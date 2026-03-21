@@ -4,6 +4,8 @@ import { AppHeader } from '../components/shared/AppHeader';
 import { CategoryTabBar } from '../components/pack/CategoryTabBar';
 import { FilterSortRow } from '../components/pack/FilterSortRow';
 import { PackCard } from '../components/pack/PackCard';
+import { PackOpeningModal } from '../components/pack/PackOpeningModal';
+import { WonPrizesModal } from '../components/pack/WonPrizesModal';
 import { InsufficientCreditsModal } from '../components/shared/InsufficientCreditsModal';
 import { BuyCreditsModal } from './BuyCreditsModal';
 import { colors } from '../tokens/colors';
@@ -40,6 +42,8 @@ export function PacksScreen() {
       />
       <InsufficientCreditsModal />
       <BuyCreditsModal />
+      <PackOpeningModal />
+      <WonPrizesModal />
     </View>
   );
 }
