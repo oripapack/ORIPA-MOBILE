@@ -9,6 +9,7 @@ import { useAppStore } from '../store/useAppStore';
 export function RewardsScreen() {
   const insets = useSafeAreaInsets();
   const user = useAppStore((s) => s.user);
+  const completedPulls = user.pullHistory.filter((p) => p.fulfillment !== 'pending');
   const pct = Math.min(100, Math.round((user.xp / user.xpToNextTier) * 100));
 
   const tierColors: Record<string, string> = {
@@ -54,7 +55,7 @@ export function RewardsScreen() {
 
       {/* Pull History */}
       <Text style={styles.sectionTitle}>Pull History</Text>
-      {user.pullHistory.map((pull) => (
+      {completedPulls.map((pull) => (
         <View key={pull.id} style={styles.pullCard}>
           <View style={styles.pullLeft}>
             <Text style={styles.pullEmoji}>✨</Text>
@@ -64,7 +65,9 @@ export function RewardsScreen() {
             </View>
           </View>
           <View style={styles.pullRight}>
-            <Text style={styles.pullCredits}>+{pull.creditsWon.toLocaleString()}</Text>
+            <Text style={styles.pullCredits}>
+              {pull.fulfillment === 'shipped' ? 'Shipped' : `+${pull.creditsWon.toLocaleString()}`}
+            </Text>
             <Text style={styles.pullDate}>
               {pull.timestamp.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             </Text>
@@ -72,7 +75,7 @@ export function RewardsScreen() {
         </View>
       ))}
 
-      {user.pullHistory.length === 0 && (
+      {completedPulls.length === 0 && (
         <View style={styles.emptyState}>
           <Text style={styles.emptyIcon}>📦</Text>
           <Text style={styles.emptyTitle}>No pulls yet</Text>

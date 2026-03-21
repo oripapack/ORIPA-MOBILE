@@ -14,6 +14,8 @@ interface Props {
 
 export function PackCard({ pack, onPress }: Props) {
   const openPack = useAppStore((s) => s.openPack);
+  const isPackOpening = useAppStore((s) => s.modals.packOpening);
+  const awaitingFulfillment = useAppStore((s) => !!s.pendingFulfillmentPullId);
   const pct = Math.round((pack.remainingInventory / pack.totalInventory) * 100);
 
   return (
@@ -58,9 +60,10 @@ export function PackCard({ pack, onPress }: Props) {
 
       {/* CTA */}
       <TouchableOpacity
-        style={styles.cta}
+        style={[styles.cta, (isPackOpening || awaitingFulfillment) && styles.ctaDisabled]}
         onPress={() => openPack(pack)}
         activeOpacity={0.85}
+        disabled={isPackOpening || awaitingFulfillment}
       >
         <Text style={styles.ctaText}>Open Pack</Text>
       </TouchableOpacity>
@@ -179,6 +182,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  ctaDisabled: {
+    opacity: 0.55,
   },
   ctaText: {
     color: colors.white,

@@ -1,10 +1,25 @@
+/** After a pack opens, user must choose ship vs convert — until then, `pending`. */
+export type PullFulfillment = 'pending' | 'converted' | 'shipped';
+
+export type PullRarityTier = 'common' | 'rare' | 'legendary';
+
 export interface Pull {
   id: string;
   packId: string;
   packTitle: string;
   result: string;
+  /** Notional / display value of the hit (can exceed pack price). */
   creditsWon: number;
   timestamp: Date;
+  /**
+   * Legacy pulls may omit this — treat as already settled for Rewards UI.
+   * New pulls start as `pending` until Won Prizes flow completes.
+   */
+  fulfillment?: PullFulfillment;
+  /** Credits added to wallet if user taps “Convert to points” (capped; see store). */
+  convertCreditValue?: number;
+  /** From pack opening reveal — for Won Prizes UI. */
+  tier?: PullRarityTier;
 }
 
 export interface UserState {
