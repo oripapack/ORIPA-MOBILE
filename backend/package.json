@@ -1,0 +1,11 @@
+{
+  "name": "pull-hub-backend",
+  "private": true,
+  "scripts": {
+    "start": "supabase start",
+    "stop": "supabase stop",
+    "status": "supabase status",
+    "db:reset": "supabase db reset",
+    "link": "supabase link"
+  }
+}

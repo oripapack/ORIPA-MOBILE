@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { categories, PackCategory } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
 import { colors } from '../../tokens/colors';
@@ -7,6 +8,7 @@ import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 export function CategoryTabBar() {
+  const { t } = useTranslation();
   const selected = useAppStore((s) => s.selectedCategory);
   const setCategory = useAppStore((s) => s.setCategory);
 
@@ -26,7 +28,9 @@ export function CategoryTabBar() {
               onPress={() => setCategory(cat.key as PackCategory | 'all')}
               activeOpacity={0.7}
             >
-              <Text style={[styles.label, active && styles.labelActive]}>{cat.label}</Text>
+              <Text style={[styles.label, active && styles.labelActive]}>
+                {t(`categories.${cat.key}`)}
+              </Text>
             </TouchableOpacity>
           );
         })}

@@ -1,0 +1,31 @@
+/**
+ * Single place for **user-facing** app name and demo flags.
+ * Legal text for Terms / Privacy lives in `src/legal/inAppLegalCopy.ts` (in-app modals).
+ * App Store submission: see `docs/MVP_PUBLISH_ORDER.md`.
+ */
+import packageJson from '../../package.json';
+
+/** Shown in Account, demo banner, legal copy, etc. */
+export const APP_DISPLAY_NAME = 'Pull Hub';
+
+/**
+ * Splits `APP_DISPLAY_NAME` for the header / pack art (e.g. "Pull Hub" → Pull + Hub).
+ */
+export function getAppLogoParts(): { primary: string; secondary: string | null } {
+  const parts = APP_DISPLAY_NAME.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return { primary: parts[0], secondary: parts.slice(1).join(' ') };
+  }
+  return { primary: APP_DISPLAY_NAME, secondary: null };
+}
+
+export const APP_VERSION = packageJson.version;
+export const APP_SLUG = packageJson.name;
+
+/** When true, shows a top banner so viewers know credits/shipping are not real. */
+export const SHOW_DEMO_BANNER = true;
+
+export const DEMO_BANNER_TEXT = 'Preview build — credits & rewards are simulated.';
+
+/** If true, Buy Credits is clearly labeled as mock (no real charges). */
+export const CREDITS_ARE_MOCK = true;

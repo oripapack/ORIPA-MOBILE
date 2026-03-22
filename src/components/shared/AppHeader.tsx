@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { CreditsPill } from './CreditsPill';
-import { useAppStore } from '../../store/useAppStore';
+import { getAppLogoParts } from '../../config/app';
+import { navigationRef } from '../../navigation/navigationRef';
 
 interface Props {
   onSearch?: () => void;
@@ -13,21 +15,29 @@ interface Props {
 
 export function AppHeader({ onSearch }: Props) {
   const insets = useSafeAreaInsets();
-  const openModal = useAppStore((s) => s.openModal);
+  const { primary, secondary } = getAppLogoParts();
+
+  const goCredits = () => {
+    if (navigationRef.isReady()) {
+      navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
+    }
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
       {/* Logo */}
       <View style={styles.logo}>
-        <Text style={styles.logoText}>VAULT</Text>
-        <Text style={styles.logoDot}>PACKS</Text>
+        <Text style={styles.logoText}>{primary}</Text>
+        {secondary != null && secondary.length > 0 ? (
+          <Text style={styles.logoDot}>{secondary}</Text>
+        ) : null}
       </View>
 
       {/* Right controls */}
       <View style={styles.right}>
-        <CreditsPill onAdd={() => openModal('buyCredits')} />
+        <CreditsPill onAdd={goCredits} />
         <TouchableOpacity style={styles.iconBtn} onPress={onSearch}>
-          <Text style={styles.icon}>🔍</Text>
+          <Ionicons name="search" size={22} color={colors.nearBlack} />
         </TouchableOpacity>
       </View>
     </View>
@@ -72,8 +82,5 @@ const styles = StyleSheet.create({
     height: 36,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  icon: {
-    fontSize: 18,
   },
 });

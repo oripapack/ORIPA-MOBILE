@@ -70,6 +70,6 @@ Reference: **clove**-style Oripa / mystery-pack apps (store → open packs → a
 | Won Prizes list + checkbox + convert vs ship | `WonPrizesModal.tsx` |
 | Convert confirmation | Nested confirm in `WonPrizesModal` |
 | Defer wallet credits until user chooses | `finalizePullFulfillment` in `useAppStore.ts` |
-| Pull History hides pending rows | `RewardsScreen` filters `fulfillment !== 'pending'` |
+| Pull History hides pending rows | `AccountScreen` filters `fulfillment !== 'pending'` |
 
 Next steps you might add: address picker for ship, API for fulfillment, Lottie/video for step 9-style minigame.

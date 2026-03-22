@@ -1,0 +1,324 @@
+{
+  "tabs": {
+    "home": "首頁",
+    "friends": "好友",
+    "marketplace": "商店",
+    "account": "帳戶"
+  },
+  "marketplace": {
+    "storeTitle": "Pull Hub 商店",
+    "storeLead": "瀏覽認證合作店的單卡與未拆封商品。結帳功能即將上線 — 此處僅為列表（開包請至首頁）。",
+    "searchPlaceholder": "搜尋卡片、系列或店家…",
+    "promoTitle": "部分訂單享免運",
+    "promoBody": "參與店家與條件下滿 $50 可享免運等，詳見各商品說明。",
+    "cat_all": "全部",
+    "cat_pokemon": "寶可夢",
+    "cat_one_piece": "航海王",
+    "cat_yugioh": "遊戲王",
+    "cat_sports": "體育",
+    "whyTitle": "為什麼選擇 Pull Hub 商店？",
+    "whyPointLabel1": "重點 1",
+    "whyPointLabel2": "重點 2",
+    "whyPointLabel3": "重點 3",
+    "whyPoint1Title": "出貨快速",
+    "whyPoint1Body": "合作店家快速出貨，方便賽前與聯盟夜收貨；截單時間因店而異。",
+    "whyPoint2Title": "價格有競爭力",
+    "whyPoint2Body": "在同一畫面比較多家店。Pull Hub 佣金計入合作方定價，結帳無隱藏費用。",
+    "whyPoint3Title": "選擇豐富",
+    "whyPoint3Body": "聚合多地可信賣家的庫存 — 從日版促銷到英文常用卡與未拆盒。",
+    "specialPrice": "特價",
+    "saleOn": "促銷",
+    "sectionStores": "來自合作店",
+    "verified": "已驗證",
+    "commissionLine": "Pull Hub 手續費：{{pct}}%",
+    "badgeSale": "特價",
+    "badgeTournament": "賽事",
+    "badgeNew": "新品",
+    "emptyResults": "沒有符合篩選的商品。",
+    "listingDemoTitle": "商品",
+    "listingDemoBody": "「{{title}}」的結帳尚未串接 — 本頁僅供瀏覽列表。",
+    "demoNote": "示範：支付、購物車與賣家撥款未連線。開包請至首頁。"
+  },
+  "settings": {
+    "title": "設定"
+  },
+  "demoBanner": "預覽版 — 積分與獎勵為模擬資料。",
+  "home": {
+    "discover": "發現",
+    "spotlightTitle": "精選卡包",
+    "spotlightBody": "精選上新與活動。請用下方分類與排序瀏覽。",
+    "browseAllPacks": "瀏覽全部卡包",
+    "emptyCategory": "此分類尚無卡包。"
+  },
+  "packs": {
+    "browseTitle": "瀏覽卡包",
+    "browseSub": "全部分類、篩選與排序"
+  },
+  "categories": {
+    "all": "全部",
+    "featured": "精選",
+    "new": "新品",
+    "pokemon": "寶可夢",
+    "yugioh": "遊戲王",
+    "one_piece": "航海王",
+    "sports": "體育",
+    "graded": "評級卡",
+    "hot_drops": "熱門掉落"
+  },
+  "hero": {
+    "eyebrow": "新用戶專屬",
+    "headline1": "高價值",
+    "headline2": "歡迎卡包",
+    "sub": "限時卡包，更高爆率與額外獎勵",
+    "browsePacks": "瀏覽卡包",
+    "notNow": "暫不",
+    "hitCard": "Hit 卡"
+  },
+  "friends": {
+    "title": "好友",
+    "lead": "與認識的人連線。分享好友 ID 或掃描對方 QR 碼新增。",
+    "add": "新增",
+    "emptyCta": "新增好友",
+    "addModalTitle": "新增好友",
+    "qrShort": "QR",
+    "yourFriendId": "你的好友 ID",
+    "memberHint": "此 ID 與帳戶頁會員 ID 相同。",
+    "showQr": "顯示我的 QR 碼",
+    "addFriend": "新增好友",
+    "enterFriendId": "輸入好友 ID",
+    "placeholderId": "例：TCG-100001",
+    "lookup": "查詢",
+    "scanQr": "掃描 QR 碼",
+    "demoHint": "示範：可嘗試 TCG-100001、100002、100003。",
+    "yourFriends": "好友（{{count}}）",
+    "emptyTitle": "尚無好友",
+    "emptyBody": "新增後將顯示於此，作為後續社交功能的基礎。"
+  },
+  "rewards": {
+    "title": "獎勵",
+    "tier": "等級",
+    "viewBenefits": "查看等級權益 →",
+    "pullHistory": "開包紀錄",
+    "shipped": "已出貨",
+    "noPullsTitle": "尚無開包紀錄",
+    "noPullsBody": "開啟第一個卡包後，紀錄將顯示於此。"
+  },
+  "account": {
+    "title": "帳戶",
+    "tier": "等級",
+    "memberId": "會員 ID",
+    "verifyIdentity": "身分驗證",
+    "viewBenefits": "查看等級權益 →",
+    "sectionAccount": "帳戶",
+    "sectionMore": "更多",
+    "sectionSupport": "支援",
+    "sectionLegal": "法律資訊",
+    "sectionPreferences": "偏好設定",
+    "languageRegion": "語言與地區",
+    "followUs": "關注我們",
+    "followSub": "關注官方管道取得活動與更新。",
+    "logout": "登出",
+    "version": "{{name}} v{{version}}"
+  },
+  "shortcuts": {
+    "notif": "通知",
+    "hot": "熱門掉落",
+    "history": "開包紀錄",
+    "promos": "活動"
+  },
+  "accountRows": {
+    "shipping": "收貨地址",
+    "payout": "收款方式",
+    "identity": "身分驗證",
+    "linked": "關聯帳戶"
+  },
+  "supportRows": {
+    "help": "說明中心",
+    "contact": "聯絡客服",
+    "faq": "常見問題"
+  },
+  "legalRows": {
+    "terms": "服務條款",
+    "privacy": "隱私權政策",
+    "promo": "活動規則",
+    "payment": "付款說明"
+  },
+  "locale": {
+    "title": "語言與地區",
+    "language": "語言",
+    "region": "地區",
+    "regionHint": "用於日期、貨幣顯示及未來配送設定。",
+    "save": "儲存",
+    "cancel": "取消"
+  },
+  "regions": {
+    "US": "美國",
+    "CA": "加拿大",
+    "GB": "英國",
+    "JP": "日本",
+    "AU": "澳洲"
+  },
+  "buyCredits": {
+    "close": "關閉",
+    "title": "購買積分",
+    "subtitle": "用於開包。促銷折扣僅顯示在較低方案；較高方案為標價。",
+    "mockNote": "預覽：無真實扣款 — 示範積分即時入帳。",
+    "discountBadge": "{{pct}}% OFF",
+    "pointsLine": "{{count}} pt",
+    "approx": "約",
+    "buyNow": "購買",
+    "disclaimer": "確認購買後可能無法取消、退款或退回積分（上線前以最終政策為準）。",
+    "mockFooter": "模擬購買 — 上線前請接入真實收銀。",
+    "liveFooter": "安全付款 · 即時入帳 · 不過期"
+  },
+  "legalModal": {
+    "done": "完成"
+  },
+  "myQr": {
+    "title": "你的好友碼",
+    "subtitle": "請好友掃描此 QR 碼，或分享 ID 讓對方新增你。",
+    "you": "你",
+    "copy": "複製",
+    "done": "完成"
+  },
+  "qrScanner": {
+    "title": "掃描好友 QR 碼",
+    "cancel": "取消",
+    "permText": "掃描 QR 碼需要相機權限。",
+    "allowCamera": "允許使用相機",
+    "hint": "將 QR 碼對準框內",
+    "webTitle": "網頁版不支援掃描",
+    "webBody": "請在手機 App 中掃描，或手動輸入好友 ID。",
+    "close": "關閉"
+  },
+  "sort": {
+    "recommended": "推薦",
+    "priceAsc": "價格由低到高",
+    "priceDesc": "價格由高到低",
+    "newest": "最新",
+    "bestValue": "性價比",
+    "popular": "最受歡迎"
+  },
+  "filterRow": {
+    "filter": "篩選",
+    "sortPrefix": "排序：",
+    "sortBy": "排序方式"
+  },
+  "chips": {
+    "new": "新品",
+    "new_user": "新用戶",
+    "best_value": "超值",
+    "graded": "評級",
+    "hot_drop": "熱門",
+    "bonus_pack": "贈包",
+    "chase_boost": "追卡"
+  },
+  "packCard": {
+    "openPack": "開包",
+    "credits": "積分",
+    "remaining": "剩餘 {{left}} / {{total}}",
+    "maxPerUser": "每人限開 {{count}} 次"
+  },
+  "packCatalog": {
+    "1": {
+      "title": "新用戶歡迎卡包",
+      "value": "超過 100% 追卡價值",
+      "guarantee": "每開 2 包必得獎勵"
+    },
+    "2": {
+      "title": "寶可夢 朱／紫 熱門卡包",
+      "value": "90% 機率獲得 200+ 積分價值",
+      "guarantee": "每包必有閃卡"
+    },
+    "3": {
+      "title": "航海王 評級保管卡包",
+      "value": "內含 PSA 9–10 評級卡",
+      "guarantee": "每包含一張評級卡"
+    },
+    "4": {
+      "title": "體育卡閃電卡包",
+      "value": "2024 熱門新秀",
+      "guarantee": "每開 5 包可得簽字或實體卡"
+    },
+    "5": {
+      "title": "寶可夢復古評級卡包",
+      "value": "初版時代評級好卡",
+      "guarantee": "保證 PSA 8+ 品相"
+    },
+    "6": {
+      "title": "熱門掉落神秘卡包",
+      "value": "全品類驚喜混搭",
+      "guarantee": "每開 3 包送贈包"
+    },
+    "7": {
+      "title": "航海王 頂上戰爭卡包",
+      "value": "領袖 SR 與追閃",
+      "guarantee": "十分之一機率異畫"
+    },
+    "8": {
+      "title": "新品試玩採樣卡包",
+      "value": "最新系列試抽",
+      "guarantee": "每次至少 3 張卡"
+    },
+    "9": {
+      "title": "遊戲王 傳說之戰卡包",
+      "value": "Secret Rare 與星光位",
+      "guarantee": "每包必有超罕或以上"
+    }
+  },
+  "packOpening": {
+    "title": "開包中",
+    "opening": "正在開啟…",
+    "suspense": "抽到了什麼？",
+    "revealing": "揭曉中…",
+    "skip": "跳過 ▸",
+    "live": "直播",
+    "continue": "繼續",
+    "openNext": "再開一包",
+    "youPulled": "你抽到了",
+    "creditsLabel": "+{{amount}} 積分",
+    "resultCommon1": "來自 {{packName}} 的普通命中",
+    "resultCommon2": "來自 {{packName}} 的標準抽出",
+    "resultCommon3": "來自 {{packName}} 的日常卡",
+    "resultRare1": "來自 {{packName}} 的稀有命中",
+    "resultRare2": "來自 {{packName}} 的超罕抽出",
+    "resultRare3": "來自 {{packName}} 的特別卡",
+    "resultLegendary1": "來自 {{packName}} 的傳說命中",
+    "resultLegendary2": "來自 {{packName}} 的神話級抽出",
+    "resultLegendary3": "改變局勢的卡 — {{packName}}"
+  },
+  "insufficientCredits": {
+    "title": "積分不足",
+    "body": "開此卡包需要更多積分。",
+    "bodyWithAmount": "還需 {{needed}} 積分才能開此卡包。請儲值後繼續。",
+    "packLabel": "卡包",
+    "costLabel": "費用",
+    "balanceLabel": "你的餘額",
+    "creditsLine": "{{amount}} 積分",
+    "buyCredits": "購買積分",
+    "cancel": "取消"
+  },
+  "friendsAlerts": {
+    "copiedTitle": "已複製",
+    "copiedBody": "好友 ID 已複製到剪貼簿。",
+    "addTitle": "新增好友？",
+    "cancel": "取消",
+    "add": "新增",
+    "addedTitle": "已新增",
+    "addedBody": "{{name}} 已加入你的好友列表。",
+    "selfTitle": "這是你自己",
+    "selfBody": "不能新增自己的好友 ID。",
+    "duplicateTitle": "已是好友",
+    "duplicateBody": "該好友已在列表中。",
+    "errorTitle": "發生錯誤",
+    "errorBody": "請再試一次。",
+    "invalidIdTitle": "ID 無效",
+    "invalidIdBody": "好友 ID 格式類似 TCG-123456。請向對方索取。",
+    "notFoundTitle": "找不到使用者",
+    "notFoundBody": "沒有與該 ID 相符的帳號。請核對或稍後再試。"
+  },
+  "common": {
+    "copied": "已複製",
+    "friendIdCopied": "好友 ID 已複製到剪貼簿。"
+  }
+}

@@ -1,10 +1,10 @@
 import { create } from 'zustand';
+import { FriendEntry } from '../data/friends';
 import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
 import { Pack, PackCategory } from '../data/mockPacks';
 
 interface ModalState {
   insufficientCredits: boolean;
-  buyCredits: boolean;
   /**
    * Reserved for future multi-pack / quantity picker (e.g. open 1 vs 5 vs 10).
    * MVP: single pack only — see `openPack` and `PackOpeningModal`.
@@ -15,8 +15,12 @@ interface ModalState {
   wonPrizes: boolean;
 }
 
+type AddFriendResult = { ok: true } | { ok: false; reason: 'duplicate' | 'self' | 'invalid' };
+
 interface AppStore {
   user: UserState;
+  /** Added via friend ID lookup / QR (MVP local list). */
+  friends: FriendEntry[];
   selectedCategory: PackCategory | 'all';
   sortOrder: 'recommended' | 'price_asc' | 'price_desc' | 'newest' | 'best_value' | 'popular';
   modals: ModalState;
@@ -25,6 +29,8 @@ interface AppStore {
   pendingFulfillmentPullId: string | null;
   /** Prevents double-applying pull rewards (e.g. React Strict Mode / effect re-runs). */
   _packOpenRewardApplied: boolean;
+  /** Increments on every successful `openPack` so pack UI re-rolls even when `selectedPack` is the same reference. */
+  packOpenSessionId: number;
 
   // Actions
   addCredits: (amount: number) => void;
@@ -37,15 +43,19 @@ interface AppStore {
   applyPackOpenResult: (result: { result: string; creditsWon: number; tier: PullRarityTier }) => void;
   /** After Won Prizes: add credits (convert) or mark shipped — no credits. */
   finalizePullFulfillment: (pullId: string, choice: 'convert' | 'ship') => void;
+  /** Adds a friend by member ID + display name (caller resolves name from lookup). */
+  addFriend: (memberId: string, displayName: string) => AddFriendResult;
+  /** When Clerk profile onboarding is done — updates local `user` for Account / Friends. */
+  setUserFromClerkProfile: (p: { id: string; displayName: string; memberId: string }) => void;
 }
 
 export const useAppStore = create<AppStore>((set, get) => ({
   user: mockUser,
+  friends: [],
   selectedCategory: 'all',
   sortOrder: 'recommended',
   modals: {
     insufficientCredits: false,
-    buyCredits: false,
     quantitySheet: false,
     packOpening: false,
     wonPrizes: false,
@@ -53,6 +63,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   selectedPack: null,
   pendingFulfillmentPullId: null,
   _packOpenRewardApplied: false,
+  packOpenSessionId: 0,
 
   addCredits: (amount) =>
     set((state) => ({
@@ -74,7 +85,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   /**
    * Single-pack opens only (MVP). Credits + XP apply immediately when the user
    * commits to opening; the modal animation only reveals the pull result.
-   * TODO: wire `quantitySheet` + quantity pricing when we add multi-open.
+   * Multi-open / quantity pricing is not implemented in MVP (single open only).
    */
   openPack: (pack) => {
     const { user, pendingFulfillmentPullId } = get();
@@ -92,6 +103,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
       selectedPack: pack,
       modals: { ...state.modals, packOpening: true },
       _packOpenRewardApplied: false,
+      packOpenSessionId: state.packOpenSessionId + 1,
       user: {
         ...state.user,
         credits: state.user.credits - pack.creditPrice,
@@ -109,7 +121,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
     const { selectedPack, _packOpenRewardApplied } = get();
     if (!selectedPack || _packOpenRewardApplied) return;
 
-    const convertCreditValue = Math.min(result.creditsWon, selectedPack.creditPrice);
+    /** Must match on-screen `creditsWon` from the opening reveal (full roll, not capped to pack price). */
+    const convertCreditValue = result.creditsWon;
 
     const pull: Pull = {
       id: `pull_${Date.now()}_${Math.random().toString(16).slice(2)}`,
@@ -133,12 +146,40 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }));
   },
 
+  addFriend: (memberId, displayName) => {
+    const { user, friends } = get();
+    const id = memberId.trim().replace(/\s+/g, '').toUpperCase();
+    if (!id) return { ok: false, reason: 'invalid' };
+    if (id === user.memberId.trim().toUpperCase()) return { ok: false, reason: 'self' };
+    if (friends.some((f) => f.memberId === id)) return { ok: false, reason: 'duplicate' };
+
+    const entry: FriendEntry = {
+      memberId: id,
+      displayName: displayName.trim() || `Friend ${id.slice(-4)}`,
+      addedAt: Date.now(),
+    };
+    set({ friends: [entry, ...friends] });
+    return { ok: true };
+  },
+
+  setUserFromClerkProfile: (p) =>
+    set((state) => ({
+      user: {
+        ...state.user,
+        id: p.id,
+        displayName: p.displayName,
+        memberId: p.memberId,
+        isVerified: true,
+      },
+    })),
+
   finalizePullFulfillment: (pullId, choice) => {
     set((state) => {
       const pull = state.user.pullHistory.find((p) => p.id === pullId);
       if (!pull || pull.fulfillment !== 'pending') return state;
 
-      const creditsToAdd = choice === 'convert' ? (pull.convertCreditValue ?? 0) : 0;
+      const creditsToAdd =
+        choice === 'convert' ? (pull.creditsWon ?? pull.convertCreditValue ?? 0) : 0;
       const nextFulfillment = choice === 'convert' ? 'converted' : 'shipped';
 
       return {

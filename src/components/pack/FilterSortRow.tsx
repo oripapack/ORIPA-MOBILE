@@ -1,48 +1,77 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Pressable } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
+import { transparentModalIOSProps } from '../../constants/modalPresentation';
 
-const sortOptions = [
-  { key: 'recommended', label: 'Recommended' },
-  { key: 'price_asc', label: 'Price: Low to High' },
-  { key: 'price_desc', label: 'Price: High to Low' },
-  { key: 'newest', label: 'Newest' },
-  { key: 'best_value', label: 'Best Value' },
-  { key: 'popular', label: 'Most Popular' },
-] as const;
+type SortKey =
+  | 'recommended'
+  | 'price_asc'
+  | 'price_desc'
+  | 'newest'
+  | 'best_value'
+  | 'popular';
+
+const SORT_KEYS: SortKey[] = [
+  'recommended',
+  'price_asc',
+  'price_desc',
+  'newest',
+  'best_value',
+  'popular',
+];
+
+const SORT_I18N: Record<SortKey, string> = {
+  recommended: 'sort.recommended',
+  price_asc: 'sort.priceAsc',
+  price_desc: 'sort.priceDesc',
+  newest: 'sort.newest',
+  best_value: 'sort.bestValue',
+  popular: 'sort.popular',
+};
 
 export function FilterSortRow() {
+  const { t } = useTranslation();
   const sortOrder = useAppStore((s) => s.sortOrder);
   const setSortOrder = useAppStore((s) => s.setSortOrder);
   const [showSort, setShowSort] = useState(false);
 
-  const currentLabel = sortOptions.find((o) => o.key === sortOrder)?.label ?? 'Recommended';
+  const sortOptions = useMemo(
+    () => SORT_KEYS.map((key) => ({ key, label: t(SORT_I18N[key]) })),
+    [t],
+  );
+
+  const currentLabel =
+    sortOptions.find((o) => o.key === sortOrder)?.label ?? t('sort.recommended');
 
   return (
     <View style={styles.row}>
       <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7}>
         <Text style={styles.filterIcon}>⚙</Text>
-        <Text style={styles.filterText}>Filter</Text>
+        <Text style={styles.filterText}>{t('filterRow.filter')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.sortBtn} onPress={() => setShowSort(true)} activeOpacity={0.7}>
-        <Text style={styles.sortLabel}>Sort: </Text>
+        <Text style={styles.sortLabel}>{t('filterRow.sortPrefix')}</Text>
         <Text style={styles.sortValue}>{currentLabel}</Text>
         <Text style={styles.sortChevron}>▾</Text>
       </TouchableOpacity>
 
-      <Modal visible={showSort} transparent animationType="fade">
+      <Modal visible={showSort} transparent animationType="fade" {...transparentModalIOSProps}>
         <Pressable style={styles.overlay} onPress={() => setShowSort(false)}>
           <View style={styles.dropdown}>
-            <Text style={styles.dropdownTitle}>Sort By</Text>
+            <Text style={styles.dropdownTitle}>{t('filterRow.sortBy')}</Text>
             {sortOptions.map((opt) => (
               <TouchableOpacity
                 key={opt.key}
                 style={[styles.dropdownItem, sortOrder === opt.key && styles.dropdownItemActive]}
-                onPress={() => { setSortOrder(opt.key); setShowSort(false); }}
+                onPress={() => {
+                  setSortOrder(opt.key);
+                  setShowSort(false);
+                }}
               >
                 <Text style={[styles.dropdownText, sortOrder === opt.key && styles.dropdownTextActive]}>
                   {opt.label}

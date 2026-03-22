@@ -1,19 +1,28 @@
-import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, FlatList, StyleSheet, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { AppHeader } from '../components/shared/AppHeader';
 import { HeroBanner } from '../components/pack/HeroBanner';
 import { CategoryTabBar } from '../components/pack/CategoryTabBar';
 import { FilterSortRow } from '../components/pack/FilterSortRow';
 import { PackCard } from '../components/pack/PackCard';
-import { PackOpeningModal } from '../components/pack/PackOpeningModal';
-import { WonPrizesModal } from '../components/pack/WonPrizesModal';
-import { InsufficientCreditsModal } from '../components/shared/InsufficientCreditsModal';
-import { BuyCreditsModal } from './BuyCreditsModal';
 import { colors } from '../tokens/colors';
 import { mockPacks } from '../data/mockPacks';
+import { useWelcomeBannerDismissed } from '../hooks/useWelcomeBannerDismissed';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useAppStore } from '../store/useAppStore';
+import { fontSize, fontWeight } from '../tokens/typography';
+import { spacing } from '../tokens/spacing';
 
+/**
+ * Home = full pack store: optional welcome hero, category chips (Pokémon, Yu-Gi-Oh!, etc.),
+ * sort/filter, and all openable packs in one scroll.
+ */
 export function HomeScreen() {
+  const { t } = useTranslation();
+  const { loading: welcomeLoading, isDismissed: welcomeDismissed, dismiss: dismissWelcome } =
+    useWelcomeBannerDismissed();
+  const { refreshControl } = usePullToRefresh();
   const selectedCategory = useAppStore((s) => s.selectedCategory);
   const sortOrder = useAppStore((s) => s.sortOrder);
 
@@ -21,14 +30,21 @@ export function HomeScreen() {
     (p) => selectedCategory === 'all' || p.category === selectedCategory
   );
 
-  const sorted = [...filtered].sort((a, b) => {
+  const sorted = useMemo(() => {
+    const arr = [...filtered];
     switch (sortOrder) {
-      case 'price_asc': return a.creditPrice - b.creditPrice;
-      case 'price_desc': return b.creditPrice - a.creditPrice;
-      case 'best_value': return b.remainingInventory / b.totalInventory - a.remainingInventory / a.totalInventory;
-      default: return 0;
+      case 'price_asc':
+        return arr.sort((a, b) => a.creditPrice - b.creditPrice);
+      case 'price_desc':
+        return arr.sort((a, b) => b.creditPrice - a.creditPrice);
+      default:
+        return arr;
     }
-  });
+  }, [filtered, sortOrder]);
+
+  const handleBrowsePacks = () => {
+    void dismissWelcome();
+  };
 
   return (
     <View style={styles.container}>
@@ -38,19 +54,30 @@ export function HomeScreen() {
         keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <>
-            <HeroBanner />
+            {!welcomeLoading && !welcomeDismissed ? (
+              <HeroBanner
+                onBrowsePacks={handleBrowsePacks}
+                onDismiss={() => void dismissWelcome()}
+              />
+            ) : null}
+            <View style={styles.catalogIntro}>
+              <Text style={styles.browseTitle}>{t('packs.browseTitle')}</Text>
+              <Text style={styles.browseSub}>{t('packs.browseSub')}</Text>
+            </View>
             <CategoryTabBar />
             <FilterSortRow />
           </>
         }
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Text style={styles.emptyText}>{t('home.emptyCategory')}</Text>
+          </View>
+        }
         renderItem={({ item }) => <PackCard pack={item} />}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        refreshControl={refreshControl}
       />
-      <InsufficientCreditsModal />
-      <BuyCreditsModal />
-      <PackOpeningModal />
-      <WonPrizesModal />
     </View>
   );
 }
@@ -60,8 +87,34 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  catalogIntro: {
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.xs,
+  },
+  browseTitle: {
+    fontSize: fontSize.xl,
+    fontWeight: fontWeight.black,
+    color: colors.textPrimary,
+  },
+  browseSub: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
   list: {
-    paddingTop: 0,
+    paddingTop: 12,
     paddingBottom: 100,
+    flexGrow: 1,
+  },
+  empty: {
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.xl,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    textAlign: 'center',
   },
 });

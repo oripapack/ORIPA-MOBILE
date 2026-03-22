@@ -1,0 +1,404 @@
+{
+  "tabs": {
+    "home": "Home",
+    "friends": "Friends",
+    "marketplace": "Shop",
+    "account": "Account"
+  },
+  "marketplace": {
+    "storeTitle": "Pull Hub Store",
+    "storeLead": "Browse singles and sealed products from verified partner shops. Checkout is coming soon — this is a listings-first experience (no pack opening here).",
+    "searchPlaceholder": "Search cards, sets, or shops…",
+    "promoTitle": "Free shipping on many orders",
+    "promoBody": "Orders over $50 from participating stores ship free. See each listing for details.",
+    "cat_all": "All",
+    "cat_pokemon": "Pokémon",
+    "cat_one_piece": "One Piece",
+    "cat_yugioh": "Yu-Gi-Oh!",
+    "cat_sports": "Sports",
+    "whyTitle": "Why choose Pull Hub Store?",
+    "whyPointLabel1": "Point 1",
+    "whyPointLabel2": "Point 2",
+    "whyPointLabel3": "Point 3",
+    "whyPoint1Title": "Fast fulfillment",
+    "whyPoint1Body": "Partner stores ship quickly so you can get cards in time for events and league nights. Cutoff times vary by seller.",
+    "whyPoint2Title": "Competitive prices",
+    "whyPoint2Body": "Compare listings across shops in one place. Pull Hub’s commission is built into partner pricing — no surprise fees at checkout.",
+    "whyPoint3Title": "Huge selection",
+    "whyPoint3Body": "We aggregate inventory from trusted sellers across regions — from Japanese promos to English staples and sealed wax.",
+    "specialPrice": "Special price",
+    "saleOn": "SALE",
+    "sectionStores": "From partner stores",
+    "verified": "Verified",
+    "commissionLine": "Pull Hub fee on sales: {{pct}}%",
+    "badgeSale": "SALE",
+    "badgeTournament": "Tournament",
+    "badgeNew": "NEW",
+    "emptyResults": "No listings match your filters.",
+    "listingDemoTitle": "Listing",
+    "listingDemoBody": "Checkout for “{{title}}” isn’t wired yet — this screen is listings-only.",
+    "demoNote": "Demo: payments, cart, and seller payouts are not connected. Pack opening stays on the Home tab."
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "demoBanner": "Preview build — credits & rewards are simulated.",
+  "home": {
+    "discover": "Discover",
+    "spotlightTitle": "Spotlight packs",
+    "spotlightBody": "Hand-picked drops and promos. Use categories and sorting below.",
+    "browseAllPacks": "Browse all packs",
+    "emptyCategory": "No packs in this category yet."
+  },
+  "packs": {
+    "browseTitle": "Browse packs",
+    "browseSub": "All categories, filters, and sort options"
+  },
+  "categories": {
+    "all": "All",
+    "featured": "Featured",
+    "new": "New",
+    "pokemon": "Pokémon",
+    "yugioh": "Yu-Gi-Oh!",
+    "one_piece": "One Piece",
+    "sports": "Sports",
+    "graded": "Graded",
+    "hot_drops": "Hot Drops"
+  },
+  "hero": {
+    "eyebrow": "NEW USER EXCLUSIVE",
+    "headline1": "High-Value",
+    "headline2": "Welcome Packs",
+    "sub": "Limited-time packs with boosted hit rates and bonus rewards",
+    "browsePacks": "Browse Packs",
+    "notNow": "Not now",
+    "hitCard": "Hit Card"
+  },
+  "friends": {
+    "title": "Friends",
+    "lead": "Connect with people you know. Share your friend ID or scan their QR to add them.",
+    "add": "Add",
+    "emptyCta": "Add friends",
+    "addModalTitle": "Add a friend",
+    "qrShort": "QR",
+    "yourFriendId": "Your friend ID",
+    "memberHint": "This ID is also in your Account tab as Member ID.",
+    "showQr": "Show my QR code",
+    "addFriend": "Add a friend",
+    "enterFriendId": "Enter friend ID",
+    "placeholderId": "e.g. TCG-100001",
+    "lookup": "Look up",
+    "scanQr": "Scan QR code",
+    "demoHint": "Demo: try IDs TCG-100001, TCG-100002, or TCG-100003.",
+    "yourFriends": "Your friends ({{count}})",
+    "emptyTitle": "No friends yet",
+    "emptyBody": "When you add someone, they’ll show up here so you can build on more social features later."
+  },
+  "rewards": {
+    "title": "Rewards",
+    "tier": "TIER",
+    "viewBenefits": "View Tier Benefits →",
+    "pullHistory": "Pull History",
+    "shipped": "Shipped",
+    "noPullsTitle": "No pulls yet",
+    "noPullsBody": "Open your first pack to see your pull history here."
+  },
+  "account": {
+    "title": "Account",
+    "tier": "TIER",
+    "memberId": "Member ID",
+    "verifyIdentity": "Verify Identity",
+    "viewBenefits": "View Tier Benefits →",
+    "sectionAccount": "Account",
+    "sectionMore": "More",
+    "sectionSupport": "Support",
+    "sectionLegal": "Legal",
+    "sectionPreferences": "Preferences",
+    "languageRegion": "Language & Region",
+    "followUs": "Follow Us",
+    "followSub": "Follow our official channels for promos, drops, and updates.",
+    "logout": "Logout",
+    "version": "{{name}} v{{version}}"
+  },
+  "shortcuts": {
+    "notif": "Notifications",
+    "hot": "Hot Drops",
+    "history": "Pull History",
+    "promos": "Promos"
+  },
+  "accountRows": {
+    "shipping": "Shipping Address",
+    "payout": "Payout Method",
+    "identity": "Identity Verification",
+    "linked": "Linked Accounts"
+  },
+  "supportRows": {
+    "help": "Help Center",
+    "contact": "Contact Support",
+    "faq": "FAQ"
+  },
+  "legalRows": {
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "promo": "Promotional Rules",
+    "payment": "Payment Disclosures"
+  },
+  "locale": {
+    "title": "Language & Region",
+    "language": "Language",
+    "region": "Region",
+    "regionHint": "Used for dates, currency display, and future shipping defaults.",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "regions": {
+    "US": "United States",
+    "CA": "Canada",
+    "GB": "United Kingdom",
+    "JP": "Japan",
+    "AU": "Australia"
+  },
+  "buyCredits": {
+    "close": "Close",
+    "title": "Buy Credits",
+    "subtitle": "Credits open packs. Promotional discounts show on smaller bundles; higher tiers are list price.",
+    "mockNote": "Preview: no real payment — credits are added instantly for demos.",
+    "discountBadge": "{{pct}}% OFF",
+    "pointsLine": "{{count}} pt",
+    "approx": "approx.",
+    "buyNow": "Buy now",
+    "disclaimer": "After confirming a credit purchase, cancellations, refunds, or point returns may not be possible. (Final policy before launch.)",
+    "mockFooter": "Simulated bundles — replace with real checkout before launch.",
+    "liveFooter": "Secure checkout · Instant delivery · No expiry"
+  },
+  "lootBox": {
+    "title": "Probability of contents",
+    "lead": "Pack openings are randomized. Approximate tier rates below are for disclosure; specific packs may vary.",
+    "columnTier": "Tier",
+    "footnote": "Rates are illustrative for this preview build. Published products will show final odds before purchase where required.",
+    "done": "Got it"
+  },
+  "auth": {
+    "title": "Sign in",
+    "subtitle": "Use Google, Apple, or email. New accounts: we’ll email you a one-time code to verify.",
+    "continueGoogle": "Continue with Google",
+    "continueApple": "Continue with Apple",
+    "or": "or",
+    "modeSignIn": "Sign in",
+    "modeSignUp": "Create account",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "emailSignIn": "Sign in with email",
+    "emailContinue": "Continue",
+    "verifyHint": "Enter the code we sent to {{email}}.",
+    "codePlaceholder": "6-digit code",
+    "verifyCode": "Verify & continue",
+    "resendCode": "Resend code",
+    "emailPasswordRequired": "Enter email and password.",
+    "signInIncomplete": "Could not finish sign-in. If you use two-factor authentication, we’ll add support next.",
+    "verifyFailed": "Verification didn’t complete. Check the code and try again.",
+    "dashboardHint": "Clerk Dashboard: enable Google (oauth_google), Apple (oauth_apple), and Email + password + email code verification.",
+    "signedInAs": "Account",
+    "signOut": "Sign out",
+    "signOutTitle": "Sign out?",
+    "signOutMessage": "You will need to sign in again to use your synced data when it is available.",
+    "signOutConfirm": "Sign out",
+    "cancel": "Cancel"
+  },
+  "linkPhone": {
+    "title": "Verify your phone",
+    "subtitle": "We use your number once to confirm you’re a real person and to protect promos (one verified number per account). Use international format, e.g. +1…",
+    "phonePlaceholder": "+1 555 123 4567",
+    "sendCode": "Send code",
+    "codeHint": "Enter the code we texted you.",
+    "codePlaceholder": "6-digit code",
+    "verify": "Verify & continue",
+    "resend": "Resend code",
+    "changeNumber": "Use a different number",
+    "invalid": "Enter a valid phone number in international format (include country code, e.g. +1…).",
+    "phoneMissing": "Could not start phone verification. Try again.",
+    "verifyFailed": "That code didn’t work. Check the message and try again.",
+    "genericError": "Something went wrong. Try again.",
+    "dashboardHint": "Clerk Dashboard → User & authentication → Phone: enable SMS / verification. You can turn off “Sign in with phone” if you only want Google / Apple / email sign-in.",
+    "signOut": "Use a different account"
+  },
+  "profileOnboarding": {
+    "title": "Set up your profile",
+    "subtitle": "Choose a public username and how you’d like to appear. You can change this later when account settings are wired to the server.",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "your_handle",
+    "displayNameLabel": "Display name (optional)",
+    "displayNamePlaceholder": "Same as username if empty",
+    "memberIdHint": "Your friend code (TCG-…) is assigned automatically for QR and invites.",
+    "usernameInvalid": "Use 2–20 characters: letters, numbers, and underscores only.",
+    "continue": "Continue",
+    "genericError": "Could not save your profile. Try again."
+  },
+  "paymentPortal": {
+    "navTitle": "Payment",
+    "eyebrow": "Checkout",
+    "tabCredits": "Credits",
+    "tabMarketplace": "Marketplace",
+    "viewProbabilities": "View probability of contents",
+    "digitalRoutingNote": "Digital credits: use App Store / Google Play in-app purchase when live — not Stripe for coins.",
+    "marketplaceTitle": "Physical order",
+    "marketplaceLead": "Partner listings ship real products. Checkout uses a physical-goods payment flow (server-backed Stripe), separate from in-app credit packs.",
+    "item": "Item",
+    "price": "Price",
+    "physicalPolicy": "Physical goods only — PaymentIntent created on your server ({{mode}}). Apple Pay / Google Pay may appear for shipping purchases, not for digital currency.",
+    "continueCheckout": "Continue to checkout",
+    "physicalStubTitle": "Checkout not connected",
+    "physicalStubBody": "Wire your backend to create a Stripe PaymentIntent, then open the client with the returned client secret. No keys in the app binary.",
+    "sampleListingTitle": "Sample listing"
+  },
+  "legalModal": {
+    "done": "Done"
+  },
+  "myQr": {
+    "title": "Your friend code",
+    "subtitle": "Have a friend scan this QR, or share your ID so they can add you.",
+    "you": "You",
+    "copy": "Copy",
+    "done": "Done"
+  },
+  "qrScanner": {
+    "title": "Scan friend QR",
+    "cancel": "Cancel",
+    "permText": "We need camera access to scan friend QR codes.",
+    "allowCamera": "Allow camera",
+    "hint": "Align the QR code within the frame",
+    "webTitle": "Scan not available on web",
+    "webBody": "Open the app on your phone to scan a friend's QR code, or enter their friend ID below.",
+    "close": "Close"
+  },
+  "sort": {
+    "recommended": "Recommended",
+    "priceAsc": "Price: Low to High",
+    "priceDesc": "Price: High to Low",
+    "newest": "Newest",
+    "bestValue": "Best Value",
+    "popular": "Most Popular"
+  },
+  "filterRow": {
+    "filter": "Filter",
+    "sortPrefix": "Sort: ",
+    "sortBy": "Sort By"
+  },
+  "chips": {
+    "new": "New",
+    "new_user": "New User",
+    "best_value": "Best Value",
+    "graded": "Graded",
+    "hot_drop": "Hot Drop",
+    "bonus_pack": "Bonus Pack",
+    "chase_boost": "Chase Boost"
+  },
+  "packCard": {
+    "openPack": "Open Pack",
+    "credits": "Credits",
+    "remaining": "{{left}} / {{total}} Remaining",
+    "maxPerUser": "Only {{count}} opens per user"
+  },
+  "packCatalog": {
+    "1": {
+      "title": "New User Welcome Pack",
+      "value": "Over 100% chase value",
+      "guarantee": "Guaranteed bonus every 2 opens"
+    },
+    "2": {
+      "title": "Pokémon Scarlet & Violet Hit Pack",
+      "value": "90% chance at 200+ credits value",
+      "guarantee": "Holofoil guaranteed in every pack"
+    },
+    "3": {
+      "title": "One Piece Graded Vault Pack",
+      "value": "PSA 9–10 graded cards inside",
+      "guarantee": "Every pack contains a graded card"
+    },
+    "4": {
+      "title": "Sports Cards Flash Pack",
+      "value": "Rookie cards from top 2024 picks",
+      "guarantee": "Auto or relic card every 5 opens"
+    },
+    "5": {
+      "title": "Pokémon Vintage Graded Pack",
+      "value": "Base Set era graded hits",
+      "guarantee": "Guaranteed PSA 8+ condition"
+    },
+    "6": {
+      "title": "Hot Drop Mystery Pack",
+      "value": "Surprise mix from all categories",
+      "guarantee": "Bonus pack after every 3 opens"
+    },
+    "7": {
+      "title": "One Piece Paramount War Pack",
+      "value": "Leader SR cards with chase foils",
+      "guarantee": "1-in-10 chance at Alt Art"
+    },
+    "8": {
+      "title": "New Arrivals Sampler Pack",
+      "value": "Sample hits from newest sets",
+      "guarantee": "At least 3 cards per open"
+    },
+    "9": {
+      "title": "Yu-Gi-Oh! Battles of Legend Pack",
+      "value": "Secret Rares and starlight chase slots",
+      "guarantee": "Ultra Rare or higher every pack"
+    }
+  },
+  "packOpening": {
+    "title": "Pack opening",
+    "opening": "Opening…",
+    "suspense": "What did you pull?",
+    "revealing": "Revealing…",
+    "skip": "Skip ▸",
+    "live": "LIVE",
+    "continue": "Continue",
+    "openNext": "Open next",
+    "youPulled": "You pulled",
+    "creditsLabel": "+{{amount}} credits",
+    "resultCommon1": "Common hit from {{packName}}",
+    "resultCommon2": "Standard pull from {{packName}}",
+    "resultCommon3": "Everyday card from {{packName}}",
+    "resultRare1": "Rare hit from {{packName}}",
+    "resultRare2": "Ultra pull from {{packName}}",
+    "resultRare3": "Special card from {{packName}}",
+    "resultLegendary1": "Legendary hit from {{packName}}",
+    "resultLegendary2": "Mythic pull from {{packName}}",
+    "resultLegendary3": "Game-changing card from {{packName}}"
+  },
+  "insufficientCredits": {
+    "title": "Not Enough Credits",
+    "body": "You need more credits to open this pack.",
+    "bodyWithAmount": "You need {{needed}} more credits to open this pack. Add credits now to continue.",
+    "packLabel": "Pack",
+    "costLabel": "Cost",
+    "balanceLabel": "Your Balance",
+    "creditsLine": "{{amount}} Credits",
+    "buyCredits": "Buy Credits",
+    "cancel": "Cancel"
+  },
+  "friendsAlerts": {
+    "copiedTitle": "Copied",
+    "copiedBody": "Friend ID copied to clipboard.",
+    "addTitle": "Add friend?",
+    "cancel": "Cancel",
+    "add": "Add",
+    "addedTitle": "Added",
+    "addedBody": "{{name}} is now in your friends list.",
+    "selfTitle": "That's you",
+    "selfBody": "You can't add your own friend ID.",
+    "duplicateTitle": "Already friends",
+    "duplicateBody": "This friend is already in your list.",
+    "errorTitle": "Something went wrong",
+    "errorBody": "Please try again.",
+    "invalidIdTitle": "Invalid ID",
+    "invalidIdBody": "Friend IDs look like TCG-123456. Ask your friend to share their code.",
+    "notFoundTitle": "User not found",
+    "notFoundBody": "No account matches that friend ID yet. Double-check the code or try again later."
+  },
+  "common": {
+    "copied": "Copied",
+    "friendIdCopied": "Friend ID copied to clipboard."
+  }
+}

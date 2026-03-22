@@ -1,58 +1,70 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
+import { transparentModalIOSProps } from '../../constants/modalPresentation';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from './PrimaryButton';
 import { SecondaryButton } from './SecondaryButton';
 import { useAppStore } from '../../store/useAppStore';
+import { getLocalizedPackFields } from '../../i18n/packCopy';
+import { navigationRef } from '../../navigation/navigationRef';
 
 export function InsufficientCreditsModal() {
+  const { t } = useTranslation();
   const visible = useAppStore((s) => s.modals.insufficientCredits);
   const selectedPack = useAppStore((s) => s.selectedPack);
   const closeModal = useAppStore((s) => s.closeModal);
-  const openModal = useAppStore((s) => s.openModal);
   const userCredits = useAppStore((s) => s.user.credits);
 
   const needed = selectedPack ? selectedPack.creditPrice - userCredits : 0;
+  const packLoc = selectedPack ? getLocalizedPackFields(selectedPack, t) : null;
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
+    <Modal visible={visible} transparent animationType="fade" {...transparentModalIOSProps}>
       <Pressable style={styles.overlay} onPress={() => closeModal('insufficientCredits')}>
         <Pressable style={styles.modal} onPress={() => {}}>
           <View style={styles.iconWrap}>
-            <Text style={styles.icon}>🪙</Text>
+            <MaterialCommunityIcons name="wallet" size={32} color="#EA580C" />
           </View>
 
-          <Text style={styles.title}>Not Enough Credits</Text>
+          <Text style={styles.title}>{t('insufficientCredits.title')}</Text>
           <Text style={styles.body}>
-            You need{' '}
-            <Text style={styles.highlight}>{needed.toLocaleString()} more credits</Text>{' '}
-            to open this pack. Add credits now to continue.
+            {t('insufficientCredits.bodyWithAmount', { needed: needed.toLocaleString() })}
           </Text>
 
           {selectedPack && (
             <View style={styles.packInfo}>
-              <Text style={styles.packInfoLabel}>Pack</Text>
-              <Text style={styles.packInfoValue}>{selectedPack.title}</Text>
-              <Text style={styles.packInfoLabel}>Cost</Text>
-              <Text style={styles.packInfoValue}>🪙 {selectedPack.creditPrice.toLocaleString()} Credits</Text>
-              <Text style={styles.packInfoLabel}>Your Balance</Text>
-              <Text style={styles.packInfoValue}>🪙 {userCredits.toLocaleString()} Credits</Text>
+              <Text style={styles.packInfoLabel}>{t('insufficientCredits.packLabel')}</Text>
+              <Text style={styles.packInfoValue}>{packLoc?.title ?? selectedPack.title}</Text>
+              <Text style={styles.packInfoLabel}>{t('insufficientCredits.costLabel')}</Text>
+              <Text style={styles.packInfoValue}>
+                {t('insufficientCredits.creditsLine', {
+                  amount: selectedPack.creditPrice.toLocaleString(),
+                })}
+              </Text>
+              <Text style={styles.packInfoLabel}>{t('insufficientCredits.balanceLabel')}</Text>
+              <Text style={styles.packInfoValue}>
+                {t('insufficientCredits.creditsLine', { amount: userCredits.toLocaleString() })}
+              </Text>
             </View>
           )}
 
           <PrimaryButton
-            label="Buy Credits"
+            label={t('insufficientCredits.buyCredits')}
             variant="red"
             style={styles.primaryBtn}
             onPress={() => {
               closeModal('insufficientCredits');
-              openModal('buyCredits');
+              if (navigationRef.isReady()) {
+                navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
+              }
             }}
           />
           <SecondaryButton
-            label="Cancel"
+            label={t('insufficientCredits.cancel')}
             onPress={() => closeModal('insufficientCredits')}
           />
         </Pressable>
@@ -86,9 +98,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: spacing.base,
   },
-  icon: {
-    fontSize: 32,
-  },
   title: {
     fontSize: fontSize.xl,
     fontWeight: fontWeight.black,
@@ -102,10 +111,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: spacing.base,
-  },
-  highlight: {
-    color: colors.red,
-    fontWeight: fontWeight.bold,
   },
   packInfo: {
     backgroundColor: colors.background,

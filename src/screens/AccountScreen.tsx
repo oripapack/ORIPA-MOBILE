@@ -1,82 +1,122 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
 import { fontSize, fontWeight } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { ListRow } from '../components/shared/ListRow';
 import { useAppStore } from '../store/useAppStore';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
+import { getLocalizedPackTitle } from '../i18n/packCopy';
+import { RootStackParamList, RootTabParamList } from '../navigation/types';
+import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
 
-const shortcuts = [
-  { id: 'notif', icon: '🔔', label: 'Notifications' },
-  { id: 'hot', icon: '🔥', label: 'Hot Drops' },
-  { id: 'history', icon: '📋', label: 'Pull History' },
-  { id: 'promos', icon: '🎟️', label: 'Promos' },
-];
+const shortcutIds = ['notif', 'hot', 'history', 'promos'] as const;
+const shortcutIcons: Record<(typeof shortcutIds)[number], string> = {
+  notif: '🔔',
+  hot: '🔥',
+  history: '📋',
+  promos: '🎟️',
+};
 
-const accountRows = [
-  { label: 'Shipping Address', icon: '📦' },
-  { label: 'Payout Method', icon: '🏦' },
-  { label: 'Identity Verification', icon: '🪪' },
-  { label: 'Linked Accounts', icon: '🔗' },
-];
+const accountRowKeys = ['shipping', 'payout', 'identity', 'linked'] as const;
+const accountIcons: Record<(typeof accountRowKeys)[number], string> = {
+  shipping: '📦',
+  payout: '🏦',
+  identity: '🪪',
+  linked: '🔗',
+};
 
-const supportRows = [
-  { label: 'Help Center', icon: '❓' },
-  { label: 'Contact Support', icon: '💬' },
-  { label: 'FAQ', icon: '📖' },
-];
+const supportRowKeys = ['help', 'contact', 'faq'] as const;
+const supportIcons: Record<(typeof supportRowKeys)[number], string> = {
+  help: '❓',
+  contact: '💬',
+  faq: '📖',
+};
 
-const legalRows = [
-  { label: 'Terms of Service', icon: '📄' },
-  { label: 'Privacy Policy', icon: '🔒' },
-  { label: 'Promotional Rules', icon: '📣' },
-  { label: 'Payment Disclosures', icon: '💳' },
-];
-
-const socialLinks = [
-  { id: 'ig', icon: '📸', label: 'Instagram' },
-  { id: 'x', icon: '𝕏', label: 'X' },
-  { id: 'yt', icon: '▶️', label: 'YouTube' },
-  { id: 'dc', icon: '🎮', label: 'Discord' },
-];
+type AccountNav = CompositeNavigationProp<
+  BottomTabNavigationProp<RootTabParamList, 'Account'>,
+  StackNavigationProp<RootStackParamList>
+>;
 
 export function AccountScreen() {
+  const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<AccountNav>();
   const user = useAppStore((s) => s.user);
+  const { refreshControl } = usePullToRefresh();
+
+  const completedPulls = user.pullHistory.filter((p) => p.fulfillment !== 'pending');
+  const pct = Math.min(100, Math.round((user.xp / user.xpToNextTier) * 100));
+
+  const tierColors: Record<string, string> = {
+    Starter: '#6B7280',
+    Bronze: '#92400E',
+    Silver: '#6B7280',
+    Gold: '#B45309',
+  };
+  const tierColor = tierColors[user.tier] ?? colors.textSecondary;
+
+  const shortcuts = useMemo(
+    () => shortcutIds.map((id) => ({ id, icon: shortcutIcons[id], label: t(`shortcuts.${id}`) })),
+    [t],
+  );
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
       showsVerticalScrollIndicator={false}
+      refreshControl={refreshControl}
     >
-      <Text style={styles.pageTitle}>Account</Text>
+      <Text style={styles.pageTitle}>{t('account.title')}</Text>
 
-      {/* Tier / Rewards Card */}
+      <ClerkAccountSection />
+
+      {/* Tier card (from former Rewards tab) */}
       <View style={styles.tierCard}>
-        <View style={styles.tierCardTop}>
+        <View style={styles.tierTop}>
           <View>
-            <Text style={styles.tierEyebrow}>TIER</Text>
-            <Text style={styles.tierName}>{user.tier.toUpperCase()}</Text>
-            <Text style={styles.tierXp}>{user.xp.toLocaleString()} / {user.xpToNextTier.toLocaleString()} XP</Text>
+            <Text style={styles.tierEyebrow}>{t('rewards.tier')}</Text>
+            <Text style={[styles.tierName, { color: tierColor }]}>{user.tier.toUpperCase()}</Text>
           </View>
-          <View style={styles.memberBlock}>
-            <Text style={styles.memberLabel}>Member ID</Text>
-            <Text style={styles.memberId}>{user.memberId}</Text>
-            {!user.isVerified && (
-              <TouchableOpacity style={styles.verifyBtn}>
-                <Text style={styles.verifyBtnText}>Verify Identity</Text>
-              </TouchableOpacity>
-            )}
+          <View style={styles.tierBadge}>
+            <Text style={styles.tierBadgeText}>🏆</Text>
           </View>
+        </View>
+
+        <View style={styles.xpRow}>
+          <Text style={styles.xpText}>
+            {user.xp.toLocaleString()} / {user.xpToNextTier.toLocaleString()} XP
+          </Text>
+          <Text style={styles.xpPct}>{pct}%</Text>
         </View>
         <View style={styles.barTrack}>
-          <View style={[styles.barFill, { width: `${Math.min(100, (user.xp / user.xpToNextTier) * 100)}%` as any }]} />
+          <View style={[styles.barFill, { width: `${pct}%` as any, backgroundColor: tierColor }]} />
         </View>
-        <TouchableOpacity>
-          <Text style={styles.viewBenefits}>View Tier Benefits →</Text>
+
+        <TouchableOpacity style={styles.viewBenefitsBtn}>
+          <Text style={styles.viewBenefitsText}>{t('rewards.viewBenefits')}</Text>
         </TouchableOpacity>
+      </View>
+
+      {/* Member ID */}
+      <View style={styles.memberCard}>
+        <View style={styles.memberRow}>
+          <View>
+            <Text style={styles.memberLabel}>{t('account.memberId')}</Text>
+            <Text style={styles.memberId}>{user.memberId}</Text>
+          </View>
+          {!user.isVerified && (
+            <TouchableOpacity style={styles.verifyBtn}>
+              <Text style={styles.verifyBtnText}>{t('account.verifyIdentity')}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Shortcut grid */}
@@ -89,55 +129,78 @@ export function AccountScreen() {
         ))}
       </View>
 
+      {/* Pull History */}
+      <Text style={styles.pullSectionTitle}>{t('rewards.pullHistory')}</Text>
+      {completedPulls.map((pull) => (
+        <View key={pull.id} style={styles.pullCard}>
+          <View style={styles.pullLeft}>
+            <Text style={styles.pullEmoji}>✨</Text>
+            <View style={styles.pullTextCol}>
+              <Text style={styles.pullResult} numberOfLines={2}>
+                {pull.result}
+              </Text>
+              <Text style={styles.pullPack} numberOfLines={2} ellipsizeMode="tail">
+                {getLocalizedPackTitle(pull.packId, pull.packTitle, t)}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.pullRight}>
+            <Text style={styles.pullCredits} numberOfLines={1}>
+              {pull.fulfillment === 'shipped'
+                ? t('rewards.shipped')
+                : `+${pull.creditsWon.toLocaleString()}`}
+            </Text>
+            <Text style={styles.pullDate}>
+              {pull.timestamp.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
+            </Text>
+          </View>
+        </View>
+      ))}
+
+      {completedPulls.length === 0 && (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyIcon}>📦</Text>
+          <Text style={styles.emptyTitle}>{t('rewards.noPullsTitle')}</Text>
+          <Text style={styles.emptyBody}>{t('rewards.noPullsBody')}</Text>
+        </View>
+      )}
+
       {/* Account section */}
-      <Text style={styles.sectionHeader}>Account</Text>
+      <Text style={styles.sectionHeader}>{t('account.sectionAccount')}</Text>
       <View style={styles.listGroup}>
-        {accountRows.map((row) => (
-          <ListRow key={row.label} label={row.label} icon={<Text>{row.icon}</Text>} />
+        {accountRowKeys.map((key) => (
+          <ListRow
+            key={key}
+            label={t(`accountRows.${key}`)}
+            icon={<Text>{accountIcons[key]}</Text>}
+          />
         ))}
       </View>
 
       {/* Support section */}
-      <Text style={styles.sectionHeader}>Support</Text>
+      <Text style={styles.sectionHeader}>{t('account.sectionSupport')}</Text>
       <View style={styles.listGroup}>
-        {supportRows.map((row) => (
-          <ListRow key={row.label} label={row.label} icon={<Text>{row.icon}</Text>} />
+        {supportRowKeys.map((key) => (
+          <ListRow key={key} label={t(`supportRows.${key}`)} icon={<Text>{supportIcons[key]}</Text>} />
         ))}
       </View>
 
-      {/* Legal section */}
-      <Text style={styles.sectionHeader}>Legal</Text>
+      {/* Settings → stack screen */}
+      <Text style={styles.sectionHeader}>{t('account.sectionMore')}</Text>
       <View style={styles.listGroup}>
-        {legalRows.map((row) => (
-          <ListRow key={row.label} label={row.label} icon={<Text>{row.icon}</Text>} />
-        ))}
         <ListRow
-          label="Logout"
+          label={t('settings.title')}
+          icon={<Text>⚙️</Text>}
+          onPress={() => navigation.navigate('Settings')}
+        />
+        <ListRow
+          label={t('account.logout')}
           icon={<Text>🚪</Text>}
           destructive
           showChevron={false}
           onPress={() => {}}
         />
       </View>
-
-      {/* Social */}
-      <Text style={styles.socialTitle}>Follow Us</Text>
-      <Text style={styles.socialSubtitle}>Follow our official channels for promos, drops, and updates.</Text>
-      <View style={styles.socialRow}>
-        {socialLinks.map((link) => (
-          <TouchableOpacity key={link.id} style={styles.socialBtn} activeOpacity={0.7}>
-            <Text style={styles.socialIcon}>{link.icon}</Text>
-            <Text style={styles.socialLabel}>{link.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Language & Region */}
-      <View style={styles.listGroup}>
-        <ListRow label="Language & Region" icon={<Text>🌐</Text>} />
-      </View>
-
-      <Text style={styles.version}>VaultPacks v1.0.0</Text>
     </ScrollView>
   );
 }
@@ -158,12 +221,17 @@ const styles = StyleSheet.create({
     marginBottom: spacing.base,
   },
   tierCard: {
-    backgroundColor: colors.nearBlack,
+    backgroundColor: colors.white,
     borderRadius: radius.xl,
     padding: spacing.xl,
-    marginBottom: spacing.base,
+    marginBottom: spacing.sm,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    elevation: 2,
   },
-  tierCardTop: {
+  tierTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
@@ -172,62 +240,94 @@ const styles = StyleSheet.create({
   tierEyebrow: {
     fontSize: fontSize.xs,
     fontWeight: fontWeight.bold,
-    color: colors.gold,
+    color: colors.textMuted,
     letterSpacing: 1.5,
     marginBottom: 2,
   },
   tierName: {
-    fontSize: fontSize.xl,
+    fontSize: fontSize.xxl,
     fontWeight: fontWeight.black,
-    color: colors.white,
     letterSpacing: 1,
-    marginBottom: 4,
   },
-  tierXp: {
+  tierBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.full,
+    backgroundColor: colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tierBadgeText: {
+    fontSize: 24,
+  },
+  xpRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.xs,
+  },
+  xpText: {
     fontSize: fontSize.sm,
-    color: 'rgba(255,255,255,0.55)',
+    color: colors.textSecondary,
+    fontWeight: fontWeight.medium,
   },
-  memberBlock: {
-    alignItems: 'flex-end',
+  xpPct: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    fontWeight: fontWeight.semibold,
+  },
+  barTrack: {
+    height: 8,
+    backgroundColor: colors.borderLight,
+    borderRadius: radius.full,
+    marginBottom: spacing.base,
+    overflow: 'hidden',
+  },
+  barFill: {
+    height: '100%',
+    borderRadius: radius.full,
+  },
+  viewBenefitsBtn: {
+    alignSelf: 'flex-start',
+  },
+  viewBenefitsText: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.semibold,
+    color: colors.red,
+  },
+  memberCard: {
+    backgroundColor: colors.white,
+    borderRadius: radius.lg,
+    padding: spacing.base,
+    marginBottom: spacing.base,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  memberRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: spacing.md,
   },
   memberLabel: {
     fontSize: fontSize.xs,
-    color: 'rgba(255,255,255,0.5)',
+    color: colors.textMuted,
     marginBottom: 2,
   },
   memberId: {
     fontSize: fontSize.sm,
     fontWeight: fontWeight.semibold,
-    color: 'rgba(255,255,255,0.85)',
-    marginBottom: spacing.sm,
+    color: colors.textPrimary,
   },
   verifyBtn: {
     backgroundColor: colors.gold,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
+    paddingVertical: 6,
     borderRadius: radius.md,
   },
   verifyBtnText: {
     fontSize: fontSize.xs,
     fontWeight: fontWeight.bold,
     color: colors.nearBlack,
-  },
-  barTrack: {
-    height: 6,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: radius.full,
-    marginBottom: spacing.md,
-    overflow: 'hidden',
-  },
-  barFill: {
-    height: '100%',
-    backgroundColor: colors.gold,
-    borderRadius: radius.full,
-  },
-  viewBenefits: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
-    color: colors.gold,
   },
   shortcutGrid: {
     flexDirection: 'row',
@@ -253,6 +353,94 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     textAlign: 'center',
   },
+  pullSectionTitle: {
+    fontSize: fontSize.lg,
+    fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
+    marginTop: spacing.sm,
+  },
+  pullCard: {
+    backgroundColor: colors.white,
+    borderRadius: radius.lg,
+    padding: spacing.base,
+    marginBottom: spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  pullLeft: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.md,
+    flex: 1,
+    minWidth: 0,
+    /** Critical: clip long titles so they can’t draw over the status column (esp. “Shipped”). */
+    overflow: 'hidden',
+    paddingRight: spacing.xs,
+  },
+  pullTextCol: {
+    flex: 1,
+    minWidth: 0,
+    overflow: 'hidden',
+  },
+  pullEmoji: {
+    fontSize: 24,
+    marginTop: 2,
+  },
+  pullResult: {
+    fontSize: fontSize.base,
+    fontWeight: fontWeight.semibold,
+    color: colors.textPrimary,
+    width: '100%',
+  },
+  pullPack: {
+    fontSize: fontSize.xs,
+    color: colors.textSecondary,
+    marginTop: 2,
+    width: '100%',
+  },
+  /** Reserved lane: wide enough for “Shipped” / 発送済み etc. so status never overlaps titles. */
+  pullRight: {
+    alignItems: 'flex-end',
+    flexShrink: 0,
+    flexGrow: 0,
+    marginLeft: spacing.sm,
+    minWidth: 124,
+    paddingLeft: spacing.xs,
+  },
+  pullCredits: {
+    fontSize: fontSize.base,
+    fontWeight: fontWeight.bold,
+    color: colors.green,
+    textAlign: 'right',
+    width: '100%',
+  },
+  pullDate: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: spacing.xl,
+    marginBottom: spacing.base,
+  },
+  emptyIcon: {
+    fontSize: 48,
+    marginBottom: spacing.base,
+  },
+  emptyTitle: {
+    fontSize: fontSize.lg,
+    fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  emptyBody: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
   sectionHeader: {
     fontSize: fontSize.xs,
     fontWeight: fontWeight.bold,
@@ -269,46 +457,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.border,
-  },
-  socialTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
-    color: colors.textPrimary,
-    marginTop: spacing.xl,
-    marginBottom: spacing.xs,
-  },
-  socialSubtitle: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    marginBottom: spacing.base,
-  },
-  socialRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.base,
-  },
-  socialBtn: {
-    flex: 1,
-    backgroundColor: colors.white,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-    gap: 4,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  socialIcon: {
-    fontSize: 20,
-  },
-  socialLabel: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
-    color: colors.textSecondary,
-  },
-  version: {
-    textAlign: 'center',
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    marginTop: spacing.xl,
   },
 });

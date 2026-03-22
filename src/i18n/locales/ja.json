@@ -1,0 +1,324 @@
+{
+  "tabs": {
+    "home": "ホーム",
+    "friends": "フレンド",
+    "marketplace": "ショップ",
+    "account": "アカウント"
+  },
+  "marketplace": {
+    "storeTitle": "Pull Hub ストア",
+    "storeLead": "認証パートナー店のシングル・未開封を閲覧。決済は今後対応 — ここは一覧のみ（パック開封はホーム）。",
+    "searchPlaceholder": "カード・セット・店名で検索…",
+    "promoTitle": "送料無料の商品も",
+    "promoBody": "参加店舗・条件により $50 以上で送料無料など。詳細は各出品をご確認ください。",
+    "cat_all": "すべて",
+    "cat_pokemon": "ポケモン",
+    "cat_one_piece": "ワンピース",
+    "cat_yugioh": "遊戯王",
+    "cat_sports": "スポーツ",
+    "whyTitle": "Pull Hub ストアが選ばれる理由",
+    "whyPointLabel1": "Point 1",
+    "whyPointLabel2": "Point 2",
+    "whyPointLabel3": "Point 3",
+    "whyPoint1Title": "発送が速い",
+    "whyPoint1Body": "提携店は迅速に発送。大会前やリーグ前に間に合うよう、店舗ごとに締め切り時間が異なります。",
+    "whyPoint2Title": "価格を比較しやすい",
+    "whyPoint2Body": "複数店の出品を一画面で。Pull Hub の手数料はパートナー価格に含まれる想定で、チェックアウト時の追加請求はありません。",
+    "whyPoint3Title": "品揃えが豊富",
+    "whyPoint3Body": "地域を超えた信頼できる販売者の在庫を集約 — 日本プロモから英語版の定番、未開封ボックスまで。",
+    "specialPrice": "特価",
+    "saleOn": "セール中",
+    "sectionStores": "提携ストアから",
+    "verified": "認証済み",
+    "commissionLine": "Pull Hub 手数料: {{pct}}%",
+    "badgeSale": "セール",
+    "badgeTournament": "大会",
+    "badgeNew": "新着",
+    "emptyResults": "条件に一致する出品がありません。",
+    "listingDemoTitle": "出品",
+    "listingDemoBody": "「{{title}}」の決済は未接続です — この画面は一覧専用です。",
+    "demoNote": "デモ: 決済・カート・店舗への送金は未接続。パック開封はホームタブで。"
+  },
+  "settings": {
+    "title": "設定"
+  },
+  "demoBanner": "プレビュー版 — クレジットと報酬はシミュレーションです。",
+  "home": {
+    "discover": "発見",
+    "spotlightTitle": "スポットライトパック",
+    "spotlightBody": "厳選ドロップとプロモ。下のカテゴリと並び替えで探せます。",
+    "browseAllPacks": "すべてのパックを見る",
+    "emptyCategory": "このカテゴリにはまだパックがありません。"
+  },
+  "packs": {
+    "browseTitle": "パックを探す",
+    "browseSub": "すべてのカテゴリ、フィルター、並び替え"
+  },
+  "categories": {
+    "all": "すべて",
+    "featured": "おすすめ",
+    "new": "新着",
+    "pokemon": "ポケモン",
+    "yugioh": "遊戯王",
+    "one_piece": "ワンピース",
+    "sports": "スポーツ",
+    "graded": "鑑定品",
+    "hot_drops": "ホットドロップ"
+  },
+  "hero": {
+    "eyebrow": "新規ユーザー限定",
+    "headline1": "高還元",
+    "headline2": "ウェルカムパック",
+    "sub": "期間限定パック。当たり率アップとボーナス報酬",
+    "browsePacks": "パックを見る",
+    "notNow": "あとで",
+    "hitCard": "当たりカード"
+  },
+  "friends": {
+    "title": "フレンド",
+    "lead": "知り合いとつながろう。フレンドIDを共有するか、QRをスキャンして追加。",
+    "add": "追加",
+    "emptyCta": "フレンドを追加",
+    "addModalTitle": "フレンドを追加",
+    "qrShort": "QR",
+    "yourFriendId": "あなたのフレンドID",
+    "memberHint": "このIDはアカウントのメンバーIDでもあります。",
+    "showQr": "自分のQRを表示",
+    "addFriend": "フレンドを追加",
+    "enterFriendId": "フレンドIDを入力",
+    "placeholderId": "例: TCG-100001",
+    "lookup": "検索",
+    "scanQr": "QRをスキャン",
+    "demoHint": "デモ: TCG-100001、100002、100003 を試せます。",
+    "yourFriends": "フレンド（{{count}}人）",
+    "emptyTitle": "まだフレンドがいません",
+    "emptyBody": "追加するとここに表示されます。今後のソーシャル機能の土台になります。"
+  },
+  "rewards": {
+    "title": "リワード",
+    "tier": "ティア",
+    "viewBenefits": "ティア特典を見る →",
+    "pullHistory": "開封履歴",
+    "shipped": "発送済み",
+    "noPullsTitle": "まだ開封履歴がありません",
+    "noPullsBody": "最初のパックを開けると、ここに履歴が表示されます。"
+  },
+  "account": {
+    "title": "アカウント",
+    "tier": "ティア",
+    "memberId": "メンバーID",
+    "verifyIdentity": "本人確認",
+    "viewBenefits": "ティア特典を見る →",
+    "sectionAccount": "アカウント",
+    "sectionMore": "その他",
+    "sectionSupport": "サポート",
+    "sectionLegal": "法的情報",
+    "sectionPreferences": "設定",
+    "languageRegion": "言語と地域",
+    "followUs": "フォロー",
+    "followSub": "公式チャンネルでプロモや最新情報をチェック。",
+    "logout": "ログアウト",
+    "version": "{{name}} v{{version}}"
+  },
+  "shortcuts": {
+    "notif": "通知",
+    "hot": "ホットドロップ",
+    "history": "開封履歴",
+    "promos": "プロモ"
+  },
+  "accountRows": {
+    "shipping": "配送先住所",
+    "payout": "受取方法",
+    "identity": "本人確認",
+    "linked": "連携アカウント"
+  },
+  "supportRows": {
+    "help": "ヘルプセンター",
+    "contact": "サポートに連絡",
+    "faq": "よくある質問"
+  },
+  "legalRows": {
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "promo": "プロモーション規則",
+    "payment": "支払いに関する表示"
+  },
+  "locale": {
+    "title": "言語と地域",
+    "language": "言語",
+    "region": "地域",
+    "regionHint": "日付・通貨表示、将来の配送設定に使用します。",
+    "save": "保存",
+    "cancel": "キャンセル"
+  },
+  "regions": {
+    "US": "アメリカ",
+    "CA": "カナダ",
+    "GB": "イギリス",
+    "JP": "日本",
+    "AU": "オーストラリア"
+  },
+  "buyCredits": {
+    "close": "閉じる",
+    "title": "クレジット購入",
+    "subtitle": "パック開封に使えます。割引表示は少額バンドルのみ。上位は定価表示です。",
+    "mockNote": "プレビュー: 実際の決済はありません。デモ用に即時付与されます。",
+    "discountBadge": "{{pct}}% OFF",
+    "pointsLine": "{{count}} pt",
+    "approx": "約",
+    "buyNow": "購入",
+    "disclaimer": "購入確定後のキャンセル・返金・ポイント返還はできない場合があります（本番前に確定）。",
+    "mockFooter": "シミュレーション — 本番前に実決済に差し替えてください。",
+    "liveFooter": "安全な決済 · 即時反映 · 失効なし"
+  },
+  "legalModal": {
+    "done": "完了"
+  },
+  "myQr": {
+    "title": "フレンドコード",
+    "subtitle": "友だちにこのQRを読み取ってもらうか、IDを共有して追加してもらいましょう。",
+    "you": "あなた",
+    "copy": "コピー",
+    "done": "完了"
+  },
+  "qrScanner": {
+    "title": "フレンドQRをスキャン",
+    "cancel": "キャンセル",
+    "permText": "QRをスキャンするにはカメラへのアクセスが必要です。",
+    "allowCamera": "カメラを許可",
+    "hint": "QRを枠内に合わせてください",
+    "webTitle": "Webではスキャンできません",
+    "webBody": "スマホアプリでフレンドのQRをスキャンするか、フレンドIDを入力してください。",
+    "close": "閉じる"
+  },
+  "sort": {
+    "recommended": "おすすめ",
+    "priceAsc": "価格：安い順",
+    "priceDesc": "価格：高い順",
+    "newest": "新着順",
+    "bestValue": "お得順",
+    "popular": "人気順"
+  },
+  "filterRow": {
+    "filter": "フィルター",
+    "sortPrefix": "並び替え: ",
+    "sortBy": "並び替え"
+  },
+  "chips": {
+    "new": "新着",
+    "new_user": "新規ユーザー",
+    "best_value": "お得",
+    "graded": "鑑定",
+    "hot_drop": "ホット",
+    "bonus_pack": "ボーナス",
+    "chase_boost": "チェイス"
+  },
+  "packCard": {
+    "openPack": "パックを開ける",
+    "credits": "クレジット",
+    "remaining": "残り {{left}} / {{total}}",
+    "maxPerUser": "1人あたり最大{{count}}回まで"
+  },
+  "packCatalog": {
+    "1": {
+      "title": "新規ユーザー歓迎パック",
+      "value": "チェイス価値100%超",
+      "guarantee": "2回に1回ボーナス確定"
+    },
+    "2": {
+      "title": "ポケモン スカーレット＆バイオレット ヒットパック",
+      "value": "90%で200クレジット以上相当",
+      "guarantee": "毎パックホロ確定"
+    },
+    "3": {
+      "title": "ワンピース 鑑定保管庫パック",
+      "value": "PSA 9〜10の鑑定カード",
+      "guarantee": "毎パック鑑定カード1枚"
+    },
+    "4": {
+      "title": "スポーツカード フラッシュパック",
+      "value": "2024年注目ルーキー",
+      "guarantee": "5回に1回サイン or レリック"
+    },
+    "5": {
+      "title": "ポケモン ビンテージ鑑定パック",
+      "value": "初版期の鑑定ヒット",
+      "guarantee": "PSA 8+ コンディション保証"
+    },
+    "6": {
+      "title": "ホットドロップ ミステリーパック",
+      "value": "全カテゴリからのサプライズ",
+      "guarantee": "3回に1回ボーナスパック"
+    },
+    "7": {
+      "title": "ワンピース 頂上戦争パック",
+      "value": "リーダーSR＆チェイス仕様",
+      "guarantee": "10回に1回アート違い"
+    },
+    "8": {
+      "title": "新着お試しサンプルパック",
+      "value": "最新セットからのサンプル",
+      "guarantee": "1回あたり最低3枚"
+    },
+    "9": {
+      "title": "遊戯王 バトルズ・オブ・レジェンド パック",
+      "value": "シークレットレア＆スターライト枠",
+      "guarantee": "毎パックウルトラレア以上"
+    }
+  },
+  "packOpening": {
+    "title": "パック開封",
+    "opening": "開封中…",
+    "suspense": "何が出た？",
+    "revealing": "公開中…",
+    "skip": "スキップ ▸",
+    "live": "LIVE",
+    "continue": "続ける",
+    "openNext": "次を開く",
+    "youPulled": "獲得カード",
+    "creditsLabel": "+{{amount}} クレジット",
+    "resultCommon1": "{{packName}}からのコモンヒット",
+    "resultCommon2": "{{packName}}からのスタンダード",
+    "resultCommon3": "{{packName}}の毎日カード",
+    "resultRare1": "{{packName}}からのレアヒット",
+    "resultRare2": "{{packName}}からのウルトラ",
+    "resultRare3": "{{packName}}のスペシャルカード",
+    "resultLegendary1": "{{packName}}からのレジェンダリー",
+    "resultLegendary2": "{{packName}}からの神話級",
+    "resultLegendary3": "{{packName}}のゲームチェンジャー"
+  },
+  "insufficientCredits": {
+    "title": "クレジット不足",
+    "body": "このパックを開くにはクレジットが足りません。",
+    "bodyWithAmount": "あと {{needed}} クレジット必要です。続けるには追加購入してください。",
+    "packLabel": "パック",
+    "costLabel": "必要額",
+    "balanceLabel": "残高",
+    "creditsLine": "{{amount}} クレジット",
+    "buyCredits": "クレジットを購入",
+    "cancel": "キャンセル"
+  },
+  "friendsAlerts": {
+    "copiedTitle": "コピーしました",
+    "copiedBody": "フレンドIDをクリップボードにコピーしました。",
+    "addTitle": "フレンドを追加しますか？",
+    "cancel": "キャンセル",
+    "add": "追加",
+    "addedTitle": "追加しました",
+    "addedBody": "{{name}} をフレンドリストに追加しました。",
+    "selfTitle": "自分自身です",
+    "selfBody": "自分のフレンドIDは追加できません。",
+    "duplicateTitle": "すでにフレンドです",
+    "duplicateBody": "このフレンドは既にリストにいます。",
+    "errorTitle": "エラー",
+    "errorBody": "もう一度お試しください。",
+    "invalidIdTitle": "IDの形式が不正です",
+    "invalidIdBody": "フレンドIDは TCG-123456 の形式です。友だちに共有してもらってください。",
+    "notFoundTitle": "ユーザーが見つかりません",
+    "notFoundBody": "そのフレンドIDに一致するアカウントがありません。確認するか、後でもう一度お試しください。"
+  },
+  "common": {
+    "copied": "コピーしました",
+    "friendIdCopied": "フレンドIDをクリップボードにコピーしました。"
+  }
+}
