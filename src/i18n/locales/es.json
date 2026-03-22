@@ -1,0 +1,324 @@
+{
+  "tabs": {
+    "home": "Inicio",
+    "friends": "Amigos",
+    "marketplace": "Tienda",
+    "account": "Cuenta"
+  },
+  "marketplace": {
+    "storeTitle": "Tienda Pull Hub",
+    "storeLead": "Explora singles y sellado de tiendas socias verificadas. El pago llegará pronto — aquí solo listados (sin apertura de sobres).",
+    "searchPlaceholder": "Buscar cartas, expansiones o tiendas…",
+    "promoTitle": "Envío gratis en muchos pedidos",
+    "promoBody": "En tiendas participantes, pedidos desde $50 con envío gratis según condiciones. Revisa cada anuncio.",
+    "cat_all": "Todos",
+    "cat_pokemon": "Pokémon",
+    "cat_one_piece": "One Piece",
+    "cat_yugioh": "Yu-Gi-Oh!",
+    "cat_sports": "Deportes",
+    "whyTitle": "¿Por qué elegir la tienda Pull Hub?",
+    "whyPointLabel1": "Punto 1",
+    "whyPointLabel2": "Punto 2",
+    "whyPointLabel3": "Punto 3",
+    "whyPoint1Title": "Envío rápido",
+    "whyPoint1Body": "Las tiendas socias despachan rápido para que recibas antes de torneos y ligas. Los horarios límite varían por vendedor.",
+    "whyPoint2Title": "Precios competitivos",
+    "whyPoint2Body": "Compara anuncios de varias tiendas en un solo lugar. La comisión de Pull Hub está en el precio del socio — sin cargos sorpresa al pagar.",
+    "whyPoint3Title": "Gran variedad",
+    "whyPoint3Body": "Agregamos inventario de vendedores de confianza en varias regiones: promos japonesas, staples en inglés y cajas selladas.",
+    "specialPrice": "Ofertas",
+    "saleOn": "OFERTA",
+    "sectionStores": "De tiendas socias",
+    "verified": "Verificada",
+    "commissionLine": "Comisión Pull Hub: {{pct}}%",
+    "badgeSale": "OFERTA",
+    "badgeTournament": "Torneo",
+    "badgeNew": "NUEVO",
+    "emptyResults": "Ningún anuncio coincide con los filtros.",
+    "listingDemoTitle": "Anuncio",
+    "listingDemoBody": "El pago de «{{title}}» aún no está conectado — esta pantalla es solo listados.",
+    "demoNote": "Demo: pagos, carrito y pagos a vendedores no están conectados. Abrir sobres sigue en Inicio."
+  },
+  "settings": {
+    "title": "Ajustes"
+  },
+  "demoBanner": "Preview build — créditos y recompensas simulados.",
+  "home": {
+    "discover": "Descubrir",
+    "spotlightTitle": "Paquetes destacados",
+    "spotlightBody": "Lanzamientos y promos seleccionados. Usa las categorías y el orden abajo.",
+    "browseAllPacks": "Ver todos los paquetes",
+    "emptyCategory": "Aún no hay paquetes en esta categoría."
+  },
+  "packs": {
+    "browseTitle": "Explorar paquetes",
+    "browseSub": "Todas las categorías, filtros y ordenación"
+  },
+  "categories": {
+    "all": "Todos",
+    "featured": "Destacados",
+    "new": "Novedades",
+    "pokemon": "Pokémon",
+    "yugioh": "Yu-Gi-Oh!",
+    "one_piece": "One Piece",
+    "sports": "Deportes",
+    "graded": "Graduadas",
+    "hot_drops": "Hot Drops"
+  },
+  "hero": {
+    "eyebrow": "EXCLUSIVO NUEVOS USUARIOS",
+    "headline1": "Alto valor",
+    "headline2": "Paquetes de bienvenida",
+    "sub": "Paquetes por tiempo limitado con mejores tasas y bonos",
+    "browsePacks": "Ver paquetes",
+    "notNow": "Ahora no",
+    "hitCard": "Carta ganadora"
+  },
+  "friends": {
+    "title": "Amigos",
+    "lead": "Conecta con gente que conoces. Comparte tu ID de amigo o escanea su QR.",
+    "add": "Añadir",
+    "emptyCta": "Añadir amigos",
+    "addModalTitle": "Añadir amigo",
+    "qrShort": "QR",
+    "yourFriendId": "Tu ID de amigo",
+    "memberHint": "Este ID también aparece como ID de miembro en Cuenta.",
+    "showQr": "Mostrar mi QR",
+    "addFriend": "Añadir amigo",
+    "enterFriendId": "Introduce el ID de amigo",
+    "placeholderId": "ej. TCG-100001",
+    "lookup": "Buscar",
+    "scanQr": "Escanear QR",
+    "demoHint": "Demo: prueba TCG-100001, TCG-100002 o TCG-100003.",
+    "yourFriends": "Tus amigos ({{count}})",
+    "emptyTitle": "Aún no hay amigos",
+    "emptyBody": "Cuando añadas a alguien, aparecerá aquí para futuras funciones sociales."
+  },
+  "rewards": {
+    "title": "Recompensas",
+    "tier": "NIVEL",
+    "viewBenefits": "Ver beneficios del nivel →",
+    "pullHistory": "Historial de aperturas",
+    "shipped": "Enviado",
+    "noPullsTitle": "Aún no hay aperturas",
+    "noPullsBody": "Abre tu primer paquete para ver el historial aquí."
+  },
+  "account": {
+    "title": "Cuenta",
+    "tier": "NIVEL",
+    "memberId": "ID de miembro",
+    "verifyIdentity": "Verificar identidad",
+    "viewBenefits": "Ver beneficios del nivel →",
+    "sectionAccount": "Cuenta",
+    "sectionMore": "Más",
+    "sectionSupport": "Soporte",
+    "sectionLegal": "Legal",
+    "sectionPreferences": "Preferencias",
+    "languageRegion": "Idioma y región",
+    "followUs": "Síguenos",
+    "followSub": "Canales oficiales para promos, novedades y actualizaciones.",
+    "logout": "Cerrar sesión",
+    "version": "{{name}} v{{version}}"
+  },
+  "shortcuts": {
+    "notif": "Notificaciones",
+    "hot": "Hot Drops",
+    "history": "Historial de aperturas",
+    "promos": "Promos"
+  },
+  "accountRows": {
+    "shipping": "Dirección de envío",
+    "payout": "Método de pago",
+    "identity": "Verificación de identidad",
+    "linked": "Cuentas vinculadas"
+  },
+  "supportRows": {
+    "help": "Centro de ayuda",
+    "contact": "Contactar soporte",
+    "faq": "FAQ"
+  },
+  "legalRows": {
+    "terms": "Términos del servicio",
+    "privacy": "Política de privacidad",
+    "promo": "Reglas promocionales",
+    "payment": "Información de pagos"
+  },
+  "locale": {
+    "title": "Idioma y región",
+    "language": "Idioma",
+    "region": "Región",
+    "regionHint": "Para fechas, moneda y envíos futuros.",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "regions": {
+    "US": "Estados Unidos",
+    "CA": "Canadá",
+    "GB": "Reino Unido",
+    "JP": "Japón",
+    "AU": "Australia"
+  },
+  "buyCredits": {
+    "close": "Cerrar",
+    "title": "Comprar créditos",
+    "subtitle": "Sirven para abrir paquetes. Los descuentos promocionales son en los paquetes pequeños; los de mayor monto son precio de lista.",
+    "mockNote": "Preview: sin pago real — créditos de demo al instante.",
+    "discountBadge": "{{pct}}% OFF",
+    "pointsLine": "{{count}} pt",
+    "approx": "aprox.",
+    "buyNow": "Comprar",
+    "disclaimer": "Tras confirmar la compra, cancelaciones, reembolsos o devoluciones de puntos pueden no ser posibles (política final antes del lanzamiento).",
+    "mockFooter": "Simulado — sustituir por checkout real antes del lanzamiento.",
+    "liveFooter": "Pago seguro · Entrega instantánea · Sin caducidad"
+  },
+  "legalModal": {
+    "done": "Hecho"
+  },
+  "myQr": {
+    "title": "Tu código de amigo",
+    "subtitle": "Que escaneen este QR o comparte tu ID para que te añadan.",
+    "you": "Tú",
+    "copy": "Copiar",
+    "done": "Hecho"
+  },
+  "qrScanner": {
+    "title": "Escanear QR de amigo",
+    "cancel": "Cancelar",
+    "permText": "Necesitamos la cámara para escanear códigos QR.",
+    "allowCamera": "Permitir cámara",
+    "hint": "Encuadra el código QR",
+    "webTitle": "No disponible en web",
+    "webBody": "Usa la app en el móvil para escanear o introduce el ID del amigo.",
+    "close": "Cerrar"
+  },
+  "sort": {
+    "recommended": "Recomendado",
+    "priceAsc": "Precio: menor a mayor",
+    "priceDesc": "Precio: mayor a menor",
+    "newest": "Más recientes",
+    "bestValue": "Mejor valor",
+    "popular": "Más populares"
+  },
+  "filterRow": {
+    "filter": "Filtrar",
+    "sortPrefix": "Orden: ",
+    "sortBy": "Ordenar por"
+  },
+  "chips": {
+    "new": "Nuevo",
+    "new_user": "Nuevo usuario",
+    "best_value": "Mejor valor",
+    "graded": "Graduada",
+    "hot_drop": "Hot Drop",
+    "bonus_pack": "Bonus",
+    "chase_boost": "Chase"
+  },
+  "packCard": {
+    "openPack": "Abrir paquete",
+    "credits": "Créditos",
+    "remaining": "{{left}} / {{total}} restantes",
+    "maxPerUser": "Solo {{count}} aperturas por usuario"
+  },
+  "packCatalog": {
+    "1": {
+      "title": "Paquete de bienvenida (nuevo usuario)",
+      "value": "Más del 100% de valor chase",
+      "guarantee": "Bono garantizado cada 2 aperturas"
+    },
+    "2": {
+      "title": "Pokémon Escarlata y Púrpura — Paquete hit",
+      "value": "90% de probabilidad de 200+ créditos",
+      "guarantee": "Holo en cada paquete"
+    },
+    "3": {
+      "title": "One Piece — Bóveda graduada",
+      "value": "Cartas graduadas PSA 9–10",
+      "guarantee": "Una carta graduada por paquete"
+    },
+    "4": {
+      "title": "Deportes — Paquete flash",
+      "value": "Novatos top de 2024",
+      "guarantee": "Auto o reliquia cada 5 aperturas"
+    },
+    "5": {
+      "title": "Pokémon vintage graduado",
+      "value": "Hits graduados de era Base",
+      "guarantee": "PSA 8+ garantizado"
+    },
+    "6": {
+      "title": "Hot Drop — Paquete misterio",
+      "value": "Mezcla sorpresa de todas las categorías",
+      "guarantee": "Paquete bonus cada 3 aperturas"
+    },
+    "7": {
+      "title": "One Piece — Guerra en el Paramount",
+      "value": "SR líder con foil chase",
+      "guarantee": "1 de cada 10 — arte alternativo"
+    },
+    "8": {
+      "title": "Muestras de novedades",
+      "value": "Hits de los sets más nuevos",
+      "guarantee": "Al menos 3 cartas por apertura"
+    },
+    "9": {
+      "title": "Yu-Gi-Oh! — Batallas de Leyenda",
+      "value": "Secret Rares y huecos starlight",
+      "guarantee": "Ultra Rare o superior en cada paquete"
+    }
+  },
+  "packOpening": {
+    "title": "Abriendo paquete",
+    "opening": "Abriendo…",
+    "suspense": "¿Qué te salió?",
+    "revealing": "Revelando…",
+    "skip": "Saltar ▸",
+    "live": "EN VIVO",
+    "continue": "Continuar",
+    "openNext": "Abrir otro",
+    "youPulled": "Has obtenido",
+    "creditsLabel": "+{{amount}} créditos",
+    "resultCommon1": "Hit común de {{packName}}",
+    "resultCommon2": "Apertura estándar de {{packName}}",
+    "resultCommon3": "Carta cotidiana de {{packName}}",
+    "resultRare1": "Hit raro de {{packName}}",
+    "resultRare2": "Ultra de {{packName}}",
+    "resultRare3": "Carta especial de {{packName}}",
+    "resultLegendary1": "Hit legendario de {{packName}}",
+    "resultLegendary2": "Tirada mítica de {{packName}}",
+    "resultLegendary3": "Carta que lo cambia todo de {{packName}}"
+  },
+  "insufficientCredits": {
+    "title": "Créditos insuficientes",
+    "body": "Necesitas más créditos para abrir este paquete.",
+    "bodyWithAmount": "Necesitas {{needed}} créditos más para abrir este paquete. Añade créditos para continuar.",
+    "packLabel": "Paquete",
+    "costLabel": "Coste",
+    "balanceLabel": "Tu saldo",
+    "creditsLine": "{{amount}} créditos",
+    "buyCredits": "Comprar créditos",
+    "cancel": "Cancelar"
+  },
+  "friendsAlerts": {
+    "copiedTitle": "Copiado",
+    "copiedBody": "ID de amigo copiado al portapapeles.",
+    "addTitle": "¿Añadir amigo?",
+    "cancel": "Cancelar",
+    "add": "Añadir",
+    "addedTitle": "Añadido",
+    "addedBody": "{{name}} ya está en tu lista de amigos.",
+    "selfTitle": "Eres tú",
+    "selfBody": "No puedes añadir tu propio ID de amigo.",
+    "duplicateTitle": "Ya es amigo",
+    "duplicateBody": "Este amigo ya está en tu lista.",
+    "errorTitle": "Algo salió mal",
+    "errorBody": "Inténtalo de nuevo.",
+    "invalidIdTitle": "ID no válido",
+    "invalidIdBody": "Los IDs tienen formato TCG-123456. Pídele a tu amigo que lo comparta.",
+    "notFoundTitle": "Usuario no encontrado",
+    "notFoundBody": "No hay cuenta con ese ID. Compruébalo o inténtalo más tarde."
+  },
+  "common": {
+    "copied": "Copiado",
+    "friendIdCopied": "ID copiado al portapapeles."
+  }
+}

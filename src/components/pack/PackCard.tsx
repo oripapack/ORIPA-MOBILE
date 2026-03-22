@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Pack } from '../../data/mockPacks';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { ChipTag } from '../shared/ChipTag';
 import { useAppStore } from '../../store/useAppStore';
+import { getLocalizedPackFields } from '../../i18n/packCopy';
 
 interface Props {
   pack: Pack;
@@ -13,10 +15,12 @@ interface Props {
 }
 
 export function PackCard({ pack, onPress }: Props) {
+  const { t } = useTranslation();
   const openPack = useAppStore((s) => s.openPack);
   const isPackOpening = useAppStore((s) => s.modals.packOpening);
   const awaitingFulfillment = useAppStore((s) => !!s.pendingFulfillmentPullId);
   const pct = Math.round((pack.remainingInventory / pack.totalInventory) * 100);
+  const loc = getLocalizedPackFields(pack, t);
 
   return (
     <View style={styles.card}>
@@ -30,13 +34,13 @@ export function PackCard({ pack, onPress }: Props) {
       {/* Image area */}
       <TouchableOpacity onPress={onPress} activeOpacity={0.92} style={[styles.imageArea, { backgroundColor: pack.imageColor }]}>
         <View style={styles.imageOverlay}>
-          <Text style={styles.imageTitle}>{pack.title}</Text>
+          <Text style={styles.imageTitle}>{loc.title}</Text>
           <View style={styles.valueBadge}>
-            <Text style={styles.valueBadgeText}>{pack.valueDescription}</Text>
+            <Text style={styles.valueBadgeText}>{loc.valueDescription}</Text>
           </View>
-          <Text style={styles.guaranteeText}>{pack.guaranteeText}</Text>
+          <Text style={styles.guaranteeText}>{loc.guaranteeText}</Text>
           {pack.maxPerUser && (
-            <Text style={styles.limitText}>Only {pack.maxPerUser} opens per user</Text>
+            <Text style={styles.limitText}>{t('packCard.maxPerUser', { count: pack.maxPerUser })}</Text>
           )}
         </View>
       </TouchableOpacity>
@@ -46,10 +50,13 @@ export function PackCard({ pack, onPress }: Props) {
         <View style={styles.priceLeft}>
           <Text style={styles.coin}>🪙</Text>
           <Text style={styles.price}>{pack.creditPrice.toLocaleString()}</Text>
-          <Text style={styles.credits}>Credits</Text>
+          <Text style={styles.credits}>{t('packCard.credits')}</Text>
         </View>
         <Text style={styles.remaining}>
-          {pack.remainingInventory.toLocaleString()} / {pack.totalInventory.toLocaleString()} Remaining
+          {t('packCard.remaining', {
+            left: pack.remainingInventory.toLocaleString(),
+            total: pack.totalInventory.toLocaleString(),
+          })}
         </Text>
       </View>
 
@@ -65,7 +72,7 @@ export function PackCard({ pack, onPress }: Props) {
         activeOpacity={0.85}
         disabled={isPackOpening || awaitingFulfillment}
       >
-        <Text style={styles.ctaText}>Open Pack</Text>
+        <Text style={styles.ctaText}>{t('packCard.openPack')}</Text>
       </TouchableOpacity>
     </View>
   );

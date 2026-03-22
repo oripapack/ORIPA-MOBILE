@@ -1,0 +1,1 @@
+-- Loaded after migrations on `supabase db reset`. Add partner rows when inventory sync exists.

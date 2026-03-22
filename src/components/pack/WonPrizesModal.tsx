@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Modal,
   View,
@@ -14,35 +14,48 @@ import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
+import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../store/useAppStore';
+import { transparentModalIOSProps } from '../../constants/modalPresentation';
+import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import type { PullRarityTier } from '../../data/mockUser';
 
 const TIER_POOL: Record<PullRarityTier, string> = {
-  common: 'Standard Prize Pool',
+  common: 'Common Prize Pool',
   rare: 'Rare Prize Pool',
+  epic: 'Epic Prize Pool',
   legendary: 'Legendary Prize Pool',
+  mythic: 'Mythic Prize Pool',
 };
 
 const TIER_BADGE: Record<PullRarityTier, string> = {
-  common: 'Standard',
+  common: 'Common',
   rare: 'Rare',
+  epic: 'Epic',
   legendary: 'Legendary',
+  mythic: 'Mythic',
 };
 
 /**
  * Post-opening flow (inspo: clove “Won Prizes”): choose ship vs convert to credits.
- * Credits are only added when user confirms convert (or Skip = convert).
+ * Credits are only added when user confirms convert or ship.
  */
 export function WonPrizesModal() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const visible = useAppStore((s) => s.modals.wonPrizes);
   const pendingId = useAppStore((s) => s.pendingFulfillmentPullId);
   const user = useAppStore((s) => s.user);
-  const closeModal = useAppStore((s) => s.closeModal);
   const finalizePullFulfillment = useAppStore((s) => s.finalizePullFulfillment);
 
   const [shipSelected, setShipSelected] = useState(false);
   const [showConvertConfirm, setShowConvertConfirm] = useState(false);
+
+  useEffect(() => {
+    if (!visible) return;
+    setShipSelected(false);
+    setShowConvertConfirm(false);
+  }, [visible, pendingId]);
 
   const pull = useMemo(
     () => (pendingId ? user.pullHistory.find((p) => p.id === pendingId) : undefined),
@@ -50,13 +63,8 @@ export function WonPrizesModal() {
   );
 
   const tier: PullRarityTier = pull?.tier ?? 'common';
-  const convertAmount = pull?.convertCreditValue ?? 0;
-
-  const onSkip = () => {
-    if (!pull) return;
-    finalizePullFulfillment(pull.id, 'convert');
-    setShipSelected(false);
-  };
+  /** Same value as pack opening — always use rolled credits, not a separate capped field. */
+  const convertAmount = pull?.creditsWon ?? pull?.convertCreditValue ?? 0;
 
   const onPrimaryPress = () => {
     if (!pull) return;
@@ -79,7 +87,13 @@ export function WonPrizesModal() {
   if (!pull || !pendingId) return null;
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onSkip}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      {...transparentModalIOSProps}
+      onRequestClose={() => {}}
+    >
       <View style={[styles.screen, { paddingTop: insets.top + spacing.sm }]}>
         <ScrollView
           contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + spacing.xl }]}
@@ -87,9 +101,6 @@ export function WonPrizesModal() {
         >
           <View style={styles.topBar}>
             <Text style={styles.pageTitle}>Won Prizes</Text>
-            <TouchableOpacity onPress={onSkip} hitSlop={12}>
-              <Text style={styles.skip}>Skip</Text>
-            </TouchableOpacity>
           </View>
 
           <Text style={styles.instructions}>
@@ -133,7 +144,7 @@ export function WonPrizesModal() {
                 {pull?.result ?? '—'}
               </Text>
               <Text style={styles.itemMeta} numberOfLines={1}>
-                {pull?.packTitle ?? ''}
+                {pull ? getLocalizedPackTitle(pull.packId, pull.packTitle, t) : ''}
               </Text>
             </View>
 
@@ -170,7 +181,7 @@ export function WonPrizesModal() {
       </View>
 
       {/* Confirmation — inspo: “Convert items to points” sheet */}
-      <Modal visible={showConvertConfirm} transparent animationType="fade">
+      <Modal visible={showConvertConfirm} transparent animationType="fade" {...transparentModalIOSProps}>
         <Pressable style={styles.confirmOverlay} onPress={() => setShowConvertConfirm(false)}>
           <Pressable style={styles.confirmCard} onPress={() => {}}>
             <TouchableOpacity style={styles.confirmClose} onPress={() => setShowConvertConfirm(false)}>
@@ -205,18 +216,12 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: spacing.sm,
   },
   pageTitle: {
     fontSize: fontSize.xxl,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
-  },
-  skip: {
-    fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
-    color: colors.textSecondary,
   },
   instructions: {
     fontSize: fontSize.sm,

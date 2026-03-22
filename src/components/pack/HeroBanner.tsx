@@ -1,25 +1,48 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 interface Props {
-  onPress?: () => void;
+  /** Primary CTA — e.g. dismiss welcome hero (full catalog is already below). */
+  onBrowsePacks?: () => void;
+  /** Close without navigating (still one-time hide). */
+  onDismiss?: () => void;
 }
 
-export function HeroBanner({ onPress }: Props) {
+export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
-      <View style={styles.inner}>
-        <Text style={styles.eyebrow}>NEW USER EXCLUSIVE</Text>
-        <Text style={styles.headline}>High-Value{'\n'}Welcome Packs</Text>
-        <Text style={styles.subtext}>
-          Limited-time packs with boosted hit rates and bonus rewards
-        </Text>
-        <TouchableOpacity style={styles.cta} onPress={onPress} activeOpacity={0.85}>
-          <Text style={styles.ctaText}>Browse Packs</Text>
+      {onDismiss ? (
+        <TouchableOpacity
+          style={styles.closeBtn}
+          onPress={onDismiss}
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          accessibilityLabel={t('hero.notNow')}
+        >
+          <Text style={styles.closeText}>×</Text>
         </TouchableOpacity>
+      ) : null}
+      <View style={styles.inner}>
+        <Text style={styles.eyebrow}>{t('hero.eyebrow')}</Text>
+        <Text style={styles.headline}>
+          {t('hero.headline1')}
+          {'\n'}
+          {t('hero.headline2')}
+        </Text>
+        <Text style={styles.subtext}>{t('hero.sub')}</Text>
+        <TouchableOpacity style={styles.cta} onPress={onBrowsePacks} activeOpacity={0.85}>
+          <Text style={styles.ctaText}>{t('hero.browsePacks')}</Text>
+        </TouchableOpacity>
+        {onDismiss ? (
+          <TouchableOpacity onPress={onDismiss} style={styles.notNow} hitSlop={8}>
+            <Text style={styles.notNowText}>{t('hero.notNow')}</Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
 
       {/* Decorative card stack */}
@@ -28,7 +51,7 @@ export function HeroBanner({ onPress }: Props) {
         <View style={[styles.card, styles.cardBack1]} />
         <View style={[styles.card, styles.cardFront]}>
           <Text style={styles.cardEmoji}>⭐</Text>
-          <Text style={styles.cardLabel}>Hit Card</Text>
+          <Text style={styles.cardLabel}>{t('hero.hitCard')}</Text>
         </View>
       </View>
     </View>
@@ -46,6 +69,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: 180,
     overflow: 'hidden',
+    position: 'relative',
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: spacing.sm,
+    right: spacing.sm,
+    zIndex: 2,
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  closeText: {
+    color: 'rgba(255,255,255,0.55)',
+    fontSize: 28,
+    fontWeight: fontWeight.regular,
+    lineHeight: 30,
   },
   inner: {
     flex: 1,
@@ -82,6 +122,17 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: fontSize.sm,
     fontWeight: fontWeight.bold,
+  },
+  notNow: {
+    marginTop: spacing.sm,
+    alignSelf: 'flex-start',
+    paddingVertical: 4,
+  },
+  notNowText: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.semibold,
+    color: 'rgba(255,255,255,0.45)',
+    textDecorationLine: 'underline',
   },
   cardStack: {
     width: 80,

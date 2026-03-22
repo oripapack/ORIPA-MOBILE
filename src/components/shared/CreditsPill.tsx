@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -14,7 +15,7 @@ export function CreditsPill({ onAdd }: Props) {
 
   return (
     <View style={styles.pill}>
-      <Text style={styles.coin}>🪙</Text>
+      <FontAwesome5 name="coins" size={14} color={colors.gold} style={styles.coin} solid />
       <Text style={styles.amount}>{credits.toLocaleString()}</Text>
       <TouchableOpacity style={styles.addBtn} onPress={onAdd} activeOpacity={0.8}>
         <Text style={styles.addText}>+</Text>
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   coin: {
-    fontSize: 14,
+    marginRight: 2,
   },
   amount: {
     color: colors.white,

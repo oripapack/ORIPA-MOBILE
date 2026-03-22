@@ -1,7 +1,8 @@
 /** After a pack opens, user must choose ship vs convert — until then, `pending`. */
 export type PullFulfillment = 'pending' | 'converted' | 'shipped';
 
-export type PullRarityTier = 'common' | 'rare' | 'legendary';
+/** Lowest → highest: common (green) … mythic (red). */
+export type PullRarityTier = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
 
 export interface Pull {
   id: string;
@@ -16,7 +17,7 @@ export interface Pull {
    * New pulls start as `pending` until Won Prizes flow completes.
    */
   fulfillment?: PullFulfillment;
-  /** Credits added to wallet if user taps “Convert to points” (capped; see store). */
+  /** Credits added to wallet if user taps “Convert to points” (matches reveal `creditsWon`). */
   convertCreditValue?: number;
   /** From pack opening reveal — for Won Prizes UI. */
   tier?: PullRarityTier;
