@@ -208,7 +208,7 @@ export function WonPrizesModal() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   scroll: {
     paddingHorizontal: spacing.base,
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   checkboxOn: {
     backgroundColor: colors.red,
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.border,
     paddingTop: spacing.md,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   footerBtn: {
     marginBottom: spacing.xs,
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   confirmCard: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xl,
     padding: spacing.xl,
   },

@@ -311,12 +311,12 @@ export function LinkPhoneScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.white },
+  flex: { flex: 1, backgroundColor: colors.surfaceElevated },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   scrollContent: {
     paddingHorizontal: spacing.xl,
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   logoPrimary: {
     fontSize: fontSize.hero,
     fontWeight: fontWeight.black,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   logoSecondary: {
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     minHeight: 50,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   countryFlag: {
     fontSize: fontSize.lg,

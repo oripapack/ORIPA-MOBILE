@@ -15,7 +15,7 @@ import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
 import { isClerkEnabled } from '../config/clerk';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
-import { ClerkLogoutRow } from '../components/account/ClerkLogoutRow';
+import { AccountSignOutFooter } from '../components/account/AccountSignOutFooter';
 import { PullHistoryRow, useCompletedPullsSorted } from '../components/account/PullHistoryRow';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { openExternalUrl } from '../utils/openExternalUrl';
@@ -151,12 +151,13 @@ export function AccountScreen() {
         </View>
       ) : null}
 
-      <ClerkAccountSection />
-
-      {/* Tier card */}
+      {/* Tier + display name — primary profile block */}
       <View style={styles.tierCard}>
+        <Text style={styles.tierDisplayName} numberOfLines={2}>
+          {user.displayName}
+        </Text>
         <View style={styles.tierTop}>
-          <View>
+          <View style={styles.tierTitleBlock}>
             <Text style={styles.tierEyebrow}>{t('rewards.tier')}</Text>
             <Text style={[styles.tierName, { color: tierColor }]}>{user.tier.toUpperCase()}</Text>
           </View>
@@ -184,24 +185,22 @@ export function AccountScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Member ID */}
-      <View style={styles.memberCard}>
-        <View style={styles.memberRow}>
-          <View>
-            <Text style={styles.memberLabel}>{t('account.memberId')}</Text>
-            <Text style={styles.memberId}>{user.memberId}</Text>
+      <ClerkAccountSection />
+
+      {!user.isVerified ? (
+        <TouchableOpacity
+          style={styles.verifyIdentityCard}
+          onPress={() => requireAuth(() => navigation.navigate('IdentityVerification'))}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel={t('account.verifyIdentity')}
+        >
+          <View style={styles.verifyIdentityRow}>
+            <Text style={styles.verifyIdentityText}>{t('account.verifyIdentity')}</Text>
+            <Text style={styles.verifyIdentityChevron}>›</Text>
           </View>
-          {!user.isVerified && (
-            <TouchableOpacity
-              style={styles.verifyBtn}
-              onPress={() => requireAuth(() => navigation.navigate('IdentityVerification'))}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.verifyBtnText}>{t('account.verifyIdentity')}</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
+        </TouchableOpacity>
+      ) : null}
 
       {/* Player desk: full history is primary; everything else is secondary */}
       <View style={styles.casinoStrip}>
@@ -295,8 +294,9 @@ export function AccountScreen() {
           icon={<Text>⚙️</Text>}
           onPress={() => navigation.navigate('Settings')}
         />
-        {isClerkEnabled && clerkSignedIn ? <ClerkLogoutRow /> : null}
       </View>
+
+      <AccountSignOutFooter visible={isClerkEnabled && clerkSignedIn} />
     </ScrollView>
   );
 }
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
   guestSignInCard: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xl,
     padding: spacing.lg,
     marginBottom: spacing.base,
@@ -365,21 +365,34 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   tierCard: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xl,
-    padding: spacing.xl,
-    marginBottom: spacing.sm,
+    padding: spacing.xl + 4,
+    marginBottom: spacing.base,
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 1,
     shadowRadius: 10,
     elevation: 2,
   },
+  tierDisplayName: {
+    fontSize: fontSize.hero,
+    fontWeight: fontWeight.black,
+    color: colors.textPrimary,
+    letterSpacing: -0.8,
+    marginBottom: spacing.lg,
+    lineHeight: 40,
+  },
   tierTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: spacing.base,
+  },
+  tierTitleBlock: {
+    flex: 1,
+    minWidth: 0,
+    paddingRight: spacing.sm,
   },
   tierEyebrow: {
     fontSize: fontSize.xs,
@@ -389,20 +402,20 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   tierName: {
-    fontSize: fontSize.xxl,
+    fontSize: fontSize.hero - 2,
     fontWeight: fontWeight.black,
     letterSpacing: 1,
   },
   tierBadge: {
-    width: 48,
-    height: 48,
+    width: 56,
+    height: 56,
     borderRadius: radius.full,
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
   },
   tierBadgeText: {
-    fontSize: 24,
+    fontSize: 28,
   },
   xpRow: {
     flexDirection: 'row',
@@ -438,40 +451,31 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.semibold,
     color: colors.red,
   },
-  memberCard: {
-    backgroundColor: colors.white,
+  verifyIdentityCard: {
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
-    padding: spacing.base,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.base,
     marginBottom: spacing.base,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  memberRow: {
+  verifyIdentityRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: spacing.md,
   },
-  memberLabel: {
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    marginBottom: 2,
-  },
-  memberId: {
-    fontSize: fontSize.sm,
+  verifyIdentityText: {
+    flex: 1,
+    fontSize: fontSize.md,
     fontWeight: fontWeight.semibold,
     color: colors.textPrimary,
   },
-  verifyBtn: {
-    backgroundColor: colors.gold,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 6,
-    borderRadius: radius.md,
-  },
-  verifyBtnText: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
-    color: colors.nearBlack,
+  verifyIdentityChevron: {
+    fontSize: 22,
+    fontWeight: fontWeight.regular,
+    color: colors.textMuted,
   },
   casinoStrip: {
     backgroundColor: colors.casinoFelt,
@@ -613,7 +617,7 @@ const styles = StyleSheet.create({
     paddingLeft: spacing.xs,
   },
   listGroup: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
     overflow: 'hidden',
     borderWidth: 1,

@@ -1,6 +1,8 @@
 import React, { useMemo, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { ChipTagType, Pack } from '../../data/mockPacks';
 import { colors } from '../../tokens/colors';
@@ -107,18 +109,43 @@ export function PackCard({ pack, onPress }: Props) {
         disabled={!onPress}
         style={[styles.hero, { backgroundColor: pack.imageColor }]}
       >
-        <View style={styles.imageGradient} pointerEvents="none">
-          <Svg width={CARD_W} height={PACK_IMG_H}>
-            <Defs>
-              <LinearGradient id={`packImgGrad-${pack.id}`} x1="0.5" y1="0" x2="0.5" y2="1">
-                <Stop offset="0" stopColor="rgba(0,0,0,0.12)" />
-                <Stop offset="0.5" stopColor="rgba(0,0,0,0.2)" />
-                <Stop offset="1" stopColor="rgba(0,0,0,0.75)" />
-              </LinearGradient>
-            </Defs>
-            <Rect x={0} y={0} width={CARD_W} height={PACK_IMG_H} fill={`url(#packImgGrad-${pack.id})`} />
-          </Svg>
-        </View>
+        {pack.imageUrl ? (
+          <>
+            <Image
+              source={{ uri: pack.imageUrl }}
+              style={styles.heroImage}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+              transition={200}
+            />
+            {/* RN-SVG gradients over full-bleed images often render solid black on iOS — use native gradient */}
+            <LinearGradient
+              pointerEvents="none"
+              colors={['rgba(0,0,0,0.08)', 'rgba(0,0,0,0.42)']}
+              locations={[0.25, 1]}
+              style={styles.heroPhotoGradient}
+            />
+          </>
+        ) : (
+          <View style={styles.imageGradient} pointerEvents="none">
+            <Svg width={CARD_W} height={PACK_IMG_H}>
+              <Defs>
+                <SvgLinearGradient id={`packImgGradSolid-${pack.id}`} x1="0.5" y1="0" x2="0.5" y2="1">
+                  <Stop offset="0" stopColor="#000000" stopOpacity={0.12} />
+                  <Stop offset="0.5" stopColor="#000000" stopOpacity={0.22} />
+                  <Stop offset="1" stopColor="#000000" stopOpacity={0.62} />
+                </SvgLinearGradient>
+              </Defs>
+              <Rect
+                x={0}
+                y={0}
+                width={CARD_W}
+                height={PACK_IMG_H}
+                fill={`url(#packImgGradSolid-${pack.id})`}
+              />
+            </Svg>
+          </View>
+        )}
 
         {primary ? (
           <View style={styles.badgeCluster} pointerEvents="none">
@@ -209,14 +236,31 @@ const styles = StyleSheet.create({
     height: PACK_IMG_H,
     width: '100%',
     justifyContent: 'flex-end',
+    overflow: 'hidden',
+  },
+  heroImage: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    width: '100%',
+    height: PACK_IMG_H,
+    zIndex: 0,
+    backgroundColor: 'transparent',
+  },
+  heroPhotoGradient: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
   },
   imageGradient: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
   },
   badgeCluster: {
     position: 'absolute',
     top: spacing.md,
     right: spacing.md,
+    zIndex: 2,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
@@ -252,6 +296,7 @@ const styles = StyleSheet.create({
   heroCopy: {
     padding: spacing.base,
     paddingBottom: spacing.md,
+    zIndex: 2,
   },
   imageTitle: {
     color: colors.white,

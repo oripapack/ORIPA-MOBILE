@@ -49,7 +49,7 @@ export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   header: {
     flexDirection: 'row',

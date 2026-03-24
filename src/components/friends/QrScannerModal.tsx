@@ -11,7 +11,7 @@ import {
 import { CameraView, useCameraPermissions, type BarcodeScanningResult } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { parseFriendMemberIdFromQr } from '../../lib/friendQr';
+import { parseFriendInviteFromQr } from '../../lib/friendQr';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -20,11 +20,11 @@ import { transparentModalIOSProps } from '../../constants/modalPresentation';
 interface Props {
   visible: boolean;
   onClose: () => void;
-  /** Called with parsed member ID from a valid friend QR. */
-  onMemberIdScanned: (memberId: string) => void;
+  /** Called with normalized username from a valid friend QR. */
+  onUsernameScanned: (username: string) => void;
 }
 
-export function QrScannerModal({ visible, onClose, onMemberIdScanned }: Props) {
+export function QrScannerModal({ visible, onClose, onUsernameScanned }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
@@ -33,19 +33,22 @@ export function QrScannerModal({ visible, onClose, onMemberIdScanned }: Props) {
   useEffect(() => {
     if (visible) {
       scannedRef.current = false;
+      if (!permission?.granted) {
+        void requestPermission();
+      }
     }
-  }, [visible]);
+  }, [visible, permission?.granted, requestPermission]);
 
   const handleBarcode = useCallback(
     (scanningResult: BarcodeScanningResult) => {
       if (scannedRef.current) return;
-      const id = parseFriendMemberIdFromQr(scanningResult.data);
-      if (!id) return;
+      const username = parseFriendInviteFromQr(scanningResult.data);
+      if (!username) return;
       scannedRef.current = true;
-      onMemberIdScanned(id);
+      onUsernameScanned(username);
       onClose();
     },
-    [onMemberIdScanned, onClose],
+    [onUsernameScanned, onClose],
   );
 
   if (Platform.OS === 'web') {
@@ -178,7 +181,7 @@ const styles = StyleSheet.create({
   },
   webWrap: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     paddingHorizontal: spacing.xl,
     justifyContent: 'center',
   },

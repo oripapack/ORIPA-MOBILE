@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import {
   type ListingCategory,
   type MarketplaceListing,
 } from '../data/marketplace';
+import { demoMarketplacePromoImage } from '../data/demoMedia';
 import { navigationRef } from '../navigation/navigationRef';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -89,7 +90,12 @@ export function MarketplaceScreen() {
 
         {/* Promo */}
         <View style={styles.promoBanner}>
-          <Text style={styles.promoIcon}>🚚</Text>
+          <Image
+            source={{ uri: demoMarketplacePromoImage }}
+            style={styles.promoImage}
+            resizeMode="cover"
+            accessibilityIgnoresInvertColors
+          />
           <View style={styles.promoTextCol}>
             <Text style={styles.promoTitle}>{t('marketplace.promoTitle')}</Text>
             <Text style={styles.promoBody}>{t('marketplace.promoBody')}</Text>
@@ -235,7 +241,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     marginHorizontal: spacing.base,
     borderRadius: radius.lg,
     borderWidth: 1,
@@ -257,16 +263,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.promoBannerBg,
     marginHorizontal: spacing.base,
     padding: spacing.base,
     borderRadius: radius.xl,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: colors.promoBannerBorder,
     marginBottom: spacing.md,
   },
-  promoIcon: {
-    fontSize: 36,
+  promoImage: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.md,
+    backgroundColor: colors.border,
   },
   promoTextCol: {
     flex: 1,
@@ -274,7 +283,7 @@ const styles = StyleSheet.create({
   promoTitle: {
     fontSize: fontSize.base,
     fontWeight: fontWeight.bold,
-    color: colors.redDark,
+    color: colors.gold,
     marginBottom: 4,
   },
   promoBody: {
@@ -291,13 +300,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.full,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderWidth: 1,
     borderColor: colors.border,
   },
   catChipActive: {
     backgroundColor: colors.nearBlack,
-    borderColor: colors.nearBlack,
+    borderColor: colors.gold,
   },
   catChipText: {
     fontSize: fontSize.sm,
@@ -305,7 +314,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   catChipTextActive: {
-    color: colors.white,
+    color: colors.gold,
   },
   section: {
     marginBottom: spacing.lg,
@@ -367,7 +376,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   verifiedPill: {
-    backgroundColor: '#ECFDF5',
+    backgroundColor: colors.verifiedPillBg,
     paddingHorizontal: spacing.sm,
     paddingVertical: 3,
     borderRadius: radius.md,
@@ -375,7 +384,7 @@ const styles = StyleSheet.create({
   verifiedText: {
     fontSize: fontSize.xs,
     fontWeight: fontWeight.bold,
-    color: '#047857',
+    color: colors.verifiedPillText,
     letterSpacing: 0.3,
   },
   storeTagline: {
@@ -401,13 +410,13 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     padding: spacing.base,
     borderRadius: radius.lg,
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.demoNoteBg,
     borderWidth: 1,
-    borderColor: '#FCD34D',
+    borderColor: colors.demoNoteBorder,
   },
   demoNoteText: {
     fontSize: fontSize.xs,
-    color: '#92400E',
+    color: colors.demoNoteText,
     lineHeight: 18,
     textAlign: 'center',
   },

@@ -33,10 +33,10 @@ export function PaymentPortalScreen() {
     navigation.setOptions({
       title: t('paymentPortal.navTitle'),
       headerShown: true,
-      headerTintColor: colors.nearBlack,
+      headerTintColor: colors.textPrimary,
       headerTitleStyle: { fontWeight: fontWeight.bold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.white },
+      headerStyle: { backgroundColor: colors.surfaceElevated },
     });
   }, [navigation, t]);
 
@@ -93,7 +93,7 @@ export function PaymentPortalScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   scroll: { flex: 1 },
   content: {
@@ -120,11 +120,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   tabActive: {
-    borderColor: colors.nearBlack,
-    backgroundColor: '#FAFAFA',
+    borderColor: colors.red,
+    backgroundColor: colors.surfaceMuted,
   },
   tabText: {
     fontSize: fontSize.sm,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   tabTextActive: {
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     fontWeight: fontWeight.bold,
   },
 });

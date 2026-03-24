@@ -13,15 +13,26 @@ interface Props {
   onClose: () => void;
   /** Encoded QR string (see `buildFriendQrPayload`). */
   qrValue: string;
-  memberId: string;
+  /** Public handle — what friends use to add you. */
+  username: string;
   displayName: string;
   onCopied?: () => void;
+  /** Opens the camera scanner to add someone by their QR (root-level modal). */
+  onScanSomeoneElse?: () => void;
 }
 
-export function MyQrModal({ visible, onClose, qrValue, memberId, displayName, onCopied }: Props) {
+export function MyQrModal({
+  visible,
+  onClose,
+  qrValue,
+  username,
+  displayName,
+  onCopied,
+  onScanSomeoneElse,
+}: Props) {
   const { t } = useTranslation();
   const copyId = async () => {
-    await Clipboard.setStringAsync(memberId);
+    await Clipboard.setStringAsync(username);
     onCopied?.();
   };
 
@@ -40,18 +51,35 @@ export function MyQrModal({ visible, onClose, qrValue, memberId, displayName, on
           </View>
 
           <View style={styles.qrWrap}>
-            <QRCode value={qrValue} size={216} backgroundColor={colors.white} color={colors.nearBlack} />
+            <QRCode value={qrValue} size={216} backgroundColor={colors.white} color={colors.black} />
           </View>
 
           <Text style={styles.nameLabel}>{t('myQr.you')}</Text>
           <Text style={styles.name}>{displayName}</Text>
 
           <View style={styles.idRow}>
-            <Text style={styles.idText}>{memberId}</Text>
+            <Text style={styles.idText}>@{username}</Text>
             <TouchableOpacity style={styles.copyBtn} onPress={copyId} activeOpacity={0.7}>
               <Text style={styles.copyBtnText}>{t('myQr.copy')}</Text>
             </TouchableOpacity>
           </View>
+
+          {onScanSomeoneElse ? (
+            <TouchableOpacity
+              style={styles.scanOtherBtn}
+              onPress={onScanSomeoneElse}
+              activeOpacity={0.88}
+              accessibilityRole="button"
+              accessibilityLabel={t('myQr.scanAnother')}
+            >
+              <Text style={styles.scanOtherEmoji}>📷</Text>
+              <View style={styles.scanOtherTextCol}>
+                <Text style={styles.scanOtherTitle}>{t('myQr.scanAnother')}</Text>
+                <Text style={styles.scanOtherSub}>{t('myQr.scanAnotherSub')}</Text>
+              </View>
+              <Text style={styles.scanOtherChevron}>›</Text>
+            </TouchableOpacity>
+          ) : null}
 
           <TouchableOpacity style={styles.doneBtn} onPress={onClose} activeOpacity={0.85}>
             <Text style={styles.doneBtnText}>{t('myQr.done')}</Text>
@@ -118,7 +146,7 @@ const styles = StyleSheet.create({
   qrWrap: {
     alignSelf: 'center',
     padding: spacing.md,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
     borderWidth: 2,
     borderColor: 'rgba(240,193,76,0.65)',
@@ -169,9 +197,45 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   copyBtnText: {
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     fontSize: fontSize.sm,
     fontWeight: fontWeight.black,
+  },
+  scanOtherBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.base,
+    marginBottom: spacing.md,
+    borderWidth: 1.5,
+    borderColor: 'rgba(225,29,46,0.35)',
+  },
+  scanOtherEmoji: {
+    fontSize: 22,
+  },
+  scanOtherTextCol: {
+    flex: 1,
+    minWidth: 0,
+  },
+  scanOtherTitle: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.black,
+    color: colors.textPrimary,
+  },
+  scanOtherSub: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.medium,
+    color: colors.textSecondary,
+    marginTop: 2,
+    lineHeight: 16,
+  },
+  scanOtherChevron: {
+    fontSize: 22,
+    color: colors.textMuted,
+    fontWeight: fontWeight.regular,
   },
   doneBtn: {
     height: 52,

@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useClerk, useUser } from '@clerk/clerk-expo';
+import { useUser } from '@clerk/clerk-expo';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -9,6 +9,7 @@ import { isClerkEnabled } from '../../config/clerk';
 import { AppUserUnsafeMetadata } from '../../lib/clerkProfile';
 
 /**
+ * Username (handle), email, phone — display name lives on the tier card.
  * Renders only when Clerk is configured and the tree is under `ClerkProvider`.
  */
 export function ClerkAccountSection() {
@@ -19,47 +20,47 @@ export function ClerkAccountSection() {
 function ClerkAccountSectionInner() {
   const { t } = useTranslation();
   const { user } = useUser();
-  const { signOut } = useClerk();
 
   if (!user) {
     return null;
   }
 
-  const email = user.primaryEmailAddress?.emailAddress;
   const meta = user.unsafeMetadata as AppUserUnsafeMetadata | undefined;
-  const appProfileName = (meta?.appDisplayName || meta?.appUsername)?.trim();
-  const name =
-    appProfileName ||
-    (typeof user?.fullName === 'string' && user.fullName.trim()) ||
-    [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
-    user?.username ||
-    email;
+  const appUsername = (meta?.appUsername ?? '').trim();
+  const clerkUsername = (user.username ?? '').trim();
+  const username = appUsername || clerkUsername;
 
-  const onSignOut = () => {
-    Alert.alert(t('auth.signOutTitle'), t('auth.signOutMessage'), [
-      { text: t('auth.cancel'), style: 'cancel' },
-      {
-        text: t('auth.signOutConfirm'),
-        style: 'destructive',
-        onPress: () => void signOut(),
-      },
-    ]);
-  };
+  const email = user.primaryEmailAddress?.emailAddress;
+  const phone = user.primaryPhoneNumber?.phoneNumber;
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.eyebrow}>{t('auth.signedInAs')}</Text>
-      <Text style={styles.name} numberOfLines={2}>
-        {name || '—'}
-      </Text>
-      {email ? (
-        <Text style={styles.email} numberOfLines={1}>
-          {email}
+      <Text style={styles.eyebrow}>{t('account.accountDetailsEyebrow')}</Text>
+
+      <View style={styles.fieldBlock}>
+        <Text style={styles.contactLabel}>{t('account.usernameLabel')}</Text>
+        <Text style={username ? styles.contactValue : styles.contactValueMuted} numberOfLines={1}>
+          {username || t('account.usernameUnset')}
         </Text>
+      </View>
+
+      {email ? (
+        <View style={styles.fieldBlock}>
+          <Text style={styles.contactLabel}>{t('account.emailLabel')}</Text>
+          <Text style={styles.contactValue} numberOfLines={2}>
+            {email}
+          </Text>
+        </View>
       ) : null}
-      <TouchableOpacity style={styles.outBtn} onPress={onSignOut} activeOpacity={0.88}>
-        <Text style={styles.outBtnText}>{t('auth.signOut')}</Text>
-      </TouchableOpacity>
+
+      {phone ? (
+        <View style={styles.fieldBlock}>
+          <Text style={styles.contactLabel}>{t('account.phoneLabel')}</Text>
+          <Text style={styles.contactValue} numberOfLines={2}>
+            {phone}
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -67,44 +68,42 @@ function ClerkAccountSectionInner() {
 const styles = StyleSheet.create({
   wrap: {
     marginBottom: spacing.lg,
-    padding: spacing.base,
-    backgroundColor: '#FAFAFA',
-    borderRadius: radius.lg,
+    padding: spacing.lg,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: colors.border,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    elevation: 2,
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
-    color: colors.textMuted,
-    marginBottom: spacing.xs,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  name: {
-    fontSize: fontSize.md,
     fontWeight: fontWeight.bold,
-    color: colors.textPrimary,
+    color: colors.textMuted,
+    marginBottom: spacing.md,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
-  email: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+  fieldBlock: {
+    marginBottom: spacing.md,
+  },
+  contactLabel: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.medium,
     color: colors.textSecondary,
-    marginTop: 4,
+    marginBottom: 4,
   },
-  outBtn: {
-    marginTop: spacing.md,
-    alignSelf: 'flex-start',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.white,
-  },
-  outBtnText: {
-    fontSize: fontSize.sm,
+  contactValue: {
+    fontSize: fontSize.md,
     fontWeight: fontWeight.semibold,
     color: colors.textPrimary,
+  },
+  contactValueMuted: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.medium,
+    color: colors.textMuted,
   },
 });

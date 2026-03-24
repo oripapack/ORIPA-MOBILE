@@ -41,7 +41,7 @@ export function CategoryTabBar() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: 'rgba(255,255,255,0.65)',
+    backgroundColor: 'rgba(12, 20, 10, 0.88)',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.headerHairline,
   },
@@ -54,14 +54,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.xs + 2,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(255,255,255,0.85)',
+    backgroundColor: 'rgba(22, 32, 24, 0.95)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(15,23,42,0.06)',
+    borderColor: colors.border,
   },
   tabActive: {
     backgroundColor: colors.nearBlack,
-    borderColor: colors.nearBlack,
-    shadowColor: colors.redGlow,
+    borderColor: colors.gold,
+    shadowColor: colors.gold,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.55,
     shadowRadius: 10,
@@ -73,6 +73,6 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   labelActive: {
-    color: colors.white,
+    color: colors.gold,
   },
 });

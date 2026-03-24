@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.base,
     marginBottom: spacing.lg,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   label: {
     fontSize: fontSize.xs,

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Modal,
   View,
@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  Alert,
   Platform,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -17,138 +17,133 @@ import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
-import { QrScannerModal } from './QrScannerModal';
+import { useFriendInviteResolver } from '../../hooks/useFriendInviteResolver';
 import { useAppStore } from '../../store/useAppStore';
-import {
-  isValidMemberIdFormat,
-  lookupMemberDisplayName,
-  normalizeMemberId,
-} from '../../data/friends';
+import { DEMO_DISCOVERABLE_USERS } from '../../data/socialMock';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
+  /** Open the camera scanner (must be a root-level modal — not nested inside this sheet). */
+  onRequestScanner: () => void;
 }
 
-export function AddFriendModal({ visible, onClose }: Props) {
+export function AddFriendModal({ visible, onClose, onRequestScanner }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const { resolveFromRaw } = useFriendInviteResolver({ onAdded: onClose });
+  const friends = useAppStore((s) => s.friends);
   const addFriend = useAppStore((s) => s.addFriend);
 
   const [lookupInput, setLookupInput] = useState('');
-  const [scanOpen, setScanOpen] = useState(false);
+
+  const demoList = useMemo(
+    () => DEMO_DISCOVERABLE_USERS.filter((d) => !friends.some((f) => f.username === d.username)),
+    [friends],
+  );
 
   useEffect(() => {
     if (!visible) {
       setLookupInput('');
-      setScanOpen(false);
     }
   }, [visible]);
 
-  const promptAddFriend = useCallback(
-    (memberId: string, displayName: string) => {
-      Alert.alert(t('friendsAlerts.addTitle'), `${displayName}\n${memberId}`, [
-        { text: t('friendsAlerts.cancel'), style: 'cancel' },
-        {
-          text: t('friendsAlerts.add'),
-          onPress: () => {
-            const res = addFriend(memberId, displayName);
-            if (res.ok) {
-              Alert.alert(t('friendsAlerts.addedTitle'), t('friendsAlerts.addedBody', { name: displayName }));
-              setLookupInput('');
-              onClose();
-            } else if (res.reason === 'self') {
-              Alert.alert(t('friendsAlerts.selfTitle'), t('friendsAlerts.selfBody'));
-            } else if (res.reason === 'duplicate') {
-              Alert.alert(t('friendsAlerts.duplicateTitle'), t('friendsAlerts.duplicateBody'));
-            } else {
-              Alert.alert(t('friendsAlerts.errorTitle'), t('friendsAlerts.errorBody'));
-            }
-          },
-        },
-      ]);
-    },
-    [addFriend, onClose, t],
-  );
-
-  const resolveAndOfferAdd = useCallback(
-    (rawId: string) => {
-      const id = normalizeMemberId(rawId);
-      if (!isValidMemberIdFormat(id)) {
-        Alert.alert(t('friendsAlerts.invalidIdTitle'), t('friendsAlerts.invalidIdBody'));
-        return;
-      }
-      const name = lookupMemberDisplayName(id);
-      if (!name) {
-        Alert.alert(t('friendsAlerts.notFoundTitle'), t('friendsAlerts.notFoundBody'));
-        return;
-      }
-      promptAddFriend(id, name);
-    },
-    [promptAddFriend, t],
-  );
-
   const onLookupPress = () => {
-    resolveAndOfferAdd(lookupInput);
-  };
-
-  const onScanned = (memberId: string) => {
-    setScanOpen(false);
-    resolveAndOfferAdd(memberId);
+    resolveFromRaw(lookupInput);
   };
 
   return (
-    <>
-      <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-        <View
-          style={[
-            styles.root,
-            {
-              paddingTop: insets.top + spacing.sm,
-              paddingBottom: insets.bottom + spacing.base,
-            },
-          ]}
-        >
-          <View style={styles.header}>
-            <View style={styles.headerAccent} />
-            <View style={styles.headerInner}>
-              <Text style={styles.badge}>{t('friends.heroEyebrow')}</Text>
-              <View style={styles.headerRow}>
-                <Text style={styles.title}>{t('friends.addModalTitle')}</Text>
-                <TouchableOpacity onPress={onClose} hitSlop={12}>
-                  <Text style={styles.cancel}>{t('locale.cancel')}</Text>
-                </TouchableOpacity>
-              </View>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <View
+        style={[
+          styles.root,
+          {
+            paddingTop: insets.top + spacing.sm,
+            paddingBottom: insets.bottom + spacing.base,
+          },
+        ]}
+      >
+        <View style={styles.header}>
+          <View style={styles.headerAccent} />
+          <View style={styles.headerInner}>
+            <Text style={styles.badge}>{t('friends.heroEyebrow')}</Text>
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>{t('friends.addModalTitle')}</Text>
+              <TouchableOpacity onPress={onClose} hitSlop={12}>
+                <Text style={styles.cancel}>{t('locale.cancel')}</Text>
+              </TouchableOpacity>
             </View>
           </View>
-
-          <ScrollView
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <Text style={styles.inputLabel}>{t('friends.enterFriendId')}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder={t('friends.placeholderId')}
-              placeholderTextColor={colors.textMuted}
-              autoCapitalize="characters"
-              autoCorrect={false}
-              value={lookupInput}
-              onChangeText={setLookupInput}
-              returnKeyType="done"
-              onSubmitEditing={onLookupPress}
-            />
-            <PrimaryButton label={t('friends.lookup')} onPress={onLookupPress} variant="red" />
-            <View style={styles.scanGap} />
-            <SecondaryButton label={t('friends.scanQr')} onPress={() => setScanOpen(true)} />
-            <Text style={styles.demoHint}>{t('friends.demoHint')}</Text>
-          </ScrollView>
         </View>
-      </Modal>
 
-      <QrScannerModal visible={scanOpen} onClose={() => setScanOpen(false)} onMemberIdScanned={onScanned} />
-    </>
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.inputLabel}>{t('friends.enterFriendUsername')}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder={t('friends.placeholderUsername')}
+            placeholderTextColor={colors.textMuted}
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={lookupInput}
+            onChangeText={setLookupInput}
+            returnKeyType="done"
+            onSubmitEditing={onLookupPress}
+          />
+          <PrimaryButton label={t('friends.lookup')} onPress={onLookupPress} variant="red" />
+          <View style={styles.scanGap} />
+          <SecondaryButton
+            label={t('friends.scanQr')}
+            onPress={() => {
+              onRequestScanner();
+            }}
+          />
+          <Text style={styles.demoHint}>{t('friends.demoHint')}</Text>
+
+          {demoList.length > 0 ? (
+            <View style={styles.demoSection}>
+              <Text style={styles.demoBrowseTitle}>{t('social.demoBrowseTitle')}</Text>
+              {demoList.map((d) => (
+                <View key={d.username} style={styles.demoRow}>
+                  <View style={styles.demoRowText}>
+                    <Text style={styles.demoName} numberOfLines={1}>
+                      {d.displayName}
+                    </Text>
+                    <Text style={styles.demoUn} numberOfLines={1}>
+                      @{d.username}
+                    </Text>
+                    <Text style={styles.demoBlurb} numberOfLines={2}>
+                      {d.blurb}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.demoAddBtn}
+                    onPress={() => {
+                      const res = addFriend(d.username, d.displayName);
+                      if (res.ok) {
+                        Alert.alert(
+                          t('social.demoAddedTitle'),
+                          t('social.demoAddedBody', { name: d.displayName }),
+                        );
+                        onClose();
+                      } else if (res.reason === 'duplicate') {
+                        Alert.alert(t('social.demoAddedTitle'), t('social.demoAlreadyFriend'));
+                      }
+                    }}
+                    activeOpacity={0.88}
+                  >
+                    <Text style={styles.demoAddBtnText}>{t('friends.add')}</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          ) : null}
+        </ScrollView>
+      </View>
+    </Modal>
   );
 }
 
@@ -236,5 +231,63 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: spacing.lg,
     lineHeight: 18,
+  },
+  demoSection: {
+    marginTop: spacing.xl,
+    paddingTop: spacing.lg,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+  },
+  demoBrowseTitle: {
+    fontSize: 10,
+    fontWeight: fontWeight.black,
+    color: colors.textMuted,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    marginBottom: spacing.md,
+  },
+  demoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  demoRowText: {
+    flex: 1,
+    minWidth: 0,
+  },
+  demoName: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
+  },
+  demoUn: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.semibold,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  demoBlurb: {
+    fontSize: fontSize.xs,
+    color: colors.textSecondary,
+    marginTop: spacing.xs,
+    lineHeight: 18,
+  },
+  demoAddBtn: {
+    backgroundColor: colors.nearBlack,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.md,
+  },
+  demoAddBtnText: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.black,
+    color: colors.white,
+    letterSpacing: 0.3,
   },
 });

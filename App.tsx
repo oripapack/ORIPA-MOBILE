@@ -8,7 +8,7 @@ import { hydrateLocaleFromStorage } from './src/i18n';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
-import { DemoBanner } from './src/components/shared/DemoBanner';
+import { SimulationDisclosure } from './src/components/shared/SimulationDisclosure';
 import { PhysicalGoodsPaymentRoot } from './src/payments';
 import { CLERK_PUBLISHABLE_KEY, isClerkEnabled } from './src/config/clerk';
 import { ClerkSessionBridge } from './src/components/account/ClerkSessionBridge';
@@ -35,9 +35,9 @@ export default function App() {
   const tree = (
     <PhysicalGoodsPaymentRoot>
       <SafeAreaProvider>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <View style={styles.root}>
-          <DemoBanner />
+          <SimulationDisclosure />
           {__DEV__ && !isClerkEnabled ? (
             <View style={styles.clerkHint} accessibilityRole="text">
               <Text style={styles.clerkHintText}>
@@ -55,7 +55,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       {!localeReady ? (
-        <View style={[styles.root, { backgroundColor: colors.white }]} />
+        <View style={[styles.root, { backgroundColor: colors.background }]} />
       ) : isClerkEnabled ? (
         <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
           <ClerkSessionBridge />
@@ -71,15 +71,15 @@ export default function App() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   clerkHint: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: colors.warningBannerBg,
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#D97706',
+    borderBottomColor: colors.warningBannerBorder,
   },
   clerkHintText: {
     fontSize: 12,
-    color: '#78350F',
+    color: colors.warningBannerText,
     lineHeight: 18,
   },
 });

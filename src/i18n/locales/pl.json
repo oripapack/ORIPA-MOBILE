@@ -41,7 +41,8 @@
   },
   "common": {
     "copied": "Skopiowano",
-    "friendIdCopied": "Identyfikator znajomego skopiowany do schowka."
+    "friendIdCopied": "Identyfikator znajomego skopiowany do schowka.",
+    "error": "Error"
   },
   "helpCenter": {
     "navTitle": "Centrum pomocy",
@@ -229,7 +230,14 @@
     "demoHint": "Demo: wypróbuj identyfikatory TCG-100001, TCG-100002 lub TCG-100003.",
     "yourFriends": "Twoi przyjaciele ({{count}})",
     "emptyTitle": "Nie ma jeszcze żadnych przyjaciół",
-    "emptyBody": "Gdy kogoś dodasz, pojawi się on tutaj, dzięki czemu będziesz mógł później skorzystać z większej liczby funkcji społecznościowych."
+    "emptyBody": "Gdy kogoś dodasz, pojawi się on tutaj, dzięki czemu będziesz mógł później skorzystać z większej liczby funkcji społecznościowych.",
+    "heroEyebrow": "SQUAD LOUNGE",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "Nagrody",
@@ -264,7 +272,12 @@
     "guestSignInCta": "Zaloguj się lub utwórz konto",
     "playerDeskEyebrow": "BIURKO GRACZY",
     "pullHistoryCta": "Pełna historia zabaw",
-    "pullHistorySub": "Każde otwarcie, wygrana kredytowa i trafienie — pełny dziennik"
+    "pullHistorySub": "Każde otwarcie, wygrana kredytowa i trafienie — pełny dziennik",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Alerty",
@@ -389,7 +402,8 @@
     "memberIdHint": "Twój kod znajomego (TCG-…) jest przypisywany automatycznie do kodów QR i zaproszeń.",
     "usernameInvalid": "Użyj 2–20 znaków: tylko litery, cyfry i podkreślenia.",
     "continue": "Kontynuować",
-    "genericError": "Nie można zapisać Twojego profilu. Spróbuj ponownie."
+    "genericError": "Nie można zapisać Twojego profilu. Spróbuj ponownie.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "Zapłata",
@@ -416,7 +430,9 @@
     "subtitle": "Poproś znajomego, aby zeskanował ten kod QR lub udostępnił Twój identyfikator, aby mógł Cię dodać.",
     "you": "Ty",
     "copy": "Kopia",
-    "done": "Zrobione"
+    "done": "Zrobione",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "Zeskanuj kod QR przyjaciela",
@@ -531,7 +547,8 @@
     "resultRare3": "Specjalna karta od{{packName}}",
     "resultLegendary1": "Legendarny hit od{{packName}}",
     "resultLegendary2": "Mityczne pociągnięcie z{{packName}}",
-    "resultLegendary3": "Karta zmieniająca grę od{{packName}}"
+    "resultLegendary3": "Karta zmieniająca grę od{{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "Za mało kredytów",
@@ -561,6 +578,49 @@
     "invalidIdTitle": "Nieprawidłowy identyfikator",
     "invalidIdBody": "Identyfikatory znajomych wyglądają jak TCG-123456. Poproś znajomego, aby udostępnił swój kod.",
     "notFoundTitle": "Nie znaleziono użytkownika",
-    "notFoundBody": "Żadne konto nie pasuje jeszcze do tego identyfikatora znajomego. Sprawdź dwukrotnie kod lub spróbuj ponownie później."
+    "notFoundBody": "Żadne konto nie pasuje jeszcze do tego identyfikatora znajomego. Sprawdź dwukrotnie kod lub spróbuj ponownie później.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "Profil",
+    "goBack": "Wstecz",
+    "profileMissingTitle": "Profil niedostępny",
+    "profileMissingBody": "Nie mamy jeszcze profilu demo dla tej nazwy użytkownika.",
+    "joined": "Dołączono {{date}}",
+    "statPacks": "Otwarte pakiety",
+    "statValue": "Łączna wartość",
+    "statChase": "Trafienia chase",
+    "statLuck": "Wynik szczęścia",
+    "bestPull": "Najlepszy pull",
+    "estimatedValue": "Szacowana wartość",
+    "rarityMix": "Miks rzadkości",
+    "highlights": "Aktywność",
+    "recentPulls": "Ostatnie pull",
+    "noRecentPulls": "Brak ostatnich pulli.",
+    "compare": "Porównaj",
+    "openLeaderboard": "Ranking znajomych",
+    "sendDemoPack": "Wyślij pakiet demo",
+    "giftTitle": "Prezent demo",
+    "giftBody": "To symulacja — żaden pakiet nie został wysłany.",
+    "notFriendTitle": "Nie w Twoim kręgu",
+    "notFriendBody": "Dodaj tego kolekcjonera jako znajomego, aby zobaczyć profil.",
+    "leaderboardNavTitle": "Ranking znajomych",
+    "leaderboardLead": "Według wybranej metryki. Tylko dane demo.",
+    "compareTitle": "Porównaj kolekcjonerów",
+    "compareSub": "Statystyki obok siebie — wyższa wygrywa w każdym wierszu.",
+    "compareDone": "Gotowe",
+    "metric": {
+      "totalValue": "Łączna wartość",
+      "biggestPull": "Największy pull",
+      "packsOpened": "Otwarte pakiety",
+      "chaseHits": "Trafienia chase",
+      "luckScore": "Szczęście"
+    },
+    "you": "Ty",
+    "demoBrowseTitle": "Wypróbuj demo znajomego",
+    "demoAddedTitle": "Dodano znajomego",
+    "demoAddedBody": "{{name}} jest teraz w Twoim kręgu.",
+    "demoAlreadyFriend": "Już w Twoim kręgu"
   }
 }

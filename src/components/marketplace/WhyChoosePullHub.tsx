@@ -38,7 +38,7 @@ export function WhyChoosePullHub() {
 
 const styles = StyleSheet.create({
   wrap: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     marginHorizontal: spacing.base,
     borderRadius: radius.xl,
     padding: spacing.lg,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderWidth: 2,
     borderColor: colors.red,
     alignItems: 'center',

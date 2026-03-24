@@ -231,7 +231,13 @@
     "demoHint": "Демо: попробуйте идентификаторы TCG-100001, TCG-100002 или TCG-100003.",
     "yourFriends": "Ваши друзья ({{count}})",
     "emptyTitle": "Друзей пока нет",
-    "emptyBody": "Когда вы добавите кого-то, он появится здесь, чтобы вы могли позже использовать дополнительные социальные функции."
+    "emptyBody": "Когда вы добавите кого-то, он появится здесь, чтобы вы могли позже использовать дополнительные социальные функции.",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "Награды",
@@ -266,7 +272,12 @@
     "guestSignInCta": "Войти или создать аккаунт",
     "playerDeskEyebrow": "СТОЛ ИГРОКА",
     "pullHistoryCta": "Полная история открытий",
-    "pullHistorySub": "Каждое открытие, кредиты и хиты — полный журнал"
+    "pullHistorySub": "Каждое открытие, кредиты и хиты — полный журнал",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Оповещения",
@@ -391,7 +402,8 @@
     "memberIdHint": "Ваш код друга (TCG-…) назначается автоматически для QR и приглашений.",
     "usernameInvalid": "Используйте от 2 до 20 символов: только буквы, цифры и символы подчеркивания.",
     "continue": "Продолжить",
-    "genericError": "Не удалось сохранить профиль. Попробуйте ещё раз."
+    "genericError": "Не удалось сохранить профиль. Попробуйте ещё раз.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "Оплата",
@@ -418,7 +430,9 @@
     "subtitle": "Попросите друга отсканировать этот QR-код или поделитесь своим идентификатором, чтобы он мог вас добавить.",
     "you": "Вы",
     "copy": "Копировать",
-    "done": "Готово"
+    "done": "Готово",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "Сканировать QR-код друга",
@@ -533,7 +547,8 @@
     "resultRare3": "Особая карта из {{packName}}",
     "resultLegendary1": "Легендарный хит из {{packName}}",
     "resultLegendary2": "Мифический пул из {{packName}}",
-    "resultLegendary3": "Карта, меняющая игру, из {{packName}}"
+    "resultLegendary3": "Карта, меняющая игру, из {{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "Недостаточно кредитов",
@@ -563,6 +578,49 @@
     "invalidIdTitle": "Неверный идентификатор",
     "invalidIdBody": "Идентификаторы друзей выглядят как TCG-123456. Попросите друга поделиться своим кодом.",
     "notFoundTitle": "Пользователь не найден",
-    "notFoundBody": "Пока ни одна учетная запись не соответствует этому идентификатору друга. Еще раз проверьте код или повторите попытку позже."
+    "notFoundBody": "Пока ни одна учетная запись не соответствует этому идентификатору друга. Еще раз проверьте код или повторите попытку позже.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "Профиль",
+    "goBack": "Назад",
+    "profileMissingTitle": "Профиль недоступен",
+    "profileMissingBody": "Демо-профиля для этого имени пользователя пока нет.",
+    "joined": "С {{date}}",
+    "statPacks": "Открыто паков",
+    "statValue": "Общая стоимость",
+    "statChase": "Чейз-хиты",
+    "statLuck": "Очки удачи",
+    "bestPull": "Лучший пулл",
+    "estimatedValue": "Оценочная стоимость",
+    "rarityMix": "Распределение редкости",
+    "highlights": "Активность",
+    "recentPulls": "Недавние пуллы",
+    "noRecentPulls": "Пока нет недавних пуллов.",
+    "compare": "Сравнить",
+    "openLeaderboard": "Рейтинг друзей",
+    "sendDemoPack": "Отправить демо-пак",
+    "giftTitle": "Демо-подарок",
+    "giftBody": "Это макет — пак не отправлен.",
+    "notFriendTitle": "Не в вашем кругу",
+    "notFriendBody": "Добавьте этого коллекционера в друзья, чтобы видеть профиль.",
+    "leaderboardNavTitle": "Рейтинг друзей",
+    "leaderboardLead": "Сортировка по выбранной метрике. Только демо-данные.",
+    "compareTitle": "Сравнить коллекционеров",
+    "compareSub": "Статистика рядом — в каждой строке побеждает больший.",
+    "compareDone": "Готово",
+    "metric": {
+      "totalValue": "Общая стоимость",
+      "biggestPull": "Крупнейший пулл",
+      "packsOpened": "Открыто паков",
+      "chaseHits": "Чейз-хиты",
+      "luckScore": "Удача"
+    },
+    "you": "Вы",
+    "demoBrowseTitle": "Попробовать демо-друга",
+    "demoAddedTitle": "Друг добавлен",
+    "demoAddedBody": "{{name}} теперь в вашем кругу.",
+    "demoAlreadyFriend": "Уже в вашем кругу"
   }
 }

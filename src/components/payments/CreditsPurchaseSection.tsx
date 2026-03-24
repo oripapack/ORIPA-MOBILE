@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xs,
     fontWeight: fontWeight.semibold,
     color: colors.redDark,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: colors.promoBannerBg,
     padding: spacing.sm,
     borderRadius: radius.md,
     marginBottom: spacing.md,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   bundleCard: {
     position: 'relative',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
     padding: spacing.base,
     borderWidth: 1,
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   pointsLine: {
     fontSize: fontSize.lg,
     fontWeight: fontWeight.black,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     marginBottom: 2,
   },
   approxLine: {
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   priceList: {
     fontSize: fontSize.base,
     fontWeight: fontWeight.bold,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
   },
   priceWas: {
     fontSize: fontSize.xs,

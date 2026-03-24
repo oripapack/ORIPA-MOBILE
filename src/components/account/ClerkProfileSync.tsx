@@ -4,7 +4,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { getAppProfileFromClerkUser } from '../../lib/clerkProfile';
 
 /**
- * Keeps Zustand `user` (display name, member id) aligned with Clerk after profile onboarding.
+ * Keeps Zustand `user` (display name, username, friend code) aligned with Clerk after profile onboarding.
  */
 export function ClerkProfileSync() {
   const { user, isLoaded } = useUser();
@@ -17,7 +17,7 @@ export function ClerkProfileSync() {
     setUserFromClerkProfile({
       id: user.id,
       displayName: profile.displayName,
-      memberId: profile.memberId,
+      username: profile.username,
     });
   }, [isLoaded, user, setUserFromClerkProfile]);
 

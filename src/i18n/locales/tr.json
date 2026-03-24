@@ -41,7 +41,8 @@
   },
   "common": {
     "copied": "Kopyalandı",
-    "friendIdCopied": "Arkadaş Kimliği panoya kopyalandı."
+    "friendIdCopied": "Arkadaş Kimliği panoya kopyalandı.",
+    "error": "Error"
   },
   "helpCenter": {
     "navTitle": "Yardım Merkezi",
@@ -229,7 +230,14 @@
     "demoHint": "Demo: TCG-100001, TCG-100002 veya TCG-100003 kimliklerini deneyin.",
     "yourFriends": "Arkadaşların ({{count}})",
     "emptyTitle": "Henüz arkadaş yok",
-    "emptyBody": "Birisini eklediğinizde burada görünecekler, böylece daha sonra daha fazla sosyal özellik geliştirebileceksiniz."
+    "emptyBody": "Birisini eklediğinizde burada görünecekler, böylece daha sonra daha fazla sosyal özellik geliştirebileceksiniz.",
+    "heroEyebrow": "SQUAD LOUNGE",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "Ödüller",
@@ -264,7 +272,12 @@
     "guestSignInCta": "Oturum açın veya hesap oluşturun",
     "playerDeskEyebrow": "OYUNCU MASASI",
     "pullHistoryCta": "Tam oyun geçmişi",
-    "pullHistorySub": "Her açma, kredi kazanma ve isabet — tam kayıt"
+    "pullHistorySub": "Her açma, kredi kazanma ve isabet — tam kayıt",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Uyarılar",
@@ -389,7 +402,8 @@
     "memberIdHint": "Arkadaş kodunuz (TCG-…) QR ve davetler için otomatik olarak atanır.",
     "usernameInvalid": "2-20 karakter kullanın: yalnızca harfler, sayılar ve alt çizgiler.",
     "continue": "Devam etmek",
-    "genericError": "Profiliniz kaydedilemedi. Tekrar deneyin."
+    "genericError": "Profiliniz kaydedilemedi. Tekrar deneyin.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "Ödeme",
@@ -416,7 +430,9 @@
     "subtitle": "Bir arkadaşınızın bu QR'yi taramasını sağlayın veya sizi ekleyebilmesi için kimliğinizi paylaşın.",
     "you": "Sen",
     "copy": "Kopyala",
-    "done": "Tamamlamak"
+    "done": "Tamamlamak",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "Arkadaşınızın QR'sini tarayın",
@@ -531,7 +547,8 @@
     "resultRare3": "Özel kart{{packName}}",
     "resultLegendary1": "Efsanevi vuruş{{packName}}",
     "resultLegendary2": "Efsanevi çekiş{{packName}}",
-    "resultLegendary3": "Oyunun kurallarını değiştiren kart{{packName}}"
+    "resultLegendary3": "Oyunun kurallarını değiştiren kart{{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "Yeterli Kredi Yok",
@@ -561,6 +578,49 @@
     "invalidIdTitle": "Geçersiz kimlik",
     "invalidIdBody": "Arkadaş kimlikleri TCG-123456'ya benziyor. Arkadaşınızdan kodunu paylaşmasını isteyin.",
     "notFoundTitle": "Kullanıcı bulunamadı",
-    "notFoundBody": "Henüz bu arkadaş kimliğiyle eşleşen hesap yok. Kodu bir kez daha kontrol edin veya daha sonra tekrar deneyin."
+    "notFoundBody": "Henüz bu arkadaş kimliğiyle eşleşen hesap yok. Kodu bir kez daha kontrol edin veya daha sonra tekrar deneyin.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "Profil",
+    "goBack": "Geri",
+    "profileMissingTitle": "Profil kullanılamıyor",
+    "profileMissingBody": "Bu kullanıcı adı için henüz demo profil yok.",
+    "joined": "{{date}} katıldı",
+    "statPacks": "Açılan paketler",
+    "statValue": "Toplam değer",
+    "statChase": "Chase isabetleri",
+    "statLuck": "Şans puanı",
+    "bestPull": "En iyi pull",
+    "estimatedValue": "Tahmini değer",
+    "rarityMix": "Nadirlik dağılımı",
+    "highlights": "Aktivite",
+    "recentPulls": "Son pull’lar",
+    "noRecentPulls": "Henüz son pull yok.",
+    "compare": "Karşılaştır",
+    "openLeaderboard": "Arkadaş sıralaması",
+    "sendDemoPack": "Demo paket gönder",
+    "giftTitle": "Demo hediye",
+    "giftBody": "Bu bir simülasyon — paket gönderilmedi.",
+    "notFriendTitle": "Çevrende değil",
+    "notFriendBody": "Profili görmek için bu koleksiyoncuyu arkadaş olarak ekleyin.",
+    "leaderboardNavTitle": "Arkadaş sıralaması",
+    "leaderboardLead": "Seçilen metriğe göre sıralı. Yalnızca demo veriler.",
+    "compareTitle": "Koleksiyoncuları karşılaştır",
+    "compareSub": "Yan yana istatistikler — her satırda yüksek olan kazanır.",
+    "compareDone": "Tamam",
+    "metric": {
+      "totalValue": "Toplam değer",
+      "biggestPull": "En büyük pull",
+      "packsOpened": "Açılan paketler",
+      "chaseHits": "Chase isabetleri",
+      "luckScore": "Şans"
+    },
+    "you": "Sen",
+    "demoBrowseTitle": "Demo arkadaş dene",
+    "demoAddedTitle": "Arkadaş eklendi",
+    "demoAddedBody": "{{name}} artık çevrende.",
+    "demoAlreadyFriend": "Zaten çevrende"
   }
 }

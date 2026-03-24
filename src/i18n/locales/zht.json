@@ -98,7 +98,14 @@
     "demoHint": "示範：可嘗試 TCG-100001、100002、100003。",
     "yourFriends": "好友（{{count}}）",
     "emptyTitle": "尚無好友",
-    "emptyBody": "新增後將顯示於此，作為後續社交功能的基礎。"
+    "emptyBody": "新增後將顯示於此，作為後續社交功能的基礎。",
+    "heroEyebrow": "SQUAD LOUNGE",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "獎勵",
@@ -133,7 +140,12 @@
     "guestSignInCta": "登入或建立帳戶",
     "playerDeskEyebrow": "PLAYER DESK",
     "pullHistoryCta": "Full play history",
-    "pullHistorySub": "Every open, credit win, and hit — complete log"
+    "pullHistorySub": "Every open, credit win, and hit — complete log",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "通知",
@@ -164,7 +176,8 @@
     "region": "地區",
     "regionHint": "用於日期、貨幣顯示及未來配送設定。",
     "save": "儲存",
-    "cancel": "取消"
+    "cancel": "取消",
+    "fallbackNote": "All languages in the list have full UI translations. Region still controls dates and currency display."
   },
   "regions": {
     "US": "美國",
@@ -194,7 +207,9 @@
     "subtitle": "請好友掃描此 QR 碼，或分享 ID 讓對方新增你。",
     "you": "你",
     "copy": "複製",
-    "done": "完成"
+    "done": "完成",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "掃描好友 QR 碼",
@@ -309,7 +324,8 @@
     "resultRare3": "來自 {{packName}} 的特別卡",
     "resultLegendary1": "來自 {{packName}} 的傳說命中",
     "resultLegendary2": "來自 {{packName}} 的神話級抽出",
-    "resultLegendary3": "改變局勢的卡 — {{packName}}"
+    "resultLegendary3": "改變局勢的卡 — {{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "積分不足",
@@ -339,10 +355,272 @@
     "invalidIdTitle": "ID 無效",
     "invalidIdBody": "好友 ID 格式類似 TCG-123456。請向對方索取。",
     "notFoundTitle": "找不到使用者",
-    "notFoundBody": "沒有與該 ID 相符的帳號。請核對或稍後再試。"
+    "notFoundBody": "沒有與該 ID 相符的帳號。請核對或稍後再試。",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
   },
   "common": {
     "copied": "已複製",
-    "friendIdCopied": "好友 ID 已複製到剪貼簿。"
+    "friendIdCopied": "好友 ID 已複製到剪貼簿。",
+    "error": "Error"
+  },
+  "social": {
+    "profileNavTitle": "個人檔案",
+    "goBack": "返回",
+    "profileMissingTitle": "無法顯示個人檔案",
+    "profileMissingBody": "此使用者名稱尚無示範個人檔案。",
+    "joined": "{{date}} 加入",
+    "statPacks": "已開封包數",
+    "statValue": "總價值",
+    "statChase": "追擊命中",
+    "statLuck": "幸運分數",
+    "bestPull": "最佳開出",
+    "estimatedValue": "估計價值",
+    "rarityMix": "稀有度分佈",
+    "highlights": "動態",
+    "recentPulls": "最近開出",
+    "noRecentPulls": "尚無最近開出紀錄。",
+    "compare": "比較",
+    "openLeaderboard": "好友排行榜",
+    "sendDemoPack": "傳送示範卡包",
+    "giftTitle": "示範禮物",
+    "giftBody": "僅為模擬 — 未傳送任何卡包。",
+    "notFriendTitle": "不在你的圈子",
+    "notFriendBody": "將此收藏者加為好友即可查看個人檔案。",
+    "leaderboardNavTitle": "好友排行榜",
+    "leaderboardLead": "依所選指標排序。僅為示範資料。",
+    "compareTitle": "比較收藏者",
+    "compareSub": "並排統計 — 每列較高者勝。",
+    "compareDone": "完成",
+    "metric": {
+      "totalValue": "總價值",
+      "biggestPull": "最大開出",
+      "packsOpened": "已開封包數",
+      "chaseHits": "追擊命中",
+      "luckScore": "幸運分數"
+    },
+    "you": "你",
+    "demoBrowseTitle": "試用示範好友",
+    "demoAddedTitle": "已加入好友",
+    "demoAddedBody": "{{name}} 已加入你的圈子。",
+    "demoAlreadyFriend": "已在你的圈子"
+  },
+  "helpCenter": {
+    "navTitle": "Help Center",
+    "lead": "Quick answers for credits, shipping, and drops. This is sample content — replace with your real help articles before launch.",
+    "faq": {
+      "credits": {
+        "q": "How do credits work?",
+        "a": "Credits are the in-app currency used to open digital packs. Purchases in this preview may be simulated — final pricing, refunds, and bundles will be published before launch."
+      },
+      "shipping": {
+        "q": "Where do you ship physical cards?",
+        "a": "Marketplace orders ship from partner stores. Cutoffs, carriers, and fees vary by listing. Add a shipping address in Account so checkout is faster when payments go live."
+      },
+      "drops": {
+        "q": "What is a hot drop?",
+        "a": "Hot drops are limited-time or high-demand pack releases. They are different from account promos (bonuses and coupons). Tap Hot Drops on Account for a short explainer."
+      }
+    },
+    "contactSection": "Still stuck?",
+    "emailCta": "Email {{email}}",
+    "emailUs": "Email support",
+    "responseTime": "We aim to reply within 1–2 business days (demo — not monitored)."
+  },
+  "shippingAddress": {
+    "navTitle": "Shipping address",
+    "lead": "Used for marketplace orders and prize shipping when fulfillment is live. Saved only on this device in the preview build.",
+    "save": "Save address",
+    "savedTitle": "Saved",
+    "savedBody": "Your shipping address was saved on this device.",
+    "saveFailed": "Could not save. Try again.",
+    "missingTitle": "Missing fields",
+    "missingBody": "Enter at least name, street line 1, city, and country.",
+    "fields": {
+      "fullName": "Full name",
+      "line1": "Address line 1",
+      "line2": "Address line 2 (optional)",
+      "city": "City",
+      "region": "State / region",
+      "postal": "Postal code",
+      "country": "Country"
+    },
+    "placeholders": {
+      "fullName": "Alex Trainer",
+      "line1": "123 Main St",
+      "line2": "Apt 4",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94102",
+      "country": "United States"
+    }
+  },
+  "tierBenefits": {
+    "navTitle": "Tier benefits",
+    "lead": "Tiers are a loyalty ladder based on XP from activity. Sample perks below — tune before launch.",
+    "progressHint": "You have {{xp}} XP. Next tier unlocks at {{need}} XP (demo ladder).",
+    "topTier": "You are at the highest preview tier — thanks for playing with the sample data.",
+    "fromXp": "From {{xp}} XP",
+    "yourTier": "Your tier",
+    "disclaimer": "Benefits, thresholds, and availability are illustrative only and may change."
+  },
+  "notifications": {
+    "navTitle": "Notifications",
+    "lead": "Choose what we can notify you about. Preferences are stored on this device only in the preview.",
+    "note": "System notification permission is requested separately when push is wired. Email and SMS controls will live here too.",
+    "toggles": {
+      "order": {
+        "title": "Orders & shipping",
+        "sub": "Tracking, delays, and delivery updates for marketplace orders."
+      },
+      "drops": {
+        "title": "Hot drops & restocks",
+        "sub": "Limited packs and high-demand releases."
+      },
+      "promos": {
+        "title": "Promos & credits",
+        "sub": "Bonus credits, coupons, and seasonal campaigns."
+      },
+      "social": {
+        "title": "Friends & social",
+        "sub": "Friend requests and invites (when enabled)."
+      }
+    }
+  },
+  "hotDropsInfo": {
+    "navTitle": "Hot drops",
+    "body": "Hot drops are time-limited or high-demand pack releases — often a specific set, collab, or flash window. They are about the product and timing.",
+    "b1": "Announced start and end times (or “while supplies last”).",
+    "b2": "May have different odds or price than evergreen packs — always read the pack details.",
+    "b3": "Can sell out quickly; enabling notifications helps you catch restocks.",
+    "callout": "Not the same as Promos: promos are marketing incentives (bonus credits, coupons), not the pack release itself."
+  },
+  "promosInfo": {
+    "navTitle": "Promos",
+    "body": "Promos are marketing programs: bonus credits, coupon codes, seasonal campaigns, or partner offers. They reward actions like signing up, buying bundles, or referring friends.",
+    "b1": "Shown in-app, email, or social — each promo has its own rules and dates.",
+    "b2": "May stack with tiers or be limited to certain packs — read the fine print before launch.",
+    "b3": "Different from Hot Drops: a promo is the offer; a hot drop is the product release.",
+    "vsHotTitle": "Hot drops vs promos",
+    "vsHotBody": "Use Hot Drops to learn about limited pack releases. Use Promos (this screen) to understand bonus credits and coupon-style incentives."
+  },
+  "pullHistoryScreen": {
+    "navTitle": "Play history",
+    "lead": "Every completed play — newest first. Pending pulls stay in the pack flow until you cash out or ship."
+  },
+  "linkedAccounts": {
+    "navTitle": "Linked accounts",
+    "body": "Linking lets you sign in to the same Pull Hub profile with more than one method (for example Google and Apple), so you are not locked to a single login.",
+    "whatTitle": "What this means",
+    "whatBody": "It is not about merging two separate app accounts. It is about attaching sign-in providers to one account for convenience and recovery.",
+    "futureTitle": "Coming later",
+    "futureGoogle": "Google account link",
+    "futureApple": "Apple ID link",
+    "futureEmail": "Email + password link",
+    "note": "Provider linking will use your auth settings (e.g. Clerk) in production."
+  },
+  "identityVerification": {
+    "navTitle": "Identity verification",
+    "body": "Identity verification (sometimes called KYC) confirms you are a real person and meets age or compliance rules before high-value payouts, certain promos, or regulated features.",
+    "whyTitle": "Why apps ask for this",
+    "whyBody": "It reduces fraud, protects minors, and satisfies financial or marketplace rules when money or valuable prizes move between users and platforms.",
+    "previewTitle": "Preview flow (not active)",
+    "step1": "Government ID or document check",
+    "step2": "Selfie or liveness check (if required)",
+    "step3": "Review — usually minutes, sometimes longer",
+    "note": "This build only explains the concept. Wire your vendor (e.g. Persona, Stripe Identity) before requiring verification."
+  },
+  "payoutMethod": {
+    "navTitle": "Payout method",
+    "body": "When you sell cards or receive cash-outs, payouts go to a linked bank or debit card. This preview does not connect to real banking.",
+    "line1": "Add a bank account (ACH / local rails) or debit card depending on region.",
+    "line2": "Verify small deposits or instant micro-charges when your processor requires it.",
+    "line3": "Payout timing and fees follow marketplace rules — see Terms before launch.",
+    "note": "Replace this placeholder with real payout onboarding when Stripe Connect or your PSP is integrated."
+  },
+  "lootBox": {
+    "title": "Probability of contents",
+    "lead": "Pack openings are randomized. Approximate tier rates below are for disclosure; specific packs may vary.",
+    "columnTier": "Tier",
+    "footnote": "Rates are illustrative for this preview build. Published products will show final odds before purchase where required.",
+    "done": "Got it"
+  },
+  "auth": {
+    "title": "Sign in",
+    "subtitle": "Use Google, Apple, or email. New accounts: we’ll email you a one-time code to verify.",
+    "continueGoogle": "Continue with Google",
+    "continueApple": "Continue with Apple",
+    "or": "or",
+    "modeSignIn": "Sign in",
+    "modeSignUp": "Create account",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "emailSignIn": "Sign in with email",
+    "emailContinue": "Continue",
+    "verifyHint": "Enter the code we sent to {{email}}.",
+    "codePlaceholder": "6-digit code",
+    "verifyCode": "Verify & continue",
+    "resendCode": "Resend code",
+    "emailPasswordRequired": "Enter email and password.",
+    "signInIncomplete": "Could not finish sign-in. If you use two-factor authentication, we’ll add support next.",
+    "verifyFailed": "Verification didn’t complete. Check the code and try again.",
+    "dashboardHint": "Clerk Dashboard: enable Google (oauth_google), Apple (oauth_apple), and Email + password + email code verification.",
+    "signedInAs": "Account",
+    "signOut": "Sign out",
+    "signOutTitle": "Sign out?",
+    "signOutMessage": "You will need to sign in again to use your synced data when it is available.",
+    "signOutConfirm": "Sign out",
+    "cancel": "Cancel"
+  },
+  "linkPhone": {
+    "title": "Verify your phone",
+    "subtitle": "We’ll text you a code once. Pick your country, then enter your mobile number — no need to type +1 yourself.",
+    "mobileLabel": "Mobile number",
+    "countryPickerA11y": "Country or region",
+    "nationalPlaceholderNanp": "(555) 123-4567",
+    "nationalPlaceholder": "Phone number",
+    "sendCode": "Send code",
+    "codeHint": "Enter the code we texted you.",
+    "codePlaceholder": "6-digit code",
+    "verify": "Verify & continue",
+    "resend": "Resend code",
+    "changeNumber": "Use a different number",
+    "invalid": "Enter a valid phone number for the selected country.",
+    "nanpInvalid": "US and Canada numbers need 10 digits (area code + number).",
+    "phoneMissing": "Could not start phone verification. Try again.",
+    "verifyFailed": "That code didn’t work. Check the message and try again.",
+    "genericError": "Something went wrong. Try again.",
+    "dashboardHint": "Clerk Dashboard → User & authentication → Phone: enable SMS / verification. You can turn off “Sign in with phone” if you only want Google / Apple / email sign-in.",
+    "smsDevHint": "SMS not sending? In development, add a test phone in the Clerk dashboard or connect Twilio / your SMS provider — Clerk won’t send real texts until that’s configured.",
+    "signOut": "Use a different account"
+  },
+  "profileOnboarding": {
+    "title": "Set up your profile",
+    "subtitle": "Choose a public username and how you’d like to appear. You can change this later when account settings are wired to the server.",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "your_handle",
+    "displayNameLabel": "Display name (optional)",
+    "displayNamePlaceholder": "Same as username if empty",
+    "profileHint": "Your username is unique and is what friends use to find you.",
+    "usernameInvalid": "Use 2–20 characters: letters, numbers, and underscores only.",
+    "continue": "Continue",
+    "genericError": "Could not save your profile. Try again."
+  },
+  "paymentPortal": {
+    "navTitle": "Payment",
+    "eyebrow": "Checkout",
+    "tabCredits": "Credits",
+    "tabMarketplace": "Marketplace",
+    "viewProbabilities": "View probability of contents",
+    "digitalRoutingNote": "Digital credits: use App Store / Google Play in-app purchase when live — not Stripe for coins.",
+    "marketplaceTitle": "Physical order",
+    "marketplaceLead": "Partner listings ship real products. Checkout uses a physical-goods payment flow (server-backed Stripe), separate from in-app credit packs.",
+    "item": "Item",
+    "price": "Price",
+    "physicalPolicy": "Physical goods only — PaymentIntent created on your server ({{mode}}). Apple Pay / Google Pay may appear for shipping purchases, not for digital currency.",
+    "continueCheckout": "Continue to checkout",
+    "physicalStubTitle": "Checkout not connected",
+    "physicalStubBody": "Wire your backend to create a Stripe PaymentIntent, then open the client with the returned client secret. No keys in the app binary.",
+    "sampleListingTitle": "Sample listing"
   }
 }

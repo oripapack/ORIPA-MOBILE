@@ -28,10 +28,10 @@ export function NotificationsScreen() {
     navigation.setOptions({
       title: t('notifications.navTitle'),
       headerShown: true,
-      headerTintColor: colors.nearBlack,
+      headerTintColor: colors.textPrimary,
       headerTitleStyle: { fontWeight: fontWeight.bold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.white },
+      headerStyle: { backgroundColor: colors.surfaceElevated },
     });
   }, [navigation, t]);
 
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: spacing.md,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
     padding: spacing.base,
     marginBottom: spacing.sm,

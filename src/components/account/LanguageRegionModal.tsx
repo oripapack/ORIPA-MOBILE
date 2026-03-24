@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   title: {
     fontSize: fontSize.lg,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   group: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,

@@ -231,7 +231,13 @@
     "demoHint": "Démo : essayez TCG-100001, TCG-100002 ou TCG-100003.",
     "yourFriends": "Vos amis ({{count}})",
     "emptyTitle": "Pas encore d’amis",
-    "emptyBody": "Quand vous ajoutez quelqu’un, il apparaîtra ici pour de futures fonctions sociales."
+    "emptyBody": "Quand vous ajoutez quelqu’un, il apparaîtra ici pour de futures fonctions sociales.",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "Récompenses",
@@ -266,7 +272,12 @@
     "guestSignInCta": "Se connecter ou créer un compte",
     "playerDeskEyebrow": "BUREAU JOUEUR",
     "pullHistoryCta": "Historique complet",
-    "pullHistorySub": "Chaque ouverture, gain de crédits et hit — journal complet"
+    "pullHistorySub": "Chaque ouverture, gain de crédits et hit — journal complet",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Alertes",
@@ -391,7 +402,8 @@
     "memberIdHint": "Votre code ami (TCG-…) est attribué automatiquement pour QR et invitations.",
     "usernameInvalid": "2 à 20 caractères : lettres, chiffres et tirets bas uniquement.",
     "continue": "Continuer",
-    "genericError": "Impossible d’enregistrer le profil. Réessayez."
+    "genericError": "Impossible d’enregistrer le profil. Réessayez.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "Paiement",
@@ -418,7 +430,9 @@
     "subtitle": "Faites scanner ce QR ou partagez votre ID pour qu’on vous ajoute.",
     "you": "Vous",
     "copy": "Copier",
-    "done": "Terminé"
+    "done": "Terminé",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "Scanner QR ami",
@@ -533,7 +547,8 @@
     "resultRare3": "Carte spéciale de {{packName}}",
     "resultLegendary1": "Hit légendaire de {{packName}}",
     "resultLegendary2": "Tirage mythique de {{packName}}",
-    "resultLegendary3": "Carte qui change la partie de {{packName}}"
+    "resultLegendary3": "Carte qui change la partie de {{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "Crédits insuffisants",
@@ -563,6 +578,49 @@
     "invalidIdTitle": "ID invalide",
     "invalidIdBody": "Les friend ID ressemblent à TCG-123456. Demandez le code à votre ami.",
     "notFoundTitle": "Utilisateur introuvable",
-    "notFoundBody": "Aucun compte ne correspond à ce friend ID. Vérifiez le code ou réessayez plus tard."
+    "notFoundBody": "Aucun compte ne correspond à ce friend ID. Vérifiez le code ou réessayez plus tard.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "Profil",
+    "goBack": "Retour",
+    "profileMissingTitle": "Profil indisponible",
+    "profileMissingBody": "Nous n’avons pas encore de profil démo pour ce nom d’utilisateur.",
+    "joined": "Inscrit le {{date}}",
+    "statPacks": "Packs ouverts",
+    "statValue": "Valeur totale",
+    "statChase": "Chase réussis",
+    "statLuck": "Score de chance",
+    "bestPull": "Meilleur pull",
+    "estimatedValue": "Valeur estimée",
+    "rarityMix": "Mix de raretés",
+    "highlights": "Activité",
+    "recentPulls": "Pulls récents",
+    "noRecentPulls": "Pas encore de pulls récents.",
+    "compare": "Comparer",
+    "openLeaderboard": "Classement des amis",
+    "sendDemoPack": "Envoyer un pack démo",
+    "giftTitle": "Cadeau démo",
+    "giftBody": "Simulation — aucun pack n’a été envoyé.",
+    "notFriendTitle": "Pas dans votre cercle",
+    "notFriendBody": "Ajoutez ce collectionneur en ami pour voir son profil.",
+    "leaderboardNavTitle": "Classement des amis",
+    "leaderboardLead": "Classé selon l’indicateur choisi. Données démo uniquement.",
+    "compareTitle": "Comparer les collectionneurs",
+    "compareSub": "Stats côte à côte — le plus haut gagne chaque ligne.",
+    "compareDone": "Terminé",
+    "metric": {
+      "totalValue": "Valeur totale",
+      "biggestPull": "Plus gros pull",
+      "packsOpened": "Packs ouverts",
+      "chaseHits": "Chase réussis",
+      "luckScore": "Chance"
+    },
+    "you": "Vous",
+    "demoBrowseTitle": "Essayer un ami démo",
+    "demoAddedTitle": "Ami ajouté",
+    "demoAddedBody": "{{name}} fait maintenant partie de votre cercle.",
+    "demoAlreadyFriend": "Déjà dans votre cercle"
   }
 }

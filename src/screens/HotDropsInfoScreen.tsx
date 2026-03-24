@@ -20,10 +20,10 @@ export function HotDropsInfoScreen() {
     navigation.setOptions({
       title: t('hotDropsInfo.navTitle'),
       headerShown: true,
-      headerTintColor: colors.nearBlack,
+      headerTintColor: colors.textPrimary,
       headerTitleStyle: { fontWeight: fontWeight.bold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.white },
+      headerStyle: { backgroundColor: colors.surfaceElevated },
     });
   }, [navigation, t]);
 
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   callout: {
     marginTop: spacing.lg,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
     padding: spacing.base,
     borderWidth: 1,
