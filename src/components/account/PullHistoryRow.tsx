@@ -51,7 +51,7 @@ export function useCompletedPullsSorted() {
 
 const styles = StyleSheet.create({
   pullCard: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: 12,
     padding: spacing.base,
     marginBottom: spacing.sm,

@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   modal: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xxl,
     padding: spacing.xl,
     width: '100%',

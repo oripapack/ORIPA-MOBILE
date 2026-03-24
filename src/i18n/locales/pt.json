@@ -231,7 +231,13 @@
     "demoHint": "Demo: tente TCG-100001, TCG-100002 ou TCG-100003.",
     "yourFriends": "Seus amigos ({{count}})",
     "emptyTitle": "Ainda sem amigos",
-    "emptyBody": "Quando adicionar alguém, aparecerá aqui para recursos sociais futuros."
+    "emptyBody": "Quando adicionar alguém, aparecerá aqui para recursos sociais futuros.",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "Recompensas",
@@ -266,7 +272,12 @@
     "guestSignInCta": "Entrar ou criar conta",
     "playerDeskEyebrow": "BALCÃO DO JOGADOR",
     "pullHistoryCta": "Histórico completo",
-    "pullHistorySub": "Cada abertura, ganho de créditos e hit — registro completo"
+    "pullHistorySub": "Cada abertura, ganho de créditos e hit — registro completo",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Alertas",
@@ -391,7 +402,8 @@
     "memberIdHint": "Seu código de amigo (TCG-…) é atribuído automaticamente para QR e convites.",
     "usernameInvalid": "Use 2–20 caracteres: letras, números e sublinhados apenas.",
     "continue": "Continuar",
-    "genericError": "Não foi possível salvar o perfil. Tente de novo."
+    "genericError": "Não foi possível salvar o perfil. Tente de novo.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "Pagamento",
@@ -418,7 +430,9 @@
     "subtitle": "Peça para um amigo escanear este QR ou compartilhe seu ID",
     "you": "Você",
     "copy": "Copiar",
-    "done": "Concluído"
+    "done": "Concluído",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "Escanear QR de amigo",
@@ -533,7 +547,8 @@
     "resultRare3": "Carta especial de {{packName}}",
     "resultLegendary1": "Hit lendário de {{packName}}",
     "resultLegendary2": "Mythic pull de {{packName}}",
-    "resultLegendary3": "Carta que muda o jogo de {{packName}}"
+    "resultLegendary3": "Carta que muda o jogo de {{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "Créditos insuficientes",
@@ -563,6 +578,49 @@
     "invalidIdTitle": "ID inválido",
     "invalidIdBody": "Friend IDs são como TCG-123456. Peça o código ao seu amigo.",
     "notFoundTitle": "Usuário não encontrado",
-    "notFoundBody": "Nenhuma conta com esse friend ID. Confira o código ou tente mais tarde."
+    "notFoundBody": "Nenhuma conta com esse friend ID. Confira o código ou tente mais tarde.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "Perfil",
+    "goBack": "Voltar",
+    "profileMissingTitle": "Perfil indisponível",
+    "profileMissingBody": "Ainda não há um perfil demo para este nome de usuário.",
+    "joined": "Entrou em {{date}}",
+    "statPacks": "Packs abertos",
+    "statValue": "Valor total",
+    "statChase": "Chases acertados",
+    "statLuck": "Pontuação de sorte",
+    "bestPull": "Melhor pull",
+    "estimatedValue": "Valor estimado",
+    "rarityMix": "Mix de raridade",
+    "highlights": "Atividade",
+    "recentPulls": "Pulls recentes",
+    "noRecentPulls": "Ainda não há pulls recentes.",
+    "compare": "Comparar",
+    "openLeaderboard": "Ranking de amigos",
+    "sendDemoPack": "Enviar pack demo",
+    "giftTitle": "Presente demo",
+    "giftBody": "É uma simulação — nenhum pack foi enviado.",
+    "notFriendTitle": "Fora do seu círculo",
+    "notFriendBody": "Adicione este colecionador como amigo para ver o perfil.",
+    "leaderboardNavTitle": "Ranking de amigos",
+    "leaderboardLead": "Ordenado pela métrica selecionada. Apenas dados demo.",
+    "compareTitle": "Comparar colecionadores",
+    "compareSub": "Estatísticas lado a lado — o maior ganha em cada linha.",
+    "compareDone": "Concluído",
+    "metric": {
+      "totalValue": "Valor total",
+      "biggestPull": "Maior pull",
+      "packsOpened": "Packs abertos",
+      "chaseHits": "Chases acertados",
+      "luckScore": "Sorte"
+    },
+    "you": "Você",
+    "demoBrowseTitle": "Experimentar amigo demo",
+    "demoAddedTitle": "Amigo adicionado",
+    "demoAddedBody": "{{name}} agora está no seu círculo.",
+    "demoAlreadyFriend": "Já está no seu círculo"
   }
 }

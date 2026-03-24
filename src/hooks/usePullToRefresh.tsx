@@ -35,7 +35,7 @@ export function usePullToRefresh(options: Options = {}) {
       onRefresh={onRefresh}
       tintColor={colors.red}
       {...(Platform.OS === 'android'
-        ? { colors: [colors.red] as [string], progressBackgroundColor: colors.white }
+        ? { colors: [colors.red] as [string], progressBackgroundColor: colors.surfaceElevated }
         : {})}
     />
   );

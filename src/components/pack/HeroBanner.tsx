@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing, Dimensions, Image } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
+import { demoHomeHeroBackground } from '../../data/demoMedia';
 
 const { width: BANNER_W } = Dimensions.get('window');
 
@@ -63,18 +64,24 @@ export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={{ uri: demoHomeHeroBackground }}
+        style={styles.bgPhoto}
+        resizeMode="cover"
+        accessibilityIgnoresInvertColors
+      />
       <View style={styles.bgSvg} pointerEvents="none">
         <Svg width={BANNER_W} height={220}>
           <Defs>
             <LinearGradient id="heroGrad" x1="0" y1="0" x2="1" y2="1">
-              <Stop offset="0" stopColor="#0c0f18" />
-              <Stop offset="0.35" stopColor="#151528" />
-              <Stop offset="0.72" stopColor="#1a1030" />
-              <Stop offset="1" stopColor="#050508" />
+              <Stop offset="0" stopColor="#050a06" />
+              <Stop offset="0.32" stopColor="#0f1f14" />
+              <Stop offset="0.65" stopColor="#142010" />
+              <Stop offset="1" stopColor="#020403" />
             </LinearGradient>
             <LinearGradient id="heroHot" x1="1" y1="0" x2="0.2" y2="0.85">
-              <Stop offset="0" stopColor="rgba(225, 29, 46, 0.55)" />
-              <Stop offset="0.45" stopColor="rgba(225, 29, 46, 0.12)" />
+              <Stop offset="0" stopColor="rgba(196, 30, 58, 0.42)" />
+              <Stop offset="0.4" stopColor="rgba(212, 175, 55, 0.18)" />
               <Stop offset="1" stopColor="rgba(255,255,255,0)" />
             </LinearGradient>
           </Defs>
@@ -151,6 +158,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 28,
     elevation: 12,
+  },
+  bgPhoto: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.42,
   },
   bgSvg: {
     ...StyleSheet.absoluteFillObject,
@@ -250,13 +261,13 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.15)',
   },
   cardBack2: {
-    backgroundColor: '#2D2D3A',
+    backgroundColor: '#2A1810',
     top: 0,
     left: 8,
     transform: [{ rotate: '8deg' }],
   },
   cardBack1: {
-    backgroundColor: '#3D2020',
+    backgroundColor: '#5C1F1F',
     top: 2,
     left: 4,
     transform: [{ rotate: '4deg' }],

@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     paddingLeft: spacing.xs,
   },
   listGroup: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
     overflow: 'hidden',
     borderWidth: 1,

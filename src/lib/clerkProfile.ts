@@ -8,19 +8,7 @@ export type AppUserUnsafeMetadata = {
   appUsername?: string;
   /** Shown in UI; falls back to appUsername. */
   appDisplayName?: string;
-  /** Stable friend code prefix `TCG-…` — set on first onboarding. */
-  appMemberId?: string;
 };
-
-export function memberIdFromClerkUserId(clerkUserId: string): string {
-  let h = 2166136261;
-  for (let i = 0; i < clerkUserId.length; i++) {
-    h ^= clerkUserId.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  const n = (Math.abs(h) % 9000000) + 1000000;
-  return `TCG-${n}`;
-}
 
 function readMeta(user: { unsafeMetadata?: unknown } | null | undefined): AppUserUnsafeMetadata {
   const m = user?.unsafeMetadata;
@@ -38,14 +26,16 @@ export function hasCompletedProfileOnboarding(user: { unsafeMetadata?: unknown }
 
 export function getAppProfileFromClerkUser(user: {
   id: string;
+  username?: string | null;
   unsafeMetadata?: unknown;
-}): { displayName: string; memberId: string } | null {
+}): { displayName: string; username: string } | null {
   const m = readMeta(user);
   if (!hasCompletedProfileOnboarding(user)) return null;
-  const username = (m.appUsername ?? '').trim();
-  const displayName = (m.appDisplayName ?? username).trim() || username;
-  const memberId = m.appMemberId ?? memberIdFromClerkUserId(user.id);
-  return { displayName, memberId };
+  const appUsername = (m.appUsername ?? '').trim();
+  const clerkUsername = typeof user.username === 'string' ? user.username.trim() : '';
+  const username = appUsername || clerkUsername;
+  const displayName = (m.appDisplayName ?? appUsername).trim() || appUsername;
+  return { displayName, username };
 }
 
 /** Username: 2–20 chars, letters, numbers, underscore. */

@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: 'rgba(14, 22, 14, 0.75)',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.headerHairline,
   },
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   dropdown: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     padding: spacing.xl,
@@ -165,10 +165,10 @@ const styles = StyleSheet.create({
   },
   dropdownTextActive: {
     fontWeight: fontWeight.bold,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
   },
   checkmark: {
-    color: colors.red,
+    color: colors.gold,
     fontWeight: fontWeight.bold,
     fontSize: fontSize.base,
   },

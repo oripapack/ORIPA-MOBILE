@@ -53,7 +53,7 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
           <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
             <Text style={styles.headerTitle}>Country / region</Text>
             <TouchableOpacity onPress={onClose} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close">
-              <Ionicons name="close" size={26} color={colors.nearBlack} />
+              <Ionicons name="close" size={26} color={colors.textPrimary} />
             </TouchableOpacity>
           </View>
 
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     maxHeight: '88%',
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   rowOn: {
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.surfaceMuted,
   },
   flag: {
     fontSize: 22,

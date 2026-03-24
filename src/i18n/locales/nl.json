@@ -231,7 +231,13 @@
     "demoHint": "Demo: probeer TCG-100001, TCG-100002 of TCG-100003.",
     "yourFriends": "Jouw vrienden ({{count}})",
     "emptyTitle": "Nog geen vrienden",
-    "emptyBody": "Als je iemand toevoegt, verschijnt die hier — basis voor meer sociale functies later."
+    "emptyBody": "Als je iemand toevoegt, verschijnt die hier — basis voor meer sociale functies later.",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "Beloningen",
@@ -266,7 +272,12 @@
     "guestSignInCta": "Inloggen of account aanmaken",
     "playerDeskEyebrow": "SPELERBALIE",
     "pullHistoryCta": "Volledige speelgeschiedenis",
-    "pullHistorySub": "Elke open, creditwinst en hit — volledig logboek"
+    "pullHistorySub": "Elke open, creditwinst en hit — volledig logboek",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Meldingen",
@@ -391,7 +402,8 @@
     "memberIdHint": "Je vriendcode (TCG-…) wordt automatisch voor QR en uitnodigingen toegekend.",
     "usernameInvalid": "2–20 tekens: alleen letters, cijfers en underscores.",
     "continue": "Doorgaan",
-    "genericError": "Profiel opslaan mislukt. Probeer opnieuw."
+    "genericError": "Profiel opslaan mislukt. Probeer opnieuw.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "Betaling",
@@ -418,7 +430,9 @@
     "subtitle": "Laat een vriend deze QR scannen of deel je ID",
     "you": "Jij",
     "copy": "Kopiëren",
-    "done": "Klaar"
+    "done": "Klaar",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "Scan vriend-QR",
@@ -533,7 +547,8 @@
     "resultRare3": "Speciale kaart uit {{packName}}",
     "resultLegendary1": "Legendarische hit uit {{packName}}",
     "resultLegendary2": "Mythische pull uit {{packName}}",
-    "resultLegendary3": "Game-changing kaart uit {{packName}}"
+    "resultLegendary3": "Game-changing kaart uit {{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "Onvoldoende credits",
@@ -563,6 +578,49 @@
     "invalidIdTitle": "Ongeldige ID",
     "invalidIdBody": "Friend-ID’s zien eruit als TCG-123456. Vraag je vriend om de code.",
     "notFoundTitle": "Gebruiker niet gevonden",
-    "notFoundBody": "Geen account met die friend-ID. Controleer de code of probeer later opnieuw."
+    "notFoundBody": "Geen account met die friend-ID. Controleer de code of probeer later opnieuw.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "Profiel",
+    "goBack": "Terug",
+    "profileMissingTitle": "Profiel niet beschikbaar",
+    "profileMissingBody": "We hebben nog geen demoprofiel voor deze gebruikersnaam.",
+    "joined": "Lid sinds {{date}}",
+    "statPacks": "Geopende packs",
+    "statValue": "Totale waarde",
+    "statChase": "Chase-treffers",
+    "statLuck": "Geluksscore",
+    "bestPull": "Beste pull",
+    "estimatedValue": "Geschatte waarde",
+    "rarityMix": "Zeldzaamheid mix",
+    "highlights": "Activiteit",
+    "recentPulls": "Recente pulls",
+    "noRecentPulls": "Nog geen recente pulls.",
+    "compare": "Vergelijken",
+    "openLeaderboard": "Vriendenranglijst",
+    "sendDemoPack": "Demo-pack sturen",
+    "giftTitle": "Democadeau",
+    "giftBody": "Dit is een mock — er is geen pack verstuurd.",
+    "notFriendTitle": "Niet in je kring",
+    "notFriendBody": "Voeg deze verzamelaar toe als vriend om het profiel te zien.",
+    "leaderboardNavTitle": "Vriendenranglijst",
+    "leaderboardLead": "Gerangschikt op gekozen metriek. Alleen demogegevens.",
+    "compareTitle": "Verzamelaars vergelijken",
+    "compareSub": "Stats naast elkaar — hoger wint per rij.",
+    "compareDone": "Klaar",
+    "metric": {
+      "totalValue": "Totale waarde",
+      "biggestPull": "Grootste pull",
+      "packsOpened": "Geopende packs",
+      "chaseHits": "Chase-treffers",
+      "luckScore": "Geluk"
+    },
+    "you": "Jij",
+    "demoBrowseTitle": "Probeer een demovriend",
+    "demoAddedTitle": "Vriend toegevoegd",
+    "demoAddedBody": "{{name}} zit nu in je kring.",
+    "demoAlreadyFriend": "Al in je kring"
   }
 }

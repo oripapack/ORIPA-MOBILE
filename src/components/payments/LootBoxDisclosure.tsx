@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     right: spacing.lg,
     top: '18%',
     maxHeight: '72%',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xl,
     padding: spacing.lg,
     shadowColor: '#000',

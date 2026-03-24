@@ -1,5 +1,9 @@
 import { create } from 'zustand';
-import { FriendEntry } from '../data/friends';
+import {
+  FriendEntry,
+  isValidFriendUsernameFormat,
+  normalizeFriendUsername,
+} from '../data/friends';
 import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
 import { Pack, PackCategory } from '../data/mockPacks';
 
@@ -15,7 +19,9 @@ interface ModalState {
   wonPrizes: boolean;
 }
 
-type AddFriendResult = { ok: true } | { ok: false; reason: 'duplicate' | 'self' | 'invalid' };
+type AddFriendResult =
+  | { ok: true }
+  | { ok: false; reason: 'duplicate' | 'self' | 'invalid' };
 
 interface AppStore {
   user: UserState;
@@ -43,10 +49,10 @@ interface AppStore {
   applyPackOpenResult: (result: { result: string; creditsWon: number; tier: PullRarityTier }) => void;
   /** After Won Prizes: add credits (convert) or mark shipped — no credits. */
   finalizePullFulfillment: (pullId: string, choice: 'convert' | 'ship') => void;
-  /** Adds a friend by member ID + display name (caller resolves name from lookup). */
-  addFriend: (memberId: string, displayName: string) => AddFriendResult;
+  /** Adds a friend by unique username + display name (caller resolves name from lookup). */
+  addFriend: (username: string, displayName: string) => AddFriendResult;
   /** When Clerk profile onboarding is done — updates local `user` for Account / Friends. */
-  setUserFromClerkProfile: (p: { id: string; displayName: string; memberId: string }) => void;
+  setUserFromClerkProfile: (p: { id: string; displayName: string; username: string }) => void;
 }
 
 export const useAppStore = create<AppStore>((set, get) => ({
@@ -146,16 +152,16 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }));
   },
 
-  addFriend: (memberId, displayName) => {
+  addFriend: (usernameRaw, displayName) => {
     const { user, friends } = get();
-    const id = memberId.trim().replace(/\s+/g, '').toUpperCase();
-    if (!id) return { ok: false, reason: 'invalid' };
-    if (id === user.memberId.trim().toUpperCase()) return { ok: false, reason: 'self' };
-    if (friends.some((f) => f.memberId === id)) return { ok: false, reason: 'duplicate' };
+    const u = normalizeFriendUsername(usernameRaw);
+    if (!isValidFriendUsernameFormat(u)) return { ok: false, reason: 'invalid' };
+    if (u === normalizeFriendUsername(user.username)) return { ok: false, reason: 'self' };
+    if (friends.some((f) => f.username === u)) return { ok: false, reason: 'duplicate' };
 
     const entry: FriendEntry = {
-      memberId: id,
-      displayName: displayName.trim() || `Friend ${id.slice(-4)}`,
+      username: u,
+      displayName: displayName.trim() || `Friend ${u.slice(-4)}`,
       addedAt: Date.now(),
     };
     set({ friends: [entry, ...friends] });
@@ -168,7 +174,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         ...state.user,
         id: p.id,
         displayName: p.displayName,
-        memberId: p.memberId,
+        username: p.username,
         isVerified: true,
       },
     })),

@@ -22,7 +22,7 @@ export function DemoBanner() {
 
 const styles = StyleSheet.create({
   wrap: {
-    backgroundColor: colors.nearBlack,
+    backgroundColor: colors.black,
     paddingBottom: spacing.sm,
     paddingHorizontal: spacing.base,
     borderBottomWidth: 1,

@@ -231,7 +231,13 @@
     "demoHint": "Bản demo: thử ID TCG-100001, TCG-100002 hoặc TCG-100003.",
     "yourFriends": "Bạn bè của bạn ({{count}})",
     "emptyTitle": "Chưa có bạn bè",
-    "emptyBody": "Khi bạn thêm ai đó, họ sẽ hiển thị ở đây để bạn có thể phát triển thêm các tính năng xã hội sau này."
+    "emptyBody": "Khi bạn thêm ai đó, họ sẽ hiển thị ở đây để bạn có thể phát triển thêm các tính năng xã hội sau này.",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "Phần thưởng",
@@ -266,7 +272,12 @@
     "guestSignInCta": "Đăng nhập hoặc tạo tài khoản",
     "playerDeskEyebrow": "BÀN CHƠI",
     "pullHistoryCta": "Toàn bộ lịch sử mở gói",
-    "pullHistorySub": "Mỗi lần mở, credit trúng và hit — nhật ký đầy đủ"
+    "pullHistorySub": "Mỗi lần mở, credit trúng và hit — nhật ký đầy đủ",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Thông báo",
@@ -391,7 +402,8 @@
     "memberIdHint": "Mã bạn bè của bạn (TCG-…) được gán tự động cho QR và lời mời.",
     "usernameInvalid": "Sử dụng 2–20 ký tự: chỉ chữ cái, số và dấu gạch dưới.",
     "continue": "Tiếp tục",
-    "genericError": "Không thể lưu hồ sơ của bạn. Hãy thử lại."
+    "genericError": "Không thể lưu hồ sơ của bạn. Hãy thử lại.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "Thanh toán",
@@ -418,7 +430,9 @@
     "subtitle": "Nhờ một người bạn quét mã QR này hoặc chia sẻ ID của bạn để họ có thể thêm bạn.",
     "you": "Bạn",
     "copy": "Sao chép",
-    "done": "Xong"
+    "done": "Xong",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "Quét QR bạn bè",
@@ -533,7 +547,8 @@
     "resultRare3": "Thẻ đặc biệt từ {{packName}}",
     "resultLegendary1": "Hit huyền thoại từ {{packName}}",
     "resultLegendary2": "Pull mythic từ {{packName}}",
-    "resultLegendary3": "Thẻ game-changer từ {{packName}}"
+    "resultLegendary3": "Thẻ game-changer từ {{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "Không đủ credit",
@@ -563,6 +578,49 @@
     "invalidIdTitle": "ID không hợp lệ",
     "invalidIdBody": "ID bạn bè trông giống như TCG-123456. Yêu cầu bạn bè của bạn chia sẻ mã của họ.",
     "notFoundTitle": "Không tìm thấy người dùng",
-    "notFoundBody": "Chưa có tài khoản nào khớp với ID bạn bè đó. Hãy kiểm tra kỹ mã hoặc thử lại sau."
+    "notFoundBody": "Chưa có tài khoản nào khớp với ID bạn bè đó. Hãy kiểm tra kỹ mã hoặc thử lại sau.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "Hồ sơ",
+    "goBack": "Quay lại",
+    "profileMissingTitle": "Không có hồ sơ",
+    "profileMissingBody": "Chưa có hồ sơ demo cho tên người dùng này.",
+    "joined": "Tham gia {{date}}",
+    "statPacks": "Gói đã mở",
+    "statValue": "Tổng giá trị",
+    "statChase": "Chase trúng",
+    "statLuck": "Điểm may mắn",
+    "bestPull": "Pull tốt nhất",
+    "estimatedValue": "Giá trị ước tính",
+    "rarityMix": "Tỷ lệ hiếm",
+    "highlights": "Hoạt động",
+    "recentPulls": "Pull gần đây",
+    "noRecentPulls": "Chưa có pull gần đây.",
+    "compare": "So sánh",
+    "openLeaderboard": "Bảng xếp hạng bạn bè",
+    "sendDemoPack": "Gửi gói demo",
+    "giftTitle": "Quà demo",
+    "giftBody": "Chỉ là mô phỏng — không có gói nào được gửi.",
+    "notFriendTitle": "Chưa trong vòng của bạn",
+    "notFriendBody": "Thêm người sưu tập này làm bạn để xem hồ sơ.",
+    "leaderboardNavTitle": "Bảng xếp hạng bạn bè",
+    "leaderboardLead": "Xếp hạng theo chỉ số đã chọn. Chỉ dữ liệu demo.",
+    "compareTitle": "So sánh người sưu tập",
+    "compareSub": "Thống kê cạnh nhau — cao hơn thắng mỗi dòng.",
+    "compareDone": "Xong",
+    "metric": {
+      "totalValue": "Tổng giá trị",
+      "biggestPull": "Pull lớn nhất",
+      "packsOpened": "Gói đã mở",
+      "chaseHits": "Chase trúng",
+      "luckScore": "May mắn"
+    },
+    "you": "Bạn",
+    "demoBrowseTitle": "Thử bạn demo",
+    "demoAddedTitle": "Đã thêm bạn",
+    "demoAddedBody": "{{name}} đã vào vòng của bạn.",
+    "demoAlreadyFriend": "Đã có trong vòng của bạn"
   }
 }

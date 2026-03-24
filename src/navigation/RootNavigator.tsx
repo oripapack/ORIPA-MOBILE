@@ -22,6 +22,8 @@ import { PullHistoryScreen } from '../screens/PullHistoryScreen';
 import { LinkedAccountsScreen } from '../screens/LinkedAccountsScreen';
 import { IdentityVerificationScreen } from '../screens/IdentityVerificationScreen';
 import { PayoutMethodScreen } from '../screens/PayoutMethodScreen';
+import { FriendProfileScreen } from '../screens/FriendProfileScreen';
+import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
 import { navigationRef } from './navigationRef';
 import { colors } from '../tokens/colors';
@@ -51,10 +53,12 @@ function TabNavigatorInner() {
 
   return (
     <Tab.Navigator
+      // Bar order follows <Tab.Screen /> order (Shop first). Default *selected* tab is Home (packs).
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: colors.red,
+        tabBarActiveTintColor: colors.gold,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
@@ -85,10 +89,10 @@ function RootStack() {
           component={PaymentPortalScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -96,10 +100,10 @@ function RootStack() {
           component={HelpCenterScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -107,10 +111,10 @@ function RootStack() {
           component={ShippingAddressScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -118,10 +122,10 @@ function RootStack() {
           component={TierBenefitsScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -129,10 +133,10 @@ function RootStack() {
           component={NotificationsScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -140,10 +144,10 @@ function RootStack() {
           component={HotDropsInfoScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -151,10 +155,10 @@ function RootStack() {
           component={PromosInfoScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -162,10 +166,32 @@ function RootStack() {
           component={PullHistoryScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
+          }}
+        />
+        <Stack.Screen
+          name="FriendProfile"
+          component={FriendProfileScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.textPrimary,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.surfaceElevated },
+          }}
+        />
+        <Stack.Screen
+          name="FriendsLeaderboard"
+          component={FriendsLeaderboardScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.textPrimary,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -173,10 +199,10 @@ function RootStack() {
           component={LinkedAccountsScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -184,10 +210,10 @@ function RootStack() {
           component={IdentityVerificationScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
         <Stack.Screen
@@ -195,10 +221,10 @@ function RootStack() {
           component={PayoutMethodScreen}
           options={{
             headerShown: true,
-            headerTintColor: colors.nearBlack,
+            headerTintColor: colors.textPrimary,
             headerTitleStyle: styles.stackHeaderTitle,
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.white },
+            headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
       </Stack.Navigator>
@@ -279,10 +305,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: colors.background,
   },
   tabBar: {
-    backgroundColor: 'rgba(255,255,255,0.94)',
+    backgroundColor: colors.tabBarBg,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.headerHairline,
     height: 82,
@@ -301,5 +327,6 @@ const styles = StyleSheet.create({
   stackHeaderTitle: {
     fontSize: fontSize.md,
     fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
   },
 });

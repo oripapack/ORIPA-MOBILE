@@ -16,6 +16,8 @@ export type RootStackParamList = {
   HotDropsInfo: undefined;
   PromosInfo: undefined;
   PullHistory: undefined;
+  FriendProfile: { username: string };
+  FriendsLeaderboard: undefined;
   LinkedAccounts: undefined;
   IdentityVerification: undefined;
   PayoutMethod: undefined;

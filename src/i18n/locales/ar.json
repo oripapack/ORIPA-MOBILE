@@ -41,7 +41,8 @@
   },
   "common": {
     "copied": "منقول",
-    "friendIdCopied": "تم نسخ معرف الصديق إلى الحافظة."
+    "friendIdCopied": "تم نسخ معرف الصديق إلى الحافظة.",
+    "error": "Error"
   },
   "helpCenter": {
     "navTitle": "مركز المساعدة",
@@ -229,7 +230,14 @@
     "demoHint": "العرض التوضيحي: جرب المعرفات TCG-100001 أو TCG-100002 أو TCG-100003.",
     "yourFriends": "أصدقائك ({{count}})",
     "emptyTitle": "لا أصدقاء بعد",
-    "emptyBody": "عند إضافة شخص ما، سيظهر هنا حتى تتمكن من الاستفادة من المزيد من الميزات الاجتماعية لاحقًا."
+    "emptyBody": "عند إضافة شخص ما، سيظهر هنا حتى تتمكن من الاستفادة من المزيد من الميزات الاجتماعية لاحقًا.",
+    "heroEyebrow": "SQUAD LOUNGE",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "المكافآت",
@@ -264,7 +272,12 @@
     "guestSignInCta": "تسجيل الدخول أو إنشاء حساب",
     "playerDeskEyebrow": "مكتب اللاعب",
     "pullHistoryCta": "تاريخ اللعب الكامل",
-    "pullHistorySub": "كل فتح، فوز رصيد، وضربة - سجل كامل"
+    "pullHistorySub": "كل فتح، فوز رصيد، وضربة - سجل كامل",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "التنبيهات",
@@ -389,7 +402,8 @@
     "memberIdHint": "يتم تعيين رمز صديقك (TCG-...) تلقائيًا لـ QR والدعوات.",
     "usernameInvalid": "استخدم من 2 إلى 20 حرفًا: الحروف والأرقام والشرطات السفلية فقط.",
     "continue": "يكمل",
-    "genericError": "لا يمكن حفظ ملف التعريف الخاص بك. حاول ثانية."
+    "genericError": "لا يمكن حفظ ملف التعريف الخاص بك. حاول ثانية.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "قسط",
@@ -416,7 +430,9 @@
     "subtitle": "اطلب من صديق أن يقوم بمسح QR هذا ضوئيًا، أو شارك معرفك حتى يتمكن من إضافتك.",
     "you": "أنت",
     "copy": "ينسخ",
-    "done": "منتهي"
+    "done": "منتهي",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "مسح صديق QR",
@@ -531,7 +547,8 @@
     "resultRare3": "بطاقة خاصة من{{packName}}",
     "resultLegendary1": "ضربة أسطورية من{{packName}}",
     "resultLegendary2": "سحب أسطوري من{{packName}}",
-    "resultLegendary3": "بطاقة تغير قواعد اللعبة من{{packName}}"
+    "resultLegendary3": "بطاقة تغير قواعد اللعبة من{{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "الاعتمادات ليست كافية",
@@ -561,6 +578,49 @@
     "invalidIdTitle": "معرف غير صالح",
     "invalidIdBody": "تبدو معرفات الأصدقاء مثل TCG-123456. اطلب من صديقك مشاركة الرمز الخاص به.",
     "notFoundTitle": "لم يتم العثور على المستخدم",
-    "notFoundBody": "لا يوجد حساب يطابق معرف الصديق هذا حتى الآن. تحقق جيدًا من الرمز أو حاول مرة أخرى لاحقًا."
+    "notFoundBody": "لا يوجد حساب يطابق معرف الصديق هذا حتى الآن. تحقق جيدًا من الرمز أو حاول مرة أخرى لاحقًا.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "الملف",
+    "goBack": "رجوع",
+    "profileMissingTitle": "الملف غير متوفر",
+    "profileMissingBody": "لا يوجد ملف تجريبي لهذا الاسم بعد.",
+    "joined": "انضم في {{date}}",
+    "statPacks": "الحزم المفتوحة",
+    "statValue": "القيمة الإجمالية",
+    "statChase": "ضربات تشيس",
+    "statLuck": "درجة الحظ",
+    "bestPull": "أفضل سحب",
+    "estimatedValue": "القيمة التقديرية",
+    "rarityMix": "توزيع الندرة",
+    "highlights": "النشاط",
+    "recentPulls": "السحوبات الأخيرة",
+    "noRecentPulls": "لا سحوبات حديثة بعد.",
+    "compare": "مقارنة",
+    "openLeaderboard": "ترتيب الأصدقاء",
+    "sendDemoPack": "إرسال حزمة تجريبية",
+    "giftTitle": "هدية تجريبية",
+    "giftBody": "محاكاة فقط — لم تُرسل أي حزمة.",
+    "notFriendTitle": "ليس في دائرتك",
+    "notFriendBody": "أضف هذا المجمع كصديق لعرض الملف.",
+    "leaderboardNavTitle": "ترتيب الأصدقاء",
+    "leaderboardLead": "حسب المقياس المختار. بيانات تجريبية فقط.",
+    "compareTitle": "مقارنة المجمعين",
+    "compareSub": "إحصاءات جنبًا إلى جنب — الأعلى يفوز في كل صف.",
+    "compareDone": "تم",
+    "metric": {
+      "totalValue": "القيمة الإجمالية",
+      "biggestPull": "أكبر سحب",
+      "packsOpened": "الحزم المفتوحة",
+      "chaseHits": "ضربات تشيس",
+      "luckScore": "الحظ"
+    },
+    "you": "أنت",
+    "demoBrowseTitle": "جرّب صديقًا تجريبيًا",
+    "demoAddedTitle": "تمت إضافة الصديق",
+    "demoAddedBody": "{{name}} أصبح في دائرتك.",
+    "demoAlreadyFriend": "موجود بالفعل في دائرتك"
   }
 }

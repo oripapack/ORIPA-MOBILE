@@ -22,13 +22,23 @@ export function getAppLogoParts(): { primary: string; secondary: string | null }
 export const APP_VERSION = packageJson.version;
 export const APP_SLUG = packageJson.name;
 
-/** When true, shows a top banner so viewers know credits/shipping are not real. */
-export const SHOW_DEMO_BANNER = true;
-
-export const DEMO_BANNER_TEXT = 'Preview build — credits & rewards are simulated.';
-
 /** Help Center / Contact Support mailto target (replace before launch). */
 export const SUPPORT_EMAIL = 'support@pullhub.app';
 
 /** If true, Buy Credits is clearly labeled as mock (no real charges). */
 export const CREDITS_ARE_MOCK = true;
+
+/**
+ * When true (and credits are mock), the user must acknowledge the simulation notice once
+ * (`SimulationDisclosure` modal). Top banner is disabled — use this for a cleaner layout.
+ */
+export const SHOW_SIMULATION_DISCLOSURE = CREDITS_ARE_MOCK;
+
+/**
+ * @deprecated Use `SHOW_SIMULATION_DISCLOSURE` + modal. Kept for older references.
+ * When false, `DemoBanner` does not render.
+ */
+export const SHOW_DEMO_BANNER = false;
+
+/** @deprecated Copy for legacy banner; modal uses i18n `demoSimulation.*`. */
+export const DEMO_BANNER_TEXT = 'Preview build — credits & rewards are simulated.';

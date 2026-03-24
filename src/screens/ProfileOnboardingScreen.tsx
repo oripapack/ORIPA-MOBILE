@@ -18,12 +18,7 @@ import { colors } from '../tokens/colors';
 import { fontSize, fontWeight } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
-import {
-  AppUserUnsafeMetadata,
-  isValidAppUsername,
-  memberIdFromClerkUserId,
-  normalizeDisplayName,
-} from '../lib/clerkProfile';
+import { AppUserUnsafeMetadata, isValidAppUsername, normalizeDisplayName } from '../lib/clerkProfile';
 
 function mergeUnsafeMetadata(
   user: { unsafeMetadata?: unknown },
@@ -63,8 +58,6 @@ export function ProfileOnboardingScreen() {
     }
 
     const d = normalizeDisplayName(displayName);
-    const meta = user.unsafeMetadata as AppUserUnsafeMetadata | undefined;
-    const memberId = meta?.appMemberId ?? memberIdFromClerkUserId(user.id);
 
     setBusy(true);
     try {
@@ -73,7 +66,6 @@ export function ProfileOnboardingScreen() {
           onboardingComplete: true,
           appUsername: u,
           appDisplayName: d || u,
-          appMemberId: memberId,
         }),
       });
       await user.reload();
@@ -148,7 +140,7 @@ export function ProfileOnboardingScreen() {
           editable={!busy}
         />
 
-        <Text style={styles.hintInline}>{t('profileOnboarding.memberIdHint')}</Text>
+        <Text style={styles.hintInline}>{t('profileOnboarding.profileHint')}</Text>
 
         <TouchableOpacity
           style={[styles.primaryBtn, busy && styles.btnDisabled]}
@@ -175,12 +167,12 @@ export function ProfileOnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.white },
+  flex: { flex: 1, backgroundColor: colors.surfaceElevated },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   scrollContent: {
     paddingHorizontal: spacing.xl,
@@ -195,7 +187,7 @@ const styles = StyleSheet.create({
   logoPrimary: {
     fontSize: fontSize.hero,
     fontWeight: fontWeight.black,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   logoSecondary: {

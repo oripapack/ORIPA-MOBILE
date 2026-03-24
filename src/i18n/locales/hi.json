@@ -41,7 +41,8 @@
   },
   "common": {
     "copied": "कॉपी किया गया",
-    "friendIdCopied": "मित्र आईडी को क्लिपबोर्ड पर कॉपी किया गया।"
+    "friendIdCopied": "मित्र आईडी को क्लिपबोर्ड पर कॉपी किया गया।",
+    "error": "Error"
   },
   "helpCenter": {
     "navTitle": "सहायता केंद्र",
@@ -229,7 +230,14 @@
     "demoHint": "डेमो: आईडी TCG-100001, TCG-100002, या TCG-100003 आज़माएँ।",
     "yourFriends": "आपके मित्र ({{count}})",
     "emptyTitle": "अभी तक कोई दोस्त नहीं",
-    "emptyBody": "जब आप किसी को जोड़ते हैं, तो वे यहां दिखाई देंगे ताकि आप बाद में और अधिक सामाजिक सुविधाएं बना सकें।"
+    "emptyBody": "जब आप किसी को जोड़ते हैं, तो वे यहां दिखाई देंगे ताकि आप बाद में और अधिक सामाजिक सुविधाएं बना सकें।",
+    "heroEyebrow": "SQUAD LOUNGE",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "पुरस्कार",
@@ -264,7 +272,12 @@
     "guestSignInCta": "साइन इन करें या खाता बनाने के लिए",
     "playerDeskEyebrow": "प्लेयर डेस्क",
     "pullHistoryCta": "पूरा खेल इतिहास",
-    "pullHistorySub": "हर खुला, क्रेडिट जीत, और हिट - पूरा लॉग"
+    "pullHistorySub": "हर खुला, क्रेडिट जीत, और हिट - पूरा लॉग",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "अलर्ट",
@@ -389,7 +402,8 @@
     "memberIdHint": "आपका मित्र कोड (टीसीजी-…) क्यूआर और आमंत्रण के लिए स्वचालित रूप से असाइन किया गया है।",
     "usernameInvalid": "2-20 वर्णों का उपयोग करें: केवल अक्षर, संख्याएँ और अंडरस्कोर।",
     "continue": "जारी रखना",
-    "genericError": "आपकी प्रोफ़ाइल सहेजी नहीं जा सकी. पुनः प्रयास करें।"
+    "genericError": "आपकी प्रोफ़ाइल सहेजी नहीं जा सकी. पुनः प्रयास करें।",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "भुगतान",
@@ -416,7 +430,9 @@
     "subtitle": "किसी मित्र से इस QR को स्कैन करने को कहें, या अपनी आईडी साझा करें ताकि वे आपको जोड़ सकें।",
     "you": "आप",
     "copy": "प्रतिलिपि",
-    "done": "हो गया"
+    "done": "हो गया",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "मित्र QR स्कैन करें",
@@ -531,7 +547,8 @@
     "resultRare3": "से विशेष कार्ड{{packName}}",
     "resultLegendary1": "से महान हिट{{packName}}",
     "resultLegendary2": "मिथकीय खींचतान{{packName}}",
-    "resultLegendary3": "गेम-चेंजिंग कार्ड से{{packName}}"
+    "resultLegendary3": "गेम-चेंजिंग कार्ड से{{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "पर्याप्त क्रेडिट नहीं",
@@ -561,6 +578,49 @@
     "invalidIdTitle": "अमान्य आईडी",
     "invalidIdBody": "मित्र आईडी TCG-123456 जैसी दिखती हैं। अपने मित्र से उनका कोड साझा करने के लिए कहें.",
     "notFoundTitle": "उपयोगकर्ता नहीं मिला",
-    "notFoundBody": "अभी तक कोई भी खाता उस मित्र आईडी से मेल नहीं खाता है। कोड को दोबारा जांचें या बाद में पुनः प्रयास करें।"
+    "notFoundBody": "अभी तक कोई भी खाता उस मित्र आईडी से मेल नहीं खाता है। कोड को दोबारा जांचें या बाद में पुनः प्रयास करें।",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "प्रोफ़ाइल",
+    "goBack": "वापस",
+    "profileMissingTitle": "प्रोफ़ाइल उपलब्ध नहीं",
+    "profileMissingBody": "इस उपयोगकर्ता नाम के लिए अभी कोई डेमो प्रोफ़ाइल नहीं है।",
+    "joined": "{{date}} को शामिल हुए",
+    "statPacks": "खोले गए पैक",
+    "statValue": "कुल मूल्य",
+    "statChase": "चेस हिट",
+    "statLuck": "लक स्कोर",
+    "bestPull": "सबसे अच्छा पुल",
+    "estimatedValue": "अनुमानित मूल्य",
+    "rarityMix": "दुर्लभता मिश्रण",
+    "highlights": "गतिविधि",
+    "recentPulls": "हाल के पुल",
+    "noRecentPulls": "अभी कोई हाल का पुल नहीं।",
+    "compare": "तुलना करें",
+    "openLeaderboard": "दोस्त लीडरबोर्ड",
+    "sendDemoPack": "डेमो पैक भेजें",
+    "giftTitle": "डेमो उपहार",
+    "giftBody": "यह नकली है — कोई पैक नहीं भेजा गया।",
+    "notFriendTitle": "आपके सर्कल में नहीं",
+    "notFriendBody": "प्रोफ़ाइल देखने के लिए इस कलेक्टर को दोस्त जोड़ें।",
+    "leaderboardNavTitle": "दोस्त लीडरबोर्ड",
+    "leaderboardLead": "चयनित मेट्रिक से रैंक। केवल डेमो डेटा।",
+    "compareTitle": "कलेक्टर तुलना",
+    "compareSub": "आँकड़े साथ-साथ — हर पंक्ति में ऊँचा जीतता है।",
+    "compareDone": "हो गया",
+    "metric": {
+      "totalValue": "कुल मूल्य",
+      "biggestPull": "सबसे बड़ा पुल",
+      "packsOpened": "खोले गए पैक",
+      "chaseHits": "चेस हिट",
+      "luckScore": "लक"
+    },
+    "you": "आप",
+    "demoBrowseTitle": "डेमो दोस्त आज़माएँ",
+    "demoAddedTitle": "दोस्त जोड़ा गया",
+    "demoAddedBody": "{{name}} अब आपके सर्कल में है।",
+    "demoAlreadyFriend": "पहले से सर्कल में है"
   }
 }

@@ -53,10 +53,10 @@ export function ShippingAddressScreen() {
     navigation.setOptions({
       title: t('shippingAddress.navTitle'),
       headerShown: true,
-      headerTintColor: colors.nearBlack,
+      headerTintColor: colors.textPrimary,
       headerTitleStyle: { fontWeight: fontWeight.bold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.white },
+      headerStyle: { backgroundColor: colors.surfaceElevated },
     });
   }, [navigation, t]);
 
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   input: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,

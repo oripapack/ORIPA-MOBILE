@@ -22,10 +22,10 @@ export function PullHistoryScreen() {
     navigation.setOptions({
       title: t('pullHistoryScreen.navTitle'),
       headerShown: true,
-      headerTintColor: colors.nearBlack,
+      headerTintColor: colors.textPrimary,
       headerTitleStyle: { fontWeight: fontWeight.bold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.white },
+      headerStyle: { backgroundColor: colors.surfaceElevated },
     });
   }, [navigation, t]);
 

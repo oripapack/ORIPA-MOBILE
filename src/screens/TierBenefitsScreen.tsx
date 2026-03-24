@@ -31,10 +31,10 @@ export function TierBenefitsScreen() {
     navigation.setOptions({
       title: t('tierBenefits.navTitle'),
       headerShown: true,
-      headerTintColor: colors.nearBlack,
+      headerTintColor: colors.textPrimary,
       headerTitleStyle: { fontWeight: fontWeight.bold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.white },
+      headerStyle: { backgroundColor: colors.surfaceElevated },
     });
   }, [navigation, t]);
 
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   card: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xl,
     padding: spacing.base,
     marginBottom: spacing.base,

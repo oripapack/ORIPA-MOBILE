@@ -26,7 +26,8 @@ export interface Pull {
 export interface UserState {
   id: string;
   displayName: string;
-  memberId: string;
+  /** Public handle — unique; used to add friends (QR / search). */
+  username: string;
   credits: number;
   tier: 'Starter' | 'Bronze' | 'Silver' | 'Gold';
   xp: number;
@@ -38,7 +39,7 @@ export interface UserState {
 export const mockUser: UserState = {
   id: 'usr_001',
   displayName: 'TrainerAlex',
-  memberId: 'TCG-002891',
+  username: 'trainer_alex',
   credits: 1250,
   tier: 'Starter',
   xp: 4200,

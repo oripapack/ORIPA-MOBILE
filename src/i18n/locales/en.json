@@ -181,6 +181,13 @@
     "title": "Settings"
   },
   "demoBanner": "Preview build — credits & rewards are simulated.",
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
   "home": {
     "discover": "Discover",
     "spotlightTitle": "Spotlight packs",
@@ -215,23 +222,66 @@
   "friends": {
     "title": "Friends",
     "heroEyebrow": "SQUAD LOUNGE",
-    "lead": "Link up with people you actually play with — share your tag or scan theirs.",
+    "lead": "Link up with people you actually play with — share your username or scan theirs.",
     "add": "Add",
     "emptyCta": "Add friends",
     "addModalTitle": "Add a friend",
     "qrShort": "QR",
-    "yourFriendId": "Your friend ID",
-    "memberHint": "This ID is also in your Account tab as Member ID.",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
     "showQr": "Show my QR code",
     "addFriend": "Add a friend",
-    "enterFriendId": "Enter friend ID",
-    "placeholderId": "e.g. TCG-100001",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan",
     "lookup": "Look up",
     "scanQr": "Scan QR code",
-    "demoHint": "Demo: try IDs TCG-100001, TCG-100002, or TCG-100003.",
+    "demoHint": "Demo: try jordan, sam_r, or casey_m — or legacy codes TCG-100001…003.",
     "yourFriends": "Your friends ({{count}})",
     "emptyTitle": "No friends yet",
     "emptyBody": "When you add someone, they’ll show up here so you can build on more social features later."
+  },
+  "social": {
+    "profileNavTitle": "Profile",
+    "goBack": "Go back",
+    "profileMissingTitle": "Profile unavailable",
+    "profileMissingBody": "We don’t have a demo profile for this username yet.",
+    "joined": "Joined {{date}}",
+    "statPacks": "Packs opened",
+    "statValue": "Total value",
+    "statChase": "Chase hits",
+    "statLuck": "Luck score",
+    "bestPull": "Best pull",
+    "estimatedValue": "Estimated value",
+    "rarityMix": "Rarity mix",
+    "highlights": "Activity",
+    "recentPulls": "Recent pulls",
+    "noRecentPulls": "No recent pulls yet.",
+    "compare": "Compare",
+    "openLeaderboard": "Friends leaderboard",
+    "sendDemoPack": "Send demo pack",
+    "giftTitle": "Demo gift",
+    "giftBody": "This is a mock — no pack was sent.",
+    "notFriendTitle": "Not in your circle",
+    "notFriendBody": "Add this collector as a friend to view their profile.",
+    "leaderboardNavTitle": "Friends leaderboard",
+    "leaderboardLead": "Ranked by the selected metric. Demo data only.",
+    "compareTitle": "Compare collectors",
+    "compareSub": "Side-by-side stats — higher wins each row.",
+    "compareDone": "Done",
+    "metric": {
+      "totalValue": "Total value",
+      "biggestPull": "Biggest pull",
+      "packsOpened": "Packs opened",
+      "chaseHits": "Chase hits",
+      "luckScore": "Luck score"
+    },
+    "you": "You",
+    "demoBrowseTitle": "Try a demo friend",
+    "demoAddedTitle": "Friend added",
+    "demoAddedBody": "{{name}} is now in your circle.",
+    "demoAlreadyFriend": "Already in your circle"
   },
   "rewards": {
     "title": "Rewards",
@@ -247,7 +297,6 @@
   "account": {
     "title": "Player",
     "tier": "TIER",
-    "memberId": "Member ID",
     "verifyIdentity": "Verify Identity",
     "viewBenefits": "View Tier Benefits →",
     "sectionAccount": "Account",
@@ -266,7 +315,12 @@
     "guestSignInCta": "Sign in or create account",
     "playerDeskEyebrow": "PLAYER DESK",
     "pullHistoryCta": "Full play history",
-    "pullHistorySub": "Every open, credit win, and hit — complete log"
+    "pullHistorySub": "Every open, credit win, and hit — complete log",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Alerts",
@@ -388,7 +442,7 @@
     "usernamePlaceholder": "your_handle",
     "displayNameLabel": "Display name (optional)",
     "displayNamePlaceholder": "Same as username if empty",
-    "memberIdHint": "Your friend code (TCG-…) is assigned automatically for QR and invites.",
+    "profileHint": "Your username is unique and is what friends use to find you.",
     "usernameInvalid": "Use 2–20 characters: letters, numbers, and underscores only.",
     "continue": "Continue",
     "genericError": "Could not save your profile. Try again."
@@ -414,10 +468,12 @@
     "done": "Done"
   },
   "myQr": {
-    "title": "Your friend code",
-    "subtitle": "Have a friend scan this QR, or share your ID so they can add you.",
+    "title": "Your username",
+    "subtitle": "Friends scan this QR or type your username to add you.",
     "you": "You",
     "copy": "Copy",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR",
     "done": "Done"
   },
   "qrScanner": {
@@ -427,7 +483,7 @@
     "allowCamera": "Allow camera",
     "hint": "Align the QR code within the frame",
     "webTitle": "Scan not available on web",
-    "webBody": "Open the app on your phone to scan a friend's QR code, or enter their friend ID below.",
+    "webBody": "Open the app on your phone to scan a friend's QR code, or enter their username below.",
     "close": "Close"
   },
   "sort": {
@@ -522,7 +578,8 @@
     "skip": "Skip ▸",
     "live": "LIVE",
     "continue": "Continue",
-    "openNext": "Open next",
+    "openNext": "Open another",
+    "replay": "Replay animation",
     "youPulled": "You pulled",
     "creditsLabel": "+{{amount}} credits",
     "resultCommon1": "Common hit from {{packName}}",
@@ -548,21 +605,23 @@
   },
   "friendsAlerts": {
     "copiedTitle": "Copied",
-    "copiedBody": "Friend ID copied to clipboard.",
+    "copiedBody": "Username copied to clipboard.",
     "addTitle": "Add friend?",
     "cancel": "Cancel",
     "add": "Add",
     "addedTitle": "Added",
     "addedBody": "{{name}} is now in your friends list.",
     "selfTitle": "That's you",
-    "selfBody": "You can't add your own friend ID.",
+    "selfBody": "You can't add your own username.",
     "duplicateTitle": "Already friends",
     "duplicateBody": "This friend is already in your list.",
     "errorTitle": "Something went wrong",
     "errorBody": "Please try again.",
-    "invalidIdTitle": "Invalid ID",
-    "invalidIdBody": "Friend IDs look like TCG-123456. Ask your friend to share their code.",
+    "invalidIdTitle": "Invalid username",
+    "invalidIdBody": "Usernames are 2–20 characters: letters, numbers, and underscores. Ask your friend for their handle.",
     "notFoundTitle": "User not found",
-    "notFoundBody": "No account matches that friend ID yet. Double-check the code or try again later."
+    "notFoundBody": "No demo account matches that username yet. Double-check spelling or try again later.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
   }
 }

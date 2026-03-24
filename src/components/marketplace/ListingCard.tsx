@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
@@ -34,12 +34,22 @@ export function ListingCard({ listing, onPress }: Props) {
       accessibilityLabel={listing.title}
     >
       <View style={[styles.thumb, { backgroundColor: listing.imageColor }]}>
+        {listing.imageUrl ? (
+          <Image
+            source={{ uri: listing.imageUrl }}
+            style={StyleSheet.absoluteFillObject}
+            resizeMode="cover"
+            accessibilityIgnoresInvertColors
+          />
+        ) : (
+          <Text style={styles.thumbPlaceholder}>🃏</Text>
+        )}
+        <View style={styles.thumbScrim} pointerEvents="none" />
         {badgeLabel ? (
           <View style={styles.badgePill}>
             <Text style={styles.badgeText}>{badgeLabel}</Text>
           </View>
         ) : null}
-        <Text style={styles.thumbPlaceholder}>🃏</Text>
       </View>
       <Text style={styles.title} numberOfLines={2}>
         {listing.title}
@@ -72,10 +82,15 @@ const styles = StyleSheet.create({
     fontSize: 36,
     opacity: 0.35,
   },
+  thumbScrim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.08)',
+  },
   badgePill: {
     position: 'absolute',
     left: spacing.xs,
     bottom: spacing.xs,
+    zIndex: 1,
     backgroundColor: colors.red,
     paddingHorizontal: 6,
     paddingVertical: 3,
@@ -103,7 +118,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: fontSize.sm,
     fontWeight: fontWeight.black,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     marginTop: 4,
   },
 });

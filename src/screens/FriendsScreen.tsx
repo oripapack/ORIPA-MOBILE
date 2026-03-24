@@ -24,8 +24,11 @@ import { buildFriendQrPayload } from '../lib/friendQr';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { SocialFollowRow } from '../components/account/SocialFollowRow';
 import { useRequireAuth } from '../hooks/useRequireAuth';
+import { useFriendInviteResolver } from '../hooks/useFriendInviteResolver';
+import { QrScannerModal } from '../components/friends/QrScannerModal';
+import { navigationRef } from '../navigation/navigationRef';
 
-const RING_PALETTE = ['#E11D2E', colors.casinoGold, '#2563EB', '#7C3AED', '#059669', '#EA580C'];
+const RING_PALETTE = [colors.red, colors.casinoGold, '#2563EB', '#7C3AED', '#059669', '#EA580C'];
 
 function accentForId(id: string): string {
   let h = 0;
@@ -43,13 +46,50 @@ export function FriendsScreen() {
 
   const [qrOpen, setQrOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [friendScannerOpen, setFriendScannerOpen] = useState(false);
 
-  const qrPayload = useMemo(() => buildFriendQrPayload(user.memberId), [user.memberId]);
+  const { resolveFromUsername } = useFriendInviteResolver({ onAdded: () => setAddOpen(false) });
 
-  const copyMyId = () => {
+  const qrPayload = useMemo(
+    () => (user.username.trim() ? buildFriendQrPayload(user.username) : ''),
+    [user.username],
+  );
+
+  const openQr = () => {
+    requireAuth(() => {
+      if (!user.username.trim()) {
+        Alert.alert(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
+        return;
+      }
+      setQrOpen(true);
+    });
+  };
+
+  const openAdd = () => requireAuth(() => setAddOpen(true));
+
+  const openLeaderboard = () =>
+    requireAuth(() => {
+      if (navigationRef.isReady()) {
+        navigationRef.navigate('FriendsLeaderboard');
+      }
+    });
+
+  const openFriendProfile = (username: string) =>
+    requireAuth(() => {
+      if (navigationRef.isReady()) {
+        navigationRef.navigate('FriendProfile', { username });
+      }
+    });
+
+  const copyMyUsername = () => {
     requireAuth(() => {
       void (async () => {
-        await Clipboard.setStringAsync(user.memberId);
+        const handle = user.username.trim();
+        if (!handle) {
+          Alert.alert(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
+          return;
+        }
+        await Clipboard.setStringAsync(handle);
         if (Platform.OS !== 'web') {
           await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
@@ -68,90 +108,112 @@ export function FriendsScreen() {
           showsVerticalScrollIndicator={false}
           refreshControl={refreshControl}
         >
-          <View style={styles.hero}>
-            <Text style={styles.heroEyebrow}>{t('friends.heroEyebrow')}</Text>
-            <View style={styles.heroTop}>
-              <View style={styles.titleBlock}>
-                <Text style={styles.pageTitle}>{t('friends.title')}</Text>
-                <Text style={styles.lead}>{t('friends.lead')}</Text>
-              </View>
-              <View style={styles.headerActions}>
-                <TouchableOpacity
-                  onPress={() => requireAuth(() => setQrOpen(true))}
-                  style={styles.headerBtnGhost}
-                  hitSlop={8}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('friends.showQr')}
-                >
-                  <Text style={styles.headerBtnGhostText}>{t('friends.qrShort')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => requireAuth(() => setAddOpen(true))}
-                  style={styles.headerBtnSolid}
-                  hitSlop={8}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('friends.add')}
-                >
-                  <Text style={styles.headerBtnSolidText}>{t('friends.add')}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+          <View style={styles.pageIntro}>
+            <Text style={styles.introEyebrow}>{t('friends.heroEyebrow')}</Text>
+            <Text style={styles.introTitle}>{t('friends.title')}</Text>
+            <Text style={styles.introLead}>{t('friends.lead')}</Text>
           </View>
 
-          <View style={styles.tagCard}>
-            <View style={styles.tagCardLeft} />
-            <View style={styles.tagCardBody}>
-              <Text style={styles.tagLabel}>{t('friends.yourFriendId')}</Text>
-              <Text style={styles.tagValue} numberOfLines={1} selectable>
-                {user.memberId}
+          <View style={styles.identityCard}>
+            <Text style={styles.identityLabel}>{t('friends.yourUsername')}</Text>
+            <View style={styles.handleRow}>
+              <Text style={styles.handleText} numberOfLines={1} selectable>
+                {user.username.trim() ? `@${user.username}` : '—'}
               </Text>
-              <Text style={styles.tagHint}>{t('friends.memberHint')}</Text>
+              <TouchableOpacity
+                onPress={copyMyUsername}
+                style={styles.copyPill}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={t('myQr.copy')}
+              >
+                <Text style={styles.copyPillText}>{t('myQr.copy')}</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={copyMyId} style={styles.tagCopy} activeOpacity={0.85}>
-              <Text style={styles.tagCopyText}>{t('myQr.copy')}</Text>
+            <Text style={styles.identityHint}>{t('friends.usernameHint')}</Text>
+
+            <View style={styles.identityDivider} />
+
+            <View style={styles.actionPair}>
+              <TouchableOpacity
+                style={[styles.actionTile, styles.actionTileQr]}
+                onPress={openQr}
+                activeOpacity={0.88}
+                accessibilityRole="button"
+                accessibilityLabel={t('friends.showQr')}
+              >
+                <Text style={styles.actionTileTitle}>{t('friends.qrShort')}</Text>
+                <Text style={styles.actionTileSub}>{t('friends.qrActionSub')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.actionTile, styles.actionTileAdd]}
+                onPress={openAdd}
+                activeOpacity={0.88}
+                accessibilityRole="button"
+                accessibilityLabel={t('friends.addFriend')}
+              >
+                <Text style={[styles.actionTileTitle, styles.actionTileTitleOnRed]}>{t('friends.add')}</Text>
+                <Text style={[styles.actionTileSub, styles.actionTileSubOnRed]}>{t('friends.addActionSub')}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={styles.leaderboardRow}
+              onPress={openLeaderboard}
+              activeOpacity={0.88}
+              accessibilityRole="button"
+              accessibilityLabel={t('social.openLeaderboard')}
+            >
+              <Text style={styles.leaderboardRowText}>{t('social.openLeaderboard')}</Text>
+              <Text style={styles.leaderboardRowChev}>→</Text>
             </TouchableOpacity>
           </View>
 
           {friends.length > 0 ? (
             <>
-              <Text style={styles.sectionLabel}>{t('friends.yourFriends', { count: friends.length })}</Text>
+              <Text style={styles.listSectionLabel}>{t('friends.yourFriends', { count: friends.length })}</Text>
               <View style={styles.friendList}>
                 {friends.map((item) => {
-                  const ring = accentForId(item.memberId);
+                  const ring = accentForId(item.username);
                   return (
-                    <View key={item.memberId} style={[styles.friendRow, { borderLeftColor: ring }]}>
+                    <TouchableOpacity
+                      key={item.username}
+                      style={styles.friendRow}
+                      onPress={() => openFriendProfile(item.username)}
+                      activeOpacity={0.88}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${item.displayName} @${item.username}`}
+                    >
                       <View style={[styles.friendAvatar, { borderColor: ring }]}>
                         <Text style={[styles.friendAvatarText, { color: ring }]}>
                           {item.displayName.slice(0, 1).toUpperCase()}
                         </Text>
                       </View>
                       <View style={styles.friendMeta}>
-                        <Text style={styles.friendName}>{item.displayName}</Text>
-                        <Text style={styles.friendId} numberOfLines={1}>
-                          {item.memberId}
+                        <Text style={styles.friendName} numberOfLines={1}>
+                          {item.displayName}
+                        </Text>
+                        <Text style={styles.friendHandle} numberOfLines={1}>
+                          @{item.username}
                         </Text>
                       </View>
-                    </View>
+                      <Text style={styles.friendChev}>→</Text>
+                    </TouchableOpacity>
                   );
                 })}
               </View>
             </>
           ) : (
-            <View style={styles.empty}>
-              <Text style={styles.emptyEmoji}>🎲</Text>
+            <View style={styles.emptyCard}>
+              <Text style={styles.emptyEmoji}>👋</Text>
               <Text style={styles.emptyTitle}>{t('friends.emptyTitle')}</Text>
               <Text style={styles.emptyBody}>{t('friends.emptyBody')}</Text>
-              <PrimaryButton
-                label={t('friends.emptyCta')}
-                onPress={() => requireAuth(() => setAddOpen(true))}
-                variant="red"
-                style={styles.emptyCta}
-              />
+              <PrimaryButton label={t('friends.emptyCta')} onPress={openAdd} variant="red" style={styles.emptyCta} />
             </View>
           )}
 
           <View style={styles.socialCard}>
-            <Text style={styles.socialTitle}>{t('account.followUs')}</Text>
+            <Text style={styles.socialEyebrow}>{t('account.followUs')}</Text>
             <Text style={styles.socialSubtitle}>{t('account.followSub')}</Text>
             <SocialFollowRow />
           </View>
@@ -162,12 +224,31 @@ export function FriendsScreen() {
         visible={qrOpen}
         onClose={() => setQrOpen(false)}
         qrValue={qrPayload}
-        memberId={user.memberId}
+        username={user.username}
         displayName={user.displayName}
         onCopied={() => Alert.alert(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'))}
+        onScanSomeoneElse={() => {
+          setQrOpen(false);
+          setFriendScannerOpen(true);
+        }}
       />
 
-      <AddFriendModal visible={addOpen} onClose={() => setAddOpen(false)} />
+      <AddFriendModal
+        visible={addOpen}
+        onClose={() => setAddOpen(false)}
+        onRequestScanner={() => {
+          setAddOpen(false);
+          setFriendScannerOpen(true);
+        }}
+      />
+
+      <QrScannerModal
+        visible={friendScannerOpen}
+        onClose={() => setFriendScannerOpen(false)}
+        onUsernameScanned={(username) => {
+          resolveFromUsername(username);
+        }}
+      />
     </View>
   );
 }
@@ -185,148 +266,154 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingBottom: 120,
   },
-  hero: {
-    backgroundColor: colors.casinoFelt,
-    borderRadius: radius.xl,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.casinoFeltBorder,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 18,
-    elevation: 6,
+  pageIntro: {
+    marginBottom: spacing.lg,
+    paddingHorizontal: 2,
   },
-  heroEyebrow: {
+  introEyebrow: {
     fontSize: 10,
     fontWeight: fontWeight.black,
     color: colors.casinoGold,
-    letterSpacing: 2,
+    letterSpacing: 2.2,
     marginBottom: spacing.sm,
   },
-  heroTop: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: spacing.md,
-  },
-  titleBlock: {
-    flex: 1,
-    minWidth: 0,
-    paddingRight: spacing.xs,
-  },
-  pageTitle: {
-    fontSize: fontSize.xxl,
+  introTitle: {
+    fontSize: fontSize.hero - 2,
     fontWeight: fontWeight.black,
-    color: colors.white,
-    letterSpacing: -0.5,
-    marginBottom: spacing.xs,
+    color: colors.textPrimary,
+    letterSpacing: -0.8,
+    marginBottom: spacing.sm,
   },
-  lead: {
+  introLead: {
     fontSize: fontSize.sm,
-    color: 'rgba(248,250,252,0.65)',
-    lineHeight: 20,
+    color: colors.textSecondary,
+    lineHeight: 21,
+    maxWidth: 360,
   },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  headerBtnGhost: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm + 2,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: 'rgba(240,193,76,0.5)',
-    backgroundColor: 'rgba(255,255,255,0.06)',
-  },
-  headerBtnGhostText: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
-    color: colors.casinoGold,
-    letterSpacing: 0.5,
-  },
-  headerBtnSolid: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm + 2,
-    borderRadius: radius.md,
-    backgroundColor: colors.red,
-    shadowColor: colors.red,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  headerBtnSolidText: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
-    color: colors.white,
-    letterSpacing: 0.3,
-  },
-  tagCard: {
-    flexDirection: 'row',
-    alignItems: 'stretch',
+  identityCard: {
     backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xl,
-    overflow: 'hidden',
+    padding: spacing.lg,
     marginBottom: spacing.xl,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(15,23,42,0.08)',
-    shadowColor: colors.shadowStrong,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(15,23,42,0.06)',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 5,
   },
-  tagCardLeft: {
-    width: 5,
-    backgroundColor: colors.casinoGold,
-    opacity: 0.95,
-  },
-  tagCardBody: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.base,
-    justifyContent: 'center',
-  },
-  tagLabel: {
+  identityLabel: {
     fontSize: 10,
     fontWeight: fontWeight.bold,
     color: colors.textMuted,
-    letterSpacing: 1,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: 4,
+    marginBottom: spacing.sm,
   },
-  tagValue: {
-    fontSize: fontSize.md,
+  handleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  handleText: {
+    flex: 1,
+    fontSize: fontSize.xl,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
-    letterSpacing: 0.5,
+    letterSpacing: 0.2,
   },
-  tagHint: {
-    fontSize: fontSize.xs,
-    color: colors.textSecondary,
-    marginTop: 6,
-    lineHeight: 16,
-  },
-  tagCopy: {
-    alignSelf: 'center',
-    marginRight: spacing.md,
+  copyPill: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
     backgroundColor: colors.nearBlack,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
   },
-  tagCopyText: {
-    color: colors.white,
+  copyPillText: {
     fontSize: fontSize.xs,
     fontWeight: fontWeight.black,
+    color: colors.white,
+    letterSpacing: 0.4,
+  },
+  identityHint: {
+    fontSize: fontSize.xs,
+    color: colors.textSecondary,
+    lineHeight: 17,
+  },
+  identityDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.border,
+    marginVertical: spacing.lg,
+  },
+  actionPair: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  actionTile: {
+    flex: 1,
+    minHeight: 76,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionTileQr: {
+    backgroundColor: colors.casinoFelt,
+    borderWidth: 1,
+    borderColor: 'rgba(240,193,76,0.45)',
+  },
+  actionTileAdd: {
+    backgroundColor: colors.red,
+    shadowColor: colors.red,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.28,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  actionTileTitle: {
+    fontSize: fontSize.lg,
+    fontWeight: fontWeight.black,
+    color: colors.white,
     letterSpacing: 0.5,
   },
-  sectionLabel: {
+  actionTileTitleOnRed: {
+    color: colors.white,
+  },
+  actionTileSub: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.semibold,
+    color: 'rgba(248,250,252,0.72)',
+    marginTop: 4,
+  },
+  actionTileSubOnRed: {
+    color: 'rgba(255,255,255,0.88)',
+  },
+  leaderboardRow: {
+    marginTop: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(15,23,42,0.08)',
+  },
+  leaderboardRowText: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
+  },
+  leaderboardRowChev: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold,
+    color: colors.textMuted,
+  },
+  listSectionLabel: {
     fontSize: 10,
     fontWeight: fontWeight.black,
     color: colors.textMuted,
@@ -336,6 +423,7 @@ const styles = StyleSheet.create({
     paddingLeft: 2,
   },
   friendList: {
+    gap: spacing.sm,
     marginBottom: spacing.xl,
   },
   friendRow: {
@@ -344,22 +432,27 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     backgroundColor: colors.surfaceElevated,
     borderRadius: radius.lg,
-    padding: spacing.md,
-    borderLeftWidth: 4,
-    borderWidth: StyleSheet.hairlineWidth,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 2,
   },
   friendAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(0,0,0,0.04)',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(0,0,0,0.03)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
   },
   friendAvatarText: {
-    fontSize: fontSize.xl,
+    fontSize: fontSize.lg,
     fontWeight: fontWeight.black,
   },
   friendMeta: {
@@ -368,58 +461,64 @@ const styles = StyleSheet.create({
   },
   friendName: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontWeight: fontWeight.bold,
     color: colors.textPrimary,
   },
-  friendId: {
+  friendHandle: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontWeight: fontWeight.medium,
     color: colors.textMuted,
-    marginTop: 2,
-    letterSpacing: 0.3,
+    marginTop: 3,
   },
-  empty: {
+  friendChev: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold,
+    color: colors.textMuted,
+  },
+  emptyCard: {
     alignItems: 'center',
     paddingVertical: spacing.xxl,
     paddingHorizontal: spacing.lg,
-    backgroundColor: colors.casinoFelt,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xl,
     borderWidth: 1,
-    borderColor: colors.casinoFeltBorder,
+    borderColor: 'rgba(15,23,42,0.08)',
     marginBottom: spacing.xl,
   },
   emptyEmoji: {
-    fontSize: 44,
+    fontSize: 40,
     marginBottom: spacing.md,
   },
   emptyTitle: {
     fontSize: fontSize.lg,
     fontWeight: fontWeight.black,
-    color: colors.white,
+    color: colors.textPrimary,
     marginBottom: spacing.xs,
     textAlign: 'center',
   },
   emptyBody: {
     fontSize: fontSize.sm,
-    color: 'rgba(248,250,252,0.65)',
+    color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: spacing.lg,
   },
   emptyCta: {
-    minWidth: 240,
+    minWidth: 220,
   },
   socialCard: {
     backgroundColor: colors.surfaceElevated,
     borderRadius: radius.xl,
     padding: spacing.lg,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderWidth: 1,
+    borderColor: 'rgba(15,23,42,0.06)',
   },
-  socialTitle: {
-    fontSize: fontSize.md,
+  socialEyebrow: {
+    fontSize: 10,
     fontWeight: fontWeight.black,
-    color: colors.textPrimary,
+    color: colors.textMuted,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
     marginBottom: spacing.xs,
   },
   socialSubtitle: {

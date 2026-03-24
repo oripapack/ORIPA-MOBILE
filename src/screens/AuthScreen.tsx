@@ -249,7 +249,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
           accessibilityLabel={t('auth.continueGoogle')}
         >
           {oauthBusy === 'google' ? (
-            <ActivityIndicator color={colors.nearBlack} />
+            <ActivityIndicator color={colors.textPrimary} />
           ) : (
             <>
               <Text style={styles.googleIcon}>G</Text>
@@ -398,12 +398,12 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.white },
+  flex: { flex: 1, backgroundColor: colors.surfaceElevated },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   scrollContent: {
     paddingHorizontal: spacing.xl,
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
   logoPrimary: {
     fontSize: fontSize.hero,
     fontWeight: fontWeight.black,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   logoSecondary: {
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderWidth: 1.5,
     borderColor: colors.border,
     borderRadius: radius.lg,
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   oauthText: {
     fontSize: fontSize.md,
     fontWeight: fontWeight.semibold,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
   },
   appleText: {
     fontSize: fontSize.md,
@@ -503,11 +503,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
   },
   modeChipOn: {
-    borderColor: colors.nearBlack,
-    backgroundColor: '#FAFAFA',
+    borderColor: colors.red,
+    backgroundColor: colors.surfaceMuted,
   },
   modeChipText: {
     fontSize: fontSize.sm,
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   modeChipTextOn: {
-    color: colors.nearBlack,
+    color: colors.textPrimary,
   },
   input: {
     borderWidth: 1,
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
   promoBannerTitle: {
     fontSize: fontSize.sm,
     fontWeight: fontWeight.bold,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
   promoBannerBody: {

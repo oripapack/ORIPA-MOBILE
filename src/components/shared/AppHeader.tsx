@@ -44,7 +44,7 @@ export function AppHeader({ onSearch }: Props) {
       <View style={styles.right}>
         <CreditsPill onAdd={goCredits} />
         <TouchableOpacity style={styles.iconBtn} onPress={onSearch}>
-          <Ionicons name="search" size={22} color={colors.nearBlack} />
+          <Ionicons name="search" size={22} color={colors.textPrimary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.md,
-    backgroundColor: 'rgba(255,255,255,0.82)',
+    backgroundColor: colors.headerBarBg,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.headerHairline,
     shadowColor: colors.shadowStrong,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: fontSize.xl,
     fontWeight: fontWeight.black,
-    color: colors.nearBlack,
+    color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   logoAccent: {
@@ -84,13 +84,13 @@ const styles = StyleSheet.create({
     height: 3,
     width: 36,
     borderRadius: 2,
-    backgroundColor: colors.red,
-    opacity: 0.9,
+    backgroundColor: colors.gold,
+    opacity: 0.95,
   },
   logoDot: {
     fontSize: fontSize.xl,
     fontWeight: fontWeight.black,
-    color: colors.red,
+    color: colors.gold,
     letterSpacing: -0.5,
   },
   right: {

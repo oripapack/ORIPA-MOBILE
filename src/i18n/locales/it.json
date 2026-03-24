@@ -231,7 +231,13 @@
     "demoHint": "Demo: prova TCG-100001, TCG-100002 o TCG-100003.",
     "yourFriends": "I tuoi amici ({{count}})",
     "emptyTitle": "Ancora nessun amico",
-    "emptyBody": "Quando aggiungi qualcuno, apparirà qui per funzioni social future."
+    "emptyBody": "Quando aggiungi qualcuno, apparirà qui per funzioni social future.",
+    "qrActionSub": "Your code",
+    "addActionSub": "Find people",
+    "yourUsername": "Your username",
+    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "enterFriendUsername": "Username",
+    "placeholderUsername": "e.g. jordan"
   },
   "rewards": {
     "title": "Ricompense",
@@ -266,7 +272,12 @@
     "guestSignInCta": "Accedi o crea account",
     "playerDeskEyebrow": "BANCO GIOCATORE",
     "pullHistoryCta": "Cronologia completa",
-    "pullHistorySub": "Ogni apertura, vincita crediti e hit — registro completo"
+    "pullHistorySub": "Ogni apertura, vincita crediti e hit — registro completo",
+    "accountDetailsEyebrow": "Account details",
+    "usernameLabel": "Username",
+    "usernameUnset": "Not set yet",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone"
   },
   "shortcuts": {
     "notif": "Avvisi",
@@ -391,7 +402,8 @@
     "memberIdHint": "Il tuo codice amico (TCG-…) viene assegnato automaticamente per QR e inviti.",
     "usernameInvalid": "2–20 caratteri: lettere, numeri e underscore solo.",
     "continue": "Continua",
-    "genericError": "Impossibile salvare il profilo. Riprova."
+    "genericError": "Impossibile salvare il profilo. Riprova.",
+    "profileHint": "Your username is unique and is what friends use to find you."
   },
   "paymentPortal": {
     "navTitle": "Pagamento",
@@ -418,7 +430,9 @@
     "subtitle": "Fai scansionare il QR a un amico o condividi l'ID",
     "you": "Tu",
     "copy": "Copia",
-    "done": "Fatto"
+    "done": "Fatto",
+    "scanAnother": "Scan someone else's code",
+    "scanAnotherSub": "Use the camera to add them from their QR"
   },
   "qrScanner": {
     "title": "Scansiona QR amico",
@@ -533,7 +547,8 @@
     "resultRare3": "Carta speciale da {{packName}}",
     "resultLegendary1": "Hit leggendario da {{packName}}",
     "resultLegendary2": "Mythic pull da {{packName}}",
-    "resultLegendary3": "Carta che cambia il gioco da {{packName}}"
+    "resultLegendary3": "Carta che cambia il gioco da {{packName}}",
+    "replay": "Replay animation"
   },
   "insufficientCredits": {
     "title": "Crediti insufficienti",
@@ -563,6 +578,49 @@
     "invalidIdTitle": "ID non valido",
     "invalidIdBody": "I friend ID sono come TCG-123456. Chiedi il codice al tuo amico.",
     "notFoundTitle": "Utente non trovato",
-    "notFoundBody": "Nessun account con quel friend ID. Controlla il codice o riprova più tardi."
+    "notFoundBody": "Nessun account con quel friend ID. Controlla il codice o riprova più tardi.",
+    "noUsernameTitle": "Set a username first",
+    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "social": {
+    "profileNavTitle": "Profilo",
+    "goBack": "Indietro",
+    "profileMissingTitle": "Profilo non disponibile",
+    "profileMissingBody": "Non abbiamo ancora un profilo demo per questo username.",
+    "joined": "Iscritto il {{date}}",
+    "statPacks": "Pack aperti",
+    "statValue": "Valore totale",
+    "statChase": "Chase riusciti",
+    "statLuck": "Punteggio fortuna",
+    "bestPull": "Miglior pull",
+    "estimatedValue": "Valore stimato",
+    "rarityMix": "Mix di rarità",
+    "highlights": "Attività",
+    "recentPulls": "Pull recenti",
+    "noRecentPulls": "Nessun pull recente.",
+    "compare": "Confronta",
+    "openLeaderboard": "Classifica amici",
+    "sendDemoPack": "Invia pack demo",
+    "giftTitle": "Regalo demo",
+    "giftBody": "È una simulazione — nessun pack è stato inviato.",
+    "notFriendTitle": "Non nel tuo cerchio",
+    "notFriendBody": "Aggiungi questo collezionista come amico per vedere il profilo.",
+    "leaderboardNavTitle": "Classifica amici",
+    "leaderboardLead": "Ordinato per la metrica selezionata. Solo dati demo.",
+    "compareTitle": "Confronta collezionisti",
+    "compareSub": "Statistiche affiancate — vince chi ha di più in ogni riga.",
+    "compareDone": "Fatto",
+    "metric": {
+      "totalValue": "Valore totale",
+      "biggestPull": "Pull più alto",
+      "packsOpened": "Pack aperti",
+      "chaseHits": "Chase riusciti",
+      "luckScore": "Fortuna"
+    },
+    "you": "Tu",
+    "demoBrowseTitle": "Prova un amico demo",
+    "demoAddedTitle": "Amico aggiunto",
+    "demoAddedBody": "{{name}} è ora nel tuo cerchio.",
+    "demoAlreadyFriend": "Già nel tuo cerchio"
   }
 }
