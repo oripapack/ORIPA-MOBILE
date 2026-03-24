@@ -18,6 +18,7 @@ import { colors } from '../tokens/colors';
 import { fontSize, fontWeight } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
+import { useGuestBrowseStore } from '../store/guestBrowseStore';
 
 /** Narrow types for Clerk’s email/password + verification helpers (see Clerk custom-flow docs). */
 type ClerkSignInPwd = {
@@ -36,12 +37,21 @@ type OAuthProvider = 'google' | 'apple';
 type EmailMode = 'signin' | 'signup';
 type SignupPhase = 'form' | 'verify';
 
+type AuthScreenProps = {
+  /** Welcome screen: signup promo strip + skip to browse as guest. */
+  welcomeMode?: boolean;
+};
+
 /**
  * OAuth: enable `oauth_google` / `oauth_apple` in Clerk → SSO connections.
  * Email: enable email + password + verification code in Clerk → User & authentication.
  */
-export function AuthScreen() {
+export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
   const { t } = useTranslation();
+  const welcomePromoSeen = useGuestBrowseStore((s) => s.welcomePromoSeen);
+  const setGuestBrowseEnabled = useGuestBrowseStore((s) => s.setGuestBrowseEnabled);
+  const markWelcomePromoSeen = useGuestBrowseStore((s) => s.markWelcomePromoSeen);
+  const clearAuthWall = useGuestBrowseStore((s) => s.clearAuthWall);
   const insets = useSafeAreaInsets();
   const { setActive } = useClerk();
   const { startSSOFlow } = useSSO();
@@ -67,6 +77,16 @@ export function AuthScreen() {
     setCode('');
   };
 
+  const activateSession = useCallback(
+    async (sessionId: string | null | undefined) => {
+      if (sessionId) {
+        await setActive({ session: sessionId });
+        void markWelcomePromoSeen();
+      }
+    },
+    [markWelcomePromoSeen, setActive],
+  );
+
   const runOAuth = useCallback(
     async (strategy: 'oauth_google' | 'oauth_apple', label: OAuthProvider) => {
       setError(null);
@@ -74,7 +94,7 @@ export function AuthScreen() {
       try {
         const { createdSessionId } = await startSSOFlow({ strategy });
         if (createdSessionId) {
-          await setActive({ session: createdSessionId });
+          await activateSession(createdSessionId);
         }
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : String(e);
@@ -83,20 +103,19 @@ export function AuthScreen() {
         setOauthBusy(null);
       }
     },
-    [setActive, startSSOFlow],
+    [activateSession, startSSOFlow],
   );
 
   const onGoogle = () => runOAuth('oauth_google', 'google');
   const onApple = () => runOAuth('oauth_apple', 'apple');
 
-  const activateSession = useCallback(
-    async (sessionId: string | null | undefined) => {
-      if (sessionId) {
-        await setActive({ session: sessionId });
-      }
-    },
-    [setActive],
-  );
+  const onSkipBrowse = useCallback(() => {
+    void (async () => {
+      await setGuestBrowseEnabled(true);
+      await markWelcomePromoSeen();
+      clearAuthWall();
+    })();
+  }, [clearAuthWall, markWelcomePromoSeen, setGuestBrowseEnabled]);
 
   const onEmailSubmit = useCallback(async () => {
     if (!signInLoaded || !signUpLoaded) return;
@@ -212,6 +231,13 @@ export function AuthScreen() {
 
         <Text style={styles.title}>{t('auth.title')}</Text>
         <Text style={styles.subtitle}>{t('auth.subtitle')}</Text>
+
+        {welcomeMode && !welcomePromoSeen ? (
+          <View style={styles.promoBanner} accessibilityRole="text">
+            <Text style={styles.promoBannerTitle}>{t('welcome.signupPromoTitle')}</Text>
+            <Text style={styles.promoBannerBody}>{t('welcome.signupPromoBody')}</Text>
+          </View>
+        ) : null}
 
         {/* OAuth */}
         <TouchableOpacity
@@ -349,7 +375,23 @@ export function AuthScreen() {
           </Text>
         ) : null}
 
-        <Text style={styles.hint}>{t('auth.dashboardHint')}</Text>
+        {welcomeMode ? (
+          <>
+            <TouchableOpacity
+              style={styles.skipBtn}
+              onPress={onSkipBrowse}
+              disabled={oauthDisabled || emailBusy}
+              activeOpacity={0.85}
+              accessibilityRole="button"
+              accessibilityLabel={t('welcome.skip')}
+            >
+              <Text style={styles.skipBtnText}>{t('welcome.skip')}</Text>
+            </TouchableOpacity>
+            <Text style={styles.hint}>{t('welcome.guestHint')}</Text>
+          </>
+        ) : (
+          <Text style={styles.hint}>{t('auth.dashboardHint')}</Text>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -527,5 +569,35 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.regular,
     color: colors.textMuted,
     lineHeight: 18,
+  },
+  promoBanner: {
+    backgroundColor: '#FFF7ED',
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+    padding: spacing.base,
+    marginBottom: spacing.lg,
+  },
+  promoBannerTitle: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.bold,
+    color: colors.nearBlack,
+    marginBottom: spacing.xs,
+  },
+  promoBannerBody: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.regular,
+    color: colors.textSecondary,
+    lineHeight: 20,
+  },
+  skipBtn: {
+    marginTop: spacing.xl,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+  },
+  skipBtnText: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.semibold,
+    color: colors.textMuted,
   },
 });

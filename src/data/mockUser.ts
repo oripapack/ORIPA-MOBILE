@@ -69,5 +69,13 @@ export const mockUser: UserState = {
       creditsWon: 420,
       timestamp: new Date('2026-03-17T20:45:00'),
     },
+    {
+      id: 'p4',
+      packId: '3',
+      packTitle: 'Trainer’s Choice Booster',
+      result: 'Trainer Gallery Full Art',
+      creditsWon: 180,
+      timestamp: new Date('2026-03-16T12:00:00'),
+    },
   ],
 };

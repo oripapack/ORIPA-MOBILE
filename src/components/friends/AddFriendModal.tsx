@@ -110,10 +110,16 @@ export function AddFriendModal({ visible, onClose }: Props) {
           ]}
         >
           <View style={styles.header}>
-            <Text style={styles.title}>{t('friends.addModalTitle')}</Text>
-            <TouchableOpacity onPress={onClose} hitSlop={12}>
-              <Text style={styles.cancel}>{t('locale.cancel')}</Text>
-            </TouchableOpacity>
+            <View style={styles.headerAccent} />
+            <View style={styles.headerInner}>
+              <Text style={styles.badge}>{t('friends.heroEyebrow')}</Text>
+              <View style={styles.headerRow}>
+                <Text style={styles.title}>{t('friends.addModalTitle')}</Text>
+                <TouchableOpacity onPress={onClose} hitSlop={12}>
+                  <Text style={styles.cancel}>{t('locale.cancel')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
 
           <ScrollView
@@ -133,7 +139,7 @@ export function AddFriendModal({ visible, onClose }: Props) {
               returnKeyType="done"
               onSubmitEditing={onLookupPress}
             />
-            <PrimaryButton label={t('friends.lookup')} onPress={onLookupPress} />
+            <PrimaryButton label={t('friends.lookup')} onPress={onLookupPress} variant="red" />
             <View style={styles.scanGap} />
             <SecondaryButton label={t('friends.scanQr')} onPress={() => setScanOpen(true)} />
             <Text style={styles.demoHint}>{t('friends.demoHint')}</Text>
@@ -149,49 +155,78 @@ export function AddFriendModal({ visible, onClose }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.homeGradientBottom,
   },
   header: {
     flexDirection: 'row',
+    backgroundColor: colors.casinoFelt,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.casinoFeltBorder,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  headerAccent: {
+    width: 5,
+    backgroundColor: colors.casinoGold,
+  },
+  headerInner: {
+    flex: 1,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
+  },
+  badge: {
+    fontSize: 10,
+    fontWeight: fontWeight.black,
+    color: colors.casinoGold,
+    letterSpacing: 2,
+    marginBottom: spacing.xs,
+  },
+  headerRow: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    backgroundColor: colors.white,
+    gap: spacing.md,
   },
   title: {
-    fontSize: fontSize.lg,
+    flex: 1,
+    fontSize: fontSize.xl,
     fontWeight: fontWeight.black,
-    color: colors.textPrimary,
+    color: colors.white,
+    letterSpacing: -0.3,
   },
   cancel: {
     fontSize: fontSize.base,
     fontWeight: fontWeight.semibold,
-    color: colors.textSecondary,
+    color: 'rgba(248,250,252,0.75)',
   },
   scroll: {
     padding: spacing.base,
     paddingBottom: spacing.xl,
   },
   inputLabel: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.bold,
+    color: colors.textMuted,
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+    marginBottom: spacing.sm,
   },
   input: {
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: radius.lg,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.casinoGold,
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? 14 : 12,
-    fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.black,
     color: colors.textPrimary,
-    marginBottom: spacing.base,
-    backgroundColor: colors.white,
+    marginBottom: spacing.lg,
+    backgroundColor: colors.surfaceElevated,
   },
   scanGap: {
     height: spacing.sm,
@@ -199,7 +234,7 @@ const styles = StyleSheet.create({
   demoHint: {
     fontSize: fontSize.xs,
     color: colors.textMuted,
-    marginTop: spacing.base,
+    marginTop: spacing.lg,
     lineHeight: 18,
   },
 });

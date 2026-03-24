@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
@@ -11,6 +11,8 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 import { DemoBanner } from './src/components/shared/DemoBanner';
 import { PhysicalGoodsPaymentRoot } from './src/payments';
 import { CLERK_PUBLISHABLE_KEY, isClerkEnabled } from './src/config/clerk';
+import { ClerkSessionBridge } from './src/components/account/ClerkSessionBridge';
+import { colors } from './src/tokens/colors';
 
 /** Mitigate RN default Text weight drift (explicit regular weight when unspecified). */
 const baseTextStyle = { fontWeight: '400' as const };
@@ -20,8 +22,10 @@ T.defaultProps = { ...T.defaultProps, style: [T.defaultProps?.style, baseTextSty
 TI.defaultProps = { ...TI.defaultProps, style: [TI.defaultProps?.style, baseTextStyle] };
 
 export default function App() {
+  const [localeReady, setLocaleReady] = useState(false);
+
   useEffect(() => {
-    void hydrateLocaleFromStorage();
+    void hydrateLocaleFromStorage().then(() => setLocaleReady(true));
   }, []);
 
   useEffect(() => {
@@ -50,8 +54,11 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {isClerkEnabled ? (
+      {!localeReady ? (
+        <View style={[styles.root, { backgroundColor: colors.white }]} />
+      ) : isClerkEnabled ? (
         <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
+          <ClerkSessionBridge />
           {tree}
         </ClerkProvider>
       ) : (

@@ -1,0 +1,568 @@
+{
+  "tabs": {
+    "home": "Trang chủ",
+    "friends": "Bạn bè",
+    "marketplace": "Cửa hàng",
+    "account": "Người chơi"
+  },
+  "marketplace": {
+    "storeTitle": "Cửa hàng Pull Hub",
+    "storeLead": "Xem thẻ lẻ và sản phẩm niêm phong từ cửa hàng đối tác đã xác minh. Thanh toán sắp ra mắt — hiện chỉ xem tin đăng (không mở gói ở đây).",
+    "searchPlaceholder": "Tìm kiếm thẻ, bộ hoặc cửa hàng…",
+    "promoTitle": "Miễn phí vận chuyển với nhiều đơn hàng",
+    "promoBody": "Đơn hàng trên $50 từ các cửa hàng tham gia sẽ được giao hàng miễn phí. Xem từng danh sách để biết chi tiết.",
+    "cat_all": "Tất cả",
+    "cat_pokemon": "Pokémon",
+    "cat_one_piece": "One Piece",
+    "cat_yugioh": "Yu-Gi-Oh!",
+    "cat_sports": "Thể thao",
+    "whyTitle": "Tại sao nên chọn Pull Hub Store?",
+    "whyPointLabel1": "Điểm 1",
+    "whyPointLabel2": "Điểm 2",
+    "whyPointLabel3": "Điểm 3",
+    "whyPoint1Title": "Giao nhanh",
+    "whyPoint1Body": "Các cửa hàng đối tác vận chuyển nhanh chóng để bạn có thể nhận thẻ kịp thời cho các sự kiện và đêm thi đấu. Thời gian giới hạn khác nhau tùy theo người bán.",
+    "whyPoint2Title": "Giá cả cạnh tranh",
+    "whyPoint2Body": "So sánh danh sách giữa các cửa hàng ở một nơi. Hoa hồng của Pull Hub được tính vào giá của đối tác — không có phí bất ngờ khi thanh toán.",
+    "whyPoint3Title": "Lựa chọn lớn",
+    "whyPoint3Body": "Chúng tôi gom hàng từ người bán uy tín nhiều khu vực — từ promo Nhật đến thẻ tiếng Anh thông dụng và hộp niêm phong.",
+    "specialPrice": "Giá đặc biệt",
+    "saleOn": "SALE",
+    "sectionStores": "Từ các cửa hàng đối tác",
+    "verified": "Đã xác minh",
+    "commissionLine": "Phí Pull Hub trên doanh số: {{pct}}%",
+    "badgeSale": "SALE",
+    "badgeTournament": "Giải đấu",
+    "badgeNew": "MỚI",
+    "emptyResults": "Không có danh sách nào phù hợp với bộ lọc của bạn.",
+    "listingDemoTitle": "Danh sách",
+    "listingDemoBody": "Thanh toán cho “{{title}}” chưa có dây — màn hình này chỉ hiển thị danh sách.",
+    "demoNote": "Bản demo: thanh toán, giỏ hàng và thanh toán của người bán không được kết nối. Việc mở gói vẫn ở tab Trang chủ."
+  },
+  "common": {
+    "error": "Lỗi",
+    "copied": "Đã sao chép",
+    "friendIdCopied": "ID bạn bè đã được sao chép vào bảng nhớ tạm."
+  },
+  "helpCenter": {
+    "navTitle": "Trung tâm trợ giúp",
+    "lead": "Câu trả lời nhanh về credit, giao hàng và hot drop. Đây là nội dung mẫu — thay bằng bài viết thật trước khi ra mắt.",
+    "faq": {
+      "credits": {
+        "q": "Credit hoạt động thế nào?",
+        "a": "Credit là tiền tệ trong app để mở gói kỹ thuật số. Trong bản xem trước, giao dịch có thể được mô phỏng — giá, hoàn tiền và gói cuối cùng sẽ công bố trước khi ra mắt."
+      },
+      "shipping": {
+        "q": "Bạn gửi thẻ vật lý ở đâu?",
+        "a": "Đơn đặt hàng trên thị trường được vận chuyển từ các cửa hàng đối tác. Giới hạn, nhà cung cấp dịch vụ và phí khác nhau tùy theo danh sách. Thêm địa chỉ giao hàng vào Tài khoản để quá trình thanh toán diễn ra nhanh hơn khi thanh toán được thực hiện."
+      },
+      "drops": {
+        "q": "Giọt nóng là gì?",
+        "a": "Hot drop là các bản phát hành gói có thời gian giới hạn hoặc có nhu cầu cao. Chúng khác với khuyến mãi tài khoản (tiền thưởng và phiếu giảm giá). Nhấn vào Hot Drops trên Tài khoản để xem phần giải thích ngắn gọn."
+      }
+    },
+    "contactSection": "Vẫn bị mắc kẹt?",
+    "emailCta": "Gửi email tới {{email}}",
+    "emailUs": "Hỗ trợ qua email",
+    "responseTime": "Chúng tôi mong muốn trả lời trong vòng 1–2 ngày làm việc (bản demo — không được giám sát)."
+  },
+  "shippingAddress": {
+    "navTitle": "Địa chỉ giao hàng",
+    "lead": "Được sử dụng cho các đơn đặt hàng trên thị trường và vận chuyển giải thưởng khi quá trình thực hiện đang diễn ra. Chỉ được lưu trên thiết bị này trong bản dựng xem trước.",
+    "save": "Lưu địa chỉ",
+    "savedTitle": "Đã lưu",
+    "savedBody": "Địa chỉ giao hàng của bạn đã được lưu trên thiết bị này.",
+    "saveFailed": "Không thể lưu. Hãy thử lại.",
+    "missingTitle": "Thiếu trường",
+    "missingBody": "Nhập ít nhất tên, đường 1, thành phố và quốc gia.",
+    "fields": {
+      "fullName": "Tên đầy đủ",
+      "line1": "Dòng địa chỉ 1",
+      "line2": "Dòng địa chỉ 2 (tùy chọn)",
+      "city": "Thành phố",
+      "region": "Bang/khu vực",
+      "postal": "Mã bưu chính",
+      "country": "Quốc gia"
+    },
+    "placeholders": {
+      "fullName": "Huấn luyện viên Alex",
+      "line1": "123 đường chính",
+      "line2": "Căn hộ 4",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94102",
+      "country": "Hoa Kỳ"
+    }
+  },
+  "tierBenefits": {
+    "navTitle": "Lợi ích theo cấp độ",
+    "lead": "Cấp bậc là thang mức độ trung thành dựa trên XP từ hoạt động. Các đặc quyền mẫu bên dưới — điều chỉnh trước khi ra mắt.",
+    "progressHint": "Bạn có {{xp}} XP. Cấp tiếp theo mở khi đạt {{need}} XP (thang demo).",
+    "topTier": "Bạn đang ở cấp độ xem trước cao nhất — cảm ơn bạn đã thử nghiệm dữ liệu mẫu.",
+    "fromXp": "Từ {{xp}} XP",
+    "yourTier": "Cấp độ của bạn",
+    "disclaimer": "Lợi ích, ngưỡng và tính khả dụng chỉ mang tính chất minh họa và có thể thay đổi."
+  },
+  "notifications": {
+    "navTitle": "Thông báo",
+    "lead": "Chọn nội dung chúng tôi có thể thông báo cho bạn. Tùy chọn chỉ được lưu trữ trên thiết bị này trong bản xem trước.",
+    "note": "Quyền thông báo hệ thống sẽ xin riêng khi bật push. Phần email và SMS cũng sẽ nằm ở đây.",
+    "toggles": {
+      "order": {
+        "title": "Đơn đặt hàng & vận chuyển",
+        "sub": "Theo dõi, trì hoãn và cập nhật giao hàng cho các đơn đặt hàng trên thị trường."
+      },
+      "drops": {
+        "title": "Hot drop & nhập hàng",
+        "sub": "Gói giới hạn và bản phát hành hot."
+      },
+      "promos": {
+        "title": "Khuyến mãi & credit",
+        "sub": "Credit thưởng, mã giảm giá và chiến dịch theo mùa."
+      },
+      "social": {
+        "title": "Bạn bè & xã hội",
+        "sub": "Yêu cầu và lời mời kết bạn (khi được bật)."
+      }
+    }
+  },
+  "hotDropsInfo": {
+    "navTitle": "Hot drop",
+    "body": "Hot drop là gói phát hành giới hạn thời gian hoặc rất hot — thường là một set, collab hoặc khung flash. Liên quan đến sản phẩm và thời điểm.",
+    "b1": "Thời gian bắt đầu và kết thúc được công bố (hoặc “trong khi nguồn cung cấp vẫn còn”).",
+    "b2": "Có thể có tỷ lệ cược hoặc giá khác với gói thường xanh — hãy luôn đọc chi tiết về gói.",
+    "b3": "Có thể bán hết nhanh chóng; bật thông báo sẽ giúp bạn nắm bắt được hàng có sẵn.",
+    "callout": "Khác khuyến mãi: khuyến mãi là ưu đãi marketing (credit thưởng, mã giảm giá), không phải bản thân đợt phát hành gói."
+  },
+  "promosInfo": {
+    "navTitle": "Khuyến mãi",
+    "body": "Khuyến mãi là chương trình marketing: credit thưởng, mã giảm giá, chiến dịch theo mùa hoặc ưu đãi đối tác — thưởng cho đăng ký, mua gói, giới thiệu bạn, v.v.",
+    "b1": "Hiển thị trong ứng dụng, email hoặc mạng xã hội — mỗi quảng cáo có quy tắc và ngày riêng.",
+    "b2": "Có thể xếp chồng theo cấp độ hoặc bị giới hạn ở một số gói nhất định - hãy đọc bản in đẹp trước khi ra mắt.",
+    "b3": "Khác với Hot Drops: khuyến mãi là ưu đãi; một đợt giảm giá nóng là việc phát hành sản phẩm.",
+    "vsHotTitle": "Hot drop và khuyến mãi",
+    "vsHotBody": "Hot drop giải thích gói giới hạn. Màn Khuyến mãi này giải thích credit thưởng và ưu đãi kiểu coupon."
+  },
+  "pullHistoryScreen": {
+    "navTitle": "Lịch sử chơi",
+    "lead": "Mỗi lần mở đã xong — mới nhất trước. Lượt đang treo vẫn nằm trong luồng gói cho đến khi bạn nhận thưởng hoặc gửi hàng."
+  },
+  "linkedAccounts": {
+    "navTitle": "Tài khoản được liên kết",
+    "body": "Việc liên kết cho phép bạn đăng nhập vào cùng một hồ sơ Pull Hub bằng nhiều phương thức (ví dụ: Google và Apple), do đó bạn không bị giới hạn ở một lần đăng nhập.",
+    "whatTitle": "Điều này có nghĩa là gì",
+    "whatBody": "Đây không phải là việc hợp nhất hai tài khoản ứng dụng riêng biệt. Đó là việc gắn các nhà cung cấp dịch vụ đăng nhập vào một tài khoản để thuận tiện và phục hồi.",
+    "futureTitle": "Đến sau",
+    "futureGoogle": "Liên kết tài khoản Google",
+    "futureApple": "Liên kết ID Apple",
+    "futureEmail": "Liên kết email + mật khẩu",
+    "note": "Liên kết nhà cung cấp sẽ dùng cấu hình auth của bạn (ví dụ Clerk) trên môi trường production."
+  },
+  "identityVerification": {
+    "navTitle": "Xác minh danh tính",
+    "body": "Xác minh danh tính (đôi khi được gọi là KYC) xác nhận bạn là người thật và đáp ứng các quy tắc về độ tuổi hoặc tuân thủ trước các khoản thanh toán có giá trị cao, một số khuyến mãi nhất định hoặc các tính năng được quản lý.",
+    "whyTitle": "Tại sao ứng dụng yêu cầu điều này",
+    "whyBody": "Nó làm giảm gian lận, bảo vệ trẻ vị thành niên và đáp ứng các quy tắc tài chính hoặc thị trường khi tiền hoặc giải thưởng có giá trị di chuyển giữa người dùng và nền tảng.",
+    "previewTitle": "Luồng xem trước (không hoạt động)",
+    "step1": "Kiểm tra giấy tờ hoặc ID chính phủ",
+    "step2": "Kiểm tra ảnh selfie hoặc độ sống động (nếu cần)",
+    "step3": "Xem lại - thường là vài phút, đôi khi lâu hơn",
+    "note": "Bản dựng này chỉ giải thích khái niệm. Liên hệ với nhà cung cấp của bạn (ví dụ: Persona, Stripe Identity) trước khi yêu cầu xác minh."
+  },
+  "payoutMethod": {
+    "navTitle": "Phương thức thanh toán",
+    "body": "Khi bạn bán thẻ hoặc nhận tiền mặt, khoản thanh toán sẽ được chuyển đến ngân hàng hoặc thẻ ghi nợ được liên kết. Bản xem trước này không kết nối với ngân hàng thực.",
+    "line1": "Thêm tài khoản ngân hàng (ACH hoặc kênh địa phương) hoặc thẻ ghi nợ tùy khu vực.",
+    "line2": "Xác minh các khoản tiền gửi nhỏ hoặc các khoản phí vi mô tức thời khi bộ xử lý của bạn yêu cầu.",
+    "line3": "Thời gian và phí thanh toán tuân theo các quy tắc thị trường — xem Điều khoản trước khi ra mắt.",
+    "note": "Thay thế phần giữ chỗ này bằng khoản thanh toán thực tế khi tích hợp Stripe Connect hoặc PSP của bạn."
+  },
+  "settings": {
+    "title": "Cài đặt"
+  },
+  "demoBanner": "Bản xem trước — credit và phần thưởng được mô phỏng.",
+  "home": {
+    "discover": "Khám phá",
+    "spotlightTitle": "Gói nổi bật",
+    "spotlightBody": "Drop và khuyến mãi được chọn. Dùng danh mục và sắp xếp bên dưới.",
+    "browseAllPacks": "Duyệt tất cả các gói",
+    "emptyCategory": "Chưa có gói nào trong danh mục này."
+  },
+  "packs": {
+    "browseTitle": "Sàn gói",
+    "browseSub": "Chọn dòng, sắp xếp danh sách, mở khi bạn sẵn sàng"
+  },
+  "categories": {
+    "all": "Tất cả",
+    "featured": "Nổi bật",
+    "new": "Mới",
+    "pokemon": "Pokémon",
+    "yugioh": "Yu-Gi-Oh!",
+    "one_piece": "One Piece",
+    "sports": "Thể thao",
+    "graded": "Đã chấm điểm",
+    "hot_drops": "Hot drop"
+  },
+  "hero": {
+    "eyebrow": "TIỀN THƯỞNG CHÀO MỪNG",
+    "headline1": "Tuyến gói tăng tỉ lệ",
+    "headline2": "dành cho người chơi mới",
+    "sub": "Gói có hạn với tỉ lệ hit tốt hơn — tích credit và săn pull lớn",
+    "browsePacks": "Đến sàn gói",
+    "notNow": "Có lẽ sau này",
+    "hitCard": "Thẻ Jackpot"
+  },
+  "friends": {
+    "title": "Bạn bè",
+    "heroEyebrow": "PHÒNG SQUAD",
+    "lead": "Kết nối người bạn thật sự chơi cùng — chia sẻ tag hoặc quét QR của họ.",
+    "add": "Thêm",
+    "emptyCta": "Thêm bạn bè",
+    "addModalTitle": "Thêm một người bạn",
+    "qrShort": "QR",
+    "yourFriendId": "ID bạn bè của bạn",
+    "memberHint": "ID này cũng có trong tab Tài khoản của bạn dưới dạng ID Thành viên.",
+    "showQr": "Hiển thị mã QR của tôi",
+    "addFriend": "Thêm một người bạn",
+    "enterFriendId": "Nhập ID bạn bè",
+    "placeholderId": "ví dụ. TCG-100001",
+    "lookup": "Tra cứu",
+    "scanQr": "Quét mã QR",
+    "demoHint": "Bản demo: thử ID TCG-100001, TCG-100002 hoặc TCG-100003.",
+    "yourFriends": "Bạn bè của bạn ({{count}})",
+    "emptyTitle": "Chưa có bạn bè",
+    "emptyBody": "Khi bạn thêm ai đó, họ sẽ hiển thị ở đây để bạn có thể phát triển thêm các tính năng xã hội sau này."
+  },
+  "rewards": {
+    "title": "Phần thưởng",
+    "tier": "CẤP",
+    "viewBenefits": "Xem lợi ích theo cấp độ →",
+    "pullHistory": "Lịch sử mở gói",
+    "shipped": "Đã vận chuyển",
+    "noPullsTitle": "Chưa có lần mở nào",
+    "noPullsBody": "Mở gói đầu tiên — hit và credit sẽ hiện ở đây.",
+    "latestWins": "Hit gần nhất",
+    "viewFullHistory": "Toàn bộ lịch sử mở gói →"
+  },
+  "account": {
+    "title": "Người chơi",
+    "tier": "CẤP",
+    "memberId": "ID thành viên",
+    "verifyIdentity": "Xác minh danh tính",
+    "viewBenefits": "Xem lợi ích theo cấp độ →",
+    "sectionAccount": "Tài khoản",
+    "sectionMore": "Thêm",
+    "sectionSupport": "Hỗ trợ",
+    "sectionLegal": "Pháp lý",
+    "sectionPreferences": "Tùy chọn",
+    "languageRegion": "Ngôn ngữ & Khu vực",
+    "followUs": "Theo dõi chúng tôi",
+    "followSub": "Kênh chính thức: khuyến mãi, drop và cập nhật.",
+    "logout": "Đăng xuất",
+    "version": "{{name}} v{{version}}",
+    "guestSignInEyebrow": "Duyệt với tư cách khách",
+    "guestSignInTitle": "Đăng nhập để dùng đầy đủ tính năng",
+    "guestSignInBody": "Khách chỉ xem được catalog. Đăng nhập bằng Google, Apple hoặc email để mở gói, mua credit, thanh toán và dùng Bạn bè.",
+    "guestSignInCta": "Đăng nhập hoặc tạo tài khoản",
+    "playerDeskEyebrow": "BÀN CHƠI",
+    "pullHistoryCta": "Toàn bộ lịch sử mở gói",
+    "pullHistorySub": "Mỗi lần mở, credit trúng và hit — nhật ký đầy đủ"
+  },
+  "shortcuts": {
+    "notif": "Thông báo",
+    "hot": "Hot drop",
+    "promos": "Khuyến mãi"
+  },
+  "accountRows": {
+    "shipping": "Địa chỉ giao hàng",
+    "payout": "Phương thức thanh toán",
+    "identity": "Xác minh danh tính",
+    "linked": "Tài khoản được liên kết"
+  },
+  "supportRows": {
+    "help": "Trung tâm trợ giúp",
+    "contact": "Liên hệ hỗ trợ",
+    "faq": "Câu hỏi thường gặp"
+  },
+  "legalRows": {
+    "terms": "Điều khoản dịch vụ",
+    "privacy": "Chính sách bảo mật",
+    "promo": "Quy tắc khuyến mại",
+    "payment": "Tiết lộ thanh toán"
+  },
+  "locale": {
+    "title": "Ngôn ngữ & Khu vực",
+    "language": "Ngôn ngữ",
+    "region": "Khu vực",
+    "regionHint": "Được sử dụng cho ngày tháng, hiển thị tiền tệ và mặc định giao hàng trong tương lai.",
+    "fallbackNote": "Mọi ngôn ngữ trong danh sách đều có bản dịch giao diện đầy đủ. Khu vực vẫn quyết định định dạng ngày và tiền tệ.",
+    "save": "Lưu",
+    "cancel": "Hủy bỏ"
+  },
+  "regions": {
+    "US": "Hoa Kỳ",
+    "CA": "Canada",
+    "GB": "Vương quốc Anh",
+    "JP": "Nhật Bản",
+    "AU": "Úc"
+  },
+  "buyCredits": {
+    "close": "Đóng",
+    "title": "Mua credit",
+    "subtitle": "Credit dùng để mở gói. Gói nhỏ có giảm giá; gói lớn gần giá niêm yết.",
+    "mockNote": "Xem trước: không thanh toán thật — credit cộng ngay cho demo.",
+    "discountBadge": "−{{pct}}%",
+    "pointsLine": "{{count}} điểm",
+    "approx": "khoảng",
+    "buyNow": "Mua ngay",
+    "disclaimer": "Sau khi xác nhận mua credit, có thể không hủy, hoàn tiền hoặc hoàn điểm. (Chính sách cuối khi ra mắt.)",
+    "mockFooter": "Gói mô phỏng - thay thế bằng thanh toán thực trước khi ra mắt.",
+    "liveFooter": "Thanh toán an toàn · Giao hàng ngay · Không hết hạn"
+  },
+  "lootBox": {
+    "title": "Xác suất của nội dung",
+    "lead": "Việc mở gói được thực hiện ngẫu nhiên. Các mức xếp hạng gần đúng dưới đây chỉ để tiết lộ; gói cụ thể có thể khác nhau.",
+    "columnTier": "cấp",
+    "footnote": "Tỷ lệ mang tính minh họa cho bản dựng xem trước này. Các sản phẩm được xuất bản sẽ hiển thị tỷ lệ cược cuối cùng trước khi mua nếu cần.",
+    "done": "Hiểu rồi"
+  },
+  "welcome": {
+    "signupPromoTitle": "Gói chào mừng miễn phí",
+    "signupPromoBody": "Tạo tài khoản ngay — chúng tôi thêm gói chào mừng bonus vào phiên đầu (demo — kích hoạt khi go-live).",
+    "skip": "Duyệt mà không cần đăng nhập",
+    "guestHint": "Bạn có thể xem catalog. Đăng nhập để mở gói, mua credit, thanh toán và dùng Bạn bè."
+  },
+  "auth": {
+    "title": "Đăng nhập",
+    "subtitle": "Sử dụng Google, Apple hoặc email. Tài khoản mới: chúng tôi sẽ gửi cho bạn mã dùng một lần qua email để xác minh.",
+    "continueGoogle": "Tiếp tục với Google",
+    "continueApple": "Tiếp tục với Apple",
+    "or": "hoặc",
+    "modeSignIn": "Đăng nhập",
+    "modeSignUp": "Tạo tài khoản",
+    "emailPlaceholder": "E-mail",
+    "passwordPlaceholder": "Mật khẩu",
+    "emailSignIn": "Đăng nhập bằng email",
+    "emailContinue": "Tiếp tục",
+    "verifyHint": "Nhập mã chúng tôi đã gửi tới {{email}}.",
+    "codePlaceholder": "mã 6 chữ số",
+    "verifyCode": "Xác minh và tiếp tục",
+    "resendCode": "Gửi lại mã",
+    "emailPasswordRequired": "Nhập email và mật khẩu.",
+    "signInIncomplete": "Không thể hoàn tất đăng nhập. Nếu bạn sử dụng xác thực hai yếu tố, chúng tôi sẽ thêm hỗ trợ tiếp theo.",
+    "verifyFailed": "Quá trình xác minh chưa hoàn tất. Hãy kiểm tra mã và thử lại.",
+    "dashboardHint": "Clerk dashboard: bật Google (oauth_google), Apple (oauth_apple) và email + mật khẩu + mã email.",
+    "signedInAs": "Tài khoản",
+    "signOut": "Đăng xuất",
+    "signOutTitle": "Đăng xuất?",
+    "signOutMessage": "Bạn sẽ cần phải đăng nhập lại để sử dụng dữ liệu đã đồng bộ hóa của mình khi có sẵn.",
+    "signOutConfirm": "Đăng xuất",
+    "cancel": "Hủy bỏ"
+  },
+  "linkPhone": {
+    "title": "Xác minh điện thoại của bạn",
+    "subtitle": "Chúng tôi gửi một tin SMS. Chọn quốc gia, nhập số di động — không cần tự gõ mã +1.",
+    "mobileLabel": "Số điện thoại di động",
+    "countryPickerA11y": "Quốc gia hoặc khu vực",
+    "nationalPlaceholderNanp": "(555) 123-4567",
+    "nationalPlaceholder": "Số điện thoại",
+    "sendCode": "Gửi mã",
+    "codeHint": "Nhập mã chúng tôi đã nhắn tin cho bạn.",
+    "codePlaceholder": "mã 6 chữ số",
+    "verify": "Xác minh và tiếp tục",
+    "resend": "Gửi lại mã",
+    "changeNumber": "Sử dụng một số khác",
+    "invalid": "Nhập số điện thoại hợp lệ cho quốc gia đã chọn.",
+    "nanpInvalid": "Số của Hoa Kỳ và Canada cần 10 chữ số (mã vùng + số).",
+    "phoneMissing": "Không thể bắt đầu xác minh số điện thoại. Hãy thử lại.",
+    "verifyFailed": "Mã đó không hoạt động. Hãy kiểm tra tin nhắn và thử lại.",
+    "genericError": "Đã xảy ra lỗi. Hãy thử lại.",
+    "dashboardHint": "Clerk → User & authentication → Phone: bật SMS/xác minh. Có thể tắt “Đăng nhập bằng điện thoại” nếu chỉ dùng Google/Apple/email.",
+    "smsDevHint": "Không nhận SMS? Trong dev thêm số thử trên Clerk hoặc cấu hình Twilio — Clerk không gửi SMS thật nếu chưa setup.",
+    "signOut": "Sử dụng một tài khoản khác"
+  },
+  "profileOnboarding": {
+    "title": "Thiết lập hồ sơ của bạn",
+    "subtitle": "Chọn tên người dùng công khai và cách bạn muốn xuất hiện. Bạn có thể thay đổi điều này sau khi cài đặt tài khoản được kết nối với máy chủ.",
+    "usernameLabel": "Tên người dùng",
+    "usernamePlaceholder": "your_handle",
+    "displayNameLabel": "Tên hiển thị (tùy chọn)",
+    "displayNamePlaceholder": "Giống như tên người dùng nếu trống",
+    "memberIdHint": "Mã bạn bè của bạn (TCG-…) được gán tự động cho QR và lời mời.",
+    "usernameInvalid": "Sử dụng 2–20 ký tự: chỉ chữ cái, số và dấu gạch dưới.",
+    "continue": "Tiếp tục",
+    "genericError": "Không thể lưu hồ sơ của bạn. Hãy thử lại."
+  },
+  "paymentPortal": {
+    "navTitle": "Thanh toán",
+    "eyebrow": "Checkout",
+    "tabCredits": "Credit",
+    "tabMarketplace": "Chợ",
+    "viewProbabilities": "Xem tỉ lệ nội dung gói",
+    "digitalRoutingNote": "Credit kỹ thuật số: mua trong app App Store/Google Play khi live — không dùng Stripe cho coin.",
+    "marketplaceTitle": "Đơn hàng vật lý",
+    "marketplaceLead": "Tin đăng đối tác giao hàng thật. Thanh toán dùng luồng hàng hoá (Stripe phía server), tách khỏi mua credit trong app.",
+    "item": "Mặt hàng",
+    "price": "Giá",
+    "physicalPolicy": "Chỉ hàng vật lý — PaymentIntent tạo trên server ({{mode}}). Apple Pay/Google Pay có thể hiện cho giao hàng, không phải cho tiền ảo trong app.",
+    "continueCheckout": "Tiếp tục thanh toán",
+    "physicalStubTitle": "Thanh toán không được kết nối",
+    "physicalStubBody": "Kết nối backend để tạo Stripe PaymentIntent, rồi mở client với client secret trả về. Không để API key trong app.",
+    "sampleListingTitle": "Danh sách mẫu"
+  },
+  "legalModal": {
+    "done": "Xong"
+  },
+  "myQr": {
+    "title": "Mã bạn bè của bạn",
+    "subtitle": "Nhờ một người bạn quét mã QR này hoặc chia sẻ ID của bạn để họ có thể thêm bạn.",
+    "you": "Bạn",
+    "copy": "Sao chép",
+    "done": "Xong"
+  },
+  "qrScanner": {
+    "title": "Quét QR bạn bè",
+    "cancel": "Hủy bỏ",
+    "permText": "Chúng tôi cần quyền truy cập vào máy ảnh để quét mã QR của bạn bè.",
+    "allowCamera": "Cho phép máy ảnh",
+    "hint": "Căn chỉnh mã QR trong khung",
+    "webTitle": "Quét không có sẵn trên web",
+    "webBody": "Mở ứng dụng trên điện thoại của bạn để quét mã QR của bạn bè hoặc nhập ID bạn bè của họ vào bên dưới.",
+    "close": "Đóng"
+  },
+  "sort": {
+    "recommended": "Khuyến khích",
+    "priceAsc": "Giá: Thấp đến Cao",
+    "priceDesc": "Giá: Cao đến thấp",
+    "newest": "Mới nhất",
+    "bestValue": "Giá trị tốt nhất",
+    "popular": "Phổ biến nhất"
+  },
+  "filterRow": {
+    "filter": "Lọc",
+    "sortPrefix": "Sắp xếp: ",
+    "sortBy": "Sắp xếp theo"
+  },
+  "chips": {
+    "new": "Mới",
+    "new_user": "Người dùng mới",
+    "best_value": "Giá trị tốt nhất",
+    "graded": "Đã chấm điểm",
+    "hot_drop": "Hot drop",
+    "bonus_pack": "Bonus",
+    "chase_boost": "Chase boost"
+  },
+  "packCard": {
+    "openPack": "Chơi ngay",
+    "credits": "credit",
+    "remaining": "{{left}} / {{total}} còn lại",
+    "maxPerUser": "Tối đa {{count}} lượt / tài khoản",
+    "shortBadge": {
+      "new": "MỚI",
+      "new_user": "CHÀO MỪNG",
+      "best_value": "GIÁ TRỊ",
+      "graded": "VAULT",
+      "hot_drop": "NÓNG",
+      "bonus_pack": "THƯỞNG",
+      "chase_boost": "ĐUỔI"
+    }
+  },
+  "packCatalog": {
+    "1": {
+      "title": "Gói chào mừng người dùng mới",
+      "value": "Giá trị theo đuổi trên 100%",
+      "guarantee": "Đảm bảo tiền thưởng cứ sau 2 lần mở"
+    },
+    "2": {
+      "title": "Gói hit Pokémon Scarlet & Violet",
+      "value": "90% cơ hội giá trị trên 200 credit",
+      "guarantee": "Holofoil đảm bảo trong mỗi gói"
+    },
+    "3": {
+      "title": "Gói Vault được phân loại One Piece",
+      "value": "Bên trong thẻ phân loại PSA 9–10",
+      "guarantee": "Mỗi gói chứa một thẻ xếp loại"
+    },
+    "4": {
+      "title": "Gói Flash Thẻ Thể thao",
+      "value": "Thẻ tân binh từ các lượt chọn hàng đầu năm 2024",
+      "guarantee": "Thẻ tự động hoặc thẻ di tích cứ sau 5 lần mở"
+    },
+    "5": {
+      "title": "Gói phân loại Pokémon Vintage",
+      "value": "Lượt truy cập được xếp loại theo thời đại Bộ cơ sở",
+      "guarantee": "Đảm bảo điều kiện PSA 8+"
+    },
+    "6": {
+      "title": "Gói bí ẩn thả nóng",
+      "value": "Sự kết hợp bất ngờ từ tất cả các danh mục",
+      "guarantee": "Gói thưởng sau mỗi 3 lần mở"
+    },
+    "7": {
+      "title": "Gói chiến tranh tối cao One Piece",
+      "value": "Thẻ SR dẫn đầu có lá đuổi theo",
+      "guarantee": "Cơ hội 1/10 tại Alt Art"
+    },
+    "8": {
+      "title": "Gói lấy mẫu mới đến",
+      "value": "Các bản hit mẫu từ các bộ mới nhất",
+      "guarantee": "Ít nhất 3 thẻ mỗi lần mở"
+    },
+    "9": {
+      "title": "Yu-Gi-Oh! Gói trận chiến huyền thoại",
+      "value": "Các khe rượt đuổi bí mật và ánh sáng sao",
+      "guarantee": "Ultra Rare hoặc cao hơn mỗi gói"
+    }
+  },
+  "packOpening": {
+    "title": "Mở gói",
+    "opening": "Đang mở…",
+    "suspense": "Bạn vừa pull được gì?",
+    "revealing": "Đang lật…",
+    "skip": "Bỏ qua ▸",
+    "live": "LIVE",
+    "continue": "Tiếp tục",
+    "openNext": "Mở gói tiếp",
+    "youPulled": "Bạn đã pull",
+    "creditsLabel": "+{{amount}} credit",
+    "resultCommon1": "Hit thường từ {{packName}}",
+    "resultCommon2": "Pull chuẩn từ {{packName}}",
+    "resultCommon3": "Thẻ thường từ {{packName}}",
+    "resultRare1": "Hit hiếm từ {{packName}}",
+    "resultRare2": "Ultra pull từ {{packName}}",
+    "resultRare3": "Thẻ đặc biệt từ {{packName}}",
+    "resultLegendary1": "Hit huyền thoại từ {{packName}}",
+    "resultLegendary2": "Pull mythic từ {{packName}}",
+    "resultLegendary3": "Thẻ game-changer từ {{packName}}"
+  },
+  "insufficientCredits": {
+    "title": "Không đủ credit",
+    "body": "Cần thêm credit để mở gói này.",
+    "bodyWithAmount": "Bạn còn thiếu {{needed}} credit để mở gói này. Nạp thêm để tiếp tục.",
+    "packLabel": "Gói",
+    "costLabel": "Giá",
+    "balanceLabel": "Số dư",
+    "creditsLine": "{{amount}} credit",
+    "buyCredits": "Mua credit",
+    "cancel": "Hủy bỏ"
+  },
+  "friendsAlerts": {
+    "copiedTitle": "Đã sao chép",
+    "copiedBody": "ID bạn bè đã được sao chép vào bảng nhớ tạm.",
+    "addTitle": "Thêm bạn bè?",
+    "cancel": "Hủy bỏ",
+    "add": "Thêm vào",
+    "addedTitle": "Đã thêm",
+    "addedBody": "{{name}} đã có trong danh sách bạn bè.",
+    "selfTitle": "Đó là bạn",
+    "selfBody": "Bạn không thể thêm ID bạn bè của riêng mình.",
+    "duplicateTitle": "Đã là bạn bè",
+    "duplicateBody": "Người bạn này đã có trong danh sách của bạn.",
+    "errorTitle": "Lỗi",
+    "errorBody": "Vui lòng thử lại.",
+    "invalidIdTitle": "ID không hợp lệ",
+    "invalidIdBody": "ID bạn bè trông giống như TCG-123456. Yêu cầu bạn bè của bạn chia sẻ mã của họ.",
+    "notFoundTitle": "Không tìm thấy người dùng",
+    "notFoundBody": "Chưa có tài khoản nào khớp với ID bạn bè đó. Hãy kiểm tra kỹ mã hoặc thử lại sau."
+  }
+}

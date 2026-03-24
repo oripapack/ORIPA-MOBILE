@@ -93,9 +93,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.headerHairline,
   },
   filterBtn: {
     flexDirection: 'row',

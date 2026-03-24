@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -12,18 +12,36 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { isClerkAPIResponseError, useClerk, useUser } from '@clerk/clerk-expo';
 import { colors } from '../tokens/colors';
 import { fontSize, fontWeight } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
-import { hasVerifiedPhone, normalizeE164 } from '../lib/clerkPhone';
+import {
+  hasVerifiedPhone,
+  isValidNationalForDial,
+  toE164FromDialAndNational,
+} from '../lib/clerkPhone';
+import {
+  DEFAULT_DIAL_CODE_ID,
+  DialCodeOption,
+  dialOptionById,
+} from '../constants/phoneDialCodes';
+import { PhoneCountryPickerModal } from '../components/phone/PhoneCountryPickerModal';
 
 type Phase = 'phone' | 'code';
 
+function formatNanpDisplay(digits: string): string {
+  const d = digits.slice(0, 10);
+  if (d.length <= 3) return d;
+  if (d.length <= 6) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
+
 /**
  * After OAuth/email sign-in: collect & verify a phone number on the Clerk user.
- * Dashboard: User & authentication → Phone → enable SMS / verification (sign-in with phone can stay off).
+ * Dashboard: User & authentication → Phone → enable SMS; add a test number or SMS provider for dev.
  */
 export function LinkPhoneScreen() {
   const { t } = useTranslation();
@@ -31,8 +49,15 @@ export function LinkPhoneScreen() {
   const { signOut } = useClerk();
   const { user, isLoaded } = useUser();
 
+  const defaultCountry = useMemo(
+    () => dialOptionById(DEFAULT_DIAL_CODE_ID) ?? dialOptionById('US')!,
+    [],
+  );
+
   const [phase, setPhase] = useState<Phase>('phone');
-  const [rawPhone, setRawPhone] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<DialCodeOption>(defaultCountry);
+  const [nationalDigits, setNationalDigits] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [code, setCode] = useState('');
   const [pendingPhoneId, setPendingPhoneId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -40,12 +65,26 @@ export function LinkPhoneScreen() {
 
   const { primary, secondary } = getAppLogoParts();
 
+  const isNanp = selectedCountry.dial === '+1';
+
+  const nationalDisplay = isNanp ? formatNanpDisplay(nationalDigits) : nationalDigits;
+
+  const onNationalChange = useCallback(
+    (text: string) => {
+      const digits = text.replace(/\D/g, '');
+      const max = isNanp ? 10 : 15;
+      setNationalDigits(digits.slice(0, max));
+    },
+    [isNanp],
+  );
+
   const onSubmitPhone = useCallback(async () => {
     if (!user) return;
     setError(null);
-    const phoneNumber = normalizeE164(rawPhone);
-    if (phoneNumber.length < 8) {
-      setError(t('linkPhone.invalid'));
+
+    const phoneNumber = toE164FromDialAndNational(selectedCountry.dial, nationalDigits);
+    if (!isValidNationalForDial(selectedCountry.dial, nationalDigits)) {
+      setError(isNanp ? t('linkPhone.nanpInvalid') : t('linkPhone.invalid'));
       return;
     }
 
@@ -62,15 +101,19 @@ export function LinkPhoneScreen() {
       setCode('');
     } catch (e: unknown) {
       if (isClerkAPIResponseError(e)) {
-        const msg = e.errors?.[0]?.message;
-        setError(msg ?? t('linkPhone.genericError'));
+        const errs = e.errors;
+        const msg =
+          Array.isArray(errs) && errs.length > 0
+            ? errs.map((er) => er.message).filter(Boolean).join(' ')
+            : undefined;
+        setError(msg || t('linkPhone.genericError'));
       } else {
         setError(e instanceof Error ? e.message : t('linkPhone.genericError'));
       }
     } finally {
       setBusy(false);
     }
-  }, [rawPhone, t, user]);
+  }, [isNanp, nationalDigits, selectedCountry.dial, t, user]);
 
   const onVerifyCode = useCallback(async () => {
     if (!user || !pendingPhoneId) return;
@@ -139,6 +182,17 @@ export function LinkPhoneScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 48 : 0}
     >
+      <PhoneCountryPickerModal
+        visible={pickerOpen}
+        selected={selectedCountry}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(opt) => {
+          setSelectedCountry(opt);
+          setNationalDigits('');
+          setError(null);
+        }}
+      />
+
       <ScrollView
         style={styles.flex}
         contentContainerStyle={[
@@ -158,17 +212,33 @@ export function LinkPhoneScreen() {
 
         {phase === 'phone' ? (
           <>
-            <TextInput
-              style={styles.input}
-              value={rawPhone}
-              onChangeText={setRawPhone}
-              placeholder={t('linkPhone.phonePlaceholder')}
-              placeholderTextColor={colors.textMuted}
-              keyboardType="phone-pad"
-              autoComplete="tel"
-              textContentType="telephoneNumber"
-              editable={!busy}
-            />
+            <Text style={styles.fieldLabel}>{t('linkPhone.mobileLabel')}</Text>
+            <View style={styles.phoneRow}>
+              <TouchableOpacity
+                style={styles.countryBtn}
+                onPress={() => setPickerOpen(true)}
+                disabled={busy}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={t('linkPhone.countryPickerA11y')}
+              >
+                <Text style={styles.countryFlag}>{selectedCountry.flag}</Text>
+                <Text style={styles.countryDial}>{selectedCountry.dial}</Text>
+                <Ionicons name="chevron-down" size={18} color={colors.textSecondary} />
+              </TouchableOpacity>
+              <TextInput
+                style={styles.phoneInput}
+                value={nationalDisplay}
+                onChangeText={onNationalChange}
+                placeholder={isNanp ? t('linkPhone.nationalPlaceholderNanp') : t('linkPhone.nationalPlaceholder')}
+                placeholderTextColor={colors.textMuted}
+                keyboardType="phone-pad"
+                autoComplete="tel-national"
+                textContentType="telephoneNumber"
+                editable={!busy}
+              />
+            </View>
+
             <TouchableOpacity
               style={[styles.primaryBtn, busy && styles.btnDisabled]}
               onPress={() => void onSubmitPhone()}
@@ -187,7 +257,7 @@ export function LinkPhoneScreen() {
           <>
             <Text style={styles.verifyHint}>{t('linkPhone.codeHint')}</Text>
             <TextInput
-              style={styles.input}
+              style={styles.inputFull}
               value={code}
               onChangeText={setCode}
               placeholder={t('linkPhone.codePlaceholder')}
@@ -230,6 +300,7 @@ export function LinkPhoneScreen() {
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <Text style={styles.hint}>{t('linkPhone.dashboardHint')}</Text>
+        <Text style={styles.hintSecondary}>{t('linkPhone.smsDevHint')}</Text>
 
         <TouchableOpacity onPress={onSignOut} style={styles.signOutWrap} disabled={busy}>
           <Text style={styles.linkMuted}>{t('linkPhone.signOut')}</Text>
@@ -282,7 +353,53 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
-  input: {
+  fieldLabel: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.semibold,
+    color: colors.textMuted,
+    marginBottom: spacing.xs,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+  },
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
+  },
+  countryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
+    minHeight: 50,
+    backgroundColor: colors.white,
+  },
+  countryFlag: {
+    fontSize: fontSize.lg,
+  },
+  countryDial: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.semibold,
+    color: colors.textPrimary,
+  },
+  phoneInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.base,
+    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.regular,
+    color: colors.textPrimary,
+    minHeight: 50,
+  },
+  inputFull: {
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: radius.md,
@@ -340,6 +457,13 @@ const styles = StyleSheet.create({
   },
   hint: {
     marginTop: spacing.xl,
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.regular,
+    color: colors.textMuted,
+    lineHeight: 18,
+  },
+  hintSecondary: {
+    marginTop: spacing.sm,
     fontSize: fontSize.xs,
     fontWeight: fontWeight.regular,
     color: colors.textMuted,

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppHeader } from '../components/shared/AppHeader';
+import { HomeBackground } from '../components/shared/HomeBackground';
 import { HeroBanner } from '../components/pack/HeroBanner';
 import { CategoryTabBar } from '../components/pack/CategoryTabBar';
 import { FilterSortRow } from '../components/pack/FilterSortRow';
@@ -48,6 +49,7 @@ export function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <HomeBackground />
       <AppHeader />
       <FlatList
         data={sorted}
@@ -63,6 +65,7 @@ export function HomeScreen() {
             <View style={styles.catalogIntro}>
               <Text style={styles.browseTitle}>{t('packs.browseTitle')}</Text>
               <Text style={styles.browseSub}>{t('packs.browseSub')}</Text>
+              <View style={styles.catalogRule} />
             </View>
             <CategoryTabBar />
             <FilterSortRow />
@@ -85,7 +88,7 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.homeGradientBottom,
   },
   catalogIntro: {
     paddingHorizontal: spacing.base,
@@ -101,6 +104,13 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     color: colors.textSecondary,
     marginTop: 2,
+    lineHeight: 20,
+  },
+  catalogRule: {
+    marginTop: spacing.md,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.headerHairline,
+    alignSelf: 'stretch',
   },
   list: {
     paddingTop: 12,

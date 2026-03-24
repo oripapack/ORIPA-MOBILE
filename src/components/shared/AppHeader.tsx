@@ -8,6 +8,7 @@ import { spacing } from '../../tokens/spacing';
 import { CreditsPill } from './CreditsPill';
 import { getAppLogoParts } from '../../config/app';
 import { navigationRef } from '../../navigation/navigationRef';
+import { useRequireAuth } from '../../hooks/useRequireAuth';
 
 interface Props {
   onSearch?: () => void;
@@ -16,18 +17,24 @@ interface Props {
 export function AppHeader({ onSearch }: Props) {
   const insets = useSafeAreaInsets();
   const { primary, secondary } = getAppLogoParts();
+  const { requireAuth } = useRequireAuth();
 
   const goCredits = () => {
-    if (navigationRef.isReady()) {
-      navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
-    }
+    requireAuth(() => {
+      if (navigationRef.isReady()) {
+        navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
+      }
+    });
   };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
       {/* Logo */}
       <View style={styles.logo}>
-        <Text style={styles.logoText}>{primary}</Text>
+        <View>
+          <Text style={styles.logoText}>{primary}</Text>
+          <View style={styles.logoAccent} />
+        </View>
         {secondary != null && secondary.length > 0 ? (
           <Text style={styles.logoDot}>{secondary}</Text>
         ) : null}
@@ -51,13 +58,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.md,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    backgroundColor: 'rgba(255,255,255,0.82)',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.headerHairline,
+    shadowColor: colors.shadowStrong,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 4,
+    zIndex: 2,
   },
   logo: {
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'center',
     gap: 3,
   },
   logoText: {
@@ -65,6 +78,14 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.black,
     color: colors.nearBlack,
     letterSpacing: -0.5,
+  },
+  logoAccent: {
+    marginTop: 4,
+    height: 3,
+    width: 36,
+    borderRadius: 2,
+    backgroundColor: colors.red,
+    opacity: 0.9,
   },
   logoDot: {
     fontSize: fontSize.xl,

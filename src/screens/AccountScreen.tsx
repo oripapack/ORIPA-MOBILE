@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,15 +11,21 @@ import { radius, spacing } from '../tokens/spacing';
 import { ListRow } from '../components/shared/ListRow';
 import { useAppStore } from '../store/useAppStore';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
-import { getLocalizedPackTitle } from '../i18n/packCopy';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
+import { isClerkEnabled } from '../config/clerk';
+import { useGuestBrowseStore } from '../store/guestBrowseStore';
+import { ClerkLogoutRow } from '../components/account/ClerkLogoutRow';
+import { PullHistoryRow, useCompletedPullsSorted } from '../components/account/PullHistoryRow';
+import { useRequireAuth } from '../hooks/useRequireAuth';
+import { openExternalUrl } from '../utils/openExternalUrl';
+import { SUPPORT_EMAIL } from '../config/app';
 
-const shortcutIds = ['notif', 'hot', 'history', 'promos'] as const;
-const shortcutIcons: Record<(typeof shortcutIds)[number], string> = {
+/** Secondary quick links — pull history is the primary chip above (full list lives on PullHistory). */
+const secondaryShortcutIds = ['notif', 'hot', 'promos'] as const;
+const secondaryShortcutIcons: Record<(typeof secondaryShortcutIds)[number], string> = {
   notif: '🔔',
   hot: '🔥',
-  history: '📋',
   promos: '🎟️',
 };
 
@@ -44,13 +50,23 @@ type AccountNav = CompositeNavigationProp<
 >;
 
 export function AccountScreen() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<AccountNav>();
   const user = useAppStore((s) => s.user);
   const { refreshControl } = usePullToRefresh();
+  const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
+  const forceAuthWall = useGuestBrowseStore((s) => s.forceAuthWall);
+  const { requireAuth } = useRequireAuth();
 
-  const completedPulls = user.pullHistory.filter((p) => p.fulfillment !== 'pending');
+  const showGuestSignInCard = isClerkEnabled && !clerkSignedIn;
+
+  const onGuestSignIn = useCallback(() => {
+    forceAuthWall();
+  }, [forceAuthWall]);
+
+  const completedSorted = useCompletedPullsSorted();
+  const latestWins = useMemo(() => completedSorted.slice(0, 3), [completedSorted]);
   const pct = Math.min(100, Math.round((user.xp / user.xpToNextTier) * 100));
 
   const tierColors: Record<string, string> = {
@@ -61,9 +77,52 @@ export function AccountScreen() {
   };
   const tierColor = tierColors[user.tier] ?? colors.textSecondary;
 
-  const shortcuts = useMemo(
-    () => shortcutIds.map((id) => ({ id, icon: shortcutIcons[id], label: t(`shortcuts.${id}`) })),
+  const secondaryShortcuts = useMemo(
+    () =>
+      secondaryShortcutIds.map((id) => ({
+        id,
+        icon: secondaryShortcutIcons[id],
+        label: t(`shortcuts.${id}`),
+      })),
     [t],
+  );
+
+  const goPullHistory = useCallback(() => {
+    requireAuth(() => navigation.navigate('PullHistory'));
+  }, [navigation, requireAuth]);
+
+  const onSecondaryShortcut = useCallback(
+    (id: (typeof secondaryShortcutIds)[number]) => {
+      requireAuth(() => {
+        if (id === 'notif') navigation.navigate('Notifications');
+        if (id === 'hot') navigation.navigate('HotDropsInfo');
+        if (id === 'promos') navigation.navigate('PromosInfo');
+      });
+    },
+    [navigation, requireAuth],
+  );
+
+  const onAccountRow = useCallback(
+    (key: (typeof accountRowKeys)[number]) => {
+      requireAuth(() => {
+        if (key === 'shipping') navigation.navigate('ShippingAddress');
+        if (key === 'payout') navigation.navigate('PayoutMethod');
+        if (key === 'identity') navigation.navigate('IdentityVerification');
+        if (key === 'linked') navigation.navigate('LinkedAccounts');
+      });
+    },
+    [navigation, requireAuth],
+  );
+
+  const onSupportRow = useCallback(
+    (key: (typeof supportRowKeys)[number]) => {
+      if (key === 'help' || key === 'faq') {
+        navigation.navigate('HelpCenter');
+        return;
+      }
+      void openExternalUrl(`mailto:${SUPPORT_EMAIL}`, t('supportRows.contact'));
+    },
+    [navigation, t],
   );
 
   return (
@@ -75,9 +134,26 @@ export function AccountScreen() {
     >
       <Text style={styles.pageTitle}>{t('account.title')}</Text>
 
+      {showGuestSignInCard ? (
+        <View style={styles.guestSignInCard}>
+          <Text style={styles.guestSignInEyebrow}>{t('account.guestSignInEyebrow')}</Text>
+          <Text style={styles.guestSignInTitle}>{t('account.guestSignInTitle')}</Text>
+          <Text style={styles.guestSignInBody}>{t('account.guestSignInBody')}</Text>
+          <TouchableOpacity
+            style={styles.guestSignInBtn}
+            onPress={onGuestSignIn}
+            activeOpacity={0.88}
+            accessibilityRole="button"
+            accessibilityLabel={t('account.guestSignInCta')}
+          >
+            <Text style={styles.guestSignInBtnText}>{t('account.guestSignInCta')}</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
+
       <ClerkAccountSection />
 
-      {/* Tier card (from former Rewards tab) */}
+      {/* Tier card */}
       <View style={styles.tierCard}>
         <View style={styles.tierTop}>
           <View>
@@ -96,10 +172,14 @@ export function AccountScreen() {
           <Text style={styles.xpPct}>{pct}%</Text>
         </View>
         <View style={styles.barTrack}>
-          <View style={[styles.barFill, { width: `${pct}%` as any, backgroundColor: tierColor }]} />
+          <View style={[styles.barFill, { width: `${pct}%` as `${number}%`, backgroundColor: tierColor }]} />
         </View>
 
-        <TouchableOpacity style={styles.viewBenefitsBtn}>
+        <TouchableOpacity
+          style={styles.viewBenefitsBtn}
+          onPress={() => navigation.navigate('TierBenefits')}
+          activeOpacity={0.75}
+        >
           <Text style={styles.viewBenefitsText}>{t('rewards.viewBenefits')}</Text>
         </TouchableOpacity>
       </View>
@@ -112,60 +192,78 @@ export function AccountScreen() {
             <Text style={styles.memberId}>{user.memberId}</Text>
           </View>
           {!user.isVerified && (
-            <TouchableOpacity style={styles.verifyBtn}>
+            <TouchableOpacity
+              style={styles.verifyBtn}
+              onPress={() => requireAuth(() => navigation.navigate('IdentityVerification'))}
+              activeOpacity={0.85}
+            >
               <Text style={styles.verifyBtnText}>{t('account.verifyIdentity')}</Text>
             </TouchableOpacity>
           )}
         </View>
       </View>
 
-      {/* Shortcut grid */}
-      <View style={styles.shortcutGrid}>
-        {shortcuts.map((s) => (
-          <TouchableOpacity key={s.id} style={styles.shortcutItem} activeOpacity={0.7}>
-            <Text style={styles.shortcutIcon}>{s.icon}</Text>
-            <Text style={styles.shortcutLabel}>{s.label}</Text>
-          </TouchableOpacity>
-        ))}
+      {/* Player desk: full history is primary; everything else is secondary */}
+      <View style={styles.casinoStrip}>
+        <Text style={styles.casinoEyebrow}>{t('account.playerDeskEyebrow')}</Text>
+        <TouchableOpacity
+          style={styles.pullHistoryPrimary}
+          onPress={goPullHistory}
+          activeOpacity={0.88}
+          accessibilityRole="button"
+          accessibilityLabel={t('account.pullHistoryCta')}
+        >
+          <Text style={styles.pullHistoryPrimaryEmoji}>🎰</Text>
+          <View style={styles.pullHistoryPrimaryCopy}>
+            <Text style={styles.pullHistoryPrimaryTitle}>{t('account.pullHistoryCta')}</Text>
+            <Text style={styles.pullHistoryPrimarySub}>{t('account.pullHistorySub')}</Text>
+          </View>
+          <Text style={styles.pullHistoryChevron}>›</Text>
+        </TouchableOpacity>
+
+        <View style={styles.casinoDivider} />
+
+        <View style={styles.secondaryRow}>
+          {secondaryShortcuts.map((s) => (
+            <TouchableOpacity
+              key={s.id}
+              style={styles.secondaryItem}
+              activeOpacity={0.75}
+              onPress={() => onSecondaryShortcut(s.id)}
+            >
+              <Text style={styles.secondaryIcon}>{s.icon}</Text>
+              <Text style={styles.secondaryLabel} numberOfLines={2}>
+                {s.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
-      {/* Pull History */}
-      <Text style={styles.pullSectionTitle}>{t('rewards.pullHistory')}</Text>
-      {completedPulls.map((pull) => (
-        <View key={pull.id} style={styles.pullCard}>
-          <View style={styles.pullLeft}>
-            <Text style={styles.pullEmoji}>✨</Text>
-            <View style={styles.pullTextCol}>
-              <Text style={styles.pullResult} numberOfLines={2}>
-                {pull.result}
-              </Text>
-              <Text style={styles.pullPack} numberOfLines={2} ellipsizeMode="tail">
-                {getLocalizedPackTitle(pull.packId, pull.packTitle, t)}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.pullRight}>
-            <Text style={styles.pullCredits} numberOfLines={1}>
-              {pull.fulfillment === 'shipped'
-                ? t('rewards.shipped')
-                : `+${pull.creditsWon.toLocaleString()}`}
-            </Text>
-            <Text style={styles.pullDate}>
-              {pull.timestamp.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
-            </Text>
-          </View>
-        </View>
+      {/* Latest wins preview — full log is PullHistory */}
+      <Text style={styles.pullSectionTitle}>{t('rewards.latestWins')}</Text>
+      {latestWins.map((pull) => (
+        <PullHistoryRow key={pull.id} pull={pull} />
       ))}
 
-      {completedPulls.length === 0 && (
+      {latestWins.length > 0 ? (
+        <TouchableOpacity
+          style={styles.viewHistoryBtn}
+          onPress={goPullHistory}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.viewHistoryText}>{t('rewards.viewFullHistory')}</Text>
+        </TouchableOpacity>
+      ) : null}
+
+      {latestWins.length === 0 && (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyIcon}>📦</Text>
+          <Text style={styles.emptyIcon}>🎲</Text>
           <Text style={styles.emptyTitle}>{t('rewards.noPullsTitle')}</Text>
           <Text style={styles.emptyBody}>{t('rewards.noPullsBody')}</Text>
         </View>
       )}
 
-      {/* Account section */}
       <Text style={styles.sectionHeader}>{t('account.sectionAccount')}</Text>
       <View style={styles.listGroup}>
         {accountRowKeys.map((key) => (
@@ -173,19 +271,23 @@ export function AccountScreen() {
             key={key}
             label={t(`accountRows.${key}`)}
             icon={<Text>{accountIcons[key]}</Text>}
+            onPress={() => onAccountRow(key)}
           />
         ))}
       </View>
 
-      {/* Support section */}
       <Text style={styles.sectionHeader}>{t('account.sectionSupport')}</Text>
       <View style={styles.listGroup}>
         {supportRowKeys.map((key) => (
-          <ListRow key={key} label={t(`supportRows.${key}`)} icon={<Text>{supportIcons[key]}</Text>} />
+          <ListRow
+            key={key}
+            label={t(`supportRows.${key}`)}
+            icon={<Text>{supportIcons[key]}</Text>}
+            onPress={() => onSupportRow(key)}
+          />
         ))}
       </View>
 
-      {/* Settings → stack screen */}
       <Text style={styles.sectionHeader}>{t('account.sectionMore')}</Text>
       <View style={styles.listGroup}>
         <ListRow
@@ -193,13 +295,7 @@ export function AccountScreen() {
           icon={<Text>⚙️</Text>}
           onPress={() => navigation.navigate('Settings')}
         />
-        <ListRow
-          label={t('account.logout')}
-          icon={<Text>🚪</Text>}
-          destructive
-          showChevron={false}
-          onPress={() => {}}
-        />
+        {isClerkEnabled && clerkSignedIn ? <ClerkLogoutRow /> : null}
       </View>
     </ScrollView>
   );
@@ -219,6 +315,54 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
     marginBottom: spacing.base,
+    letterSpacing: -0.5,
+  },
+  guestSignInCard: {
+    backgroundColor: colors.white,
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+    marginBottom: spacing.base,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  guestSignInEyebrow: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.bold,
+    color: colors.red,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    marginBottom: spacing.xs,
+  },
+  guestSignInTitle: {
+    fontSize: fontSize.lg,
+    fontWeight: fontWeight.black,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
+  },
+  guestSignInBody: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.regular,
+    color: colors.textSecondary,
+    lineHeight: 20,
+    marginBottom: spacing.md,
+  },
+  guestSignInBtn: {
+    backgroundColor: colors.red,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    minHeight: 48,
+    justifyContent: 'center',
+  },
+  guestSignInBtnText: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold,
+    color: colors.white,
   },
   tierCard: {
     backgroundColor: colors.white,
@@ -329,96 +473,113 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.bold,
     color: colors.nearBlack,
   },
-  shortcutGrid: {
+  casinoStrip: {
+    backgroundColor: colors.casinoFelt,
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+    marginBottom: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.casinoFeltBorder,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.35,
+    shadowRadius: 20,
+    elevation: 8,
+  },
+  casinoEyebrow: {
+    fontSize: 10,
+    fontWeight: fontWeight.black,
+    color: colors.casinoGold,
+    letterSpacing: 2,
+    marginBottom: spacing.md,
+    opacity: 0.9,
+  },
+  pullHistoryPrimary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(240, 193, 76, 0.45)',
+  },
+  pullHistoryPrimaryEmoji: {
+    fontSize: 28,
+  },
+  pullHistoryPrimaryCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  pullHistoryPrimaryTitle: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.black,
+    color: colors.white,
+    letterSpacing: 0.3,
+  },
+  pullHistoryPrimarySub: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.medium,
+    color: 'rgba(248,250,252,0.55)',
+    marginTop: 2,
+    lineHeight: 16,
+  },
+  pullHistoryChevron: {
+    fontSize: 28,
+    fontWeight: fontWeight.regular,
+    color: colors.casinoGold,
+    marginTop: -2,
+  },
+  casinoDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    marginVertical: spacing.md,
+  },
+  secondaryRow: {
     flexDirection: 'row',
     gap: spacing.sm,
-    marginBottom: spacing.base,
   },
-  shortcutItem: {
+  secondaryItem: {
     flex: 1,
-    backgroundColor: colors.white,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.base,
     alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing.xs,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: 4,
+    borderRadius: radius.md,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: 'rgba(255,255,255,0.08)',
+    minHeight: 72,
   },
-  shortcutIcon: {
+  secondaryIcon: {
     fontSize: 22,
   },
-  shortcutLabel: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
-    color: colors.textPrimary,
+  secondaryLabel: {
+    fontSize: 10,
+    fontWeight: fontWeight.bold,
+    color: 'rgba(248,250,252,0.88)',
     textAlign: 'center',
+    lineHeight: 13,
   },
   pullSectionTitle: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
+    fontWeight: fontWeight.black,
     color: colors.textPrimary,
     marginBottom: spacing.md,
+    marginTop: spacing.xs,
+    letterSpacing: -0.2,
+  },
+  viewHistoryBtn: {
+    alignSelf: 'flex-start',
     marginTop: spacing.sm,
-  },
-  pullCard: {
-    backgroundColor: colors.white,
-    borderRadius: radius.lg,
-    padding: spacing.base,
     marginBottom: spacing.sm,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
   },
-  pullLeft: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: spacing.md,
-    flex: 1,
-    minWidth: 0,
-    /** Critical: clip long titles so they can’t draw over the status column (esp. “Shipped”). */
-    overflow: 'hidden',
-    paddingRight: spacing.xs,
-  },
-  pullTextCol: {
-    flex: 1,
-    minWidth: 0,
-    overflow: 'hidden',
-  },
-  pullEmoji: {
-    fontSize: 24,
-    marginTop: 2,
-  },
-  pullResult: {
-    fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
-    color: colors.textPrimary,
-    width: '100%',
-  },
-  pullPack: {
-    fontSize: fontSize.xs,
-    color: colors.textSecondary,
-    marginTop: 2,
-    width: '100%',
-  },
-  /** Reserved lane: wide enough for “Shipped” / 発送済み etc. so status never overlaps titles. */
-  pullRight: {
-    alignItems: 'flex-end',
-    flexShrink: 0,
-    flexGrow: 0,
-    marginLeft: spacing.sm,
-    minWidth: 124,
-    paddingLeft: spacing.xs,
-  },
-  pullCredits: {
-    fontSize: fontSize.base,
+  viewHistoryText: {
+    fontSize: fontSize.sm,
     fontWeight: fontWeight.bold,
-    color: colors.green,
-    textAlign: 'right',
-    width: '100%',
-  },
-  pullDate: {
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    marginTop: 2,
+    color: colors.red,
   },
   emptyState: {
     alignItems: 'center',

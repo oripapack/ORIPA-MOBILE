@@ -33,8 +33,11 @@ export function MyQrModal({ visible, onClose, qrValue, memberId, displayName, on
         </TouchableWithoutFeedback>
         <View style={styles.sheet} pointerEvents="box-none">
           <View style={styles.handle} />
-          <Text style={styles.title}>{t('myQr.title')}</Text>
-          <Text style={styles.subtitle}>{t('myQr.subtitle')}</Text>
+          <View style={styles.sheetTop}>
+            <Text style={styles.badge}>{t('friends.heroEyebrow')}</Text>
+            <Text style={styles.title}>{t('myQr.title')}</Text>
+            <Text style={styles.subtitle}>{t('myQr.subtitle')}</Text>
+          </View>
 
           <View style={styles.qrWrap}>
             <QRCode value={qrValue} size={216} backgroundColor={colors.white} color={colors.nearBlack} />
@@ -62,7 +65,7 @@ export function MyQrModal({ visible, onClose, qrValue, memberId, displayName, on
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: 'rgba(0,0,0,0.55)',
   },
   backdropTap: {
     flex: 1,
@@ -74,12 +77,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 2,
     elevation: 8,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surfaceElevated,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xl + 8,
     paddingTop: spacing.sm,
+    borderTopWidth: 3,
+    borderTopColor: colors.casinoGold,
   },
   handle: {
     alignSelf: 'center',
@@ -88,6 +93,16 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: colors.border,
     marginBottom: spacing.base,
+  },
+  sheetTop: {
+    marginBottom: spacing.md,
+  },
+  badge: {
+    fontSize: 10,
+    fontWeight: fontWeight.black,
+    color: colors.casinoGold,
+    letterSpacing: 2,
+    marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.xl,
@@ -99,16 +114,20 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     color: colors.textSecondary,
     lineHeight: 20,
-    marginBottom: spacing.lg,
   },
   qrWrap: {
     alignSelf: 'center',
-    padding: spacing.base,
+    padding: spacing.md,
     backgroundColor: colors.white,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
+    borderWidth: 2,
+    borderColor: 'rgba(240,193,76,0.65)',
     marginBottom: spacing.lg,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 4,
   },
   nameLabel: {
     fontSize: fontSize.xs,
@@ -119,7 +138,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
+    fontWeight: fontWeight.black,
     color: colors.textPrimary,
     marginBottom: spacing.base,
   },
@@ -127,30 +146,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.background,
+    backgroundColor: colors.casinoFelt,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.base,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.casinoFeltBorder,
     marginBottom: spacing.lg,
   },
   idText: {
+    flex: 1,
     fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
+    fontWeight: fontWeight.black,
     letterSpacing: 0.5,
-    color: colors.textPrimary,
+    color: colors.white,
+    marginRight: spacing.sm,
   },
   copyBtn: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
-    backgroundColor: colors.nearBlack,
+    backgroundColor: colors.casinoGold,
     borderRadius: radius.md,
   },
   copyBtnText: {
-    color: colors.white,
+    color: colors.nearBlack,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontWeight: fontWeight.black,
   },
   doneBtn: {
     height: 52,
@@ -158,10 +179,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.red,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: colors.red,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 4,
   },
   doneBtnText: {
     color: colors.white,
     fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontWeight: fontWeight.black,
+    letterSpacing: 0.5,
   },
 });

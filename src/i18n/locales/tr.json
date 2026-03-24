@@ -1,0 +1,566 @@
+{
+  "tabs": {
+    "home": "Ev",
+    "friends": "Arkadaşlar",
+    "marketplace": "Mağaza",
+    "account": "Oyuncu"
+  },
+  "marketplace": {
+    "storeTitle": "Pull Hub Mağazası",
+    "storeLead": "Doğrulanmış ortak mağazalardan tekli ve mühürlü ürünlere göz atın. Ödeme yakında geliyor; bu, listelemede öncelikli bir deneyimdir (burada paket açılmaz).",
+    "searchPlaceholder": "Kartları, setleri veya mağazaları arayın…",
+    "promoTitle": "Birçok siparişte ücretsiz kargo",
+    "promoBody": "Katılımcı mağazalardan 50 ABD dolarının üzerindeki siparişler ücretsiz gönderilir. Ayrıntılar için her listeye bakın.",
+    "cat_all": "Tüm",
+    "cat_pokemon": "Pokémon",
+    "cat_one_piece": "Tek Parça",
+    "cat_yugioh": "Yu-Gi-Oh!",
+    "cat_sports": "Spor",
+    "whyTitle": "Neden Pull Hub Store'u seçmelisiniz?",
+    "whyPointLabel1": "1. nokta",
+    "whyPointLabel2": "2. nokta",
+    "whyPointLabel3": "3. nokta",
+    "whyPoint1Title": "Hızlı yerine getirme",
+    "whyPoint1Body": "Ortak mağazalar hızlı bir şekilde gönderilir, böylece etkinlikler ve lig geceleri için kartları zamanında alabilirsiniz. Kesim süreleri satıcıya göre değişir.",
+    "whyPoint2Title": "Rekabetçi fiyatlar",
+    "whyPoint2Body": "Mağazalardaki listeleri tek bir yerde karşılaştırın. Pull Hub'ın komisyonu iş ortağı fiyatlandırmasına dahil edilmiştir; ödeme sırasında sürpriz ücretler yoktur.",
+    "whyPoint3Title": "Büyük seçim",
+    "whyPoint3Body": "Japonya promosyonlarından İngiliz zımba tellerine ve mühürlü balmumuna kadar, bölgeler genelindeki güvenilir satıcıların envanterini topluyoruz.",
+    "specialPrice": "Özel fiyat",
+    "saleOn": "SATIŞ",
+    "sectionStores": "Ortak mağazalardan",
+    "verified": "Doğrulandı",
+    "commissionLine": "Satışlarda Pull Hub ücreti:{{pct}}%",
+    "badgeSale": "SATIŞ",
+    "badgeTournament": "Turnuva",
+    "badgeNew": "YENİ",
+    "emptyResults": "Filtrelerinizle eşleşen ilan yok.",
+    "listingDemoTitle": "Listeleme",
+    "listingDemoBody": "Şunun için ödeme yapın: \"{{title}}” henüz kablolu değil - bu ekran yalnızca listeleme içindir.",
+    "demoNote": "Demo: ödemeler, alışveriş sepeti ve satıcı ödemeleri birbirine bağlı değildir. Paket açma Ana Sayfa sekmesinde kalır."
+  },
+  "common": {
+    "copied": "Kopyalandı",
+    "friendIdCopied": "Arkadaş Kimliği panoya kopyalandı."
+  },
+  "helpCenter": {
+    "navTitle": "Yardım Merkezi",
+    "lead": "Krediler, nakliye ve indirimler için hızlı yanıtlar. Bu örnek içeriktir; lansmandan önce gerçek yardım makalelerinizle değiştirin.",
+    "faq": {
+      "credits": {
+        "q": "Krediler nasıl çalışır?",
+        "a": "Krediler, dijital paketleri açmak için kullanılan uygulama içi para birimidir. Bu önizlemedeki satın alma işlemleri simüle edilebilir; nihai fiyatlandırma, geri ödemeler ve paketler lansmandan önce yayınlanacaktır."
+      },
+      "shipping": {
+        "q": "Fiziksel kartları nereye gönderiyorsunuz?",
+        "a": "Pazaryeri siparişleri ortak mağazalardan gönderilir. Kesintiler, taşıyıcılar ve ücretler listelemeye göre değişir. Ödemeler yayına girdiğinde ödeme işleminin daha hızlı olması için Hesap'a bir teslimat adresi ekleyin."
+      },
+      "drops": {
+        "q": "Sıcak düşüş nedir?",
+        "a": "Sıcak indirimler, sınırlı süreli veya yüksek talep gören paket sürümleridir. Hesap promosyonlarından (bonuslar ve kuponlar) farklıdırlar. Kısa bir açıklama için Hesaptaki Sıcak Droplar'a dokunun."
+      }
+    },
+    "contactSection": "Hala sıkıştınız mı?",
+    "emailCta": "E-posta{{email}}",
+    "emailUs": "E-posta desteği",
+    "responseTime": "1-2 iş günü içinde yanıt vermeyi hedefliyoruz (demo — izlenmiyor)."
+  },
+  "shippingAddress": {
+    "navTitle": "Gönderi Adresi",
+    "lead": "Pazaryeri siparişleri ve yerine getirme yayındayken ödül gönderimi için kullanılır. Önizleme yapısında yalnızca bu cihaza kaydedildi.",
+    "save": "Adresi kaydet",
+    "savedTitle": "Kaydedildi",
+    "savedBody": "Gönderim adresiniz bu cihaza kaydedildi.",
+    "saveFailed": "Kaydedilemedi. Tekrar deneyin.",
+    "missingTitle": "Eksik alanlar",
+    "missingBody": "En azından adı, cadde hattı 1'i, şehri ve ülkeyi girin.",
+    "fields": {
+      "fullName": "Ad Soyad",
+      "line1": "Adres satırı 1",
+      "line2": "Adres satırı 2 (isteğe bağlı)",
+      "city": "Şehir",
+      "region": "Eyalet / bölge",
+      "postal": "Posta Kodu",
+      "country": "Ülke"
+    },
+    "placeholders": {
+      "fullName": "Alex Eğitmen",
+      "line1": "123 Ana Cadde",
+      "line2": "Apt 4",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94102",
+      "country": "Amerika Birleşik Devletleri"
+    }
+  },
+  "tierBenefits": {
+    "navTitle": "Seviye avantajları",
+    "lead": "Seviyeler, etkinlikten elde edilen XP'ye dayalı bir sadakat merdivenidir. Aşağıda örnek avantajlar var; lansmandan önce ayarlayın.",
+    "progressHint": "Var{{xp}}XP. Sonraki seviyenin kilidi şu saatte açılır:{{need}}XP (demo merdiveni).",
+    "topTier": "En yüksek önizleme katmanındasınız; örnek verilerle oynadığınız için teşekkürler.",
+    "fromXp": "İtibaren{{xp}}XP",
+    "yourTier": "Seviyeniz",
+    "disclaimer": "Avantajlar, eşikler ve kullanılabilirlik yalnızca açıklama amaçlıdır ve değişebilir."
+  },
+  "notifications": {
+    "navTitle": "Bildirimler",
+    "lead": "Sizi ne konuda bilgilendirebileceğimizi seçin. Tercihler bu cihazda yalnızca önizlemede saklanır.",
+    "note": "Push kablolu olduğunda sistem bildirim izni ayrıca istenir. E-posta ve SMS kontrolleri de burada yer alacak.",
+    "toggles": {
+      "order": {
+        "title": "Siparişler ve nakliye",
+        "sub": "Market siparişleri için takip, gecikmeler ve teslimat güncellemeleri."
+      },
+      "drops": {
+        "title": "Sıcak indirimler ve stok yenilemeler",
+        "sub": "Sınırlı paketler ve yüksek talep gören sürümler."
+      },
+      "promos": {
+        "title": "Promosyonlar ve krediler",
+        "sub": "Bonus kredileri, kuponlar ve sezonluk kampanyalar."
+      },
+      "social": {
+        "title": "Arkadaşlar ve sosyal",
+        "sub": "Arkadaşlık istekleri ve davetler (etkinleştirildiğinde)."
+      }
+    }
+  },
+  "hotDropsInfo": {
+    "navTitle": "Sıcak damlalar",
+    "body": "Sıcak indirimler, süresi sınırlı veya yüksek talep gören paket sürümleridir; genellikle belirli bir set, ortak çalışma veya flaş penceresidir. Bunlar ürün ve zamanlamayla ilgilidir.",
+    "b1": "Duyurulan başlangıç ​​ve bitiş saatleri (veya “sarf malzemeleri bitene kadar”).",
+    "b2": "Her zaman yenilenen paketlerden farklı oranlar veya fiyatlar olabilir; her zaman paket ayrıntılarını okuyun.",
+    "b3": "Hızlı bir şekilde tükenebilir; bildirimleri etkinleştirmek stok stoklarını yakalamanıza yardımcı olur.",
+    "callout": "Promosyonlarla aynı şey değildir: Promosyonlar, paketin kendisi değil, pazarlama teşvikleridir (bonus kredileri, kuponlar)."
+  },
+  "promosInfo": {
+    "navTitle": "Promosyonlar",
+    "body": "Promosyonlar pazarlama programlarıdır: bonus kredileri, kupon kodları, sezonluk kampanyalar veya iş ortağı teklifleri. Kaydolma, paket satın alma veya arkadaşlarınızı yönlendirme gibi eylemleri ödüllendirirler.",
+    "b1": "Uygulama içi, e-posta veya sosyal medyada gösterilir; her promosyonun kendi kuralları ve tarihleri ​​vardır.",
+    "b2": "Seviyelerle birleştirilebilir veya belirli paketlerle sınırlı olabilir; lansmandan önce ayrıntılı bilgileri okuyun.",
+    "b3": "Hot Drops'tan farklı: Promosyon bir tekliftir; sıcak düşüş ürünün piyasaya sürülmesidir.",
+    "vsHotTitle": "Sıcak damlalar vs promosyonlar",
+    "vsHotBody": "Sınırlı sayıda çıkan paketler hakkında bilgi edinmek için Hot Drops'ı kullanın. Bonus kredilerini ve kupon tarzı teşvikleri anlamak için Promosyonları (bu ekran) kullanın."
+  },
+  "pullHistoryScreen": {
+    "navTitle": "Oynatma geçmişi",
+    "lead": "Tamamlanan her oyun — en yenisi önce gelir. Bekleyen çekimler, siz nakde çevirene veya gönderene kadar paket akışında kalır."
+  },
+  "linkedAccounts": {
+    "navTitle": "Bağlı hesaplar",
+    "body": "Bağlama, aynı Pull Hub profilinde birden fazla yöntemle (örneğin Google ve Apple) oturum açmanıza olanak tanır, böylece tek bir oturum açma işlemine kilitlenmezsiniz.",
+    "whatTitle": "Bu ne anlama geliyor?",
+    "whatBody": "Bu, iki ayrı uygulama hesabının birleştirilmesiyle ilgili değil. Kolaylık ve kurtarma için oturum açma sağlayıcılarını tek bir hesaba bağlamakla ilgilidir.",
+    "futureTitle": "Daha sonra gelecek",
+    "futureGoogle": "Google hesabı bağlantısı",
+    "futureApple": "Apple kimliği bağlantısı",
+    "futureEmail": "E-posta + şifre bağlantısı",
+    "note": "Sağlayıcı bağlantısı, üretimde kimlik doğrulama ayarlarınızı (ör. Katip) kullanır."
+  },
+  "identityVerification": {
+    "navTitle": "Kimlik doğrulama",
+    "body": "Kimlik doğrulama (bazen KYC olarak da adlandırılır), yüksek değerli ödemelerden, belirli promosyonlardan veya düzenlemeye tabi özelliklerden önce gerçek bir kişi olduğunuzu ve yaş veya uyumluluk kurallarına uyduğunuzu doğrular.",
+    "whyTitle": "Uygulamalar neden bunu istiyor?",
+    "whyBody": "Dolandırıcılığı azaltır, reşit olmayanları korur ve para veya değerli ödüller kullanıcılar ve platformlar arasında hareket ettiğinde mali veya piyasa kurallarını karşılar.",
+    "previewTitle": "Akışı önizleyin (etkin değil)",
+    "step1": "Resmi kimlik veya belge kontrolü",
+    "step2": "Selfie veya canlılık kontrolü (gerekiyorsa)",
+    "step3": "İnceleme - genellikle birkaç dakika, bazen daha uzun",
+    "note": "Bu yapı yalnızca konsepti açıklıyor. Doğrulama gerektirmeden önce tedarikçinize (örn. Persona, Stripe Identity) bağlantı kurun."
+  },
+  "payoutMethod": {
+    "navTitle": "Ödeme yöntemi",
+    "body": "Kart sattığınızda veya nakit çıkışı aldığınızda, ödemeler bağlantılı bir bankaya veya banka kartına gider. Bu önizleme gerçek bankacılıkla bağlantılı değildir.",
+    "line1": "Bölgeye bağlı olarak bir banka hesabı (ACH / yerel raylar) veya banka kartı ekleyin.",
+    "line2": "İşlemciniz gerektirdiğinde küçük birikintileri veya anında mikro yüklemeleri doğrulayın.",
+    "line3": "Ödeme zamanlaması ve ücretler pazar kurallarına uygundur; lansmandan önce Şartlar'a bakın.",
+    "note": "Stripe Connect veya PSP'niz entegre edildiğinde bu yer tutucuyu gerçek ödemeli katılımla değiştirin."
+  },
+  "settings": {
+    "title": "Ayarlar"
+  },
+  "demoBanner": "Önizleme yapısı — krediler ve ödüller simüle edilir.",
+  "home": {
+    "discover": "Keşfetmek",
+    "spotlightTitle": "Gündem paketleri",
+    "spotlightBody": "Özenle seçilmiş indirimler ve promosyonlar. Aşağıdaki kategorileri ve sıralamayı kullanın.",
+    "browseAllPacks": "Tüm paketlere göz atın",
+    "emptyCategory": "Bu kategoride henüz paket yok."
+  },
+  "packs": {
+    "browseTitle": "Paket katı",
+    "browseSub": "Bir hat seç, zemini sırala, hazır olduğunda çalıştır"
+  },
+  "categories": {
+    "all": "Tüm",
+    "featured": "Öne Çıkanlar",
+    "new": "Yeni",
+    "pokemon": "Pokémon",
+    "yugioh": "Yu-Gi-Oh!",
+    "one_piece": "Tek Parça",
+    "sports": "Spor",
+    "graded": "kademeli",
+    "hot_drops": "Sıcak Damlalar"
+  },
+  "hero": {
+    "eyebrow": "HOŞGELDİNİZ BONUSU",
+    "headline1": "Sulu çizgiler",
+    "headline2": "yeni oyuncular için",
+    "sub": "Daha iyi isabet oranlarına sahip sınırlı süreli paketler — kredi biriktirin ve büyük çekişmeyi kovalayın",
+    "browsePacks": "Yere vur",
+    "notNow": "Belki daha sonra",
+    "hitCard": "Büyük ikramiye kartı"
+  },
+  "friends": {
+    "title": "Arkadaşlar",
+    "lead": "Tanıdığınız insanlarla bağlantı kurun. Eklemek için arkadaş kimliğinizi paylaşın veya QR'lerini tarayın.",
+    "add": "Eklemek",
+    "emptyCta": "Arkadaş ekle",
+    "addModalTitle": "Arkadaş ekle",
+    "qrShort": "QR",
+    "yourFriendId": "Arkadaşınızın kimliği",
+    "memberHint": "Bu kimlik aynı zamanda Hesap sekmenizde Üye Kimliği olarak yer alır.",
+    "showQr": "QR kodumu göster",
+    "addFriend": "Arkadaş ekle",
+    "enterFriendId": "Arkadaş kimliğini girin",
+    "placeholderId": "örneğin TCG-100001",
+    "lookup": "Bakmak",
+    "scanQr": "QR kodunu tarayın",
+    "demoHint": "Demo: TCG-100001, TCG-100002 veya TCG-100003 kimliklerini deneyin.",
+    "yourFriends": "Arkadaşların ({{count}})",
+    "emptyTitle": "Henüz arkadaş yok",
+    "emptyBody": "Birisini eklediğinizde burada görünecekler, böylece daha sonra daha fazla sosyal özellik geliştirebileceksiniz."
+  },
+  "rewards": {
+    "title": "Ödüller",
+    "tier": "AŞAMA",
+    "viewBenefits": "Kademe Avantajlarını Görüntüle →",
+    "pullHistory": "Çekme Geçmişi",
+    "shipped": "Gönderildi",
+    "noPullsTitle": "Henüz oyun yok",
+    "noPullsBody": "İlk paketinizi yırtın; isabetleriniz ve kredileriniz burada görünecek.",
+    "latestWins": "En son hitler",
+    "viewFullHistory": "Tüm oyun geçmişini görün →"
+  },
+  "account": {
+    "title": "Oyuncu",
+    "tier": "AŞAMA",
+    "memberId": "Üye kimliği",
+    "verifyIdentity": "Kimliği Doğrula",
+    "viewBenefits": "Kademe Avantajlarını Görüntüle →",
+    "sectionAccount": "Hesap",
+    "sectionMore": "Daha",
+    "sectionSupport": "Destek",
+    "sectionLegal": "Yasal",
+    "sectionPreferences": "Tercihler",
+    "languageRegion": "Dil ve Bölge",
+    "followUs": "Bizi takip edin",
+    "followSub": "Promosyonlar, indirimler ve güncellemeler için resmi kanallarımızı takip edin.",
+    "logout": "Oturumu kapat",
+    "version": "{{name}}v{{version}}",
+    "guestSignInEyebrow": "Misafir olarak göz atıyorum",
+    "guestSignInTitle": "Burada herhangi bir şey yapmak için oturum açın",
+    "guestSignInBody": "Misafirler yalnızca göz atabilir. Paketleri açmak, kredi satın almak, ödeme yapmak ve Arkadaşlar'ı kullanmak için Google, Apple veya e-posta ile oturum açın.",
+    "guestSignInCta": "Oturum açın veya hesap oluşturun",
+    "playerDeskEyebrow": "OYUNCU MASASI",
+    "pullHistoryCta": "Tam oyun geçmişi",
+    "pullHistorySub": "Her açma, kredi kazanma ve isabet — tam kayıt"
+  },
+  "shortcuts": {
+    "notif": "Uyarılar",
+    "hot": "Sıcak damlalar",
+    "promos": "Promosyonlar"
+  },
+  "accountRows": {
+    "shipping": "Gönderi Adresi",
+    "payout": "Ödeme Yöntemi",
+    "identity": "Kimlik Doğrulaması",
+    "linked": "Bağlı Hesaplar"
+  },
+  "supportRows": {
+    "help": "Yardım Merkezi",
+    "contact": "Destek Ekibiyle İletişime Geçin",
+    "faq": "SSS"
+  },
+  "legalRows": {
+    "terms": "Hizmet Şartları",
+    "privacy": "Gizlilik Politikası",
+    "promo": "Promosyon Kuralları",
+    "payment": "Ödeme Açıklamaları"
+  },
+  "locale": {
+    "title": "Dil ve Bölge",
+    "language": "Dil",
+    "region": "Bölge",
+    "regionHint": "Tarihler, para birimi gösterimi ve gelecekteki gönderim varsayılanları için kullanılır.",
+    "fallbackNote": "Japonca, Korece, Çince (simp/trad) ve İspanyolcanın özel çevirileri vardır. Diğer diller şimdilik İngilizce kullanıyor; herhangi bir seçeneği seçin ve uygulama yerel ayarı güncellenir (biz çevirirken dizeler takip edilir).",
+    "save": "Kaydetmek",
+    "cancel": "İptal etmek"
+  },
+  "regions": {
+    "US": "Amerika Birleşik Devletleri",
+    "CA": "Kanada",
+    "GB": "Birleşik Krallık",
+    "JP": "Japonya",
+    "AU": "Avustralya"
+  },
+  "buyCredits": {
+    "close": "Kapalı",
+    "title": "Kredi Satın Al",
+    "subtitle": "Kredi paketleri açar. Promosyon indirimleri daha küçük paketlerde gösterilir; daha yüksek seviyeler liste fiyatıdır.",
+    "mockNote": "Önizleme: gerçek ödeme yok; demolar için krediler anında eklenir.",
+    "discountBadge": "{{pct}}% KAPALI",
+    "pointsLine": "{{count}}puan",
+    "approx": "yaklaşık.",
+    "buyNow": "Şimdi al",
+    "disclaimer": "Kredili satın alma işlemi onaylandıktan sonra iptal, para iadesi veya puan iadesi mümkün olmayabilir. (Lansmandan önceki son politika.)",
+    "mockFooter": "Simüle edilmiş paketler — lansmandan önce gerçek ödemeyle değiştirin.",
+    "liveFooter": "Güvenli ödeme · Anında teslimat · Son kullanma tarihi yok"
+  },
+  "lootBox": {
+    "title": "İçeriğin olasılığı",
+    "lead": "Paket açılışları rastgeledir. Aşağıdaki yaklaşık kademe oranları açıklama amaçlıdır; belirli paketler değişiklik gösterebilir.",
+    "columnTier": "Aşama",
+    "footnote": "Fiyatlar bu önizleme yapısı için örnek niteliğindedir. Yayınlanan ürünler, gerektiğinde satın almadan önce son oranları gösterecektir.",
+    "done": "Anladım"
+  },
+  "welcome": {
+    "signupPromoTitle": "Ücretsiz hoş geldin paketi",
+    "signupPromoBody": "Şimdi bir hesap oluşturun ve ilk oturumunuza bir bonus hoş geldin paketi ekleyelim (demo - canlı yayında verilir).",
+    "skip": "Oturum açmadan göz atın",
+    "guestHint": "Kataloğa göz atabilirsiniz. Paketleri açmak, kredi satın almak, ödeme yapmak ve Arkadaşlar'ı kullanmak için oturum açın."
+  },
+  "auth": {
+    "title": "Oturum aç",
+    "subtitle": "Google, Apple veya e-postayı kullanın. Yeni hesaplar: Doğrulamanız için size e-postayla tek seferlik bir kod göndereceğiz.",
+    "continueGoogle": "Google ile devam et",
+    "continueApple": "Apple'la devam et",
+    "or": "veya",
+    "modeSignIn": "Oturum aç",
+    "modeSignUp": "Hesap oluşturmak",
+    "emailPlaceholder": "E-posta",
+    "passwordPlaceholder": "Şifre",
+    "emailSignIn": "E-postayla oturum açın",
+    "emailContinue": "Devam etmek",
+    "verifyHint": "Gönderdiğimiz kodu girin{{email}}.",
+    "codePlaceholder": "6 haneli kod",
+    "verifyCode": "Doğrula ve devam et",
+    "resendCode": "Kodu yeniden gönder",
+    "emailPasswordRequired": "E-posta ve şifreyi girin.",
+    "signInIncomplete": "Oturum açma işlemi tamamlanamadı. İki faktörlü kimlik doğrulamayı kullanıyorsanız daha sonra destek ekleyeceğiz.",
+    "verifyFailed": "Doğrulama tamamlanmadı. Kodu kontrol edip tekrar deneyin.",
+    "dashboardHint": "Katip Kontrol Paneli: Google (oauth_google), Apple (oauth_apple) ve E-posta + şifre + e-posta kodu doğrulamayı etkinleştirin.",
+    "signedInAs": "Hesap",
+    "signOut": "oturumu Kapat",
+    "signOutTitle": "Oturumu Kapat?",
+    "signOutMessage": "Senkronize edilmiş verilerinizi kullanılabilir olduğunda kullanmak için tekrar oturum açmanız gerekecektir.",
+    "signOutConfirm": "oturumu Kapat",
+    "cancel": "İptal etmek"
+  },
+  "linkPhone": {
+    "title": "Telefonunuzu doğrulayın",
+    "subtitle": "Size bir kez kısa mesajla kod göndereceğiz. Ülkenizi seçin, ardından cep telefonu numaranızı girin; +1 yazmanıza gerek yok.",
+    "mobileLabel": "Cep numarası",
+    "countryPickerA11y": "Ülke veya bölge",
+    "nationalPlaceholderNanp": "(555) 123-4567",
+    "nationalPlaceholder": "Telefon numarası",
+    "sendCode": "Kodu gönder",
+    "codeHint": "Size mesaj attığımız kodu girin.",
+    "codePlaceholder": "6 haneli kod",
+    "verify": "Doğrula ve devam et",
+    "resend": "Kodu yeniden gönder",
+    "changeNumber": "Farklı bir numara kullan",
+    "invalid": "Seçilen ülke için geçerli bir telefon numarası girin.",
+    "nanpInvalid": "ABD ve Kanada numaralarının 10 haneli olması gerekir (alan kodu + numara).",
+    "phoneMissing": "Telefon doğrulaması başlatılamadı. Tekrar deneyin.",
+    "verifyFailed": "Bu kod işe yaramadı. Mesajı kontrol edip tekrar deneyin.",
+    "genericError": "Bir şeyler ters gitti. Tekrar deneyin.",
+    "dashboardHint": "Görevli Kontrol Paneli → Kullanıcı ve kimlik doğrulama → Telefon: SMS / doğrulamayı etkinleştirin. Yalnızca Google / Apple / e-posta ile oturum açmayı istiyorsanız “Telefonla oturum aç”ı kapatabilirsiniz.",
+    "smsDevHint": "SMS gönderilmiyor mu? Geliştirme aşamasında, Clerk kontrol paneline bir test telefonu ekleyin veya Twilio'yu / SMS sağlayıcınızı bağlayın; Clerk, yapılandırılana kadar gerçek metinler göndermez.",
+    "signOut": "Farklı bir hesap kullanın"
+  },
+  "profileOnboarding": {
+    "title": "Profilinizi ayarlayın",
+    "subtitle": "Herkese açık bir kullanıcı adı ve nasıl görünmek istediğinizi seçin. Bunu daha sonra hesap ayarları sunucuya bağlandığında değiştirebilirsiniz.",
+    "usernameLabel": "Kullanıcı adı",
+    "usernamePlaceholder": "sizin_tanımlayıcınız",
+    "displayNameLabel": "Görünen ad (isteğe bağlı)",
+    "displayNamePlaceholder": "Boşsa kullanıcı adı ile aynı",
+    "memberIdHint": "Arkadaş kodunuz (TCG-…) QR ve davetler için otomatik olarak atanır.",
+    "usernameInvalid": "2-20 karakter kullanın: yalnızca harfler, sayılar ve alt çizgiler.",
+    "continue": "Devam etmek",
+    "genericError": "Profiliniz kaydedilemedi. Tekrar deneyin."
+  },
+  "paymentPortal": {
+    "navTitle": "Ödeme",
+    "eyebrow": "Çıkış yapmak",
+    "tabCredits": "Kredi",
+    "tabMarketplace": "Pazar yeri",
+    "viewProbabilities": "İçerik olasılığını görüntüle",
+    "digitalRoutingNote": "Dijital krediler: Canlı yayın sırasında uygulama içi satın alma işlemlerini App Store / Google Play'den kullanın; madeni paralar için Stripe'ı değil.",
+    "marketplaceTitle": "Fiziksel düzen",
+    "marketplaceLead": "İş ortağı listeleri gerçek ürünler sunar. Checkout, uygulama içi kredi paketlerinden ayrı olarak fiziksel ürün ödeme akışını (sunucu destekli Stripe) kullanır.",
+    "item": "Öğe",
+    "price": "Fiyat",
+    "physicalPolicy": "Yalnızca fiziksel ürünler — Sunucunuzda oluşturulan PaymentIntent ({{mode}}). Apple Pay / Google Pay, dijital para birimi için değil, gönderimle yapılan satın alma işlemleri için görünebilir.",
+    "continueCheckout": "Ödeme işlemine devam edin",
+    "physicalStubTitle": "Ödeme bağlı değil",
+    "physicalStubBody": "Bir Stripe PaymentIntent oluşturmak için arka ucunuzu bağlayın, ardından döndürülen müşteri sırrıyla istemciyi açın. Uygulama ikili dosyasında anahtar yok.",
+    "sampleListingTitle": "Örnek liste"
+  },
+  "legalModal": {
+    "done": "Tamamlamak"
+  },
+  "myQr": {
+    "title": "Arkadaş kodunuz",
+    "subtitle": "Bir arkadaşınızın bu QR'yi taramasını sağlayın veya sizi ekleyebilmesi için kimliğinizi paylaşın.",
+    "you": "Sen",
+    "copy": "Kopyala",
+    "done": "Tamamlamak"
+  },
+  "qrScanner": {
+    "title": "Arkadaşınızın QR'sini tarayın",
+    "cancel": "İptal etmek",
+    "permText": "Arkadaşınızın QR kodlarını taramak için kamera erişimine ihtiyacımız var.",
+    "allowCamera": "Kameraya izin ver",
+    "hint": "QR kodunu çerçevenin içine hizalayın",
+    "webTitle": "Tarama web'de kullanılamıyor",
+    "webBody": "Bir arkadaşınızın QR kodunu taramak için uygulamayı telefonunuzda açın veya arkadaşınızın kimliğini aşağıya girin.",
+    "close": "Kapalı"
+  },
+  "sort": {
+    "recommended": "Tavsiye edilen",
+    "priceAsc": "Fiyat: Düşükten Yükseğe",
+    "priceDesc": "Fiyat: Yüksekten Düşüğe",
+    "newest": "En yeni",
+    "bestValue": "En İyi Değer",
+    "popular": "En Popüler"
+  },
+  "filterRow": {
+    "filter": "Filtre",
+    "sortPrefix": "Düzenlemek:",
+    "sortBy": "Göre sırala"
+  },
+  "chips": {
+    "new": "Yeni",
+    "new_user": "Yeni Kullanıcı",
+    "best_value": "En İyi Değer",
+    "graded": "kademeli",
+    "hot_drop": "Sıcak Damla",
+    "bonus_pack": "Bonus Paketi",
+    "chase_boost": "Takip Takviyesi"
+  },
+  "packCard": {
+    "openPack": "Şimdi oyna",
+    "credits": "kredi",
+    "remaining": "{{left}}/{{total}}sol",
+    "maxPerUser": "Maksimum{{count}}oyunlar / hesap",
+    "shortBadge": {
+      "new": "YENİ",
+      "new_user": "HOŞ GELDİN",
+      "best_value": "DEĞER",
+      "graded": "KASA",
+      "hot_drop": "SICAK",
+      "bonus_pack": "BONUS",
+      "chase_boost": "TAKİP ETMEK"
+    }
+  },
+  "packCatalog": {
+    "1": {
+      "title": "Yeni Kullanıcıya Hoş Geldiniz Paketi",
+      "value": "%100'ün üzerinde takip değeri",
+      "guarantee": "Her 2 açılışta garantili bonus"
+    },
+    "2": {
+      "title": "Pokémon Scarlet ve Violet Hit Paketi",
+      "value": "200+ kredi değerinde %90 şans",
+      "guarantee": "Her pakette holofoil garantisi"
+    },
+    "3": {
+      "title": "Tek Parça Kademeli Kasa Paketi",
+      "value": "PSA 9–10 dereceli kartlar içeride",
+      "guarantee": "Her pakette derecelendirilmiş bir kart bulunur"
+    },
+    "4": {
+      "title": "Spor Kartları Flash Paketi",
+      "value": "2024'ün en iyi seçimlerinden çaylak kartları",
+      "guarantee": "Her 5 açılışta bir otomatik veya kalıntı kart"
+    },
+    "5": {
+      "title": "Pokémon Vintage Kademeli Paket",
+      "value": "Temel Set dönemi derecelendirilmiş isabetler",
+      "guarantee": "Garantili PSA 8+ durumu"
+    },
+    "6": {
+      "title": "Sıcak Damla Gizem Paketi",
+      "value": "Tüm kategorilerden sürpriz karışım",
+      "guarantee": "Her 3 açılıştan sonra bonus paketi"
+    },
+    "7": {
+      "title": "Tek Parça Paramount Savaş Paketi",
+      "value": "Takip folyolarına sahip lider SR kartları",
+      "guarantee": "Alt Art'ta 10'da 1 şans"
+    },
+    "8": {
+      "title": "Yeni Gelenler Örnekleyici Paketi",
+      "value": "En yeni setlerden örnek hitler",
+      "guarantee": "Açık başına en az 3 kart"
+    },
+    "9": {
+      "title": "Yu-Gi-Oh! Efsane Savaşları Paketi",
+      "value": "Gizli Nadireler ve yıldız ışığı kovalamaca slotları",
+      "guarantee": "Her pakette Ultra Nadir veya daha üstü"
+    }
+  },
+  "packOpening": {
+    "title": "Paket açma",
+    "opening": "Açılıyor…",
+    "suspense": "Ne çektin?",
+    "revealing": "Açığa çıkıyor…",
+    "skip": "Atla ▸",
+    "live": "CANLI",
+    "continue": "Devam etmek",
+    "openNext": "Sonrakini aç",
+    "youPulled": "Sen çektin",
+    "creditsLabel": "+{{amount}}kredi",
+    "resultCommon1": "Ortak isabet{{packName}}",
+    "resultCommon2": "Standart çekme{{packName}}",
+    "resultCommon3": "Günlük kart{{packName}}",
+    "resultRare1": "Nadir isabet{{packName}}",
+    "resultRare2": "Ultra çekme{{packName}}",
+    "resultRare3": "Özel kart{{packName}}",
+    "resultLegendary1": "Efsanevi vuruş{{packName}}",
+    "resultLegendary2": "Efsanevi çekiş{{packName}}",
+    "resultLegendary3": "Oyunun kurallarını değiştiren kart{{packName}}"
+  },
+  "insufficientCredits": {
+    "title": "Yeterli Kredi Yok",
+    "body": "Bu paketi açmak için daha fazla krediye ihtiyacınız var.",
+    "bodyWithAmount": "ihtiyacın var{{needed}}Bu paketi açmak için daha fazla kredi. Devam etmek için şimdi kredi ekleyin.",
+    "packLabel": "Ambalaj",
+    "costLabel": "Maliyet",
+    "balanceLabel": "Bakiyeniz",
+    "creditsLine": "{{amount}}Kredi",
+    "buyCredits": "Kredi Satın Al",
+    "cancel": "İptal etmek"
+  },
+  "friendsAlerts": {
+    "copiedTitle": "Kopyalandı",
+    "copiedBody": "Arkadaş Kimliği panoya kopyalandı.",
+    "addTitle": "Arkadaş eklensin mi?",
+    "cancel": "İptal etmek",
+    "add": "Eklemek",
+    "addedTitle": "Eklendi",
+    "addedBody": "{{name}}artık arkadaş listende.",
+    "selfTitle": "bu sensin",
+    "selfBody": "Kendi arkadaş kimliğinizi ekleyemezsiniz.",
+    "duplicateTitle": "Zaten arkadaşlar",
+    "duplicateBody": "Bu arkadaş zaten listenizde.",
+    "errorTitle": "Bir şeyler ters gitti",
+    "errorBody": "Lütfen tekrar deneyin.",
+    "invalidIdTitle": "Geçersiz kimlik",
+    "invalidIdBody": "Arkadaş kimlikleri TCG-123456'ya benziyor. Arkadaşınızdan kodunu paylaşmasını isteyin.",
+    "notFoundTitle": "Kullanıcı bulunamadı",
+    "notFoundBody": "Henüz bu arkadaş kimliğiyle eşleşen hesap yok. Kodu bir kez daha kontrol edin veya daha sonra tekrar deneyin."
+  }
+}

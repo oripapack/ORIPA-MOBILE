@@ -17,6 +17,7 @@ import {
 } from '../data/marketplace';
 import { navigationRef } from '../navigation/navigationRef';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
+import { useRequireAuth } from '../hooks/useRequireAuth';
 
 const CATEGORY_KEYS: (ListingCategory | 'all')[] = [
   'all',
@@ -30,6 +31,7 @@ export function MarketplaceScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { refreshControl } = usePullToRefresh();
+  const { requireAuth } = useRequireAuth();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ListingCategory | 'all'>('all');
 
@@ -49,13 +51,15 @@ export function MarketplaceScreen() {
   );
 
   const onListingPress = (listing: MarketplaceListing) => {
-    if (navigationRef.isReady()) {
-      navigationRef.navigate('PaymentPortal', {
-        initialTab: 'marketplace',
-        listingTitle: listing.title,
-        listingPrice: listing.price,
-      });
-    }
+    requireAuth(() => {
+      if (navigationRef.isReady()) {
+        navigationRef.navigate('PaymentPortal', {
+          initialTab: 'marketplace',
+          listingTitle: listing.title,
+          listingPrice: listing.price,
+        });
+      }
+    });
   };
 
   return (

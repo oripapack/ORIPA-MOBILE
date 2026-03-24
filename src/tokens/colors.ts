@@ -1,9 +1,12 @@
 export const colors = {
   // Base
-  background: '#F7F7F8',
+  background: '#F4F5F8',
+  /** Slightly cooler lift for cards / chrome */
+  surfaceElevated: '#FFFFFF',
+  surfaceMuted: '#ECEEF3',
   white: '#FFFFFF',
   black: '#111111',
-  nearBlack: '#121212',
+  nearBlack: '#0C0C0E',
 
   // Text
   textPrimary: '#111111',
@@ -17,9 +20,17 @@ export const colors = {
   // Brand
   red: '#E11D2E',
   redDark: '#B91C1C',
-  gold: '#F5C451',
+  redGlow: 'rgba(225, 29, 46, 0.35)',
+  gold: '#F0B95C',
   goldDark: '#D97706',
+  goldSoft: 'rgba(240, 185, 92, 0.22)',
   green: '#16A34A',
+
+  /** Home / marketing chrome */
+  homeGradientTop: '#FAFAFC',
+  homeGradientMid: '#F1F3F9',
+  homeGradientBottom: '#E8EBF4',
+  headerHairline: 'rgba(15, 23, 42, 0.06)',
 
   // Chips
   chipNew: '#EFF6FF',
@@ -47,4 +58,12 @@ export const colors = {
 
   // Card shadow
   shadow: 'rgba(0,0,0,0.08)',
+  shadowStrong: 'rgba(15, 23, 42, 0.14)',
+  shadowCard: 'rgba(15, 23, 42, 0.12)',
+
+  /** Account / “player desk” strip */
+  casinoFelt: '#0a0f1a',
+  casinoGold: '#f0c14c',
+  casinoGoldDark: '#b8860b',
+  casinoFeltBorder: 'rgba(240, 193, 76, 0.35)',
 } as const;

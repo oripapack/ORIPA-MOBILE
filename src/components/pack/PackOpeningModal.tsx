@@ -207,7 +207,95 @@ const TIER_STYLES: Record<
   },
 };
 
-const PARTICLE_COUNT = 48;
+const PARTICLE_COUNT = 58;
+
+function PackEnergyRings({ color, active }: { color: string; active: boolean }) {
+  const pulse = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!active) {
+      pulse.setValue(0);
+      return;
+    }
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, {
+          toValue: 1,
+          duration: 1750,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulse, {
+          toValue: 0,
+          duration: 1750,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [active, pulse]);
+
+  const sOuter = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1.08] });
+  const oOuter = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.18, 0.48] });
+  const sInner = pulse.interpolate({ inputRange: [0, 1], outputRange: [1.06, 0.9] });
+  const oInner = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.1, 0.34] });
+
+  if (!active) return null;
+
+  return (
+    <View style={energyRingStyles.wrap} pointerEvents="none">
+      <Animated.View
+        style={[
+          energyRingStyles.ring,
+          energyRingStyles.ringOuter,
+          {
+            borderColor: color,
+            transform: [{ scale: sOuter }],
+            opacity: oOuter,
+          },
+        ]}
+      />
+      <Animated.View
+        style={[
+          energyRingStyles.ring,
+          energyRingStyles.ringInner,
+          {
+            borderColor: color,
+            transform: [{ scale: sInner }],
+            opacity: oInner,
+          },
+        ]}
+      />
+    </View>
+  );
+}
+
+const energyRingStyles = StyleSheet.create({
+  wrap: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 0,
+  },
+  ring: {
+    position: 'absolute',
+    borderStyle: 'solid',
+  },
+  ringOuter: {
+    width: 272,
+    height: 332,
+    borderRadius: radius.xl,
+    borderWidth: 2,
+  },
+  ringInner: {
+    width: 236,
+    height: 296,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+  },
+});
 
 function StadiumGradient() {
   return (
@@ -215,13 +303,21 @@ function StadiumGradient() {
       <Svg width={WIN_W} height={WIN_H} style={StyleSheet.absoluteFill}>
         <Defs>
           <LinearGradient id="stadiumGrad" x1="0.5" y1="0" x2="0.5" y2="1">
-            <Stop offset="0" stopColor="#07070d" />
-            <Stop offset="0.35" stopColor="#12101c" />
-            <Stop offset="0.55" stopColor="#1e1630" />
-            <Stop offset="1" stopColor="#050508" />
+            <Stop offset="0" stopColor="#030712" />
+            <Stop offset="0.22" stopColor="#0b1020" />
+            <Stop offset="0.42" stopColor="#120a1e" />
+            <Stop offset="0.58" stopColor="#0f172a" />
+            <Stop offset="0.78" stopColor="#1a1035" />
+            <Stop offset="1" stopColor="#020617" />
+          </LinearGradient>
+          <LinearGradient id="stadiumAurora" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0" stopColor="rgba(56, 189, 248, 0.14)" />
+            <Stop offset="0.45" stopColor="rgba(168, 85, 247, 0.1)" />
+            <Stop offset="1" stopColor="rgba(244, 63, 94, 0.08)" />
           </LinearGradient>
         </Defs>
         <Rect x={0} y={0} width={WIN_W} height={WIN_H} fill="url(#stadiumGrad)" />
+        <Rect x={0} y={0} width={WIN_W} height={WIN_H} fill="url(#stadiumAurora)" opacity={0.85} />
       </Svg>
       <View style={styles.vignetteTop} />
       <View style={styles.vignetteBottom} />
@@ -454,6 +550,7 @@ export function PackOpeningModal() {
   const packShake = useRef(new Animated.Value(0)).current;
   const packOpacity = useRef(new Animated.Value(1)).current;
   const burstFlash = useRef(new Animated.Value(0)).current;
+  const burstTint = useRef(new Animated.Value(0)).current;
   const walkoutY = useRef(new Animated.Value(520)).current;
   const walkoutScale = useRef(new Animated.Value(0.5)).current;
   const walkoutRotate = useRef(new Animated.Value(0)).current;
@@ -563,6 +660,7 @@ export function PackOpeningModal() {
     setPhase('done');
     packOpacity.setValue(0);
     burstFlash.setValue(0);
+    burstTint.setValue(0);
     walkoutY.setValue(0);
     walkoutScale.setValue(1);
     walkoutRotate.setValue(1);
@@ -590,6 +688,7 @@ export function PackOpeningModal() {
     packShake.setValue(0);
     packOpacity.setValue(1);
     burstFlash.setValue(0);
+    burstTint.setValue(0);
     walkoutY.setValue(520);
     walkoutScale.setValue(0.5);
     walkoutRotate.setValue(0);
@@ -670,6 +769,25 @@ export function PackOpeningModal() {
       void playPackReveal();
       hapticPackReveal();
 
+      const chroma =
+        roll.tier === 'mythic' || roll.tier === 'legendary' || roll.tier === 'epic';
+      if (chroma) {
+        burstTint.setValue(0);
+        Animated.sequence([
+          Animated.timing(burstTint, {
+            toValue: 0.92,
+            duration: 52,
+            useNativeDriver: true,
+          }),
+          Animated.timing(burstTint, {
+            toValue: 0,
+            duration: 360,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }
+
       Animated.timing(packOpacity, {
         toValue: 0,
         duration: 220,
@@ -679,12 +797,12 @@ export function PackOpeningModal() {
       Animated.sequence([
         Animated.timing(burstFlash, {
           toValue: 1,
-          duration: 70,
+          duration: chroma ? 55 : 70,
           useNativeDriver: true,
         }),
         Animated.timing(burstFlash, {
           toValue: 0,
-          duration: 280,
+          duration: chroma ? 300 : 280,
           easing: Easing.out(Easing.cubic),
           useNativeDriver: true,
         }),
@@ -720,6 +838,7 @@ export function PackOpeningModal() {
     packShake,
     packOpacity,
     burstFlash,
+    burstTint,
     walkoutY,
     walkoutScale,
     walkoutRotate,
@@ -810,6 +929,9 @@ export function PackOpeningModal() {
           <View style={styles.stage}>
             {(phase === 'stadium' || phase === 'burst') && (
               <View style={styles.packStage}>
+                {phase === 'stadium' && pending && (
+                  <PackEnergyRings color={tierVisual.border} active />
+                )}
                 <Animated.View
                   pointerEvents="none"
                   style={[
@@ -838,6 +960,17 @@ export function PackOpeningModal() {
                 </Animated.View>
               </View>
             )}
+
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                styles.burstTintLayer,
+                {
+                  opacity: burstTint,
+                  backgroundColor: pending ? TIER_STYLES[pending.tier].beam : 'transparent',
+                },
+              ]}
+            />
 
             <Animated.View
               pointerEvents="none"
@@ -1092,6 +1225,10 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.semibold,
     color: 'rgba(255,255,255,0.5)',
     letterSpacing: 1,
+  },
+  burstTintLayer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 18,
   },
   burstLayer: {
     ...StyleSheet.absoluteFillObject,

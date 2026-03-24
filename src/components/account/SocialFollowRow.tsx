@@ -15,7 +15,7 @@ const SOCIAL_CONFIG: {
   color: string;
 }[] = [
   { id: 'instagram', label: 'Instagram', icon: 'instagram', color: '#E4405F' },
-  { id: 'x', label: 'X', icon: 'twitter', color: '#000000' },
+  { id: 'x', label: 'X', icon: 'twitter', color: '#F8FAFC' },
   { id: 'youtube', label: 'YouTube', icon: 'youtube', color: '#FF0000' },
   { id: 'discord', label: 'Discord', icon: 'discord', color: '#5865F2' },
 ];
@@ -38,12 +38,14 @@ export function SocialFollowRow() {
         <TouchableOpacity
           key={item.id}
           style={styles.socialBtn}
-          activeOpacity={0.7}
+          activeOpacity={0.82}
           onPress={() => void open(item.id)}
           accessibilityRole="link"
           accessibilityLabel={`Open ${item.label}`}
         >
-          <FontAwesome5 name={item.icon} size={26} color={item.color} brand />
+          <View style={[styles.iconBubble, { borderColor: `${item.color}55` }]}>
+            <FontAwesome5 name={item.icon} size={22} color={item.color} brand />
+          </View>
           <Text style={styles.socialLabel}>{item.label}</Text>
         </TouchableOpacity>
       ))}
@@ -54,26 +56,36 @@ export function SocialFollowRow() {
 const styles = StyleSheet.create({
   socialRow: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.base,
     flexWrap: 'wrap',
+    gap: spacing.sm,
     justifyContent: 'space-between',
   },
   socialBtn: {
     width: '48%',
     flexGrow: 1,
     minWidth: '45%',
-    backgroundColor: colors.white,
+    backgroundColor: colors.nearBlack,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+  iconBubble: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
   },
   socialLabel: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
-    color: colors.textSecondary,
+    fontWeight: fontWeight.bold,
+    color: 'rgba(248,250,252,0.88)',
+    letterSpacing: 0.2,
   },
 });

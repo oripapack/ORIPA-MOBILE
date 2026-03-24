@@ -43,6 +43,12 @@
     "title": "設定"
   },
   "demoBanner": "プレビュー版 — クレジットと報酬はシミュレーションです。",
+  "welcome": {
+    "signupPromoTitle": "ウェルカムパック無料",
+    "signupPromoBody": "アカウントを作成すると初回セッションにボーナスウェルカムパックを付与します（デモ — 本番接続後に付与）。",
+    "skip": "サインインせずに閲覧",
+    "guestHint": "カタログは閲覧できます。パック開封・クレジット購入・決済・フレンドにはサインインが必要です。"
+  },
   "home": {
     "discover": "発見",
     "spotlightTitle": "スポットライトパック",
@@ -101,7 +107,9 @@
     "pullHistory": "開封履歴",
     "shipped": "発送済み",
     "noPullsTitle": "まだ開封履歴がありません",
-    "noPullsBody": "最初のパックを開けると、ここに履歴が表示されます。"
+    "noPullsBody": "最初のパックを開けると、ここに履歴が表示されます。",
+    "latestWins": "Latest hits",
+    "viewFullHistory": "See full play history →"
   },
   "account": {
     "title": "アカウント",
@@ -118,7 +126,14 @@
     "followUs": "フォロー",
     "followSub": "公式チャンネルでプロモや最新情報をチェック。",
     "logout": "ログアウト",
-    "version": "{{name}} v{{version}}"
+    "version": "{{name}} v{{version}}",
+    "guestSignInEyebrow": "ゲストで閲覧中",
+    "guestSignInTitle": "操作するにはサインインが必要です",
+    "guestSignInBody": "ゲストは閲覧のみです。パックを開く・クレジット購入・決済・フレンド機能にはアカウントが必要です。Google、Apple、またはメールで続行できます。",
+    "guestSignInCta": "サインインまたは新規登録",
+    "playerDeskEyebrow": "PLAYER DESK",
+    "pullHistoryCta": "Full play history",
+    "pullHistorySub": "Every open, credit win, and hit — complete log"
   },
   "shortcuts": {
     "notif": "通知",
@@ -217,7 +232,16 @@
     "openPack": "パックを開ける",
     "credits": "クレジット",
     "remaining": "残り {{left}} / {{total}}",
-    "maxPerUser": "1人あたり最大{{count}}回まで"
+    "maxPerUser": "1人あたり最大{{count}}回まで",
+    "shortBadge": {
+      "new": "NEW",
+      "new_user": "WELCOME",
+      "best_value": "VALUE",
+      "graded": "VAULT",
+      "hot_drop": "HOT",
+      "bonus_pack": "BONUS",
+      "chase_boost": "CHASE"
+    }
   },
   "packCatalog": {
     "1": {

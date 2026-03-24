@@ -43,6 +43,12 @@
     "title": "설정"
   },
   "demoBanner": "미리보기 빌드 — 크레딧과 리워드는 시뮬레이션입니다.",
+  "welcome": {
+    "signupPromoTitle": "무료 웰컴 팩",
+    "signupPromoBody": "지금 가입하면 첫 세션에 보너스 웰컴 팩을 드립니다(데모 — 실서비스 시 지급).",
+    "skip": "로그인 없이 둘러보기",
+    "guestHint": "카탈로그는 볼 수 있어요. 팩 열기, 크레딧 구매, 결제, 친구 기능은 로그인이 필요합니다."
+  },
   "home": {
     "discover": "발견",
     "spotlightTitle": "스포트라이트 팩",
@@ -101,7 +107,9 @@
     "pullHistory": "개봉 기록",
     "shipped": "배송됨",
     "noPullsTitle": "아직 개봉 기록이 없어요",
-    "noPullsBody": "첫 팩을 열면 여기에 기록이 표시됩니다."
+    "noPullsBody": "첫 팩을 열면 여기에 기록이 표시됩니다.",
+    "latestWins": "Latest hits",
+    "viewFullHistory": "See full play history →"
   },
   "account": {
     "title": "계정",
@@ -118,7 +126,14 @@
     "followUs": "팔로우",
     "followSub": "공식 채널에서 프로모와 소식을 확인하세요.",
     "logout": "로그아웃",
-    "version": "{{name}} v{{version}}"
+    "version": "{{name}} v{{version}}",
+    "guestSignInEyebrow": "게스트로 둘러보기",
+    "guestSignInTitle": "이용하려면 로그인하세요",
+    "guestSignInBody": "게스트는 둘러보기만 가능합니다. 팩 열기, 크레딧 구매, 결제, 친구 기능은 계정이 필요합니다. Google, Apple 또는 이메일로 계속하세요.",
+    "guestSignInCta": "로그인 또는 회원가입",
+    "playerDeskEyebrow": "PLAYER DESK",
+    "pullHistoryCta": "Full play history",
+    "pullHistorySub": "Every open, credit win, and hit — complete log"
   },
   "shortcuts": {
     "notif": "알림",
@@ -217,7 +232,16 @@
     "openPack": "팩 열기",
     "credits": "크레딧",
     "remaining": "남음 {{left}} / {{total}}",
-    "maxPerUser": "1인당 최대 {{count}}회"
+    "maxPerUser": "1인당 최대 {{count}}회",
+    "shortBadge": {
+      "new": "NEW",
+      "new_user": "WELCOME",
+      "best_value": "VALUE",
+      "graded": "VAULT",
+      "hot_drop": "HOT",
+      "bonus_pack": "BONUS",
+      "chase_boost": "CHASE"
+    }
   },
   "packCatalog": {
     "1": {

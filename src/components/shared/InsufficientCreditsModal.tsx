@@ -11,9 +11,11 @@ import { SecondaryButton } from './SecondaryButton';
 import { useAppStore } from '../../store/useAppStore';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { navigationRef } from '../../navigation/navigationRef';
+import { useRequireAuth } from '../../hooks/useRequireAuth';
 
 export function InsufficientCreditsModal() {
   const { t } = useTranslation();
+  const { requireAuth } = useRequireAuth();
   const visible = useAppStore((s) => s.modals.insufficientCredits);
   const selectedPack = useAppStore((s) => s.selectedPack);
   const closeModal = useAppStore((s) => s.closeModal);
@@ -58,9 +60,11 @@ export function InsufficientCreditsModal() {
             style={styles.primaryBtn}
             onPress={() => {
               closeModal('insufficientCredits');
-              if (navigationRef.isReady()) {
-                navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
-              }
+              requireAuth(() => {
+                if (navigationRef.isReady()) {
+                  navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
+                }
+              });
             }}
           />
           <SecondaryButton

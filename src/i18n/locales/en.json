@@ -3,7 +3,7 @@
     "home": "Home",
     "friends": "Friends",
     "marketplace": "Shop",
-    "account": "Account"
+    "account": "Player"
   },
   "marketplace": {
     "storeTitle": "Pull Hub Store",
@@ -39,6 +39,144 @@
     "listingDemoBody": "Checkout for “{{title}}” isn’t wired yet — this screen is listings-only.",
     "demoNote": "Demo: payments, cart, and seller payouts are not connected. Pack opening stays on the Home tab."
   },
+  "common": {
+    "error": "Error",
+    "copied": "Copied",
+    "friendIdCopied": "Friend ID copied to clipboard."
+  },
+  "helpCenter": {
+    "navTitle": "Help Center",
+    "lead": "Quick answers for credits, shipping, and drops. This is sample content — replace with your real help articles before launch.",
+    "faq": {
+      "credits": {
+        "q": "How do credits work?",
+        "a": "Credits are the in-app currency used to open digital packs. Purchases in this preview may be simulated — final pricing, refunds, and bundles will be published before launch."
+      },
+      "shipping": {
+        "q": "Where do you ship physical cards?",
+        "a": "Marketplace orders ship from partner stores. Cutoffs, carriers, and fees vary by listing. Add a shipping address in Account so checkout is faster when payments go live."
+      },
+      "drops": {
+        "q": "What is a hot drop?",
+        "a": "Hot drops are limited-time or high-demand pack releases. They are different from account promos (bonuses and coupons). Tap Hot Drops on Account for a short explainer."
+      }
+    },
+    "contactSection": "Still stuck?",
+    "emailCta": "Email {{email}}",
+    "emailUs": "Email support",
+    "responseTime": "We aim to reply within 1–2 business days (demo — not monitored)."
+  },
+  "shippingAddress": {
+    "navTitle": "Shipping address",
+    "lead": "Used for marketplace orders and prize shipping when fulfillment is live. Saved only on this device in the preview build.",
+    "save": "Save address",
+    "savedTitle": "Saved",
+    "savedBody": "Your shipping address was saved on this device.",
+    "saveFailed": "Could not save. Try again.",
+    "missingTitle": "Missing fields",
+    "missingBody": "Enter at least name, street line 1, city, and country.",
+    "fields": {
+      "fullName": "Full name",
+      "line1": "Address line 1",
+      "line2": "Address line 2 (optional)",
+      "city": "City",
+      "region": "State / region",
+      "postal": "Postal code",
+      "country": "Country"
+    },
+    "placeholders": {
+      "fullName": "Alex Trainer",
+      "line1": "123 Main St",
+      "line2": "Apt 4",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94102",
+      "country": "United States"
+    }
+  },
+  "tierBenefits": {
+    "navTitle": "Tier benefits",
+    "lead": "Tiers are a loyalty ladder based on XP from activity. Sample perks below — tune before launch.",
+    "progressHint": "You have {{xp}} XP. Next tier unlocks at {{need}} XP (demo ladder).",
+    "topTier": "You are at the highest preview tier — thanks for playing with the sample data.",
+    "fromXp": "From {{xp}} XP",
+    "yourTier": "Your tier",
+    "disclaimer": "Benefits, thresholds, and availability are illustrative only and may change."
+  },
+  "notifications": {
+    "navTitle": "Notifications",
+    "lead": "Choose what we can notify you about. Preferences are stored on this device only in the preview.",
+    "note": "System notification permission is requested separately when push is wired. Email and SMS controls will live here too.",
+    "toggles": {
+      "order": {
+        "title": "Orders & shipping",
+        "sub": "Tracking, delays, and delivery updates for marketplace orders."
+      },
+      "drops": {
+        "title": "Hot drops & restocks",
+        "sub": "Limited packs and high-demand releases."
+      },
+      "promos": {
+        "title": "Promos & credits",
+        "sub": "Bonus credits, coupons, and seasonal campaigns."
+      },
+      "social": {
+        "title": "Friends & social",
+        "sub": "Friend requests and invites (when enabled)."
+      }
+    }
+  },
+  "hotDropsInfo": {
+    "navTitle": "Hot drops",
+    "body": "Hot drops are time-limited or high-demand pack releases — often a specific set, collab, or flash window. They are about the product and timing.",
+    "b1": "Announced start and end times (or “while supplies last”).",
+    "b2": "May have different odds or price than evergreen packs — always read the pack details.",
+    "b3": "Can sell out quickly; enabling notifications helps you catch restocks.",
+    "callout": "Not the same as Promos: promos are marketing incentives (bonus credits, coupons), not the pack release itself."
+  },
+  "promosInfo": {
+    "navTitle": "Promos",
+    "body": "Promos are marketing programs: bonus credits, coupon codes, seasonal campaigns, or partner offers. They reward actions like signing up, buying bundles, or referring friends.",
+    "b1": "Shown in-app, email, or social — each promo has its own rules and dates.",
+    "b2": "May stack with tiers or be limited to certain packs — read the fine print before launch.",
+    "b3": "Different from Hot Drops: a promo is the offer; a hot drop is the product release.",
+    "vsHotTitle": "Hot drops vs promos",
+    "vsHotBody": "Use Hot Drops to learn about limited pack releases. Use Promos (this screen) to understand bonus credits and coupon-style incentives."
+  },
+  "pullHistoryScreen": {
+    "navTitle": "Play history",
+    "lead": "Every completed play — newest first. Pending pulls stay in the pack flow until you cash out or ship."
+  },
+  "linkedAccounts": {
+    "navTitle": "Linked accounts",
+    "body": "Linking lets you sign in to the same Pull Hub profile with more than one method (for example Google and Apple), so you are not locked to a single login.",
+    "whatTitle": "What this means",
+    "whatBody": "It is not about merging two separate app accounts. It is about attaching sign-in providers to one account for convenience and recovery.",
+    "futureTitle": "Coming later",
+    "futureGoogle": "Google account link",
+    "futureApple": "Apple ID link",
+    "futureEmail": "Email + password link",
+    "note": "Provider linking will use your auth settings (e.g. Clerk) in production."
+  },
+  "identityVerification": {
+    "navTitle": "Identity verification",
+    "body": "Identity verification (sometimes called KYC) confirms you are a real person and meets age or compliance rules before high-value payouts, certain promos, or regulated features.",
+    "whyTitle": "Why apps ask for this",
+    "whyBody": "It reduces fraud, protects minors, and satisfies financial or marketplace rules when money or valuable prizes move between users and platforms.",
+    "previewTitle": "Preview flow (not active)",
+    "step1": "Government ID or document check",
+    "step2": "Selfie or liveness check (if required)",
+    "step3": "Review — usually minutes, sometimes longer",
+    "note": "This build only explains the concept. Wire your vendor (e.g. Persona, Stripe Identity) before requiring verification."
+  },
+  "payoutMethod": {
+    "navTitle": "Payout method",
+    "body": "When you sell cards or receive cash-outs, payouts go to a linked bank or debit card. This preview does not connect to real banking.",
+    "line1": "Add a bank account (ACH / local rails) or debit card depending on region.",
+    "line2": "Verify small deposits or instant micro-charges when your processor requires it.",
+    "line3": "Payout timing and fees follow marketplace rules — see Terms before launch.",
+    "note": "Replace this placeholder with real payout onboarding when Stripe Connect or your PSP is integrated."
+  },
   "settings": {
     "title": "Settings"
   },
@@ -51,8 +189,8 @@
     "emptyCategory": "No packs in this category yet."
   },
   "packs": {
-    "browseTitle": "Browse packs",
-    "browseSub": "All categories, filters, and sort options"
+    "browseTitle": "Pack floor",
+    "browseSub": "Pick a line, sort the floor, run it when you're ready"
   },
   "categories": {
     "all": "All",
@@ -66,17 +204,18 @@
     "hot_drops": "Hot Drops"
   },
   "hero": {
-    "eyebrow": "NEW USER EXCLUSIVE",
-    "headline1": "High-Value",
-    "headline2": "Welcome Packs",
-    "sub": "Limited-time packs with boosted hit rates and bonus rewards",
-    "browsePacks": "Browse Packs",
-    "notNow": "Not now",
-    "hitCard": "Hit Card"
+    "eyebrow": "WELCOME BONUS",
+    "headline1": "Juiced lines",
+    "headline2": "for new players",
+    "sub": "Limited-time packs with better hit rates — stack credits and chase the big pull",
+    "browsePacks": "Hit the floor",
+    "notNow": "Maybe later",
+    "hitCard": "Jackpot card"
   },
   "friends": {
     "title": "Friends",
-    "lead": "Connect with people you know. Share your friend ID or scan their QR to add them.",
+    "heroEyebrow": "SQUAD LOUNGE",
+    "lead": "Link up with people you actually play with — share your tag or scan theirs.",
     "add": "Add",
     "emptyCta": "Add friends",
     "addModalTitle": "Add a friend",
@@ -100,11 +239,13 @@
     "viewBenefits": "View Tier Benefits →",
     "pullHistory": "Pull History",
     "shipped": "Shipped",
-    "noPullsTitle": "No pulls yet",
-    "noPullsBody": "Open your first pack to see your pull history here."
+    "noPullsTitle": "No plays yet",
+    "noPullsBody": "Rip your first pack — your hits and credits will show up here.",
+    "latestWins": "Latest hits",
+    "viewFullHistory": "See full play history →"
   },
   "account": {
-    "title": "Account",
+    "title": "Player",
     "tier": "TIER",
     "memberId": "Member ID",
     "verifyIdentity": "Verify Identity",
@@ -118,12 +259,18 @@
     "followUs": "Follow Us",
     "followSub": "Follow our official channels for promos, drops, and updates.",
     "logout": "Logout",
-    "version": "{{name}} v{{version}}"
+    "version": "{{name}} v{{version}}",
+    "guestSignInEyebrow": "Browsing as guest",
+    "guestSignInTitle": "Sign in to do anything here",
+    "guestSignInBody": "Guests can only browse. Sign in with Google, Apple, or email to open packs, buy credits, checkout, and use Friends.",
+    "guestSignInCta": "Sign in or create account",
+    "playerDeskEyebrow": "PLAYER DESK",
+    "pullHistoryCta": "Full play history",
+    "pullHistorySub": "Every open, credit win, and hit — complete log"
   },
   "shortcuts": {
-    "notif": "Notifications",
-    "hot": "Hot Drops",
-    "history": "Pull History",
+    "notif": "Alerts",
+    "hot": "Hot drops",
     "promos": "Promos"
   },
   "accountRows": {
@@ -148,6 +295,7 @@
     "language": "Language",
     "region": "Region",
     "regionHint": "Used for dates, currency display, and future shipping defaults.",
+    "fallbackNote": "All languages in the list have full UI translations. Region still controls dates and currency display.",
     "save": "Save",
     "cancel": "Cancel"
   },
@@ -178,6 +326,12 @@
     "footnote": "Rates are illustrative for this preview build. Published products will show final odds before purchase where required.",
     "done": "Got it"
   },
+  "welcome": {
+    "signupPromoTitle": "Free welcome pack",
+    "signupPromoBody": "Create an account now and we’ll add a bonus welcome pack to your first session (demo — grant when live).",
+    "skip": "Browse without signing in",
+    "guestHint": "You can browse the catalog. Sign in to open packs, buy credits, checkout, and use Friends."
+  },
   "auth": {
     "title": "Sign in",
     "subtitle": "Use Google, Apple, or email. New accounts: we’ll email you a one-time code to verify.",
@@ -207,19 +361,24 @@
   },
   "linkPhone": {
     "title": "Verify your phone",
-    "subtitle": "We use your number once to confirm you’re a real person and to protect promos (one verified number per account). Use international format, e.g. +1…",
-    "phonePlaceholder": "+1 555 123 4567",
+    "subtitle": "We’ll text you a code once. Pick your country, then enter your mobile number — no need to type +1 yourself.",
+    "mobileLabel": "Mobile number",
+    "countryPickerA11y": "Country or region",
+    "nationalPlaceholderNanp": "(555) 123-4567",
+    "nationalPlaceholder": "Phone number",
     "sendCode": "Send code",
     "codeHint": "Enter the code we texted you.",
     "codePlaceholder": "6-digit code",
     "verify": "Verify & continue",
     "resend": "Resend code",
     "changeNumber": "Use a different number",
-    "invalid": "Enter a valid phone number in international format (include country code, e.g. +1…).",
+    "invalid": "Enter a valid phone number for the selected country.",
+    "nanpInvalid": "US and Canada numbers need 10 digits (area code + number).",
     "phoneMissing": "Could not start phone verification. Try again.",
     "verifyFailed": "That code didn’t work. Check the message and try again.",
     "genericError": "Something went wrong. Try again.",
     "dashboardHint": "Clerk Dashboard → User & authentication → Phone: enable SMS / verification. You can turn off “Sign in with phone” if you only want Google / Apple / email sign-in.",
+    "smsDevHint": "SMS not sending? In development, add a test phone in the Clerk dashboard or connect Twilio / your SMS provider — Clerk won’t send real texts until that’s configured.",
     "signOut": "Use a different account"
   },
   "profileOnboarding": {
@@ -294,10 +453,19 @@
     "chase_boost": "Chase Boost"
   },
   "packCard": {
-    "openPack": "Open Pack",
-    "credits": "Credits",
-    "remaining": "{{left}} / {{total}} Remaining",
-    "maxPerUser": "Only {{count}} opens per user"
+    "openPack": "Play now",
+    "credits": "credits",
+    "remaining": "{{left}} / {{total}} left",
+    "maxPerUser": "Max {{count}} plays / account",
+    "shortBadge": {
+      "new": "NEW",
+      "new_user": "WELCOME",
+      "best_value": "VALUE",
+      "graded": "VAULT",
+      "hot_drop": "HOT",
+      "bonus_pack": "BONUS",
+      "chase_boost": "CHASE"
+    }
   },
   "packCatalog": {
     "1": {
@@ -396,9 +564,5 @@
     "invalidIdBody": "Friend IDs look like TCG-123456. Ask your friend to share their code.",
     "notFoundTitle": "User not found",
     "notFoundBody": "No account matches that friend ID yet. Double-check the code or try again later."
-  },
-  "common": {
-    "copied": "Copied",
-    "friendIdCopied": "Friend ID copied to clipboard."
   }
 }

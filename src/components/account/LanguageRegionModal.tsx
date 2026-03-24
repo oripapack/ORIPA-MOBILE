@@ -55,14 +55,15 @@ export function LanguageRegionModal({
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
       <View style={[styles.root, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom + spacing.base }]}>
         <View style={styles.header}>
-          <Text style={styles.title}>Language & Region</Text>
+          <Text style={styles.title}>{t('locale.title')}</Text>
           <TouchableOpacity onPress={onClose} hitSlop={12}>
-            <Text style={styles.cancel}>Cancel</Text>
+            <Text style={styles.cancel}>{t('locale.cancel')}</Text>
           </TouchableOpacity>
         </View>
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-          <Text style={styles.sectionLabel}>Language</Text>
+          <Text style={styles.sectionLabel}>{t('locale.language')}</Text>
+          <Text style={styles.sectionHint}>{t('locale.fallbackNote')}</Text>
           <View style={styles.group}>
             {LANGUAGE_OPTIONS.map((opt) => (
               <TouchableOpacity

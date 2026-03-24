@@ -9,6 +9,16 @@ export type RootStackParamList = {
         listingPrice?: string;
       }
     | undefined;
+  HelpCenter: undefined;
+  ShippingAddress: undefined;
+  TierBenefits: undefined;
+  Notifications: undefined;
+  HotDropsInfo: undefined;
+  PromosInfo: undefined;
+  PullHistory: undefined;
+  LinkedAccounts: undefined;
+  IdentityVerification: undefined;
+  PayoutMethod: undefined;
 };
 
 export type RootTabParamList = {

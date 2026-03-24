@@ -21,8 +21,12 @@ function ClerkAccountSectionInner() {
   const { user } = useUser();
   const { signOut } = useClerk();
 
-  const email = user?.primaryEmailAddress?.emailAddress;
-  const meta = user?.unsafeMetadata as AppUserUnsafeMetadata | undefined;
+  if (!user) {
+    return null;
+  }
+
+  const email = user.primaryEmailAddress?.emailAddress;
+  const meta = user.unsafeMetadata as AppUserUnsafeMetadata | undefined;
   const appProfileName = (meta?.appDisplayName || meta?.appUsername)?.trim();
   const name =
     appProfileName ||

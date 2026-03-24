@@ -43,6 +43,12 @@
     "title": "Ajustes"
   },
   "demoBanner": "Preview build — créditos y recompensas simulados.",
+  "welcome": {
+    "signupPromoTitle": "Pack de bienvenida gratis",
+    "signupPromoBody": "Crea una cuenta y añadiremos un pack de bienvenida extra en tu primera sesión (demo; se activará en producción).",
+    "skip": "Explorar sin iniciar sesión",
+    "guestHint": "Puedes ver el catálogo. Para abrir sobres, comprar créditos, pagar y usar Amigos, inicia sesión."
+  },
   "home": {
     "discover": "Descubrir",
     "spotlightTitle": "Paquetes destacados",
@@ -101,7 +107,9 @@
     "pullHistory": "Historial de aperturas",
     "shipped": "Enviado",
     "noPullsTitle": "Aún no hay aperturas",
-    "noPullsBody": "Abre tu primer paquete para ver el historial aquí."
+    "noPullsBody": "Abre tu primer paquete para ver el historial aquí.",
+    "latestWins": "Latest hits",
+    "viewFullHistory": "See full play history →"
   },
   "account": {
     "title": "Cuenta",
@@ -118,7 +126,14 @@
     "followUs": "Síguenos",
     "followSub": "Canales oficiales para promos, novedades y actualizaciones.",
     "logout": "Cerrar sesión",
-    "version": "{{name}} v{{version}}"
+    "version": "{{name}} v{{version}}",
+    "guestSignInEyebrow": "Navegando como invitado",
+    "guestSignInTitle": "Inicia sesión para usar la app",
+    "guestSignInBody": "Los invitados solo pueden explorar. Para abrir sobres, comprar créditos, pagar y usar Amigos necesitas una cuenta. Continúa con Google, Apple o correo.",
+    "guestSignInCta": "Iniciar sesión o registrarse",
+    "playerDeskEyebrow": "PLAYER DESK",
+    "pullHistoryCta": "Full play history",
+    "pullHistorySub": "Every open, credit win, and hit — complete log"
   },
   "shortcuts": {
     "notif": "Notificaciones",
@@ -217,7 +232,16 @@
     "openPack": "Abrir paquete",
     "credits": "Créditos",
     "remaining": "{{left}} / {{total}} restantes",
-    "maxPerUser": "Solo {{count}} aperturas por usuario"
+    "maxPerUser": "Solo {{count}} aperturas por usuario",
+    "shortBadge": {
+      "new": "NEW",
+      "new_user": "WELCOME",
+      "best_value": "VALUE",
+      "graded": "VAULT",
+      "hot_drop": "HOT",
+      "bonus_pack": "BONUS",
+      "chase_boost": "CHASE"
+    }
   },
   "packCatalog": {
     "1": {

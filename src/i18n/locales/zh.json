@@ -43,6 +43,12 @@
     "title": "设置"
   },
   "demoBanner": "预览版 — 积分与奖励为模拟数据。",
+  "welcome": {
+    "signupPromoTitle": "免费欢迎包",
+    "signupPromoBody": "现在创建账户，首次会话将赠送额外欢迎包（演示 — 上线后发放）。",
+    "skip": "不登录浏览",
+    "guestHint": "可以浏览目录。开包、购买点数、结账和好友功能需要登录。"
+  },
   "home": {
     "discover": "发现",
     "spotlightTitle": "精选卡包",
@@ -101,7 +107,9 @@
     "pullHistory": "开包记录",
     "shipped": "已发货",
     "noPullsTitle": "暂无开包记录",
-    "noPullsBody": "开启第一个卡包后，记录将显示在这里。"
+    "noPullsBody": "开启第一个卡包后，记录将显示在这里。",
+    "latestWins": "Latest hits",
+    "viewFullHistory": "See full play history →"
   },
   "account": {
     "title": "账户",
@@ -118,7 +126,14 @@
     "followUs": "关注我们",
     "followSub": "关注官方渠道获取活动与更新。",
     "logout": "退出登录",
-    "version": "{{name}} v{{version}}"
+    "version": "{{name}} v{{version}}",
+    "guestSignInEyebrow": "以访客身份浏览",
+    "guestSignInTitle": "登录后才能使用功能",
+    "guestSignInBody": "访客只能浏览。开包、购买点数、结账和好友等功能需要账户。请使用 Google、Apple 或电子邮件继续。",
+    "guestSignInCta": "登录或创建账户",
+    "playerDeskEyebrow": "PLAYER DESK",
+    "pullHistoryCta": "Full play history",
+    "pullHistorySub": "Every open, credit win, and hit — complete log"
   },
   "shortcuts": {
     "notif": "通知",
@@ -217,7 +232,16 @@
     "openPack": "开包",
     "credits": "积分",
     "remaining": "剩余 {{left}} / {{total}}",
-    "maxPerUser": "每人限开 {{count}} 次"
+    "maxPerUser": "每人限开 {{count}} 次",
+    "shortBadge": {
+      "new": "NEW",
+      "new_user": "WELCOME",
+      "best_value": "VALUE",
+      "graded": "VAULT",
+      "hot_drop": "HOT",
+      "bonus_pack": "BONUS",
+      "chase_boost": "CHASE"
+    }
   },
   "packCatalog": {
     "1": {

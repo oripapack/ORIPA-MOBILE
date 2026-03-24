@@ -1,0 +1,568 @@
+{
+  "tabs": {
+    "home": "Início",
+    "friends": "Amigos",
+    "marketplace": "Loja",
+    "account": "Jogador"
+  },
+  "marketplace": {
+    "storeTitle": "Loja Pull Hub",
+    "storeLead": "Navegue por singles e produtos lacrados de lojas parceiras verificadas. O checkout virá em breve — por enquanto só anúncios (sem abrir boosters aqui).",
+    "searchPlaceholder": "Buscar cartas, coleções ou lojas…",
+    "promoTitle": "Frete grátis em muitos pedidos",
+    "promoBody": "Pedidos acima de US$ 50 em lojas participantes costumam ter frete grátis. Veja cada anúncio para detalhes.",
+    "cat_all": "Todos",
+    "cat_pokemon": "Pokémon",
+    "cat_one_piece": "One Piece",
+    "cat_yugioh": "Yu-Gi-Oh!",
+    "cat_sports": "Esportes",
+    "whyTitle": "Por que a loja Pull Hub?",
+    "whyPointLabel1": "Ponto 1",
+    "whyPointLabel2": "Ponto 2",
+    "whyPointLabel3": "Ponto 3",
+    "whyPoint1Title": "Envio rápido",
+    "whyPoint1Body": "Lojas parceiras enviam rápido para você receber cartas a tempo de eventos e noites de liga. Prazos variam por vendedor.",
+    "whyPoint2Title": "Preços competitivos",
+    "whyPoint2Body": "Compare anúncios de várias lojas em um só lugar. A comissão Pull Hub já está no preço do parceiro — sem taxas surpresa.",
+    "whyPoint3Title": "Grande variedade",
+    "whyPoint3Body": "Agregamos estoque de vendedores confiáveis em várias regiões — de promos japonesas a staples em inglês e produtos lacrados.",
+    "specialPrice": "Preço especial",
+    "saleOn": "PROMO",
+    "sectionStores": "De lojas parceiras",
+    "verified": "Verificada",
+    "commissionLine": "Taxa Pull Hub nas vendas: {{pct}}%",
+    "badgeSale": "PROMO",
+    "badgeTournament": "Torneio",
+    "badgeNew": "NOVO",
+    "emptyResults": "Nenhum anúncio corresponde aos filtros.",
+    "listingDemoTitle": "Anúncio",
+    "listingDemoBody": "O checkout para «{{title}}» ainda não está conectado — esta tela é só de anúncios.",
+    "demoNote": "Demo: pagamentos, carrinho e repasses a vendedores não estão conectados. Abrir boosters fica na aba Início."
+  },
+  "common": {
+    "error": "Erro",
+    "copied": "Copiado",
+    "friendIdCopied": "Friend ID copiado para a área de transferência."
+  },
+  "helpCenter": {
+    "navTitle": "Central de ajuda",
+    "lead": "Respostas rápidas sobre créditos, envio e drops. Conteúdo de exemplo — substitua por artigos reais antes do lançamento.",
+    "faq": {
+      "credits": {
+        "q": "Como funcionam os créditos?",
+        "a": "Créditos são a moeda no app para abrir boosters digitais. Nesta prévia as compras podem ser simuladas — preços finais, reembolsos e pacotes serão publicados antes do lançamento."
+      },
+      "shipping": {
+        "q": "Para onde enviam cartas físicas?",
+        "a": "Pedidos do marketplace saem das lojas parceiras. Prazos, transportadoras e taxas variam por anúncio. Adicione um endereço em Conta para agilizar o checkout quando estiver ativo."
+      },
+      "drops": {
+        "q": "O que é um hot drop?",
+        "a": "Hot drops são lançamentos de boosters por tempo limitado ou muito procurados. É diferente de promoções de conta (bônus, cupons). Toque em Hot drops em Conta para uma explicação curta."
+      }
+    },
+    "contactSection": "Ainda travado?",
+    "emailCta": "Enviar e-mail para {{email}}",
+    "emailUs": "Falar com o suporte",
+    "responseTime": "Pretendemos responder em 1–2 dias úteis (demo — não monitorado)."
+  },
+  "shippingAddress": {
+    "navTitle": "Endereço de entrega",
+    "lead": "Usado para pedidos do marketplace e envio de prêmios quando o fulfillment estiver no ar. Na prévia salvo só neste dispositivo.",
+    "save": "Salvar endereço",
+    "savedTitle": "Salvo",
+    "savedBody": "Seu endereço foi salvo neste dispositivo.",
+    "saveFailed": "Não foi possível salvar. Tente de novo.",
+    "missingTitle": "Campos faltando",
+    "missingBody": "Informe pelo menos nome, linha 1 do endereço, cidade e país.",
+    "fields": {
+      "fullName": "Nome completo",
+      "line1": "Endereço linha 1",
+      "line2": "Endereço linha 2 (opcional)",
+      "city": "Cidade",
+      "region": "Estado / região",
+      "postal": "CEP / código postal",
+      "country": "País"
+    },
+    "placeholders": {
+      "fullName": "Alex Trainer",
+      "line1": "123 Main St",
+      "line2": "Apt 4",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94102",
+      "country": "United States"
+    }
+  },
+  "tierBenefits": {
+    "navTitle": "Benefícios por nível",
+    "lead": "Níveis são uma escada de fidelidade com base em XP. Benefícios de exemplo abaixo — ajuste antes do lançamento.",
+    "progressHint": "Você tem {{xp}} XP. O próximo nível desbloqueia em {{need}} XP (escala demo).",
+    "topTier": "Você está no nível máximo desta prévia — obrigado por testar os dados de exemplo.",
+    "fromXp": "A partir de {{xp}} XP",
+    "yourTier": "Seu nível",
+    "disclaimer": "Benefícios, limites e disponibilidade são ilustrativos e podem mudar."
+  },
+  "notifications": {
+    "navTitle": "Notificações",
+    "lead": "Escolha sobre o que podemos notificar. Na prévia as preferências ficam só neste dispositivo.",
+    "note": "A permissão de notificação do sistema será pedida separadamente quando o push estiver pronto. E-mail e SMS também virão aqui.",
+    "toggles": {
+      "order": {
+        "title": "Pedidos e envio",
+        "sub": "Rastreamento, atrasos e entregas em pedidos do marketplace."
+      },
+      "drops": {
+        "title": "Hot drops e reposição",
+        "sub": "Boosters limitados e lançamentos muito procurados."
+      },
+      "promos": {
+        "title": "Promos e créditos",
+        "sub": "Créditos bônus, cupons e campanhas sazonais."
+      },
+      "social": {
+        "title": "Amigos e social",
+        "sub": "Pedidos de amizade e convites (quando ativo)."
+      }
+    }
+  },
+  "hotDropsInfo": {
+    "navTitle": "Hot drops",
+    "body": "Hot drops são lançamentos de boosters por tempo limitado ou muito procurados — muitas vezes um set específico, collab ou janela relâmpago. É sobre produto e timing.",
+    "b1": "Horários de início e fim anunciados (ou «enquanto durar o estoque»).",
+    "b2": "Podem ter chances ou preço diferentes dos boosters permanentes — leia sempre os detalhes.",
+    "b3": "Podem esgotar rápido; notificações ajudam a pegar reposição.",
+    "callout": "Não é o mesmo que Promos: promos são incentivos de marketing (créditos bônus, cupons), não o lançamento do produto."
+  },
+  "promosInfo": {
+    "navTitle": "Promos",
+    "body": "Promos são programas de marketing: créditos bônus, cupons, campanhas sazonais ou ofertas de parceiros. Recompensam cadastro, pacotes, indicações, etc.",
+    "b1": "Exibidas no app, e-mail ou redes — cada promo tem regras e datas.",
+    "b2": "Podem somar com níveis ou valer só para certos boosters — leia a letra miúda antes do lançamento.",
+    "b3": "Diferente de Hot drops: promo é a oferta; hot drop é o lançamento do produto.",
+    "vsHotTitle": "Hot drops vs promos",
+    "vsHotBody": "Hot drops explica lançamentos limitados. Promos (esta tela) explica créditos bônus e incentivos tipo cupom."
+  },
+  "pullHistoryScreen": {
+    "navTitle": "Histórico de jogadas",
+    "lead": "Todas as jogadas concluídas — mais recentes primeiro. Puxadas pendentes ficam no fluxo do booster até resgatar ou enviar."
+  },
+  "linkedAccounts": {
+    "navTitle": "Contas vinculadas",
+    "body": "Vincular permite entrar no mesmo perfil Pull Hub com mais de um método (Google, Apple, e-mail), sem ficar preso a um único login.",
+    "whatTitle": "O que isso significa",
+    "whatBody": "Não é fundir duas contas do app. É associar provedores de login a uma conta para conveniência e recuperação.",
+    "futureTitle": "Em breve",
+    "futureGoogle": "Vincular conta Google",
+    "futureApple": "Vincular Apple ID",
+    "futureEmail": "Vincular e-mail + senha",
+    "note": "O vínculo de provedores usará suas configurações de auth (ex.: Clerk) em produção."
+  },
+  "identityVerification": {
+    "navTitle": "Verificação de identidade",
+    "body": "Verificação de identidade (às vezes chamada KYC) confirma que você é uma pessoa real e atende regras de idade ou conformidade antes de pagamentos altos, certas promos ou recursos regulados.",
+    "whyTitle": "Por que apps pedem isso",
+    "whyBody": "Reduz fraude, protege menores e atende regras financeiras ou de marketplace quando dinheiro ou prêmios valiosos circulam.",
+    "previewTitle": "Fluxo de prévia (inativo)",
+    "step1": "Documento oficial ou checagem de documento",
+    "step2": "Selfie ou prova de vivacidade (se exigido)",
+    "step3": "Análise — em geral minutos, às vezes mais",
+    "note": "Este build só explica o conceito. Integre seu fornecedor (ex.: Persona, Stripe Identity) antes de exigir verificação."
+  },
+  "payoutMethod": {
+    "navTitle": "Método de recebimento",
+    "body": "Ao vender cartas ou sacar, os pagamentos vão para conta bancária ou cartão vinculado. Esta prévia não conecta a bancos reais.",
+    "line1": "Adicione conta bancária (ACH / rede local) ou cartão de débito conforme a região.",
+    "line2": "Verifique microdepósitos ou microcobranças se o processador exigir.",
+    "line3": "Prazos e taxas seguem regras do marketplace — veja os Termos antes do lançamento.",
+    "note": "Substitua este texto por onboarding real quando Stripe Connect ou seu PSP estiver integrado."
+  },
+  "settings": {
+    "title": "Configurações"
+  },
+  "demoBanner": "Build de prévia — créditos e recompensas simulados.",
+  "home": {
+    "discover": "Descobrir",
+    "spotlightTitle": "Boosters em destaque",
+    "spotlightBody": "Seleções e promos. Use categorias e ordenação abaixo.",
+    "browseAllPacks": "Ver todos os boosters",
+    "emptyCategory": "Nenhum booster nesta categoria ainda."
+  },
+  "packs": {
+    "browseTitle": "Área de boosters",
+    "browseSub": "Escolha uma linha, ordene, jogue quando estiver pronto"
+  },
+  "categories": {
+    "all": "Todos",
+    "featured": "Destaque",
+    "new": "Novos",
+    "pokemon": "Pokémon",
+    "yugioh": "Yu-Gi-Oh!",
+    "one_piece": "One Piece",
+    "sports": "Esportes",
+    "graded": "Graded",
+    "hot_drops": "Hot Drops"
+  },
+  "hero": {
+    "eyebrow": "BÔNUS DE BOAS-VINDAS",
+    "headline1": "Linhas turbinadas",
+    "headline2": "para novos jogadores",
+    "sub": "Boosters por tempo limitado com melhores taxas de hit — junte créditos e vá atrás da carta grande",
+    "browsePacks": "Entrar na área",
+    "notNow": "Talvez depois",
+    "hitCard": "Carta jackpot"
+  },
+  "friends": {
+    "title": "Amigos",
+    "heroEyebrow": "ESPAÇO DO GRUPO",
+    "lead": "Conecte-se com quem você realmente joga — compartilhe sua tag ou escaneie a deles.",
+    "add": "Adicionar",
+    "emptyCta": "Adicionar amigos",
+    "addModalTitle": "Adicionar amigo",
+    "qrShort": "QR",
+    "yourFriendId": "Seu friend ID",
+    "memberHint": "Este ID também aparece em Conta como Member ID.",
+    "showQr": "Mostrar meu QR",
+    "addFriend": "Adicionar amigo",
+    "enterFriendId": "Digite o friend ID",
+    "placeholderId": "ex.: TCG-100001",
+    "lookup": "Buscar",
+    "scanQr": "Escanear QR",
+    "demoHint": "Demo: tente TCG-100001, TCG-100002 ou TCG-100003.",
+    "yourFriends": "Seus amigos ({{count}})",
+    "emptyTitle": "Ainda sem amigos",
+    "emptyBody": "Quando adicionar alguém, aparecerá aqui para recursos sociais futuros."
+  },
+  "rewards": {
+    "title": "Recompensas",
+    "tier": "NÍVEL",
+    "viewBenefits": "Ver benefícios do nível →",
+    "pullHistory": "Histórico",
+    "shipped": "Enviado",
+    "noPullsTitle": "Ainda sem jogadas",
+    "noPullsBody": "Abra seu primeiro booster — hits e créditos aparecerão aqui.",
+    "latestWins": "Últimos hits",
+    "viewFullHistory": "Ver histórico completo →"
+  },
+  "account": {
+    "title": "Jogador",
+    "tier": "NÍVEL",
+    "memberId": "Member ID",
+    "verifyIdentity": "Verificar identidade",
+    "viewBenefits": "Ver benefícios do nível →",
+    "sectionAccount": "Conta",
+    "sectionMore": "Mais",
+    "sectionSupport": "Suporte",
+    "sectionLegal": "Legal",
+    "sectionPreferences": "Preferências",
+    "languageRegion": "Idioma e região",
+    "followUs": "Siga-nos",
+    "followSub": "Canais oficiais para promos, drops e novidades.",
+    "logout": "Sair",
+    "version": "{{name}} v{{version}}",
+    "guestSignInEyebrow": "Navegando como convidado",
+    "guestSignInTitle": "Entre para fazer mais",
+    "guestSignInBody": "Convidados só podem navegar. Entre com Google, Apple ou e-mail para abrir boosters, comprar créditos, pagar e usar Amigos.",
+    "guestSignInCta": "Entrar ou criar conta",
+    "playerDeskEyebrow": "BALCÃO DO JOGADOR",
+    "pullHistoryCta": "Histórico completo",
+    "pullHistorySub": "Cada abertura, ganho de créditos e hit — registro completo"
+  },
+  "shortcuts": {
+    "notif": "Alertas",
+    "hot": "Hot drops",
+    "promos": "Promos"
+  },
+  "accountRows": {
+    "shipping": "Endereço de entrega",
+    "payout": "Recebimento",
+    "identity": "Verificação de identidade",
+    "linked": "Contas vinculadas"
+  },
+  "supportRows": {
+    "help": "Central de ajuda",
+    "contact": "Falar com o suporte",
+    "faq": "FAQ"
+  },
+  "legalRows": {
+    "terms": "Termos de serviço",
+    "privacy": "Política de privacidade",
+    "promo": "Regras promocionais",
+    "payment": "Divulgações de pagamento"
+  },
+  "locale": {
+    "title": "Idioma e região",
+    "language": "Idioma",
+    "region": "Região",
+    "regionHint": "Usado para datas, moeda e padrões futuros de envio.",
+    "fallbackNote": "Todos os idiomas da lista têm tradução completa da interface. A região ainda controla datas e moeda.",
+    "save": "Salvar",
+    "cancel": "Cancelar"
+  },
+  "regions": {
+    "US": "Estados Unidos",
+    "CA": "Canadá",
+    "GB": "Reino Unido",
+    "JP": "Japão",
+    "AU": "Austrália"
+  },
+  "buyCredits": {
+    "close": "Fechar",
+    "title": "Comprar créditos",
+    "subtitle": "Créditos abrem boosters. Descontos promocionais em pacotes menores; níveis maiores são preço de tabela.",
+    "mockNote": "Prévia: sem pagamento real — créditos são adicionados na hora para demos.",
+    "discountBadge": "{{pct}}% OFF",
+    "pointsLine": "{{count}} pt",
+    "approx": "aprox.",
+    "buyNow": "Comprar agora",
+    "disclaimer": "Após confirmar a compra de créditos, cancelamentos, reembolsos ou devolução de pontos podem não ser possíveis. (Política final antes do lançamento.)",
+    "mockFooter": "Pacotes simulados — substitua por checkout real antes do lançamento.",
+    "liveFooter": "Checkout seguro · Entrega instantânea · Sem expiração"
+  },
+  "lootBox": {
+    "title": "Probabilidade do conteúdo",
+    "lead": "As aberturas são aleatórias. As taxas por nível abaixo são indicativas; pacotes específicos podem variar.",
+    "columnTier": "Nível",
+    "footnote": "Taxas ilustrativas para esta prévia. Produtos publicados mostrarão as chances finais antes da compra quando exigido.",
+    "done": "Entendi"
+  },
+  "welcome": {
+    "signupPromoTitle": "Booster de boas-vindas grátis",
+    "signupPromoBody": "Crie uma conta agora e adicionaremos um booster bônus à sua primeira sessão (demo — ativação em produção).",
+    "skip": "Navegar sem entrar",
+    "guestHint": "Você pode ver o catálogo. Entre para abrir boosters, comprar créditos, pagar e usar Amigos."
+  },
+  "auth": {
+    "title": "Entrar",
+    "subtitle": "Google, Apple ou e-mail. Novas contas: enviamos um código único por e-mail para verificar.",
+    "continueGoogle": "Continuar com Google",
+    "continueApple": "Continuar com Apple",
+    "or": "ou",
+    "modeSignIn": "Entrar",
+    "modeSignUp": "Criar conta",
+    "emailPlaceholder": "E-mail",
+    "passwordPlaceholder": "Senha",
+    "emailSignIn": "Entrar com e-mail",
+    "emailContinue": "Continuar",
+    "verifyHint": "Digite o código enviado para {{email}}.",
+    "codePlaceholder": "Código de 6 dígitos",
+    "verifyCode": "Verificar e continuar",
+    "resendCode": "Reenviar código",
+    "emailPasswordRequired": "Digite e-mail e senha.",
+    "signInIncomplete": "Não foi possível concluir o login. Se usar 2FA, adicionaremos suporte em breve.",
+    "verifyFailed": "Verificação falhou. Confira o código e tente de novo.",
+    "dashboardHint": "Clerk Dashboard: ative Google (oauth_google), Apple (oauth_apple) e e-mail + senha + código por e-mail.",
+    "signedInAs": "Conta",
+    "signOut": "Sair",
+    "signOutTitle": "Sair?",
+    "signOutMessage": "Você precisará entrar de novo para usar dados sincronizados quando estiverem disponíveis.",
+    "signOutConfirm": "Sair",
+    "cancel": "Cancelar"
+  },
+  "linkPhone": {
+    "title": "Verificar telefone",
+    "subtitle": "Enviaremos um SMS uma vez. Escolha o país e digite o número — não precisa digitar +1.",
+    "mobileLabel": "Celular",
+    "countryPickerA11y": "País ou região",
+    "nationalPlaceholderNanp": "(555) 123-4567",
+    "nationalPlaceholder": "Número de telefone",
+    "sendCode": "Enviar código",
+    "codeHint": "Digite o código que enviamos por SMS.",
+    "codePlaceholder": "Código de 6 dígitos",
+    "verify": "Verificar e continuar",
+    "resend": "Reenviar código",
+    "changeNumber": "Usar outro número",
+    "invalid": "Digite um número válido para o país selecionado.",
+    "nanpInvalid": "EUA e Canadá precisam de 10 dígitos (DDD + número).",
+    "phoneMissing": "Não foi possível iniciar a verificação. Tente de novo.",
+    "verifyFailed": "Código incorreto. Confira a mensagem e tente de novo.",
+    "genericError": "Algo deu errado. Tente de novo.",
+    "dashboardHint": "Clerk → User & authentication → Phone: ative SMS/verificação. Você pode desligar «Entrar com telefone» se quiser só Google/Apple/e-mail.",
+    "smsDevHint": "SMS não chega? Em desenvolvimento, adicione um telefone de teste no Clerk ou conecte Twilio — Clerk não envia SMS reais sem configuração.",
+    "signOut": "Usar outra conta"
+  },
+  "profileOnboarding": {
+    "title": "Configurar perfil",
+    "subtitle": "Escolha um nome de usuário público e como quer aparecer. Poderá mudar depois quando as configurações estiverem no servidor.",
+    "usernameLabel": "Nome de usuário",
+    "usernamePlaceholder": "seu_handle",
+    "displayNameLabel": "Nome exibido (opcional)",
+    "displayNamePlaceholder": "Igual ao usuário se vazio",
+    "memberIdHint": "Seu código de amigo (TCG-…) é atribuído automaticamente para QR e convites.",
+    "usernameInvalid": "Use 2–20 caracteres: letras, números e sublinhados apenas.",
+    "continue": "Continuar",
+    "genericError": "Não foi possível salvar o perfil. Tente de novo."
+  },
+  "paymentPortal": {
+    "navTitle": "Pagamento",
+    "eyebrow": "Checkout",
+    "tabCredits": "Créditos",
+    "tabMarketplace": "Marketplace",
+    "viewProbabilities": "Ver probabilidade do conteúdo",
+    "digitalRoutingNote": "Créditos digitais: compra in-app App Store / Google Play quando estiver no ar — não Stripe para moedas.",
+    "marketplaceTitle": "Pedido físico",
+    "marketplaceLead": "Anúncios de parceiros enviam produtos reais. O checkout usa fluxo de bens físicos (Stripe no servidor), separado dos boosters de crédito.",
+    "item": "Item",
+    "price": "Preço",
+    "physicalPolicy": "Apenas bens físicos — PaymentIntent criado no seu servidor ({{mode}}). Apple Pay / Google Pay podem aparecer para envio, não para moeda digital.",
+    "continueCheckout": "Continuar para o checkout",
+    "physicalStubTitle": "Checkout não conectado",
+    "physicalStubBody": "Conecte o backend para criar um PaymentIntent Stripe e abra o cliente com o client secret retornado. Sem chaves no app.",
+    "sampleListingTitle": "Anúncio de exemplo"
+  },
+  "legalModal": {
+    "done": "Concluído"
+  },
+  "myQr": {
+    "title": "Seu código de amigo",
+    "subtitle": "Peça para um amigo escanear este QR ou compartilhe seu ID",
+    "you": "Você",
+    "copy": "Copiar",
+    "done": "Concluído"
+  },
+  "qrScanner": {
+    "title": "Escanear QR de amigo",
+    "cancel": "Cancelar",
+    "permText": "Precisamos da câmera para escanear QR de amigos.",
+    "allowCamera": "Permitir câmera",
+    "hint": "Alinhe o QR no quadro",
+    "webTitle": "Scan indisponível na web",
+    "webBody": "Abra o app no celular para escanear o QR ou digite o friend ID abaixo.",
+    "close": "Fechar"
+  },
+  "sort": {
+    "recommended": "Recomendado",
+    "priceAsc": "Preço: menor",
+    "priceDesc": "Preço: maior",
+    "newest": "Mais novos",
+    "bestValue": "Melhor custo-benefício",
+    "popular": "Mais populares"
+  },
+  "filterRow": {
+    "filter": "Filtrar",
+    "sortPrefix": "Ordenar: ",
+    "sortBy": "Ordenar por"
+  },
+  "chips": {
+    "new": "Novo",
+    "new_user": "Novo usuário",
+    "best_value": "Melhor valor",
+    "graded": "Graded",
+    "hot_drop": "Hot Drop",
+    "bonus_pack": "Booster bônus",
+    "chase_boost": "Chase Boost"
+  },
+  "packCard": {
+    "openPack": "Jogar agora",
+    "credits": "créditos",
+    "remaining": "{{left}} / {{total}} restantes",
+    "maxPerUser": "Máx. {{count}} jogadas / conta",
+    "shortBadge": {
+      "new": "NEW",
+      "new_user": "WELCOME",
+      "best_value": "VALUE",
+      "graded": "VAULT",
+      "hot_drop": "HOT",
+      "bonus_pack": "BONUS",
+      "chase_boost": "CHASE"
+    }
+  },
+  "packCatalog": {
+    "1": {
+      "title": "Booster de boas-vindas",
+      "value": "Mais de 100% de valor chase",
+      "guarantee": "Bônus garantido a cada 2 aberturas"
+    },
+    "2": {
+      "title": "Pokémon Scarlet & Violet Hit Pack",
+      "value": "90% de chance de 200+ créditos",
+      "guarantee": "Holofoil garantida em cada booster"
+    },
+    "3": {
+      "title": "One Piece Graded Vault Pack",
+      "value": "Cartas graded PSA 9–10",
+      "guarantee": "Cada booster contém uma carta graded"
+    },
+    "4": {
+      "title": "Sports Cards Flash Pack",
+      "value": "Rookies das melhores escolhas de 2024",
+      "guarantee": "Auto ou relic a cada 5 aberturas"
+    },
+    "5": {
+      "title": "Pokémon Vintage Graded Pack",
+      "value": "Hits graded da era Base Set",
+      "guarantee": "PSA 8+ garantido"
+    },
+    "6": {
+      "title": "Hot Drop Mystery Pack",
+      "value": "Mix surpresa de todas as categorias",
+      "guarantee": "Booster bônus após cada 3 aberturas"
+    },
+    "7": {
+      "title": "One Piece Paramount War Pack",
+      "value": "Líderes SR com foils chase",
+      "guarantee": "1 em 10 chance de Alt Art"
+    },
+    "8": {
+      "title": "New Arrivals Sampler Pack",
+      "value": "Hits dos sets mais novos",
+      "guarantee": "Pelo menos 3 cartas por abertura"
+    },
+    "9": {
+      "title": "Yu-Gi-Oh! Battles of Legend Pack",
+      "value": "Secret Rares e slots starlight",
+      "guarantee": "Ultra Rare ou superior em cada booster"
+    }
+  },
+  "packOpening": {
+    "title": "Abrindo booster",
+    "opening": "Abrindo…",
+    "suspense": "O que você tirou?",
+    "revealing": "Revelando…",
+    "skip": "Pular ▸",
+    "live": "AO VIVO",
+    "continue": "Continuar",
+    "openNext": "Abrir próximo",
+    "youPulled": "Você tirou",
+    "creditsLabel": "+{{amount}} créditos",
+    "resultCommon1": "Hit comum de {{packName}}",
+    "resultCommon2": "Tirada padrão de {{packName}}",
+    "resultCommon3": "Carta comum de {{packName}}",
+    "resultRare1": "Hit raro de {{packName}}",
+    "resultRare2": "Ultra pull de {{packName}}",
+    "resultRare3": "Carta especial de {{packName}}",
+    "resultLegendary1": "Hit lendário de {{packName}}",
+    "resultLegendary2": "Mythic pull de {{packName}}",
+    "resultLegendary3": "Carta que muda o jogo de {{packName}}"
+  },
+  "insufficientCredits": {
+    "title": "Créditos insuficientes",
+    "body": "Você precisa de mais créditos para abrir este booster.",
+    "bodyWithAmount": "Faltam {{needed}} créditos para abrir este booster. Adicione créditos para continuar.",
+    "packLabel": "Booster",
+    "costLabel": "Custo",
+    "balanceLabel": "Saldo",
+    "creditsLine": "{{amount}} créditos",
+    "buyCredits": "Comprar créditos",
+    "cancel": "Cancelar"
+  },
+  "friendsAlerts": {
+    "copiedTitle": "Copiado",
+    "copiedBody": "Friend ID copiado para a área de transferência.",
+    "addTitle": "Adicionar amigo?",
+    "cancel": "Cancelar",
+    "add": "Adicionar",
+    "addedTitle": "Adicionado",
+    "addedBody": "{{name}} agora está na sua lista de amigos.",
+    "selfTitle": "É você",
+    "selfBody": "Você não pode adicionar seu próprio friend ID.",
+    "duplicateTitle": "Já são amigos",
+    "duplicateBody": "Esta pessoa já está na lista.",
+    "errorTitle": "Erro",
+    "errorBody": "Tente de novo.",
+    "invalidIdTitle": "ID inválido",
+    "invalidIdBody": "Friend IDs são como TCG-123456. Peça o código ao seu amigo.",
+    "notFoundTitle": "Usuário não encontrado",
+    "notFoundBody": "Nenhuma conta com esse friend ID. Confira o código ou tente mais tarde."
+  }
+}

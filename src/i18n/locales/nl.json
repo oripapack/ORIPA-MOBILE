@@ -1,0 +1,568 @@
+{
+  "tabs": {
+    "home": "Home",
+    "friends": "Vrienden",
+    "marketplace": "Winkel",
+    "account": "Speler"
+  },
+  "marketplace": {
+    "storeTitle": "Pull Hub-winkel",
+    "storeLead": "Blader door losse kaarten en sealed producten van geverifieerde partnerwinkels. Afrekenen komt eraan — nu alleen listings (geen boosters openen hier).",
+    "searchPlaceholder": "Zoek kaarten, sets of winkels…",
+    "promoTitle": "Gratis verzending bij veel bestellingen",
+    "promoBody": "Bestellingen boven $ 50 bij deelnemende winkels vaak gratis verzonden. Zie elk listing voor details.",
+    "cat_all": "Alles",
+    "cat_pokemon": "Pokémon",
+    "cat_one_piece": "One Piece",
+    "cat_yugioh": "Yu-Gi-Oh!",
+    "cat_sports": "Sport",
+    "whyTitle": "Waarom Pull Hub-winkel?",
+    "whyPointLabel1": "Punt 1",
+    "whyPointLabel2": "Punt 2",
+    "whyPointLabel3": "Punt 3",
+    "whyPoint1Title": "Snelle levering",
+    "whyPoint1Body": "Partnerwinkels verzenden snel zodat je kaarten op tijd hebt voor events en league-avonden. Afsluitijden verschillen per verkoper.",
+    "whyPoint2Title": "Scherpe prijzen",
+    "whyPoint2Body": "Vergelijk listings van meerdere winkels op één plek. Pull Hub’s commissie zit in de partnerprijs — geen verrassingskosten bij afrekenen.",
+    "whyPoint3Title": "Enorme keuze",
+    "whyPoint3Body": "We bundelen voorraad van betrouwbare verkopers wereldwijd — van Japanse promo’s tot Engelse staples en sealed wax.",
+    "specialPrice": "Speciale prijs",
+    "saleOn": "SALE",
+    "sectionStores": "Van partnerwinkels",
+    "verified": "Geverifieerd",
+    "commissionLine": "Pull Hub-fee op verkopen: {{pct}}%",
+    "badgeSale": "SALE",
+    "badgeTournament": "Toernooi",
+    "badgeNew": "NIEUW",
+    "emptyResults": "Geen listings komen overeen met je filters.",
+    "listingDemoTitle": "Listing",
+    "listingDemoBody": "Afrekenen voor „{{title}}“ is nog niet gekoppeld — alleen listings.",
+    "demoNote": "Demo: betalingen, winkelwagen en uitbetalingen aan verkopers zijn niet gekoppeld. Boosters openen blijft op het Home-tabblad."
+  },
+  "common": {
+    "error": "Fout",
+    "copied": "Gekopieerd",
+    "friendIdCopied": "Friend-ID gekopieerd naar klembord."
+  },
+  "helpCenter": {
+    "navTitle": "Helpcentrum",
+    "lead": "Snelle antwoorden over credits, verzending en drops. Voorbeeldinhoud — vervang door echte artikelen vóór launch.",
+    "faq": {
+      "credits": {
+        "q": "Hoe werken credits?",
+        "a": "Credits zijn de in-app valuta om digitale boosters te openen. In deze preview kunnen aankopen gesimuleerd zijn — definitieve prijzen, terugbetalingen en bundles worden vóór launch gepubliceerd."
+      },
+      "shipping": {
+        "q": "Waarheen verzenden jullie fysieke kaarten?",
+        "a": "Marketplace-bestellingen worden door partnerwinkels verzonden. Cut-offs, vervoerders en kosten verschillen per listing. Voeg een verzendadres toe bij Account zodat afrekenen straks sneller gaat."
+      },
+      "drops": {
+        "q": "Wat is een hot drop?",
+        "a": "Hot drops zijn tijdelijke of zeer gewilde booster-releases. Dat is iets anders dan account-promo’s (bonussen, coupons). Tik op Hot drops bij Account voor een korte uitleg."
+      }
+    },
+    "contactSection": "Nog vast?",
+    "emailCta": "E-mail {{email}}",
+    "emailUs": "Neem contact op met support",
+    "responseTime": "We streven te antwoorden binnen 1–2 werkdagen (demo — niet bewaakt)."
+  },
+  "shippingAddress": {
+    "navTitle": "Verzendadres",
+    "lead": "Voor marketplace-bestellingen en prijzenuitzending zodra fulfillment live is. In de preview alleen op dit apparaat opgeslagen.",
+    "save": "Adres opslaan",
+    "savedTitle": "Opgeslagen",
+    "savedBody": "Je verzendadres is op dit apparaat opgeslagen.",
+    "saveFailed": "Opslaan mislukt. Probeer opnieuw.",
+    "missingTitle": "Velden ontbreken",
+    "missingBody": "Vul minimaal naam, adresregel 1, stad en land in.",
+    "fields": {
+      "fullName": "Volledige naam",
+      "line1": "Adresregel 1",
+      "line2": "Adresregel 2 (optioneel)",
+      "city": "Plaats",
+      "region": "Provincie / regio",
+      "postal": "Postcode",
+      "country": "Land"
+    },
+    "placeholders": {
+      "fullName": "Alex Trainer",
+      "line1": "123 Main St",
+      "line2": "Apt 4",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94102",
+      "country": "United States"
+    }
+  },
+  "tierBenefits": {
+    "navTitle": "Niveauvoordelen",
+    "lead": "Niveaus zijn een loyaliteitsladder op basis van XP. Voorbeeldvoordelen hieronder — afstemmen vóór launch.",
+    "progressHint": "Je hebt {{xp}} XP. Volgend niveau ontgrendelt bij {{need}} XP (demo-ladder).",
+    "topTier": "Je zit op het hoogste preview-niveau — bedankt om de voorbeelddata te testen.",
+    "fromXp": "Vanaf {{xp}} XP",
+    "yourTier": "Jouw niveau",
+    "disclaimer": "Voordelen, drempels en beschikbaarheid zijn indicatief en kunnen wijzigen."
+  },
+  "notifications": {
+    "navTitle": "Meldingen",
+    "lead": "Kies waar we je over mogen informeren. In de preview alleen op dit apparaat opgeslagen.",
+    "note": "Systeemtoestemming voor push komt apart wanneer push live is. E-mail- en sms-regels volgen hier.",
+    "toggles": {
+      "order": {
+        "title": "Bestellingen & verzending",
+        "sub": "Tracking, vertragingen en levering bij marketplace-bestellingen."
+      },
+      "drops": {
+        "title": "Hot drops & aanvulling",
+        "sub": "Beperkte boosters en gewilde releases."
+      },
+      "promos": {
+        "title": "Promo’s & credits",
+        "sub": "Bonuscredits, coupons en seizoenscampagnes."
+      },
+      "social": {
+        "title": "Vrienden & social",
+        "sub": "Vriendschapsverzoeken en uitnodigingen (indien actief)."
+      }
+    }
+  },
+  "hotDropsInfo": {
+    "navTitle": "Hot drops",
+    "body": "Hot drops zijn tijdelijke of zeer gewilde booster-releases — vaak een specifieke set, samenwerking of flash-venster. Het gaat om product en timing.",
+    "b1": "Aangekondigde start- en eindtijden (of „zolang voorraad strekt“).",
+    "b2": "Kan andere kansen of prijzen hebben dan vaste lijnen — lees altijd boosterdetails.",
+    "b3": "Kan snel uitverkopen; meldingen helpen bij aanvulling.",
+    "callout": "Niet hetzelfde als promo’s: promo’s zijn marketing (bonuscredits, coupons), niet de productrelease zelf."
+  },
+  "promosInfo": {
+    "navTitle": "Promo’s",
+    "body": "Promo’s zijn marketingprogramma’s: bonuscredits, couponcodes, seizoenscampagnes of partneraanbiedingen. Ze belonen o.a. registratie, bundels of referrals.",
+    "b1": "Getoond in-app, per e-mail of social — elke promo heeft eigen regels en data.",
+    "b2": "Kan met niveaus stapelen of alleen voor bepaalde boosters gelden — lees de kleine letter vóór launch.",
+    "b3": "Verschil met hot drops: promo is het aanbod; hot drop is de productrelease.",
+    "vsHotTitle": "Hot drops vs promo’s",
+    "vsHotBody": "Hot drops legt beperkte releases uit. Promo’s (dit scherm) legt bonuscredits en couponachtige incentives uit."
+  },
+  "pullHistoryScreen": {
+    "navTitle": "Speelgeschiedenis",
+    "lead": "Elke voltooide play — nieuwste eerst. Openstaande pulls blijven in de boosterflow tot uitbetalen of verzenden."
+  },
+  "linkedAccounts": {
+    "navTitle": "Gekoppelde accounts",
+    "body": "Koppelen laat je met meer dan één methode (Google, Apple, e-mail) op hetzelfde Pull Hub-profiel inloggen — je zit niet vast aan één login.",
+    "whatTitle": "Wat dit betekent",
+    "whatBody": "Het gaat niet om twee app-accounts samenvoegen, maar om providers aan één account te koppelen — voor gemak en herstel.",
+    "futureTitle": "Binnenkort",
+    "futureGoogle": "Google-account koppelen",
+    "futureApple": "Apple-ID koppelen",
+    "futureEmail": "E-mail + wachtwoord koppelen",
+    "note": "Provider-koppeling gebruikt jullie auth-instellingen (bijv. Clerk) in productie."
+  },
+  "identityVerification": {
+    "navTitle": "Identiteitsverificatie",
+    "body": "Identiteitsverificatie (vaak KYC) bevestigt dat je een echte persoon bent en voldoet aan leeftijd of compliance vóór hoge uitbetalingen, bepaalde promo’s of gereguleerde functies.",
+    "whyTitle": "Waarom apps dit vragen",
+    "whyBody": "Minder fraude, bescherming van minderjarigen, naleving van financiële en marketplace-regels wanneer geld of waardevolle prijzen stromen.",
+    "previewTitle": "Previewflow (inactief)",
+    "step1": "Overheids-ID of documentcontrole",
+    "step2": "Selfie of levendigheidstest (indien vereist)",
+    "step3": "Beoordeling — meestal minuten, soms langer",
+    "note": "Deze build legt alleen het concept uit. Koppel je leverancier (bijv. Persona, Stripe Identity) vóór je verificatie verplicht stelt."
+  },
+  "payoutMethod": {
+    "navTitle": "Uitbetalingsmethode",
+    "body": "Als je kaarten verkoopt of uitbetaalt, gaan uitbetalingen naar een gekoppelde bankrekening of betaalkaart. Deze preview is niet gekoppeld aan echte banken.",
+    "line1": "Voeg een bankrekening (ACH / lokaal) of betaalkaart toe per regio.",
+    "line2": "Verifieer micro-stortingen of -afschrijvingen als je processor dat vereist.",
+    "line3": "Uitbetalingstermijnen en kosten volgen marketplace-regels — zie Voorwaarden vóór launch.",
+    "note": "Vervang deze placeholder door echte uitbetalings-onboarding wanneer Stripe Connect of jullie PSP is geïntegreerd."
+  },
+  "settings": {
+    "title": "Instellingen"
+  },
+  "demoBanner": "Preview-build — credits en beloningen gesimuleerd.",
+  "home": {
+    "discover": "Ontdekken",
+    "spotlightTitle": "Spotlight-boosters",
+    "spotlightBody": "Uitgezochte drops en promo’s. Gebruik hieronder categorieën en sortering.",
+    "browseAllPacks": "Alle boosters",
+    "emptyCategory": "Nog geen boosters in deze categorie."
+  },
+  "packs": {
+    "browseTitle": "Boostervloer",
+    "browseSub": "Kies een lijn, sorteer de vloer, start wanneer je klaar bent"
+  },
+  "categories": {
+    "all": "Alle",
+    "featured": "Featured",
+    "new": "Nieuw",
+    "pokemon": "Pokémon",
+    "yugioh": "Yu-Gi-Oh!",
+    "one_piece": "One Piece",
+    "sports": "Sport",
+    "graded": "Graded",
+    "hot_drops": "Hot Drops"
+  },
+  "hero": {
+    "eyebrow": "WELKOMSTBONUS",
+    "headline1": "Opgevoerde lijnen",
+    "headline2": "voor nieuwe spelers",
+    "sub": "Tijdelijke boosters met betere hit-rates — spaar credits en jaag op de grote pull",
+    "browsePacks": "Naar de vloer",
+    "notNow": "Misschien later",
+    "hitCard": "Jackpotkaart"
+  },
+  "friends": {
+    "title": "Vrienden",
+    "heroEyebrow": "SQUAD-RUIMTE",
+    "lead": "Koppel met mensen waarmee je echt speelt — deel je tag of scan de hunne.",
+    "add": "Toevoegen",
+    "emptyCta": "Vrienden toevoegen",
+    "addModalTitle": "Vriend toevoegen",
+    "qrShort": "QR",
+    "yourFriendId": "Jouw friend-ID",
+    "memberHint": "Deze ID staat ook bij Account als Member-ID.",
+    "showQr": "Mijn QR tonen",
+    "addFriend": "Vriend toevoegen",
+    "enterFriendId": "Friend-ID invoeren",
+    "placeholderId": "bijv. TCG-100001",
+    "lookup": "Zoeken",
+    "scanQr": "QR scannen",
+    "demoHint": "Demo: probeer TCG-100001, TCG-100002 of TCG-100003.",
+    "yourFriends": "Jouw vrienden ({{count}})",
+    "emptyTitle": "Nog geen vrienden",
+    "emptyBody": "Als je iemand toevoegt, verschijnt die hier — basis voor meer sociale functies later."
+  },
+  "rewards": {
+    "title": "Beloningen",
+    "tier": "NIVEAU",
+    "viewBenefits": "Bekijk niveauvoordelen →",
+    "pullHistory": "Geschiedenis",
+    "shipped": "Verzonden",
+    "noPullsTitle": "Nog geen plays",
+    "noPullsBody": "Open je eerste booster — je hits en credits verschijnen hier.",
+    "latestWins": "Laatste hits",
+    "viewFullHistory": "Volledige speelgeschiedenis →"
+  },
+  "account": {
+    "title": "Speler",
+    "tier": "NIVEAU",
+    "memberId": "Member-ID",
+    "verifyIdentity": "Identiteit verifiëren",
+    "viewBenefits": "Bekijk niveauvoordelen →",
+    "sectionAccount": "Account",
+    "sectionMore": "Meer",
+    "sectionSupport": "Support",
+    "sectionLegal": "Juridisch",
+    "sectionPreferences": "Voorkeuren",
+    "languageRegion": "Taal en regio",
+    "followUs": "Volg ons",
+    "followSub": "Officiële kanalen voor promo’s, drops en updates.",
+    "logout": "Uitloggen",
+    "version": "{{name}} v{{version}}",
+    "guestSignInEyebrow": "Als gast",
+    "guestSignInTitle": "Log in om meer te doen",
+    "guestSignInBody": "Gasten kunnen alleen bladeren. Log in met Google, Apple of e-mail om boosters te openen, credits te kopen, af te rekenen en Vrienden te gebruiken.",
+    "guestSignInCta": "Inloggen of account aanmaken",
+    "playerDeskEyebrow": "SPELERBALIE",
+    "pullHistoryCta": "Volledige speelgeschiedenis",
+    "pullHistorySub": "Elke open, creditwinst en hit — volledig logboek"
+  },
+  "shortcuts": {
+    "notif": "Meldingen",
+    "hot": "Hot drops",
+    "promos": "Promo’s"
+  },
+  "accountRows": {
+    "shipping": "Verzendadres",
+    "payout": "Uitbetaling",
+    "identity": "Identiteitsverificatie",
+    "linked": "Gekoppelde accounts"
+  },
+  "supportRows": {
+    "help": "Helpcentrum",
+    "contact": "Contact opnemen",
+    "faq": "FAQ"
+  },
+  "legalRows": {
+    "terms": "Gebruiksvoorwaarden",
+    "privacy": "Privacybeleid",
+    "promo": "Promotieregels",
+    "payment": "Betalingsinformatie"
+  },
+  "locale": {
+    "title": "Taal en regio",
+    "language": "Taal",
+    "region": "Regio",
+    "regionHint": "Voor datum, valuta en toekomstige verzendstandaarden.",
+    "fallbackNote": "Alle talen in de lijst hebben een volledige UI-vertaling. De regio bepaalt nog steeds datum en valuta.",
+    "save": "Opslaan",
+    "cancel": "Annuleren"
+  },
+  "regions": {
+    "US": "Verenigde Staten",
+    "CA": "Canada",
+    "GB": "Verenigd Koninkrijk",
+    "JP": "Japan",
+    "AU": "Australië"
+  },
+  "buyCredits": {
+    "close": "Sluiten",
+    "title": "Credits kopen",
+    "subtitle": "Credits openen boosters. Promotiekortingen op kleinere bundels; hogere niveaus zijn lijstprijs.",
+    "mockNote": "Preview: geen echte betaling — credits worden direct voor demo’s bijgeschreven.",
+    "discountBadge": "{{pct}}% KORTING",
+    "pointsLine": "{{count}} pt",
+    "approx": "ca.",
+    "buyNow": "Nu kopen",
+    "disclaimer": "Na bevestiging van een creditaankoop zijn annulering, terugbetaling of puntenretour mogelijk uitgesloten. (Definitief beleid vóór launch.)",
+    "mockFooter": "Gesimuleerde bundels — vervang door echte checkout vóór launch.",
+    "liveFooter": "Veilige checkout · Directe levering · Geen verval"
+  },
+  "lootBox": {
+    "title": "Kans op inhoud",
+    "lead": "Het openen van boosters is willekeurig. De percentages per niveau hieronder zijn indicatief; specifieke boosters kunnen afwijken.",
+    "columnTier": "Niveau",
+    "footnote": "Percentages zijn illustratief voor deze preview. Gepubliceerde producten tonen definitieve kansen vóór aankoop waar vereist.",
+    "done": "Begrepen"
+  },
+  "welcome": {
+    "signupPromoTitle": "Gratis welkomstbooster",
+    "signupPromoBody": "Maak nu een account aan — we voegen een bonus welkomstbooster toe aan je eerste sessie (demo — live activering later).",
+    "skip": "Bladeren zonder in te loggen",
+    "guestHint": "Je kunt de catalogus bekijken. Log in om boosters te openen, credits te kopen, af te rekenen en Vrienden te gebruiken."
+  },
+  "auth": {
+    "title": "Inloggen",
+    "subtitle": "Google, Apple of e-mail. Nieuwe accounts: we mailen een eenmalige code ter verificatie.",
+    "continueGoogle": "Doorgaan met Google",
+    "continueApple": "Doorgaan met Apple",
+    "or": "of",
+    "modeSignIn": "Inloggen",
+    "modeSignUp": "Account aanmaken",
+    "emailPlaceholder": "E-mail",
+    "passwordPlaceholder": "Wachtwoord",
+    "emailSignIn": "Inloggen met e-mail",
+    "emailContinue": "Doorgaan",
+    "verifyHint": "Voer de code in die we naar {{email}} hebben gestuurd.",
+    "codePlaceholder": "6-cijferige code",
+    "verifyCode": "Verifiëren en doorgaan",
+    "resendCode": "Code opnieuw versturen",
+    "emailPasswordRequired": "Vul e-mail en wachtwoord in.",
+    "signInIncomplete": "Inloggen niet voltooid. Bij 2FA voegen we later ondersteuning toe.",
+    "verifyFailed": "Verificatie mislukt. Controleer de code en probeer opnieuw.",
+    "dashboardHint": "Clerk-dashboard: schakel Google (oauth_google), Apple (oauth_apple) en e-mail + wachtwoord + e-mailcode in.",
+    "signedInAs": "Account",
+    "signOut": "Uitloggen",
+    "signOutTitle": "Uitloggen?",
+    "signOutMessage": "Je moet opnieuw inloggen om gesynchroniseerde gegevens te gebruiken zodra die beschikbaar zijn.",
+    "signOutConfirm": "Uitloggen",
+    "cancel": "Annuleren"
+  },
+  "linkPhone": {
+    "title": "Telefoon verifiëren",
+    "subtitle": "We sturen één sms. Kies je land, voer je nummer in — je hoeft +1 niet zelf te typen.",
+    "mobileLabel": "Mobiel nummer",
+    "countryPickerA11y": "Land of regio",
+    "nationalPlaceholderNanp": "(555) 123-4567",
+    "nationalPlaceholder": "Telefoonnummer",
+    "sendCode": "Code versturen",
+    "codeHint": "Voer de code in die we per sms hebben gestuurd.",
+    "codePlaceholder": "6-cijferige code",
+    "verify": "Verifiëren en doorgaan",
+    "resend": "Code opnieuw versturen",
+    "changeNumber": "Ander nummer gebruiken",
+    "invalid": "Voer een geldig nummer in voor het gekozen land.",
+    "nanpInvalid": "VS en Canada: 10 cijfers (netnummer + nummer).",
+    "phoneMissing": "Telefoonverificatie kon niet starten. Probeer opnieuw.",
+    "verifyFailed": "Code klopt niet. Controleer het bericht en probeer opnieuw.",
+    "genericError": "Er ging iets mis. Probeer opnieuw.",
+    "dashboardHint": "Clerk → User & authentication → Phone: sms/verificatie inschakelen. Je kunt ‘Inloggen met telefoon’ uitzetten als je alleen Google/Apple/e-mail wilt.",
+    "smsDevHint": "Geen sms? Voeg in dev een testnummer toe in Clerk of koppel Twilio — Clerk stuurt geen echte sms zonder setup.",
+    "signOut": "Ander account gebruiken"
+  },
+  "profileOnboarding": {
+    "title": "Profiel instellen",
+    "subtitle": "Kies een openbare gebruikersnaam en hoe je wilt verschijnen. Later aanpasbaar wanneer accountinstellingen op de server staan.",
+    "usernameLabel": "Gebruikersnaam",
+    "usernamePlaceholder": "jouw_handle",
+    "displayNameLabel": "Weergavenaam (optioneel)",
+    "displayNamePlaceholder": "Zelfde als gebruikersnaam indien leeg",
+    "memberIdHint": "Je vriendcode (TCG-…) wordt automatisch voor QR en uitnodigingen toegekend.",
+    "usernameInvalid": "2–20 tekens: alleen letters, cijfers en underscores.",
+    "continue": "Doorgaan",
+    "genericError": "Profiel opslaan mislukt. Probeer opnieuw."
+  },
+  "paymentPortal": {
+    "navTitle": "Betaling",
+    "eyebrow": "Afrekenen",
+    "tabCredits": "Credits",
+    "tabMarketplace": "Marketplace",
+    "viewProbabilities": "Bekijk kans op inhoud",
+    "digitalRoutingNote": "Digitale credits: in-app aankoop App Store / Google Play wanneer live — niet Stripe voor munten.",
+    "marketplaceTitle": "Fysieke bestelling",
+    "marketplaceLead": "Partnerlistings verzenden echte producten. Afrekenen gebruikt een fysieke goederen-flow (Stripe server-side), los van credit-boosters.",
+    "item": "Item",
+    "price": "Prijs",
+    "physicalPolicy": "Alleen fysieke goederen — PaymentIntent op jullie server ({{mode}}). Apple Pay / Google Pay kunnen voor verzending verschijnen, niet voor digitale valuta.",
+    "continueCheckout": "Doorgaan naar afrekenen",
+    "physicalStubTitle": "Afrekenen niet gekoppeld",
+    "physicalStubBody": "Koppel je backend om een Stripe PaymentIntent te maken, open daarna de client met het client secret. Geen keys in de app.",
+    "sampleListingTitle": "Voorbeeldlisting"
+  },
+  "legalModal": {
+    "done": "Klaar"
+  },
+  "myQr": {
+    "title": "Jouw vriendcode",
+    "subtitle": "Laat een vriend deze QR scannen of deel je ID",
+    "you": "Jij",
+    "copy": "Kopiëren",
+    "done": "Klaar"
+  },
+  "qrScanner": {
+    "title": "Scan vriend-QR",
+    "cancel": "Annuleren",
+    "permText": "We hebben cameratoegang nodig om vriend-QR-codes te scannen.",
+    "allowCamera": "Camera toestaan",
+    "hint": "Lijn de QR-code uit in het kader",
+    "webTitle": "Scannen niet beschikbaar op web",
+    "webBody": "Open de app op je telefoon om de QR van een vriend te scannen, of voer hieronder de friend-ID in.",
+    "close": "Sluiten"
+  },
+  "sort": {
+    "recommended": "Aanbevolen",
+    "priceAsc": "Prijs: laag naar hoog",
+    "priceDesc": "Prijs: hoog naar laag",
+    "newest": "Nieuwste",
+    "bestValue": "Beste waarde",
+    "popular": "Populairst"
+  },
+  "filterRow": {
+    "filter": "Filter",
+    "sortPrefix": "Sorteer: ",
+    "sortBy": "Sorteren op"
+  },
+  "chips": {
+    "new": "Nieuw",
+    "new_user": "Nieuwe speler",
+    "best_value": "Beste waarde",
+    "graded": "Graded",
+    "hot_drop": "Hot drop",
+    "bonus_pack": "Bonus",
+    "chase_boost": "Chase boost"
+  },
+  "packCard": {
+    "openPack": "Nu spelen",
+    "credits": "credits",
+    "remaining": "{{left}} / {{total}} over",
+    "maxPerUser": "Max. {{count}} plays / account",
+    "shortBadge": {
+      "new": "NEW",
+      "new_user": "WELCOME",
+      "best_value": "VALUE",
+      "graded": "VAULT",
+      "hot_drop": "HOT",
+      "bonus_pack": "BONUS",
+      "chase_boost": "CHASE"
+    }
+  },
+  "packCatalog": {
+    "1": {
+      "title": "Welkomstbooster",
+      "value": "Meer dan 100% chase-waarde",
+      "guarantee": "Bonus gegarandeerd elke 2 opens"
+    },
+    "2": {
+      "title": "Pokémon Scarlet & Violet Hit Pack",
+      "value": "90% kans op 200+ credits waarde",
+      "guarantee": "Holofoil gegarandeerd in elke booster"
+    },
+    "3": {
+      "title": "One Piece Graded Vault Pack",
+      "value": "PSA 9–10 graded kaarten",
+      "guarantee": "Elke booster bevat een graded kaart"
+    },
+    "4": {
+      "title": "Sports Cards Flash Pack",
+      "value": "Rookies van topkeuzes 2024",
+      "guarantee": "Auto of relic elke 5 opens"
+    },
+    "5": {
+      "title": "Pokémon Vintage Graded Pack",
+      "value": "Base Set-era graded hits",
+      "guarantee": "PSA 8+ gegarandeerd"
+    },
+    "6": {
+      "title": "Hot Drop Mystery Pack",
+      "value": "Verrassingsmix uit alle categorieën",
+      "guarantee": "Bonusbooster na elke 3 opens"
+    },
+    "7": {
+      "title": "One Piece Paramount War Pack",
+      "value": "Leader SR met chase foils",
+      "guarantee": "1 op 10 kans op Alt Art"
+    },
+    "8": {
+      "title": "New Arrivals Sampler Pack",
+      "value": "Hits uit nieuwste sets",
+      "guarantee": "Minstens 3 kaarten per open"
+    },
+    "9": {
+      "title": "Yu-Gi-Oh! Battles of Legend Pack",
+      "value": "Secret Rares en starlight-slots",
+      "guarantee": "Ultra Rare of hoger in elke booster"
+    }
+  },
+  "packOpening": {
+    "title": "Booster openen",
+    "opening": "Openen…",
+    "suspense": "Wat heb je getrokken?",
+    "revealing": "Onthullen…",
+    "skip": "Overslaan ▸",
+    "live": "LIVE",
+    "continue": "Doorgaan",
+    "openNext": "Volgende openen",
+    "youPulled": "Je hebt getrokken",
+    "creditsLabel": "+{{amount}} credits",
+    "resultCommon1": "Gewone hit uit {{packName}}",
+    "resultCommon2": "Standaard pull uit {{packName}}",
+    "resultCommon3": "Alledaagse kaart uit {{packName}}",
+    "resultRare1": "Zeldzame hit uit {{packName}}",
+    "resultRare2": "Ultra pull uit {{packName}}",
+    "resultRare3": "Speciale kaart uit {{packName}}",
+    "resultLegendary1": "Legendarische hit uit {{packName}}",
+    "resultLegendary2": "Mythische pull uit {{packName}}",
+    "resultLegendary3": "Game-changing kaart uit {{packName}}"
+  },
+  "insufficientCredits": {
+    "title": "Onvoldoende credits",
+    "body": "Je hebt meer credits nodig om deze booster te openen.",
+    "bodyWithAmount": "Je hebt nog {{needed}} credits nodig voor deze booster. Voeg credits toe om door te gaan.",
+    "packLabel": "Booster",
+    "costLabel": "Kosten",
+    "balanceLabel": "Saldo",
+    "creditsLine": "{{amount}} credits",
+    "buyCredits": "Credits kopen",
+    "cancel": "Annuleren"
+  },
+  "friendsAlerts": {
+    "copiedTitle": "Gekopieerd",
+    "copiedBody": "Friend-ID gekopieerd naar klembord.",
+    "addTitle": "Vriend toevoegen?",
+    "cancel": "Annuleren",
+    "add": "Toevoegen",
+    "addedTitle": "Toegevoegd",
+    "addedBody": "{{name}} staat nu in je vriendenlijst.",
+    "selfTitle": "Dat ben jij",
+    "selfBody": "Je kunt je eigen friend-ID niet toevoegen.",
+    "duplicateTitle": "Al vrienden",
+    "duplicateBody": "Deze persoon staat al in je lijst.",
+    "errorTitle": "Fout",
+    "errorBody": "Probeer het opnieuw.",
+    "invalidIdTitle": "Ongeldige ID",
+    "invalidIdBody": "Friend-ID’s zien eruit als TCG-123456. Vraag je vriend om de code.",
+    "notFoundTitle": "Gebruiker niet gevonden",
+    "notFoundBody": "Geen account met die friend-ID. Controleer de code of probeer later opnieuw."
+  }
+}

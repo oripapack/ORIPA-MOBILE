@@ -1,16 +1,30 @@
 import { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LOCALE_STORAGE_KEY } from '../locale/constants';
-import { migrateLanguageCode, setAppLanguage, type AppLanguage } from '../i18n';
+import i18n, { migrateLanguageCode, setAppLanguage, type AppLanguage } from '../i18n';
 
-/** Native script labels — same in every UI language. */
+/**
+ * Every code here is registered in `src/i18n/index.ts` so switching always calls `changeLanguage`.
+ * All listed languages have dedicated `src/i18n/locales/*.json` files (merged with English for any missing keys).
+ */
 export const LANGUAGE_OPTIONS = [
   { code: 'en' as const, label: 'English' },
+  { code: 'es' as const, label: 'Español' },
+  { code: 'fr' as const, label: 'Français' },
+  { code: 'de' as const, label: 'Deutsch' },
+  { code: 'it' as const, label: 'Italiano' },
+  { code: 'pt' as const, label: 'Português' },
+  { code: 'ru' as const, label: 'Русский' },
+  { code: 'pl' as const, label: 'Polski' },
+  { code: 'nl' as const, label: 'Nederlands' },
+  { code: 'tr' as const, label: 'Türkçe' },
+  { code: 'ar' as const, label: 'العربية' },
+  { code: 'hi' as const, label: 'हिन्दी' },
   { code: 'ja' as const, label: '日本語' },
   { code: 'ko' as const, label: '한국어' },
-  { code: 'es' as const, label: 'Español' },
   { code: 'zh' as const, label: '中文（简体）' },
   { code: 'zht' as const, label: '中文（繁體）' },
+  { code: 'vi' as const, label: 'Tiếng Việt' },
 ] as const;
 
 export const REGION_OPTIONS = [
@@ -34,7 +48,9 @@ function parseStoredLanguage(raw: string | undefined): LanguageCode {
 }
 
 export function useLocalePreferences() {
-  const [language, setLanguageState] = useState<LanguageCode>(DEFAULTS.language);
+  const [language, setLanguageState] = useState<LanguageCode>(() =>
+    migrateLanguageCode(i18n.language) as LanguageCode,
+  );
   const [region, setRegionState] = useState<RegionCode>(DEFAULTS.region);
   const [loading, setLoading] = useState(true);
 

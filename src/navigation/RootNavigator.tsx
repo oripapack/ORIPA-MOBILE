@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
@@ -12,6 +12,16 @@ import { AccountScreen } from '../screens/AccountScreen';
 import { MarketplaceScreen } from '../screens/MarketplaceScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { PaymentPortalScreen } from '../screens/PaymentPortalScreen';
+import { HelpCenterScreen } from '../screens/HelpCenterScreen';
+import { ShippingAddressScreen } from '../screens/ShippingAddressScreen';
+import { TierBenefitsScreen } from '../screens/TierBenefitsScreen';
+import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { HotDropsInfoScreen } from '../screens/HotDropsInfoScreen';
+import { PromosInfoScreen } from '../screens/PromosInfoScreen';
+import { PullHistoryScreen } from '../screens/PullHistoryScreen';
+import { LinkedAccountsScreen } from '../screens/LinkedAccountsScreen';
+import { IdentityVerificationScreen } from '../screens/IdentityVerificationScreen';
+import { PayoutMethodScreen } from '../screens/PayoutMethodScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
 import { navigationRef } from './navigationRef';
 import { colors } from '../tokens/colors';
@@ -21,9 +31,10 @@ import { AuthScreen } from '../screens/AuthScreen';
 import { LinkPhoneScreen } from '../screens/LinkPhoneScreen';
 import { ProfileOnboardingScreen } from '../screens/ProfileOnboardingScreen';
 import { ClerkProfileSync } from '../components/account/ClerkProfileSync';
-import { isClerkEnabled } from '../config/clerk';
+import { isClerkEnabled, requirePhoneVerification } from '../config/clerk';
 import { hasVerifiedPhone } from '../lib/clerkPhone';
 import { hasCompletedProfileOnboarding } from '../lib/clerkProfile';
+import { useGuestBrowseStore } from '../store/guestBrowseStore';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -80,15 +91,136 @@ function RootStack() {
             headerStyle: { backgroundColor: colors.white },
           }}
         />
+        <Stack.Screen
+          name="HelpCenter"
+          component={HelpCenterScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="ShippingAddress"
+          component={ShippingAddressScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="TierBenefits"
+          component={TierBenefitsScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="Notifications"
+          component={NotificationsScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="HotDropsInfo"
+          component={HotDropsInfoScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="PromosInfo"
+          component={PromosInfoScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="PullHistory"
+          component={PullHistoryScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="LinkedAccounts"
+          component={LinkedAccountsScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="IdentityVerification"
+          component={IdentityVerificationScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
+        <Stack.Screen
+          name="PayoutMethod"
+          component={PayoutMethodScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.nearBlack,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.white },
+          }}
+        />
       </Stack.Navigator>
       <GlobalPackModals />
     </>
   );
 }
 
+function GuestHydration() {
+  const hydrate = useGuestBrowseStore((s) => s.hydrate);
+  useEffect(() => {
+    void hydrate();
+  }, [hydrate]);
+  return null;
+}
+
 function ClerkAuthGate() {
   const { isLoaded, isSignedIn } = useAuth();
   const { user, isLoaded: userLoaded } = useUser();
+  const hydrated = useGuestBrowseStore((s) => s.hydrated);
+  const guestBrowseEnabled = useGuestBrowseStore((s) => s.guestBrowseEnabled);
+  const authWallForced = useGuestBrowseStore((s) => s.authWallForced);
 
   if (!isLoaded) {
     return (
@@ -98,8 +230,20 @@ function ClerkAuthGate() {
     );
   }
 
+  if (!hydrated) {
+    return (
+      <View style={styles.authLoading}>
+        <ActivityIndicator size="large" color={colors.red} />
+      </View>
+    );
+  }
+
   if (!isSignedIn) {
-    return <AuthScreen />;
+    const allowGuest = guestBrowseEnabled && !authWallForced;
+    if (allowGuest) {
+      return <RootStack />;
+    }
+    return <AuthScreen welcomeMode />;
   }
 
   if (!userLoaded || !user) {
@@ -110,7 +254,7 @@ function ClerkAuthGate() {
     );
   }
 
-  if (!hasVerifiedPhone(user)) {
+  if (requirePhoneVerification && !hasVerifiedPhone(user)) {
     return <LinkPhoneScreen />;
   }
 
@@ -124,6 +268,7 @@ function ClerkAuthGate() {
 export function RootNavigator() {
   return (
     <NavigationContainer ref={navigationRef}>
+      <GuestHydration />
       {isClerkEnabled ? <ClerkAuthGate /> : <RootStack />}
     </NavigationContainer>
   );
@@ -137,17 +282,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   tabBar: {
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    height: 80,
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.headerHairline,
+    height: 82,
     paddingBottom: 16,
     paddingTop: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 10,
+    shadowColor: colors.shadowStrong,
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    elevation: 16,
   },
   tabLabel: {
     fontSize: fontSize.xs,

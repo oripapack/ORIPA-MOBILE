@@ -27,5 +27,8 @@ export const SHOW_DEMO_BANNER = true;
 
 export const DEMO_BANNER_TEXT = 'Preview build — credits & rewards are simulated.';
 
+/** Help Center / Contact Support mailto target (replace before launch). */
+export const SUPPORT_EMAIL = 'support@pullhub.app';
+
 /** If true, Buy Credits is clearly labeled as mock (no real charges). */
 export const CREDITS_ARE_MOCK = true;
