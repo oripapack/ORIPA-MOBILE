@@ -22,6 +22,7 @@ import { PullHistoryScreen } from '../screens/PullHistoryScreen';
 import { LinkedAccountsScreen } from '../screens/LinkedAccountsScreen';
 import { IdentityVerificationScreen } from '../screens/IdentityVerificationScreen';
 import { PayoutMethodScreen } from '../screens/PayoutMethodScreen';
+import { PackDetailsScreen } from '../screens/PackDetailsScreen';
 import { FriendProfileScreen } from '../screens/FriendProfileScreen';
 import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
@@ -84,6 +85,13 @@ function RootStack() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="MainTabs" component={TabNavigatorInner} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen
+          name="PackDetails"
+          component={PackDetailsScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="PaymentPortal"
           component={PaymentPortalScreen}

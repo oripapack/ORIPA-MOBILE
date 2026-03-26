@@ -54,7 +54,8 @@
     "spotlightTitle": "精选卡包",
     "spotlightBody": "精选上新与活动。请用下方分类与排序浏览。",
     "browseAllPacks": "浏览全部卡包",
-    "emptyCategory": "该分类下暂无卡包。"
+    "emptyCategory": "该分类下暂无卡包。",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "浏览卡包",
@@ -86,7 +87,7 @@
     "add": "添加",
     "emptyCta": "添加好友",
     "addModalTitle": "添加好友",
-    "qrShort": "QR",
+    "qrShort": "二维码",
     "yourFriendId": "你的好友 ID",
     "memberHint": "该 ID 与账户页会员 ID 相同。",
     "showQr": "显示我的二维码",
@@ -100,12 +101,12 @@
     "emptyTitle": "暂无好友",
     "emptyBody": "添加后将显示在此，为后续社交功能做准备。",
     "heroEyebrow": "SQUAD LOUNGE",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "qrActionSub": "你的码",
+    "addActionSub": "找人",
+    "yourUsername": "你的用户名",
+    "usernameHint": "好友通过此唯一用户名添加你——与玩家标签页一致。",
+    "enterFriendUsername": "用户名",
+    "placeholderUsername": "例如 jordan"
   },
   "rewards": {
     "title": "奖励",
@@ -115,8 +116,8 @@
     "shipped": "已发货",
     "noPullsTitle": "暂无开包记录",
     "noPullsBody": "开启第一个卡包后，记录将显示在这里。",
-    "latestWins": "Latest hits",
-    "viewFullHistory": "See full play history →"
+    "latestWins": "最新收获",
+    "viewFullHistory": "查看完整记录 →"
   },
   "account": {
     "title": "账户",
@@ -139,13 +140,13 @@
     "guestSignInBody": "访客只能浏览。开包、购买点数、结账和好友等功能需要账户。请使用 Google、Apple 或电子邮件继续。",
     "guestSignInCta": "登录或创建账户",
     "playerDeskEyebrow": "PLAYER DESK",
-    "pullHistoryCta": "Full play history",
-    "pullHistorySub": "Every open, credit win, and hit — complete log",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "pullHistoryCta": "完整开箱记录",
+    "pullHistorySub": "每次开启、赢得积分与出货——完整日志",
+    "accountDetailsEyebrow": "账户详情",
+    "usernameLabel": "用户名",
+    "usernameUnset": "尚未设置",
+    "emailLabel": "邮箱",
+    "phoneLabel": "手机"
   },
   "shortcuts": {
     "notif": "通知",
@@ -177,7 +178,7 @@
     "regionHint": "用于日期、货币显示及未来配送设置。",
     "save": "保存",
     "cancel": "取消",
-    "fallbackNote": "All languages in the list have full UI translations. Region still controls dates and currency display."
+    "fallbackNote": "列表中的语言均提供完整界面翻译。日期与货币显示仍由地区设置控制。"
   },
   "regions": {
     "US": "美国",
@@ -191,8 +192,8 @@
     "title": "购买积分",
     "subtitle": "用于开包。促销折扣仅显示在较低档位；更高档位为标价。",
     "mockNote": "预览：无真实扣款 — 演示积分即时到账。",
-    "discountBadge": "{{pct}}% OFF",
-    "pointsLine": "{{count}} pt",
+    "discountBadge": "省 {{pct}}%",
+    "pointsLine": "{{count}} 分",
     "approx": "约",
     "buyNow": "购买",
     "disclaimer": "确认购买后可能无法取消、退款或退回积分（上线前以最终政策为准）。",
@@ -208,8 +209,8 @@
     "you": "你",
     "copy": "复制",
     "done": "完成",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "扫描他人二维码",
+    "scanAnotherSub": "用相机扫描对方二维码添加"
   },
   "qrScanner": {
     "title": "扫描好友二维码",
@@ -249,14 +250,16 @@
     "remaining": "剩余 {{left}} / {{total}}",
     "maxPerUser": "每人限开 {{count}} 次",
     "shortBadge": {
-      "new": "NEW",
-      "new_user": "WELCOME",
-      "best_value": "VALUE",
-      "graded": "VAULT",
-      "hot_drop": "HOT",
-      "bonus_pack": "BONUS",
-      "chase_boost": "CHASE"
-    }
+      "new": "新",
+      "new_user": "欢迎",
+      "best_value": "超值",
+      "graded": "保管",
+      "hot_drop": "热",
+      "bonus_pack": "赠",
+      "chase_boost": "追"
+    },
+    "topHit": "头奖",
+    "chase": "追"
   },
   "packCatalog": {
     "1": {
@@ -325,7 +328,7 @@
     "resultLegendary1": "来自 {{packName}} 的传说命中",
     "resultLegendary2": "来自 {{packName}} 的神话级抽出",
     "resultLegendary3": "改变局势的卡 — {{packName}}",
-    "replay": "Replay animation"
+    "replay": "重播动画"
   },
   "insufficientCredits": {
     "title": "积分不足",
@@ -356,13 +359,13 @@
     "invalidIdBody": "好友 ID 格式类似 TCG-123456。请让对方分享。",
     "notFoundTitle": "未找到用户",
     "notFoundBody": "没有与该 ID 匹配的账号。请核对或稍后再试。",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "先设置用户名",
+    "noUsernameBody": "完成资料以获得可与好友分享的唯一用户名。"
   },
   "common": {
     "copied": "已复制",
     "friendIdCopied": "好友 ID 已复制到剪贴板。",
-    "error": "Error"
+    "error": "错误"
   },
   "social": {
     "profileNavTitle": "资料",
@@ -406,221 +409,245 @@
     "demoAlreadyFriend": "已在你的圈子"
   },
   "helpCenter": {
-    "navTitle": "Help Center",
-    "lead": "Quick answers for credits, shipping, and drops. This is sample content — replace with your real help articles before launch.",
+    "navTitle": "帮助中心",
+    "lead": "关于积分、物流和 Hot drops 的快速解答。此为示例内容，上线前请替换为真实帮助文章。",
     "faq": {
       "credits": {
-        "q": "How do credits work?",
-        "a": "Credits are the in-app currency used to open digital packs. Purchases in this preview may be simulated — final pricing, refunds, and bundles will be published before launch."
+        "q": "积分如何使用？",
+        "a": "积分是应用内用于开启数字卡包的货币。预览中的购买可能被模拟；最终定价、退款与捆绑包将在上线前公布。"
       },
       "shipping": {
-        "q": "Where do you ship physical cards?",
-        "a": "Marketplace orders ship from partner stores. Cutoffs, carriers, and fees vary by listing. Add a shipping address in Account so checkout is faster when payments go live."
+        "q": "实体卡配送到哪里？",
+        "a": "商城订单由合作店铺发货。截单时间、承运商和费用因商品而异。在账户中添加收货地址，可在支付上线后更快结账。"
       },
       "drops": {
-        "q": "What is a hot drop?",
-        "a": "Hot drops are limited-time or high-demand pack releases. They are different from account promos (bonuses and coupons). Tap Hot Drops on Account for a short explainer."
+        "q": "什么是 Hot drop？",
+        "a": "Hot drops 指限时或高需求的卡包发售，与账户促销（奖励与优惠券）不同。在账户中点击 Hot drops 可查看简短说明。"
       }
     },
-    "contactSection": "Still stuck?",
-    "emailCta": "Email {{email}}",
-    "emailUs": "Email support",
-    "responseTime": "We aim to reply within 1–2 business days (demo — not monitored)."
+    "contactSection": "还有问题？",
+    "emailCta": "发邮件至 {{email}}",
+    "emailUs": "邮件支持",
+    "responseTime": "我们争取在 1–2 个工作日内回复（演示环境，未值守）。"
   },
   "shippingAddress": {
-    "navTitle": "Shipping address",
-    "lead": "Used for marketplace orders and prize shipping when fulfillment is live. Saved only on this device in the preview build.",
-    "save": "Save address",
-    "savedTitle": "Saved",
-    "savedBody": "Your shipping address was saved on this device.",
-    "saveFailed": "Could not save. Try again.",
-    "missingTitle": "Missing fields",
-    "missingBody": "Enter at least name, street line 1, city, and country.",
+    "navTitle": "收货地址",
+    "lead": "在履约上线后用于商城订单与奖品寄送。预览版仅保存在本设备。",
+    "save": "保存地址",
+    "savedTitle": "已保存",
+    "savedBody": "收货地址已保存在本设备。",
+    "saveFailed": "无法保存，请重试。",
+    "missingTitle": "信息不完整",
+    "missingBody": "至少填写姓名、地址第一行、城市和国家。",
     "fields": {
-      "fullName": "Full name",
-      "line1": "Address line 1",
-      "line2": "Address line 2 (optional)",
-      "city": "City",
-      "region": "State / region",
-      "postal": "Postal code",
-      "country": "Country"
+      "fullName": "姓名",
+      "line1": "地址第 1 行",
+      "line2": "地址第 2 行（选填）",
+      "city": "城市",
+      "region": "州/省/地区",
+      "postal": "邮政编码",
+      "country": "国家"
     },
     "placeholders": {
       "fullName": "Alex Trainer",
-      "line1": "123 Main St",
-      "line2": "Apt 4",
-      "city": "San Francisco",
+      "line1": "主街 123 号",
+      "line2": "4 单元",
+      "city": "旧金山",
       "region": "CA",
       "postal": "94102",
-      "country": "United States"
+      "country": "美国"
     }
   },
   "tierBenefits": {
-    "navTitle": "Tier benefits",
-    "lead": "Tiers are a loyalty ladder based on XP from activity. Sample perks below — tune before launch.",
-    "progressHint": "You have {{xp}} XP. Next tier unlocks at {{need}} XP (demo ladder).",
-    "topTier": "You are at the highest preview tier — thanks for playing with the sample data.",
-    "fromXp": "From {{xp}} XP",
-    "yourTier": "Your tier",
-    "disclaimer": "Benefits, thresholds, and availability are illustrative only and may change."
+    "navTitle": "等级福利",
+    "lead": "等级按活动获得的 XP 递进。以下为示例福利，上线前请调整。",
+    "progressHint": "当前 {{xp}} XP。下一等级需 {{need}} XP（演示阶梯）。",
+    "topTier": "你已达到预览最高等级，感谢体验示例数据。",
+    "fromXp": "{{xp}} XP 起",
+    "yourTier": "你的等级",
+    "disclaimer": "福利、门槛与可用性仅为示意，可能变更。"
   },
   "notifications": {
-    "navTitle": "Notifications",
-    "lead": "Choose what we can notify you about. Preferences are stored on this device only in the preview.",
-    "note": "System notification permission is requested separately when push is wired. Email and SMS controls will live here too.",
+    "navTitle": "通知",
+    "lead": "选择我们可以通知你的内容。预览中偏好仅保存在本设备。",
+    "note": "接入推送后会单独请求系统通知权限。邮件与短信控制也会放在这里。",
     "toggles": {
       "order": {
-        "title": "Orders & shipping",
-        "sub": "Tracking, delays, and delivery updates for marketplace orders."
+        "title": "订单与物流",
+        "sub": "商城订单的物流、延误与签收更新。"
       },
       "drops": {
-        "title": "Hot drops & restocks",
-        "sub": "Limited packs and high-demand releases."
+        "title": "Hot drops 与补货",
+        "sub": "限量卡包与高需求上新。"
       },
       "promos": {
-        "title": "Promos & credits",
-        "sub": "Bonus credits, coupons, and seasonal campaigns."
+        "title": "促销与积分",
+        "sub": "奖励积分、优惠券与季节活动。"
       },
       "social": {
-        "title": "Friends & social",
-        "sub": "Friend requests and invites (when enabled)."
+        "title": "好友与社交",
+        "sub": "好友请求与邀请（功能开启时）。"
       }
     }
   },
   "hotDropsInfo": {
     "navTitle": "Hot drops",
-    "body": "Hot drops are time-limited or high-demand pack releases — often a specific set, collab, or flash window. They are about the product and timing.",
-    "b1": "Announced start and end times (or “while supplies last”).",
-    "b2": "May have different odds or price than evergreen packs — always read the pack details.",
-    "b3": "Can sell out quickly; enabling notifications helps you catch restocks.",
-    "callout": "Not the same as Promos: promos are marketing incentives (bonus credits, coupons), not the pack release itself."
+    "body": "Hot drops 是限时或高需求的卡包发售，常见为特定系列、联名或闪购窗口，核心在商品与时间。",
+    "b1": "公布起止时间（或“售完即止”）。",
+    "b2": "概率或价格可能与常驻卡包不同——请务必阅读卡包详情。",
+    "b3": "可能很快售罄；开启通知有助于不错过补货。",
+    "callout": "与 Promos 不同：促销是营销激励（奖励积分、优惠券），不是卡包发售本身。"
   },
   "promosInfo": {
     "navTitle": "Promos",
-    "body": "Promos are marketing programs: bonus credits, coupon codes, seasonal campaigns, or partner offers. They reward actions like signing up, buying bundles, or referring friends.",
-    "b1": "Shown in-app, email, or social — each promo has its own rules and dates.",
-    "b2": "May stack with tiers or be limited to certain packs — read the fine print before launch.",
-    "b3": "Different from Hot Drops: a promo is the offer; a hot drop is the product release.",
-    "vsHotTitle": "Hot drops vs promos",
-    "vsHotBody": "Use Hot Drops to learn about limited pack releases. Use Promos (this screen) to understand bonus credits and coupon-style incentives."
+    "body": "促销是营销计划：奖励积分、优惠码、季节活动或合作优惠。奖励注册、购买套装或邀请好友等行为。",
+    "b1": "通过应用内、邮件或社交展示——每条促销规则与日期不同。",
+    "b2": "可能与等级叠加或仅限部分卡包——上线前请阅读细则。",
+    "b3": "与 Hot Drops 不同：促销是优惠，Hot drop 是商品发布。",
+    "vsHotTitle": "Hot drops 与促销",
+    "vsHotBody": "用 Hot Drops 了解限量卡包。用 Promos（本屏）了解奖励积分与类券激励。"
   },
   "pullHistoryScreen": {
-    "navTitle": "Play history",
-    "lead": "Every completed play — newest first. Pending pulls stay in the pack flow until you cash out or ship."
+    "navTitle": "开箱记录",
+    "lead": "已完成的开箱，最新的在前。进行中的留在卡包流程直至兑换或发货。"
   },
   "linkedAccounts": {
-    "navTitle": "Linked accounts",
-    "body": "Linking lets you sign in to the same Pull Hub profile with more than one method (for example Google and Apple), so you are not locked to a single login.",
-    "whatTitle": "What this means",
-    "whatBody": "It is not about merging two separate app accounts. It is about attaching sign-in providers to one account for convenience and recovery.",
-    "futureTitle": "Coming later",
-    "futureGoogle": "Google account link",
-    "futureApple": "Apple ID link",
-    "futureEmail": "Email + password link",
-    "note": "Provider linking will use your auth settings (e.g. Clerk) in production."
+    "navTitle": "关联账户",
+    "body": "关联后可以用多种方式登录同一 Pull Hub 资料（例如 Google 与 Apple），不必只依赖单一登录。",
+    "whatTitle": "含义说明",
+    "whatBody": "不是合并两个应用账户，而是把登录方式挂到一个账户上，便于使用与找回。",
+    "futureTitle": "即将推出",
+    "futureGoogle": "关联 Google 账户",
+    "futureApple": "关联 Apple ID",
+    "futureEmail": "关联邮箱与密码",
+    "note": "正式上线后将按你的认证设置（例如 Clerk）进行提供商关联。"
   },
   "identityVerification": {
-    "navTitle": "Identity verification",
-    "body": "Identity verification (sometimes called KYC) confirms you are a real person and meets age or compliance rules before high-value payouts, certain promos, or regulated features.",
-    "whyTitle": "Why apps ask for this",
-    "whyBody": "It reduces fraud, protects minors, and satisfies financial or marketplace rules when money or valuable prizes move between users and platforms.",
-    "previewTitle": "Preview flow (not active)",
-    "step1": "Government ID or document check",
-    "step2": "Selfie or liveness check (if required)",
-    "step3": "Review — usually minutes, sometimes longer",
-    "note": "This build only explains the concept. Wire your vendor (e.g. Persona, Stripe Identity) before requiring verification."
+    "navTitle": "身份验证",
+    "body": "身份验证（亦称 KYC）在高额提现、部分促销或受监管功能前，确认你是真人并满足年龄与合规要求。",
+    "whyTitle": "应用为何需要",
+    "whyBody": "降低欺诈、保护未成年人，并在资金或高价值奖品在用户与平台间流转时满足金融或商城规则。",
+    "previewTitle": "预览流程（未启用）",
+    "step1": "官方证件或文件核验",
+    "step2": "自拍或活体检测（如需要）",
+    "step3": "审核——通常数分钟，有时更长",
+    "note": "本构建仅说明概念。强制验证前请接入你的供应商（如 Persona、Stripe Identity）。"
   },
   "payoutMethod": {
-    "navTitle": "Payout method",
-    "body": "When you sell cards or receive cash-outs, payouts go to a linked bank or debit card. This preview does not connect to real banking.",
-    "line1": "Add a bank account (ACH / local rails) or debit card depending on region.",
-    "line2": "Verify small deposits or instant micro-charges when your processor requires it.",
-    "line3": "Payout timing and fees follow marketplace rules — see Terms before launch.",
-    "note": "Replace this placeholder with real payout onboarding when Stripe Connect or your PSP is integrated."
+    "navTitle": "收款方式",
+    "body": "出售卡牌或提现时，款项进入已关联的银行或借记卡。本预览不连接真实银行。",
+    "line1": "按地区添加银行账户（ACH/本地通道）或借记卡。",
+    "line2": "若处理器要求，通过小额入账或即时微扣款完成验证。",
+    "line3": "到账时间与费用遵循商城规则——上线前请参阅条款。",
+    "note": "接入 Stripe Connect 或 PSP 后，将此占位替换为真实收款引导。"
   },
   "lootBox": {
-    "title": "Probability of contents",
-    "lead": "Pack openings are randomized. Approximate tier rates below are for disclosure; specific packs may vary.",
-    "columnTier": "Tier",
-    "footnote": "Rates are illustrative for this preview build. Published products will show final odds before purchase where required.",
-    "done": "Got it"
+    "title": "内容概率",
+    "lead": "开包为随机。下列段位比例为披露用近似值，具体卡包可能不同。",
+    "columnTier": "段位",
+    "footnote": "预览构建中的比例为示意。正式商品将在法规要求处于购买前展示最终概率。",
+    "done": "知道了"
   },
   "auth": {
-    "title": "Sign in",
-    "subtitle": "Use Google, Apple, or email. New accounts: we’ll email you a one-time code to verify.",
-    "continueGoogle": "Continue with Google",
-    "continueApple": "Continue with Apple",
-    "or": "or",
-    "modeSignIn": "Sign in",
-    "modeSignUp": "Create account",
-    "emailPlaceholder": "Email",
-    "passwordPlaceholder": "Password",
-    "emailSignIn": "Sign in with email",
-    "emailContinue": "Continue",
-    "verifyHint": "Enter the code we sent to {{email}}.",
-    "codePlaceholder": "6-digit code",
-    "verifyCode": "Verify & continue",
-    "resendCode": "Resend code",
-    "emailPasswordRequired": "Enter email and password.",
-    "signInIncomplete": "Could not finish sign-in. If you use two-factor authentication, we’ll add support next.",
-    "verifyFailed": "Verification didn’t complete. Check the code and try again.",
-    "dashboardHint": "Clerk Dashboard: enable Google (oauth_google), Apple (oauth_apple), and Email + password + email code verification.",
-    "signedInAs": "Account",
-    "signOut": "Sign out",
-    "signOutTitle": "Sign out?",
-    "signOutMessage": "You will need to sign in again to use your synced data when it is available.",
-    "signOutConfirm": "Sign out",
-    "cancel": "Cancel"
+    "title": "登录",
+    "subtitle": "使用 Google、Apple 或邮箱。新账户：我们将发送一次性验证码到邮箱。",
+    "continueGoogle": "使用 Google 继续",
+    "continueApple": "使用 Apple 继续",
+    "or": "或",
+    "modeSignIn": "登录",
+    "modeSignUp": "创建账户",
+    "emailPlaceholder": "邮箱",
+    "passwordPlaceholder": "密码",
+    "emailSignIn": "使用邮箱登录",
+    "emailContinue": "继续",
+    "verifyHint": "请输入我们发送至 {{email}} 的验证码。",
+    "codePlaceholder": "6 位验证码",
+    "verifyCode": "验证并继续",
+    "resendCode": "重新发送",
+    "emailPasswordRequired": "请输入邮箱和密码。",
+    "signInIncomplete": "无法完成登录。若使用两步验证，后续将提供支持。",
+    "verifyFailed": "验证未完成，请检查验证码后重试。",
+    "dashboardHint": "Clerk 控制台：启用 Google（oauth_google）、Apple（oauth_apple），以及邮箱+密码+邮箱验证码。",
+    "signedInAs": "账户",
+    "signOut": "退出登录",
+    "signOutTitle": "要退出吗？",
+    "signOutMessage": "同步数据可用后，需重新登录才能使用。",
+    "signOutConfirm": "退出登录",
+    "cancel": "取消"
   },
   "linkPhone": {
-    "title": "Verify your phone",
-    "subtitle": "We’ll text you a code once. Pick your country, then enter your mobile number — no need to type +1 yourself.",
-    "mobileLabel": "Mobile number",
-    "countryPickerA11y": "Country or region",
+    "title": "验证手机",
+    "subtitle": "我们将发送一条含验证码的短信。选择国家后输入本地号码——无需自己输入 +1。",
+    "mobileLabel": "手机号码",
+    "countryPickerA11y": "国家或地区",
     "nationalPlaceholderNanp": "(555) 123-4567",
-    "nationalPlaceholder": "Phone number",
-    "sendCode": "Send code",
-    "codeHint": "Enter the code we texted you.",
-    "codePlaceholder": "6-digit code",
-    "verify": "Verify & continue",
-    "resend": "Resend code",
-    "changeNumber": "Use a different number",
-    "invalid": "Enter a valid phone number for the selected country.",
-    "nanpInvalid": "US and Canada numbers need 10 digits (area code + number).",
-    "phoneMissing": "Could not start phone verification. Try again.",
-    "verifyFailed": "That code didn’t work. Check the message and try again.",
-    "genericError": "Something went wrong. Try again.",
-    "dashboardHint": "Clerk Dashboard → User & authentication → Phone: enable SMS / verification. You can turn off “Sign in with phone” if you only want Google / Apple / email sign-in.",
-    "smsDevHint": "SMS not sending? In development, add a test phone in the Clerk dashboard or connect Twilio / your SMS provider — Clerk won’t send real texts until that’s configured.",
-    "signOut": "Use a different account"
+    "nationalPlaceholder": "电话号码",
+    "sendCode": "发送验证码",
+    "codeHint": "请输入短信中的验证码。",
+    "codePlaceholder": "6 位验证码",
+    "verify": "验证并继续",
+    "resend": "重新发送",
+    "changeNumber": "使用其他号码",
+    "invalid": "请输入所选国家的有效号码。",
+    "nanpInvalid": "美国与加拿大号码需 10 位（区号+号码）。",
+    "phoneMissing": "无法开始手机验证，请重试。",
+    "verifyFailed": "验证码不正确，请查看短信后重试。",
+    "genericError": "出错了，请重试。",
+    "dashboardHint": "Clerk 控制台 → User & authentication → Phone：启用短信/验证。若仅使用 Google/Apple/邮箱，可关闭“使用手机登录”。",
+    "smsDevHint": "收不到短信？开发阶段可在 Clerk 控制台添加测试号码，或连接 Twilio/短信服务商——配置完成前 Clerk 不会发送真实短信。",
+    "signOut": "使用其他账户"
   },
   "profileOnboarding": {
-    "title": "Set up your profile",
-    "subtitle": "Choose a public username and how you’d like to appear. You can change this later when account settings are wired to the server.",
-    "usernameLabel": "Username",
+    "title": "设置资料",
+    "subtitle": "选择公开用户名与展示名。账户与服务器连通后可再次修改。",
+    "usernameLabel": "用户名",
     "usernamePlaceholder": "your_handle",
-    "displayNameLabel": "Display name (optional)",
-    "displayNamePlaceholder": "Same as username if empty",
-    "profileHint": "Your username is unique and is what friends use to find you.",
-    "usernameInvalid": "Use 2–20 characters: letters, numbers, and underscores only.",
-    "continue": "Continue",
-    "genericError": "Could not save your profile. Try again."
+    "displayNameLabel": "展示名（选填）",
+    "displayNamePlaceholder": "留空则与用户名相同",
+    "profileHint": "用户名唯一，好友通过它找到你。",
+    "usernameInvalid": "2–20 个字符：仅字母、数字与下划线。",
+    "continue": "继续",
+    "genericError": "无法保存资料，请重试。"
   },
   "paymentPortal": {
-    "navTitle": "Payment",
-    "eyebrow": "Checkout",
-    "tabCredits": "Credits",
+    "navTitle": "支付",
+    "eyebrow": "结账",
+    "tabCredits": "积分",
     "tabMarketplace": "Marketplace",
-    "viewProbabilities": "View probability of contents",
-    "digitalRoutingNote": "Digital credits: use App Store / Google Play in-app purchase when live — not Stripe for coins.",
-    "marketplaceTitle": "Physical order",
-    "marketplaceLead": "Partner listings ship real products. Checkout uses a physical-goods payment flow (server-backed Stripe), separate from in-app credit packs.",
-    "item": "Item",
-    "price": "Price",
-    "physicalPolicy": "Physical goods only — PaymentIntent created on your server ({{mode}}). Apple Pay / Google Pay may appear for shipping purchases, not for digital currency.",
-    "continueCheckout": "Continue to checkout",
-    "physicalStubTitle": "Checkout not connected",
-    "physicalStubBody": "Wire your backend to create a Stripe PaymentIntent, then open the client with the returned client secret. No keys in the app binary.",
-    "sampleListingTitle": "Sample listing"
+    "viewProbabilities": "查看内容概率",
+    "digitalRoutingNote": "数字积分：上线后使用 App Store/Google Play 应用内购买——代币不走 Stripe。",
+    "marketplaceTitle": "实体订单",
+    "marketplaceLead": "合作上架寄送实体商品。结账走实体支付流程（服务器侧 Stripe），与应用内积分包分开。",
+    "item": "商品",
+    "price": "价格",
+    "physicalPolicy": "仅限实体——在你的服务器创建 PaymentIntent（{{mode}}）。Apple Pay/Google Pay 可能出现于运费类购买，不用于数字代币。",
+    "continueCheckout": "前往结账",
+    "physicalStubTitle": "结账未连接",
+    "physicalStubBody": "在后端创建 Stripe PaymentIntent，用返回的 client secret 打开客户端。不要把密钥放进应用包。",
+    "sampleListingTitle": "示例商品"
+  },
+  "search": {
+    "title": "搜索",
+    "placeholder": "搜索",
+    "emptyTitle": "开始搜索",
+    "emptyBody": "搜索卡包、系列或卡牌。",
+    "noResultsTitle": "无结果",
+    "noResultsBody": "试试其他关键词。"
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "返回",
+    "missingTitle": "未找到卡包",
+    "missingBody": "该卡包可能已结束或不可用。",
+    "guaranteeTitle": "保底",
+    "priceTitle": "价格",
+    "remaining": "剩余 {{left}} / {{total}}",
+    "ctaDisabled": "不可用"
   }
 }

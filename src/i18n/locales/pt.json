@@ -85,13 +85,13 @@
       "country": "País"
     },
     "placeholders": {
-      "fullName": "Alex Trainer",
-      "line1": "123 Main St",
-      "line2": "Apt 4",
-      "city": "San Francisco",
-      "region": "CA",
-      "postal": "94102",
-      "country": "United States"
+      "fullName": "Alex Silva",
+      "line1": "Rua Principal, 123",
+      "line2": "Apto 4",
+      "city": "São Paulo",
+      "region": "SP",
+      "postal": "01310-100",
+      "country": "Brasil"
     }
   },
   "tierBenefits": {
@@ -135,12 +135,12 @@
     "callout": "Não é o mesmo que Promos: promos são incentivos de marketing (créditos bônus, cupons), não o lançamento do produto."
   },
   "promosInfo": {
-    "navTitle": "Promos",
+    "navTitle": "Promoções",
     "body": "Promos são programas de marketing: créditos bônus, cupons, campanhas sazonais ou ofertas de parceiros. Recompensam cadastro, pacotes, indicações, etc.",
     "b1": "Exibidas no app, e-mail ou redes — cada promo tem regras e datas.",
     "b2": "Podem somar com níveis ou valer só para certos boosters — leia a letra miúda antes do lançamento.",
     "b3": "Diferente de Hot drops: promo é a oferta; hot drop é o lançamento do produto.",
-    "vsHotTitle": "Hot drops vs promos",
+    "vsHotTitle": "Hot drops vs promoções",
     "vsHotBody": "Hot drops explica lançamentos limitados. Promos (esta tela) explica créditos bônus e incentivos tipo cupom."
   },
   "pullHistoryScreen": {
@@ -186,7 +186,8 @@
     "spotlightTitle": "Boosters em destaque",
     "spotlightBody": "Seleções e promos. Use categorias e ordenação abaixo.",
     "browseAllPacks": "Ver todos os boosters",
-    "emptyCategory": "Nenhum booster nesta categoria ainda."
+    "emptyCategory": "Nenhum booster nesta categoria ainda.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "Área de boosters",
@@ -232,12 +233,12 @@
     "yourFriends": "Seus amigos ({{count}})",
     "emptyTitle": "Ainda sem amigos",
     "emptyBody": "Quando adicionar alguém, aparecerá aqui para recursos sociais futuros.",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "qrActionSub": "Seu código",
+    "addActionSub": "Encontrar pessoas",
+    "yourUsername": "Seu nome de usuário",
+    "usernameHint": "Amigos adicionam você com este nome — igual na aba Jogador.",
+    "enterFriendUsername": "Nome de usuário",
+    "placeholderUsername": "ex.: jordan"
   },
   "rewards": {
     "title": "Recompensas",
@@ -273,16 +274,16 @@
     "playerDeskEyebrow": "BALCÃO DO JOGADOR",
     "pullHistoryCta": "Histórico completo",
     "pullHistorySub": "Cada abertura, ganho de créditos e hit — registro completo",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "accountDetailsEyebrow": "Detalhes da conta",
+    "usernameLabel": "Nome de usuário",
+    "usernameUnset": "Ainda não definido",
+    "emailLabel": "E-mail",
+    "phoneLabel": "Telefone"
   },
   "shortcuts": {
     "notif": "Alertas",
     "hot": "Hot drops",
-    "promos": "Promos"
+    "promos": "Promoções"
   },
   "accountRows": {
     "shipping": "Endereço de entrega",
@@ -403,7 +404,7 @@
     "usernameInvalid": "Use 2–20 caracteres: letras, números e sublinhados apenas.",
     "continue": "Continuar",
     "genericError": "Não foi possível salvar o perfil. Tente de novo.",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "Seu nome de usuário é único — amigos encontram você assim."
   },
   "paymentPortal": {
     "navTitle": "Pagamento",
@@ -431,8 +432,8 @@
     "you": "Você",
     "copy": "Copiar",
     "done": "Concluído",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "Ler o código de outra pessoa",
+    "scanAnotherSub": "Use a câmera para adicioná-la pelo QR"
   },
   "qrScanner": {
     "title": "Escanear QR de amigo",
@@ -464,7 +465,7 @@
     "graded": "Graded",
     "hot_drop": "Hot Drop",
     "bonus_pack": "Booster bônus",
-    "chase_boost": "Chase Boost"
+    "chase_boost": "Chase boost"
   },
   "packCard": {
     "openPack": "Jogar agora",
@@ -473,13 +474,15 @@
     "maxPerUser": "Máx. {{count}} jogadas / conta",
     "shortBadge": {
       "new": "NEW",
-      "new_user": "WELCOME",
+      "new_user": "BEM-VINDO",
       "best_value": "VALUE",
       "graded": "VAULT",
       "hot_drop": "HOT",
       "bonus_pack": "BONUS",
       "chase_boost": "CHASE"
-    }
+    },
+    "topHit": "Top hit",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -488,42 +491,42 @@
       "guarantee": "Bônus garantido a cada 2 aberturas"
     },
     "2": {
-      "title": "Pokémon Scarlet & Violet Hit Pack",
+      "title": "Pack Pokémon Scarlet & Violet Hit",
       "value": "90% de chance de 200+ créditos",
       "guarantee": "Holofoil garantida em cada booster"
     },
     "3": {
-      "title": "One Piece Graded Vault Pack",
+      "title": "Pack cofre gradado One Piece",
       "value": "Cartas graded PSA 9–10",
       "guarantee": "Cada booster contém uma carta graded"
     },
     "4": {
-      "title": "Sports Cards Flash Pack",
+      "title": "Pack flash de cards esportivos",
       "value": "Rookies das melhores escolhas de 2024",
       "guarantee": "Auto ou relic a cada 5 aberturas"
     },
     "5": {
-      "title": "Pokémon Vintage Graded Pack",
+      "title": "Pack Pokémon vintage gradado",
       "value": "Hits graded da era Base Set",
       "guarantee": "PSA 8+ garantido"
     },
     "6": {
-      "title": "Hot Drop Mystery Pack",
+      "title": "Pack mistério Hot Drop",
       "value": "Mix surpresa de todas as categorias",
       "guarantee": "Booster bônus após cada 3 aberturas"
     },
     "7": {
-      "title": "One Piece Paramount War Pack",
+      "title": "Pack One Piece Paramount War",
       "value": "Líderes SR com foils chase",
       "guarantee": "1 em 10 chance de Alt Art"
     },
     "8": {
-      "title": "New Arrivals Sampler Pack",
+      "title": "Pack degustação novidades",
       "value": "Hits dos sets mais novos",
       "guarantee": "Pelo menos 3 cartas por abertura"
     },
     "9": {
-      "title": "Yu-Gi-Oh! Battles of Legend Pack",
+      "title": "Pack Yu-Gi-Oh! Battles of Legend",
       "value": "Secret Rares e slots starlight",
       "guarantee": "Ultra Rare ou superior em cada booster"
     }
@@ -548,7 +551,7 @@
     "resultLegendary1": "Hit lendário de {{packName}}",
     "resultLegendary2": "Mythic pull de {{packName}}",
     "resultLegendary3": "Carta que muda o jogo de {{packName}}",
-    "replay": "Replay animation"
+    "replay": "Repetir animação"
   },
   "insufficientCredits": {
     "title": "Créditos insuficientes",
@@ -579,8 +582,8 @@
     "invalidIdBody": "Friend IDs são como TCG-123456. Peça o código ao seu amigo.",
     "notFoundTitle": "Usuário não encontrado",
     "notFoundBody": "Nenhuma conta com esse friend ID. Confira o código ou tente mais tarde.",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "Defina um nome de usuário primeiro",
+    "noUsernameBody": "Conclua o perfil para ter um nome único para compartilhar."
   },
   "social": {
     "profileNavTitle": "Perfil",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "Amigo adicionado",
     "demoAddedBody": "{{name}} agora está no seu círculo.",
     "demoAlreadyFriend": "Já está no seu círculo"
+  },
+  "search": {
+    "title": "Buscar",
+    "placeholder": "Buscar",
+    "emptyTitle": "Comece a buscar",
+    "emptyBody": "Busque por pacotes, sets ou cartas.",
+    "noResultsTitle": "Sem resultados",
+    "noResultsBody": "Tente outro termo."
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "Voltar",
+    "missingTitle": "Pacote não encontrado",
+    "missingBody": "Este pacote pode ter terminado ou não estar disponível.",
+    "guaranteeTitle": "Garantido",
+    "priceTitle": "Preço",
+    "remaining": "Restam {{left}} de {{total}}",
+    "ctaDisabled": "Indisponível"
   }
 }

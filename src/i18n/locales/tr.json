@@ -42,7 +42,7 @@
   "common": {
     "copied": "Kopyalandı",
     "friendIdCopied": "Arkadaş Kimliği panoya kopyalandı.",
-    "error": "Error"
+    "error": "Hata"
   },
   "helpCenter": {
     "navTitle": "Yardım Merkezi",
@@ -87,10 +87,10 @@
     "placeholders": {
       "fullName": "Alex Eğitmen",
       "line1": "123 Ana Cadde",
-      "line2": "Apt 4",
-      "city": "San Francisco",
-      "region": "CA",
-      "postal": "94102",
+      "line2": "Daire 4",
+      "city": "İstanbul",
+      "region": "34",
+      "postal": "34000",
       "country": "Amerika Birleşik Devletleri"
     }
   },
@@ -186,7 +186,8 @@
     "spotlightTitle": "Gündem paketleri",
     "spotlightBody": "Özenle seçilmiş indirimler ve promosyonlar. Aşağıdaki kategorileri ve sıralamayı kullanın.",
     "browseAllPacks": "Tüm paketlere göz atın",
-    "emptyCategory": "Bu kategoride henüz paket yok."
+    "emptyCategory": "Bu kategoride henüz paket yok.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "Paket katı",
@@ -231,13 +232,13 @@
     "yourFriends": "Arkadaşların ({{count}})",
     "emptyTitle": "Henüz arkadaş yok",
     "emptyBody": "Birisini eklediğinizde burada görünecekler, böylece daha sonra daha fazla sosyal özellik geliştirebileceksiniz.",
-    "heroEyebrow": "SQUAD LOUNGE",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "heroEyebrow": "TAKIM ALANI",
+    "qrActionSub": "Kodun",
+    "addActionSub": "Kişi bul",
+    "yourUsername": "Kullanıcı adın",
+    "usernameHint": "Arkadaşlar seni bu benzersiz kullanıcı adıyla ekler — Oyuncu sekmendekiyle aynı.",
+    "enterFriendUsername": "Kullanıcı adı",
+    "placeholderUsername": "ör. jordan"
   },
   "rewards": {
     "title": "Ödüller",
@@ -273,11 +274,11 @@
     "playerDeskEyebrow": "OYUNCU MASASI",
     "pullHistoryCta": "Tam oyun geçmişi",
     "pullHistorySub": "Her açma, kredi kazanma ve isabet — tam kayıt",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "accountDetailsEyebrow": "Hesap ayrıntıları",
+    "usernameLabel": "Kullanıcı adı",
+    "usernameUnset": "Henüz ayarlanmadı",
+    "emailLabel": "E-posta",
+    "phoneLabel": "Telefon"
   },
   "shortcuts": {
     "notif": "Uyarılar",
@@ -403,7 +404,7 @@
     "usernameInvalid": "2-20 karakter kullanın: yalnızca harfler, sayılar ve alt çizgiler.",
     "continue": "Devam etmek",
     "genericError": "Profiliniz kaydedilemedi. Tekrar deneyin.",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "Kullanıcı adın benzersiz — arkadaşların seni bununla bulur."
   },
   "paymentPortal": {
     "navTitle": "Ödeme",
@@ -431,8 +432,8 @@
     "you": "Sen",
     "copy": "Kopyala",
     "done": "Tamamlamak",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "Başkasının kodunu tara",
+    "scanAnotherSub": "QR ile eklemek için kamerayı kullan"
   },
   "qrScanner": {
     "title": "Arkadaşınızın QR'sini tarayın",
@@ -479,7 +480,9 @@
       "hot_drop": "SICAK",
       "bonus_pack": "BONUS",
       "chase_boost": "TAKİP ETMEK"
-    }
+    },
+    "topHit": "En iyi hit",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -548,7 +551,7 @@
     "resultLegendary1": "Efsanevi vuruş{{packName}}",
     "resultLegendary2": "Efsanevi çekiş{{packName}}",
     "resultLegendary3": "Oyunun kurallarını değiştiren kart{{packName}}",
-    "replay": "Replay animation"
+    "replay": "Animasyonu tekrar oynat"
   },
   "insufficientCredits": {
     "title": "Yeterli Kredi Yok",
@@ -579,8 +582,8 @@
     "invalidIdBody": "Arkadaş kimlikleri TCG-123456'ya benziyor. Arkadaşınızdan kodunu paylaşmasını isteyin.",
     "notFoundTitle": "Kullanıcı bulunamadı",
     "notFoundBody": "Henüz bu arkadaş kimliğiyle eşleşen hesap yok. Kodu bir kez daha kontrol edin veya daha sonra tekrar deneyin.",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "Önce kullanıcı adı belirle",
+    "noUsernameBody": "Arkadaşlarınla paylaşmak için benzersiz bir ad almak üzere profili tamamla."
   },
   "social": {
     "profileNavTitle": "Profil",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "Arkadaş eklendi",
     "demoAddedBody": "{{name}} artık çevrende.",
     "demoAlreadyFriend": "Zaten çevrende"
+  },
+  "search": {
+    "title": "Ara",
+    "placeholder": "Ara",
+    "emptyTitle": "Aramaya başla",
+    "emptyBody": "Paket, set veya kart arayın.",
+    "noResultsTitle": "Sonuç yok",
+    "noResultsBody": "Başka bir arama deneyin."
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "Geri",
+    "missingTitle": "Paket bulunamadı",
+    "missingBody": "Bu paket bitmiş olabilir ya da şu an kullanılamıyor.",
+    "guaranteeTitle": "Garantili",
+    "priceTitle": "Fiyat",
+    "remaining": "{{total}} içinden {{left}} kaldı",
+    "ctaDisabled": "Kullanılamıyor"
   }
 }

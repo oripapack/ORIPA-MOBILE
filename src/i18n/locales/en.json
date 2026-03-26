@@ -5,6 +5,23 @@
     "marketplace": "Shop",
     "account": "Player"
   },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search packs…",
+    "emptyTitle": "Search packs",
+    "emptyBody": "Type a pack name, tag, or line to jump in fast.",
+    "noResultsTitle": "No results",
+    "noResultsBody": "Try a different keyword."
+  },
+  "packDetails": {
+    "back": "Back",
+    "missingTitle": "Pack unavailable",
+    "missingBody": "We couldn’t find this pack in the demo catalog.",
+    "guaranteeTitle": "Guarantee",
+    "priceTitle": "Price",
+    "remaining": "{{left}} / {{total}} left",
+    "ctaDisabled": "Unavailable"
+  },
   "marketplace": {
     "storeTitle": "Pull Hub Store",
     "storeLead": "Browse singles and sealed products from verified partner shops. Checkout is coming soon — this is a listings-first experience (no pack opening here).",
@@ -191,9 +208,10 @@
   "home": {
     "discover": "Discover",
     "spotlightTitle": "Spotlight packs",
-    "spotlightBody": "Hand-picked drops and promos. Use categories and sorting below.",
+    "spotlightBody": "Hand-picked drops and promos. Pick a product line, then narrow with filters.",
     "browseAllPacks": "Browse all packs",
-    "emptyCategory": "No packs in this category yet."
+    "subfilterAll": "All packs",
+    "emptyCategory": "No packs match this line and filter yet."
   },
   "packs": {
     "browseTitle": "Pack floor",
@@ -510,6 +528,8 @@
   },
   "packCard": {
     "openPack": "Play now",
+    "topHit": "Top hit",
+    "chase": "CHASE",
     "credits": "credits",
     "remaining": "{{left}} / {{total}} left",
     "maxPerUser": "Max {{count}} plays / account",

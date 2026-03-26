@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppHeader } from '../components/shared/AppHeader';
@@ -6,9 +6,12 @@ import { HomeBackground } from '../components/shared/HomeBackground';
 import { HeroBanner } from '../components/pack/HeroBanner';
 import { CategoryTabBar } from '../components/pack/CategoryTabBar';
 import { FilterSortRow } from '../components/pack/FilterSortRow';
+import { PackSubfilterBar } from '../components/pack/PackSubfilterBar';
+import { RecentHitsTicker } from '../components/pack/RecentHitsTicker';
 import { PackCard } from '../components/pack/PackCard';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 import { colors } from '../tokens/colors';
-import { mockPacks } from '../data/mockPacks';
+import { mockPacks, packBelongsToHomeNiche, packMatchesSubfilter } from '../data/mockPacks';
 import { useWelcomeBannerDismissed } from '../hooks/useWelcomeBannerDismissed';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useAppStore } from '../store/useAppStore';
@@ -16,19 +19,20 @@ import { fontSize, fontWeight } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
 
 /**
- * Home = full pack store: optional welcome hero, category chips (Pokémon, Yu-Gi-Oh!, etc.),
- * sort/filter, and all openable packs in one scroll.
+ * Home = pack store: line tabs (Pokémon, Yu-Gi-Oh!, etc.), sub-filters within each line, sort, and list.
  */
 export function HomeScreen() {
   const { t } = useTranslation();
   const { loading: welcomeLoading, isDismissed: welcomeDismissed, dismiss: dismissWelcome } =
     useWelcomeBannerDismissed();
   const { refreshControl } = usePullToRefresh();
-  const selectedCategory = useAppStore((s) => s.selectedCategory);
+  const homeNiche = useAppStore((s) => s.homeNiche);
+  const packSubfilter = useAppStore((s) => s.packSubfilter);
   const sortOrder = useAppStore((s) => s.sortOrder);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const filtered = mockPacks.filter(
-    (p) => selectedCategory === 'all' || p.category === selectedCategory
+    (p) => packBelongsToHomeNiche(p, homeNiche) && packMatchesSubfilter(p, packSubfilter)
   );
 
   const sorted = useMemo(() => {
@@ -50,12 +54,13 @@ export function HomeScreen() {
   return (
     <View style={styles.container}>
       <HomeBackground />
-      <AppHeader />
+      <AppHeader onSearch={() => setSearchOpen(true)} />
       <FlatList
         data={sorted}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <>
+            <RecentHitsTicker />
             {!welcomeLoading && !welcomeDismissed ? (
               <HeroBanner
                 onBrowsePacks={handleBrowsePacks}
@@ -68,6 +73,7 @@ export function HomeScreen() {
               <View style={styles.catalogRule} />
             </View>
             <CategoryTabBar />
+            <PackSubfilterBar />
             <FilterSortRow />
           </>
         }
@@ -81,6 +87,8 @@ export function HomeScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={refreshControl}
       />
+
+      <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </View>
   );
 }

@@ -1,6 +1,6 @@
 {
   "tabs": {
-    "home": "Home",
+    "home": "Start",
     "friends": "Vrienden",
     "marketplace": "Winkel",
     "account": "Speler"
@@ -27,15 +27,15 @@
     "whyPoint3Title": "Enorme keuze",
     "whyPoint3Body": "We bundelen voorraad van betrouwbare verkopers wereldwijd — van Japanse promo’s tot Engelse staples en sealed wax.",
     "specialPrice": "Speciale prijs",
-    "saleOn": "SALE",
+    "saleOn": "UITVERKOOP",
     "sectionStores": "Van partnerwinkels",
     "verified": "Geverifieerd",
     "commissionLine": "Pull Hub-fee op verkopen: {{pct}}%",
-    "badgeSale": "SALE",
+    "badgeSale": "UITVERKOOP",
     "badgeTournament": "Toernooi",
     "badgeNew": "NIEUW",
     "emptyResults": "Geen listings komen overeen met je filters.",
-    "listingDemoTitle": "Listing",
+    "listingDemoTitle": "Advertentie",
     "listingDemoBody": "Afrekenen voor „{{title}}“ is nog niet gekoppeld — alleen listings.",
     "demoNote": "Demo: betalingen, winkelwagen en uitbetalingen aan verkopers zijn niet gekoppeld. Boosters openen blijft op het Home-tabblad."
   },
@@ -85,13 +85,13 @@
       "country": "Land"
     },
     "placeholders": {
-      "fullName": "Alex Trainer",
-      "line1": "123 Main St",
-      "line2": "Apt 4",
-      "city": "San Francisco",
-      "region": "CA",
-      "postal": "94102",
-      "country": "United States"
+      "fullName": "Alex Jansen",
+      "line1": "Hoofdstraat 123",
+      "line2": "App 4",
+      "city": "Amsterdam",
+      "region": "NH",
+      "postal": "1011 AB",
+      "country": "Nederland"
     }
   },
   "tierBenefits": {
@@ -186,7 +186,8 @@
     "spotlightTitle": "Spotlight-boosters",
     "spotlightBody": "Uitgezochte drops en promo’s. Gebruik hieronder categorieën en sortering.",
     "browseAllPacks": "Alle boosters",
-    "emptyCategory": "Nog geen boosters in deze categorie."
+    "emptyCategory": "Nog geen boosters in deze categorie.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "Boostervloer",
@@ -194,7 +195,7 @@
   },
   "categories": {
     "all": "Alle",
-    "featured": "Featured",
+    "featured": "Uitgelicht",
     "new": "Nieuw",
     "pokemon": "Pokémon",
     "yugioh": "Yu-Gi-Oh!",
@@ -232,12 +233,12 @@
     "yourFriends": "Jouw vrienden ({{count}})",
     "emptyTitle": "Nog geen vrienden",
     "emptyBody": "Als je iemand toevoegt, verschijnt die hier — basis voor meer sociale functies later.",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "qrActionSub": "Jouw code",
+    "addActionSub": "Mensen vinden",
+    "yourUsername": "Jouw gebruikersnaam",
+    "usernameHint": "Vrienden voegen je toe met deze unieke naam — hetzelfde als op je Speler-tab.",
+    "enterFriendUsername": "Gebruikersnaam",
+    "placeholderUsername": "bijv. jordan"
   },
   "rewards": {
     "title": "Beloningen",
@@ -273,11 +274,11 @@
     "playerDeskEyebrow": "SPELERBALIE",
     "pullHistoryCta": "Volledige speelgeschiedenis",
     "pullHistorySub": "Elke open, creditwinst en hit — volledig logboek",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "accountDetailsEyebrow": "Accountgegevens",
+    "usernameLabel": "Gebruikersnaam",
+    "usernameUnset": "Nog niet ingesteld",
+    "emailLabel": "E-mail",
+    "phoneLabel": "Telefoon"
   },
   "shortcuts": {
     "notif": "Meldingen",
@@ -403,7 +404,7 @@
     "usernameInvalid": "2–20 tekens: alleen letters, cijfers en underscores.",
     "continue": "Doorgaan",
     "genericError": "Profiel opslaan mislukt. Probeer opnieuw.",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "Je gebruikersnaam is uniek — zo vinden vrienden je."
   },
   "paymentPortal": {
     "navTitle": "Betaling",
@@ -414,7 +415,7 @@
     "digitalRoutingNote": "Digitale credits: in-app aankoop App Store / Google Play wanneer live — niet Stripe voor munten.",
     "marketplaceTitle": "Fysieke bestelling",
     "marketplaceLead": "Partnerlistings verzenden echte producten. Afrekenen gebruikt een fysieke goederen-flow (Stripe server-side), los van credit-boosters.",
-    "item": "Item",
+    "item": "Product",
     "price": "Prijs",
     "physicalPolicy": "Alleen fysieke goederen — PaymentIntent op jullie server ({{mode}}). Apple Pay / Google Pay kunnen voor verzending verschijnen, niet voor digitale valuta.",
     "continueCheckout": "Doorgaan naar afrekenen",
@@ -431,8 +432,8 @@
     "you": "Jij",
     "copy": "Kopiëren",
     "done": "Klaar",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "Scan iemands anders code",
+    "scanAnotherSub": "Gebruik de camera om via QR toe te voegen"
   },
   "qrScanner": {
     "title": "Scan vriend-QR",
@@ -473,13 +474,15 @@
     "maxPerUser": "Max. {{count}} plays / account",
     "shortBadge": {
       "new": "NEW",
-      "new_user": "WELCOME",
+      "new_user": "WELKOM",
       "best_value": "VALUE",
       "graded": "VAULT",
       "hot_drop": "HOT",
       "bonus_pack": "BONUS",
       "chase_boost": "CHASE"
-    }
+    },
+    "topHit": "Top hit",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -488,42 +491,42 @@
       "guarantee": "Bonus gegarandeerd elke 2 opens"
     },
     "2": {
-      "title": "Pokémon Scarlet & Violet Hit Pack",
+      "title": "Pokémon Scarlet & Violet Hit-pack",
       "value": "90% kans op 200+ credits waarde",
       "guarantee": "Holofoil gegarandeerd in elke booster"
     },
     "3": {
-      "title": "One Piece Graded Vault Pack",
+      "title": "One Piece gegradeerde kluis-pack",
       "value": "PSA 9–10 graded kaarten",
       "guarantee": "Elke booster bevat een graded kaart"
     },
     "4": {
-      "title": "Sports Cards Flash Pack",
+      "title": "Sports flash-pack",
       "value": "Rookies van topkeuzes 2024",
       "guarantee": "Auto of relic elke 5 opens"
     },
     "5": {
-      "title": "Pokémon Vintage Graded Pack",
+      "title": "Pokémon vintage graded-pack",
       "value": "Base Set-era graded hits",
       "guarantee": "PSA 8+ gegarandeerd"
     },
     "6": {
-      "title": "Hot Drop Mystery Pack",
+      "title": "Hot Drop mystery-pack",
       "value": "Verrassingsmix uit alle categorieën",
       "guarantee": "Bonusbooster na elke 3 opens"
     },
     "7": {
-      "title": "One Piece Paramount War Pack",
+      "title": "One Piece Paramount War-pack",
       "value": "Leader SR met chase foils",
       "guarantee": "1 op 10 kans op Alt Art"
     },
     "8": {
-      "title": "New Arrivals Sampler Pack",
+      "title": "Nieuwe aanwinsten sample-pack",
       "value": "Hits uit nieuwste sets",
       "guarantee": "Minstens 3 kaarten per open"
     },
     "9": {
-      "title": "Yu-Gi-Oh! Battles of Legend Pack",
+      "title": "Yu-Gi-Oh! Battles of Legend-pack",
       "value": "Secret Rares en starlight-slots",
       "guarantee": "Ultra Rare of hoger in elke booster"
     }
@@ -548,7 +551,7 @@
     "resultLegendary1": "Legendarische hit uit {{packName}}",
     "resultLegendary2": "Mythische pull uit {{packName}}",
     "resultLegendary3": "Game-changing kaart uit {{packName}}",
-    "replay": "Replay animation"
+    "replay": "Animatie opnieuw afspelen"
   },
   "insufficientCredits": {
     "title": "Onvoldoende credits",
@@ -579,8 +582,8 @@
     "invalidIdBody": "Friend-ID’s zien eruit als TCG-123456. Vraag je vriend om de code.",
     "notFoundTitle": "Gebruiker niet gevonden",
     "notFoundBody": "Geen account met die friend-ID. Controleer de code of probeer later opnieuw.",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "Stel eerst een gebruikersnaam in",
+    "noUsernameBody": "Rond je profiel af voor een unieke naam om te delen."
   },
   "social": {
     "profileNavTitle": "Profiel",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "Vriend toegevoegd",
     "demoAddedBody": "{{name}} zit nu in je kring.",
     "demoAlreadyFriend": "Al in je kring"
+  },
+  "search": {
+    "title": "Zoeken",
+    "placeholder": "Zoeken",
+    "emptyTitle": "Begin met zoeken",
+    "emptyBody": "Zoek naar packs, sets of kaarten.",
+    "noResultsTitle": "Geen resultaten",
+    "noResultsBody": "Probeer een andere zoekterm."
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "Terug",
+    "missingTitle": "Pack niet gevonden",
+    "missingBody": "Deze pack is mogelijk afgelopen of niet beschikbaar.",
+    "guaranteeTitle": "Gegarandeerd",
+    "priceTitle": "Prijs",
+    "remaining": "{{left}} van {{total}} over",
+    "ctaDisabled": "Niet beschikbaar"
   }
 }

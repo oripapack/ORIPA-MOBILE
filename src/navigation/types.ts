@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   MainTabs: undefined;
   Settings: undefined;
+  PackDetails: { packId: string };
   /** Unified checkout: in-app credits (digital) vs marketplace physical goods (Stripe server flow). */
   PaymentPortal:
     | {

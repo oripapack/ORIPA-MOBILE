@@ -42,7 +42,7 @@
   "common": {
     "copied": "कॉपी किया गया",
     "friendIdCopied": "मित्र आईडी को क्लिपबोर्ड पर कॉपी किया गया।",
-    "error": "Error"
+    "error": "त्रुटि"
   },
   "helpCenter": {
     "navTitle": "सहायता केंद्र",
@@ -186,7 +186,8 @@
     "spotlightTitle": "स्पॉटलाइट पैक",
     "spotlightBody": "हाथ से चुनी गई बूंदें और प्रोमो। नीचे श्रेणियों और छँटाई का उपयोग करें।",
     "browseAllPacks": "सभी पैक ब्राउज़ करें",
-    "emptyCategory": "इस श्रेणी में अभी तक कोई पैक नहीं है."
+    "emptyCategory": "इस श्रेणी में अभी तक कोई पैक नहीं है.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "फर्श पैक करो",
@@ -231,13 +232,13 @@
     "yourFriends": "आपके मित्र ({{count}})",
     "emptyTitle": "अभी तक कोई दोस्त नहीं",
     "emptyBody": "जब आप किसी को जोड़ते हैं, तो वे यहां दिखाई देंगे ताकि आप बाद में और अधिक सामाजिक सुविधाएं बना सकें।",
-    "heroEyebrow": "SQUAD LOUNGE",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "heroEyebrow": "स्क्वाड लाउंज",
+    "qrActionSub": "आपका कोड",
+    "addActionSub": "लोग ढूँढें",
+    "yourUsername": "आपका उपयोगकर्ता नाम",
+    "usernameHint": "दोस्त इस अद्वितीय उपयोगकर्ता नाम से आपको जोड़ते हैं — वही जो खिलाड़ी टैब पर है।",
+    "enterFriendUsername": "उपयोगकर्ता नाम",
+    "placeholderUsername": "उदा. jordan"
   },
   "rewards": {
     "title": "पुरस्कार",
@@ -273,11 +274,11 @@
     "playerDeskEyebrow": "प्लेयर डेस्क",
     "pullHistoryCta": "पूरा खेल इतिहास",
     "pullHistorySub": "हर खुला, क्रेडिट जीत, और हिट - पूरा लॉग",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "accountDetailsEyebrow": "खाता विवरण",
+    "usernameLabel": "उपयोगकर्ता नाम",
+    "usernameUnset": "अभी सेट नहीं",
+    "emailLabel": "ईमेल",
+    "phoneLabel": "फ़ोन"
   },
   "shortcuts": {
     "notif": "अलर्ट",
@@ -403,7 +404,7 @@
     "usernameInvalid": "2-20 वर्णों का उपयोग करें: केवल अक्षर, संख्याएँ और अंडरस्कोर।",
     "continue": "जारी रखना",
     "genericError": "आपकी प्रोफ़ाइल सहेजी नहीं जा सकी. पुनः प्रयास करें।",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "आपका उपयोगकर्ता नाम अद्वितीय है — दोस्त आपको इसी से ढूँढते हैं।"
   },
   "paymentPortal": {
     "navTitle": "भुगतान",
@@ -431,8 +432,8 @@
     "you": "आप",
     "copy": "प्रतिलिपि",
     "done": "हो गया",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "किसी और का कोड स्कैन करें",
+    "scanAnotherSub": "उनके QR से जोड़ने के लिए कैमरा इस्तेमाल करें"
   },
   "qrScanner": {
     "title": "मित्र QR स्कैन करें",
@@ -479,7 +480,9 @@
       "hot_drop": "गर्म",
       "bonus_pack": "बोनस",
       "chase_boost": "पीछा करना"
-    }
+    },
+    "topHit": "टॉप हिट",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -548,7 +551,7 @@
     "resultLegendary1": "से महान हिट{{packName}}",
     "resultLegendary2": "मिथकीय खींचतान{{packName}}",
     "resultLegendary3": "गेम-चेंजिंग कार्ड से{{packName}}",
-    "replay": "Replay animation"
+    "replay": "एनिमेशन फिर चलाएँ"
   },
   "insufficientCredits": {
     "title": "पर्याप्त क्रेडिट नहीं",
@@ -579,8 +582,8 @@
     "invalidIdBody": "मित्र आईडी TCG-123456 जैसी दिखती हैं। अपने मित्र से उनका कोड साझा करने के लिए कहें.",
     "notFoundTitle": "उपयोगकर्ता नहीं मिला",
     "notFoundBody": "अभी तक कोई भी खाता उस मित्र आईडी से मेल नहीं खाता है। कोड को दोबारा जांचें या बाद में पुनः प्रयास करें।",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "पहले उपयोगकर्ता नाम सेट करें",
+    "noUsernameBody": "प्रोफ़ाइल पूरी करें ताकि दोस्तों के साथ साझा करने के लिए अद्वितीय नाम मिले।"
   },
   "social": {
     "profileNavTitle": "प्रोफ़ाइल",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "दोस्त जोड़ा गया",
     "demoAddedBody": "{{name}} अब आपके सर्कल में है।",
     "demoAlreadyFriend": "पहले से सर्कल में है"
+  },
+  "search": {
+    "title": "खोज",
+    "placeholder": "खोजें",
+    "emptyTitle": "खोज शुरू करें",
+    "emptyBody": "पैक, सेट या कार्ड खोजें।",
+    "noResultsTitle": "कोई परिणाम नहीं",
+    "noResultsBody": "कोई दूसरा शब्द आज़माएँ।"
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "वापस",
+    "missingTitle": "पैक नहीं मिला",
+    "missingBody": "यह पैक खत्म हो गया है या उपलब्ध नहीं है।",
+    "guaranteeTitle": "गारंटी",
+    "priceTitle": "कीमत",
+    "remaining": "{{total}} में से {{left}} बाकी",
+    "ctaDisabled": "उपलब्ध नहीं"
   }
 }

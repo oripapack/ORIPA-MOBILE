@@ -17,9 +17,9 @@
     "cat_yugioh": "遊戯王",
     "cat_sports": "スポーツ",
     "whyTitle": "Pull Hub ストアが選ばれる理由",
-    "whyPointLabel1": "Point 1",
-    "whyPointLabel2": "Point 2",
-    "whyPointLabel3": "Point 3",
+    "whyPointLabel1": "ポイント1",
+    "whyPointLabel2": "ポイント2",
+    "whyPointLabel3": "ポイント3",
     "whyPoint1Title": "発送が速い",
     "whyPoint1Body": "提携店は迅速に発送。大会前やリーグ前に間に合うよう、店舗ごとに締め切り時間が異なります。",
     "whyPoint2Title": "価格を比較しやすい",
@@ -54,7 +54,8 @@
     "spotlightTitle": "スポットライトパック",
     "spotlightBody": "厳選ドロップとプロモ。下のカテゴリと並び替えで探せます。",
     "browseAllPacks": "すべてのパックを見る",
-    "emptyCategory": "このカテゴリにはまだパックがありません。"
+    "emptyCategory": "このカテゴリにはまだパックがありません。",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "パックを探す",
@@ -100,12 +101,12 @@
     "emptyTitle": "まだフレンドがいません",
     "emptyBody": "追加するとここに表示されます。今後のソーシャル機能の土台になります。",
     "heroEyebrow": "SQUAD LOUNGE",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "qrActionSub": "あなたのコード",
+    "addActionSub": "人を探す",
+    "yourUsername": "ユーザー名",
+    "usernameHint": "フレンドはこの一意のユーザー名であなたを追加します—プレイヤータブと同じです。",
+    "enterFriendUsername": "ユーザー名",
+    "placeholderUsername": "例：jordan"
   },
   "rewards": {
     "title": "リワード",
@@ -115,8 +116,8 @@
     "shipped": "発送済み",
     "noPullsTitle": "まだ開封履歴がありません",
     "noPullsBody": "最初のパックを開けると、ここに履歴が表示されます。",
-    "latestWins": "Latest hits",
-    "viewFullHistory": "See full play history →"
+    "latestWins": "最新のヒット",
+    "viewFullHistory": "プレイ履歴を見る →"
   },
   "account": {
     "title": "アカウント",
@@ -139,13 +140,13 @@
     "guestSignInBody": "ゲストは閲覧のみです。パックを開く・クレジット購入・決済・フレンド機能にはアカウントが必要です。Google、Apple、またはメールで続行できます。",
     "guestSignInCta": "サインインまたは新規登録",
     "playerDeskEyebrow": "PLAYER DESK",
-    "pullHistoryCta": "Full play history",
-    "pullHistorySub": "Every open, credit win, and hit — complete log",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "pullHistoryCta": "プレイ履歴すべて",
+    "pullHistorySub": "すべてのオープン、クレジット勝ち、ヒット—完全ログ",
+    "accountDetailsEyebrow": "アカウント詳細",
+    "usernameLabel": "ユーザー名",
+    "usernameUnset": "未設定",
+    "emailLabel": "メール",
+    "phoneLabel": "電話"
   },
   "shortcuts": {
     "notif": "通知",
@@ -177,7 +178,7 @@
     "regionHint": "日付・通貨表示、将来の配送設定に使用します。",
     "save": "保存",
     "cancel": "キャンセル",
-    "fallbackNote": "All languages in the list have full UI translations. Region still controls dates and currency display."
+    "fallbackNote": "一覧の言語はすべて UI をフル翻訳しています。日付と通貨表示はリージョン設定に従います。"
   },
   "regions": {
     "US": "アメリカ",
@@ -208,8 +209,8 @@
     "you": "あなた",
     "copy": "コピー",
     "done": "完了",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "他の人のコードをスキャン",
+    "scanAnotherSub": "カメラで相手の QR から追加"
   },
   "qrScanner": {
     "title": "フレンドQRをスキャン",
@@ -256,7 +257,9 @@
       "hot_drop": "HOT",
       "bonus_pack": "BONUS",
       "chase_boost": "CHASE"
-    }
+    },
+    "topHit": "トップヒット",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -325,7 +328,7 @@
     "resultLegendary1": "{{packName}}からのレジェンダリー",
     "resultLegendary2": "{{packName}}からの神話級",
     "resultLegendary3": "{{packName}}のゲームチェンジャー",
-    "replay": "Replay animation"
+    "replay": "アニメを再生"
   },
   "insufficientCredits": {
     "title": "クレジット不足",
@@ -356,13 +359,13 @@
     "invalidIdBody": "フレンドIDは TCG-123456 の形式です。友だちに共有してもらってください。",
     "notFoundTitle": "ユーザーが見つかりません",
     "notFoundBody": "そのフレンドIDに一致するアカウントがありません。確認するか、後でもう一度お試しください。",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "先にユーザー名を設定",
+    "noUsernameBody": "プロフィールを完了させ、友だちと共有できる一意のユーザー名を取得してください。"
   },
   "common": {
     "copied": "コピーしました",
     "friendIdCopied": "フレンドIDをクリップボードにコピーしました。",
-    "error": "Error"
+    "error": "エラー"
   },
   "social": {
     "profileNavTitle": "プロフィール",
@@ -406,221 +409,245 @@
     "demoAlreadyFriend": "すでにサークルにいます"
   },
   "helpCenter": {
-    "navTitle": "Help Center",
-    "lead": "Quick answers for credits, shipping, and drops. This is sample content — replace with your real help articles before launch.",
+    "navTitle": "ヘルプセンター",
+    "lead": "クレジット、配送、Hot drops について手早く確認できます。サンプル内容のため、リリース前に実際のヘルプ記事に差し替えてください。",
     "faq": {
       "credits": {
-        "q": "How do credits work?",
-        "a": "Credits are the in-app currency used to open digital packs. Purchases in this preview may be simulated — final pricing, refunds, and bundles will be published before launch."
+        "q": "クレジットはどう使われますか？",
+        "a": "クレジットはデジタルパックを開くためのアプリ内通貨です。プレビューでは購入がシミュレーションの場合があります。最終的な価格、返金、バンドルはリリース前に公開されます。"
       },
       "shipping": {
-        "q": "Where do you ship physical cards?",
-        "a": "Marketplace orders ship from partner stores. Cutoffs, carriers, and fees vary by listing. Add a shipping address in Account so checkout is faster when payments go live."
+        "q": "実物カードはどこに配送しますか？",
+        "a": "マーケットプレイスの注文は提携ストアから発送されます。締切、配送業者、手数料は出品ごとに異なります。決済が有効になったときスムーズに進むよう、アカウントで配送先を登録してください。"
       },
       "drops": {
-        "q": "What is a hot drop?",
-        "a": "Hot drops are limited-time or high-demand pack releases. They are different from account promos (bonuses and coupons). Tap Hot Drops on Account for a short explainer."
+        "q": "Hot drop とは？",
+        "a": "Hot drops は期間限定または需要の高いパックのリリースです。アカウントプロモ（ボーナスやクーポン）とは別物です。概要はアカウントの Hot drops をタップしてください。"
       }
     },
-    "contactSection": "Still stuck?",
-    "emailCta": "Email {{email}}",
-    "emailUs": "Email support",
-    "responseTime": "We aim to reply within 1–2 business days (demo — not monitored)."
+    "contactSection": "まだ解決しませんか？",
+    "emailCta": "{{email}} にメール",
+    "emailUs": "メールサポート",
+    "responseTime": "1〜2営業日以内の返信を目指しています（デモ・未監視）。"
   },
   "shippingAddress": {
-    "navTitle": "Shipping address",
-    "lead": "Used for marketplace orders and prize shipping when fulfillment is live. Saved only on this device in the preview build.",
-    "save": "Save address",
-    "savedTitle": "Saved",
-    "savedBody": "Your shipping address was saved on this device.",
-    "saveFailed": "Could not save. Try again.",
-    "missingTitle": "Missing fields",
-    "missingBody": "Enter at least name, street line 1, city, and country.",
+    "navTitle": "配送先住所",
+    "lead": "フルフィルメントが有効になったマーケット注文や景品の配送に使います。プレビューではこの端末のみに保存されます。",
+    "save": "住所を保存",
+    "savedTitle": "保存しました",
+    "savedBody": "配送先住所をこの端末に保存しました。",
+    "saveFailed": "保存できませんでした。もう一度お試しください。",
+    "missingTitle": "未入力の項目があります",
+    "missingBody": "氏名、住所1行目、市区町村、国は必ず入力してください。",
     "fields": {
-      "fullName": "Full name",
-      "line1": "Address line 1",
-      "line2": "Address line 2 (optional)",
-      "city": "City",
-      "region": "State / region",
-      "postal": "Postal code",
-      "country": "Country"
+      "fullName": "氏名",
+      "line1": "住所1",
+      "line2": "住所2（任意）",
+      "city": "市区町村",
+      "region": "州／地域",
+      "postal": "郵便番号",
+      "country": "国"
     },
     "placeholders": {
       "fullName": "Alex Trainer",
-      "line1": "123 Main St",
-      "line2": "Apt 4",
-      "city": "San Francisco",
+      "line1": "メインストリート123",
+      "line2": "アパート4",
+      "city": "サンフランシスコ",
       "region": "CA",
       "postal": "94102",
-      "country": "United States"
+      "country": "アメリカ合衆国"
     }
   },
   "tierBenefits": {
-    "navTitle": "Tier benefits",
-    "lead": "Tiers are a loyalty ladder based on XP from activity. Sample perks below — tune before launch.",
-    "progressHint": "You have {{xp}} XP. Next tier unlocks at {{need}} XP (demo ladder).",
-    "topTier": "You are at the highest preview tier — thanks for playing with the sample data.",
-    "fromXp": "From {{xp}} XP",
-    "yourTier": "Your tier",
-    "disclaimer": "Benefits, thresholds, and availability are illustrative only and may change."
+    "navTitle": "ティア特典",
+    "lead": "ティアは活動による XP に基づくロイヤリティ段階です。下はサンプル特典—リリース前に調整してください。",
+    "progressHint": "XP は {{xp}} です。次のティアは {{need}} XP で解放（デモ用ラダー）。",
+    "topTier": "プレビューで最高ティアです。サンプルデータをお楽しみいただきありがとうございます。",
+    "fromXp": "{{xp}} XP から",
+    "yourTier": "あなたのティア",
+    "disclaimer": "特典・しきい値・提供内容は説明用であり変更される場合があります。"
   },
   "notifications": {
-    "navTitle": "Notifications",
-    "lead": "Choose what we can notify you about. Preferences are stored on this device only in the preview.",
-    "note": "System notification permission is requested separately when push is wired. Email and SMS controls will live here too.",
+    "navTitle": "通知",
+    "lead": "通知してよい内容を選びます。プレビューでは設定はこの端末のみに保存されます。",
+    "note": "プッシュ連携時にシステムの通知許可を別途リクエストします。メールと SMS の設定もここに置きます。",
     "toggles": {
       "order": {
-        "title": "Orders & shipping",
-        "sub": "Tracking, delays, and delivery updates for marketplace orders."
+        "title": "注文と配送",
+        "sub": "マーケットプレイス注文の追跡、遅延、配送の更新。"
       },
       "drops": {
-        "title": "Hot drops & restocks",
-        "sub": "Limited packs and high-demand releases."
+        "title": "Hot drops と再入荷",
+        "sub": "限定パックと需要の高いリリース。"
       },
       "promos": {
-        "title": "Promos & credits",
-        "sub": "Bonus credits, coupons, and seasonal campaigns."
+        "title": "プロモとクレジット",
+        "sub": "ボーナスクレジット、クーポン、シーズンキャンペーン。"
       },
       "social": {
-        "title": "Friends & social",
-        "sub": "Friend requests and invites (when enabled)."
+        "title": "フレンドとソーシャル",
+        "sub": "フレンド申請と招待（有効時）。"
       }
     }
   },
   "hotDropsInfo": {
     "navTitle": "Hot drops",
-    "body": "Hot drops are time-limited or high-demand pack releases — often a specific set, collab, or flash window. They are about the product and timing.",
-    "b1": "Announced start and end times (or “while supplies last”).",
-    "b2": "May have different odds or price than evergreen packs — always read the pack details.",
-    "b3": "Can sell out quickly; enabling notifications helps you catch restocks.",
-    "callout": "Not the same as Promos: promos are marketing incentives (bonus credits, coupons), not the pack release itself."
+    "body": "Hot drops は期間限定または高需要のパック販売—特定のセット、コラボ、フラッシュ枠などが多く、商品とタイミングがポイントです。",
+    "b1": "開始・終了時刻の告知（または「なくなり次第終了」）。",
+    "b2": "通年パックとオッズや価格が異なる場合があります—パック詳細を必ず確認してください。",
+    "b3": "すぐ売り切れることがあります。通知をオンにすると再入荷を取りこぼしにくくなります。",
+    "callout": "Promo とは別：プロモはマーケ施策（ボーナスクレジット、クーポン）であり、パックそのものの発売ではありません。"
   },
   "promosInfo": {
     "navTitle": "Promos",
-    "body": "Promos are marketing programs: bonus credits, coupon codes, seasonal campaigns, or partner offers. They reward actions like signing up, buying bundles, or referring friends.",
-    "b1": "Shown in-app, email, or social — each promo has its own rules and dates.",
-    "b2": "May stack with tiers or be limited to certain packs — read the fine print before launch.",
-    "b3": "Different from Hot Drops: a promo is the offer; a hot drop is the product release.",
-    "vsHotTitle": "Hot drops vs promos",
-    "vsHotBody": "Use Hot Drops to learn about limited pack releases. Use Promos (this screen) to understand bonus credits and coupon-style incentives."
+    "body": "プロモはマーケプログラムです：ボーナスクレジット、クーポンコード、シーズン施策、パートナー特典など。登録、バンドル購入、友だち紹介などで付与されます。",
+    "b1": "アプリ内・メール・SNS で案内—ルールと期間はプロモごとに異なります。",
+    "b2": "ティアと併用できたり特定パックのみだったりします—リリース前に細則を確認してください。",
+    "b3": "Hot Drops とは違います：プロモはオファー、Hot drop は商品リリースです。",
+    "vsHotTitle": "Hot drops とプロモ",
+    "vsHotBody": "限定パック発売は Hot Drops で。ボーナスクレジットやクーポン型特典は Promos（この画面）で確認してください。"
   },
   "pullHistoryScreen": {
-    "navTitle": "Play history",
-    "lead": "Every completed play — newest first. Pending pulls stay in the pack flow until you cash out or ship."
+    "navTitle": "プレイ履歴",
+    "lead": "完了したプレイは新しい順。保留中のプルはキャッシュアウトまたは発送までパックフローに残ります。"
   },
   "linkedAccounts": {
-    "navTitle": "Linked accounts",
-    "body": "Linking lets you sign in to the same Pull Hub profile with more than one method (for example Google and Apple), so you are not locked to a single login.",
-    "whatTitle": "What this means",
-    "whatBody": "It is not about merging two separate app accounts. It is about attaching sign-in providers to one account for convenience and recovery.",
-    "futureTitle": "Coming later",
-    "futureGoogle": "Google account link",
-    "futureApple": "Apple ID link",
-    "futureEmail": "Email + password link",
-    "note": "Provider linking will use your auth settings (e.g. Clerk) in production."
+    "navTitle": "連携アカウント",
+    "body": "連携すると、同じ Pull Hub プロフィールに複数の方法（例：Google と Apple）でサインインでき、1つのログインに縛られません。",
+    "whatTitle": "意味するところ",
+    "whatBody": "2つのアプリアカウントを統合する話ではあり便利性と復旧のために1アカウントにサインイン手段を紐づけます。",
+    "futureTitle": "今後対応",
+    "futureGoogle": "Google アカウントの連携",
+    "futureApple": "Apple ID の連携",
+    "futureEmail": "メール＋パスワードの連携",
+    "note": "本番では認証設定（例：Clerk）に沿ってプロバイダ連携を行います。"
   },
   "identityVerification": {
-    "navTitle": "Identity verification",
-    "body": "Identity verification (sometimes called KYC) confirms you are a real person and meets age or compliance rules before high-value payouts, certain promos, or regulated features.",
-    "whyTitle": "Why apps ask for this",
-    "whyBody": "It reduces fraud, protects minors, and satisfies financial or marketplace rules when money or valuable prizes move between users and platforms.",
-    "previewTitle": "Preview flow (not active)",
-    "step1": "Government ID or document check",
-    "step2": "Selfie or liveness check (if required)",
-    "step3": "Review — usually minutes, sometimes longer",
-    "note": "This build only explains the concept. Wire your vendor (e.g. Persona, Stripe Identity) before requiring verification."
+    "navTitle": "本人確認",
+    "body": "本人確認（KYC とも呼ばれます）は、高額払い出し・一部プロモ・規制対象機能の前に実在と年齢／コンプラ要件を満たすかを確認します。",
+    "whyTitle": "アプリが求める理由",
+    "whyBody": "詐欺防止、未成年保護、ユーザーとプラットフォーム間で資金や高価な景品が動くときの金融・マーケットプレイス規則への適合のためです。",
+    "previewTitle": "プレビューフロー（未稼働）",
+    "step1": "公的IDまたは書類チェック",
+    "step2": "セルフィーまたはライブネス（必要な場合）",
+    "step3": "審査—通常数分、長い場合もあります",
+    "note": "このビルドは概念説明のみです。必須にする前にベンダー（例：Persona、Stripe Identity）を接続してください。"
   },
   "payoutMethod": {
-    "navTitle": "Payout method",
-    "body": "When you sell cards or receive cash-outs, payouts go to a linked bank or debit card. This preview does not connect to real banking.",
-    "line1": "Add a bank account (ACH / local rails) or debit card depending on region.",
-    "line2": "Verify small deposits or instant micro-charges when your processor requires it.",
-    "line3": "Payout timing and fees follow marketplace rules — see Terms before launch.",
-    "note": "Replace this placeholder with real payout onboarding when Stripe Connect or your PSP is integrated."
+    "navTitle": "受取方法",
+    "body": "カード売却やキャッシュアウトの送金は連携した銀行またはデビットカードへ行きます。このプレビューは実銀行には接続しません。",
+    "line1": "地域に応じて銀行口座（ACH／現地ネットワーク）またはデビットカードを追加します。",
+    "line2": "処理事業者が求める場合は少額入金または即時の微小課金で検証します。",
+    "line3": "送金タイミングと手数料はマーケットプレイスのルールに従います—リリース前に利用規約を確認してください。",
+    "note": "Stripe Connect や PSP 統合後、このプレースホルダーを実際の受取オンボーディングに差し替えてください。"
   },
   "lootBox": {
-    "title": "Probability of contents",
-    "lead": "Pack openings are randomized. Approximate tier rates below are for disclosure; specific packs may vary.",
-    "columnTier": "Tier",
-    "footnote": "Rates are illustrative for this preview build. Published products will show final odds before purchase where required.",
-    "done": "Got it"
+    "title": "内容の確率",
+    "lead": "パック開封はランダムです。下のティア率は開示用の目安で、パックにより異なります。",
+    "columnTier": "ティア",
+    "footnote": "このプレビューでは率は参考値です。公開商品では必要に応じて購入前に最終オッズを表示します。",
+    "done": "OK"
   },
   "auth": {
-    "title": "Sign in",
-    "subtitle": "Use Google, Apple, or email. New accounts: we’ll email you a one-time code to verify.",
-    "continueGoogle": "Continue with Google",
-    "continueApple": "Continue with Apple",
-    "or": "or",
-    "modeSignIn": "Sign in",
-    "modeSignUp": "Create account",
-    "emailPlaceholder": "Email",
-    "passwordPlaceholder": "Password",
-    "emailSignIn": "Sign in with email",
-    "emailContinue": "Continue",
-    "verifyHint": "Enter the code we sent to {{email}}.",
-    "codePlaceholder": "6-digit code",
-    "verifyCode": "Verify & continue",
-    "resendCode": "Resend code",
-    "emailPasswordRequired": "Enter email and password.",
-    "signInIncomplete": "Could not finish sign-in. If you use two-factor authentication, we’ll add support next.",
-    "verifyFailed": "Verification didn’t complete. Check the code and try again.",
-    "dashboardHint": "Clerk Dashboard: enable Google (oauth_google), Apple (oauth_apple), and Email + password + email code verification.",
-    "signedInAs": "Account",
-    "signOut": "Sign out",
-    "signOutTitle": "Sign out?",
-    "signOutMessage": "You will need to sign in again to use your synced data when it is available.",
-    "signOutConfirm": "Sign out",
-    "cancel": "Cancel"
+    "title": "サインイン",
+    "subtitle": "Google、Apple、またはメールを使用。新規アカウントは確認用のワンタイムコードをメールします。",
+    "continueGoogle": "Google で続行",
+    "continueApple": "Apple で続行",
+    "or": "または",
+    "modeSignIn": "サインイン",
+    "modeSignUp": "アカウント作成",
+    "emailPlaceholder": "メール",
+    "passwordPlaceholder": "パスワード",
+    "emailSignIn": "メールでサインイン",
+    "emailContinue": "続行",
+    "verifyHint": "{{email}} に送ったコードを入力してください。",
+    "codePlaceholder": "6桁のコード",
+    "verifyCode": "確認して続行",
+    "resendCode": "コードを再送",
+    "emailPasswordRequired": "メールとパスワードを入力してください。",
+    "signInIncomplete": "サインインを完了できませんでした。二要素認証をお使いの場合は今後対応予定です。",
+    "verifyFailed": "確認が完了しませんでした。コードを確認して再度お試しください。",
+    "dashboardHint": "Clerk Dashboard：Google（oauth_google）、Apple（oauth_apple）、メール＋パスワード＋メールコード確認を有効にしてください。",
+    "signedInAs": "アカウント",
+    "signOut": "サインアウト",
+    "signOutTitle": "サインアウトしますか？",
+    "signOutMessage": "同期データを使うには、利用可能になったら再度サインインが必要です。",
+    "signOutConfirm": "サインアウト",
+    "cancel": "キャンセル"
   },
   "linkPhone": {
-    "title": "Verify your phone",
-    "subtitle": "We’ll text you a code once. Pick your country, then enter your mobile number — no need to type +1 yourself.",
-    "mobileLabel": "Mobile number",
-    "countryPickerA11y": "Country or region",
+    "title": "電話番号を確認",
+    "subtitle": "SMS でコードを1回お送りします。国を選んで番号を入力—+1 は自分で打つ必要はありません。",
+    "mobileLabel": "携帯番号",
+    "countryPickerA11y": "国または地域",
     "nationalPlaceholderNanp": "(555) 123-4567",
-    "nationalPlaceholder": "Phone number",
-    "sendCode": "Send code",
-    "codeHint": "Enter the code we texted you.",
-    "codePlaceholder": "6-digit code",
-    "verify": "Verify & continue",
-    "resend": "Resend code",
-    "changeNumber": "Use a different number",
-    "invalid": "Enter a valid phone number for the selected country.",
-    "nanpInvalid": "US and Canada numbers need 10 digits (area code + number).",
-    "phoneMissing": "Could not start phone verification. Try again.",
-    "verifyFailed": "That code didn’t work. Check the message and try again.",
-    "genericError": "Something went wrong. Try again.",
-    "dashboardHint": "Clerk Dashboard → User & authentication → Phone: enable SMS / verification. You can turn off “Sign in with phone” if you only want Google / Apple / email sign-in.",
-    "smsDevHint": "SMS not sending? In development, add a test phone in the Clerk dashboard or connect Twilio / your SMS provider — Clerk won’t send real texts until that’s configured.",
-    "signOut": "Use a different account"
+    "nationalPlaceholder": "電話番号",
+    "sendCode": "コードを送信",
+    "codeHint": "SMS でお送りしたコードを入力してください。",
+    "codePlaceholder": "6桁のコード",
+    "verify": "確認して続行",
+    "resend": "コードを再送",
+    "changeNumber": "別の番号を使う",
+    "invalid": "選択した国で有効な電話番号を入力してください。",
+    "nanpInvalid": "米国・カナダは市外局番＋番号の10桁が必要です。",
+    "phoneMissing": "電話確認を開始できませんでした。もう一度お試しください。",
+    "verifyFailed": "コードが正しくありません。メッセージを確認して再試行してください。",
+    "genericError": "問題が発生しました。もう一度お試しください。",
+    "dashboardHint": "Clerk Dashboard → User & authentication → Phone：SMS／確認を有効化。「電話でサインイン」は Google／Apple／メールのみにするならオフにできます。",
+    "smsDevHint": "SMS が届かない？開発中は Clerk ダッシュボードでテスト電話を追加するか Twilio／SMS プロバイダーを接続してください—設定まで Clerk は実SMSを送りません。",
+    "signOut": "別のアカウントを使う"
   },
   "profileOnboarding": {
-    "title": "Set up your profile",
-    "subtitle": "Choose a public username and how you’d like to appear. You can change this later when account settings are wired to the server.",
-    "usernameLabel": "Username",
+    "title": "プロフィールを設定",
+    "subtitle": "公開ユーザー名と表示名を選びます。サーバー連携後にあとから変更できます。",
+    "usernameLabel": "ユーザー名",
     "usernamePlaceholder": "your_handle",
-    "displayNameLabel": "Display name (optional)",
-    "displayNamePlaceholder": "Same as username if empty",
-    "profileHint": "Your username is unique and is what friends use to find you.",
-    "usernameInvalid": "Use 2–20 characters: letters, numbers, and underscores only.",
-    "continue": "Continue",
-    "genericError": "Could not save your profile. Try again."
+    "displayNameLabel": "表示名（任意）",
+    "displayNamePlaceholder": "空欄ならユーザー名と同じ",
+    "profileHint": "ユーザー名は一意で、フレンドがあなたを見つけるために使います。",
+    "usernameInvalid": "2〜20文字：英数字とアンダースコアのみ。",
+    "continue": "続行",
+    "genericError": "プロフィールを保存できませんでした。もう一度お試しください。"
   },
   "paymentPortal": {
-    "navTitle": "Payment",
+    "navTitle": "お支払い",
     "eyebrow": "Checkout",
-    "tabCredits": "Credits",
+    "tabCredits": "クレジット",
     "tabMarketplace": "Marketplace",
-    "viewProbabilities": "View probability of contents",
-    "digitalRoutingNote": "Digital credits: use App Store / Google Play in-app purchase when live — not Stripe for coins.",
-    "marketplaceTitle": "Physical order",
-    "marketplaceLead": "Partner listings ship real products. Checkout uses a physical-goods payment flow (server-backed Stripe), separate from in-app credit packs.",
-    "item": "Item",
-    "price": "Price",
-    "physicalPolicy": "Physical goods only — PaymentIntent created on your server ({{mode}}). Apple Pay / Google Pay may appear for shipping purchases, not for digital currency.",
-    "continueCheckout": "Continue to checkout",
-    "physicalStubTitle": "Checkout not connected",
-    "physicalStubBody": "Wire your backend to create a Stripe PaymentIntent, then open the client with the returned client secret. No keys in the app binary.",
-    "sampleListingTitle": "Sample listing"
+    "viewProbabilities": "内容の確率を見る",
+    "digitalRoutingNote": "デジタルクレジット：公開後は App Store／Google Play のアプリ内課金—コインに Stripe は使いません。",
+    "marketplaceTitle": "物販の注文",
+    "marketplaceLead": "パートナー出品は実物を発送します。決済は実物用フロー（サーバー側 Stripe）で、アプリ内クレジットパックとは別です。",
+    "item": "商品",
+    "price": "価格",
+    "physicalPolicy": "実物のみ—サーバー上で PaymentIntent を作成（{{mode}}）。Apple Pay／Google Pay は配送購入で表示することがあり、デジタル通貨には使いません。",
+    "continueCheckout": "チェックアウトへ",
+    "physicalStubTitle": "チェックアウト未接続",
+    "physicalStubBody": "バックエンドで Stripe PaymentIntent を作成し、返った client secret でクライアントを開いてください。キーはアプリに置かないでください。",
+    "sampleListingTitle": "サンプル出品"
+  },
+  "search": {
+    "title": "検索",
+    "placeholder": "検索",
+    "emptyTitle": "検索を始める",
+    "emptyBody": "パック名、セット名、カード名で検索できます。",
+    "noResultsTitle": "結果がありません",
+    "noResultsBody": "別のキーワードで試してください。"
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "戻る",
+    "missingTitle": "パックが見つかりません",
+    "missingBody": "このパックは終了したか、現在利用できません。",
+    "guaranteeTitle": "保証",
+    "priceTitle": "価格",
+    "remaining": "残り {{left}} / {{total}}",
+    "ctaDisabled": "利用できません"
   }
 }

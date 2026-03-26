@@ -27,11 +27,11 @@
     "whyPoint3Title": "Lựa chọn lớn",
     "whyPoint3Body": "Chúng tôi gom hàng từ người bán uy tín nhiều khu vực — từ promo Nhật đến thẻ tiếng Anh thông dụng và hộp niêm phong.",
     "specialPrice": "Giá đặc biệt",
-    "saleOn": "SALE",
+    "saleOn": "GIẢM GIÁ",
     "sectionStores": "Từ các cửa hàng đối tác",
     "verified": "Đã xác minh",
     "commissionLine": "Phí Pull Hub trên doanh số: {{pct}}%",
-    "badgeSale": "SALE",
+    "badgeSale": "GIẢM GIÁ",
     "badgeTournament": "Giải đấu",
     "badgeNew": "MỚI",
     "emptyResults": "Không có danh sách nào phù hợp với bộ lọc của bạn.",
@@ -88,9 +88,9 @@
       "fullName": "Huấn luyện viên Alex",
       "line1": "123 đường chính",
       "line2": "Căn hộ 4",
-      "city": "San Francisco",
-      "region": "CA",
-      "postal": "94102",
+      "city": "TP. Hồ Chí Minh",
+      "region": "VN",
+      "postal": "700000",
       "country": "Hoa Kỳ"
     }
   },
@@ -186,7 +186,8 @@
     "spotlightTitle": "Gói nổi bật",
     "spotlightBody": "Drop và khuyến mãi được chọn. Dùng danh mục và sắp xếp bên dưới.",
     "browseAllPacks": "Duyệt tất cả các gói",
-    "emptyCategory": "Chưa có gói nào trong danh mục này."
+    "emptyCategory": "Chưa có gói nào trong danh mục này.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "Sàn gói",
@@ -232,12 +233,12 @@
     "yourFriends": "Bạn bè của bạn ({{count}})",
     "emptyTitle": "Chưa có bạn bè",
     "emptyBody": "Khi bạn thêm ai đó, họ sẽ hiển thị ở đây để bạn có thể phát triển thêm các tính năng xã hội sau này.",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "qrActionSub": "Mã của bạn",
+    "addActionSub": "Tìm người",
+    "yourUsername": "Tên người dùng của bạn",
+    "usernameHint": "Bạn bè thêm bạn bằng tên này — giống tab Người chơi.",
+    "enterFriendUsername": "Tên người dùng",
+    "placeholderUsername": "vd: jordan"
   },
   "rewards": {
     "title": "Phần thưởng",
@@ -273,11 +274,11 @@
     "playerDeskEyebrow": "BÀN CHƠI",
     "pullHistoryCta": "Toàn bộ lịch sử mở gói",
     "pullHistorySub": "Mỗi lần mở, credit trúng và hit — nhật ký đầy đủ",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
+    "accountDetailsEyebrow": "Chi tiết tài khoản",
+    "usernameLabel": "Tên người dùng",
+    "usernameUnset": "Chưa đặt",
     "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "phoneLabel": "Điện thoại"
   },
   "shortcuts": {
     "notif": "Thông báo",
@@ -312,7 +313,7 @@
   },
   "regions": {
     "US": "Hoa Kỳ",
-    "CA": "Canada",
+    "CA": "Nước Canada",
     "GB": "Vương quốc Anh",
     "JP": "Nhật Bản",
     "AU": "Úc"
@@ -396,18 +397,18 @@
     "title": "Thiết lập hồ sơ của bạn",
     "subtitle": "Chọn tên người dùng công khai và cách bạn muốn xuất hiện. Bạn có thể thay đổi điều này sau khi cài đặt tài khoản được kết nối với máy chủ.",
     "usernameLabel": "Tên người dùng",
-    "usernamePlaceholder": "your_handle",
+    "usernamePlaceholder": "ten_cua_ban",
     "displayNameLabel": "Tên hiển thị (tùy chọn)",
     "displayNamePlaceholder": "Giống như tên người dùng nếu trống",
     "memberIdHint": "Mã bạn bè của bạn (TCG-…) được gán tự động cho QR và lời mời.",
     "usernameInvalid": "Sử dụng 2–20 ký tự: chỉ chữ cái, số và dấu gạch dưới.",
     "continue": "Tiếp tục",
     "genericError": "Không thể lưu hồ sơ của bạn. Hãy thử lại.",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "Tên người dùng là duy nhất — bạn bè tìm bạn bằng nó."
   },
   "paymentPortal": {
     "navTitle": "Thanh toán",
-    "eyebrow": "Checkout",
+    "eyebrow": "Thanh toán",
     "tabCredits": "Credit",
     "tabMarketplace": "Chợ",
     "viewProbabilities": "Xem tỉ lệ nội dung gói",
@@ -431,8 +432,8 @@
     "you": "Bạn",
     "copy": "Sao chép",
     "done": "Xong",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "Quét mã người khác",
+    "scanAnotherSub": "Dùng camera để thêm họ qua QR"
   },
   "qrScanner": {
     "title": "Quét QR bạn bè",
@@ -479,7 +480,9 @@
       "hot_drop": "NÓNG",
       "bonus_pack": "THƯỞNG",
       "chase_boost": "ĐUỔI"
-    }
+    },
+    "topHit": "Hit đỉnh",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -548,7 +551,7 @@
     "resultLegendary1": "Hit huyền thoại từ {{packName}}",
     "resultLegendary2": "Pull mythic từ {{packName}}",
     "resultLegendary3": "Thẻ game-changer từ {{packName}}",
-    "replay": "Replay animation"
+    "replay": "Phát lại hiệu ứng"
   },
   "insufficientCredits": {
     "title": "Không đủ credit",
@@ -579,8 +582,8 @@
     "invalidIdBody": "ID bạn bè trông giống như TCG-123456. Yêu cầu bạn bè của bạn chia sẻ mã của họ.",
     "notFoundTitle": "Không tìm thấy người dùng",
     "notFoundBody": "Chưa có tài khoản nào khớp với ID bạn bè đó. Hãy kiểm tra kỹ mã hoặc thử lại sau.",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "Hãy đặt tên người dùng trước",
+    "noUsernameBody": "Hoàn tất hồ sơ để có tên duy nhất chia sẻ với bạn bè."
   },
   "social": {
     "profileNavTitle": "Hồ sơ",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "Đã thêm bạn",
     "demoAddedBody": "{{name}} đã vào vòng của bạn.",
     "demoAlreadyFriend": "Đã có trong vòng của bạn"
+  },
+  "search": {
+    "title": "Tìm kiếm",
+    "placeholder": "Tìm kiếm",
+    "emptyTitle": "Bắt đầu tìm kiếm",
+    "emptyBody": "Tìm pack, set hoặc thẻ.",
+    "noResultsTitle": "Không có kết quả",
+    "noResultsBody": "Thử từ khóa khác."
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "Quay lại",
+    "missingTitle": "Không tìm thấy pack",
+    "missingBody": "Pack này có thể đã kết thúc hoặc không khả dụng.",
+    "guaranteeTitle": "Đảm bảo",
+    "priceTitle": "Giá",
+    "remaining": "Còn {{left}} / {{total}}",
+    "ctaDisabled": "Không khả dụng"
   }
 }

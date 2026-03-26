@@ -15,7 +15,7 @@
     "cat_pokemon": "Pokémon",
     "cat_one_piece": "One Piece",
     "cat_yugioh": "Yu-Gi-Oh!",
-    "cat_sports": "Sports",
+    "cat_sports": "Sport",
     "whyTitle": "Pourquoi la boutique Pull Hub ?",
     "whyPointLabel1": "Point 1",
     "whyPointLabel2": "Point 2",
@@ -85,13 +85,13 @@
       "country": "Pays"
     },
     "placeholders": {
-      "fullName": "Alex Trainer",
-      "line1": "123 Main St",
-      "line2": "Apt 4",
-      "city": "San Francisco",
-      "region": "CA",
-      "postal": "94102",
-      "country": "United States"
+      "fullName": "Alex Martin",
+      "line1": "10 rue de Rivoli",
+      "line2": "Appart 4",
+      "city": "Paris",
+      "region": "IDF",
+      "postal": "75001",
+      "country": "France"
     }
   },
   "tierBenefits": {
@@ -186,7 +186,8 @@
     "spotlightTitle": "Boosters à la une",
     "spotlightBody": "Sélections et promos. Utilisez les catégories et le tri ci-dessous.",
     "browseAllPacks": "Voir tous les boosters",
-    "emptyCategory": "Aucun booster dans cette catégorie pour l’instant."
+    "emptyCategory": "Aucun booster dans cette catégorie pour l’instant.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "Salle des boosters",
@@ -199,7 +200,7 @@
     "pokemon": "Pokémon",
     "yugioh": "Yu-Gi-Oh!",
     "one_piece": "One Piece",
-    "sports": "Sports",
+    "sports": "Sport",
     "graded": "Gradées",
     "hot_drops": "Hot Drops"
   },
@@ -232,12 +233,12 @@
     "yourFriends": "Vos amis ({{count}})",
     "emptyTitle": "Pas encore d’amis",
     "emptyBody": "Quand vous ajoutez quelqu’un, il apparaîtra ici pour de futures fonctions sociales.",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "qrActionSub": "Ton code",
+    "addActionSub": "Trouver des joueurs",
+    "yourUsername": "Ton pseudo",
+    "usernameHint": "Tes amis t’ajoutent avec ce pseudo — comme sur l’onglet Joueur.",
+    "enterFriendUsername": "Pseudo",
+    "placeholderUsername": "ex. jordan"
   },
   "rewards": {
     "title": "Récompenses",
@@ -258,7 +259,7 @@
     "viewBenefits": "Voir les avantages →",
     "sectionAccount": "Compte",
     "sectionMore": "Plus",
-    "sectionSupport": "Support",
+    "sectionSupport": "Assistance",
     "sectionLegal": "Mentions légales",
     "sectionPreferences": "Préférences",
     "languageRegion": "Langue et région",
@@ -273,11 +274,11 @@
     "playerDeskEyebrow": "BUREAU JOUEUR",
     "pullHistoryCta": "Historique complet",
     "pullHistorySub": "Chaque ouverture, gain de crédits et hit — journal complet",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "accountDetailsEyebrow": "Détails du compte",
+    "usernameLabel": "Pseudo",
+    "usernameUnset": "Pas encore défini",
+    "emailLabel": "E-mail",
+    "phoneLabel": "Téléphone"
   },
   "shortcuts": {
     "notif": "Alertes",
@@ -403,11 +404,11 @@
     "usernameInvalid": "2 à 20 caractères : lettres, chiffres et tirets bas uniquement.",
     "continue": "Continuer",
     "genericError": "Impossible d’enregistrer le profil. Réessayez.",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "Ton pseudo est unique — tes amis t’identifient ainsi."
   },
   "paymentPortal": {
     "navTitle": "Paiement",
-    "eyebrow": "Checkout",
+    "eyebrow": "Caisse",
     "tabCredits": "Crédits",
     "tabMarketplace": "Marketplace",
     "viewProbabilities": "Voir la probabilité du contenu",
@@ -431,8 +432,8 @@
     "you": "Vous",
     "copy": "Copier",
     "done": "Terminé",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "Scanner le code de quelqu’un d’autre",
+    "scanAnotherSub": "Utilise l’appareil photo pour l’ajouter via son QR"
   },
   "qrScanner": {
     "title": "Scanner QR ami",
@@ -464,7 +465,7 @@
     "graded": "Gradée",
     "hot_drop": "Hot Drop",
     "bonus_pack": "Bonus",
-    "chase_boost": "Chase Boost"
+    "chase_boost": "Boost chase"
   },
   "packCard": {
     "openPack": "Jouer",
@@ -473,13 +474,15 @@
     "maxPerUser": "Max {{count}} parties / compte",
     "shortBadge": {
       "new": "NEW",
-      "new_user": "WELCOME",
+      "new_user": "BIENVENU",
       "best_value": "VALUE",
       "graded": "VAULT",
       "hot_drop": "HOT",
       "bonus_pack": "BONUS",
       "chase_boost": "CHASE"
-    }
+    },
+    "topHit": "Top hit",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -498,32 +501,32 @@
       "guarantee": "Chaque booster contient une carte gradée"
     },
     "4": {
-      "title": "Sports Cards Flash Pack",
+      "title": "Pack cartes sport Flash",
       "value": "Rookies des meilleurs choix 2024",
       "guarantee": "Auto ou relic toutes les 5 ouvertures"
     },
     "5": {
-      "title": "Pokémon Vintage Graded Pack",
+      "title": "Pack Pokémon vintage gradé",
       "value": "Hits gradés Base Set",
       "guarantee": "PSA 8+ garanti"
     },
     "6": {
-      "title": "Hot Drop Mystery Pack",
+      "title": "Pack mystère Hot Drop",
       "value": "Mélange surprise toutes catégories",
       "guarantee": "Booster bonus après 3 ouvertures"
     },
     "7": {
-      "title": "One Piece Paramount War Pack",
+      "title": "Pack One Piece Paramount War",
       "value": "Leader SR et chases foil",
       "guarantee": "1 chance sur 10 d’Alt Art"
     },
     "8": {
-      "title": "New Arrivals Sampler Pack",
+      "title": "Pack découverte nouveautés",
       "value": "Hits issus des derniers sets",
       "guarantee": "Au moins 3 cartes par ouverture"
     },
     "9": {
-      "title": "Yu-Gi-Oh! Battles of Legend Pack",
+      "title": "Pack Yu-Gi-Oh! Battles of Legend",
       "value": "Secret Rares et emplacements starlight",
       "guarantee": "Ultra Rare ou mieux à chaque booster"
     }
@@ -548,7 +551,7 @@
     "resultLegendary1": "Hit légendaire de {{packName}}",
     "resultLegendary2": "Tirage mythique de {{packName}}",
     "resultLegendary3": "Carte qui change la partie de {{packName}}",
-    "replay": "Replay animation"
+    "replay": "Revoir l’animation"
   },
   "insufficientCredits": {
     "title": "Crédits insuffisants",
@@ -579,8 +582,8 @@
     "invalidIdBody": "Les friend ID ressemblent à TCG-123456. Demandez le code à votre ami.",
     "notFoundTitle": "Utilisateur introuvable",
     "notFoundBody": "Aucun compte ne correspond à ce friend ID. Vérifiez le code ou réessayez plus tard.",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "Définis d’abord un pseudo",
+    "noUsernameBody": "Termine ton profil pour obtenir un pseudo unique à partager."
   },
   "social": {
     "profileNavTitle": "Profil",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "Ami ajouté",
     "demoAddedBody": "{{name}} fait maintenant partie de votre cercle.",
     "demoAlreadyFriend": "Déjà dans votre cercle"
+  },
+  "search": {
+    "title": "Rechercher",
+    "placeholder": "Rechercher",
+    "emptyTitle": "Lancez une recherche",
+    "emptyBody": "Recherchez des packs, des sets ou des cartes.",
+    "noResultsTitle": "Aucun résultat",
+    "noResultsBody": "Essayez un autre terme."
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "Retour",
+    "missingTitle": "Pack introuvable",
+    "missingBody": "Ce pack a peut-être expiré ou n’est pas disponible.",
+    "guaranteeTitle": "Garanti",
+    "priceTitle": "Prix",
+    "remaining": "Plus que {{left}} sur {{total}}",
+    "ctaDisabled": "Indisponible"
   }
 }

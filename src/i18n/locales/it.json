@@ -1,6 +1,6 @@
 {
   "tabs": {
-    "home": "Home",
+    "home": "Inizio",
     "friends": "Amici",
     "marketplace": "Negozio",
     "account": "Giocatore"
@@ -85,13 +85,13 @@
       "country": "Paese"
     },
     "placeholders": {
-      "fullName": "Alex Trainer",
-      "line1": "123 Main St",
-      "line2": "Apt 4",
-      "city": "San Francisco",
-      "region": "CA",
-      "postal": "94102",
-      "country": "United States"
+      "fullName": "Alex Rossi",
+      "line1": "Via Roma 1",
+      "line2": "Int. 4",
+      "city": "Milano",
+      "region": "MI",
+      "postal": "20100",
+      "country": "Italia"
     }
   },
   "tierBenefits": {
@@ -186,7 +186,8 @@
     "spotlightTitle": "Buste in evidenza",
     "spotlightBody": "Selezione e promo. Usa categorie e ordinamento sotto.",
     "browseAllPacks": "Vedi tutte le buste",
-    "emptyCategory": "Nessuna busta in questa categoria."
+    "emptyCategory": "Nessuna busta in questa categoria.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "Sala buste",
@@ -232,12 +233,12 @@
     "yourFriends": "I tuoi amici ({{count}})",
     "emptyTitle": "Ancora nessun amico",
     "emptyBody": "Quando aggiungi qualcuno, apparirà qui per funzioni social future.",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
+    "qrActionSub": "Il tuo codice",
+    "addActionSub": "Trova persone",
+    "yourUsername": "Il tuo username",
+    "usernameHint": "Gli amici ti aggiungono con questo username — come nel tab Giocatore.",
     "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "placeholderUsername": "es. jordan"
   },
   "rewards": {
     "title": "Ricompense",
@@ -273,11 +274,11 @@
     "playerDeskEyebrow": "BANCO GIOCATORE",
     "pullHistoryCta": "Cronologia completa",
     "pullHistorySub": "Ogni apertura, vincita crediti e hit — registro completo",
-    "accountDetailsEyebrow": "Account details",
+    "accountDetailsEyebrow": "Dettagli account",
     "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
+    "usernameUnset": "Non ancora impostato",
     "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "phoneLabel": "Telefono"
   },
   "shortcuts": {
     "notif": "Avvisi",
@@ -403,7 +404,7 @@
     "usernameInvalid": "2–20 caratteri: lettere, numeri e underscore solo.",
     "continue": "Continua",
     "genericError": "Impossibile salvare il profilo. Riprova.",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "L’username è univoco — gli amici ti trovano così."
   },
   "paymentPortal": {
     "navTitle": "Pagamento",
@@ -431,8 +432,8 @@
     "you": "Tu",
     "copy": "Copia",
     "done": "Fatto",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "Scansiona il codice di un altro",
+    "scanAnotherSub": "Usa la camera per aggiungerlo dal QR"
   },
   "qrScanner": {
     "title": "Scansiona QR amico",
@@ -464,7 +465,7 @@
     "graded": "Graded",
     "hot_drop": "Hot Drop",
     "bonus_pack": "Busta bonus",
-    "chase_boost": "Chase Boost"
+    "chase_boost": "Chase boost"
   },
   "packCard": {
     "openPack": "Gioca ora",
@@ -473,13 +474,15 @@
     "maxPerUser": "Max {{count}} giocate / account",
     "shortBadge": {
       "new": "NEW",
-      "new_user": "WELCOME",
+      "new_user": "BENVENUTO",
       "best_value": "VALUE",
       "graded": "VAULT",
       "hot_drop": "HOT",
       "bonus_pack": "BONUS",
       "chase_boost": "CHASE"
-    }
+    },
+    "topHit": "Top hit",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -493,37 +496,37 @@
       "guarantee": "Holofoil garantita in ogni busta"
     },
     "3": {
-      "title": "One Piece Graded Vault Pack",
+      "title": "Pack One Piece — vault gradato",
       "value": "Carte graded PSA 9–10",
       "guarantee": "Ogni busta contiene una carta graded"
     },
     "4": {
-      "title": "Sports Cards Flash Pack",
+      "title": "Pack flash carte sportive",
       "value": "Rookie dalle migliori scelte 2024",
       "guarantee": "Auto o relic ogni 5 aperture"
     },
     "5": {
-      "title": "Pokémon Vintage Graded Pack",
+      "title": "Pack Pokémon vintage gradato",
       "value": "Hit graded era Base Set",
       "guarantee": "PSA 8+ garantito"
     },
     "6": {
-      "title": "Hot Drop Mystery Pack",
+      "title": "Pack mistero Hot Drop",
       "value": "Mix a sorpresa da tutte le categorie",
       "guarantee": "Busta bonus dopo ogni 3 aperture"
     },
     "7": {
-      "title": "One Piece Paramount War Pack",
+      "title": "Pack One Piece Paramount War",
       "value": "Leader SR e foil chase",
       "guarantee": "1 su 10 chance di Alt Art"
     },
     "8": {
-      "title": "New Arrivals Sampler Pack",
+      "title": "Pack assaggio novità",
       "value": "Hit dai set più nuovi",
       "guarantee": "Almeno 3 carte per apertura"
     },
     "9": {
-      "title": "Yu-Gi-Oh! Battles of Legend Pack",
+      "title": "Pack Yu-Gi-Oh! Battles of Legend",
       "value": "Secret Rare e slot starlight",
       "guarantee": "Ultra Rare o superiore ogni busta"
     }
@@ -548,7 +551,7 @@
     "resultLegendary1": "Hit leggendario da {{packName}}",
     "resultLegendary2": "Mythic pull da {{packName}}",
     "resultLegendary3": "Carta che cambia il gioco da {{packName}}",
-    "replay": "Replay animation"
+    "replay": "Rivedi animazione"
   },
   "insufficientCredits": {
     "title": "Crediti insufficienti",
@@ -579,8 +582,8 @@
     "invalidIdBody": "I friend ID sono come TCG-123456. Chiedi il codice al tuo amico.",
     "notFoundTitle": "Utente non trovato",
     "notFoundBody": "Nessun account con quel friend ID. Controlla il codice o riprova più tardi.",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "Imposta prima uno username",
+    "noUsernameBody": "Completa il profilo per avere un nome unico da condividere."
   },
   "social": {
     "profileNavTitle": "Profilo",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "Amico aggiunto",
     "demoAddedBody": "{{name}} è ora nel tuo cerchio.",
     "demoAlreadyFriend": "Già nel tuo cerchio"
+  },
+  "search": {
+    "title": "Cerca",
+    "placeholder": "Cerca",
+    "emptyTitle": "Inizia a cercare",
+    "emptyBody": "Cerca pacchetti, set o carte.",
+    "noResultsTitle": "Nessun risultato",
+    "noResultsBody": "Prova con un altro termine."
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "Indietro",
+    "missingTitle": "Pacchetto non trovato",
+    "missingBody": "Questo pacchetto potrebbe essere terminato o non disponibile.",
+    "guaranteeTitle": "Garantito",
+    "priceTitle": "Prezzo",
+    "remaining": "{{left}} di {{total}} disponibili",
+    "ctaDisabled": "Non disponibile"
   }
 }

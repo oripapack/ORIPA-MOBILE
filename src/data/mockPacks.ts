@@ -28,6 +28,42 @@ export interface Pack {
   maxPerUser: number | null;
 }
 
+/** Home screen primary tabs — product lines only (no mega “All”). */
+export type HomeNicheCategory = 'pokemon' | 'yugioh' | 'one_piece' | 'sports';
+
+export const HOME_NICHE_CATEGORIES: HomeNicheCategory[] = ['pokemon', 'yugioh', 'one_piece', 'sports'];
+
+const IP_LINE_CATEGORIES = new Set<PackCategory>(['pokemon', 'yugioh', 'one_piece', 'sports']);
+
+/** Sub-filters within the selected niche (tags + cross-line categories). */
+export type PackSubfilter = 'all' | ChipTagType;
+
+export const HOME_SUBFILTER_KEYS: PackSubfilter[] = [
+  'all',
+  'new',
+  'hot_drop',
+  'graded',
+  'best_value',
+  'chase_boost',
+  'bonus_pack',
+  'new_user',
+];
+
+export function packBelongsToHomeNiche(pack: Pack, niche: HomeNicheCategory): boolean {
+  if (pack.category === niche) return true;
+  if (!IP_LINE_CATEGORIES.has(pack.category)) return true;
+  return false;
+}
+
+export function packMatchesSubfilter(pack: Pack, sub: PackSubfilter): boolean {
+  if (sub === 'all') return true;
+  if (pack.tags.includes(sub)) return true;
+  if (sub === 'new' && pack.category === 'new') return true;
+  if (sub === 'hot_drop' && pack.category === 'hot_drops') return true;
+  if (sub === 'graded' && pack.category === 'graded') return true;
+  return false;
+}
+
 export const mockPacks: Pack[] = [
   {
     id: '1',
@@ -367,7 +403,9 @@ export const mockPacks: Pack[] = [
   },
 ];
 
-/** Top chips: product lines + cross-cutting rows (order = left-to-right in UI). */
+/**
+ * @deprecated Home uses `HOME_NICHE_CATEGORIES` + `PackSubfilter`; kept for scripts / docs parity.
+ */
 export const categories: { key: PackCategory | 'all'; label: string }[] = [
   { key: 'all', label: 'All' },
   { key: 'pokemon', label: 'Pokémon' },
