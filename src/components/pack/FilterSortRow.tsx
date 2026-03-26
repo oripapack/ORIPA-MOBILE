@@ -49,11 +49,6 @@ export function FilterSortRow() {
 
   return (
     <View style={styles.row}>
-      <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7}>
-        <Text style={styles.filterIcon}>⚙</Text>
-        <Text style={styles.filterText}>{t('filterRow.filter')}</Text>
-      </TouchableOpacity>
-
       <TouchableOpacity style={styles.sortBtn} onPress={() => setShowSort(true)} activeOpacity={0.7}>
         <Text style={styles.sortLabel}>{t('filterRow.sortPrefix')}</Text>
         <Text style={styles.sortValue}>{currentLabel}</Text>
@@ -90,28 +85,12 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
     backgroundColor: 'rgba(14, 22, 14, 0.75)',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.headerHairline,
-  },
-  filterBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  filterIcon: { fontSize: 14 },
-  filterText: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
-    color: colors.textPrimary,
   },
   sortBtn: {
     flexDirection: 'row',

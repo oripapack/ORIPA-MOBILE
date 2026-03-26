@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "generate:sfx": "node scripts/generate-pack-sfx.mjs",
     "validate:i18n": "node scripts/validate-i18n-locales.mjs",
-    "sync:i18n": "node scripts/sync-i18n-missing-from-en.mjs"
+    "sync:i18n": "node scripts/sync-i18n-missing-from-en.mjs",
+    "apply:i18n": "node scripts/apply-i18n-translations.mjs"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.19.31",
@@ -39,15 +40,19 @@
     "expo-status-bar": "~3.0.9",
     "expo-web-browser": "~15.0.10",
     "i18next": "^25.10.2",
+    "nativewind": "^4.2.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-i18next": "^16.6.0",
     "react-native": "0.81.5",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-qrcode-svg": "^6.3.21",
+    "react-native-reanimated": "~4.1.1",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
     "react-native-svg": "15.12.1",
+    "react-native-worklets": "^0.5.2",
+    "tailwindcss": "^3.4.17",
     "zustand": "^5.0.12"
   },
   "devDependencies": {

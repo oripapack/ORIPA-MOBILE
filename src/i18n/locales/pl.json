@@ -42,7 +42,7 @@
   "common": {
     "copied": "Skopiowano",
     "friendIdCopied": "Identyfikator znajomego skopiowany do schowka.",
-    "error": "Error"
+    "error": "Błąd"
   },
   "helpCenter": {
     "navTitle": "Centrum pomocy",
@@ -88,9 +88,9 @@
       "fullName": "Trener Aleks",
       "line1": "Główna 123",
       "line2": "Mieszkanie 4",
-      "city": "San Francisco",
-      "region": "CA",
-      "postal": "94102",
+      "city": "Warszawa",
+      "region": "MZ",
+      "postal": "00-001",
       "country": "Stany Zjednoczone"
     }
   },
@@ -186,7 +186,8 @@
     "spotlightTitle": "Pakiety reflektorów",
     "spotlightBody": "Wyselekcjonowane dropy i promocje. Skorzystaj z kategorii i sortowania poniżej.",
     "browseAllPacks": "Przeglądaj wszystkie pakiety",
-    "emptyCategory": "Nie ma jeszcze pakietów w tej kategorii."
+    "emptyCategory": "Nie ma jeszcze pakietów w tej kategorii.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "Pakuj podłogę",
@@ -231,13 +232,13 @@
     "yourFriends": "Twoi przyjaciele ({{count}})",
     "emptyTitle": "Nie ma jeszcze żadnych przyjaciół",
     "emptyBody": "Gdy kogoś dodasz, pojawi się on tutaj, dzięki czemu będziesz mógł później skorzystać z większej liczby funkcji społecznościowych.",
-    "heroEyebrow": "SQUAD LOUNGE",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "heroEyebrow": "STREFA EKIPI",
+    "qrActionSub": "Twój kod",
+    "addActionSub": "Znajdź osoby",
+    "yourUsername": "Twoja nazwa użytkownika",
+    "usernameHint": "Znajomi dodają Cię po tej unikalnej nazwie — tak jak w zakładce Gracz.",
+    "enterFriendUsername": "Nazwa użytkownika",
+    "placeholderUsername": "np. jordan"
   },
   "rewards": {
     "title": "Nagrody",
@@ -273,11 +274,11 @@
     "playerDeskEyebrow": "BIURKO GRACZY",
     "pullHistoryCta": "Pełna historia zabaw",
     "pullHistorySub": "Każde otwarcie, wygrana kredytowa i trafienie — pełny dziennik",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "accountDetailsEyebrow": "Dane konta",
+    "usernameLabel": "Nazwa użytkownika",
+    "usernameUnset": "Jeszcze nie ustawiono",
+    "emailLabel": "E-mail",
+    "phoneLabel": "Telefon"
   },
   "shortcuts": {
     "notif": "Alerty",
@@ -403,7 +404,7 @@
     "usernameInvalid": "Użyj 2–20 znaków: tylko litery, cyfry i podkreślenia.",
     "continue": "Kontynuować",
     "genericError": "Nie można zapisać Twojego profilu. Spróbuj ponownie.",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "Twoja nazwa jest unikalna — po niej znajomi Cię znajdą."
   },
   "paymentPortal": {
     "navTitle": "Zapłata",
@@ -431,8 +432,8 @@
     "you": "Ty",
     "copy": "Kopia",
     "done": "Zrobione",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "Zeskanuj kod kogoś innego",
+    "scanAnotherSub": "Użyj aparatu, by dodać go z QR"
   },
   "qrScanner": {
     "title": "Zeskanuj kod QR przyjaciela",
@@ -479,7 +480,9 @@
       "hot_drop": "GORĄCY",
       "bonus_pack": "PREMIA",
       "chase_boost": "POŚCIG"
-    }
+    },
+    "topHit": "Top hit",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -548,7 +551,7 @@
     "resultLegendary1": "Legendarny hit od{{packName}}",
     "resultLegendary2": "Mityczne pociągnięcie z{{packName}}",
     "resultLegendary3": "Karta zmieniająca grę od{{packName}}",
-    "replay": "Replay animation"
+    "replay": "Odtwórz animację"
   },
   "insufficientCredits": {
     "title": "Za mało kredytów",
@@ -579,8 +582,8 @@
     "invalidIdBody": "Identyfikatory znajomych wyglądają jak TCG-123456. Poproś znajomego, aby udostępnił swój kod.",
     "notFoundTitle": "Nie znaleziono użytkownika",
     "notFoundBody": "Żadne konto nie pasuje jeszcze do tego identyfikatora znajomego. Sprawdź dwukrotnie kod lub spróbuj ponownie później.",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "Najpierw ustaw nazwę użytkownika",
+    "noUsernameBody": "Dokończ profil, aby mieć unikalną nazwę do udostępniania znajomym."
   },
   "social": {
     "profileNavTitle": "Profil",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "Dodano znajomego",
     "demoAddedBody": "{{name}} jest teraz w Twoim kręgu.",
     "demoAlreadyFriend": "Już w Twoim kręgu"
+  },
+  "search": {
+    "title": "Szukaj",
+    "placeholder": "Szukaj",
+    "emptyTitle": "Zacznij wyszukiwać",
+    "emptyBody": "Wyszukaj pakiety, zestawy lub karty.",
+    "noResultsTitle": "Brak wyników",
+    "noResultsBody": "Spróbuj innego hasła."
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "Wróć",
+    "missingTitle": "Nie znaleziono pakietu",
+    "missingBody": "Ten pakiet mógł się zakończyć lub jest niedostępny.",
+    "guaranteeTitle": "Gwarantowane",
+    "priceTitle": "Cena",
+    "remaining": "Pozostało {{left}} z {{total}}",
+    "ctaDisabled": "Niedostępne"
   }
 }

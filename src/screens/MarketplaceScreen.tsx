@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +33,7 @@ export function MarketplaceScreen() {
   const insets = useSafeAreaInsets();
   const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
+  const searchRef = useRef<TextInput>(null);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ListingCategory | 'all'>('all');
 
@@ -65,7 +66,7 @@ export function MarketplaceScreen() {
 
   return (
     <View style={styles.root}>
-      <AppHeader />
+      <AppHeader onSearch={() => searchRef.current?.focus()} />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 100 }]}
@@ -79,6 +80,7 @@ export function MarketplaceScreen() {
         <View style={styles.searchBar}>
           <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
           <TextInput
+            ref={searchRef}
             style={styles.searchInput}
             placeholder={t('marketplace.searchPlaceholder')}
             placeholderTextColor={colors.textMuted}

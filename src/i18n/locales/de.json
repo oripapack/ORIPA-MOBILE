@@ -2,7 +2,7 @@
   "tabs": {
     "home": "Start",
     "friends": "Freunde",
-    "marketplace": "Shop",
+    "marketplace": "Markt",
     "account": "Spieler"
   },
   "marketplace": {
@@ -27,15 +27,15 @@
     "whyPoint3Title": "Riesige Auswahl",
     "whyPoint3Body": "Wir bündeln Bestände vertrauenswürdiger Händler weltweit — von japanischen Promos bis englischen Staples und sealed Wax.",
     "specialPrice": "Sonderpreis",
-    "saleOn": "SALE",
+    "saleOn": "AKTION",
     "sectionStores": "Von Partner-Shops",
     "verified": "Verifiziert",
     "commissionLine": "Pull Hub-Gebühr auf Verkäufe: {{pct}} %",
-    "badgeSale": "SALE",
+    "badgeSale": "AKTION",
     "badgeTournament": "Turnier",
     "badgeNew": "NEU",
     "emptyResults": "Keine Listings passen zu deinen Filtern.",
-    "listingDemoTitle": "Listing",
+    "listingDemoTitle": "Inserat",
     "listingDemoBody": "Checkout für „{{title}}“ ist noch nicht angebunden — nur Listings.",
     "demoNote": "Demo: Zahlungen, Warenkorb und Auszahlungen an Verkäufer fehlen. Booster öffnen bleibt im Start-Tab."
   },
@@ -86,12 +86,12 @@
     },
     "placeholders": {
       "fullName": "Alex Trainer",
-      "line1": "123 Main St",
-      "line2": "Apt 4",
-      "city": "San Francisco",
-      "region": "CA",
-      "postal": "94102",
-      "country": "United States"
+      "line1": "Musterstraße 1",
+      "line2": "Whg. 4",
+      "city": "Berlin",
+      "region": "BE",
+      "postal": "10115",
+      "country": "Deutschland"
     }
   },
   "tierBenefits": {
@@ -135,7 +135,7 @@
     "callout": "Nicht dasselbe wie Promos: Promos sind Marketing-Anreize (Bonus-Credits, Gutscheine), nicht der Produkt-Release selbst."
   },
   "promosInfo": {
-    "navTitle": "Promos",
+    "navTitle": "Aktionen",
     "body": "Promos sind Marketing-Aktionen: Bonus-Credits, Gutscheincodes, Saison-Kampagnen oder Partner-Angebote. Sie belohnen z. B. Registrierung, Bundles oder Empfehlungen.",
     "b1": "In-App, per E-Mail oder Social — jede Promo hat eigene Regeln und Daten.",
     "b2": "Kann sich mit Stufen stapeln oder nur für bestimmte Booster gelten — Kleingedrucktes vor Launch lesen.",
@@ -186,7 +186,8 @@
     "spotlightTitle": "Spotlight-Booster",
     "spotlightBody": "Handverlesene Drops und Promos. Nutze Kategorien und Sortierung unten.",
     "browseAllPacks": "Alle Booster",
-    "emptyCategory": "Noch keine Booster in dieser Kategorie."
+    "emptyCategory": "Noch keine Booster in dieser Kategorie.",
+    "subfilterAll": "All packs"
   },
   "packs": {
     "browseTitle": "Booster-Bereich",
@@ -194,7 +195,7 @@
   },
   "categories": {
     "all": "Alle",
-    "featured": "Featured",
+    "featured": "Highlights",
     "new": "Neu",
     "pokemon": "Pokémon",
     "yugioh": "Yu-Gi-Oh!",
@@ -232,12 +233,12 @@
     "yourFriends": "Deine Freunde ({{count}})",
     "emptyTitle": "Noch keine Freunde",
     "emptyBody": "Wenn du jemanden hinzufügst, erscheint er hier — Grundlage für mehr Social-Features.",
-    "qrActionSub": "Your code",
-    "addActionSub": "Find people",
-    "yourUsername": "Your username",
-    "usernameHint": "Friends add you by this unique username — same as on your Player tab.",
-    "enterFriendUsername": "Username",
-    "placeholderUsername": "e.g. jordan"
+    "qrActionSub": "Dein Code",
+    "addActionSub": "Personen finden",
+    "yourUsername": "Dein Nutzername",
+    "usernameHint": "Freunde fügen dich mit diesem einzigartigen Nutzernamen hinzu — wie auf dem Spieler-Tab.",
+    "enterFriendUsername": "Nutzername",
+    "placeholderUsername": "z. B. jordan"
   },
   "rewards": {
     "title": "Belohnungen",
@@ -273,16 +274,16 @@
     "playerDeskEyebrow": "SPIELER-SCHALTER",
     "pullHistoryCta": "Gesamter Spielverlauf",
     "pullHistorySub": "Jede Öffnung, Credit-Gewinn und Hit — vollständiges Log",
-    "accountDetailsEyebrow": "Account details",
-    "usernameLabel": "Username",
-    "usernameUnset": "Not set yet",
-    "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "accountDetailsEyebrow": "Kontodetails",
+    "usernameLabel": "Nutzername",
+    "usernameUnset": "Noch nicht gesetzt",
+    "emailLabel": "E-Mail",
+    "phoneLabel": "Telefon"
   },
   "shortcuts": {
-    "notif": "Alerts",
+    "notif": "Benachrichtigungen",
     "hot": "Hot Drops",
-    "promos": "Promos"
+    "promos": "Aktionen"
   },
   "accountRows": {
     "shipping": "Lieferadresse",
@@ -403,13 +404,13 @@
     "usernameInvalid": "2–20 Zeichen: nur Buchstaben, Zahlen und Unterstriche.",
     "continue": "Weiter",
     "genericError": "Profil konnte nicht gespeichert werden. Erneut versuchen.",
-    "profileHint": "Your username is unique and is what friends use to find you."
+    "profileHint": "Dein Nutzername ist einzigartig — damit finden dich Freunde."
   },
   "paymentPortal": {
     "navTitle": "Zahlung",
-    "eyebrow": "Checkout",
+    "eyebrow": "Kasse",
     "tabCredits": "Credits",
-    "tabMarketplace": "Marketplace",
+    "tabMarketplace": "Marktplatz",
     "viewProbabilities": "Inhaltswahrscheinlichkeit ansehen",
     "digitalRoutingNote": "Digitale Credits: In-App-Kauf App Store / Google Play in Prod — nicht Stripe für Coins.",
     "marketplaceTitle": "Physische Bestellung",
@@ -431,8 +432,8 @@
     "you": "Du",
     "copy": "Kopieren",
     "done": "Fertig",
-    "scanAnother": "Scan someone else's code",
-    "scanAnotherSub": "Use the camera to add them from their QR"
+    "scanAnother": "Jemand anderen scannen",
+    "scanAnotherSub": "Nutze die Kamera, um ihn per QR hinzuzufügen"
   },
   "qrScanner": {
     "title": "Freund-QR scannen",
@@ -460,11 +461,11 @@
   "chips": {
     "new": "Neu",
     "new_user": "Neuspieler",
-    "best_value": "Best Value",
+    "best_value": "Top-Angebot",
     "graded": "Graded",
     "hot_drop": "Hot Drop",
     "bonus_pack": "Bonus",
-    "chase_boost": "Chase Boost"
+    "chase_boost": "Chase-Boost"
   },
   "packCard": {
     "openPack": "Jetzt spielen",
@@ -472,14 +473,16 @@
     "remaining": "{{left}} / {{total}} übrig",
     "maxPerUser": "Max. {{count}} Züge / Konto",
     "shortBadge": {
-      "new": "NEW",
-      "new_user": "WELCOME",
-      "best_value": "VALUE",
+      "new": "NEU",
+      "new_user": "WILLKOMEN",
+      "best_value": "WERT",
       "graded": "VAULT",
       "hot_drop": "HOT",
-      "bonus_pack": "BONUS",
+      "bonus_pack": "EXTRA",
       "chase_boost": "CHASE"
-    }
+    },
+    "topHit": "Top-Hit",
+    "chase": "CHASE"
   },
   "packCatalog": {
     "1": {
@@ -548,7 +551,7 @@
     "resultLegendary1": "Legendärer Hit aus {{packName}}",
     "resultLegendary2": "Mythic-Zug aus {{packName}}",
     "resultLegendary3": "Game-Changer-Karte aus {{packName}}",
-    "replay": "Replay animation"
+    "replay": "Animation erneut abspielen"
   },
   "insufficientCredits": {
     "title": "Nicht genug Credits",
@@ -579,8 +582,8 @@
     "invalidIdBody": "Friend-IDs sehen aus wie TCG-123456. Bitte deinen Freund um den Code.",
     "notFoundTitle": "Nutzer nicht gefunden",
     "notFoundBody": "Kein Konto zu dieser Friend-ID. Code prüfen oder später erneut versuchen.",
-    "noUsernameTitle": "Set a username first",
-    "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+    "noUsernameTitle": "Zuerst Nutzername festlegen",
+    "noUsernameBody": "Schließe die Profilerstellung ab, damit du einen eindeutigen Nutzername zum Teilen hast."
   },
   "social": {
     "profileNavTitle": "Profil",
@@ -622,5 +625,29 @@
     "demoAddedTitle": "Freund hinzugefügt",
     "demoAddedBody": "{{name}} ist jetzt in deinem Kreis.",
     "demoAlreadyFriend": "Bereits in deinem Kreis"
+  },
+  "search": {
+    "title": "Suche",
+    "placeholder": "Suchen",
+    "emptyTitle": "Suche starten",
+    "emptyBody": "Suche nach Packs, Sets oder Karten.",
+    "noResultsTitle": "Keine Ergebnisse",
+    "noResultsBody": "Probiere einen anderen Suchbegriff."
+  },
+  "demoSimulation": {
+    "title": "Simulation notice",
+    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "titleJa": "シミュレーションについてのお知らせ",
+    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "confirm": "I understand / 了解しました"
+  },
+  "packDetails": {
+    "back": "Zurück",
+    "missingTitle": "Pack nicht gefunden",
+    "missingBody": "Dieses Pack ist möglicherweise abgelaufen oder nicht verfügbar.",
+    "guaranteeTitle": "Garantiert",
+    "priceTitle": "Preis",
+    "remaining": "{{left}} von {{total}} übrig",
+    "ctaDisabled": "Nicht verfügbar"
   }
 }

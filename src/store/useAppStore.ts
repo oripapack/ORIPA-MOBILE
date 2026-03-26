@@ -5,7 +5,7 @@ import {
   normalizeFriendUsername,
 } from '../data/friends';
 import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
-import { Pack, PackCategory } from '../data/mockPacks';
+import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
 
 interface ModalState {
   insufficientCredits: boolean;
@@ -27,7 +27,10 @@ interface AppStore {
   user: UserState;
   /** Added via friend ID lookup / QR (MVP local list). */
   friends: FriendEntry[];
-  selectedCategory: PackCategory | 'all';
+  /** Home: Pokémon / Yu-Gi-Oh! / One Piece / Sports tab. */
+  homeNiche: HomeNicheCategory;
+  /** Home: tag/cohort filter within the selected niche. */
+  packSubfilter: PackSubfilter;
   sortOrder: 'recommended' | 'price_asc' | 'price_desc' | 'newest' | 'best_value' | 'popular';
   modals: ModalState;
   selectedPack: Pack | null;
@@ -40,7 +43,8 @@ interface AppStore {
 
   // Actions
   addCredits: (amount: number) => void;
-  setCategory: (cat: PackCategory | 'all') => void;
+  setHomeNiche: (niche: HomeNicheCategory) => void;
+  setPackSubfilter: (sub: PackSubfilter) => void;
   setSortOrder: (order: AppStore['sortOrder']) => void;
   openModal: (modal: keyof ModalState) => void;
   closeModal: (modal: keyof ModalState) => void;
@@ -58,7 +62,8 @@ interface AppStore {
 export const useAppStore = create<AppStore>((set, get) => ({
   user: mockUser,
   friends: [],
-  selectedCategory: 'all',
+  homeNiche: 'pokemon',
+  packSubfilter: 'all',
   sortOrder: 'recommended',
   modals: {
     insufficientCredits: false,
@@ -76,7 +81,9 @@ export const useAppStore = create<AppStore>((set, get) => ({
       user: { ...state.user, credits: state.user.credits + amount },
     })),
 
-  setCategory: (cat) => set({ selectedCategory: cat }),
+  setHomeNiche: (niche) => set({ homeNiche: niche, packSubfilter: 'all' }),
+
+  setPackSubfilter: (sub) => set({ packSubfilter: sub }),
 
   setSortOrder: (order) => set({ sortOrder: order }),
 
