@@ -55,7 +55,7 @@ export const mockUser: UserState = {
     {
       id: 'p1',
       packId: '2',
-      packTitle: 'Pokémon Scarlet & Violet Hit Pack',
+      packTitle: 'Scarlet & Violet Booster Hits',
       result: 'Charizard ex Full Art',
       creditsWon: 850,
       timestamp: new Date('2026-03-19T14:22:00'),
@@ -63,15 +63,15 @@ export const mockUser: UserState = {
     {
       id: 'p2',
       packId: '6',
-      packTitle: 'Hot Drop Mystery Pack',
-      result: 'Pikachu VMAX Rainbow',
+      packTitle: 'Crown Zenith Galarian Gallery',
+      result: 'Arceus VSTAR GG',
       creditsWon: 320,
       timestamp: new Date('2026-03-18T09:11:00'),
     },
     {
       id: 'p3',
       packId: '1',
-      packTitle: 'New User Welcome Pack',
+      packTitle: 'Paldea Beginner Commons',
       result: 'Bonus Pack + Holo',
       creditsWon: 420,
       timestamp: new Date('2026-03-17T20:45:00'),
@@ -79,8 +79,8 @@ export const mockUser: UserState = {
     {
       id: 'p4',
       packId: '3',
-      packTitle: 'Trainer’s Choice Booster',
-      result: 'Trainer Gallery Full Art',
+      packTitle: 'Paldea Evolved Chase',
+      result: 'Miraidon ex',
       creditsWon: 180,
       timestamp: new Date('2026-03-16T12:00:00'),
     },

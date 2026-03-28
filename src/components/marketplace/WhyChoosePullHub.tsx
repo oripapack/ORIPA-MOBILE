@@ -12,6 +12,9 @@ const POINTS: { pointKey: '1' | '2' | '3'; icon: string }[] = [
   { pointKey: '3', icon: '🃏' },
 ];
 
+/**
+ * Post-browse trust reinforcement — vault-framed but visually secondary to inventory.
+ */
 export function WhyChoosePullHub() {
   const { t } = useTranslation();
 
@@ -40,66 +43,68 @@ export function WhyChoosePullHub() {
 const styles = StyleSheet.create({
   outer: {
     marginHorizontal: spacing.base,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
   },
   inner: {
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.sm,
-    paddingRight: spacing.lg,
-    paddingLeft: spacing.lg + 6,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.xs,
+    paddingHorizontal: spacing.md,
   },
   sectionTitle: {
-    fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
-    color: colors.textPrimary,
-    marginBottom: spacing.lg,
-    textAlign: 'center',
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+    textAlign: 'left',
+    letterSpacing: 0.2,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: spacing.md,
-    marginBottom: spacing.xl,
+    gap: spacing.sm,
+    marginBottom: spacing.md,
   },
   iconCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: 'rgba(5,8,6,0.6)',
-    borderWidth: 2,
-    borderColor: colors.red,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconEmoji: {
-    fontSize: 24,
+    fontSize: 18,
   },
   textCol: {
     flex: 1,
   },
   pointPill: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.red,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
+    backgroundColor: colors.goldSoft,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
     borderRadius: radius.sm,
-    marginBottom: spacing.xs,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.28)',
+    marginBottom: 4,
   },
   pointPillText: {
-    fontSize: 10,
-    fontWeight: fontWeight.black,
-    color: colors.white,
-    letterSpacing: 0.8,
+    fontSize: 8,
+    fontWeight: fontWeight.bold,
+    color: colors.gold,
+    letterSpacing: 0.5,
   },
   heading: {
-    fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.bold,
     color: colors.textPrimary,
-    marginBottom: spacing.xs,
+    marginBottom: 2,
   },
   body: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    lineHeight: 22,
+    fontSize: 11,
+    color: colors.textMuted,
+    lineHeight: 17,
   },
 });

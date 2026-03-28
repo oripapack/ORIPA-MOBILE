@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AccessibilityInfo,
   View,
   Text,
   StyleSheet,
@@ -7,9 +8,10 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
-  TextInput,
+  Dimensions,
+  type LayoutChangeEvent,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { useIsFocused } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
@@ -32,6 +34,18 @@ import { useFriendInviteResolver } from '../hooks/useFriendInviteResolver';
 import { QrScannerModal } from '../components/friends/QrScannerModal';
 import { navigationRef } from '../navigation/navigationRef';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
+import { FriendsHubMenu } from '../components/friends/FriendsHubMenu';
+import { FriendsActivityCard } from '../components/friends/FriendsActivityCard';
+import {
+  buildFriendsRecentActivity,
+  buildLeaderboard,
+  buildMinimalSocialProfile,
+  deriveSocialProfileFromUser,
+  getSocialProfile,
+  type LeaderboardEntry,
+} from '../data/socialMock';
+import { formatUsd } from '../lib/socialFormat';
+import { PUBLIC_WEB_ORIGIN } from '../config/app';
 
 const RING_PALETTE = [colors.red, colors.gold, '#2563EB', '#7C3AED', '#059669', '#EA580C'];
 
@@ -41,19 +55,27 @@ function accentForId(id: string): string {
   return RING_PALETTE[h % RING_PALETTE.length];
 }
 
+const LB_PREVIEW = 3;
+
+/** Seconds between auto-advance steps; keep slow so it feels ambient, not flashy */
+const ACTIVITY_AUTO_SCROLL_INTERVAL_MS = 4200;
+/** After the user drags the carousel, pause auto-scroll for this long */
+const ACTIVITY_AUTO_SCROLL_PAUSE_AFTER_DRAG_MS = 14_000;
+
 export function FriendsScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
   const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
   const { isGuest } = useGuestMode();
   const user = useAppStore((s) => s.user);
   const friends = useAppStore((s) => s.friends);
 
+  const [menuOpen, setMenuOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [friendScannerOpen, setFriendScannerOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const { resolveFromUsername } = useFriendInviteResolver({ onAdded: () => setAddOpen(false) });
 
@@ -62,60 +84,142 @@ export function FriendsScreen() {
     [user.username],
   );
 
-  const filteredFriends = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return friends;
-    return friends.filter(
-      (f) =>
-        f.username.toLowerCase().includes(q) ||
-        f.displayName.toLowerCase().includes(q),
-    );
-  }, [friends, searchQuery]);
+  const meProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
 
-  const openQr = () => {
-    requireAuth(() => {
-      if (!user.username.trim()) {
-        Alert.alert(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
-        return;
-      }
-      setQrOpen(true);
+  const activityFeed = useMemo(
+    () => (friends.length > 0 ? buildFriendsRecentActivity(friends, 24) : []),
+    [friends],
+  );
+
+  const leaderboardPreview = useMemo((): LeaderboardEntry[] => {
+    const full = buildLeaderboard('totalValue', user.username, meProfile, friends);
+    return full.slice(0, LB_PREVIEW);
+  }, [user.username, meProfile, friends]);
+
+  const friendRows = useMemo(
+    () =>
+      friends.map((f) => ({
+        entry: f,
+        profile: getSocialProfile(f.username) ?? buildMinimalSocialProfile(f),
+      })),
+    [friends],
+  );
+
+  const activityCardWidth = Math.min(300, Math.max(232, Dimensions.get('window').width * 0.72));
+  const activityScrollRef = useRef<ScrollView>(null);
+  const activityScrollXRef = useRef(0);
+  const activityPauseAutoUntilRef = useRef(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const [activityCarouselMetrics, setActivityCarouselMetrics] = useState({ layoutW: 0, contentW: 0 });
+
+  useEffect(() => {
+    let cancelled = false;
+    AccessibilityInfo.isReduceMotionEnabled().then((v) => {
+      if (!cancelled) setReduceMotion(v);
     });
-  };
+    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
+    return () => {
+      cancelled = true;
+      sub.remove();
+    };
+  }, []);
 
-  const openAdd = () => requireAuth(() => setAddOpen(true));
+  const activityCardStride = activityCardWidth + spacing.sm;
 
-  const openLeaderboard = () =>
-    requireAuth(() => {
-      if (navigationRef.isReady()) {
-        navigationRef.navigate('FriendsLeaderboard');
-      }
-    });
+  useEffect(() => {
+    if (!isFocused || reduceMotion || activityFeed.length < 2) return;
+    const { layoutW, contentW } = activityCarouselMetrics;
+    if (layoutW < 8 || contentW <= layoutW) return;
 
-  const openFriendProfile = (username: string) =>
-    requireAuth(() => {
-      if (navigationRef.isReady()) {
-        navigationRef.navigate('FriendProfile', { username });
-      }
-    });
+    const tick = () => {
+      if (Date.now() < activityPauseAutoUntilRef.current) return;
+      const maxScroll = Math.max(0, contentW - layoutW);
+      let next = activityScrollXRef.current + activityCardStride;
+      if (next > maxScroll - 4) next = 0;
+      activityScrollRef.current?.scrollTo({ x: next, animated: true });
+    };
 
-  const copyMyUsername = () => {
-    requireAuth(() => {
-      void (async () => {
-        const handle = user.username.trim();
-        if (!handle) {
-          Alert.alert(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
-          return;
-        }
-        await Clipboard.setStringAsync(handle);
-        if (Platform.OS !== 'web') {
-          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        }
-        Alert.alert(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'));
-      })();
-    });
-  };
+    const id = setInterval(tick, ACTIVITY_AUTO_SCROLL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [
+    isFocused,
+    reduceMotion,
+    activityFeed.length,
+    activityCarouselMetrics.layoutW,
+    activityCarouselMetrics.contentW,
+    activityCardStride,
+  ]);
 
-  const hasUsername = Boolean(user.username.trim());
+  const onActivityCarouselLayout = useCallback((e: LayoutChangeEvent) => {
+    const w = e.nativeEvent.layout.width;
+    setActivityCarouselMetrics((s) => (s.layoutW === w ? s : { ...s, layoutW: w }));
+  }, []);
+
+  const onActivityContentSizeChange = useCallback((w: number) => {
+    setActivityCarouselMetrics((s) => (s.contentW === w ? s : { ...s, contentW: w }));
+  }, []);
+
+  const pauseActivityAutoScroll = useCallback(() => {
+    activityPauseAutoUntilRef.current = Date.now() + ACTIVITY_AUTO_SCROLL_PAUSE_AFTER_DRAG_MS;
+  }, []);
+
+  const openLeaderboard = useCallback(
+    () =>
+      requireAuth(() => {
+        if (navigationRef.isReady()) navigationRef.navigate('FriendsLeaderboard');
+      }),
+    [requireAuth],
+  );
+
+  const openPromotions = useCallback(
+    () =>
+      requireAuth(() => {
+        if (navigationRef.isReady()) navigationRef.navigate('Promotions');
+      }),
+    [requireAuth],
+  );
+
+  const openFriendProfile = useCallback(
+    (username: string) =>
+      requireAuth(() => {
+        if (navigationRef.isReady()) navigationRef.navigate('FriendProfile', { username });
+      }),
+    [requireAuth],
+  );
+
+  const openAdd = useCallback(() => requireAuth(() => setAddOpen(true)), [requireAuth]);
+
+  const copyInviteLink = useCallback(async () => {
+    const handle = user.username.trim();
+    if (!handle) {
+      Alert.alert(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
+      return;
+    }
+    const link = `${PUBLIC_WEB_ORIGIN}?r=${encodeURIComponent(handle)}`;
+    await Clipboard.setStringAsync(link);
+    if (Platform.OS !== 'web') {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+    Alert.alert(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'));
+  }, [user.username, t]);
+
+  const onHubSelect = useCallback(
+    (action: 'addUsername' | 'scanQr' | 'showQr' | 'shareInvite' | 'promo') => {
+      requireAuth(() => {
+        if (action === 'addUsername') setAddOpen(true);
+        else if (action === 'scanQr') setFriendScannerOpen(true);
+        else if (action === 'showQr') {
+          if (!user.username.trim()) {
+            Alert.alert(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
+            return;
+          }
+          setQrOpen(true);
+        } else if (action === 'shareInvite') void copyInviteLink();
+        else if (action === 'promo') openPromotions();
+      });
+    },
+    [requireAuth, copyInviteLink, openPromotions, user.username, t],
+  );
 
   return (
     <View style={styles.root}>
@@ -134,179 +238,151 @@ export function FriendsScreen() {
             </VaultFramedCard>
           ) : null}
 
-          {/* Hero */}
-          <View style={styles.hero}>
-            <View style={styles.heroKickerRow}>
-              <View style={styles.heroRule} />
-              <Text style={styles.heroEyebrow}>{t('friends.heroEyebrow')}</Text>
-            </View>
-            <View style={styles.heroTitleRow}>
-              <Text style={styles.heroTitle}>{t('friends.title')}</Text>
-              {friends.length > 0 ? (
-                <View style={styles.countPill}>
-                  <Text style={styles.countPillText}>{friends.length}</Text>
-                </View>
-              ) : null}
-            </View>
-            <Text style={styles.heroLead}>{t('friends.lead')}</Text>
+          {/* Header — content-first; utilities live in the menu */}
+          <View style={styles.headerRow}>
+            <Text style={styles.pageTitle}>{t('friends.title')}</Text>
+            {!isGuest ? (
+              <TouchableOpacity
+                style={styles.headerBtn}
+                onPress={() => setMenuOpen(true)}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel={t('friends.hubMenuTitle')}
+              >
+                <Ionicons name="ellipsis-horizontal" size={26} color={colors.textPrimary} />
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.headerBtnPlaceholder} />
+            )}
           </View>
 
-          {/* Identity — shared vault frame */}
-          <VaultFramedCard style={styles.vaultCard}>
-            <Text style={styles.metaLabel}>{t('friends.yourUsername')}</Text>
-              <View style={styles.handleBlock}>
-                <Text style={styles.handleText} numberOfLines={1} selectable>
-                  {hasUsername ? `@${user.username}` : '—'}
-                </Text>
-                <TouchableOpacity
-                  onPress={copyMyUsername}
-                  style={styles.copyBtn}
-                  activeOpacity={0.85}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('myQr.copy')}
+          {/* 1 — Recent activity (horizontal — primary focus) */}
+          <View style={styles.sectionActivity}>
+            <Text style={styles.sectionEyebrow}>{t('friends.sectionActivity')}</Text>
+            {friends.length === 0 || activityFeed.length === 0 ? (
+              <Text style={styles.inlineEmpty}>{t('friends.emptyActivity')}</Text>
+            ) : (
+              <View style={styles.activityCarouselBleed}>
+                <ScrollView
+                  ref={activityScrollRef}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  decelerationRate="fast"
+                  contentContainerStyle={styles.activityCarousel}
+                  onLayout={onActivityCarouselLayout}
+                  onContentSizeChange={onActivityContentSizeChange}
+                  onScroll={(ev) => {
+                    activityScrollXRef.current = ev.nativeEvent.contentOffset.x;
+                  }}
+                  scrollEventThrottle={32}
+                  onScrollBeginDrag={pauseActivityAutoScroll}
                 >
-                  <Ionicons name="copy-outline" size={18} color={colors.gold} />
-                  <Text style={styles.copyBtnLabel}>{t('myQr.copy')}</Text>
+                  {activityFeed.map((item) => (
+                    <FriendsActivityCard
+                      key={item.id}
+                      item={item}
+                      cardWidth={activityCardWidth}
+                      onOpenProfile={openFriendProfile}
+                    />
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+          </View>
+
+          {/* 2 — Leaderboard (compact) */}
+          <View style={styles.sectionLeaderboard}>
+            <Text style={styles.sectionEyebrowSm}>{t('friends.sectionLeaderboard')}</Text>
+            <Text style={styles.sectionHintCompact}>{t('friends.leaderboardPreviewHint')}</Text>
+            {leaderboardPreview.length === 0 ? (
+              <Text style={styles.inlineEmptySm}>{t('friends.emptyLeaderboardHint')}</Text>
+            ) : (
+              <View style={styles.leaderboardBlock}>
+                {leaderboardPreview.map((e) => (
+                  <TouchableOpacity
+                    key={e.username}
+                    style={[styles.lbRow, e.isCurrentUser && styles.lbRowMe]}
+                    onPress={openLeaderboard}
+                    activeOpacity={0.88}
+                  >
+                    <Text style={styles.lbRank}>{e.rank}</Text>
+                    <Text style={styles.lbEmoji}>{e.avatarEmoji}</Text>
+                    <View style={styles.lbMeta}>
+                      <Text style={styles.lbName} numberOfLines={1}>
+                        {e.displayName}
+                        {e.isCurrentUser ? ` (${t('social.you')})` : ''}
+                      </Text>
+                      <Text style={styles.lbUn} numberOfLines={1}>
+                        @{e.username}
+                      </Text>
+                    </View>
+                    <Text style={styles.lbVal}>{formatUsd(e.value)}</Text>
+                  </TouchableOpacity>
+                ))}
+                <TouchableOpacity style={styles.seeAllBtn} onPress={openLeaderboard} activeOpacity={0.85}>
+                  <Text style={styles.seeAllText}>{t('friends.leaderboardSeeAll')}</Text>
+                  <Ionicons name="chevron-forward" size={14} color={colors.gold} />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.hint}>{t('friends.usernameHint')}</Text>
+            )}
+          </View>
 
-              <Text style={styles.sectionConnectLabel}>{t('friends.sectionConnect')}</Text>
-              <View style={styles.actionRow}>
-                <TouchableOpacity
-                  style={styles.actionPrimary}
-                  onPress={openQr}
-                  activeOpacity={0.88}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('friends.showQr')}
-                >
-                  <LinearGradient
-                    colors={['rgba(232,197,71,0.18)', 'rgba(34,197,94,0.12)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={StyleSheet.absoluteFillObject}
-                  />
-                  <Ionicons name="qr-code-outline" size={22} color={colors.gold} />
-                  <View style={styles.actionTextCol}>
-                    <Text style={styles.actionTitle}>{t('friends.qrShort')}</Text>
-                    <Text style={styles.actionSub}>{t('friends.qrActionSub')}</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.actionPrimary}
-                  onPress={openAdd}
-                  activeOpacity={0.88}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('friends.addFriend')}
-                >
-                  <LinearGradient
-                    colors={['rgba(196,30,58,0.35)', 'rgba(196,30,58,0.2)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={StyleSheet.absoluteFillObject}
-                  />
-                  <Ionicons name="person-add-outline" size={22} color={colors.white} />
-                  <View style={styles.actionTextCol}>
-                    <Text style={[styles.actionTitle, styles.actionTitleOnCta]}>{t('friends.add')}</Text>
-                    <Text style={[styles.actionSub, styles.actionSubOnCta]}>{t('friends.addActionSub')}</Text>
-                  </View>
-                </TouchableOpacity>
+          {/* 3 — Squad */}
+          <View style={styles.sectionSquad}>
+            <Text style={styles.sectionEyebrowSm}>{t('friends.sectionSquad')}</Text>
+            {friends.length === 0 ? (
+              <View style={styles.emptySquadInline}>
+                <Text style={styles.emptySquadTitleSm}>{t('friends.emptySquadTitle')}</Text>
+                <Text style={styles.emptySquadBodySm}>{t('friends.emptySquadBody')}</Text>
+                <PrimaryButton label={t('friends.emptyCta')} onPress={openAdd} variant="red" style={styles.emptyCtaSm} />
               </View>
+            ) : (
+              <View style={styles.squadBlock}>
+                {friendRows.map(({ entry, profile }) => {
+                  const ring = accentForId(entry.username);
+                  return (
+                    <TouchableOpacity
+                      key={entry.username}
+                      style={styles.squadRow}
+                      onPress={() => openFriendProfile(entry.username)}
+                      activeOpacity={0.88}
+                    >
+                      <View style={[styles.squadAccent, { backgroundColor: ring }]} />
+                      <View style={[styles.squadAvatar, { borderColor: ring }]}>
+                        <Text style={[styles.squadAvatarText, { color: ring }]}>
+                          {entry.displayName.slice(0, 1).toUpperCase()}
+                        </Text>
+                      </View>
+                      <View style={styles.squadMeta}>
+                        <Text style={styles.squadName} numberOfLines={1}>
+                          {entry.displayName}
+                        </Text>
+                        <Text style={styles.squadHandle} numberOfLines={1}>
+                          @{entry.username}
+                        </Text>
+                        <Text style={styles.squadStat} numberOfLines={1}>
+                          {t('social.bestPull')}: {profile.stats.bestPullCardName}
+                        </Text>
+                        <Text style={styles.squadStatMuted}>{formatUsd(profile.stats.totalEstimatedValue)} total</Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )}
+          </View>
 
-              <TouchableOpacity
-                style={styles.leaderboardCard}
-                onPress={openLeaderboard}
-                activeOpacity={0.88}
-                accessibilityRole="button"
-                accessibilityLabel={t('social.openLeaderboard')}
-              >
-                <View style={styles.leaderboardIconWrap}>
-                  <Ionicons name="podium-outline" size={22} color={colors.gold} />
-                </View>
-                <View style={styles.leaderboardTextCol}>
-                  <Text style={styles.leaderboardTitle}>{t('social.openLeaderboard')}</Text>
-                  <Text style={styles.leaderboardHint}>{t('friends.leaderboardHint')}</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-              </TouchableOpacity>
-          </VaultFramedCard>
-
-          {/* Friends list */}
-          {friends.length > 0 ? (
-            <>
-              <View style={styles.listHeader}>
-                <Text style={styles.listSectionTitle}>{t('friends.yourFriends', { count: friends.length })}</Text>
-              </View>
-              <View style={styles.searchWrap}>
-                <Ionicons name="search-outline" size={18} color={colors.textMuted} style={styles.searchIcon} />
-                <TextInput
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  placeholder={t('friends.searchPlaceholder')}
-                  placeholderTextColor={colors.textMuted}
-                  style={styles.searchInput}
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  clearButtonMode="while-editing"
-                />
-              </View>
-              {filteredFriends.length === 0 ? (
-                <View style={styles.noMatch}>
-                  <Text style={styles.noMatchText}>{t('friends.noSearchMatches')}</Text>
-                </View>
-              ) : (
-                <View style={styles.friendList}>
-                  {filteredFriends.map((item) => {
-                    const ring = accentForId(item.username);
-                    return (
-                      <TouchableOpacity
-                        key={item.username}
-                        style={styles.friendRow}
-                        onPress={() => openFriendProfile(item.username)}
-                        activeOpacity={0.88}
-                        accessibilityRole="button"
-                        accessibilityLabel={`${item.displayName} @${item.username}`}
-                      >
-                        <View style={[styles.friendAccent, { backgroundColor: ring }]} />
-                        <View style={[styles.friendAvatar, { borderColor: ring }]}>
-                          <Text style={[styles.friendAvatarText, { color: ring }]}>
-                            {item.displayName.slice(0, 1).toUpperCase()}
-                          </Text>
-                        </View>
-                        <View style={styles.friendMeta}>
-                          <Text style={styles.friendName} numberOfLines={1}>
-                            {item.displayName}
-                          </Text>
-                          <Text style={styles.friendHandle} numberOfLines={1}>
-                            @{item.username}
-                          </Text>
-                        </View>
-                        <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              )}
-            </>
-          ) : (
-            <VaultFramedCard style={styles.emptyVaultWrap} contentStyle={styles.emptyVaultContent}>
-              <View style={styles.emptyIconWrap}>
-                <Ionicons name="people-outline" size={36} color={colors.gold} />
-              </View>
-              <Text style={styles.emptyTitle}>{t('friends.emptyTitle')}</Text>
-              <Text style={styles.emptyBody}>{t('friends.emptyBody')}</Text>
-              <PrimaryButton label={t('friends.emptyCta')} onPress={openAdd} variant="red" style={styles.emptyCta} />
-            </VaultFramedCard>
-          )}
-
-          {/* Social */}
-          <VaultFramedCard style={styles.socialCardWrap}>
-            <Text style={styles.socialEyebrow}>{t('account.followUs')}</Text>
-            <Text style={styles.socialSubtitle}>{t('account.followSub')}</Text>
-            <SocialFollowRow />
-          </VaultFramedCard>
+          {/* Social footer */}
+          <View style={styles.socialFooter}>
+            <Text style={styles.socialFooterTitle}>{t('friends.followFooterTitle')}</Text>
+            <Text style={styles.socialFooterSub}>{t('friends.followFooterSub')}</Text>
+            <SocialFollowRow compact />
+          </View>
         </ScrollView>
       </View>
+
+      <FriendsHubMenu visible={menuOpen} onClose={() => setMenuOpen(false)} onSelect={onHubSelect} />
 
       <MyQrModal
         visible={qrOpen}
@@ -370,236 +446,152 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 20,
   },
-  hero: {
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: spacing.lg,
   },
-  heroKickerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
-  },
-  heroRule: {
-    width: 28,
-    height: 2,
-    backgroundColor: colors.gold,
-    opacity: 0.85,
-  },
-  heroEyebrow: {
-    fontSize: 10,
-    fontWeight: fontWeight.black,
-    color: colors.textMuted,
-    letterSpacing: 2.4,
-  },
-  heroTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
-  },
-  heroTitle: {
+  pageTitle: {
     fontSize: fontSize.xxl,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
-    letterSpacing: -0.6,
+    letterSpacing: -0.5,
   },
-  countPill: {
-    minWidth: 28,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    backgroundColor: 'rgba(232,197,71,0.14)',
+  headerBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.06)',
     borderWidth: 1,
-    borderColor: 'rgba(232,197,71,0.35)',
+    borderColor: 'rgba(255,255,255,0.1)',
   },
-  countPillText: {
+  headerBtnPlaceholder: {
+    width: 44,
+    height: 44,
+  },
+  sectionEyebrow: {
+    fontSize: 11,
+    fontWeight: fontWeight.black,
+    color: colors.textMuted,
+    letterSpacing: 2.2,
+    marginBottom: spacing.md,
+  },
+  sectionEyebrowSm: {
+    fontSize: 10,
+    fontWeight: fontWeight.black,
+    color: colors.textMuted,
+    letterSpacing: 1.6,
+    marginBottom: spacing.sm,
+    opacity: 0.92,
+  },
+  sectionActivity: {
+    marginBottom: spacing.xl + spacing.sm,
+  },
+  sectionLeaderboard: {
+    marginBottom: spacing.lg + spacing.xs,
+  },
+  sectionSquad: {
+    marginBottom: spacing.md,
+  },
+  sectionHintCompact: {
+    fontSize: 10,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+    opacity: 0.75,
+    lineHeight: 14,
+  },
+  activityCarouselBleed: {
+    marginHorizontal: -spacing.base,
+  },
+  activityCarousel: {
+    paddingLeft: spacing.base,
+    paddingRight: spacing.base,
+    paddingBottom: spacing.xs,
+  },
+  inlineEmpty: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    lineHeight: 20,
+    paddingVertical: spacing.sm,
+    opacity: 0.85,
+  },
+  inlineEmptySm: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    lineHeight: 18,
+    paddingVertical: spacing.xs,
+    opacity: 0.8,
+  },
+  leaderboardBlock: {
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: 'rgba(5,8,6,0.5)',
+    overflow: 'hidden',
+    marginBottom: spacing.xs,
+  },
+  lbRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm + 2,
+    paddingHorizontal: spacing.md,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255,255,255,0.06)',
+  },
+  lbRowMe: {
+    backgroundColor: 'rgba(232,197,71,0.06)',
+  },
+  lbRank: {
+    width: 24,
     fontSize: fontSize.sm,
     fontWeight: fontWeight.black,
     color: colors.gold,
     textAlign: 'center',
   },
-  heroLead: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    lineHeight: 22,
-    maxWidth: 380,
-    letterSpacing: 0.15,
+  lbEmoji: {
+    fontSize: 18,
   },
-  vaultCard: {
-    marginBottom: spacing.xl,
-  },
-  metaLabel: {
-    fontSize: 9,
-    fontWeight: fontWeight.bold,
-    color: colors.textMuted,
-    letterSpacing: 1.6,
-    textTransform: 'uppercase',
-    marginBottom: spacing.sm,
-  },
-  handleBlock: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  handleText: {
-    flex: 1,
-    fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
-    color: colors.textPrimary,
-    letterSpacing: 0.2,
-  },
-  copyBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: spacing.md,
-    paddingVertical: 9,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: 'rgba(232,197,71,0.35)',
-    backgroundColor: 'rgba(232,197,71,0.08)',
-  },
-  copyBtnLabel: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.black,
-    color: colors.gold,
-    letterSpacing: 0.4,
-  },
-  hint: {
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    lineHeight: 18,
-    marginBottom: spacing.lg,
-  },
-  sectionConnectLabel: {
-    fontSize: 9,
-    fontWeight: fontWeight.bold,
-    color: colors.textMuted,
-    letterSpacing: 1.6,
-    textTransform: 'uppercase',
-    marginBottom: spacing.sm,
-  },
-  actionRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  actionPrimary: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    minHeight: 72,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  actionTextCol: {
+  lbMeta: {
     flex: 1,
     minWidth: 0,
   },
-  actionTitle: {
-    fontSize: fontSize.md,
+  lbName: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
+  },
+  lbUn: {
+    fontSize: 10,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  lbVal: {
+    fontSize: fontSize.xs,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
-    letterSpacing: 0.2,
   },
-  actionTitleOnCta: {
-    color: colors.white,
-  },
-  actionSub: {
-    fontSize: 10,
-    fontWeight: fontWeight.semibold,
-    color: colors.textMuted,
-    marginTop: 3,
-  },
-  actionSubOnCta: {
-    color: 'rgba(255,255,255,0.88)',
-  },
-  leaderboardCard: {
+  seeAllBtn: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.md,
-    backgroundColor: 'rgba(5,8,6,0.55)',
-    borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.2)',
-  },
-  leaderboardIconWrap: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'rgba(232,197,71,0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(232,197,71,0.22)',
+    gap: 4,
+    paddingVertical: spacing.sm + 2,
+    backgroundColor: 'rgba(232,197,71,0.06)',
   },
-  leaderboardTextCol: {
-    flex: 1,
-    minWidth: 0,
-  },
-  leaderboardTitle: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
-    color: colors.textPrimary,
-  },
-  leaderboardHint: {
+  seeAllText: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
-    marginTop: 3,
+    fontWeight: fontWeight.bold,
+    color: colors.gold,
   },
-  listHeader: {
-    marginBottom: spacing.sm,
-  },
-  listSectionTitle: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.black,
-    color: colors.textMuted,
-    letterSpacing: 1.4,
-    textTransform: 'uppercase',
-  },
-  searchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: 10,
-    borderRadius: radius.md,
-    backgroundColor: 'rgba(5,8,6,0.65)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  searchIcon: {
-    marginRight: spacing.sm,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
-    color: colors.textPrimary,
-    paddingVertical: 0,
-  },
-  noMatch: {
-    paddingVertical: spacing.lg,
-    alignItems: 'center',
-  },
-  noMatchText: {
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-  },
-  friendList: {
+  squadBlock: {
     gap: spacing.sm,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.md,
   },
-  friendRow: {
+  squadRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
@@ -611,7 +603,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.06)',
     overflow: 'hidden',
   },
-  friendAccent: {
+  squadAccent: {
     position: 'absolute',
     left: 0,
     top: 0,
@@ -619,86 +611,93 @@ const styles = StyleSheet.create({
     width: 3,
     opacity: 0.75,
   },
-  friendAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  squadAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: 'rgba(0,0,0,0.25)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
     marginLeft: 2,
   },
-  friendAvatarText: {
+  squadAvatarText: {
     fontSize: fontSize.lg,
     fontWeight: fontWeight.black,
   },
-  friendMeta: {
+  squadMeta: {
     flex: 1,
     minWidth: 0,
   },
-  friendName: {
+  squadName: {
     fontSize: fontSize.md,
     fontWeight: fontWeight.bold,
     color: colors.textPrimary,
   },
-  friendHandle: {
+  squadHandle: {
     fontSize: fontSize.xs,
     fontWeight: fontWeight.medium,
     color: colors.textMuted,
-    marginTop: 3,
+    marginTop: 2,
   },
-  emptyVaultWrap: {
-    marginBottom: spacing.xl,
-  },
-  emptyVaultContent: {
-    alignItems: 'center',
-    paddingVertical: spacing.xxl,
-  },
-  emptyIconWrap: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(232,197,71,0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(232,197,71,0.22)',
-    marginBottom: spacing.lg,
-  },
-  emptyTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-    textAlign: 'center',
-  },
-  emptyBody: {
-    fontSize: fontSize.sm,
+  squadStat: {
+    fontSize: fontSize.xs,
     color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: spacing.lg,
-    maxWidth: 300,
-  },
-  emptyCta: {
-    minWidth: 220,
-  },
-  socialCardWrap: {
     marginTop: spacing.xs,
   },
-  socialEyebrow: {
-    fontSize: 9,
-    fontWeight: fontWeight.black,
+  squadStatMuted: {
+    fontSize: 10,
     color: colors.textMuted,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
+    marginTop: 2,
+  },
+  emptySquadInline: {
+    paddingVertical: spacing.sm,
+    alignItems: 'center',
+  },
+  emptySquadTitleSm: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
+    textAlign: 'center',
     marginBottom: spacing.xs,
   },
-  socialSubtitle: {
-    fontSize: fontSize.sm,
+  emptySquadBodySm: {
+    fontSize: fontSize.xs,
     color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 18,
     marginBottom: spacing.md,
-    lineHeight: 20,
+    maxWidth: 300,
+    opacity: 0.9,
+  },
+  emptyCtaSm: {
+    minWidth: 200,
+    alignSelf: 'center',
+  },
+  socialFooter: {
+    marginTop: spacing.xl,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255,255,255,0.1)',
+    alignItems: 'center',
+  },
+  socialFooterTitle: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.black,
+    color: colors.textMuted,
+    letterSpacing: 1.4,
+    textTransform: 'uppercase',
+    marginBottom: spacing.xs,
+    textAlign: 'center',
+  },
+  socialFooterSub: {
+    fontSize: fontSize.xs,
+    color: colors.textSecondary,
+    lineHeight: 18,
+    marginBottom: spacing.sm,
+    textAlign: 'center',
+    maxWidth: 320,
+    opacity: 0.9,
   },
 });

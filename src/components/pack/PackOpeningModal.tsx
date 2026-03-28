@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, Easing, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { RarityTier } from '../../audio/packOpeningFeedback';
 import { colors } from '../../tokens/colors';
@@ -211,9 +212,10 @@ export function PackOpeningModal() {
   }, [applyPackOpenResult, engineDone, isGuest, pending, selectedPack, visible]);
 
   const packTint = selectedPack?.imageColor ?? colors.nearBlack;
-  const revealCard = pending
-    ? resolveRevealCardForTier(pending.tier, packOpenSessionId + replayKey * 997)
-    : null;
+  const revealCard =
+    pending && selectedPack
+      ? resolveRevealCardForTier(pending.tier, packOpenSessionId + replayKey * 997, selectedPack.category)
+      : null;
   const revealRarity = pending ? revealRarityFromTier(pending.tier) : 'common';
 
   const goToWonPrizes = () => {
@@ -302,10 +304,15 @@ export function PackOpeningModal() {
             />
           ) : null}
 
-          <RevealCtaFade visible={engineDone} instant={skippedToEnd}>
+          <RevealCtaFade visible={engineDone} instant={skippedToEnd} enterDelayMs={560}>
             <View style={styles.ctaRow}>
-              <PrimaryButton label="Manage winnings" variant="red" onPress={goToWonPrizes} style={styles.cta} />
-              <SecondaryButton label="Open another" onPress={openAnother} />
+              <PrimaryButton
+                label={t('packOpening.manageWinnings')}
+                variant="red"
+                onPress={goToWonPrizes}
+                style={styles.ctaPrimary}
+              />
+              <SecondaryButton label={t('packOpening.openNext')} onPress={openAnother} style={styles.ctaSecondary} />
               <TouchableOpacity onPress={replayAnimation} style={styles.replayBtn} hitSlop={10}>
                 <Text style={styles.replayText}>{t('packOpening.replay')}</Text>
               </TouchableOpacity>
@@ -330,15 +337,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     zIndex: 2,
   },
+  stageHeader: {
+    marginBottom: spacing.md,
+  },
+  headerBridge: {
+    width: '100%',
+    height: 1,
+    marginTop: spacing.sm,
+    opacity: 0.85,
+  },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: spacing.md,
   },
   headerTextBlock: {
     flex: 1,
     paddingRight: spacing.sm,
+  },
+  stageEyebrow: {
+    fontSize: 10,
+    fontWeight: fontWeight.black,
+    color: 'rgba(248,250,252,0.38)',
+    letterSpacing: 3.2,
+    textTransform: 'uppercase',
+    marginBottom: 4,
   },
   headerRight: {
     flexDirection: 'row',
@@ -350,12 +373,12 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.black,
     color: '#F8FAFC',
     marginBottom: 2,
-    letterSpacing: 3,
+    letterSpacing: 2.2,
     textTransform: 'uppercase',
   },
   subFifa: {
     fontSize: fontSize.xs,
-    color: 'rgba(248,250,252,0.45)',
+    color: 'rgba(226,232,240,0.42)',
     maxWidth: '80%',
     letterSpacing: 0.5,
   },
@@ -365,19 +388,19 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
-    color: 'rgba(255,255,255,0.75)',
+    fontWeight: fontWeight.semibold,
+    color: 'rgba(255,255,255,0.62)',
   },
   livePillFifa: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.09)',
+    backgroundColor: 'rgba(255,255,255,0.05)',
   },
   liveDot: {
     fontSize: 9,
@@ -385,15 +408,23 @@ const styles = StyleSheet.create({
   },
   liveText: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
-    color: 'rgba(255,255,255,0.8)',
-    letterSpacing: 2,
+    fontWeight: fontWeight.bold,
+    color: 'rgba(255,255,255,0.68)',
+    letterSpacing: 1.6,
   },
   ctaRow: {
-    gap: spacing.sm,
+    marginTop: spacing.xl,
+    paddingTop: spacing.lg,
+    gap: spacing.md,
   },
-  cta: {
-    marginBottom: 0,
+  ctaPrimary: {
+    height: 48,
+  },
+  ctaSecondary: {
+    height: 48,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   replayBtn: {
     alignSelf: 'center',
@@ -401,8 +432,8 @@ const styles = StyleSheet.create({
   },
   replayText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
-    color: 'rgba(255,255,255,0.55)',
-    letterSpacing: 1,
+    fontWeight: fontWeight.medium,
+    color: 'rgba(255,255,255,0.45)',
+    letterSpacing: 0.6,
   },
 });

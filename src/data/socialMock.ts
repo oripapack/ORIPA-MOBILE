@@ -177,8 +177,8 @@ const JORDAN: SocialUserProfile = {
     bestPullCardName: 'Umbreon VMAX Alt Art',
     chaseHits: 9,
     averagePullValue: 1312,
-    favoritePackTitle: 'Eevee Heroes',
-    mostOpenedPackTitle: 'Fusion Strike',
+    favoritePackTitle: 'Prismatic Evolutions Elite',
+    mostOpenedPackTitle: 'Crown Zenith Galarian Gallery',
     rarityBreakdown: { common: 12, uncommon: 28, rare: 44, epic: 32, legendary: 18, mythic: 8 },
   },
   recentPulls: [
@@ -187,7 +187,7 @@ const JORDAN: SocialUserProfile = {
       cardName: 'Rayquaza V Alt',
       rarity: 'legendary',
       estimatedValue: 8900,
-      packTitle: 'Evolving Skies',
+      packTitle: 'Prismatic Evolutions Elite',
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
       badge: 'chase',
     },
@@ -196,7 +196,7 @@ const JORDAN: SocialUserProfile = {
       cardName: 'Mew VMAX',
       rarity: 'epic',
       estimatedValue: 2100,
-      packTitle: 'Fusion Strike',
+      packTitle: 'Crown Zenith Galarian Gallery',
       timestamp: new Date(Date.now() - 9 * 60 * 60 * 1000),
       badge: 'hit',
     },
@@ -205,7 +205,7 @@ const JORDAN: SocialUserProfile = {
       cardName: 'Trainer Gallery',
       rarity: 'rare',
       estimatedValue: 420,
-      packTitle: 'Brilliant Stars',
+      packTitle: 'Scarlet & Violet Booster Hits',
       timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000),
     },
   ],
@@ -226,8 +226,8 @@ const SAM: SocialUserProfile = {
     bestPullCardName: 'Lugia V Alt',
     chaseHits: 4,
     averagePullValue: 1035,
-    favoritePackTitle: 'Silver Tempest',
-    mostOpenedPackTitle: 'Lost Origin',
+    favoritePackTitle: 'Obsidian Flames Premium',
+    mostOpenedPackTitle: 'Paldea Evolved Chase',
     rarityBreakdown: { common: 10, uncommon: 18, rare: 30, epic: 20, legendary: 9, mythic: 2 },
   },
   recentPulls: [
@@ -245,7 +245,7 @@ const SAM: SocialUserProfile = {
       cardName: 'Iono',
       rarity: 'epic',
       estimatedValue: 1800,
-      packTitle: 'Paldea Evolved',
+      packTitle: 'Paldea Evolved Chase',
       timestamp: new Date(Date.now() - 30 * 60 * 60 * 1000),
       badge: 'hit',
     },
@@ -267,8 +267,8 @@ const CASEY: SocialUserProfile = {
     bestPullCardName: 'Pikachu Illustrator Proxy',
     chaseHits: 3,
     averagePullValue: 3593,
-    favoritePackTitle: '151',
-    mostOpenedPackTitle: '151',
+    favoritePackTitle: '151 Kanto Collection',
+    mostOpenedPackTitle: '151 Kanto Collection',
     rarityBreakdown: { common: 6, uncommon: 10, rare: 14, epic: 12, legendary: 10, mythic: 4 },
   },
   recentPulls: [
@@ -277,7 +277,7 @@ const CASEY: SocialUserProfile = {
       cardName: 'Charizard ex Special',
       rarity: 'mythic',
       estimatedValue: 12000,
-      packTitle: 'Obsidian Flames',
+      packTitle: 'Obsidian Flames Premium',
       timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
       badge: 'chase',
     },
@@ -286,7 +286,7 @@ const CASEY: SocialUserProfile = {
       cardName: 'Wugtrio',
       rarity: 'uncommon',
       estimatedValue: 40,
-      packTitle: 'Paradox Rift',
+      packTitle: 'Scarlet & Violet Booster Hits',
       timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000),
     },
   ],
@@ -375,6 +375,41 @@ export function metricValue(profile: SocialUserProfile, metric: LeaderboardMetri
     default:
       return 0;
   }
+}
+
+/** Merged, time-sorted feed of friends’ recent pulls (demo data from `SocialUserProfile.recentPulls`). */
+export interface FriendActivityFeedItem {
+  id: string;
+  username: string;
+  displayName: string;
+  avatarEmoji: string;
+  cardName: string;
+  rarity: SocialRarity;
+  estimatedValue: number;
+  packTitle: string;
+  timestamp: Date;
+}
+
+export function buildFriendsRecentActivity(friends: FriendEntry[], limit = 24): FriendActivityFeedItem[] {
+  const out: FriendActivityFeedItem[] = [];
+  for (const f of friends) {
+    const profile = getSocialProfile(f.username) ?? buildMinimalSocialProfile(f);
+    for (const pull of profile.recentPulls) {
+      out.push({
+        id: `${f.username}_${pull.id}`,
+        username: f.username,
+        displayName: profile.displayName,
+        avatarEmoji: profile.avatarEmoji,
+        cardName: pull.cardName,
+        rarity: pull.rarity,
+        estimatedValue: pull.estimatedValue,
+        packTitle: pull.packTitle,
+        timestamp: pull.timestamp instanceof Date ? pull.timestamp : new Date(pull.timestamp),
+      });
+    }
+  }
+  out.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  return out.slice(0, limit);
 }
 
 export function buildLeaderboard(

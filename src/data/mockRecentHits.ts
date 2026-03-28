@@ -7,7 +7,7 @@ export type RecentHit = {
 };
 
 export const mockRecentHits: RecentHit[] = [
-  { id: '1', user: 'jordan', pull: 'PSA 10 Charizard V', packTitle: 'Pokémon Scarlet & Violet Hit Pack' },
-  { id: '2', user: 'sam_r', pull: 'Alt Art Leader', packTitle: 'One Piece Paramount War Pack' },
-  { id: '3', user: 'casey_m', pull: 'Starlight Rare', packTitle: 'Yu-Gi-Oh! Battles of Legend Pack' },
+  { id: '1', user: 'jordan', pull: 'PSA 10 Charizard ex', packTitle: 'Charizard ex Special Collection' },
+  { id: '2', user: 'sam_r', pull: 'Shanks Leader Alt Art', packTitle: 'Leader Alt Art Vault' },
+  { id: '3', user: 'casey_m', pull: 'Starlight Rare Accesscode', packTitle: 'Starlight Anniversary God Box' },
 ];

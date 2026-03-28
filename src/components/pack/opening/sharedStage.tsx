@@ -1,12 +1,15 @@
 import React from 'react';
 import { Animated, Dimensions, StyleSheet, View } from 'react-native';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+import Svg, { Defs, LinearGradient, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { radius } from '../../../tokens/spacing';
 
 const { width: WIN_W, height: WIN_H } = Dimensions.get('window');
 
 export const STAGE = { WIN_W, WIN_H };
 
+/**
+ * Single coherent “chamber”: smooth base wash + soft key + radial falloff — no harsh horizontal bands.
+ */
 export function StadiumGradient() {
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
@@ -14,29 +17,33 @@ export function StadiumGradient() {
         <Defs>
           <LinearGradient id="stadiumGrad" x1="0.5" y1="0" x2="0.5" y2="1">
             <Stop offset="0" stopColor="#030712" />
-            <Stop offset="0.22" stopColor="#0b1020" />
-            <Stop offset="0.42" stopColor="#120a1e" />
-            <Stop offset="0.58" stopColor="#0f172a" />
-            <Stop offset="0.78" stopColor="#1a1035" />
-            <Stop offset="1" stopColor="#020617" />
+            <Stop offset="0.4" stopColor="#0a1020" />
+            <Stop offset="0.72" stopColor="#080d18" />
+            <Stop offset="1" stopColor="#02040a" />
           </LinearGradient>
-          <LinearGradient id="stadiumAurora" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor="rgba(56, 189, 248, 0.14)" />
-            <Stop offset="0.45" stopColor="rgba(168, 85, 247, 0.1)" />
-            <Stop offset="1" stopColor="rgba(244, 63, 94, 0.08)" />
-          </LinearGradient>
+          <RadialGradient id="chamberKey" cx="50%" cy="28%" r="78%" gradientUnits="objectBoundingBox">
+            <Stop offset="0" stopColor="rgba(226, 232, 240, 0.11)" />
+            <Stop offset="0.35" stopColor="rgba(148, 163, 184, 0.05)" />
+            <Stop offset="0.65" stopColor="rgba(15, 23, 42, 0.02)" />
+            <Stop offset="1" stopColor="transparent" />
+          </RadialGradient>
+          <RadialGradient id="chamberFalloff" cx="50%" cy="45%" r="92%" gradientUnits="objectBoundingBox">
+            <Stop offset="0" stopColor="transparent" />
+            <Stop offset="0.45" stopColor="rgba(0,0,0,0.12)" />
+            <Stop offset="0.75" stopColor="rgba(0,0,0,0.42)" />
+            <Stop offset="1" stopColor="rgba(0,0,0,0.78)" />
+          </RadialGradient>
         </Defs>
         <Rect x={0} y={0} width={WIN_W} height={WIN_H} fill="url(#stadiumGrad)" />
-        <Rect x={0} y={0} width={WIN_W} height={WIN_H} fill="url(#stadiumAurora)" opacity={0.85} />
+        <Rect x={0} y={0} width={WIN_W} height={WIN_H} fill="url(#chamberKey)" opacity={0.85} />
+        <Rect x={0} y={0} width={WIN_W} height={WIN_H} fill="url(#chamberFalloff)" opacity={0.92} />
       </Svg>
-      <View style={sharedStyles.vignetteTop} />
-      <View style={sharedStyles.vignetteBottom} />
     </View>
   );
 }
 
 export function Spotlight({ pulse }: { pulse: Animated.Value }) {
-  const op = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.12, 0.38] });
+  const op = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.07, 0.26] });
   return (
     <Animated.View style={[sharedStyles.spotlightBlob, { opacity: op }]} pointerEvents="none">
       <View style={sharedStyles.spotlightInner} />
@@ -45,33 +52,21 @@ export function Spotlight({ pulse }: { pulse: Animated.Value }) {
 }
 
 const sharedStyles = StyleSheet.create({
-  vignetteTop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    height: '38%',
-  },
-  vignetteBottom: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '42%',
-    backgroundColor: 'rgba(0,0,0,0.55)',
-  },
   spotlightBlob: {
     position: 'absolute',
-    top: '6%',
-    left: '10%',
-    right: '10%',
-    height: WIN_H * 0.42,
+    top: '5%',
+    left: '4%',
+    right: '4%',
+    height: WIN_H * 0.52,
     alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   spotlightInner: {
-    width: '100%',
+    width: '92%',
     height: '100%',
-    borderRadius: 200,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    transform: [{ scaleX: 1.15 }],
+    borderRadius: 220,
+    backgroundColor: 'rgba(248, 250, 252, 0.11)',
+    transform: [{ scaleX: 1.02 }],
   },
 });
 

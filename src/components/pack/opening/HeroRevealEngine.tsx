@@ -3,8 +3,12 @@ import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { PackRollResult, RevealCard, RevealRarity } from './types';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import { useHeroReveal } from './useHeroReveal';
-import { HeroCardView } from './HeroCardView';
+import { HeroCardView, HERO_CARD_WIDTH } from './HeroCardView';
+import { HeroPackFace } from './HeroPackFace';
+import { RevealAuraHalo } from './RevealAuraHalo';
 import { PremiumChaseParticles } from './PremiumChaseParticles';
+import { PachinkoChrome } from './PachinkoChrome';
+import { HERO_STAGE } from './heroVisualTokens';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export function HeroRevealEngine({
@@ -30,8 +34,9 @@ export function HeroRevealEngine({
   const dim = h.bgDim;
   const pulse = h.glowPulse.interpolate({ inputRange: [0, 1], outputRange: [0.15, tv.glowStrength] });
   const leak = h.leakOpacity.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
-  const aura = h.auraOpacity.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
-  const split = h.packSplit.interpolate({ inputRange: [0, 1], outputRange: [0, 56] });
+  const split = h.packSplit.interpolate({ inputRange: [0, 1], outputRange: [0, 40] });
+  const splitLeftRot = h.packSplit.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-5deg'] });
+  const splitRightRot = h.packSplit.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '5deg'] });
 
   const flipDeg = h.flip.interpolate({ inputRange: [0, 1], outputRange: ['90deg', '0deg'] });
   const valueText = `${roll.creditsWon.toLocaleString()} CR`;
@@ -40,32 +45,39 @@ export function HeroRevealEngine({
     revealRarity === 'chase'
       ? 'rgba(251,191,36,1)'
       : revealRarity === 'ultra_rare'
-        ? 'rgba(167,139,250,1)'
+        ? 'rgba(125,211,252,1)'
         : revealRarity === 'rare'
           ? 'rgba(56,189,248,1)'
           : '#FFFFFF';
 
+  const chromeAccent =
+    h.phase === 'primed' ? tv.accent : 'rgba(148, 163, 184, 0.85)';
+
   return (
     <View style={styles.root}>
-      {/* Tap capture layer (anticipation) */}
-      <Pressable style={StyleSheet.absoluteFill} onPress={h.onTapCharge}>
-        <View />
-      </Pressable>
-
+      <Animated.View style={[styles.cameraStage, { transform: [{ scale: h.cameraPunch }] }]}>
       {/* Background dim layer */}
       <Animated.View style={[styles.dim, { opacity: dim }]} pointerEvents="none" />
+
+      <PachinkoChrome
+        railShimmer={h.railShimmer}
+        accent={tv.accent}
+        sparkLevel={
+          h.phase === 'primed' ? 2 : h.phase === 'arming' || h.phase === 'spinning' ? 1 : 0
+        }
+      />
 
       {/* Focus vignette (during reveal) */}
       <Animated.View style={[styles.vignette, { opacity: h.vignetteOpacity }]} pointerEvents="none" />
 
-      {/* Glow / leak atmosphere */}
+      {/* Ambient key (neutral); rarity reads on pack/card, not global purple wash */}
       <Animated.View
         pointerEvents="none"
         style={[
           styles.leak,
           {
             opacity: leak,
-            shadowColor: tv.glow,
+            shadowColor: 'rgba(148, 163, 184, 0.35)',
           },
         ]}
       />
@@ -77,7 +89,7 @@ export function HeroRevealEngine({
           styles.packWrap,
           {
             opacity: h.packOpacity,
-            transform: [{ scale: h.packScale }],
+            transform: [{ translateX: h.packShakeX }, { scale: h.packScale }],
           },
         ]}
       >
@@ -94,14 +106,18 @@ export function HeroRevealEngine({
         />
         {/* Pack split illusion (two halves) */}
         <View style={styles.packSplitRow}>
-          <Animated.View style={{ transform: [{ translateX: Animated.multiply(split, -1) }] }}>
-            <View style={[styles.packHalf, styles.packHalfLeft, { backgroundColor: packTint }]}>
-              <Text style={styles.packEmoji}>🎴</Text>
+          <Animated.View
+            style={{
+              transform: [{ translateX: Animated.multiply(split, -1) }, { rotate: splitLeftRot }],
+            }}
+          >
+            <View style={[styles.packHalf, styles.packHalfLeft]}>
+              <HeroPackFace side="left" packAccent={packTint} />
             </View>
           </Animated.View>
-          <Animated.View style={{ transform: [{ translateX: split }] }}>
-            <View style={[styles.packHalf, styles.packHalfRight, { backgroundColor: packTint }]}>
-              <Text style={styles.packLabel}>PACK</Text>
+          <Animated.View style={{ transform: [{ translateX: split }, { rotate: splitRightRot }] }}>
+            <View style={[styles.packHalf, styles.packHalfRight]}>
+              <HeroPackFace side="right" packAccent={packTint} />
             </View>
           </Animated.View>
         </View>
@@ -122,26 +138,25 @@ export function HeroRevealEngine({
         <View style={styles.silhouetteCard} />
       </Animated.View>
 
-      {/* Aura behind hero card */}
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          styles.aura,
-          {
-            opacity: aura,
-            backgroundColor: tv.glow,
-          },
-        ]}
-      />
+      <RevealAuraHalo accent={tv.accent} opacity={h.auraOpacity} />
 
       {/* Chase-only particles (premium) */}
-      <PremiumChaseParticles active={(h.phase === 'reveal' || h.phase === 'result') && revealRarity === 'chase'} revealRarity={revealRarity} />
+      <PremiumChaseParticles
+        active={
+          (h.phase === 'primed' || h.phase === 'reveal' || h.phase === 'result') && revealRarity === 'chase'
+        }
+        revealRarity={revealRarity}
+      />
 
       {/* Hero card */}
       <View style={styles.cardCenter} pointerEvents="none">
         <Animated.View
+          collapsable={false}
           style={{
             opacity: h.cardOpacity,
+            width: HERO_CARD_WIDTH,
+            maxWidth: '92%',
+            alignItems: 'center',
             transform: [
               { translateY: h.cardY },
               { translateY: h.floatY },
@@ -193,12 +208,20 @@ export function HeroRevealEngine({
             </View>
           </Animated.View>
           <Animated.View style={[styles.valueOverlay, { opacity: h.valueOpacity, transform: [{ translateY: h.valueY }] }]}>
-            <Text style={[styles.valueText, { color: tv.accent }]}>Estimated value • {valueText}</Text>
+            <Text style={[styles.valueText, { color: 'rgba(226, 232, 240, 0.88)' }]}>
+              Pull Hub · {valueText}
+            </Text>
           </Animated.View>
         </Animated.View>
       </View>
 
       {/* Tap-to-build HUD */}
+      {h.phase === 'arming' ? (
+        <View style={styles.hud} pointerEvents="none">
+          <Text style={styles.hudTitle}>Firing up…</Text>
+          <Text style={styles.hudSub}>Rails charging — get ready</Text>
+        </View>
+      ) : null}
       {h.phase === 'spinning' ? (
         <View style={styles.hud} pointerEvents="none">
           <Text style={styles.hudTitle}>Tap to open</Text>
@@ -217,6 +240,18 @@ export function HeroRevealEngine({
           <Text style={styles.hudSub}>Keep tapping…</Text>
         </View>
       ) : null}
+      {h.phase === 'primed' ? (
+        <View style={styles.hud} pointerEvents="none">
+          <Text style={[styles.hudTitle, styles.hudPrimed]}>BREAK!</Text>
+          <Text style={styles.hudSub}>Pack&apos;s going…</Text>
+        </View>
+      ) : null}
+      </Animated.View>
+
+      {/* Must sit above cameraStage so scale wrapper never steals touches */}
+      <Pressable style={styles.tapLayer} onPress={h.onTapCharge}>
+        <View />
+      </Pressable>
     </View>
   );
 }
@@ -227,6 +262,15 @@ const styles = StyleSheet.create({
     minHeight: 420,
     justifyContent: 'center',
   },
+  tapLayer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 100,
+  },
+  cameraStage: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   dim: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: '#000',
@@ -235,22 +279,25 @@ const styles = StyleSheet.create({
   vignette: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 3,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   leak: {
     position: 'absolute',
-    left: '18%',
-    right: '18%',
-    top: '18%',
-    height: 240,
+    left: '16%',
+    right: '16%',
+    top: '14%',
+    height: 260,
     borderRadius: 200,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: HERO_STAGE.leakCore,
+    borderWidth: 1,
+    borderColor: HERO_STAGE.leakRim,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.55,
-    shadowRadius: 28,
+    shadowOpacity: 0.4,
+    shadowRadius: 32,
     zIndex: 2,
   },
   packWrap: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 5,
@@ -275,12 +322,10 @@ const styles = StyleSheet.create({
   packHalf: {
     width: 105,
     height: 270,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.18)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#111827',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.14)',
     overflow: 'hidden',
+    backgroundColor: '#06090c',
   },
   packHalfLeft: {
     borderTopLeftRadius: 18,
@@ -292,8 +337,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 18,
     borderLeftWidth: 0,
   },
-  packEmoji: { fontSize: 44, marginBottom: 6 },
-  packLabel: { color: 'rgba(255,255,255,0.8)', letterSpacing: 4, fontWeight: '900' },
   flash: { ...StyleSheet.absoluteFillObject, backgroundColor: '#fff', zIndex: 10 },
   afterglow: {
     ...StyleSheet.absoluteFillObject,
@@ -302,22 +345,12 @@ const styles = StyleSheet.create({
   },
   silhouette: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', zIndex: 11 },
   silhouetteCard: {
-    width: 220,
-    height: 320,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    width: HERO_CARD_WIDTH,
+    height: 380,
+    borderRadius: 18,
+    backgroundColor: 'rgba(15, 23, 42, 0.35)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.16)',
-  },
-  aura: {
-    position: 'absolute',
-    left: '18%',
-    right: '18%',
-    top: '26%',
-    height: 300,
-    borderRadius: 999,
-    opacity: 0,
-    zIndex: 12,
+    borderColor: 'rgba(148, 163, 184, 0.2)',
   },
   cardCenter: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', zIndex: 20 },
   cardShadow: {
@@ -389,6 +422,11 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.6,
+  },
+  hudPrimed: {
+    fontSize: 15,
+    letterSpacing: 3,
+    color: 'rgba(253, 224, 71, 0.95)',
   },
 });
 

@@ -20,7 +20,12 @@ const SOCIAL_CONFIG: {
   { id: 'discord', label: 'Discord', icon: 'discord', color: '#5865F2' },
 ];
 
-export function SocialFollowRow() {
+type Props = {
+  /** Slim icon row for footers — avoids a second “card” of big blocks. */
+  compact?: boolean;
+};
+
+export function SocialFollowRow({ compact = false }: Props) {
   const open = async (id: SocialId) => {
     const url = SOCIAL_URLS[id];
     try {
@@ -31,6 +36,25 @@ export function SocialFollowRow() {
       Alert.alert('Error', 'Could not open link.');
     }
   };
+
+  if (compact) {
+    return (
+      <View style={styles.compactRow}>
+        {SOCIAL_CONFIG.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[styles.compactBtn, { borderColor: `${item.color}44` }]}
+            activeOpacity={0.82}
+            onPress={() => void open(item.id)}
+            accessibilityRole="link"
+            accessibilityLabel={`Open ${item.label}`}
+          >
+            <FontAwesome5 name={item.icon} size={20} color={item.color} brand />
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  }
 
   return (
     <View style={styles.socialRow}>
@@ -54,6 +78,22 @@ export function SocialFollowRow() {
 }
 
 const styles = StyleSheet.create({
+  compactRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: spacing.md,
+    paddingVertical: spacing.xs,
+  },
+  compactBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderWidth: 1,
+  },
   socialRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',

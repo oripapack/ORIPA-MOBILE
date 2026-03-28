@@ -7,13 +7,13 @@ import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
-import { mockPackTopHits } from '../../data/mockTopHits';
+import { getMockPackTopHit } from '../../data/mockTopHits';
 import { navigationRef } from '../../navigation/navigationRef';
 
 export function PackCardMini({ pack }: { pack: Pack }) {
   const { t } = useTranslation();
   const loc = getLocalizedPackFields(pack, t);
-  const topHit = mockPackTopHits[String(pack.id)];
+  const topHit = getMockPackTopHit(pack);
   const accent = pack.imageColor ?? colors.nearBlack;
 
   const meta = useMemo(() => {

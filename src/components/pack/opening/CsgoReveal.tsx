@@ -3,6 +3,7 @@ import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { hapticPackReveal, hapticPackResult, type RarityTier } from '../../../audio/packOpeningFeedback';
 import { fontSize, fontWeight } from '../../../tokens/typography';
 import { radius, spacing } from '../../../tokens/spacing';
+import type { HomeNicheCategory } from '../../../data/mockPacks';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import { buildCsgoStrip } from './stripGenerator';
 import { STAGE } from './sharedStage';
@@ -39,13 +40,22 @@ function StripCard({ card, dimmed }: { card: RevealCard; dimmed: boolean }) {
 type Props = {
   winningCard: RevealCard;
   sessionSalt: number;
+  prizeLine?: HomeNicheCategory;
   replayKey: number;
   skipNonce: number;
   audioTier: RarityTier;
   onComplete: () => void;
 };
 
-export function CsgoReveal({ winningCard, sessionSalt, replayKey, skipNonce, audioTier, onComplete }: Props) {
+export function CsgoReveal({
+  winningCard,
+  sessionSalt,
+  prizeLine = 'pokemon',
+  replayKey,
+  skipNonce,
+  audioTier,
+  onComplete,
+}: Props) {
   const scrollX = useRef(new Animated.Value(0)).current;
   const highlight = useRef(new Animated.Value(0)).current;
   const blurPulse = useRef(new Animated.Value(0)).current;
@@ -53,8 +63,8 @@ export function CsgoReveal({ winningCard, sessionSalt, replayKey, skipNonce, aud
   const animRef = useRef<Animated.CompositeAnimation | null>(null);
 
   const { strip, winIndex } = useMemo(
-    () => buildCsgoStrip(winningCard, sessionSalt),
-    [winningCard, sessionSalt, replayKey],
+    () => buildCsgoStrip(winningCard, sessionSalt, prizeLine),
+    [winningCard, sessionSalt, prizeLine, replayKey],
   );
   const targetX = WIN_W / 2 - (winIndex * (CARD_W + GAP) + CARD_W / 2);
   const startX = targetX + WIN_W * 0.92;

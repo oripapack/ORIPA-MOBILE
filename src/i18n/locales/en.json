@@ -44,9 +44,39 @@
     "ctaDisabled": "Unavailable"
   },
   "marketplace": {
-    "storeTitle": "Pull Hub Store",
-    "storeLead": "Browse singles and sealed products from verified partner shops. Checkout is coming soon — this is a listings-first experience (no pack opening here).",
-    "searchPlaceholder": "Search cards, sets, or shops…",
+    "storeTitle": "Marketplace",
+    "storeLead": "Verified partner inventory — singles, sealed, graded. Browse and save for checkout (opening packs stays on Home).",
+    "searchPlaceholder": "Search singles, sealed, sets, or stores…",
+    "sortRowLabel": "Sort",
+    "sort_recommended": "Recommended",
+    "sort_newest": "Newest",
+    "sort_price_low": "Lowest price",
+    "sort_price_high": "Highest price",
+    "sort_sale_first": "On sale",
+    "inventoryCount_one": "{{count}} listing",
+    "inventoryCount_other": "{{count}} listings",
+    "partnerProgramLine": "Verified Pull Hub partner",
+    "storeSpecialty": {
+      "pokemon_jp_singles": "Japanese Pokémon & One Piece singles",
+      "sports_sealed": "Sealed wax, rookies & breaks",
+      "yugioh_core": "Meta singles & high-rarity staples",
+      "graded_eu": "Graded slabs & EU-import singles"
+    },
+    "storeShipping": {
+      "dispatch_1_2": "Ships in 1–2 business days",
+      "dispatch_1_2_us": "US fulfillment · 1–2 day dispatch",
+      "dispatch_2_3": "Dispatches in 2–3 business days",
+      "dispatch_2_4_eu": "EU warehouse · 2–4 day dispatch"
+    },
+    "listingShip": {
+      "intl_ok": "Intl · tracked",
+      "us_fast": "US · insured",
+      "eu_tracked": "EU · tracked",
+      "free_eligible": "Free ship $50+ store"
+    },
+    "vsMarket": "{{pct}}% below market avg",
+    "conditionLabel": "{{grade}}",
+    "promoEyebrow": "Partner promo",
     "promoTitle": "Free shipping on many orders",
     "promoBody": "Orders over $50 from participating stores ship free. See each listing for details.",
     "cat_all": "All",
@@ -66,13 +96,16 @@
     "whyPoint3Body": "We aggregate inventory from trusted sellers across regions — from Japanese promos to English staples and sealed wax.",
     "specialPrice": "Special price",
     "saleOn": "SALE",
-    "sectionStores": "From partner stores",
+    "sectionStores": "Partner storefronts",
     "verified": "Verified",
     "commissionLine": "Pull Hub fee on sales: {{pct}}%",
     "badgeSale": "SALE",
     "badgeTournament": "Tournament",
     "badgeNew": "NEW",
     "emptyResults": "No listings match your filters.",
+    "emptyTitle": "No matches in this market",
+    "emptyHint": "Try another category or sort, or clear search.",
+    "emptyClearCta": "Clear search & filters",
     "listingDemoTitle": "Listing",
     "listingDemoBody": "Checkout for “{{title}}” isn’t wired yet — this screen is listings-only.",
     "demoNote": "Demo: payments, cart, and seller payouts are not connected. Pack opening stays on the Home tab."
@@ -81,6 +114,7 @@
     "error": "Error",
     "copied": "Copied",
     "close": "Close",
+    "cancel": "Cancel",
     "friendIdCopied": "Friend ID copied to clipboard."
   },
   "helpCenter": {
@@ -278,7 +312,7 @@
   "friends": {
     "title": "Friends",
     "heroEyebrow": "SQUAD LOUNGE",
-    "lead": "Link up with people you actually play with — share your username or scan theirs.",
+    "lead": "Link up with people you play with — share your handle, scan QR, or send your invite link.",
     "add": "Add",
     "emptyCta": "Add friends",
     "addModalTitle": "Add a friend",
@@ -300,7 +334,31 @@
     "sectionConnect": "Add & share",
     "leaderboardHint": "See how your squad ranks",
     "emptyTitle": "No friends yet",
-    "emptyBody": "When you add someone, they’ll show up here so you can build on more social features later."
+    "emptyBody": "When you add someone, they’ll show up here so you can build on more social features later.",
+    "sectionInvite": "Invite friends",
+    "inviteLead": "Share your link — new signups can earn welcome rewards (see Rewards for details).",
+    "inviteCopyLink": "Copy link",
+    "promoRewardsLink": "Rewards & promo codes",
+    "followFooterTitle": "Follow Pull Hub",
+    "followFooterSub": "Drops, events, and community updates.",
+    "hubMenuTitle": "Friends",
+    "hubMenu": {
+      "addUsername": "Add friend by username",
+      "scanQr": "Scan QR code",
+      "showQr": "Show your QR code",
+      "shareInvite": "Share invite link",
+      "promo": "Enter promo code"
+    },
+    "justPulled": "Just pulled",
+    "sectionActivity": "Recent activity",
+    "sectionLeaderboard": "Leaderboard",
+    "leaderboardPreviewHint": "Total estimated value · tap for full board",
+    "leaderboardSeeAll": "See full leaderboard",
+    "sectionSquad": "Your squad",
+    "emptyActivity": "Add collectors to see their pulls here.",
+    "emptyLeaderboardHint": "Invite friends to climb the board together.",
+    "emptySquadTitle": "No friends yet",
+    "emptySquadBody": "Add collectors to see their pulls, stats, and leaderboard spots."
   },
   "social": {
     "profileNavTitle": "Profile",
@@ -608,54 +666,9 @@
       "chase_boost": "CHASE"
     }
   },
-  "packCatalog": {
-    "1": {
-      "title": "New User Welcome Pack",
-      "value": "Over 100% chase value",
-      "guarantee": "Guaranteed bonus every 2 opens"
-    },
-    "2": {
-      "title": "Pokémon Scarlet & Violet Hit Pack",
-      "value": "90% chance at 200+ credits value",
-      "guarantee": "Holofoil guaranteed in every pack"
-    },
-    "3": {
-      "title": "One Piece Graded Vault Pack",
-      "value": "PSA 9–10 graded cards inside",
-      "guarantee": "Every pack contains a graded card"
-    },
-    "4": {
-      "title": "Sports Cards Flash Pack",
-      "value": "Rookie cards from top 2024 picks",
-      "guarantee": "Auto or relic card every 5 opens"
-    },
-    "5": {
-      "title": "Pokémon Vintage Graded Pack",
-      "value": "Base Set era graded hits",
-      "guarantee": "Guaranteed PSA 8+ condition"
-    },
-    "6": {
-      "title": "Hot Drop Mystery Pack",
-      "value": "Surprise mix from all categories",
-      "guarantee": "Bonus pack after every 3 opens"
-    },
-    "7": {
-      "title": "One Piece Paramount War Pack",
-      "value": "Leader SR cards with chase foils",
-      "guarantee": "1-in-10 chance at Alt Art"
-    },
-    "8": {
-      "title": "New Arrivals Sampler Pack",
-      "value": "Sample hits from newest sets",
-      "guarantee": "At least 3 cards per open"
-    },
-    "9": {
-      "title": "Yu-Gi-Oh! Battles of Legend Pack",
-      "value": "Secret Rares and starlight chase slots",
-      "guarantee": "Ultra Rare or higher every pack"
-    }
-  },
   "packOpening": {
+    "stageEyebrow": "Certified reveal",
+    "manageWinnings": "Manage winnings",
     "title": "Pack opening",
     "opening": "Opening…",
     "suspense": "What did you pull?",

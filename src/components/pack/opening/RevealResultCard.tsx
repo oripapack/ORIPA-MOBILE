@@ -96,19 +96,22 @@ export function RevealResultCard({
 export function RevealCtaFade({
   visible,
   instant,
+  enterDelayMs = 520,
   children,
 }: {
   visible: boolean;
   instant: boolean;
+  /** Breathing room after hero settles before CTAs claim focus */
+  enterDelayMs?: number;
   children: React.ReactNode;
 }) {
   const opacity = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(28)).current;
+  const translateY = useRef(new Animated.Value(22)).current;
 
   useEffect(() => {
     if (!visible) {
       opacity.setValue(0);
-      translateY.setValue(28);
+      translateY.setValue(22);
       return;
     }
     if (instant) {
@@ -116,23 +119,26 @@ export function RevealCtaFade({
       translateY.setValue(0);
       return;
     }
-    translateY.setValue(28);
+    translateY.setValue(22);
     opacity.setValue(0);
-    Animated.parallel([
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 450,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.spring(translateY, {
-        toValue: 0,
-        friction: 8,
-        tension: 108,
-        useNativeDriver: true,
-      }),
+    Animated.sequence([
+      Animated.delay(enterDelayMs),
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 520,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.spring(translateY, {
+          toValue: 0,
+          friction: 9,
+          tension: 98,
+          useNativeDriver: true,
+        }),
+      ]),
     ]).start();
-  }, [visible, instant, opacity, translateY]);
+  }, [visible, instant, enterDelayMs, opacity, translateY]);
 
   if (!visible) return null;
 

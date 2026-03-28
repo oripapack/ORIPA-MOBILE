@@ -16,7 +16,7 @@ import { demoPackHeroImage } from '../data/demoMedia';
 import { PackOddsModal } from '../components/pack/PackOddsModal';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { getMockPackOdds } from '../data/mockPackOdds';
-import { mockPackTopHits } from '../data/mockTopHits';
+import { getMockPackTopHit } from '../data/mockTopHits';
 
 type Props = {
   route: { params: { packId: string } };
@@ -54,8 +54,8 @@ export function PackDetailsScreen({ route }: Props) {
   }
 
   const disabled = isPackOpening || awaitingFulfillment || pack.remainingInventory <= 0;
-  const odds = useMemo(() => getMockPackOdds(String(pack.id)), [pack.id]);
-  const topHit = useMemo(() => mockPackTopHits[String(pack.id)], [pack.id]);
+  const odds = useMemo(() => getMockPackOdds(pack), [pack]);
+  const topHit = useMemo(() => getMockPackTopHit(pack), [pack]);
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom }]}>

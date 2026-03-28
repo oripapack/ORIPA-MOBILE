@@ -1,3 +1,4 @@
+import type { HomeNicheCategory } from '../../../data/mockPacks';
 import type { RevealCard } from './types';
 import { randomFillerCard } from './mockRevealCards';
 
@@ -9,7 +10,11 @@ export type CsgoStrip = {
 /**
  * Builds a horizontal strip with weighted filler cards and a fixed winning index.
  */
-export function buildCsgoStrip(winning: RevealCard, sessionSalt: number): CsgoStrip {
+export function buildCsgoStrip(
+  winning: RevealCard,
+  sessionSalt: number,
+  prizeLine: HomeNicheCategory = 'pokemon',
+): CsgoStrip {
   const len = 44 + (sessionSalt % 13);
   const winIndex = 26 + (sessionSalt % 11);
   const strip: RevealCard[] = [];
@@ -18,7 +23,7 @@ export function buildCsgoStrip(winning: RevealCard, sessionSalt: number): CsgoSt
     if (i === winIndex) {
       strip.push({ ...winning });
     } else {
-      strip.push(randomFillerCard(sessionSalt * 31 + i * 17));
+      strip.push(randomFillerCard(sessionSalt * 31 + i * 17, prizeLine));
     }
   }
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing } from 'react-native';
 import { hapticPackEnter, hapticPackReveal, hapticPackResult } from '../../../audio/packOpeningFeedback';
+import type { HomeNicheCategory } from '../../../data/mockPacks';
 import { buildCsgoStrip } from './stripGenerator';
 import { STAGE } from './sharedStage';
 import type { PackOpeningPhase, PackOpeningStyle, PackRollResult, RevealCard, RevealRarity } from './types';
@@ -22,6 +23,7 @@ export function usePackOpening({
   revealCard,
   revealRarity,
   sessionSalt,
+  prizeLine,
   replayKey,
   skipNonce,
   onRevealDone,
@@ -31,6 +33,8 @@ export function usePackOpening({
   revealCard: RevealCard;
   revealRarity: RevealRarity;
   sessionSalt: number;
+  /** Matches pack product line — filler strip stays on-theme. */
+  prizeLine?: HomeNicheCategory;
   replayKey: number;
   skipNonce: number;
   onRevealDone: () => void;
@@ -40,7 +44,11 @@ export function usePackOpening({
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const prevSkipRef = useRef(0);
 
-  const { strip, winIndex } = useMemo(() => buildCsgoStrip(revealCard, sessionSalt), [revealCard, sessionSalt]);
+  const line = prizeLine ?? 'pokemon';
+  const { strip, winIndex } = useMemo(
+    () => buildCsgoStrip(revealCard, sessionSalt, line),
+    [revealCard, sessionSalt, line],
+  );
   const targetX = STAGE.WIN_W / 2 - (winIndex * SLOT_W + CARD_W / 2);
   const startX = targetX + STAGE.WIN_W * 0.92;
   const slowX = targetX + 16;

@@ -6,7 +6,7 @@ import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { MarketplaceListing } from '../../data/marketplace';
 
-const CARD_W = 152;
+const CARD_W = 158;
 
 interface Props {
   listing: MarketplaceListing;
@@ -24,6 +24,16 @@ export function ListingCard({ listing, onPress }: Props) {
         : listing.badge === 'new'
           ? t('marketplace.badgeNew')
           : null;
+
+  const shipLine =
+    listing.listingShipKey != null ? t(`marketplace.listingShip.${listing.listingShipKey}`) : null;
+
+  const deltaLine =
+    listing.marketDeltaPct != null
+      ? t('marketplace.vsMarket', { pct: Math.abs(listing.marketDeltaPct) })
+      : null;
+
+  const footerLine = deltaLine ?? shipLine;
 
   return (
     <TouchableOpacity
@@ -57,7 +67,17 @@ export function ListingCard({ listing, onPress }: Props) {
       <Text style={styles.subtitle} numberOfLines={1}>
         {listing.subtitle}
       </Text>
+      {listing.conditionGrade ? (
+        <Text style={styles.condition} numberOfLines={1}>
+          {t('marketplace.conditionLabel', { grade: listing.conditionGrade })}
+        </Text>
+      ) : null}
       <Text style={styles.price}>{listing.price}</Text>
+      {footerLine ? (
+        <Text style={[styles.footerHint, listing.marketDeltaPct != null && styles.footerDelta]} numberOfLines={1}>
+          {footerLine}
+        </Text>
+      ) : null}
     </TouchableOpacity>
   );
 }
@@ -72,11 +92,13 @@ const styles = StyleSheet.create({
   thumb: {
     width: '100%',
     aspectRatio: 1,
-    borderRadius: radius.lg,
-    marginBottom: spacing.xs,
+    borderRadius: radius.md,
+    marginBottom: 6,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
   },
   thumbPlaceholder: {
     fontSize: 36,
@@ -84,41 +106,58 @@ const styles = StyleSheet.create({
   },
   thumbScrim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.08)',
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
   badgePill: {
     position: 'absolute',
-    left: spacing.xs,
-    bottom: spacing.xs,
+    left: 6,
+    bottom: 6,
     zIndex: 1,
     backgroundColor: colors.red,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
     borderRadius: radius.sm,
-    maxWidth: '90%',
+    maxWidth: '88%',
   },
   badgeText: {
-    fontSize: 9,
+    fontSize: 8,
     fontWeight: fontWeight.bold,
     color: colors.white,
-    letterSpacing: 0.2,
+    letterSpacing: 0.3,
   },
   title: {
     fontSize: fontSize.xs,
     fontWeight: fontWeight.bold,
     color: colors.textPrimary,
-    lineHeight: 16,
-    minHeight: 32,
+    lineHeight: 15,
+    minHeight: 30,
   },
   subtitle: {
     fontSize: 10,
     color: colors.textMuted,
     marginTop: 2,
   },
+  condition: {
+    fontSize: 9,
+    fontWeight: fontWeight.semibold,
+    color: colors.textSecondary,
+    marginTop: 3,
+    letterSpacing: 0.2,
+    textTransform: 'uppercase',
+  },
   price: {
     fontSize: fontSize.sm,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
     marginTop: 4,
+  },
+  footerHint: {
+    fontSize: 9,
+    color: colors.textMuted,
+    marginTop: 3,
+    fontWeight: fontWeight.medium,
+  },
+  footerDelta: {
+    color: colors.chipBestValueText,
   },
 });

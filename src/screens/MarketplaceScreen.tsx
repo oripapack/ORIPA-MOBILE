@@ -12,14 +12,15 @@ import { radius, spacing } from '../tokens/spacing';
 import {
   marketplaceStores,
   marketplaceListings,
+  sortMarketplaceListings,
   type ListingCategory,
   type MarketplaceListing,
+  type MarketplaceSortId,
 } from '../data/marketplace';
 import { demoMarketplacePromoImage } from '../data/demoMedia';
 import { navigationRef } from '../navigation/navigationRef';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useRequireAuth } from '../hooks/useRequireAuth';
-import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 
 const CATEGORY_KEYS: (ListingCategory | 'all')[] = [
   'all',
@@ -27,6 +28,14 @@ const CATEGORY_KEYS: (ListingCategory | 'all')[] = [
   'one_piece',
   'yugioh',
   'sports',
+];
+
+const SORT_IDS: MarketplaceSortId[] = [
+  'recommended',
+  'newest',
+  'price_low',
+  'price_high',
+  'sale_first',
 ];
 
 export function MarketplaceScreen() {
@@ -37,21 +46,48 @@ export function MarketplaceScreen() {
   const searchRef = useRef<TextInput>(null);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ListingCategory | 'all'>('all');
+  const [sort, setSort] = useState<MarketplaceSortId>('recommended');
+
+  const storeNameById = useMemo(() => {
+    const m = new Map<string, string>();
+    marketplaceStores.forEach((s) => m.set(s.id, s.name));
+    return m;
+  }, []);
+
+  const totalListingsByStore = useMemo(() => {
+    const m = new Map<string, number>();
+    marketplaceListings.forEach((l) => {
+      m.set(l.storeId, (m.get(l.storeId) ?? 0) + 1);
+    });
+    return m;
+  }, []);
 
   const filteredListings = useMemo(() => {
     const q = query.trim().toLowerCase();
     return marketplaceListings.filter((l) => {
       if (category !== 'all' && l.category !== category) return false;
       if (!q) return true;
-      const hay = `${l.title} ${l.subtitle}`.toLowerCase();
+      const storeName = storeNameById.get(l.storeId) ?? '';
+      const hay = `${l.title} ${l.subtitle} ${storeName}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [query, category]);
+  }, [query, category, storeNameById]);
+
+  const sortedListings = useMemo(
+    () => sortMarketplaceListings(filteredListings, sort),
+    [filteredListings, sort],
+  );
 
   const saleListings = useMemo(
-    () => filteredListings.filter((l) => l.badge === 'sale'),
-    [filteredListings],
+    () => sortedListings.filter((l) => l.badge === 'sale'),
+    [sortedListings],
   );
+
+  const resetBrowse = () => {
+    setQuery('');
+    setCategory('all');
+    setSort('recommended');
+  };
 
   const onListingPress = (listing: MarketplaceListing) => {
     requireAuth(() => {
@@ -77,39 +113,21 @@ export function MarketplaceScreen() {
         <Text style={[styles.pageTitle, { paddingTop: spacing.sm }]}>{t('marketplace.storeTitle')}</Text>
         <Text style={styles.lead}>{t('marketplace.storeLead')}</Text>
 
-        {/* Search */}
-        <VaultFramedCard style={styles.searchBarOuter} contentStyle={styles.searchBarInner}>
-          <View style={styles.searchBarRow}>
-            <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
-            <TextInput
-              ref={searchRef}
-              style={styles.searchInput}
-              placeholder={t('marketplace.searchPlaceholder')}
-              placeholderTextColor={colors.textMuted}
-              value={query}
-              onChangeText={setQuery}
-              returnKeyType="search"
-            />
-          </View>
-        </VaultFramedCard>
+        {/* Search — market scan */}
+        <View style={styles.searchShell}>
+          <Ionicons name="search" size={18} color={colors.textMuted} style={styles.searchIcon} />
+          <TextInput
+            ref={searchRef}
+            style={styles.searchInput}
+            placeholder={t('marketplace.searchPlaceholder')}
+            placeholderTextColor={colors.textMuted}
+            value={query}
+            onChangeText={setQuery}
+            returnKeyType="search"
+          />
+        </View>
 
-        {/* Promo */}
-        <VaultFramedCard style={styles.promoOuter} contentStyle={styles.promoInner}>
-          <View style={styles.promoRow}>
-            <Image
-              source={{ uri: demoMarketplacePromoImage }}
-              style={styles.promoImage}
-              resizeMode="cover"
-              accessibilityIgnoresInvertColors
-            />
-            <View style={styles.promoTextCol}>
-              <Text style={styles.promoTitle}>{t('marketplace.promoTitle')}</Text>
-              <Text style={styles.promoBody}>{t('marketplace.promoBody')}</Text>
-            </View>
-          </View>
-        </VaultFramedCard>
-
-        {/* Category tabs */}
+        {/* Categories */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -132,10 +150,33 @@ export function MarketplaceScreen() {
           })}
         </ScrollView>
 
-        {/* Why choose Pull Hub Store */}
-        <WhyChoosePullHub />
+        {/* Sort */}
+        <View style={styles.sortBlock}>
+          <Text style={styles.sortLabel}>{t('marketplace.sortRowLabel')}</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.sortScroll}
+          >
+            {SORT_IDS.map((id) => {
+              const active = sort === id;
+              return (
+                <TouchableOpacity
+                  key={id}
+                  style={[styles.sortChip, active && styles.sortChipActive]}
+                  onPress={() => setSort(id)}
+                  activeOpacity={0.85}
+                >
+                  <Text style={[styles.sortChipText, active && styles.sortChipTextActive]}>
+                    {t(`marketplace.sort_${id}`)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
 
-        {/* Special price row */}
+        {/* Sale row */}
         {saleListings.length > 0 ? (
           <View style={styles.section}>
             <View style={styles.sectionHeaderRow}>
@@ -160,30 +201,46 @@ export function MarketplaceScreen() {
           </View>
         ) : null}
 
-        {/* Partner stores + listings */}
+        <WhyChoosePullHub />
+
+        {/* Partner storefronts */}
         <Text style={styles.sectionEyebrow}>{t('marketplace.sectionStores')}</Text>
 
         {marketplaceStores.map((store) => {
-          const rows = filteredListings.filter((l) => {
+          const rows = sortedListings.filter((l) => {
             if (l.storeId !== store.id) return false;
-            // Avoid duplicating “sale” items: they appear in the Special price row
             if (saleListings.length > 0 && l.badge === 'sale') return false;
             return true;
           });
           if (rows.length === 0) return null;
 
+          const inv = totalListingsByStore.get(store.id) ?? 0;
+
           return (
-            <VaultFramedCard key={store.id} style={styles.storeSection} contentStyle={styles.storeSectionInner}>
+            <View key={store.id} style={styles.storeBlock}>
               <View style={styles.storeHeader}>
                 <View style={styles.storeTitleRow}>
                   <Text style={styles.storeName}>{store.name}</Text>
                   {store.verified ? (
-                    <View style={styles.verifiedPill}>
-                      <Text style={styles.verifiedText}>{t('marketplace.verified')}</Text>
-                    </View>
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={18}
+                      color={colors.gold}
+                      accessibilityLabel={t('marketplace.verified')}
+                      style={styles.verifiedIcon}
+                    />
                   ) : null}
                 </View>
+
+                <Text style={styles.storeMetaLine}>
+                  {t('marketplace.inventoryCount', { count: inv })}{' '}
+                  <Text style={styles.storeMetaDot}>·</Text>{' '}
+                  {t(`marketplace.storeShipping.${store.shippingKey}`)}
+                </Text>
+
+                <Text style={styles.storeSpecialty}>{t(`marketplace.storeSpecialty.${store.specialtyKey}`)}</Text>
                 <Text style={styles.storeTagline}>{store.tagline}</Text>
+                <Text style={styles.partnerLine}>{t('marketplace.partnerProgramLine')}</Text>
                 <Text style={styles.commission}>
                   {t('marketplace.commissionLine', { pct: Math.round(store.commissionRate * 100) })}
                 </Text>
@@ -202,19 +259,42 @@ export function MarketplaceScreen() {
                   />
                 ))}
               </ScrollView>
-            </VaultFramedCard>
+            </View>
           );
         })}
 
-        {filteredListings.length === 0 ? (
-          <VaultFramedCard style={styles.emptyOuter} contentStyle={styles.emptyInner}>
-            <Text style={styles.emptyText}>{t('marketplace.emptyResults')}</Text>
-          </VaultFramedCard>
+        {sortedListings.length === 0 ? (
+          <View style={styles.emptyWrap}>
+            <Text style={styles.emptyTitle}>{t('marketplace.emptyTitle')}</Text>
+            <Text style={styles.emptyHint}>{t('marketplace.emptyHint')}</Text>
+            <TouchableOpacity style={styles.emptyCta} onPress={resetBrowse} activeOpacity={0.88}>
+              <Text style={styles.emptyCtaText}>{t('marketplace.emptyClearCta')}</Text>
+            </TouchableOpacity>
+          </View>
         ) : null}
 
-        <VaultFramedCard style={styles.demoNoteOuter} contentStyle={styles.demoNoteInner}>
+        {/* Compact promo — supporting, after browse */}
+        <View style={styles.promoCompact}>
+          <Image
+            source={{ uri: demoMarketplacePromoImage }}
+            style={styles.promoThumb}
+            resizeMode="cover"
+            accessibilityIgnoresInvertColors
+          />
+          <View style={styles.promoCopy}>
+            <Text style={styles.promoEyebrow}>{t('marketplace.promoEyebrow')}</Text>
+            <Text style={styles.promoTitle} numberOfLines={1}>
+              {t('marketplace.promoTitle')}
+            </Text>
+            <Text style={styles.promoBody} numberOfLines={2}>
+              {t('marketplace.promoBody')}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.demoNote}>
           <Text style={styles.demoNoteText}>{t('marketplace.demoNote')}</Text>
-        </VaultFramedCard>
+        </View>
       </ScrollView>
     </View>
   );
@@ -232,97 +312,107 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   pageTitle: {
-    fontSize: fontSize.xxl,
+    fontSize: fontSize.xl,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
     paddingHorizontal: spacing.base,
-    marginBottom: spacing.xs,
+    marginBottom: 4,
+    letterSpacing: -0.3,
   },
   lead: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    lineHeight: 22,
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    lineHeight: 18,
     paddingHorizontal: spacing.base,
     marginBottom: spacing.md,
   },
-  searchBarOuter: {
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.md,
-  },
-  searchBarInner: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: spacing.md,
-  },
-  searchBarRow: {
+  searchShell: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.sm,
     minHeight: 44,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surfaceElevated,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   searchIcon: {
-    marginRight: spacing.sm,
+    marginRight: spacing.xs,
   },
   searchInput: {
     flex: 1,
-    fontSize: fontSize.base,
+    fontSize: fontSize.sm,
     color: colors.textPrimary,
     paddingVertical: spacing.sm,
   },
-  promoOuter: {
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.md,
-  },
-  promoInner: {
-    paddingVertical: spacing.sm,
-  },
-  promoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  promoImage: {
-    width: 72,
-    height: 72,
-    borderRadius: radius.md,
-    backgroundColor: colors.border,
-  },
-  promoTextCol: {
-    flex: 1,
-  },
-  promoTitle: {
-    fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
-    color: colors.gold,
-    marginBottom: 4,
-  },
-  promoBody: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    lineHeight: 20,
-  },
   catScroll: {
     paddingHorizontal: spacing.base,
-    gap: spacing.xs,
-    paddingBottom: spacing.md,
+    gap: 8,
+    paddingBottom: spacing.sm,
   },
   catChip: {
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingVertical: 9,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: colors.surfaceMuted,
     borderWidth: 1,
     borderColor: colors.border,
   },
   catChipActive: {
     backgroundColor: colors.nearBlack,
+    borderWidth: 1.5,
     borderColor: colors.gold,
+    shadowColor: colors.gold,
+    shadowOpacity: 0.22,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 3,
   },
   catChipText: {
-    fontSize: fontSize.sm,
+    fontSize: fontSize.xs,
     fontWeight: fontWeight.semibold,
     color: colors.textSecondary,
   },
   catChipTextActive: {
+    color: colors.gold,
+    fontWeight: fontWeight.bold,
+  },
+  sortBlock: {
+    marginBottom: spacing.md,
+  },
+  sortLabel: {
+    fontSize: 10,
+    fontWeight: fontWeight.bold,
+    color: colors.textMuted,
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+    paddingHorizontal: spacing.base,
+    marginBottom: spacing.xs,
+  },
+  sortScroll: {
+    paddingHorizontal: spacing.base,
+    gap: 8,
+  },
+  sortChip: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 7,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceElevated,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+  },
+  sortChipActive: {
+    borderColor: colors.goldSoft,
+    backgroundColor: 'rgba(232, 197, 71, 0.08)',
+  },
+  sortChipText: {
+    fontSize: 11,
+    fontWeight: fontWeight.semibold,
+    color: colors.textMuted,
+  },
+  sortChipTextActive: {
     color: colors.gold,
   },
   section: {
@@ -336,108 +426,184 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   sectionTitle: {
-    fontSize: fontSize.lg,
+    fontSize: fontSize.md,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
   },
   saleTag: {
     backgroundColor: colors.red,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
+    paddingVertical: 3,
     borderRadius: radius.sm,
   },
   saleTagText: {
-    fontSize: fontSize.xs,
+    fontSize: 10,
     fontWeight: fontWeight.bold,
     color: colors.white,
+    letterSpacing: 0.5,
   },
   hRow: {
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.xs,
   },
   sectionEyebrow: {
-    fontSize: fontSize.xs,
+    fontSize: 10,
     fontWeight: fontWeight.bold,
     color: colors.textMuted,
-    letterSpacing: 1,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
     paddingHorizontal: spacing.base,
     marginBottom: spacing.sm,
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
   },
-  storeSection: {
+  storeBlock: {
     marginHorizontal: spacing.base,
     marginBottom: spacing.lg,
-  },
-  storeSectionInner: {
     paddingBottom: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
   },
   storeHeader: {
     marginBottom: spacing.sm,
   },
   hRowStore: {
     paddingBottom: spacing.xs,
-    marginHorizontal: -4,
+    marginHorizontal: -2,
   },
   storeTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    gap: spacing.sm,
+    gap: 6,
     marginBottom: 4,
   },
   storeName: {
-    fontSize: fontSize.lg,
+    fontSize: fontSize.md,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
   },
-  verifiedPill: {
-    backgroundColor: colors.verifiedPillBg,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
-    borderRadius: radius.md,
+  verifiedIcon: {
+    marginTop: 1,
   },
-  verifiedText: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
-    color: colors.verifiedPillText,
-    letterSpacing: 0.3,
+  storeMetaLine: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    fontWeight: fontWeight.medium,
+    marginBottom: 2,
+  },
+  storeMetaDot: {
+    color: colors.textMuted,
+  },
+  storeSpecialty: {
+    fontSize: 11,
+    color: colors.textMuted,
+    marginBottom: 4,
+    fontWeight: fontWeight.semibold,
   },
   storeTagline: {
-    fontSize: fontSize.sm,
+    fontSize: fontSize.xs,
     color: colors.textSecondary,
     marginBottom: 4,
+    lineHeight: 18,
+  },
+  partnerLine: {
+    fontSize: 10,
+    color: colors.goldDark,
+    fontWeight: fontWeight.semibold,
+    marginBottom: 2,
+    letterSpacing: 0.2,
   },
   commission: {
-    fontSize: fontSize.xs,
+    fontSize: 10,
     color: colors.textMuted,
     fontWeight: fontWeight.medium,
   },
-  emptyOuter: {
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.md,
-  },
-  emptyInner: {
-    alignItems: 'center',
+  emptyWrap: {
+    paddingHorizontal: spacing.xl,
     paddingVertical: spacing.lg,
+    alignItems: 'center',
   },
-  emptyText: {
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
+  emptyTitle: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
     textAlign: 'center',
   },
-  demoNoteOuter: {
-    marginHorizontal: spacing.base,
-    marginTop: spacing.md,
-    marginBottom: spacing.sm,
+  emptyHint: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 18,
+    marginBottom: spacing.md,
   },
-  demoNoteInner: {
+  emptyCta: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.gold,
+    backgroundColor: 'rgba(232, 197, 71, 0.08)',
+  },
+  emptyCtaText: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.bold,
+    color: colors.gold,
+  },
+  promoCompact: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.lg,
+    padding: spacing.sm,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surfaceElevated,
+    borderWidth: 1,
+    borderColor: colors.border,
+    gap: spacing.sm,
+  },
+  promoThumb: {
+    width: 52,
+    height: 52,
+    borderRadius: radius.md,
+    backgroundColor: colors.border,
+  },
+  promoCopy: {
+    flex: 1,
+  },
+  promoEyebrow: {
+    fontSize: 9,
+    fontWeight: fontWeight.bold,
+    color: colors.textMuted,
+    letterSpacing: 1,
+    marginBottom: 2,
+    textTransform: 'uppercase',
+  },
+  promoTitle: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.bold,
+    color: colors.gold,
+    marginBottom: 2,
+  },
+  promoBody: {
+    fontSize: 10,
+    color: colors.textSecondary,
+    lineHeight: 15,
+  },
+  demoNote: {
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.demoNoteBorder,
+    backgroundColor: colors.demoNoteBg,
   },
   demoNoteText: {
-    fontSize: fontSize.xs,
+    fontSize: 10,
     color: colors.demoNoteText,
-    lineHeight: 18,
+    lineHeight: 16,
     textAlign: 'center',
   },
 });

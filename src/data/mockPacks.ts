@@ -2,23 +2,17 @@ import { demoPackHeroImage } from './demoMedia';
 
 export type ChipTagType = 'new' | 'new_user' | 'best_value' | 'graded' | 'hot_drop' | 'bonus_pack' | 'chase_boost';
 
-export type PackCategory =
-  | 'featured'
-  | 'new'
-  | 'pokemon'
-  | 'yugioh'
-  | 'one_piece'
-  | 'sports'
-  | 'graded'
-  | 'hot_drops';
+/** Home niche tabs — every demo pack belongs to exactly one product line. */
+export type HomeNicheCategory = 'pokemon' | 'yugioh' | 'one_piece' | 'sports';
+
+export type PackCategory = HomeNicheCategory;
 
 export interface Pack {
   id: string;
   title: string;
   category: PackCategory;
   tags: ChipTagType[];
-  imageColor: string; // placeholder color
-  /** Optional hero art — when set, PackCard shows photo + gradient overlay. */
+  imageColor: string;
   imageUrl?: string;
   creditPrice: number;
   totalInventory: number;
@@ -28,12 +22,8 @@ export interface Pack {
   maxPerUser: number | null;
 }
 
-/** Home screen primary tabs — product lines only (no mega “All”). */
-export type HomeNicheCategory = 'pokemon' | 'yugioh' | 'one_piece' | 'sports';
-
 export const HOME_NICHE_CATEGORIES: HomeNicheCategory[] = ['pokemon', 'yugioh', 'one_piece', 'sports'];
 
-/** Sub-filters within the selected niche (tags + cross-line categories). */
 export type PackSubfilter = 'all' | ChipTagType;
 
 export const HOME_SUBFILTER_KEYS: PackSubfilter[] = [
@@ -56,343 +46,371 @@ export function packMatchesSubfilter(pack: Pack, sub: PackSubfilter): boolean {
   return pack.tags.includes(sub);
 }
 
+function p(
+  id: string,
+  title: string,
+  category: HomeNicheCategory,
+  args: {
+    creditPrice: number;
+    tags: ChipTagType[];
+    imageColor: string;
+    valueDescription: string;
+    guaranteeText: string;
+    maxPerUser: number | null;
+    totalInventory?: number;
+    remainingInventory?: number;
+  },
+): Pack {
+  const n = parseInt(id, 10);
+  const invBase = Number.isFinite(n) ? 52000 - n * 1100 : 40000;
+  return {
+    id,
+    title,
+    category,
+    tags: args.tags,
+    imageColor: args.imageColor,
+    imageUrl: demoPackHeroImage(id),
+    creditPrice: args.creditPrice,
+    totalInventory: args.totalInventory ?? 50000,
+    remainingInventory: args.remainingInventory ?? Math.max(800, invBase),
+    valueDescription: args.valueDescription,
+    guaranteeText: args.guaranteeText,
+    maxPerUser: args.maxPerUser,
+  };
+}
+
+/**
+ * Demo catalog: 10 packs per genre, cheap → expensive credits.
+ * Titles and copy match real product lines so simulated pulls stay on-theme.
+ */
 export const mockPacks: Pack[] = [
-  {
-    id: '1',
-    title: 'New User Welcome Pack',
-    category: 'featured',
+  // ——— Pokémon (ids 1–10) ———
+  p('1', 'Paldea Beginner Commons', 'pokemon', {
+    creditPrice: 85,
     tags: ['new_user', 'best_value'],
-    imageColor: '#1C1C2E',
-    imageUrl: demoPackHeroImage('1'),
-    creditPrice: 300,
-    totalInventory: 50000,
-    remainingInventory: 22881,
-    valueDescription: 'Over 100% chase value',
-    guaranteeText: 'Guaranteed bonus every 2 opens',
-    maxPerUser: 4,
-  },
-  {
-    id: '2',
-    title: 'Pokémon Scarlet & Violet Hit Pack',
-    category: 'pokemon',
-    tags: ['hot_drop', 'new'],
+    imageColor: '#14532D',
+    valueDescription: 'PAL-era commons & uncommons — great for new binders',
+    guaranteeText: '3+ playable cards every open',
+    maxPerUser: 6,
+  }),
+  p('2', 'Scarlet & Violet Booster Hits', 'pokemon', {
+    creditPrice: 125,
+    tags: ['new'],
     imageColor: '#4F46E5',
-    imageUrl: demoPackHeroImage('2'),
-    creditPrice: 500,
-    totalInventory: 30000,
-    remainingInventory: 18420,
-    valueDescription: '90% chance at 200+ credits value',
-    guaranteeText: 'Holofoil guaranteed in every pack',
+    valueDescription: 'SV-era holos & illustration rare chase slots',
+    guaranteeText: 'Reverse holo or better in every pack',
     maxPerUser: null,
-  },
-  {
-    id: '3',
-    title: 'One Piece Graded Vault Pack',
-    category: 'one_piece',
+  }),
+  p('3', 'Paldea Evolved Chase', 'pokemon', {
+    creditPrice: 220,
+    tags: ['best_value'],
+    imageColor: '#0E7490',
+    valueDescription: 'ex & double rare hits from Paldea Evolved',
+    guaranteeText: 'Rare slot or higher guaranteed',
+    maxPerUser: null,
+  }),
+  p('4', 'Obsidian Flames Premium', 'pokemon', {
+    creditPrice: 360,
+    tags: ['hot_drop'],
+    imageColor: '#9A3412',
+    valueDescription: 'Charizard ex & type-shift chase pool',
+    guaranteeText: 'Holo rare or better every rip',
+    maxPerUser: null,
+  }),
+  p('5', '151 Kanto Collection', 'pokemon', {
+    creditPrice: 520,
+    tags: ['chase_boost'],
+    imageColor: '#BE123C',
+    valueDescription: 'Classic Kanto ex & art rare focus',
+    guaranteeText: 'Illustration rare in 1-of-8 opens (demo)',
+    maxPerUser: null,
+  }),
+  p('6', 'Crown Zenith Galarian Gallery', 'pokemon', {
+    creditPrice: 780,
+    tags: ['hot_drop'],
+    imageColor: '#6D28D9',
+    valueDescription: 'GG full arts & trainer gallery chases',
+    guaranteeText: 'Gallery or VSTAR-class hit every 2 packs',
+    maxPerUser: 3,
+  }),
+  p('7', 'Prismatic Evolutions Elite', 'pokemon', {
+    creditPrice: 1180,
+    tags: ['graded'],
+    imageColor: '#831843',
+    valueDescription: 'Eevee evolutions & ACE SPEC chase lane',
+    guaranteeText: 'Double rare slot minimum',
+    maxPerUser: 2,
+  }),
+  p('8', 'Charizard ex Special Collection', 'pokemon', {
+    creditPrice: 1850,
+    tags: ['hot_drop', 'chase_boost'],
+    imageColor: '#EA580C',
+    valueDescription: 'Promo Charizard ex & bundled chase cards',
+    guaranteeText: 'Promo + booster-equivalent value floor',
+    maxPerUser: 2,
+  }),
+  p('9', 'Base Set Era Graded Vault', 'pokemon', {
+    creditPrice: 4200,
+    tags: ['graded', 'chase_boost'],
+    imageColor: '#312E81',
+    valueDescription: 'WOTC holos & shadowless chase slabs',
+    guaranteeText: 'PSA 8+ vintage holo in every pack',
+    maxPerUser: 1,
+  }),
+  p('10', 'PSA 10 Trophy Showcase', 'pokemon', {
+    creditPrice: 8500,
+    tags: ['graded', 'chase_boost'],
+    imageColor: '#1E1B4B',
+    valueDescription: 'Modern SAR & trophy-grade slabs',
+    guaranteeText: 'PSA 10 or BGS 9.5+ chase rotation',
+    maxPerUser: 1,
+  }),
+
+  // ——— One Piece TCG (ids 11–20) ———
+  p('11', 'Romance Dawn Reprint Starters', 'one_piece', {
+    creditPrice: 95,
+    tags: ['new_user', 'best_value'],
+    imageColor: '#1E3A5F',
+    valueDescription: 'ST-01 / early leaders & commons',
+    guaranteeText: 'Leader or key character in every pack',
+    maxPerUser: 8,
+  }),
+  p('12', 'Paramount War Leaders', 'one_piece', {
+    creditPrice: 145,
+    tags: ['new'],
+    imageColor: '#134E4A',
+    valueDescription: 'OP-02 leader rares & event cards',
+    guaranteeText: 'SR or parallel in 1-of-4 opens (demo)',
+    maxPerUser: null,
+  }),
+  p('13', 'OP-05 Awakening of the New Era', 'one_piece', {
+    creditPrice: 265,
+    tags: ['best_value'],
+    imageColor: '#14532D',
+    valueDescription: 'Manga rare & character SR pool',
+    guaranteeText: 'Super rare or better every pack',
+    maxPerUser: null,
+  }),
+  p('14', 'OP-06 Wings of the Captain', 'one_piece', {
+    creditPrice: 390,
+    tags: ['hot_drop'],
+    imageColor: '#166534',
+    valueDescription: 'Alt-art leaders & foil chase slots',
+    guaranteeText: 'DON!! card + rare slot guaranteed',
+    maxPerUser: null,
+  }),
+  p('15', 'OP-07 500 Years in the Future', 'one_piece', {
+    creditPrice: 540,
+    tags: ['chase_boost'],
+    imageColor: '#991B1B',
+    valueDescription: 'Egghead arc SR chase & manga panels',
+    guaranteeText: 'Leader alt art in 1-of-10 opens (demo)',
+    maxPerUser: null,
+  }),
+  p('16', 'OP-08 Two Legends', 'one_piece', {
+    creditPrice: 720,
+    tags: ['hot_drop'],
+    imageColor: '#7C2D12',
+    valueDescription: 'Dual-leader meta & parallel foils',
+    guaranteeText: 'Two rare+ slots per open',
+    maxPerUser: null,
+  }),
+  p('17', 'OP-09 Emperors in the New World', 'one_piece', {
+    creditPrice: 1050,
+    tags: ['graded'],
+    imageColor: '#4C1D95',
+    valueDescription: 'Yonko-era chases & full-art events',
+    guaranteeText: 'SR+ with foil treatment every rip',
+    maxPerUser: 2,
+  }),
+  p('18', 'Leader Alt Art Vault', 'one_piece', {
+    creditPrice: 1680,
+    tags: ['hot_drop', 'chase_boost'],
+    imageColor: '#881337',
+    valueDescription: 'ST & OP-01–OP-09 alt-art leaders',
+    guaranteeText: 'Alt-art or manga rare in 1-of-6 opens',
+    maxPerUser: 2,
+  }),
+  p('19', 'Manga Rare & Don!! Chase', 'one_piece', {
+    creditPrice: 2980,
     tags: ['graded', 'chase_boost'],
     imageColor: '#0F172A',
-    imageUrl: demoPackHeroImage('3'),
-    creditPrice: 1000,
-    totalInventory: 10000,
-    remainingInventory: 3241,
-    valueDescription: 'PSA 9–10 graded cards inside',
-    guaranteeText: 'Every pack contains a graded card',
-    maxPerUser: 2,
-  },
-  {
-    id: '4',
-    title: 'Sports Cards Flash Pack',
-    category: 'sports',
-    tags: ['hot_drop', 'new'],
-    imageColor: '#1E3A5F',
-    imageUrl: demoPackHeroImage('4'),
-    creditPrice: 750,
-    totalInventory: 20000,
-    remainingInventory: 9810,
-    valueDescription: 'Rookie cards from top 2024 picks',
-    guaranteeText: 'Auto or relic card every 5 opens',
-    maxPerUser: null,
-  },
-  {
-    id: '5',
-    title: 'Pokémon Vintage Graded Pack',
-    category: 'graded',
-    tags: ['graded', 'best_value'],
-    imageColor: '#3B1F6B',
-    imageUrl: demoPackHeroImage('5'),
-    creditPrice: 2000,
-    totalInventory: 5000,
-    remainingInventory: 1102,
-    valueDescription: 'Base Set era graded hits',
-    guaranteeText: 'Guaranteed PSA 8+ condition',
+    valueDescription: 'Serialized parallels & top manga hits',
+    guaranteeText: 'Serialized or manga rare floor',
     maxPerUser: 1,
-  },
-  {
-    id: '6',
-    title: 'Hot Drop Mystery Pack',
-    category: 'hot_drops',
-    tags: ['new', 'bonus_pack'],
-    imageColor: '#7C2D12',
-    imageUrl: demoPackHeroImage('6'),
-    creditPrice: 200,
-    totalInventory: 100000,
-    remainingInventory: 67340,
-    valueDescription: 'Surprise mix from all categories',
-    guaranteeText: 'Bonus pack after every 3 opens',
-    maxPerUser: 10,
-  },
-  {
-    id: '7',
-    title: 'One Piece Paramount War Pack',
-    category: 'one_piece',
-    tags: ['new', 'chase_boost'],
-    imageColor: '#134E4A',
-    imageUrl: demoPackHeroImage('7'),
-    creditPrice: 600,
-    totalInventory: 25000,
-    remainingInventory: 19870,
-    valueDescription: 'Leader SR cards with chase foils',
-    guaranteeText: '1-in-10 chance at Alt Art',
-    maxPerUser: null,
-  },
-  {
-    id: '8',
-    title: 'New Arrivals Sampler Pack',
-    category: 'new',
-    tags: ['new', 'new_user'],
-    imageColor: '#1F2937',
-    imageUrl: demoPackHeroImage('8'),
-    creditPrice: 150,
-    totalInventory: 75000,
-    remainingInventory: 71200,
-    valueDescription: 'Sample hits from newest sets',
-    guaranteeText: 'At least 3 cards per open',
-    maxPerUser: 5,
-  },
-  {
-    id: '9',
-    title: 'Yu-Gi-Oh! Battles of Legend Pack',
-    category: 'yugioh',
-    tags: ['new', 'hot_drop'],
+  }),
+  p('20', 'Holy Grail PSA Manga Slot', 'one_piece', {
+    creditPrice: 7800,
+    tags: ['graded', 'chase_boost'],
+    imageColor: '#312E81',
+    valueDescription: 'Graded chase leaders & trophy panels',
+    guaranteeText: 'PSA 9+ graded hit every pack',
+    maxPerUser: 1,
+  }),
+
+  // ——— Yu-Gi-Oh! (ids 21–30) ———
+  p('21', 'Speed Duel & Structure Mix', 'yugioh', {
+    creditPrice: 75,
+    tags: ['new_user', 'best_value'],
     imageColor: '#1A0A2E',
-    imageUrl: demoPackHeroImage('9'),
-    creditPrice: 450,
-    totalInventory: 18000,
-    remainingInventory: 12400,
-    valueDescription: 'Secret Rares and starlight chase slots',
-    guaranteeText: 'Ultra Rare or higher every pack',
+    valueDescription: 'Starter staples & common reprints',
+    guaranteeText: '8+ playable cards per open',
+    maxPerUser: 10,
+  }),
+  p('22', 'Photon Hypernova', 'yugioh', {
+    creditPrice: 130,
+    tags: ['new'],
+    imageColor: '#312E81',
+    valueDescription: 'Kashtira & Tearlaments-era secrets',
+    guaranteeText: 'Super rare or higher every pack',
     maxPerUser: null,
-  },
-  {
-    id: '10',
-    title: 'Prism Clash Championship Box',
-    category: 'pokemon',
+  }),
+  p('23', 'Maze of Millennia', 'yugioh', {
+    creditPrice: 245,
+    tags: ['best_value'],
+    imageColor: '#4C1D95',
+    valueDescription: 'Collector’s rare chase pool',
+    guaranteeText: 'Ultra rare minimum rarity',
+    maxPerUser: null,
+  }),
+  p('24', 'Legacy of Destruction', 'yugioh', {
+    creditPrice: 395,
+    tags: ['hot_drop'],
+    imageColor: '#581C87',
+    valueDescription: 'Voiceless Voice & Sinful Spoils support',
+    guaranteeText: 'Secret rare slot enabled',
+    maxPerUser: null,
+  }),
+  p('25', 'Rage of the Abyss', 'yugioh', {
+    creditPrice: 555,
+    tags: ['chase_boost'],
+    imageColor: '#701A75',
+    valueDescription: 'Abyss-themed ultras & quarter-century slots',
+    guaranteeText: 'Ultra rare or higher — no commons-only',
+    maxPerUser: null,
+  }),
+  p('26', 'Phantom Nightmare', 'yugioh', {
+    creditPrice: 820,
+    tags: ['hot_drop'],
+    imageColor: '#1E1B4B',
+    valueDescription: 'Nightmare Magician & Fiendsmith chase',
+    guaranteeText: 'Super rare+ in every 2 packs',
+    maxPerUser: null,
+  }),
+  p('27', 'Battles of Legend: Terminal Revenge', 'yugioh', {
+    creditPrice: 1280,
+    tags: ['graded'],
+    imageColor: '#312E81',
+    valueDescription: 'High-impact reprints & ghost rare chase',
+    guaranteeText: 'Secret rare or collector’s rare every pack',
+    maxPerUser: 2,
+  }),
+  p('28', 'Quarter Century Chronicle', 'yugioh', {
+    creditPrice: 2150,
     tags: ['hot_drop', 'chase_boost'],
     imageColor: '#4C1D95',
-    imageUrl: demoPackHeroImage('10'),
-    creditPrice: 850,
-    totalInventory: 14000,
-    remainingInventory: 9021,
-    valueDescription: 'Full-art trainers & secret rare chase lane',
-    guaranteeText: 'VSTAR or better in every 3rd pack',
-    maxPerUser: 3,
-  },
-  {
-    id: '11',
-    title: 'Obsidian Moon Elite Crate',
-    category: 'pokemon',
-    tags: ['new', 'best_value'],
+    valueDescription: 'Quarter-century secret & nostalgia hits',
+    guaranteeText: 'QC secret or starlight chase lane',
+    maxPerUser: 2,
+  }),
+  p('29', 'LOB 1st Edition Chase', 'yugioh', {
+    creditPrice: 4650,
+    tags: ['graded', 'chase_boost'],
+    imageColor: '#172554',
+    valueDescription: 'Legend of Blue Eyes vintage ultra chase',
+    guaranteeText: 'LOB-era holo or graded slab',
+    maxPerUser: 1,
+  }),
+  p('30', 'Starlight Anniversary God Box', 'yugioh', {
+    creditPrice: 9200,
+    tags: ['graded', 'chase_boost'],
+    imageColor: '#0F172A',
+    valueDescription: 'Starlight & prize-card tier chases',
+    guaranteeText: 'Starlight or equivalent top rarity',
+    maxPerUser: 1,
+  }),
+
+  // ——— Sports cards (ids 31–40) ———
+  p('31', 'Hobby Rookie Mixer', 'sports', {
+    creditPrice: 90,
+    tags: ['new_user', 'best_value'],
+    imageColor: '#1E3A5F',
+    valueDescription: 'NFL / NBA / MLB base & insert mix',
+    guaranteeText: 'Rookie card in every pack',
+    maxPerUser: null,
+  }),
+  p('32', 'Prizm Retail Hits', 'sports', {
+    creditPrice: 155,
+    tags: ['new'],
     imageColor: '#0C4A6E',
-    imageUrl: demoPackHeroImage('11'),
-    creditPrice: 1200,
-    totalInventory: 8000,
-    remainingInventory: 4102,
-    valueDescription: 'Alt arts & special illustration pool',
-    guaranteeText: 'Double rare slot on every open',
-    maxPerUser: 2,
-  },
-  {
-    id: '12',
-    title: 'Stadium Legends Pro Wax',
-    category: 'sports',
-    tags: ['graded', 'hot_drop'],
+    valueDescription: 'Silver & base Prizm rookies',
+    guaranteeText: 'Insert or parallel every 2 opens',
+    maxPerUser: null,
+  }),
+  p('33', 'Optic Holo Rookies', 'sports', {
+    creditPrice: 285,
+    tags: ['best_value'],
     imageColor: '#14532D',
-    imageUrl: demoPackHeroImage('12'),
-    creditPrice: 920,
-    totalInventory: 12000,
-    remainingInventory: 7800,
-    valueDescription: 'Rookie autos & patch relics',
-    guaranteeText: 'Serial numbered hit every 4 opens',
+    valueDescription: 'Rated rookie holos & downtown chase',
+    guaranteeText: 'Holo rookie or key insert',
     maxPerUser: null,
-  },
-  {
-    id: '13',
-    title: 'Holographic Dreams Booster',
-    category: 'featured',
-    tags: ['new_user', 'bonus_pack'],
-    imageColor: '#831843',
-    imageUrl: demoPackHeroImage('13'),
-    creditPrice: 275,
-    totalInventory: 60000,
-    remainingInventory: 44120,
-    valueDescription: 'Iridescent chase pool · all lines',
-    guaranteeText: 'Bonus roll after every 2 opens',
-    maxPerUser: 8,
-  },
-  {
-    id: '14',
-    title: 'Rift Masters Cross-Set',
-    category: 'hot_drops',
-    tags: ['hot_drop', 'new'],
-    imageColor: '#9A3412',
-    imageUrl: demoPackHeroImage('14'),
-    creditPrice: 350,
-    totalInventory: 45000,
-    remainingInventory: 31200,
-    valueDescription: 'Random set mix — surprise EV curve',
-    guaranteeText: 'Guaranteed foil or better',
-    maxPerUser: 12,
-  },
-  {
-    id: '15',
-    title: 'Film Red Treasure Vault',
-    category: 'one_piece',
-    tags: ['chase_boost', 'new'],
-    imageColor: '#991B1B',
-    imageUrl: demoPackHeroImage('15'),
-    creditPrice: 680,
-    totalInventory: 19000,
-    remainingInventory: 12440,
-    valueDescription: 'Leader alt arts & manga rares',
-    guaranteeText: 'SR+ in every pack',
+  }),
+  p('34', 'Select Concourse', 'sports', {
+    creditPrice: 445,
+    tags: ['hot_drop'],
+    imageColor: '#854D0E',
+    valueDescription: 'Concourse silvers & tri-color parallels',
+    guaranteeText: 'Numbered or SP in 1-of-5 opens (demo)',
     maxPerUser: null,
-  },
-  {
-    id: '16',
-    title: 'Magnificent Mavens Reloaded',
-    category: 'yugioh',
-    tags: ['graded', 'best_value'],
-    imageColor: '#312E81',
-    imageUrl: demoPackHeroImage('16'),
-    creditPrice: 520,
-    totalInventory: 22000,
-    remainingInventory: 15600,
-    valueDescription: 'Starlight & CR slots enabled',
-    guaranteeText: 'Ultra Rare minimum rarity',
-    maxPerUser: 6,
-  },
-  {
-    id: '17',
-    title: 'Gem Mint Showcase',
-    category: 'graded',
-    tags: ['graded', 'hot_drop'],
-    imageColor: '#581C87',
-    imageUrl: demoPackHeroImage('17'),
-    creditPrice: 2400,
-    totalInventory: 3200,
-    remainingInventory: 890,
-    valueDescription: 'PSA 10 chase slab rotation',
-    guaranteeText: 'Every slab is PSA 9+',
-    maxPerUser: 1,
-  },
-  {
-    id: '18',
-    title: 'Turbo New Arrivals Crate',
-    category: 'new',
-    tags: ['new', 'bonus_pack'],
-    imageColor: '#164E63',
-    imageUrl: demoPackHeroImage('18'),
-    creditPrice: 195,
-    totalInventory: 88000,
-    remainingInventory: 72100,
-    valueDescription: 'Fresh set sampling — fast hits',
-    guaranteeText: '3+ playable cards per rip',
-    maxPerUser: 15,
-  },
-  {
-    id: '19',
-    title: 'Midnight Chase Roulette',
-    category: 'hot_drops',
-    tags: ['hot_drop', 'chase_boost'],
-    imageColor: '#1E1B4B',
-    imageUrl: demoPackHeroImage('19'),
-    creditPrice: 425,
-    totalInventory: 55000,
-    remainingInventory: 38900,
-    valueDescription: 'Weighted mythic table after 10 PM',
-    guaranteeText: 'Double pull token every 5 opens',
+  }),
+  p('35', 'Mosaic Fast Break', 'sports', {
+    creditPrice: 665,
+    tags: ['chase_boost'],
+    imageColor: '#422006',
+    valueDescription: 'Genesis & reactive gold parallels',
+    guaranteeText: 'Mosaic parallel every rip',
     maxPerUser: null,
-  },
-  {
-    id: '20',
-    title: 'TCG Classic Anniversary',
-    category: 'pokemon',
-    tags: ['best_value', 'graded'],
-    imageColor: '#B45309',
-    imageUrl: demoPackHeroImage('20'),
-    creditPrice: 1500,
-    totalInventory: 6000,
-    remainingInventory: 2100,
-    valueDescription: 'Retro holos & reprint grails',
-    guaranteeText: 'Vintage slot in every box',
+  }),
+  p('36', 'National Treasures RPA Chase', 'sports', {
+    creditPrice: 980,
+    tags: ['hot_drop'],
+    imageColor: '#1C1917',
+    valueDescription: 'On-card autos & patch relics',
+    guaranteeText: 'Relic or auto hit every 3 packs',
+    maxPerUser: null,
+  }),
+  p('37', 'Flawless Gem Hits', 'sports', {
+    creditPrice: 1520,
+    tags: ['graded'],
+    imageColor: '#0F172A',
+    valueDescription: 'Diamond & gemstone parallel rookies',
+    guaranteeText: 'Gem mint candidate or PSA slab',
     maxPerUser: 2,
-  },
-  {
-    id: '21',
-    title: 'Rookie Year Chronicles',
-    category: 'sports',
-    tags: ['new', 'new_user'],
-    imageColor: '#1D4ED8',
-    imageUrl: demoPackHeroImage('21'),
-    creditPrice: 640,
-    totalInventory: 16000,
-    remainingInventory: 11200,
-    valueDescription: '2024 rookie class spotlight',
-    guaranteeText: 'RC or auto in every 2 packs',
-    maxPerUser: null,
-  },
-  {
-    id: '22',
-    title: 'Alt-Art Appreciation Pack',
-    category: 'pokemon',
-    tags: ['chase_boost', 'hot_drop'],
-    imageColor: '#BE185D',
-    imageUrl: demoPackHeroImage('22'),
-    creditPrice: 780,
-    totalInventory: 11000,
-    remainingInventory: 6400,
-    valueDescription: 'Full-art & special illustration focus',
-    guaranteeText: 'Alt art in 1-of-6 opens (demo odds)',
-    maxPerUser: 4,
-  },
-  {
-    id: '23',
-    title: 'Sealed Vault Mystery',
-    category: 'featured',
-    tags: ['bonus_pack', 'best_value'],
-    imageColor: '#134E4A',
-    imageUrl: demoPackHeroImage('23'),
-    creditPrice: 1100,
-    totalInventory: 7000,
-    remainingInventory: 3020,
-    valueDescription: 'Factory sealed product — random SKU',
-    guaranteeText: 'Minimum MSRP 1.2× entry',
+  }),
+  p('38', 'The Cup /99 RPA', 'sports', {
+    creditPrice: 2680,
+    tags: ['hot_drop', 'chase_boost'],
+    imageColor: '#78350F',
+    valueDescription: 'Hockey & basketball cup RPAs',
+    guaranteeText: 'Premium patch or auto slot',
     maxPerUser: 1,
-  },
-  {
-    id: '24',
-    title: 'Crossover Battle Pass',
-    category: 'hot_drops',
-    tags: ['new', 'bonus_pack'],
-    imageColor: '#713F12',
-    imageUrl: demoPackHeroImage('24'),
-    creditPrice: 225,
-    totalInventory: 95000,
-    remainingInventory: 80100,
-    valueDescription: 'Multi-IP pool — wild variance',
-    guaranteeText: 'Streak bonus after 7 opens',
-    maxPerUser: 20,
-  },
+  }),
+  p('39', '1986 Fleer Basketball Chase', 'sports', {
+    creditPrice: 5800,
+    tags: ['graded', 'chase_boost'],
+    imageColor: '#7F1D1D',
+    valueDescription: 'Vintage wax-era grail chase',
+    guaranteeText: 'Graded vintage or iconic rookie',
+    maxPerUser: 1,
+  }),
+  p('40', 'Logoman 1/1 Vault', 'sports', {
+    creditPrice: 9800,
+    tags: ['graded', 'chase_boost'],
+    imageColor: '#F59E0B',
+    valueDescription: '1/1 shields & laundry-tag logoman chases',
+    guaranteeText: '1-of-1 or /5 hit rotation (demo)',
+    maxPerUser: 1,
+  }),
 ];
 
 /**
@@ -404,37 +422,22 @@ export const categories: { key: PackCategory | 'all'; label: string }[] = [
   { key: 'yugioh', label: 'Yu-Gi-Oh!' },
   { key: 'one_piece', label: 'One Piece' },
   { key: 'sports', label: 'Sports' },
-  { key: 'graded', label: 'Graded' },
-  { key: 'new', label: 'New' },
-  { key: 'hot_drops', label: 'Hot Drops' },
 ];
 
-/**
- * Credit packs for Buy Credits.
- * - `showPromoDiscount`: starter / low tiers only — % OFF + strikethrough (acquisition).
- * - High tiers ($5k+): list price only (no “was” / no badge) to avoid training whales on discounts.
- * JPY ≈ USD × (5,000,000 / 30,000) = ×166.67 for top-tier consistency.
- */
 export interface CreditBundle {
   id: string;
   credits: number;
   label: string;
   bonus: string | null;
-  /** When false, UI shows a single list price (no % badge, no crossed-out “was”). */
   showPromoDiscount: boolean;
-  /** Shown only if showPromoDiscount */
   discountPercent: number;
   priceUsd: string;
-  /** Strikethrough “was” — use empty string when !showPromoDiscount */
   priceUsdWas: string;
-  /** Primary JPY line (promo: discounted; standard: only line shown) */
   jpyNow: string;
-  /** Strikethrough JPY — empty when !showPromoDiscount */
   jpyWas: string;
 }
 
 export const creditBundles: CreditBundle[] = [
-  /* ——— Promo tiers (cheap — show discount) ——— */
   {
     id: 'b1',
     credits: 500,
@@ -495,7 +498,6 @@ export const creditBundles: CreditBundle[] = [
     jpyNow: '¥16,670',
     jpyWas: '¥18,940',
   },
-  /* ——— Standard tiers (no % badge — list price) ——— */
   {
     id: 'b6',
     credits: 900000,

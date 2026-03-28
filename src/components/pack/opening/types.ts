@@ -1,7 +1,19 @@
 import type { RarityTier } from '../../../audio/packOpeningFeedback';
 
 export type PackOpeningStyle = 'csgo' | 'fifa' | 'hybrid';
-export type PackOpeningPhase = 'idle' | 'intro' | 'spinning' | 'slowing' | 'landing' | 'reveal' | 'result';
+export type PackOpeningPhase =
+  | 'idle'
+  | 'intro'
+  /** Pachinko rails / atmosphere ramp before taps register */
+  | 'arming'
+  /** Tap-to-charge */
+  | 'spinning'
+  /** Full charge: shake + strobes before the pack breaks */
+  | 'primed'
+  | 'slowing'
+  | 'landing'
+  | 'reveal'
+  | 'result';
 
 /** Display tiers for the reveal UI (demo pool cards). */
 export type RevealRarity = 'common' | 'rare' | 'ultra_rare' | 'chase';

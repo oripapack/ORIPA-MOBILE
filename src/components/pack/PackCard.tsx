@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { ChipTagType, Pack } from '../../data/mockPacks';
-import { mockPackTopHits } from '../../data/mockTopHits';
+import { getMockPackTopHit } from '../../data/mockTopHits';
 import { getMockPackOdds } from '../../data/mockPackOdds';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
@@ -80,7 +80,7 @@ export function PackCard({ pack, onPress }: Props) {
   const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
   const pct = Math.round((pack.remainingInventory / pack.totalInventory) * 100);
   const loc = getLocalizedPackFields(pack, t);
-  const topHit = mockPackTopHits[String(pack.id)];
+  const topHit = getMockPackTopHit(pack);
   const isChase = !!topHit?.isChase || pack.tags.includes('chase_boost');
 
   const primary = useMemo(() => primaryTag(pack.tags), [pack.tags]);
@@ -95,7 +95,7 @@ export function PackCard({ pack, onPress }: Props) {
   const shimmerOpacity = useRef(new Animated.Value(0)).current;
   const [ctaW, setCtaW] = useState(320);
   const [oddsOpen, setOddsOpen] = useState(false);
-  const odds = useMemo(() => getMockPackOdds(String(pack.id)), [pack.id]);
+  const odds = useMemo(() => getMockPackOdds(pack), [pack]);
 
   useEffect(() => {
     if (!isChase) {
