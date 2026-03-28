@@ -42,7 +42,8 @@
   "common": {
     "copied": "منقول",
     "friendIdCopied": "تم نسخ معرف الصديق إلى الحافظة.",
-    "error": "خطأ"
+    "error": "خطأ",
+    "close": "Close"
   },
   "helpCenter": {
     "navTitle": "مركز المساعدة",
@@ -183,11 +184,27 @@
   "demoBanner": "معاينة البناء - تتم محاكاة الاعتمادات والمكافآت.",
   "home": {
     "discover": "يكتشف",
+    "browse": "تصفح",
     "spotlightTitle": "حزم الأضواء",
     "spotlightBody": "قطرات وعروض ترويجية منتقاة بعناية. استخدم الفئات والفرز أدناه.",
     "browseAllPacks": "تصفح جميع الحزم",
     "emptyCategory": "لا توجد حزم في هذه الفئة حتى الآن.",
-    "subfilterAll": "All packs"
+    "subfilterAll": "All packs",
+    "lobby": {
+      "featuredKicker": "Drop lobby",
+      "featuredEyebrow": "Vault spotlight",
+      "price": "Entry",
+      "remaining": "Inventory",
+      "viewOdds": "View odds",
+      "enterFloor": "Pack floor",
+      "recentKicker": "Recent pulls",
+      "railNewTitle": "New arrivals",
+      "railNewSub": "Fresh stock in this line — first look before the floor fills.",
+      "railHotTitle": "Hot floor",
+      "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
+      "railGradedTitle": "Graded vault",
+      "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
+    }
   },
   "packs": {
     "browseTitle": "أرضية العبوة",
@@ -238,7 +255,11 @@
     "yourUsername": "اسم المستخدم لديك",
     "usernameHint": "يضيفك الأصدقاء عبر اسم المستخدم الفريد — نفسه كما في تبويب اللاعب.",
     "enterFriendUsername": "اسم المستخدم",
-    "placeholderUsername": "مثال: jordan"
+    "placeholderUsername": "مثال: jordan",
+    "searchPlaceholder": "Search by name or @handle…",
+    "sectionConnect": "Add & share",
+    "leaderboardHint": "See how your squad ranks",
+    "noSearchMatches": "No friends match that search."
   },
   "rewards": {
     "title": "المكافآت",
@@ -649,5 +670,29 @@
     "priceTitle": "السعر",
     "remaining": "المتبقي {{left}} من {{total}}",
     "ctaDisabled": "غير متاح"
+  },
+  "splash": {
+    "frameKicker": "COLLECTOR VAULT",
+    "frameHeadline": "Your next pull",
+    "frameTagline": "Live drops · Fair odds",
+    "frameLine": "Where every pull begins"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to Pull Hub",
+    "welcomeSubtitle": "Sign up to get a free pack — or preview the lobby first.",
+    "signUpCta": "Sign up free",
+    "signInCta": "Sign in",
+    "continueGuest": "Continue as guest",
+    "sheetHint": "Swipe down anytime to browse the app.",
+    "promptEyebrow": "Nice pull",
+    "promptTitle": "Sign up to keep it",
+    "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
+    "promptSignUp": "Claim free pack",
+    "promptSignIn": "I already have an account",
+    "promptLater": "Maybe later",
+    "guestClaimTitle": "Sign in to claim",
+    "guestClaimBody": "Vault saves and rewards need an account — it only takes a moment.",
+    "friendsGuestTitle": "Friends unlock with sign-in",
+    "friendsGuestBody": "Preview the space now. Sign in to add friends, share your QR, and sync your circle."
   }
 }

@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ph-bg: #0b0f14;
+  --ph-surface: #121821;
+  --ph-border: rgba(148, 163, 184, 0.12);
+}
+
+body {
+  background: var(--ph-bg);
+  color: #e2e8f0;
+}
+
+/* Hint GPU for animated layers */
+.ph-will-animate {
+  will-change: transform, opacity;
+}

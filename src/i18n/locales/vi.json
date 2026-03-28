@@ -42,7 +42,8 @@
   "common": {
     "error": "Lỗi",
     "copied": "Đã sao chép",
-    "friendIdCopied": "ID bạn bè đã được sao chép vào bảng nhớ tạm."
+    "friendIdCopied": "ID bạn bè đã được sao chép vào bảng nhớ tạm.",
+    "close": "Close"
   },
   "helpCenter": {
     "navTitle": "Trung tâm trợ giúp",
@@ -183,11 +184,27 @@
   "demoBanner": "Bản xem trước — credit và phần thưởng được mô phỏng.",
   "home": {
     "discover": "Khám phá",
+    "browse": "Duyệt",
     "spotlightTitle": "Gói nổi bật",
     "spotlightBody": "Drop và khuyến mãi được chọn. Dùng danh mục và sắp xếp bên dưới.",
     "browseAllPacks": "Duyệt tất cả các gói",
     "emptyCategory": "Chưa có gói nào trong danh mục này.",
-    "subfilterAll": "All packs"
+    "subfilterAll": "All packs",
+    "lobby": {
+      "featuredKicker": "Drop lobby",
+      "featuredEyebrow": "Vault spotlight",
+      "price": "Entry",
+      "remaining": "Inventory",
+      "viewOdds": "View odds",
+      "enterFloor": "Pack floor",
+      "recentKicker": "Recent pulls",
+      "railNewTitle": "New arrivals",
+      "railNewSub": "Fresh stock in this line — first look before the floor fills.",
+      "railHotTitle": "Hot floor",
+      "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
+      "railGradedTitle": "Graded vault",
+      "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
+    }
   },
   "packs": {
     "browseTitle": "Sàn gói",
@@ -238,7 +255,11 @@
     "yourUsername": "Tên người dùng của bạn",
     "usernameHint": "Bạn bè thêm bạn bằng tên này — giống tab Người chơi.",
     "enterFriendUsername": "Tên người dùng",
-    "placeholderUsername": "vd: jordan"
+    "placeholderUsername": "vd: jordan",
+    "searchPlaceholder": "Search by name or @handle…",
+    "sectionConnect": "Add & share",
+    "leaderboardHint": "See how your squad ranks",
+    "noSearchMatches": "No friends match that search."
   },
   "rewards": {
     "title": "Phần thưởng",
@@ -649,5 +670,29 @@
     "priceTitle": "Giá",
     "remaining": "Còn {{left}} / {{total}}",
     "ctaDisabled": "Không khả dụng"
+  },
+  "splash": {
+    "frameKicker": "COLLECTOR VAULT",
+    "frameHeadline": "Your next pull",
+    "frameTagline": "Live drops · Fair odds",
+    "frameLine": "Where every pull begins"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to Pull Hub",
+    "welcomeSubtitle": "Sign up to get a free pack — or preview the lobby first.",
+    "signUpCta": "Sign up free",
+    "signInCta": "Sign in",
+    "continueGuest": "Continue as guest",
+    "sheetHint": "Swipe down anytime to browse the app.",
+    "promptEyebrow": "Nice pull",
+    "promptTitle": "Sign up to keep it",
+    "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
+    "promptSignUp": "Claim free pack",
+    "promptSignIn": "I already have an account",
+    "promptLater": "Maybe later",
+    "guestClaimTitle": "Sign in to claim",
+    "guestClaimBody": "Vault saves and rewards need an account — it only takes a moment.",
+    "friendsGuestTitle": "Friends unlock with sign-in",
+    "friendsGuestBody": "Preview the space now. Sign in to add friends, share your QR, and sync your circle."
   }
 }

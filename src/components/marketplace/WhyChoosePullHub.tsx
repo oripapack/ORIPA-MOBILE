@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
+import { VaultFramedCard } from '../shared/VaultFramedCard';
 
 const POINTS: { pointKey: '1' | '2' | '3'; icon: string }[] = [
   { pointKey: '1', icon: '🚚' },
@@ -15,7 +16,7 @@ export function WhyChoosePullHub() {
   const { t } = useTranslation();
 
   return (
-    <View style={styles.wrap}>
+    <VaultFramedCard style={styles.outer} contentStyle={styles.inner}>
       <Text style={styles.sectionTitle}>{t('marketplace.whyTitle')}</Text>
 
       {POINTS.map(({ pointKey, icon }) => (
@@ -32,19 +33,20 @@ export function WhyChoosePullHub() {
           </View>
         </View>
       ))}
-    </View>
+    </VaultFramedCard>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    backgroundColor: colors.surfaceElevated,
+  outer: {
     marginHorizontal: spacing.base,
-    borderRadius: radius.xl,
-    padding: spacing.lg,
     marginBottom: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
+  },
+  inner: {
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.sm,
+    paddingRight: spacing.lg,
+    paddingLeft: spacing.lg + 6,
   },
   sectionTitle: {
     fontSize: fontSize.xl,
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: 'rgba(5,8,6,0.6)',
     borderWidth: 2,
     borderColor: colors.red,
     alignItems: 'center',
@@ -79,26 +81,25 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     backgroundColor: colors.red,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
+    paddingVertical: 4,
     borderRadius: radius.sm,
     marginBottom: spacing.xs,
   },
   pointPillText: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontWeight: fontWeight.black,
     color: colors.white,
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
   },
   heading: {
-    fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.black,
     color: colors.textPrimary,
     marginBottom: spacing.xs,
-    lineHeight: 22,
   },
   body: {
     fontSize: fontSize.sm,
     color: colors.textSecondary,
-    lineHeight: 20,
+    lineHeight: 22,
   },
 });

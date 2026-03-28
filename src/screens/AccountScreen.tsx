@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
@@ -8,41 +9,19 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
 import { fontSize, fontWeight } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
-import { ListRow } from '../components/shared/ListRow';
 import { useAppStore } from '../store/useAppStore';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
-import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
 import { isClerkEnabled } from '../config/clerk';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
-import { AccountSignOutFooter } from '../components/account/AccountSignOutFooter';
-import { PullHistoryRow, useCompletedPullsSorted } from '../components/account/PullHistoryRow';
 import { useRequireAuth } from '../hooks/useRequireAuth';
-import { openExternalUrl } from '../utils/openExternalUrl';
-import { SUPPORT_EMAIL } from '../config/app';
-
-/** Secondary quick links — pull history is the primary chip above (full list lives on PullHistory). */
-const secondaryShortcutIds = ['notif', 'hot', 'promos'] as const;
-const secondaryShortcutIcons: Record<(typeof secondaryShortcutIds)[number], string> = {
-  notif: '🔔',
-  hot: '🔥',
-  promos: '🎟️',
-};
-
-const accountRowKeys = ['shipping', 'payout', 'identity', 'linked'] as const;
-const accountIcons: Record<(typeof accountRowKeys)[number], string> = {
-  shipping: '📦',
-  payout: '🏦',
-  identity: '🪪',
-  linked: '🔗',
-};
-
-const supportRowKeys = ['help', 'contact', 'faq'] as const;
-const supportIcons: Record<(typeof supportRowKeys)[number], string> = {
-  help: '❓',
-  contact: '💬',
-  faq: '📖',
-};
+import { deriveSocialProfileFromUser, getActivityHighlights } from '../data/socialMock';
+import { formatUsd } from '../lib/socialFormat';
+import { SocialPullRow } from '../components/social/SocialPullRow';
+import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
+import { ActivityStrip } from '../components/social/ActivityStrip';
+import { VaultFramedCard } from '../components/shared/VaultFramedCard';
+import { ListRow } from '../components/shared/ListRow';
 
 type AccountNav = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Account'>,
@@ -60,14 +39,14 @@ export function AccountScreen() {
   const { requireAuth } = useRequireAuth();
 
   const showGuestSignInCard = isClerkEnabled && !clerkSignedIn;
+  const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
 
   const onGuestSignIn = useCallback(() => {
     forceAuthWall();
   }, [forceAuthWall]);
 
-  const completedSorted = useCompletedPullsSorted();
-  const latestWins = useMemo(() => completedSorted.slice(0, 3), [completedSorted]);
   const pct = Math.min(100, Math.round((user.xp / user.xpToNextTier) * 100));
+  const highlights = useMemo(() => getActivityHighlights(socialProfile), [socialProfile]);
 
   const tierColors: Record<string, string> = {
     Starter: '#6B7280',
@@ -77,53 +56,13 @@ export function AccountScreen() {
   };
   const tierColor = tierColors[user.tier] ?? colors.textSecondary;
 
-  const secondaryShortcuts = useMemo(
-    () =>
-      secondaryShortcutIds.map((id) => ({
-        id,
-        icon: secondaryShortcutIcons[id],
-        label: t(`shortcuts.${id}`),
-      })),
-    [t],
-  );
-
   const goPullHistory = useCallback(() => {
     requireAuth(() => navigation.navigate('PullHistory'));
   }, [navigation, requireAuth]);
 
-  const onSecondaryShortcut = useCallback(
-    (id: (typeof secondaryShortcutIds)[number]) => {
-      requireAuth(() => {
-        if (id === 'notif') navigation.navigate('Notifications');
-        if (id === 'hot') navigation.navigate('HotDropsInfo');
-        if (id === 'promos') navigation.navigate('PromosInfo');
-      });
-    },
-    [navigation, requireAuth],
-  );
-
-  const onAccountRow = useCallback(
-    (key: (typeof accountRowKeys)[number]) => {
-      requireAuth(() => {
-        if (key === 'shipping') navigation.navigate('ShippingAddress');
-        if (key === 'payout') navigation.navigate('PayoutMethod');
-        if (key === 'identity') navigation.navigate('IdentityVerification');
-        if (key === 'linked') navigation.navigate('LinkedAccounts');
-      });
-    },
-    [navigation, requireAuth],
-  );
-
-  const onSupportRow = useCallback(
-    (key: (typeof supportRowKeys)[number]) => {
-      if (key === 'help' || key === 'faq') {
-        navigation.navigate('HelpCenter');
-        return;
-      }
-      void openExternalUrl(`mailto:${SUPPORT_EMAIL}`, t('supportRows.contact'));
-    },
-    [navigation, t],
-  );
+  const goPromotions = useCallback(() => {
+    requireAuth(() => navigation.navigate('Promotions'));
+  }, [navigation, requireAuth]);
 
   return (
     <ScrollView
@@ -132,10 +71,21 @@ export function AccountScreen() {
       showsVerticalScrollIndicator={false}
       refreshControl={refreshControl}
     >
-      <Text style={styles.pageTitle}>{t('account.title')}</Text>
+      <View style={styles.titleRow}>
+        <Text style={styles.pageTitle}>{t('account.title')}</Text>
+        <TouchableOpacity
+          style={styles.settingsBtn}
+          onPress={() => navigation.navigate('Settings')}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.title')}
+        >
+          <Ionicons name="settings-outline" size={22} color={colors.textPrimary} />
+        </TouchableOpacity>
+      </View>
 
       {showGuestSignInCard ? (
-        <View style={styles.guestSignInCard}>
+        <VaultFramedCard style={styles.guestSignInCard}>
           <Text style={styles.guestSignInEyebrow}>{t('account.guestSignInEyebrow')}</Text>
           <Text style={styles.guestSignInTitle}>{t('account.guestSignInTitle')}</Text>
           <Text style={styles.guestSignInBody}>{t('account.guestSignInBody')}</Text>
@@ -148,11 +98,50 @@ export function AccountScreen() {
           >
             <Text style={styles.guestSignInBtnText}>{t('account.guestSignInCta')}</Text>
           </TouchableOpacity>
-        </View>
+        </VaultFramedCard>
       ) : null}
 
+      <VaultFramedCard style={styles.profileCard}>
+        <View style={styles.profileHero}>
+          <Text style={styles.profileAvatar}>{socialProfile.avatarEmoji}</Text>
+          <View style={styles.profileMeta}>
+            <Text style={styles.profileName} numberOfLines={1}>
+              {socialProfile.displayName}
+            </Text>
+            <Text style={styles.profileUsername} numberOfLines={1}>
+              @{socialProfile.username}
+            </Text>
+            {socialProfile.status ? (
+              <Text style={styles.profileStatus} numberOfLines={1}>
+                {socialProfile.status}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+        <Text style={styles.profileBio} numberOfLines={3}>
+          {socialProfile.bio}
+        </Text>
+        <View style={styles.profileStatsRow}>
+          <View style={styles.profileStat}>
+            <Text style={styles.profileStatVal}>{socialProfile.stats.packsOpened}</Text>
+            <Text style={styles.profileStatLab}>Packs</Text>
+          </View>
+          <View style={styles.profileStat}>
+            <Text style={styles.profileStatVal}>{formatUsd(socialProfile.stats.totalEstimatedValue)}</Text>
+            <Text style={styles.profileStatLab}>Value</Text>
+          </View>
+          <View style={styles.profileStat}>
+            <Text style={styles.profileStatVal}>{socialProfile.luckScore}</Text>
+            <Text style={styles.profileStatLab}>Luck</Text>
+          </View>
+        </View>
+        <Text style={styles.joined}>
+          {t('social.joined', { date: new Date(socialProfile.joinDateIso).toLocaleDateString() })}
+        </Text>
+      </VaultFramedCard>
+
       {/* Tier + display name — primary profile block */}
-      <View style={styles.tierCard}>
+      <VaultFramedCard style={styles.tierCard} contentStyle={styles.tierCardInner}>
         <Text style={styles.tierDisplayName} numberOfLines={2}>
           {user.displayName}
         </Text>
@@ -183,120 +172,73 @@ export function AccountScreen() {
         >
           <Text style={styles.viewBenefitsText}>{t('rewards.viewBenefits')}</Text>
         </TouchableOpacity>
-      </View>
+      </VaultFramedCard>
 
-      <ClerkAccountSection />
+      <Text style={styles.section}>{t('account.sectionRewards')}</Text>
+      <VaultFramedCard style={styles.rewardsCard} contentStyle={styles.rewardsCardInner}>
+        <ListRow
+          label={t('promotions.enterFromAccount')}
+          icon={<Text>🎁</Text>}
+          onPress={goPromotions}
+        />
+      </VaultFramedCard>
 
-      {!user.isVerified ? (
-        <TouchableOpacity
-          style={styles.verifyIdentityCard}
-          onPress={() => requireAuth(() => navigation.navigate('IdentityVerification'))}
-          activeOpacity={0.85}
-          accessibilityRole="button"
-          accessibilityLabel={t('account.verifyIdentity')}
-        >
-          <View style={styles.verifyIdentityRow}>
-            <Text style={styles.verifyIdentityText}>{t('account.verifyIdentity')}</Text>
-            <Text style={styles.verifyIdentityChevron}>›</Text>
-          </View>
-        </TouchableOpacity>
-      ) : null}
-
-      {/* Player desk: full history is primary; everything else is secondary */}
-      <View style={styles.casinoStrip}>
-        <Text style={styles.casinoEyebrow}>{t('account.playerDeskEyebrow')}</Text>
-        <TouchableOpacity
-          style={styles.pullHistoryPrimary}
-          onPress={goPullHistory}
-          activeOpacity={0.88}
-          accessibilityRole="button"
-          accessibilityLabel={t('account.pullHistoryCta')}
-        >
-          <Text style={styles.pullHistoryPrimaryEmoji}>🎰</Text>
-          <View style={styles.pullHistoryPrimaryCopy}>
-            <Text style={styles.pullHistoryPrimaryTitle}>{t('account.pullHistoryCta')}</Text>
-            <Text style={styles.pullHistoryPrimarySub}>{t('account.pullHistorySub')}</Text>
-          </View>
-          <Text style={styles.pullHistoryChevron}>›</Text>
-        </TouchableOpacity>
-
-        <View style={styles.casinoDivider} />
-
-        <View style={styles.secondaryRow}>
-          {secondaryShortcuts.map((s) => (
-            <TouchableOpacity
-              key={s.id}
-              style={styles.secondaryItem}
-              activeOpacity={0.75}
-              onPress={() => onSecondaryShortcut(s.id)}
-            >
-              <Text style={styles.secondaryIcon}>{s.icon}</Text>
-              <Text style={styles.secondaryLabel} numberOfLines={2}>
-                {s.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
+      <VaultFramedCard style={styles.statGridWrap}>
+        <View style={styles.statGrid}>
+        <View style={styles.statCell}>
+          <Text style={styles.statVal}>{socialProfile.stats.packsOpened}</Text>
+          <Text style={styles.statLab}>{t('social.statPacks')}</Text>
         </View>
-      </View>
-
-      {/* Latest wins preview — full log is PullHistory */}
-      <Text style={styles.pullSectionTitle}>{t('rewards.latestWins')}</Text>
-      {latestWins.map((pull) => (
-        <PullHistoryRow key={pull.id} pull={pull} />
-      ))}
-
-      {latestWins.length > 0 ? (
-        <TouchableOpacity
-          style={styles.viewHistoryBtn}
-          onPress={goPullHistory}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.viewHistoryText}>{t('rewards.viewFullHistory')}</Text>
-        </TouchableOpacity>
-      ) : null}
-
-      {latestWins.length === 0 && (
-        <View style={styles.emptyState}>
-          <Text style={styles.emptyIcon}>🎲</Text>
-          <Text style={styles.emptyTitle}>{t('rewards.noPullsTitle')}</Text>
-          <Text style={styles.emptyBody}>{t('rewards.noPullsBody')}</Text>
+        <View style={styles.statCell}>
+          <Text style={styles.statVal}>{formatUsd(socialProfile.stats.totalEstimatedValue)}</Text>
+          <Text style={styles.statLab}>{t('social.statValue')}</Text>
         </View>
+        <View style={styles.statCell}>
+          <Text style={styles.statVal}>{socialProfile.stats.chaseHits}</Text>
+          <Text style={styles.statLab}>{t('social.statChase')}</Text>
+        </View>
+        <View style={styles.statCell}>
+          <Text style={styles.statVal}>{socialProfile.luckScore}</Text>
+          <Text style={styles.statLab}>{t('social.statLuck')}</Text>
+        </View>
+        </View>
+      </VaultFramedCard>
+
+      <Text style={styles.section}>{t('social.bestPull')}</Text>
+      <VaultFramedCard fill="felt" style={styles.bestCard}>
+        <Text style={styles.bestName} numberOfLines={2}>
+          {socialProfile.stats.bestPullCardName}
+        </Text>
+        <Text style={styles.bestVal}>{formatUsd(socialProfile.stats.bestPullValue)}</Text>
+        <Text style={styles.bestSub}>{t('social.estimatedValue')}</Text>
+      </VaultFramedCard>
+
+      <Text style={styles.section}>{t('social.rarityMix')}</Text>
+      <RarityBreakdownMini breakdown={socialProfile.stats.rarityBreakdown} />
+
+      <Text style={styles.section}>{t('social.highlights')}</Text>
+      <ActivityStrip items={highlights} />
+
+      <Text style={styles.section}>{t('social.recentPulls')}</Text>
+      {socialProfile.recentPulls.length === 0 ? (
+        <Text style={styles.emptyPulls}>{t('social.noRecentPulls')}</Text>
+      ) : (
+        socialProfile.recentPulls.map((pull) => <SocialPullRow key={pull.id} pull={pull} />)
       )}
 
-      <Text style={styles.sectionHeader}>{t('account.sectionAccount')}</Text>
-      <View style={styles.listGroup}>
-        {accountRowKeys.map((key) => (
-          <ListRow
-            key={key}
-            label={t(`accountRows.${key}`)}
-            icon={<Text>{accountIcons[key]}</Text>}
-            onPress={() => onAccountRow(key)}
-          />
-        ))}
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.btnDark} onPress={goPullHistory} activeOpacity={0.88}>
+          <Text style={styles.btnDarkText}>{t('account.pullHistoryCta')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.btnOutline}
+          onPress={() => navigation.navigate('FriendsLeaderboard')}
+          activeOpacity={0.88}
+        >
+          <Text style={styles.btnOutlineText}>{t('social.openLeaderboard')}</Text>
+        </TouchableOpacity>
       </View>
 
-      <Text style={styles.sectionHeader}>{t('account.sectionSupport')}</Text>
-      <View style={styles.listGroup}>
-        {supportRowKeys.map((key) => (
-          <ListRow
-            key={key}
-            label={t(`supportRows.${key}`)}
-            icon={<Text>{supportIcons[key]}</Text>}
-            onPress={() => onSupportRow(key)}
-          />
-        ))}
-      </View>
-
-      <Text style={styles.sectionHeader}>{t('account.sectionMore')}</Text>
-      <View style={styles.listGroup}>
-        <ListRow
-          label={t('settings.title')}
-          icon={<Text>⚙️</Text>}
-          onPress={() => navigation.navigate('Settings')}
-        />
-      </View>
-
-      <AccountSignOutFooter visible={isClerkEnabled && clerkSignedIn} />
     </ScrollView>
   );
 }
@@ -310,25 +252,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingBottom: 120,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.base,
+  },
   pageTitle: {
     fontSize: fontSize.xxl,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
-    marginBottom: spacing.base,
     letterSpacing: -0.5,
   },
-  guestSignInCard: {
+  settingsBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.xl,
-    padding: spacing.lg,
-    marginBottom: spacing.base,
     borderWidth: 1,
     borderColor: colors.border,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 2,
+  },
+  guestSignInCard: {
+    marginBottom: spacing.base,
   },
   guestSignInEyebrow: {
     fontSize: fontSize.xs,
@@ -365,15 +312,96 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   tierCard: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.xl,
-    padding: spacing.xl + 4,
     marginBottom: spacing.base,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 2,
+  },
+  tierCardInner: {
+    paddingTop: spacing.xl + 2,
+    paddingBottom: spacing.xl + 2,
+  },
+  profileCard: {
+    marginBottom: spacing.base,
+  },
+  statGridWrap: {
+    marginBottom: spacing.lg,
+  },
+  profileHero: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  profileAvatar: {
+    width: 48,
+    height: 48,
+    lineHeight: 48,
+    textAlign: 'center',
+    borderRadius: 24,
+    overflow: 'hidden',
+    backgroundColor: colors.background,
+    fontSize: 26,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  profileMeta: {
+    flex: 1,
+    minWidth: 0,
+  },
+  profileName: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.black,
+    color: colors.textPrimary,
+  },
+  profileUsername: {
+    marginTop: 2,
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.semibold,
+    color: colors.textMuted,
+  },
+  profileStatus: {
+    marginTop: 4,
+    fontSize: 10,
+    fontWeight: fontWeight.bold,
+    color: colors.red,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+  },
+  profileBio: {
+    marginTop: spacing.sm,
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    lineHeight: 20,
+  },
+  profileStatsRow: {
+    marginTop: spacing.md,
+    flexDirection: 'row',
+    gap: spacing.xs,
+  },
+  profileStat: {
+    flex: 1,
+    borderRadius: radius.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+    backgroundColor: 'rgba(2,6,23,0.24)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    alignItems: 'center',
+  },
+  profileStatVal: {
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.black,
+    color: colors.textPrimary,
+  },
+  profileStatLab: {
+    marginTop: 2,
+    fontSize: 10,
+    fontWeight: fontWeight.bold,
+    color: colors.textMuted,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+  },
+  joined: {
+    marginTop: spacing.md,
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
   },
   tierDisplayName: {
     fontSize: fontSize.hero,
@@ -451,176 +479,100 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.semibold,
     color: colors.red,
   },
-  verifyIdentityCard: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.base,
-    marginBottom: spacing.base,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  verifyIdentityRow: {
+  statGrid: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: spacing.md,
-  },
-  verifyIdentityText: {
-    flex: 1,
-    fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
-    color: colors.textPrimary,
-  },
-  verifyIdentityChevron: {
-    fontSize: 22,
-    fontWeight: fontWeight.regular,
-    color: colors.textMuted,
-  },
-  casinoStrip: {
-    backgroundColor: colors.casinoFelt,
-    borderRadius: radius.xl,
-    padding: spacing.lg,
-    marginBottom: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.casinoFeltBorder,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.35,
-    shadowRadius: 20,
-    elevation: 8,
-  },
-  casinoEyebrow: {
-    fontSize: 10,
-    fontWeight: fontWeight.black,
-    color: colors.casinoGold,
-    letterSpacing: 2,
-    marginBottom: spacing.md,
-    opacity: 0.9,
-  },
-  pullHistoryPrimary: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    borderWidth: 1,
-    borderColor: 'rgba(240, 193, 76, 0.45)',
-  },
-  pullHistoryPrimaryEmoji: {
-    fontSize: 28,
-  },
-  pullHistoryPrimaryCopy: {
-    flex: 1,
-    minWidth: 0,
-  },
-  pullHistoryPrimaryTitle: {
-    fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
-    color: colors.white,
-    letterSpacing: 0.3,
-  },
-  pullHistoryPrimarySub: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.medium,
-    color: 'rgba(248,250,252,0.55)',
-    marginTop: 2,
-    lineHeight: 16,
-  },
-  pullHistoryChevron: {
-    fontSize: 28,
-    fontWeight: fontWeight.regular,
-    color: colors.casinoGold,
-    marginTop: -2,
-  },
-  casinoDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    marginVertical: spacing.md,
-  },
-  secondaryRow: {
-    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: spacing.sm,
   },
-  secondaryItem: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.xs,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: 4,
-    borderRadius: radius.md,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+  statCell: {
+    width: '47%',
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.lg,
+    padding: spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-    minHeight: 72,
+    borderColor: 'rgba(15,23,42,0.06)',
   },
-  secondaryIcon: {
-    fontSize: 22,
-  },
-  secondaryLabel: {
-    fontSize: 10,
-    fontWeight: fontWeight.bold,
-    color: 'rgba(248,250,252,0.88)',
-    textAlign: 'center',
-    lineHeight: 13,
-  },
-  pullSectionTitle: {
+  statVal: {
     fontSize: fontSize.lg,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
-    marginBottom: spacing.md,
-    marginTop: spacing.xs,
-    letterSpacing: -0.2,
   },
-  viewHistoryBtn: {
-    alignSelf: 'flex-start',
-    marginTop: spacing.sm,
-    marginBottom: spacing.sm,
-  },
-  viewHistoryText: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
-    color: colors.red,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-    marginBottom: spacing.base,
-  },
-  emptyIcon: {
-    fontSize: 48,
-    marginBottom: spacing.base,
-  },
-  emptyTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-  emptyBody: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  sectionHeader: {
-    fontSize: fontSize.xs,
+  statLab: {
+    marginTop: 4,
+    fontSize: 10,
     fontWeight: fontWeight.bold,
     color: colors.textMuted,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    marginTop: spacing.xl,
-    marginBottom: spacing.xs,
-    paddingLeft: spacing.xs,
+    letterSpacing: 0.5,
   },
-  listGroup: {
-    backgroundColor: colors.surfaceElevated,
+  section: {
+    fontSize: 10,
+    fontWeight: fontWeight.black,
+    color: colors.textMuted,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    marginBottom: spacing.md,
+    marginTop: spacing.sm,
+  },
+  rewardsCard: {
+    marginBottom: spacing.lg,
+  },
+  rewardsCardInner: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingRight: 0,
+    paddingLeft: 11,
+  },
+  bestCard: {
+    marginBottom: spacing.lg,
+  },
+  bestName: {
+    fontSize: fontSize.lg,
+    fontWeight: fontWeight.black,
+    color: colors.white,
+    marginBottom: spacing.sm,
+  },
+  bestVal: {
+    fontSize: fontSize.hero - 4,
+    fontWeight: fontWeight.black,
+    color: colors.casinoGold,
+  },
+  bestSub: {
+    marginTop: 4,
+    fontSize: fontSize.xs,
+    color: 'rgba(248,250,252,0.65)',
+  },
+  actions: {
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+  },
+  btnDark: {
+    height: 52,
     borderRadius: radius.lg,
-    overflow: 'hidden',
-    borderWidth: 1,
+    backgroundColor: colors.nearBlack,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnDarkText: {
+    color: colors.white,
+    fontWeight: fontWeight.black,
+    fontSize: fontSize.md,
+  },
+  btnOutline: {
+    height: 52,
+    borderRadius: radius.lg,
+    borderWidth: 1.5,
     borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnOutlineText: {
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.black,
+    color: colors.textPrimary,
+  },
+  emptyPulls: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    marginBottom: spacing.md,
   },
 });

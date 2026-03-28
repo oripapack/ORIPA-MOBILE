@@ -42,7 +42,8 @@
   "common": {
     "error": "Fout",
     "copied": "Gekopieerd",
-    "friendIdCopied": "Friend-ID gekopieerd naar klembord."
+    "friendIdCopied": "Friend-ID gekopieerd naar klembord.",
+    "close": "Close"
   },
   "helpCenter": {
     "navTitle": "Helpcentrum",
@@ -183,11 +184,27 @@
   "demoBanner": "Preview-build — credits en beloningen gesimuleerd.",
   "home": {
     "discover": "Ontdekken",
+    "browse": "Bladeren",
     "spotlightTitle": "Spotlight-boosters",
     "spotlightBody": "Uitgezochte drops en promo’s. Gebruik hieronder categorieën en sortering.",
     "browseAllPacks": "Alle boosters",
     "emptyCategory": "Nog geen boosters in deze categorie.",
-    "subfilterAll": "All packs"
+    "subfilterAll": "All packs",
+    "lobby": {
+      "featuredKicker": "Drop lobby",
+      "featuredEyebrow": "Vault spotlight",
+      "price": "Entry",
+      "remaining": "Inventory",
+      "viewOdds": "View odds",
+      "enterFloor": "Pack floor",
+      "recentKicker": "Recent pulls",
+      "railNewTitle": "New arrivals",
+      "railNewSub": "Fresh stock in this line — first look before the floor fills.",
+      "railHotTitle": "Hot floor",
+      "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
+      "railGradedTitle": "Graded vault",
+      "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
+    }
   },
   "packs": {
     "browseTitle": "Boostervloer",
@@ -238,7 +255,11 @@
     "yourUsername": "Jouw gebruikersnaam",
     "usernameHint": "Vrienden voegen je toe met deze unieke naam — hetzelfde als op je Speler-tab.",
     "enterFriendUsername": "Gebruikersnaam",
-    "placeholderUsername": "bijv. jordan"
+    "placeholderUsername": "bijv. jordan",
+    "searchPlaceholder": "Search by name or @handle…",
+    "sectionConnect": "Add & share",
+    "leaderboardHint": "See how your squad ranks",
+    "noSearchMatches": "No friends match that search."
   },
   "rewards": {
     "title": "Beloningen",
@@ -649,5 +670,29 @@
     "priceTitle": "Prijs",
     "remaining": "{{left}} van {{total}} over",
     "ctaDisabled": "Niet beschikbaar"
+  },
+  "splash": {
+    "frameKicker": "COLLECTOR VAULT",
+    "frameHeadline": "Your next pull",
+    "frameTagline": "Live drops · Fair odds",
+    "frameLine": "Where every pull begins"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to Pull Hub",
+    "welcomeSubtitle": "Sign up to get a free pack — or preview the lobby first.",
+    "signUpCta": "Sign up free",
+    "signInCta": "Sign in",
+    "continueGuest": "Continue as guest",
+    "sheetHint": "Swipe down anytime to browse the app.",
+    "promptEyebrow": "Nice pull",
+    "promptTitle": "Sign up to keep it",
+    "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
+    "promptSignUp": "Claim free pack",
+    "promptSignIn": "I already have an account",
+    "promptLater": "Maybe later",
+    "guestClaimTitle": "Sign in to claim",
+    "guestClaimBody": "Vault saves and rewards need an account — it only takes a moment.",
+    "friendsGuestTitle": "Friends unlock with sign-in",
+    "friendsGuestBody": "Preview the space now. Sign in to add friends, share your QR, and sync your circle."
   }
 }

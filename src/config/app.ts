@@ -25,6 +25,9 @@ export const APP_SLUG = packageJson.name;
 /** Help Center / Contact Support mailto target (replace before launch). */
 export const SUPPORT_EMAIL = 'support@pullhub.app';
 
+/** Public web origin for referral links (`?r=` username). */
+export const PUBLIC_WEB_ORIGIN = 'https://pullhub.com';
+
 /** If true, Buy Credits is clearly labeled as mock (no real charges). */
 export const CREDITS_ARE_MOCK = true;
 

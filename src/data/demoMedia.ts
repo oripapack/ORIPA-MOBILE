@@ -21,7 +21,7 @@ export function demoPackHeroImage(seed: string): string {
 }
 
 /**
- * Deterministic square placeholder for marketplace listing thumbs.
+ * Deterministic square placeholder for marketplace listing thumbs. 
  * `marketplace.ts` uses explicit Unsplash URLs per listing; keep this for tests or quick demos.
  */
 export function demoListingThumb(seed: string): string {

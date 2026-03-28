@@ -6,12 +6,13 @@ import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from 'reac
 import { useTranslation } from 'react-i18next';
 import { ChipTagType, Pack } from '../../data/mockPacks';
 import { mockPackTopHits } from '../../data/mockTopHits';
+import { getMockPackOdds } from '../../data/mockPackOdds';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
-import { useRequireAuth } from '../../hooks/useRequireAuth';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
+import { PackOddsModal } from './PackOddsModal';
 
 const WIN_W = Dimensions.get('window').width;
 const CARD_GUTTER = spacing.base * 2;
@@ -74,13 +75,13 @@ interface Props {
 
 export function PackCard({ pack, onPress }: Props) {
   const { t } = useTranslation();
-  const { requireAuth } = useRequireAuth();
   const openPack = useAppStore((s) => s.openPack);
   const isPackOpening = useAppStore((s) => s.modals.packOpening);
-  const awaitingFulfillment = useAppStore((s) => !!s.pendingFulfillmentPullId);
+  const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
   const pct = Math.round((pack.remainingInventory / pack.totalInventory) * 100);
   const loc = getLocalizedPackFields(pack, t);
   const topHit = mockPackTopHits[String(pack.id)];
+  const isChase = !!topHit?.isChase || pack.tags.includes('chase_boost');
 
   const primary = useMemo(() => primaryTag(pack.tags), [pack.tags]);
   const secondary = useMemo(() => secondaryTag(pack.tags, primary), [pack.tags, primary]);
@@ -93,38 +94,49 @@ export function PackCard({ pack, onPress }: Props) {
   const shimmerX = useRef(new Animated.Value(-90)).current;
   const shimmerOpacity = useRef(new Animated.Value(0)).current;
   const [ctaW, setCtaW] = useState(320);
+  const [oddsOpen, setOddsOpen] = useState(false);
+  const odds = useMemo(() => getMockPackOdds(String(pack.id)), [pack.id]);
 
   useEffect(() => {
-    // Flashier pulse so movement is clearly visible.
+    if (!isChase) {
+      tierPulse.stopAnimation();
+      tierPulse.setValue(0);
+      return;
+    }
     const loop = Animated.loop(
       Animated.sequence([
-        Animated.timing(tierPulse, { toValue: 1, duration: 700, useNativeDriver: false }),
-        Animated.timing(tierPulse, { toValue: 0, duration: 700, useNativeDriver: false }),
+        Animated.timing(tierPulse, { toValue: 1, duration: 760, useNativeDriver: false }),
+        Animated.timing(tierPulse, { toValue: 0, duration: 760, useNativeDriver: false }),
       ]),
     );
     loop.start();
     return () => loop.stop();
-  }, [tierPulse]);
+  }, [isChase, tierPulse]);
 
   useEffect(() => {
+    if (!isChase) {
+      shimmerOpacity.setValue(0);
+      shimmerX.setValue(-90);
+      return;
+    }
     const loop = Animated.loop(
       Animated.sequence([
-        Animated.delay(550),
+        Animated.delay(700),
         Animated.parallel([
-          Animated.timing(shimmerOpacity, { toValue: 1, duration: 130, useNativeDriver: true }),
+          Animated.timing(shimmerOpacity, { toValue: 1, duration: 120, useNativeDriver: true }),
           Animated.timing(shimmerX, {
             toValue: ctaW + 90,
-            duration: 650,
+            duration: 700,
             useNativeDriver: true,
           }),
         ]),
-        Animated.timing(shimmerOpacity, { toValue: 0, duration: 90, useNativeDriver: true }),
+        Animated.timing(shimmerOpacity, { toValue: 0, duration: 100, useNativeDriver: true }),
         Animated.timing(shimmerX, { toValue: -90, duration: 0, useNativeDriver: true }),
       ]),
     );
     loop.start();
     return () => loop.stop();
-  }, [ctaW, shimmerOpacity, shimmerX]);
+  }, [isChase, ctaW, shimmerOpacity, shimmerX]);
 
   const ctaPressIn = () => {
     Animated.parallel([
@@ -236,7 +248,13 @@ export function PackCard({ pack, onPress }: Props) {
             style={[
               styles.badgeCluster,
               {
-                transform: [{ scale: tierPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.08] }) }],
+                transform: [
+                  {
+                    scale: isChase
+                      ? tierPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.07] })
+                      : 1,
+                  },
+                ],
               },
             ]}
           >
@@ -329,16 +347,29 @@ export function PackCard({ pack, onPress }: Props) {
         <Text style={styles.guaranteeText} numberOfLines={2}>
           {loc.guaranteeText}
         </Text>
+        <Pressable style={styles.oddsBtn} onPress={() => setOddsOpen(true)}>
+          <Text style={styles.oddsBtnText}>View Odds</Text>
+        </Pressable>
       </View>
 
       <Animated.View
         style={[
           styles.ctaOuter,
           {
-            transform: [{ scale: tierPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.04] }) }],
             shadowColor: CTA_GLOW.glow,
-            shadowOpacity: tierPulse.interpolate({ inputRange: [0, 1], outputRange: [0.32, 0.62] }),
-            shadowRadius: tierPulse.interpolate({ inputRange: [0, 1], outputRange: [24, 42] }),
+            transform: [
+              {
+                scale: isChase
+                  ? tierPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] })
+                  : 1,
+              },
+            ],
+            shadowOpacity: isChase
+              ? tierPulse.interpolate({ inputRange: [0, 1], outputRange: [0.30, 0.56] })
+              : ctaGlow.interpolate({ inputRange: [0, 1], outputRange: [0.16, 0.32] }),
+            shadowRadius: isChase
+              ? tierPulse.interpolate({ inputRange: [0, 1], outputRange: [18, 34] })
+              : ctaGlow.interpolate({ inputRange: [0, 1], outputRange: [14, 24] }),
           },
           (isPackOpening || awaitingFulfillment) && styles.ctaDisabled,
         ]}
@@ -353,7 +384,7 @@ export function PackCard({ pack, onPress }: Props) {
               'overflow-hidden',
               'bg-slate-900/75 border-amber-300/40',
             ].join(' ')}
-            onPress={() => requireAuth(() => openPack(pack))}
+            onPress={() => openPack(pack)}
             onPressIn={ctaPressIn}
             onPressOut={ctaPressOut}
             onHoverIn={ctaHoverIn}
@@ -376,25 +407,26 @@ export function PackCard({ pack, onPress }: Props) {
               end={{ x: 0.9, y: 1 }}
               style={styles.ctaSheen}
             />
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                styles.shimmerWrap,
-                {
-                  opacity: shimmerOpacity,
-                  transform: [{ translateX: shimmerX }, { rotate: '12deg' }],
-                },
-              ]}
-            >
-              <LinearGradient
-                colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.75)', 'rgba(255,255,255,0)']}
-                locations={[0, 0.5, 1]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.shimmer}
-              />
-            </Animated.View>
-
+            {isChase ? (
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.shimmerWrap,
+                  {
+                    opacity: shimmerOpacity,
+                    transform: [{ translateX: shimmerX }, { rotate: '12deg' }],
+                  },
+                ]}
+              >
+                <LinearGradient
+                  colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.78)', 'rgba(255,255,255,0)']}
+                  locations={[0, 0.5, 1]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.shimmer}
+                />
+              </Animated.View>
+            ) : null}
             <View style={styles.ctaInner}>
               <Text
                 style={styles.ctaText}
@@ -405,6 +437,8 @@ export function PackCard({ pack, onPress }: Props) {
           </Pressable>
         </Animated.View>
       </Animated.View>
+
+      <PackOddsModal visible={oddsOpen} onClose={() => setOddsOpen(false)} packTitle={loc.title} odds={odds} />
     </Animated.View>
   );
 }
@@ -668,6 +702,22 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 17,
   },
+  oddsBtn: {
+    marginTop: spacing.sm,
+    alignSelf: 'flex-start',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: 'rgba(2,6,23,0.30)',
+    paddingHorizontal: spacing.sm + 2,
+    paddingVertical: 6,
+  },
+  oddsBtnText: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.semibold,
+    color: colors.textPrimary,
+    letterSpacing: 0.2,
+  },
   ctaOuter: {
     marginHorizontal: spacing.base,
     marginBottom: spacing.base,
@@ -695,9 +745,9 @@ const styles = StyleSheet.create({
   shimmerWrap: {
     position: 'absolute',
     left: 0,
-    top: -34,
-    bottom: -34,
-    width: 140,
+    top: -30,
+    bottom: -30,
+    width: 130,
   },
   shimmer: {
     flex: 1,

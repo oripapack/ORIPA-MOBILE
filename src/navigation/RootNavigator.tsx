@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
 import { useAuth, useUser } from '@clerk/clerk-expo';
@@ -22,6 +23,7 @@ import { PullHistoryScreen } from '../screens/PullHistoryScreen';
 import { LinkedAccountsScreen } from '../screens/LinkedAccountsScreen';
 import { IdentityVerificationScreen } from '../screens/IdentityVerificationScreen';
 import { PayoutMethodScreen } from '../screens/PayoutMethodScreen';
+import { PromotionsScreen } from '../screens/PromotionsScreen';
 import { PackDetailsScreen } from '../screens/PackDetailsScreen';
 import { FriendProfileScreen } from '../screens/FriendProfileScreen';
 import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
@@ -30,7 +32,7 @@ import { navigationRef } from './navigationRef';
 import { colors } from '../tokens/colors';
 import { fontSize, fontWeight } from '../tokens/typography';
 import { RootStackParamList } from './types';
-import { AuthScreen } from '../screens/AuthScreen';
+import { GuestAuthWallModal } from '../components/auth/GuestAuthWallModal';
 import { LinkPhoneScreen } from '../screens/LinkPhoneScreen';
 import { ProfileOnboardingScreen } from '../screens/ProfileOnboardingScreen';
 import { ClerkProfileSync } from '../components/account/ClerkProfileSync';
@@ -38,6 +40,13 @@ import { isClerkEnabled, requirePhoneVerification } from '../config/clerk';
 import { hasVerifiedPhone } from '../lib/clerkPhone';
 import { hasCompletedProfileOnboarding } from '../lib/clerkProfile';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
+import { usePromotionStore } from '../store/promotionStore';
+import { AppBootEntrance, BOOT_ENTRANCE_SPRING } from '../components/splash/AppBootEntrance';
+import { AppSplashScreen } from '../components/splash/AppSplashScreen';
+import { GuestModeProvider } from '../context/GuestModeContext';
+import { OnboardingGate } from '../components/onboarding/OnboardingGate';
+import { useReferralLinkListener } from '../hooks/useReferralLinkListener';
+import { PromotionSync } from '../components/promotions/PromotionSync';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -235,6 +244,13 @@ function RootStack() {
             headerStyle: { backgroundColor: colors.surfaceElevated },
           }}
         />
+        <Stack.Screen
+          name="Promotions"
+          component={PromotionsScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack.Navigator>
       <GlobalPackModals />
     </>
@@ -243,9 +259,16 @@ function RootStack() {
 
 function GuestHydration() {
   const hydrate = useGuestBrowseStore((s) => s.hydrate);
+  const hydratePromotions = usePromotionStore((s) => s.hydrate);
   useEffect(() => {
     void hydrate();
-  }, [hydrate]);
+    void hydratePromotions();
+  }, [hydrate, hydratePromotions]);
+  return null;
+}
+
+function ReferralLinkBootstrap() {
+  useReferralLinkListener();
   return null;
 }
 
@@ -253,66 +276,89 @@ function ClerkAuthGate() {
   const { isLoaded, isSignedIn } = useAuth();
   const { user, isLoaded: userLoaded } = useUser();
   const hydrated = useGuestBrowseStore((s) => s.hydrated);
-  const guestBrowseEnabled = useGuestBrowseStore((s) => s.guestBrowseEnabled);
   const authWallForced = useGuestBrowseStore((s) => s.authWallForced);
+  const onboardingSheetDismissed = useGuestBrowseStore((s) => s.onboardingSheetDismissed);
+  const [splashDone, setSplashDone] = useState(false);
+  const bootEntrance = useSharedValue(0);
 
-  if (!isLoaded) {
-    return (
-      <View style={styles.authLoading}>
-        <ActivityIndicator size="large" color={colors.red} />
-      </View>
-    );
-  }
+  const loading = !isLoaded || !hydrated || (isSignedIn && (!userLoaded || !user));
 
-  if (!hydrated) {
-    return (
-      <View style={styles.authLoading}>
-        <ActivityIndicator size="large" color={colors.red} />
-      </View>
-    );
-  }
+  const onSplashExitStart = useCallback(() => {
+    bootEntrance.value = withSpring(1, BOOT_ENTRANCE_SPRING);
+  }, [bootEntrance]);
 
-  if (!isSignedIn) {
-    const allowGuest = guestBrowseEnabled && !authWallForced;
-    if (allowGuest) {
-      return <RootStack />;
+  let content: React.ReactNode = null;
+  if (!loading) {
+    if (!isSignedIn) {
+      content = (
+        <>
+          <RootStack />
+          {!onboardingSheetDismissed && !authWallForced ? <OnboardingGate /> : null}
+          {authWallForced ? <GuestAuthWallModal /> : null}
+        </>
+      );
+    } else if (user && requirePhoneVerification && !hasVerifiedPhone(user)) {
+      content = <LinkPhoneScreen />;
+    } else if (user && !hasCompletedProfileOnboarding(user)) {
+      content = <ProfileOnboardingScreen />;
+    } else {
+      content = <RootStack />;
     }
-    return <AuthScreen welcomeMode />;
   }
 
-  if (!userLoaded || !user) {
-    return (
-      <View style={styles.authLoading}>
-        <ActivityIndicator size="large" color={colors.red} />
-      </View>
-    );
-  }
+  return (
+    <View style={styles.gateRoot}>
+      <AppBootEntrance entrance={bootEntrance}>{content}</AppBootEntrance>
+      {!splashDone ? (
+        <AppSplashScreen
+          exitTrigger={!loading}
+          onExitStart={onSplashExitStart}
+          onExitComplete={() => setSplashDone(true)}
+        />
+      ) : null}
+    </View>
+  );
+}
 
-  if (requirePhoneVerification && !hasVerifiedPhone(user)) {
-    return <LinkPhoneScreen />;
-  }
+/** Clerk disabled — still show branded boot once before tabs (dev / demo). */
+function NonClerkBoot() {
+  const [splashDone, setSplashDone] = useState(false);
+  const bootEntrance = useSharedValue(0);
 
-  if (!hasCompletedProfileOnboarding(user)) {
-    return <ProfileOnboardingScreen />;
-  }
+  const onSplashExitStart = useCallback(() => {
+    bootEntrance.value = withSpring(1, BOOT_ENTRANCE_SPRING);
+  }, [bootEntrance]);
 
-  return <RootStack />;
+  return (
+    <View style={styles.gateRoot}>
+      <AppBootEntrance entrance={bootEntrance}>
+        <RootStack />
+      </AppBootEntrance>
+      {!splashDone ? (
+        <AppSplashScreen
+          exitTrigger={true}
+          onExitStart={onSplashExitStart}
+          onExitComplete={() => setSplashDone(true)}
+        />
+      ) : null}
+    </View>
+  );
 }
 
 export function RootNavigator() {
   return (
     <NavigationContainer ref={navigationRef}>
       <GuestHydration />
-      {isClerkEnabled ? <ClerkAuthGate /> : <RootStack />}
+      <ReferralLinkBootstrap />
+      <PromotionSync />
+      <GuestModeProvider>{isClerkEnabled ? <ClerkAuthGate /> : <NonClerkBoot />}</GuestModeProvider>
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  authLoading: {
+  gateRoot: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: colors.background,
   },
   tabBar: {

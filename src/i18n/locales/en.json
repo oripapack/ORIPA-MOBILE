@@ -5,6 +5,27 @@
     "marketplace": "Shop",
     "account": "Player"
   },
+  "splash": {
+    "frameLine": "Where every pull begins"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to Pull Hub",
+    "welcomeSubtitle": "Sign up to get a free pack — or preview the lobby first.",
+    "signUpCta": "Sign up free",
+    "signInCta": "Sign in",
+    "continueGuest": "Continue as guest",
+    "sheetHint": "Swipe down anytime to browse the app.",
+    "promptEyebrow": "Nice pull",
+    "promptTitle": "Sign up to keep it",
+    "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
+    "promptSignUp": "Claim free pack",
+    "promptSignIn": "I already have an account",
+    "promptLater": "Maybe later",
+    "guestClaimTitle": "Sign in to claim",
+    "guestClaimBody": "Vault saves and rewards need an account — it only takes a moment.",
+    "friendsGuestTitle": "Friends unlock with sign-in",
+    "friendsGuestBody": "Preview the space now. Sign in to add friends, share your QR, and sync your circle."
+  },
   "search": {
     "title": "Search",
     "placeholder": "Search packs…",
@@ -59,6 +80,7 @@
   "common": {
     "error": "Error",
     "copied": "Copied",
+    "close": "Close",
     "friendIdCopied": "Friend ID copied to clipboard."
   },
   "helpCenter": {
@@ -207,11 +229,27 @@
   },
   "home": {
     "discover": "Discover",
+    "browse": "Browse",
     "spotlightTitle": "Spotlight packs",
     "spotlightBody": "Hand-picked drops and promos. Pick a product line, then narrow with filters.",
     "browseAllPacks": "Browse all packs",
     "subfilterAll": "All packs",
-    "emptyCategory": "No packs match this line and filter yet."
+    "emptyCategory": "No packs match this line and filter yet.",
+    "lobby": {
+      "featuredKicker": "Drop lobby",
+      "featuredEyebrow": "Vault spotlight",
+      "price": "Entry",
+      "remaining": "Inventory",
+      "viewOdds": "View odds",
+      "enterFloor": "Pack floor",
+      "recentKicker": "Recent pulls",
+      "railNewTitle": "New arrivals",
+      "railNewSub": "Fresh stock in this line — first look before the floor fills.",
+      "railHotTitle": "Hot floor",
+      "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
+      "railGradedTitle": "Graded vault",
+      "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
+    }
   },
   "packs": {
     "browseTitle": "Pack floor",
@@ -257,6 +295,10 @@
     "scanQr": "Scan QR code",
     "demoHint": "Demo: try jordan, sam_r, or casey_m — or legacy codes TCG-100001…003.",
     "yourFriends": "Your friends ({{count}})",
+    "searchPlaceholder": "Search by name or @handle…",
+    "noSearchMatches": "No friends match that search.",
+    "sectionConnect": "Add & share",
+    "leaderboardHint": "See how your squad ranks",
     "emptyTitle": "No friends yet",
     "emptyBody": "When you add someone, they’ll show up here so you can build on more social features later."
   },
@@ -322,6 +364,7 @@
     "sectionSupport": "Support",
     "sectionLegal": "Legal",
     "sectionPreferences": "Preferences",
+    "sectionRewards": "Rewards",
     "languageRegion": "Language & Region",
     "followUs": "Follow Us",
     "followSub": "Follow our official channels for promos, drops, and updates.",
@@ -339,6 +382,28 @@
     "usernameUnset": "Not set yet",
     "emailLabel": "Email",
     "phoneLabel": "Phone"
+  },
+  "promotions": {
+    "enterFromAccount": "Rewards & promo code",
+    "screenTitle": "Rewards",
+    "screenLead": "Invite friends or enter a code. Rewards apply to your wallet right away in this preview.",
+    "sectionReferral": "Invite friends",
+    "sectionCode": "Promo code",
+    "codeExplainer": "One use per account. Try WELCOME, FREEPACK, or LAUNCH.",
+    "codeLabel": "Code",
+    "codePlaceholder": "e.g. WELCOME",
+    "apply": "Apply",
+    "applyCode": "Apply promo code",
+    "referralEyebrow": "Your link",
+    "referralTitle": "Share Pull Hub",
+    "referralBody": "When a friend creates an account from your link, you both can earn rewards. Full referral payouts will use a server ledger at launch.",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "successEyebrow": "Applied",
+    "successCta": "Done",
+    "errorInvalid": "That code isn’t valid.",
+    "errorRedeemed": "You’ve already used this code.",
+    "errorInactive": "This promotion isn’t available."
   },
   "shortcuts": {
     "notif": "Alerts",

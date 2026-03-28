@@ -51,11 +51,27 @@
   },
   "home": {
     "discover": "발견",
+    "browse": "목록",
     "spotlightTitle": "스포트라이트 팩",
     "spotlightBody": "엄선된 드롭과 프로모. 아래 카테고리와 정렬로 찾아보세요.",
     "browseAllPacks": "모든 팩 보기",
     "emptyCategory": "이 카테고리에 아직 팩이 없습니다.",
-    "subfilterAll": "All packs"
+    "subfilterAll": "All packs",
+    "lobby": {
+      "featuredKicker": "Drop lobby",
+      "featuredEyebrow": "Vault spotlight",
+      "price": "Entry",
+      "remaining": "Inventory",
+      "viewOdds": "View odds",
+      "enterFloor": "Pack floor",
+      "recentKicker": "Recent pulls",
+      "railNewTitle": "New arrivals",
+      "railNewSub": "Fresh stock in this line — first look before the floor fills.",
+      "railHotTitle": "Hot floor",
+      "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
+      "railGradedTitle": "Graded vault",
+      "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
+    }
   },
   "packs": {
     "browseTitle": "팩 둘러보기",
@@ -106,7 +122,11 @@
     "yourUsername": "사용자 이름",
     "usernameHint": "친구는 이 고유 사용자 이름으로 나를 추가합니다—플레이어 탭과 동일합니다.",
     "enterFriendUsername": "사용자 이름",
-    "placeholderUsername": "예: jordan"
+    "placeholderUsername": "예: jordan",
+    "searchPlaceholder": "Search by name or @handle…",
+    "sectionConnect": "Add & share",
+    "leaderboardHint": "See how your squad ranks",
+    "noSearchMatches": "No friends match that search."
   },
   "rewards": {
     "title": "리워드",
@@ -365,7 +385,8 @@
   "common": {
     "copied": "복사됨",
     "friendIdCopied": "친구 ID가 클립보드에 복사되었습니다.",
-    "error": "오류"
+    "error": "오류",
+    "close": "Close"
   },
   "social": {
     "profileNavTitle": "프로필",
@@ -649,5 +670,29 @@
     "priceTitle": "가격",
     "remaining": "남은 수량: {{left}} / {{total}}",
     "ctaDisabled": "이용 불가"
+  },
+  "splash": {
+    "frameKicker": "COLLECTOR VAULT",
+    "frameHeadline": "Your next pull",
+    "frameTagline": "Live drops · Fair odds",
+    "frameLine": "Where every pull begins"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to Pull Hub",
+    "welcomeSubtitle": "Sign up to get a free pack — or preview the lobby first.",
+    "signUpCta": "Sign up free",
+    "signInCta": "Sign in",
+    "continueGuest": "Continue as guest",
+    "sheetHint": "Swipe down anytime to browse the app.",
+    "promptEyebrow": "Nice pull",
+    "promptTitle": "Sign up to keep it",
+    "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
+    "promptSignUp": "Claim free pack",
+    "promptSignIn": "I already have an account",
+    "promptLater": "Maybe later",
+    "guestClaimTitle": "Sign in to claim",
+    "guestClaimBody": "Vault saves and rewards need an account — it only takes a moment.",
+    "friendsGuestTitle": "Friends unlock with sign-in",
+    "friendsGuestBody": "Preview the space now. Sign in to add friends, share your QR, and sync your circle."
   }
 }

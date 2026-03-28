@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '@clerk/clerk-expo';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { AppUserUnsafeMetadata } from '../../lib/clerkProfile';
+import { VaultFramedCard } from '../shared/VaultFramedCard';
 
 /**
  * Username (handle), email, phone — display name lives on the tier card.
@@ -34,7 +35,7 @@ function ClerkAccountSectionInner() {
   const phone = user.primaryPhoneNumber?.phoneNumber;
 
   return (
-    <View style={styles.wrap}>
+    <VaultFramedCard style={styles.wrap}>
       <Text style={styles.eyebrow}>{t('account.accountDetailsEyebrow')}</Text>
 
       <View style={styles.fieldBlock}>
@@ -61,23 +62,13 @@ function ClerkAccountSectionInner() {
           </Text>
         </View>
       ) : null}
-    </View>
+    </VaultFramedCard>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: {
     marginBottom: spacing.lg,
-    padding: spacing.lg,
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 2,
   },
   eyebrow: {
     fontSize: fontSize.xs,
