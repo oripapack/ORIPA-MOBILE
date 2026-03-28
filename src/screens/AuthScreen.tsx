@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -40,13 +40,24 @@ type SignupPhase = 'form' | 'verify';
 type AuthScreenProps = {
   /** Welcome screen: signup promo strip + skip to browse as guest. */
   welcomeMode?: boolean;
+  /** When opened from onboarding / conversion modals. */
+  initialEmailMode?: EmailMode;
+  /** Modal close (e.g. page sheet). */
+  onRequestClose?: () => void;
+  /** Compact bottom sheet — less padding, transparent bg (gradient is on shell). */
+  presentation?: 'full' | 'sheet';
 };
 
 /**
  * OAuth: enable `oauth_google` / `oauth_apple` in Clerk → SSO connections.
  * Email: enable email + password + verification code in Clerk → User & authentication.
  */
-export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
+export function AuthScreen({
+  welcomeMode = false,
+  initialEmailMode,
+  onRequestClose,
+  presentation = 'full',
+}: AuthScreenProps) {
   const { t } = useTranslation();
   const welcomePromoSeen = useGuestBrowseStore((s) => s.welcomePromoSeen);
   const setGuestBrowseEnabled = useGuestBrowseStore((s) => s.setGuestBrowseEnabled);
@@ -62,7 +73,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
   const [emailBusy, setEmailBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [emailMode, setEmailMode] = useState<EmailMode>('signin');
+  const [emailMode, setEmailMode] = useState<EmailMode>(initialEmailMode ?? 'signin');
   const [signupPhase, setSignupPhase] = useState<SignupPhase>('form');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -76,6 +87,10 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
     setError(null);
     setCode('');
   };
+
+  useEffect(() => {
+    if (initialEmailMode) setEmailMode(initialEmailMode);
+  }, [initialEmailMode]);
 
   const activateSession = useCallback(
     async (sessionId: string | null | undefined) => {
@@ -200,10 +215,11 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
 
   const oauthDisabled = oauthBusy !== null || emailBusy;
   const emailDisabled = emailBusy || oauthBusy !== null;
+  const isSheet = presentation === 'sheet';
 
   if (!signInLoaded || !signUpLoaded) {
     return (
-      <View style={[styles.centered, { paddingTop: insets.top }]}>
+      <View style={[styles.centered, isSheet && styles.centeredSheet, { paddingTop: isSheet ? 0 : insets.top }]}>
         <ActivityIndicator size="large" color={colors.red} />
       </View>
     );
@@ -211,26 +227,53 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.flex}
+      style={[styles.flex, isSheet && styles.flexSheet]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 48 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? (isSheet ? 24 : 48) : 0}
     >
       <ScrollView
-        style={styles.flex}
+        style={[styles.flex, isSheet && styles.scrollSheet]}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: insets.top + spacing.lg, paddingBottom: insets.bottom + spacing.xl },
+          isSheet && styles.scrollContentSheet,
+          {
+            paddingTop: isSheet ? spacing.sm : insets.top + spacing.lg,
+            /* Sheet shell already applies bottom safe area — extra scroll padding only */
+            paddingBottom: isSheet ? spacing.xl : insets.bottom + spacing.xl,
+          },
         ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        nestedScrollEnabled
       >
-        <View style={styles.logoRow}>
-          <Text style={styles.logoPrimary}>{primary}</Text>
-          {secondary ? <Text style={styles.logoSecondary}>{secondary}</Text> : null}
+        {onRequestClose ? (
+          <View style={styles.modalHeader}>
+            <View style={styles.modalHeaderSpacer} />
+            <TouchableOpacity
+              onPress={onRequestClose}
+              hitSlop={14}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.close')}
+            >
+              <Ionicons name="close" size={isSheet ? 22 : 26} color={colors.textMuted} />
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
+        <View style={[styles.logoRow, isSheet && styles.logoRowSheet]}>
+          <Text style={[styles.logoPrimary, isSheet && styles.logoPrimarySheet]}>{primary}</Text>
+          {secondary ? (
+            <Text style={[styles.logoSecondary, isSheet && styles.logoSecondarySheet]}>{secondary}</Text>
+          ) : null}
         </View>
 
-        <Text style={styles.title}>{t('auth.title')}</Text>
-        <Text style={styles.subtitle}>{t('auth.subtitle')}</Text>
+        <Text style={[styles.title, isSheet && styles.titleSheet]}>{t('auth.title')}</Text>
+        <Text
+          style={[styles.subtitle, isSheet && styles.subtitleSheet]}
+          numberOfLines={isSheet ? 3 : undefined}
+        >
+          {t('auth.subtitle')}
+        </Text>
 
         {welcomeMode && !welcomePromoSeen ? (
           <View style={styles.promoBanner} accessibilityRole="text">
@@ -241,7 +284,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
 
         {/* OAuth */}
         <TouchableOpacity
-          style={[styles.oauthBtn, oauthDisabled && styles.btnDisabled]}
+          style={[styles.oauthBtn, isSheet && styles.oauthBtnSheet, oauthDisabled && styles.btnDisabled]}
           onPress={onGoogle}
           disabled={oauthDisabled}
           activeOpacity={0.88}
@@ -259,7 +302,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.oauthBtn, styles.appleBtn, oauthDisabled && styles.btnDisabled]}
+          style={[styles.oauthBtn, styles.appleBtn, isSheet && styles.oauthBtnSheet, isSheet && styles.appleBtnSheet, oauthDisabled && styles.btnDisabled]}
           onPress={onApple}
           disabled={oauthDisabled}
           activeOpacity={0.88}
@@ -276,27 +319,45 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
           )}
         </TouchableOpacity>
 
-        <View style={styles.dividerRow}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>{t('auth.or')}</Text>
-          <View style={styles.dividerLine} />
+        <View style={[styles.dividerRow, isSheet && styles.dividerRowSheet]}>
+          <View style={[styles.dividerLine, isSheet && styles.dividerLineSheet]} />
+          <Text style={[styles.dividerText, isSheet && styles.dividerTextSheet]}>{t('auth.or')}</Text>
+          <View style={[styles.dividerLine, isSheet && styles.dividerLineSheet]} />
         </View>
 
         {/* Email mode */}
         <View style={styles.modeRow}>
           <TouchableOpacity
             onPress={() => setMode('signin')}
-            style={[styles.modeChip, emailMode === 'signin' && styles.modeChipOn]}
+            style={[
+              styles.modeChip,
+              isSheet && styles.modeChipSheet,
+              emailMode === 'signin' && (isSheet ? styles.modeChipOnSheet : styles.modeChipOn),
+            ]}
           >
-            <Text style={[styles.modeChipText, emailMode === 'signin' && styles.modeChipTextOn]}>
+            <Text
+              style={[
+                styles.modeChipText,
+                emailMode === 'signin' && (isSheet ? styles.modeChipTextOnSheet : styles.modeChipTextOn),
+              ]}
+            >
               {t('auth.modeSignIn')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setMode('signup')}
-            style={[styles.modeChip, emailMode === 'signup' && styles.modeChipOn]}
+            style={[
+              styles.modeChip,
+              isSheet && styles.modeChipSheet,
+              emailMode === 'signup' && (isSheet ? styles.modeChipOnSheet : styles.modeChipOn),
+            ]}
           >
-            <Text style={[styles.modeChipText, emailMode === 'signup' && styles.modeChipTextOn]}>
+            <Text
+              style={[
+                styles.modeChipText,
+                emailMode === 'signup' && (isSheet ? styles.modeChipTextOnSheet : styles.modeChipTextOn),
+              ]}
+            >
               {t('auth.modeSignUp')}
             </Text>
           </TouchableOpacity>
@@ -306,7 +367,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
           <>
             <Text style={styles.verifyHint}>{t('auth.verifyHint', { email: email.trim() })}</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, isSheet && styles.inputSheet]}
               placeholder={t('auth.codePlaceholder')}
               placeholderTextColor={colors.textMuted}
               value={code}
@@ -317,7 +378,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
               editable={!emailDisabled}
             />
             <TouchableOpacity
-              style={[styles.primaryBtn, emailDisabled && styles.btnDisabled]}
+              style={[styles.primaryBtn, isSheet && styles.primaryBtnSheet, emailDisabled && styles.btnDisabled]}
               onPress={onEmailSubmit}
               disabled={emailDisabled}
             >
@@ -334,7 +395,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
         ) : (
           <>
             <TextInput
-              style={styles.input}
+              style={[styles.input, isSheet && styles.inputSheet]}
               placeholder={t('auth.emailPlaceholder')}
               placeholderTextColor={colors.textMuted}
               value={email}
@@ -345,7 +406,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
               editable={!emailDisabled}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, isSheet && styles.inputSheet]}
               placeholder={t('auth.passwordPlaceholder')}
               placeholderTextColor={colors.textMuted}
               value={password}
@@ -354,7 +415,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
               editable={!emailDisabled}
             />
             <TouchableOpacity
-              style={[styles.primaryBtn, emailDisabled && styles.btnDisabled]}
+              style={[styles.primaryBtn, isSheet && styles.primaryBtnSheet, emailDisabled && styles.btnDisabled]}
               onPress={onEmailSubmit}
               disabled={emailDisabled}
             >
@@ -390,7 +451,7 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
             <Text style={styles.hint}>{t('welcome.guestHint')}</Text>
           </>
         ) : (
-          <Text style={styles.hint}>{t('auth.dashboardHint')}</Text>
+          <Text style={[styles.hint, isSheet && styles.hintSheet]}>{t('auth.dashboardHint')}</Text>
         )}
       </ScrollView>
     </KeyboardAvoidingView>
@@ -399,15 +460,111 @@ export function AuthScreen({ welcomeMode = false }: AuthScreenProps) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.surfaceElevated },
+  flexSheet: {
+    flex: 1,
+    width: '100%',
+    minHeight: 0,
+    backgroundColor: 'transparent',
+  },
+  scrollSheet: {
+    flex: 1,
+    width: '100%',
+    minHeight: 0,
+    backgroundColor: 'transparent',
+  },
+  scrollContentSheet: {
+    flexGrow: 0,
+    paddingHorizontal: spacing.base,
+  },
+  logoRowSheet: {
+    marginBottom: spacing.sm,
+  },
+  logoPrimarySheet: {
+    fontSize: fontSize.xxl,
+  },
+  logoSecondarySheet: {
+    fontSize: fontSize.xxl,
+  },
+  titleSheet: {
+    fontSize: fontSize.lg,
+    marginBottom: spacing.xs,
+    color: 'rgba(245,237,214,0.96)',
+  },
+  subtitleSheet: {
+    marginBottom: spacing.md,
+    lineHeight: 18,
+    color: 'rgba(196,181,154,0.88)',
+  },
+  dividerRowSheet: {
+    marginVertical: spacing.md,
+  },
+  dividerLineSheet: {
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+  dividerTextSheet: {
+    color: 'rgba(196,181,154,0.75)',
+  },
+  oauthBtnSheet: {
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.09)',
+  },
+  appleBtnSheet: {
+    backgroundColor: 'rgba(0,0,0,0.12)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.06)',
+  },
+  modeChipSheet: {
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    borderWidth: 0,
+    borderColor: 'transparent',
+  },
+  modeChipOnSheet: {
+    borderWidth: 0,
+    borderColor: 'transparent',
+    backgroundColor: 'rgba(232,197,71,0.1)',
+  },
+  modeChipTextOnSheet: {
+    color: colors.textPrimary,
+  },
+  inputSheet: {
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderColor: 'rgba(255,255,255,0.09)',
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  primaryBtnSheet: {
+    shadowColor: colors.red,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.22,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  hintSheet: {
+    color: 'rgba(138,123,104,0.85)',
+  },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.surfaceElevated,
   },
+  centeredSheet: {
+    flex: 1,
+    minHeight: 200,
+    backgroundColor: 'transparent',
+  },
   scrollContent: {
     paddingHorizontal: spacing.xl,
     flexGrow: 1,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginBottom: spacing.sm,
+  },
+  modalHeaderSpacer: {
+    flex: 1,
   },
   logoRow: {
     flexDirection: 'row',

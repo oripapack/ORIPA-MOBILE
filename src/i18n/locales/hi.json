@@ -42,7 +42,8 @@
   "common": {
     "copied": "कॉपी किया गया",
     "friendIdCopied": "मित्र आईडी को क्लिपबोर्ड पर कॉपी किया गया।",
-    "error": "त्रुटि"
+    "error": "त्रुटि",
+    "close": "Close"
   },
   "helpCenter": {
     "navTitle": "सहायता केंद्र",
@@ -183,11 +184,27 @@
   "demoBanner": "पूर्वावलोकन निर्माण - क्रेडिट और पुरस्कार सिम्युलेटेड हैं।",
   "home": {
     "discover": "खोज करना",
+    "browse": "ब्राउज़ करें",
     "spotlightTitle": "स्पॉटलाइट पैक",
     "spotlightBody": "हाथ से चुनी गई बूंदें और प्रोमो। नीचे श्रेणियों और छँटाई का उपयोग करें।",
     "browseAllPacks": "सभी पैक ब्राउज़ करें",
     "emptyCategory": "इस श्रेणी में अभी तक कोई पैक नहीं है.",
-    "subfilterAll": "All packs"
+    "subfilterAll": "All packs",
+    "lobby": {
+      "featuredKicker": "Drop lobby",
+      "featuredEyebrow": "Vault spotlight",
+      "price": "Entry",
+      "remaining": "Inventory",
+      "viewOdds": "View odds",
+      "enterFloor": "Pack floor",
+      "recentKicker": "Recent pulls",
+      "railNewTitle": "New arrivals",
+      "railNewSub": "Fresh stock in this line — first look before the floor fills.",
+      "railHotTitle": "Hot floor",
+      "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
+      "railGradedTitle": "Graded vault",
+      "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
+    }
   },
   "packs": {
     "browseTitle": "फर्श पैक करो",
@@ -238,7 +255,11 @@
     "yourUsername": "आपका उपयोगकर्ता नाम",
     "usernameHint": "दोस्त इस अद्वितीय उपयोगकर्ता नाम से आपको जोड़ते हैं — वही जो खिलाड़ी टैब पर है।",
     "enterFriendUsername": "उपयोगकर्ता नाम",
-    "placeholderUsername": "उदा. jordan"
+    "placeholderUsername": "उदा. jordan",
+    "searchPlaceholder": "Search by name or @handle…",
+    "sectionConnect": "Add & share",
+    "leaderboardHint": "See how your squad ranks",
+    "noSearchMatches": "No friends match that search."
   },
   "rewards": {
     "title": "पुरस्कार",
@@ -649,5 +670,29 @@
     "priceTitle": "कीमत",
     "remaining": "{{total}} में से {{left}} बाकी",
     "ctaDisabled": "उपलब्ध नहीं"
+  },
+  "splash": {
+    "frameKicker": "COLLECTOR VAULT",
+    "frameHeadline": "Your next pull",
+    "frameTagline": "Live drops · Fair odds",
+    "frameLine": "Where every pull begins"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to Pull Hub",
+    "welcomeSubtitle": "Sign up to get a free pack — or preview the lobby first.",
+    "signUpCta": "Sign up free",
+    "signInCta": "Sign in",
+    "continueGuest": "Continue as guest",
+    "sheetHint": "Swipe down anytime to browse the app.",
+    "promptEyebrow": "Nice pull",
+    "promptTitle": "Sign up to keep it",
+    "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
+    "promptSignUp": "Claim free pack",
+    "promptSignIn": "I already have an account",
+    "promptLater": "Maybe later",
+    "guestClaimTitle": "Sign in to claim",
+    "guestClaimBody": "Vault saves and rewards need an account — it only takes a moment.",
+    "friendsGuestTitle": "Friends unlock with sign-in",
+    "friendsGuestBody": "Preview the space now. Sign in to add friends, share your QR, and sync your circle."
   }
 }

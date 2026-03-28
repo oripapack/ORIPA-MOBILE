@@ -2,6 +2,7 @@ import React from 'react';
 import { PackOpeningModal } from './PackOpeningModal';
 import { WonPrizesModal } from './WonPrizesModal';
 import { InsufficientCreditsModal } from '../shared/InsufficientCreditsModal';
+import { SignupPromptModal } from '../onboarding/SignupPromptModal';
 
 /**
  * Mounted once at app root so pack open / won prizes / credits modals work
@@ -10,9 +11,11 @@ import { InsufficientCreditsModal } from '../shared/InsufficientCreditsModal';
 export function GlobalPackModals() {
   return (
     <>
-      <InsufficientCreditsModal />
+      {/* Pack opening first; insufficient credits after so it stacks above when both were briefly relevant */}
       <PackOpeningModal />
+      <InsufficientCreditsModal />
       <WonPrizesModal />
+      <SignupPromptModal />
     </>
   );
 }

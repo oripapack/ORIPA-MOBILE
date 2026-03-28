@@ -19,6 +19,7 @@ import { demoMarketplacePromoImage } from '../data/demoMedia';
 import { navigationRef } from '../navigation/navigationRef';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useRequireAuth } from '../hooks/useRequireAuth';
+import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 
 const CATEGORY_KEYS: (ListingCategory | 'all')[] = [
   'all',
@@ -77,32 +78,36 @@ export function MarketplaceScreen() {
         <Text style={styles.lead}>{t('marketplace.storeLead')}</Text>
 
         {/* Search */}
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
-          <TextInput
-            ref={searchRef}
-            style={styles.searchInput}
-            placeholder={t('marketplace.searchPlaceholder')}
-            placeholderTextColor={colors.textMuted}
-            value={query}
-            onChangeText={setQuery}
-            returnKeyType="search"
-          />
-        </View>
+        <VaultFramedCard style={styles.searchBarOuter} contentStyle={styles.searchBarInner}>
+          <View style={styles.searchBarRow}>
+            <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
+            <TextInput
+              ref={searchRef}
+              style={styles.searchInput}
+              placeholder={t('marketplace.searchPlaceholder')}
+              placeholderTextColor={colors.textMuted}
+              value={query}
+              onChangeText={setQuery}
+              returnKeyType="search"
+            />
+          </View>
+        </VaultFramedCard>
 
         {/* Promo */}
-        <View style={styles.promoBanner}>
-          <Image
-            source={{ uri: demoMarketplacePromoImage }}
-            style={styles.promoImage}
-            resizeMode="cover"
-            accessibilityIgnoresInvertColors
-          />
-          <View style={styles.promoTextCol}>
-            <Text style={styles.promoTitle}>{t('marketplace.promoTitle')}</Text>
-            <Text style={styles.promoBody}>{t('marketplace.promoBody')}</Text>
+        <VaultFramedCard style={styles.promoOuter} contentStyle={styles.promoInner}>
+          <View style={styles.promoRow}>
+            <Image
+              source={{ uri: demoMarketplacePromoImage }}
+              style={styles.promoImage}
+              resizeMode="cover"
+              accessibilityIgnoresInvertColors
+            />
+            <View style={styles.promoTextCol}>
+              <Text style={styles.promoTitle}>{t('marketplace.promoTitle')}</Text>
+              <Text style={styles.promoBody}>{t('marketplace.promoBody')}</Text>
+            </View>
           </View>
-        </View>
+        </VaultFramedCard>
 
         {/* Category tabs */}
         <ScrollView
@@ -168,7 +173,7 @@ export function MarketplaceScreen() {
           if (rows.length === 0) return null;
 
           return (
-            <View key={store.id} style={styles.storeSection}>
+            <VaultFramedCard key={store.id} style={styles.storeSection} contentStyle={styles.storeSectionInner}>
               <View style={styles.storeHeader}>
                 <View style={styles.storeTitleRow}>
                   <Text style={styles.storeName}>{store.name}</Text>
@@ -187,7 +192,7 @@ export function MarketplaceScreen() {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.hRow}
+                contentContainerStyle={styles.hRowStore}
               >
                 {rows.map((listing) => (
                   <ListingCard
@@ -197,19 +202,19 @@ export function MarketplaceScreen() {
                   />
                 ))}
               </ScrollView>
-            </View>
+            </VaultFramedCard>
           );
         })}
 
         {filteredListings.length === 0 ? (
-          <View style={styles.empty}>
+          <VaultFramedCard style={styles.emptyOuter} contentStyle={styles.emptyInner}>
             <Text style={styles.emptyText}>{t('marketplace.emptyResults')}</Text>
-          </View>
+          </VaultFramedCard>
         ) : null}
 
-        <View style={styles.demoNote}>
+        <VaultFramedCard style={styles.demoNoteOuter} contentStyle={styles.demoNoteInner}>
           <Text style={styles.demoNoteText}>{t('marketplace.demoNote')}</Text>
-        </View>
+        </VaultFramedCard>
       </ScrollView>
     </View>
   );
@@ -240,17 +245,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     marginBottom: spacing.md,
   },
-  searchBar: {
+  searchBarOuter: {
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.md,
+  },
+  searchBarInner: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingRight: spacing.md,
+  },
+  searchBarRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surfaceElevated,
-    marginHorizontal: spacing.base,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.md,
-    minHeight: 48,
+    minHeight: 44,
   },
   searchIcon: {
     marginRight: spacing.sm,
@@ -261,17 +268,17 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     paddingVertical: spacing.sm,
   },
-  promoBanner: {
+  promoOuter: {
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.md,
+  },
+  promoInner: {
+    paddingVertical: spacing.sm,
+  },
+  promoRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    backgroundColor: colors.promoBannerBg,
-    marginHorizontal: spacing.base,
-    padding: spacing.base,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.promoBannerBorder,
-    marginBottom: spacing.md,
   },
   promoImage: {
     width: 72,
@@ -359,11 +366,18 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   storeSection: {
+    marginHorizontal: spacing.base,
     marginBottom: spacing.lg,
   },
+  storeSectionInner: {
+    paddingBottom: spacing.sm,
+  },
   storeHeader: {
-    paddingHorizontal: spacing.base,
     marginBottom: spacing.sm,
+  },
+  hRowStore: {
+    paddingBottom: spacing.xs,
+    marginHorizontal: -4,
   },
   storeTitleRow: {
     flexDirection: 'row',
@@ -399,22 +413,26 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontWeight: fontWeight.medium,
   },
-  empty: {
-    padding: spacing.xl,
+  emptyOuter: {
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.md,
+  },
+  emptyInner: {
     alignItems: 'center',
+    paddingVertical: spacing.lg,
   },
   emptyText: {
     fontSize: fontSize.sm,
     color: colors.textMuted,
+    textAlign: 'center',
   },
-  demoNote: {
+  demoNoteOuter: {
     marginHorizontal: spacing.base,
     marginTop: spacing.md,
-    padding: spacing.base,
-    borderRadius: radius.lg,
-    backgroundColor: colors.demoNoteBg,
-    borderWidth: 1,
-    borderColor: colors.demoNoteBorder,
+    marginBottom: spacing.sm,
+  },
+  demoNoteInner: {
+    alignItems: 'center',
   },
   demoNoteText: {
     fontSize: fontSize.xs,

@@ -28,6 +28,11 @@ export interface UserState {
   displayName: string;
   /** Public handle — unique; used to add friends (QR / search). */
   username: string;
+  /**
+   * Promo / referral free opens — consumed before charging credits in `openPack`.
+   * Not shown in MVP profile; surfaced via pack flow.
+   */
+  freePackGrants: number;
   credits: number;
   tier: 'Starter' | 'Bronze' | 'Silver' | 'Gold';
   xp: number;
@@ -40,6 +45,7 @@ export const mockUser: UserState = {
   id: 'usr_001',
   displayName: 'TrainerAlex',
   username: 'trainer_alex',
+  freePackGrants: 0,
   credits: 1250,
   tier: 'Starter',
   xp: 4200,

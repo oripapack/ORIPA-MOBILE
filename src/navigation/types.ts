@@ -22,6 +22,8 @@ export type RootStackParamList = {
   LinkedAccounts: undefined;
   IdentityVerification: undefined;
   PayoutMethod: undefined;
+  /** Promo codes + referral link (Profile → rewards). */
+  Promotions: undefined;
 };
 
 export type RootTabParamList = {

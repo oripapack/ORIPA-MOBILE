@@ -7,8 +7,11 @@ import {
   ScrollView,
   Platform,
   Dimensions,
+  InteractionManager,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
@@ -16,6 +19,7 @@ import { radius, spacing } from '../../tokens/spacing';
 import { creditBundles } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
 import { CREDITS_ARE_MOCK } from '../../config/app';
+import type { RootStackParamList } from '../../navigation/types';
 
 const SCROLL_MAX_H = Math.round(Dimensions.get('window').height * 0.52);
 
@@ -23,12 +27,40 @@ interface Props {
   onOpenLootBoxDisclosure: () => void;
 }
 
+type RootNav = StackNavigationProp<RootStackParamList>;
+
 export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
   const { t } = useTranslation();
+  const navigation = useNavigation<RootNav>();
   const addCredits = useAppStore((s) => s.addCredits);
 
   const handlePurchase = (credits: number) => {
     addCredits(credits);
+
+    const s0 = useAppStore.getState();
+    if (
+      !s0.resumePackOpenAfterCredits ||
+      !s0.selectedPack ||
+      s0.user.credits < s0.selectedPack.creditPrice
+    ) {
+      return;
+    }
+
+    const wentBack = navigation.canGoBack();
+    if (wentBack) {
+      navigation.goBack();
+    }
+
+    const delay = wentBack ? 160 : 0;
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        const s = useAppStore.getState();
+        const pack = s.selectedPack;
+        if (pack && s.user.credits >= pack.creditPrice) {
+          s.openPack(pack);
+        }
+      }, delay);
+    });
   };
 
   return (

@@ -44,47 +44,69 @@ export function WonPrizesModal() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const visible = useAppStore((s) => s.modals.wonPrizes);
-  const pendingId = useAppStore((s) => s.pendingFulfillmentPullId);
+  const closeModal = useAppStore((s) => s.closeModal);
+  const pendingIds = useAppStore((s) => s.pendingFulfillmentPullIds);
   const user = useAppStore((s) => s.user);
   const finalizePullFulfillment = useAppStore((s) => s.finalizePullFulfillment);
 
-  const [shipSelected, setShipSelected] = useState(false);
+  const [shipSelected, setShipSelected] = useState<Record<string, boolean>>({});
   const [showConvertConfirm, setShowConvertConfirm] = useState(false);
 
   useEffect(() => {
     if (!visible) return;
-    setShipSelected(false);
+    setShipSelected({});
     setShowConvertConfirm(false);
-  }, [visible, pendingId]);
+  }, [visible, pendingIds.length]);
 
-  const pull = useMemo(
-    () => (pendingId ? user.pullHistory.find((p) => p.id === pendingId) : undefined),
-    [pendingId, user.pullHistory],
+  /** Avoid ghost state: modal flag true but nothing to show — would block interaction on some devices. */
+  useEffect(() => {
+    if (!visible) return;
+    if (pendingIds.length === 0) {
+      closeModal('wonPrizes');
+    }
+  }, [visible, pendingIds.length, closeModal]);
+
+  const pulls = useMemo(() => {
+    const idSet = new Set(pendingIds);
+    return user.pullHistory.filter((p) => idSet.has(p.id) && p.fulfillment === 'pending');
+  }, [pendingIds, user.pullHistory]);
+
+  const shipIds = useMemo(() => pulls.filter((p) => shipSelected[p.id]).map((p) => p.id), [pulls, shipSelected]);
+  const convertIds = useMemo(() => pulls.filter((p) => !shipSelected[p.id]).map((p) => p.id), [pulls, shipSelected]);
+
+  const shipCount = shipIds.length;
+  const convertAmount = useMemo(
+    () => pulls.reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0),
+    [pulls],
+  );
+  const convertSelectedAmount = useMemo(
+    () =>
+      pulls
+        .filter((p) => !shipSelected[p.id])
+        .reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0),
+    [pulls, shipSelected],
   );
 
-  const tier: PullRarityTier = pull?.tier ?? 'common';
-  /** Same value as pack opening — always use rolled credits, not a separate capped field. */
-  const convertAmount = pull?.creditsWon ?? pull?.convertCreditValue ?? 0;
-
   const onPrimaryPress = () => {
-    if (!pull) return;
-    if (shipSelected) {
-      finalizePullFulfillment(pull.id, 'ship');
-      setShipSelected(false);
-      return;
+    if (pulls.length === 0) return;
+    if (shipCount > 0) {
+      finalizePullFulfillment(shipIds, 'ship');
     }
-    setShowConvertConfirm(true);
+    if (convertIds.length > 0) {
+      setShowConvertConfirm(true);
+    }
   };
 
   const onConfirmConvert = () => {
-    if (!pull) return;
     setShowConvertConfirm(false);
-    finalizePullFulfillment(pull.id, 'convert');
-    setShipSelected(false);
+    if (convertIds.length > 0) {
+      finalizePullFulfillment(convertIds, 'convert');
+    }
+    setShipSelected({});
   };
 
   if (!visible) return null;
-  if (!pull || !pendingId) return null;
+  if (pulls.length === 0) return null;
 
   return (
     <Modal
@@ -109,7 +131,7 @@ export function WonPrizesModal() {
 
           <View style={styles.poolHeader}>
             <Text style={styles.poolTitle}>
-              {TIER_POOL[tier]} · 1 item
+              Pending pulls · {pulls.length} item{pulls.length === 1 ? '' : 's'}
             </Text>
             <View style={styles.poolCoins}>
               <Text style={styles.coinIcon}>🪙</Text>
@@ -117,66 +139,64 @@ export function WonPrizesModal() {
             </View>
           </View>
 
-          <Pressable
-            style={[styles.itemCard, shipSelected && styles.itemCardSelected]}
-            onPress={() => setShipSelected((s) => !s)}
-          >
-            <TouchableOpacity
-              style={[styles.checkbox, shipSelected && styles.checkboxOn]}
-              onPress={() => setShipSelected((s) => !s)}
-              activeOpacity={0.8}
-            >
-              {shipSelected ? <Text style={styles.checkmark}>✓</Text> : null}
-            </TouchableOpacity>
+          {pulls.map((pull) => {
+            const tier: PullRarityTier = pull.tier ?? 'common';
+            const checked = !!shipSelected[pull.id];
+            const itemValue = pull.creditsWon ?? pull.convertCreditValue ?? 0;
+            return (
+              <Pressable
+                key={pull.id}
+                style={[styles.itemCard, checked && styles.itemCardSelected]}
+                onPress={() => setShipSelected((s) => ({ ...s, [pull.id]: !s[pull.id] }))}
+              >
+                <TouchableOpacity
+                  style={[styles.checkbox, checked && styles.checkboxOn]}
+                  onPress={() => setShipSelected((s) => ({ ...s, [pull.id]: !s[pull.id] }))}
+                  activeOpacity={0.8}
+                >
+                  {checked ? <Text style={styles.checkmark}>✓</Text> : null}
+                </TouchableOpacity>
 
-            <View style={styles.thumb}>
-              <Text style={styles.thumbEmoji}>🎴</Text>
-              <View style={styles.thumbZoom}>
-                <Text style={styles.thumbZoomIcon}>🔍</Text>
-              </View>
-            </View>
+                <View style={styles.thumb}>
+                  <Text style={styles.thumbEmoji}>🎴</Text>
+                  <View style={styles.thumbZoom}>
+                    <Text style={styles.thumbZoomIcon}>🔍</Text>
+                  </View>
+                </View>
 
-            <View style={styles.itemBody}>
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>{TIER_BADGE[tier]}</Text>
-              </View>
-              <Text style={styles.itemName} numberOfLines={2}>
-                {pull?.result ?? '—'}
-              </Text>
-              <Text style={styles.itemMeta} numberOfLines={1}>
-                {pull ? getLocalizedPackTitle(pull.packId, pull.packTitle, t) : ''}
-              </Text>
-            </View>
+                <View style={styles.itemBody}>
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>{TIER_BADGE[tier]}</Text>
+                  </View>
+                  <Text style={styles.itemName} numberOfLines={2}>
+                    {pull.result ?? '—'}
+                  </Text>
+                  <Text style={styles.itemMeta} numberOfLines={1}>
+                    {getLocalizedPackTitle(pull.packId, pull.packTitle, t)}
+                  </Text>
+                </View>
 
-            <View style={styles.itemCoins}>
-              <Text style={styles.coinIcon}>🪙</Text>
-              <Text style={styles.itemCoinValue}>{convertAmount.toLocaleString()}</Text>
-            </View>
-          </Pressable>
+                <View style={styles.itemCoins}>
+                  <Text style={styles.coinIcon}>🪙</Text>
+                  <Text style={styles.itemCoinValue}>{itemValue.toLocaleString()}</Text>
+                </View>
+              </Pressable>
+            );
+          })}
 
           <Text style={styles.hint}>
-            {shipSelected
-              ? 'We’ll queue this for shipping (MVP — connect address + fulfillment later).'
-              : 'This item will become points if you convert below.'}
+            Tap items to mark for shipping. Unselected items will be converted into points.
           </Text>
         </ScrollView>
 
         <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
-          {shipSelected ? (
-            <PrimaryButton label="1 item to ship" variant="black" onPress={onPrimaryPress} />
-          ) : (
-            <>
-              <PrimaryButton
-                label="Convert all into Points"
-                variant="red"
-                onPress={onPrimaryPress}
-                style={styles.footerBtn}
-              />
-              <Text style={styles.footerSub}>
-                🪙 {convertAmount.toLocaleString()} acquired
-              </Text>
-            </>
-          )}
+          <PrimaryButton
+            label={shipCount > 0 ? `${shipCount} to ship + convert the rest` : 'Convert all into Points'}
+            variant={shipCount > 0 ? 'black' : 'red'}
+            onPress={onPrimaryPress}
+            style={styles.footerBtn}
+          />
+          <Text style={styles.footerSub}>🪙 {convertSelectedAmount.toLocaleString()} will be converted</Text>
         </View>
       </View>
 
@@ -193,7 +213,7 @@ export function WonPrizesModal() {
               <Text style={styles.confirmLabel}>Points to be Received</Text>
               <View style={styles.confirmValue}>
                 <Text style={styles.coinIcon}>🪙</Text>
-                <Text style={styles.confirmAmount}>{convertAmount.toLocaleString()}</Text>
+                <Text style={styles.confirmAmount}>{convertSelectedAmount.toLocaleString()}</Text>
               </View>
             </View>
             <PrimaryButton label="Confirm" variant="red" onPress={onConfirmConvert} />

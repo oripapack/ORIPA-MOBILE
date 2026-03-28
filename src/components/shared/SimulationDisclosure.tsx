@@ -1,13 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { Modal, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -56,11 +48,8 @@ export function SimulationDisclosure() {
   }
 
   if (phase === 'loading') {
-    return (
-      <View style={[styles.loadingVeil, { paddingTop: insets.top }]} pointerEvents="auto">
-        <ActivityIndicator size="large" color={colors.gold} />
-      </View>
-    );
+    /** Dark veil only — branded boot lives under this in `AppSplashScreen` (no generic spinner). */
+    return <View style={[styles.loadingVeil, { paddingTop: insets.top }]} pointerEvents="auto" />;
   }
 
   return (
@@ -90,9 +79,8 @@ export function SimulationDisclosure() {
 const styles = StyleSheet.create({
   loadingVeil: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.background,
-    alignItems: 'center',
-    justifyContent: 'center',
+    /** Transparent so branded `AppSplashScreen` shows through while AsyncStorage resolves. */
+    backgroundColor: 'transparent',
     zIndex: 10000,
   },
   overlay: {

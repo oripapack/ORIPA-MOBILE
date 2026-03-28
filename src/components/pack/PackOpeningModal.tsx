@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Animated, Easing, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { RarityTier } from '../../audio/packOpeningFeedback';
 import { colors } from '../../tokens/colors';
@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { ChipTagType, Pack } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
+import { useGuestBrowseStore } from '../../store/guestBrowseStore';
+import { isClerkEnabled } from '../../config/clerk';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { DEFAULT_PACK_OPENING_STYLE } from '../../config/packOpeningAnimation';
@@ -100,6 +102,10 @@ function generatePackOpenResult(pack: Pack, t: TFunction, packName: string): Pac
 export function PackOpeningModal() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
+  const firstPackPromptHandled = useGuestBrowseStore((s) => s.firstPackSignupPromptHandled);
+  const showSignupPrompt = useGuestBrowseStore((s) => s.showSignupPrompt);
+  const isGuest = isClerkEnabled && !clerkSignedIn;
 
   const visible = useAppStore((s) => s.modals.packOpening);
   const selectedPack = useAppStore((s) => s.selectedPack);
@@ -108,6 +114,7 @@ export function PackOpeningModal() {
   const openModal = useAppStore((s) => s.openModal);
   const setSelectedPack = useAppStore((s) => s.setSelectedPack);
   const applyPackOpenResult = useAppStore((s) => s.applyPackOpenResult);
+  const openPack = useAppStore((s) => s.openPack);
 
   const [pending, setPending] = useState<PackRollResult | null>(null);
   const [skippedToEnd, setSkippedToEnd] = useState(false);
@@ -134,7 +141,6 @@ export function PackOpeningModal() {
 
   useEffect(() => {
     if (!visible || !selectedPack) return;
-
     didApplyRef.current = false;
     setSkippedToEnd(false);
     setReplayKey(0);
@@ -201,8 +207,8 @@ export function PackOpeningModal() {
     if (!engineDone) return;
 
     didApplyRef.current = true;
-    applyPackOpenResult(pending);
-  }, [applyPackOpenResult, engineDone, pending, selectedPack, visible]);
+    applyPackOpenResult(pending, { persistToVault: !isGuest });
+  }, [applyPackOpenResult, engineDone, isGuest, pending, selectedPack, visible]);
 
   const packTint = selectedPack?.imageColor ?? colors.nearBlack;
   const revealCard = pending
@@ -212,9 +218,28 @@ export function PackOpeningModal() {
 
   const goToWonPrizes = () => {
     closeModal('packOpening');
-    setSelectedPack(null);
+    if (isGuest) {
+      if (!firstPackPromptHandled) {
+        showSignupPrompt();
+      } else {
+        Alert.alert(t('onboarding.guestClaimTitle'), t('onboarding.guestClaimBody'));
+      }
+      return;
+    }
     openModal('wonPrizes');
   };
+
+  const openAnother = useCallback(() => {
+    if (!selectedPack) return;
+    // This re-charges credits + increments session id like a real open.
+    // In demo mode, we still use store openPack for a consistent “spent credits” story.
+    const ok = openPack(selectedPack);
+    if (!ok) return;
+    setSkippedToEnd(false);
+    setEngineDone(false);
+    setSkipNonce(0);
+    setReplayKey((k) => k + 1);
+  }, [openPack, selectedPack]);
 
   const showSkip = !!pending && !engineDone;
 
@@ -226,7 +251,9 @@ export function PackOpeningModal() {
       {...transparentModalIOSProps}
       onRequestClose={() => {}}
     >
-      <Pressable style={styles.rootPress} onPress={() => {}}>
+      <View style={styles.rootPress}>
+        {/* Background press-catcher (prevents tap-to-dismiss) */}
+        <Pressable style={StyleSheet.absoluteFill} onPress={() => {}} />
         <StadiumGradient />
         <Spotlight pulse={spotlightPulse} />
 
@@ -262,6 +289,7 @@ export function PackOpeningModal() {
 
           {pending && revealCard ? (
             <PackOpeningEngine
+              key={`pack-open-${packOpenSessionId}`}
               style={DEFAULT_PACK_OPENING_STYLE}
               roll={pending}
               revealCard={revealCard}
@@ -276,15 +304,15 @@ export function PackOpeningModal() {
 
           <RevealCtaFade visible={engineDone} instant={skippedToEnd}>
             <View style={styles.ctaRow}>
-              <PrimaryButton label={t('packOpening.continue')} variant="red" onPress={goToWonPrizes} style={styles.cta} />
-              <SecondaryButton label={t('packOpening.openNext')} onPress={goToWonPrizes} />
+              <PrimaryButton label="Manage winnings" variant="red" onPress={goToWonPrizes} style={styles.cta} />
+              <SecondaryButton label="Open another" onPress={openAnother} />
               <TouchableOpacity onPress={replayAnimation} style={styles.replayBtn} hitSlop={10}>
                 <Text style={styles.replayText}>{t('packOpening.replay')}</Text>
               </TouchableOpacity>
             </View>
           </RevealCtaFade>
         </Animated.View>
-      </Pressable>
+      </View>
     </Modal>
   );
 }

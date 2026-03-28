@@ -27,6 +27,8 @@ interface AppStore {
   user: UserState;
   /** Added via friend ID lookup / QR (MVP local list). */
   friends: FriendEntry[];
+  /** Home view mode: discovery lobby vs full catalog floor. */
+  homeViewMode: 'discover' | 'browse';
   /** Home: Pokémon / Yu-Gi-Oh! / One Piece / Sports tab. */
   homeNiche: HomeNicheCategory;
   /** Home: tag/cohort filter within the selected niche. */
@@ -34,15 +36,22 @@ interface AppStore {
   sortOrder: 'recommended' | 'price_asc' | 'price_desc' | 'newest' | 'best_value' | 'popular';
   modals: ModalState;
   selectedPack: Pack | null;
-  /** Pull id waiting for ship vs convert (single-item MVP). */
-  pendingFulfillmentPullId: string | null;
+  /** Pull ids waiting for ship vs convert (batch session). */
+  pendingFulfillmentPullIds: string[];
   /** Prevents double-applying pull rewards (e.g. React Strict Mode / effect re-runs). */
   _packOpenRewardApplied: boolean;
   /** Increments on every successful `openPack` so pack UI re-rolls even when `selectedPack` is the same reference. */
   packOpenSessionId: number;
+  /**
+   * User tried to open a pack but lacked credits — after buying credits we should return them to the flow
+   * (navigate back + reopen pack modal) instead of leaving them on a dead screen.
+   */
+  resumePackOpenAfterCredits: boolean;
 
   // Actions
   addCredits: (amount: number) => void;
+  addFreePackGrants: (count: number) => void;
+  setHomeViewMode: (mode: 'discover' | 'browse') => void;
   setHomeNiche: (niche: HomeNicheCategory) => void;
   setPackSubfilter: (sub: PackSubfilter) => void;
   setSortOrder: (order: AppStore['sortOrder']) => void;
@@ -50,9 +59,12 @@ interface AppStore {
   closeModal: (modal: keyof ModalState) => void;
   setSelectedPack: (pack: Pack | null) => void;
   openPack: (pack: Pack) => boolean; // returns false if not enough credits
-  applyPackOpenResult: (result: { result: string; creditsWon: number; tier: PullRarityTier }) => void;
+  applyPackOpenResult: (
+    result: { result: string; creditsWon: number; tier: PullRarityTier },
+    options?: { persistToVault?: boolean },
+  ) => void;
   /** After Won Prizes: add credits (convert) or mark shipped — no credits. */
-  finalizePullFulfillment: (pullId: string, choice: 'convert' | 'ship') => void;
+  finalizePullFulfillment: (pullIds: string[], choice: 'convert' | 'ship') => void;
   /** Adds a friend by unique username + display name (caller resolves name from lookup). */
   addFriend: (username: string, displayName: string) => AddFriendResult;
   /** When Clerk profile onboarding is done — updates local `user` for Account / Friends. */
@@ -62,6 +74,7 @@ interface AppStore {
 export const useAppStore = create<AppStore>((set, get) => ({
   user: mockUser,
   friends: [],
+  homeViewMode: 'discover',
   homeNiche: 'pokemon',
   packSubfilter: 'all',
   sortOrder: 'recommended',
@@ -72,14 +85,25 @@ export const useAppStore = create<AppStore>((set, get) => ({
     wonPrizes: false,
   },
   selectedPack: null,
-  pendingFulfillmentPullId: null,
+  pendingFulfillmentPullIds: [],
   _packOpenRewardApplied: false,
   packOpenSessionId: 0,
+  resumePackOpenAfterCredits: false,
 
   addCredits: (amount) =>
     set((state) => ({
       user: { ...state.user, credits: state.user.credits + amount },
     })),
+
+  addFreePackGrants: (count) =>
+    set((state) => ({
+      user: {
+        ...state.user,
+        freePackGrants: Math.max(0, (state.user.freePackGrants ?? 0) + count),
+      },
+    })),
+
+  setHomeViewMode: (mode) => set({ homeViewMode: mode }),
 
   setHomeNiche: (niche) => set({ homeNiche: niche, packSubfilter: 'all' }),
 
@@ -101,19 +125,34 @@ export const useAppStore = create<AppStore>((set, get) => ({
    * Multi-open / quantity pricing is not implemented in MVP (single open only).
    */
   openPack: (pack) => {
-    const { user, pendingFulfillmentPullId } = get();
-    if (pendingFulfillmentPullId) {
-      return false;
+    const { user } = get();
+    const grants = user.freePackGrants ?? 0;
+    if (grants > 0) {
+      set((state) => ({
+        selectedPack: pack,
+        resumePackOpenAfterCredits: false,
+        modals: { ...state.modals, packOpening: true },
+        _packOpenRewardApplied: false,
+        packOpenSessionId: state.packOpenSessionId + 1,
+        user: {
+          ...state.user,
+          freePackGrants: grants - 1,
+        },
+      }));
+      return true;
     }
     if (user.credits < pack.creditPrice) {
       set((state) => ({
         selectedPack: pack,
-        modals: { ...state.modals, insufficientCredits: true },
+        resumePackOpenAfterCredits: true,
+        // Close pack opening so the insufficient-credits modal can appear above the app (not hidden under it).
+        modals: { ...state.modals, insufficientCredits: true, packOpening: false },
       }));
       return false;
     }
     set((state) => ({
       selectedPack: pack,
+      resumePackOpenAfterCredits: false,
       modals: { ...state.modals, packOpening: true },
       _packOpenRewardApplied: false,
       packOpenSessionId: state.packOpenSessionId + 1,
@@ -130,33 +169,41 @@ export const useAppStore = create<AppStore>((set, get) => ({
    * Called when the reveal finishes: records pull as **pending** (no wallet credits yet).
    * User must complete **Won Prizes** (ship vs convert) before credits are applied.
    */
-  applyPackOpenResult: (result) => {
+  applyPackOpenResult: (result, options) => {
     const { selectedPack, _packOpenRewardApplied } = get();
     if (!selectedPack || _packOpenRewardApplied) return;
 
-    /** Must match on-screen `creditsWon` from the opening reveal (full roll, not capped to pack price). */
-    const convertCreditValue = result.creditsWon;
+    const persistToVault = options?.persistToVault !== false;
 
-    const pull: Pull = {
-      id: `pull_${Date.now()}_${Math.random().toString(16).slice(2)}`,
-      packId: selectedPack.id,
-      packTitle: selectedPack.title,
-      result: result.result,
-      creditsWon: result.creditsWon,
-      timestamp: new Date(),
-      fulfillment: 'pending',
-      convertCreditValue,
-      tier: result.tier,
-    };
+    set((state) => {
+      if (!persistToVault) {
+        return { _packOpenRewardApplied: true };
+      }
 
-    set((state) => ({
-      _packOpenRewardApplied: true,
-      pendingFulfillmentPullId: pull.id,
-      user: {
-        ...state.user,
-        pullHistory: [pull, ...state.user.pullHistory],
-      },
-    }));
+      /** Must match on-screen `creditsWon` from the opening reveal (full roll, not capped to pack price). */
+      const convertCreditValue = result.creditsWon;
+
+      const pull: Pull = {
+        id: `pull_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        packId: selectedPack.id,
+        packTitle: selectedPack.title,
+        result: result.result,
+        creditsWon: result.creditsWon,
+        timestamp: new Date(),
+        fulfillment: 'pending',
+        convertCreditValue,
+        tier: result.tier,
+      };
+
+      return {
+        _packOpenRewardApplied: true,
+        pendingFulfillmentPullIds: [pull.id, ...state.pendingFulfillmentPullIds],
+        user: {
+          ...state.user,
+          pullHistory: [pull, ...state.user.pullHistory],
+        },
+      };
+    });
   },
 
   addFriend: (usernameRaw, displayName) => {
@@ -183,26 +230,30 @@ export const useAppStore = create<AppStore>((set, get) => ({
         displayName: p.displayName,
         username: p.username,
         isVerified: true,
+        freePackGrants: state.user.freePackGrants ?? 0,
       },
     })),
 
-  finalizePullFulfillment: (pullId, choice) => {
+  finalizePullFulfillment: (pullIds, choice) => {
     set((state) => {
-      const pull = state.user.pullHistory.find((p) => p.id === pullId);
-      if (!pull || pull.fulfillment !== 'pending') return state;
+      const idSet = new Set(pullIds);
+      const pulls = state.user.pullHistory.filter((p) => idSet.has(p.id) && p.fulfillment === 'pending');
+      if (pulls.length === 0) return state;
 
       const creditsToAdd =
-        choice === 'convert' ? (pull.creditsWon ?? pull.convertCreditValue ?? 0) : 0;
+        choice === 'convert'
+          ? pulls.reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0)
+          : 0;
       const nextFulfillment = choice === 'convert' ? 'converted' : 'shipped';
 
       return {
-        pendingFulfillmentPullId: null,
+        pendingFulfillmentPullIds: state.pendingFulfillmentPullIds.filter((id) => !idSet.has(id)),
         modals: { ...state.modals, wonPrizes: false },
         user: {
           ...state.user,
           credits: state.user.credits + creditsToAdd,
           pullHistory: state.user.pullHistory.map((p) =>
-            p.id === pullId ? { ...p, fulfillment: nextFulfillment } : p,
+            idSet.has(p.id) && p.fulfillment === 'pending' ? { ...p, fulfillment: nextFulfillment } : p,
           ),
         },
       };

@@ -33,8 +33,6 @@ export type HomeNicheCategory = 'pokemon' | 'yugioh' | 'one_piece' | 'sports';
 
 export const HOME_NICHE_CATEGORIES: HomeNicheCategory[] = ['pokemon', 'yugioh', 'one_piece', 'sports'];
 
-const IP_LINE_CATEGORIES = new Set<PackCategory>(['pokemon', 'yugioh', 'one_piece', 'sports']);
-
 /** Sub-filters within the selected niche (tags + cross-line categories). */
 export type PackSubfilter = 'all' | ChipTagType;
 
@@ -50,18 +48,12 @@ export const HOME_SUBFILTER_KEYS: PackSubfilter[] = [
 ];
 
 export function packBelongsToHomeNiche(pack: Pack, niche: HomeNicheCategory): boolean {
-  if (pack.category === niche) return true;
-  if (!IP_LINE_CATEGORIES.has(pack.category)) return true;
-  return false;
+  return pack.category === niche;
 }
 
 export function packMatchesSubfilter(pack: Pack, sub: PackSubfilter): boolean {
   if (sub === 'all') return true;
-  if (pack.tags.includes(sub)) return true;
-  if (sub === 'new' && pack.category === 'new') return true;
-  if (sub === 'hot_drop' && pack.category === 'hot_drops') return true;
-  if (sub === 'graded' && pack.category === 'graded') return true;
-  return false;
+  return pack.tags.includes(sub);
 }
 
 export const mockPacks: Pack[] = [
