@@ -6,6 +6,18 @@
 /** Product line on a listing (not pack-opening). */
 export type ListingCategory = 'pokemon' | 'one_piece' | 'yugioh' | 'sports' | 'other';
 
+/** Partner fulfillment origin — mock only (no geolocation). */
+export type FulfillmentRegion = 'us' | 'japan' | 'eu';
+
+/** Region chips — “near you” maps to `assumedLocalRegion` (MVP: US). */
+export type MarketplaceRegionFilterId = 'all' | 'near_you' | 'japan' | 'europe';
+
+/**
+ * MVP: treat app user as browsing from this region for “Near you” and local-first sort.
+ * Replace with real profile/geo later without changing filter IDs.
+ */
+export const ASSUMED_LOCAL_FULFILLMENT_REGION: FulfillmentRegion = 'us';
+
 export interface MarketplaceStore {
   id: string;
   name: string;
@@ -19,6 +31,16 @@ export interface MarketplaceStore {
   specialtyKey: string;
   /** i18n: `marketplace.storeShipping.<key>` */
   shippingKey: string;
+  /** Where inventory ships from (mock cross-border story). */
+  fulfillmentRegion: FulfillmentRegion;
+  /** ISO-style tag for UI pills only (mock). */
+  countryCode: 'US' | 'JP' | 'EU';
+  /**
+   * When “All regions” + recommended sort, lower = closer to assumed local user (MVP US).
+   */
+  localPriority: number;
+  /** Optional i18n key `marketplace.storeCrossBorder.<key>` shown under ships-from line. */
+  crossBorderKey?: string;
 }
 
 /** Single card / single listing — buy now style, no mystery-pack open flow. */
@@ -49,6 +71,30 @@ export interface MarketplaceListing {
 }
 
 export type MarketplaceSortId = 'recommended' | 'newest' | 'price_low' | 'price_high' | 'sale_first';
+
+export function storeMatchesRegionFilter(
+  store: MarketplaceStore,
+  filter: MarketplaceRegionFilterId,
+  assumedLocal: FulfillmentRegion = ASSUMED_LOCAL_FULFILLMENT_REGION,
+): boolean {
+  if (filter === 'all') return true;
+  if (filter === 'near_you') return store.fulfillmentRegion === assumedLocal;
+  if (filter === 'japan') return store.fulfillmentRegion === 'japan';
+  if (filter === 'europe') return store.fulfillmentRegion === 'eu';
+  return true;
+}
+
+export function filterListingsByRegion(
+  listings: MarketplaceListing[],
+  filter: MarketplaceRegionFilterId,
+  assumedLocal: FulfillmentRegion = ASSUMED_LOCAL_FULFILLMENT_REGION,
+): MarketplaceListing[] {
+  if (filter === 'all') return listings;
+  return listings.filter((l) => {
+    const s = getStoreById(l.storeId);
+    return s ? storeMatchesRegionFilter(s, filter, assumedLocal) : false;
+  });
+}
 
 const PRICE_SORT: Record<string, number> = {
   l1: 4200,
@@ -337,6 +383,10 @@ export const marketplaceStores: MarketplaceStore[] = [
     verified: true,
     specialtyKey: 'pokemon_jp_singles',
     shippingKey: 'dispatch_1_2',
+    fulfillmentRegion: 'japan',
+    countryCode: 'JP',
+    localPriority: 20,
+    crossBorderKey: 'from_japan',
   },
   {
     id: 'store_midwest_breaks',
@@ -348,6 +398,9 @@ export const marketplaceStores: MarketplaceStore[] = [
     verified: true,
     specialtyKey: 'sports_sealed',
     shippingKey: 'dispatch_1_2_us',
+    fulfillmentRegion: 'us',
+    countryCode: 'US',
+    localPriority: 0,
   },
   {
     id: 'store_ygo_vault',
@@ -359,6 +412,9 @@ export const marketplaceStores: MarketplaceStore[] = [
     verified: true,
     specialtyKey: 'yugioh_core',
     shippingKey: 'dispatch_2_3',
+    fulfillmentRegion: 'us',
+    countryCode: 'US',
+    localPriority: 1,
   },
   {
     id: 'store_eu_collectibles',
@@ -370,17 +426,32 @@ export const marketplaceStores: MarketplaceStore[] = [
     verified: true,
     specialtyKey: 'graded_eu',
     shippingKey: 'dispatch_2_4_eu',
+    fulfillmentRegion: 'eu',
+    countryCode: 'EU',
+    localPriority: 10,
+    crossBorderKey: 'from_eu',
   },
 ];
 
-export function sortMarketplaceListings(listings: MarketplaceListing[], sort: MarketplaceSortId): MarketplaceListing[] {
+export function sortMarketplaceListings(
+  listings: MarketplaceListing[],
+  sort: MarketplaceSortId,
+  options?: { regionFilterAllWithLocalBoost?: boolean },
+): MarketplaceListing[] {
   const out = [...listings];
   const rank = (x: MarketplaceListing) => x.recommendedRank;
   const listed = (x: MarketplaceListing) => x.listedAt;
   const price = (x: MarketplaceListing) => x.priceSort;
+  const localP = (x: MarketplaceListing) => getStoreById(x.storeId)?.localPriority ?? 99;
   switch (sort) {
     case 'recommended':
-      return out.sort((a, b) => rank(a) - rank(b));
+      return out.sort((a, b) => {
+        if (options?.regionFilterAllWithLocalBoost) {
+          const lp = localP(a) - localP(b);
+          if (lp !== 0) return lp;
+        }
+        return rank(a) - rank(b);
+      });
     case 'newest':
       return out.sort((a, b) => listed(b) - listed(a));
     case 'price_low':

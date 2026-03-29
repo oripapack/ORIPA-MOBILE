@@ -45,8 +45,28 @@
   },
   "marketplace": {
     "storeTitle": "Marketplace",
-    "storeLead": "Verified partner inventory — singles, sealed, graded. Browse and save for checkout (opening packs stays on Home).",
+    "storeLead": "Shop trusted listings near you or browse global partners — Japanese promos, EU slabs, US wax — in one place (pack opening stays on Home).",
     "searchPlaceholder": "Search singles, sealed, sets, or stores…",
+    "regionRowLabel": "Ships from",
+    "region_all": "All regions",
+    "region_near_you": "Near you",
+    "region_japan": "Japan",
+    "region_europe": "Europe",
+    "shipsFromLine": "Ships from {{place}}",
+    "shipsFromPlace": {
+      "us": "United States",
+      "japan": "Japan",
+      "eu": "European Union"
+    },
+    "regionPill": {
+      "us": "US",
+      "japan": "Japan",
+      "eu": "EU"
+    },
+    "storeCrossBorder": {
+      "from_japan": "International delivery · tracked",
+      "from_eu": "Cross-border EU · duties may apply"
+    },
     "sortRowLabel": "Sort",
     "sort_recommended": "Recommended",
     "sort_newest": "Newest",
@@ -104,7 +124,7 @@
     "badgeNew": "NEW",
     "emptyResults": "No listings match your filters.",
     "emptyTitle": "No matches in this market",
-    "emptyHint": "Try another category or sort, or clear search.",
+    "emptyHint": "Try another region, category, or sort — or clear search.",
     "emptyClearCta": "Clear search & filters",
     "listingDemoTitle": "Listing",
     "listingDemoBody": "Checkout for “{{title}}” isn’t wired yet — this screen is listings-only.",

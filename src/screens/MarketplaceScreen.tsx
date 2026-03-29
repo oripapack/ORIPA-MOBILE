@@ -13,8 +13,11 @@ import {
   marketplaceStores,
   marketplaceListings,
   sortMarketplaceListings,
+  filterListingsByRegion,
+  getStoreById,
   type ListingCategory,
   type MarketplaceListing,
+  type MarketplaceRegionFilterId,
   type MarketplaceSortId,
 } from '../data/marketplace';
 import { demoMarketplacePromoImage } from '../data/demoMedia';
@@ -38,6 +41,8 @@ const SORT_IDS: MarketplaceSortId[] = [
   'sale_first',
 ];
 
+const REGION_FILTER_IDS: MarketplaceRegionFilterId[] = ['all', 'near_you', 'japan', 'europe'];
+
 export function MarketplaceScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -47,18 +52,11 @@ export function MarketplaceScreen() {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ListingCategory | 'all'>('all');
   const [sort, setSort] = useState<MarketplaceSortId>('recommended');
+  const [regionFilter, setRegionFilter] = useState<MarketplaceRegionFilterId>('all');
 
   const storeNameById = useMemo(() => {
     const m = new Map<string, string>();
     marketplaceStores.forEach((s) => m.set(s.id, s.name));
-    return m;
-  }, []);
-
-  const totalListingsByStore = useMemo(() => {
-    const m = new Map<string, number>();
-    marketplaceListings.forEach((l) => {
-      m.set(l.storeId, (m.get(l.storeId) ?? 0) + 1);
-    });
     return m;
   }, []);
 
@@ -73,9 +71,17 @@ export function MarketplaceScreen() {
     });
   }, [query, category, storeNameById]);
 
+  const regionFilteredListings = useMemo(
+    () => filterListingsByRegion(filteredListings, regionFilter),
+    [filteredListings, regionFilter],
+  );
+
   const sortedListings = useMemo(
-    () => sortMarketplaceListings(filteredListings, sort),
-    [filteredListings, sort],
+    () =>
+      sortMarketplaceListings(regionFilteredListings, sort, {
+        regionFilterAllWithLocalBoost: regionFilter === 'all' && sort === 'recommended',
+      }),
+    [regionFilteredListings, sort, regionFilter],
   );
 
   const saleListings = useMemo(
@@ -87,7 +93,16 @@ export function MarketplaceScreen() {
     setQuery('');
     setCategory('all');
     setSort('recommended');
+    setRegionFilter('all');
   };
+
+  const regionShortLabel = (storeId: string) => {
+    const s = getStoreById(storeId);
+    return s ? t(`marketplace.regionPill.${s.fulfillmentRegion}`) : undefined;
+  };
+
+  const shipsFromLineForStore = (store: (typeof marketplaceStores)[number]) =>
+    t('marketplace.shipsFromLine', { place: t(`marketplace.shipsFromPlace.${store.fulfillmentRegion}`) });
 
   const onListingPress = (listing: MarketplaceListing) => {
     requireAuth(() => {
@@ -176,6 +191,32 @@ export function MarketplaceScreen() {
           </ScrollView>
         </View>
 
+        {/* Region / ships-from (mock — MVP assumes US for “Near you”) */}
+        <View style={styles.regionBlock}>
+          <Text style={styles.regionLabel}>{t('marketplace.regionRowLabel')}</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.regionScroll}
+          >
+            {REGION_FILTER_IDS.map((id) => {
+              const active = regionFilter === id;
+              return (
+                <TouchableOpacity
+                  key={id}
+                  style={[styles.regionChip, active && styles.regionChipActive]}
+                  onPress={() => setRegionFilter(id)}
+                  activeOpacity={0.85}
+                >
+                  <Text style={[styles.regionChipText, active && styles.regionChipTextActive]}>
+                    {t(`marketplace.region_${id}`)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+
         {/* Sale row */}
         {saleListings.length > 0 ? (
           <View style={styles.section}>
@@ -194,14 +235,13 @@ export function MarketplaceScreen() {
                 <ListingCard
                   key={listing.id}
                   listing={listing}
+                  shipsFromShort={regionFilter === 'all' ? regionShortLabel(listing.storeId) : undefined}
                   onPress={() => onListingPress(listing)}
                 />
               ))}
             </ScrollView>
           </View>
         ) : null}
-
-        <WhyChoosePullHub />
 
         {/* Partner storefronts */}
         <Text style={styles.sectionEyebrow}>{t('marketplace.sectionStores')}</Text>
@@ -214,7 +254,7 @@ export function MarketplaceScreen() {
           });
           if (rows.length === 0) return null;
 
-          const inv = totalListingsByStore.get(store.id) ?? 0;
+          const inv = sortedListings.filter((l) => l.storeId === store.id).length;
 
           return (
             <View key={store.id} style={styles.storeBlock}>
@@ -231,6 +271,13 @@ export function MarketplaceScreen() {
                     />
                   ) : null}
                 </View>
+
+                <Text style={styles.storeShipsFrom}>{shipsFromLineForStore(store)}</Text>
+                {store.crossBorderKey ? (
+                  <Text style={styles.storeCrossBorder}>
+                    {t(`marketplace.storeCrossBorder.${store.crossBorderKey}`)}
+                  </Text>
+                ) : null}
 
                 <Text style={styles.storeMetaLine}>
                   {t('marketplace.inventoryCount', { count: inv })}{' '}
@@ -255,6 +302,7 @@ export function MarketplaceScreen() {
                   <ListingCard
                     key={listing.id}
                     listing={listing}
+                    shipsFromShort={regionFilter === 'all' ? regionShortLabel(listing.storeId) : undefined}
                     onPress={() => onListingPress(listing)}
                   />
                 ))}
@@ -272,6 +320,8 @@ export function MarketplaceScreen() {
             </TouchableOpacity>
           </View>
         ) : null}
+
+        <WhyChoosePullHub />
 
         {/* Compact promo — supporting, after browse */}
         <View style={styles.promoCompact}>
@@ -415,6 +465,42 @@ const styles = StyleSheet.create({
   sortChipTextActive: {
     color: colors.gold,
   },
+  regionBlock: {
+    marginBottom: spacing.md,
+  },
+  regionLabel: {
+    fontSize: 10,
+    fontWeight: fontWeight.bold,
+    color: colors.textMuted,
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+    paddingHorizontal: spacing.base,
+    marginBottom: spacing.xs,
+  },
+  regionScroll: {
+    paddingHorizontal: spacing.base,
+    gap: 8,
+  },
+  regionChip: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 7,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  regionChipActive: {
+    borderColor: colors.gold,
+    backgroundColor: 'rgba(232, 197, 71, 0.07)',
+  },
+  regionChipText: {
+    fontSize: 11,
+    fontWeight: fontWeight.semibold,
+    color: colors.textSecondary,
+  },
+  regionChipTextActive: {
+    color: colors.gold,
+  },
   section: {
     marginBottom: spacing.lg,
   },
@@ -484,6 +570,19 @@ const styles = StyleSheet.create({
   },
   verifiedIcon: {
     marginTop: 1,
+  },
+  storeShipsFrom: {
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.bold,
+    color: colors.textPrimary,
+    marginBottom: 2,
+    letterSpacing: 0.2,
+  },
+  storeCrossBorder: {
+    fontSize: 10,
+    color: colors.textMuted,
+    marginBottom: 4,
+    lineHeight: 15,
   },
   storeMetaLine: {
     fontSize: 11,

@@ -10,10 +10,12 @@ const CARD_W = 158;
 
 interface Props {
   listing: MarketplaceListing;
+  /** Short origin label (e.g. “Japan”) — optional marketplace context */
+  shipsFromShort?: string;
   onPress?: () => void;
 }
 
-export function ListingCard({ listing, onPress }: Props) {
+export function ListingCard({ listing, shipsFromShort, onPress }: Props) {
   const { t } = useTranslation();
 
   const badgeLabel =
@@ -55,8 +57,15 @@ export function ListingCard({ listing, onPress }: Props) {
           <Text style={styles.thumbPlaceholder}>🃏</Text>
         )}
         <View style={styles.thumbScrim} pointerEvents="none" />
+        {shipsFromShort ? (
+          <View style={styles.regionPill} pointerEvents="none">
+            <Text style={styles.regionPillText} numberOfLines={1}>
+              {shipsFromShort}
+            </Text>
+          </View>
+        ) : null}
         {badgeLabel ? (
-          <View style={styles.badgePill}>
+          <View style={[styles.badgePill, shipsFromShort && styles.badgePillWithRegion]}>
             <Text style={styles.badgeText}>{badgeLabel}</Text>
           </View>
         ) : null}
@@ -108,6 +117,25 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.1)',
   },
+  regionPill: {
+    position: 'absolute',
+    top: 6,
+    left: 6,
+    zIndex: 2,
+    maxWidth: '72%',
+    backgroundColor: 'rgba(10, 16, 12, 0.88)',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.28)',
+  },
+  regionPillText: {
+    fontSize: 8,
+    fontWeight: fontWeight.bold,
+    color: colors.gold,
+    letterSpacing: 0.3,
+  },
   badgePill: {
     position: 'absolute',
     left: 6,
@@ -118,6 +146,12 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: radius.sm,
     maxWidth: '88%',
+  },
+  badgePillWithRegion: {
+    left: 'auto',
+    right: 6,
+    bottom: 6,
+    maxWidth: '42%',
   },
   badgeText: {
     fontSize: 8,
