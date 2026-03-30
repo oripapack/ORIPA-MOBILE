@@ -10,6 +10,8 @@ import { radius, spacing } from '../tokens/spacing';
 import { navigationRef } from '../navigation/navigationRef';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useAppStore } from '../store/useAppStore';
+import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
+import { membershipMeetsRequired } from '../data/membershipPlans';
 import { mockPacks, type Pack } from '../data/mockPacks';
 import { getLocalizedPackFields } from '../i18n/packCopy';
 import { demoPackHeroImage } from '../data/demoMedia';
@@ -29,6 +31,7 @@ export function PackDetailsScreen({ route }: Props) {
   const openPack = useAppStore((s) => s.openPack);
   const isPackOpening = useAppStore((s) => s.modals.packOpening);
   const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
+  const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
   const [oddsOpen, setOddsOpen] = useState(false);
 
   const pack = useMemo<Pack | undefined>(
@@ -53,7 +56,13 @@ export function PackDetailsScreen({ route }: Props) {
     );
   }
 
-  const disabled = isPackOpening || awaitingFulfillment || pack.remainingInventory <= 0;
+  const requiredTier = pack.requiredMembershipTier;
+  const tierGate =
+    !!requiredTier && !membershipMeetsRequired(simulatedTier, requiredTier);
+  const soldOut = pack.remainingInventory <= 0;
+  /** Member-only packs show unlock CTA unless inventory is gone. */
+  const membershipLocked = tierGate && !soldOut;
+  const openBlocked = isPackOpening || awaitingFulfillment || soldOut;
   const odds = useMemo(() => getMockPackOdds(pack), [pack]);
   const topHit = useMemo(() => getMockPackTopHit(pack), [pack]);
 
@@ -79,6 +88,17 @@ export function PackDetailsScreen({ route }: Props) {
         </View>
 
         <View style={styles.body}>
+          {tierGate && requiredTier ? (
+            <VaultFramedCard contentStyle={styles.cardInner}>
+              <Text style={styles.sectionTitle}>{t('packDetails.memberGateTitle')}</Text>
+              <Text style={styles.sectionBody}>
+                {t('packDetails.memberGateBody', {
+                  tier: t(`membership.tierName_${requiredTier}`),
+                })}
+              </Text>
+            </VaultFramedCard>
+          ) : null}
+
           <VaultFramedCard contentStyle={styles.cardInner}>
             <Text style={styles.sectionTitle}>{t('packDetails.guaranteeTitle')}</Text>
             <Text style={styles.sectionBody}>{loc.guaranteeText}</Text>
@@ -149,20 +169,34 @@ export function PackDetailsScreen({ route }: Props) {
       <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, spacing.base) }]}>
         <View style={styles.footerGlass} pointerEvents="none" />
         <TouchableOpacity
-          style={[styles.cta, disabled && styles.ctaDisabled]}
+          style={[styles.cta, openBlocked && !membershipLocked ? styles.ctaDisabled : null]}
           activeOpacity={0.9}
-          disabled={disabled}
-          onPress={() =>
+          disabled={membershipLocked ? isPackOpening || awaitingFulfillment : openBlocked}
+          onPress={() => {
+            if (membershipLocked) {
+              if (navigationRef.isReady()) navigationRef.navigate('Membership');
+              return;
+            }
             requireAuth(() => {
               openPack(pack);
-            })
-          }
+            });
+          }}
         >
           <View style={styles.ctaInner}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.ctaText}>{disabled ? t('packDetails.ctaDisabled') : t('packCard.openPack')}</Text>
+              <Text style={styles.ctaText}>
+                {membershipLocked
+                  ? t('packDetails.ctaUnlockMembership', {
+                      tier: t(`membership.tierName_${requiredTier}`),
+                    })
+                  : openBlocked
+                    ? t('packDetails.ctaDisabled')
+                    : t('packCard.openPack')}
+              </Text>
               <Text style={styles.ctaSub}>
-                {pack.creditPrice.toLocaleString()} {t('packCard.credits')} · {pack.remainingInventory.toLocaleString()} left
+                {membershipLocked
+                  ? t('packDetails.ctaUnlockMembershipSub')
+                  : `${pack.creditPrice.toLocaleString()} ${t('packCard.credits')} · ${pack.remainingInventory.toLocaleString()} left`}
               </Text>
             </View>
             <Text style={styles.ctaArrow}>›</Text>

@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: 'rgba(212, 175, 55, 0.28)',
+    borderColor: colors.accentBorder,
   },
   regionPillText: {
     fontSize: 8,

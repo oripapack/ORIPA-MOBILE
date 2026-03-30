@@ -1,4 +1,5 @@
 import { demoPackHeroImage } from './demoMedia';
+import type { MembershipTierId } from './membershipPlans';
 
 export type ChipTagType = 'new' | 'new_user' | 'best_value' | 'graded' | 'hot_drop' | 'bonus_pack' | 'chase_boost';
 
@@ -20,6 +21,8 @@ export interface Pack {
   valueDescription: string;
   guaranteeText: string;
   maxPerUser: number | null;
+  /** Member-only: requires this tier or higher (Silver < Gold < Black). */
+  requiredMembershipTier?: MembershipTierId;
 }
 
 export const HOME_NICHE_CATEGORIES: HomeNicheCategory[] = ['pokemon', 'yugioh', 'one_piece', 'sports'];
@@ -59,6 +62,7 @@ function p(
     maxPerUser: number | null;
     totalInventory?: number;
     remainingInventory?: number;
+    requiredMembershipTier?: MembershipTierId;
   },
 ): Pack {
   const n = parseInt(id, 10);
@@ -76,6 +80,7 @@ function p(
     valueDescription: args.valueDescription,
     guaranteeText: args.guaranteeText,
     maxPerUser: args.maxPerUser,
+    requiredMembershipTier: args.requiredMembershipTier,
   };
 }
 
@@ -410,6 +415,34 @@ export const mockPacks: Pack[] = [
     valueDescription: '1/1 shields & laundry-tag logoman chases',
     guaranteeText: '1-of-1 or /5 hit rotation (demo)',
     maxPerUser: 1,
+  }),
+  // Member-only lanes (demo — unlock via Account → Membership → simulate)
+  p('41', 'Silver Member Lounge', 'pokemon', {
+    creditPrice: 320,
+    tags: ['new', 'best_value'],
+    imageColor: '#475569',
+    valueDescription: 'Curated holos & illustration rares for Silver members',
+    guaranteeText: 'Member lane — reverse holo or better every open',
+    maxPerUser: null,
+    requiredMembershipTier: 'silver',
+  }),
+  p('42', 'Gold Atelier Select', 'pokemon', {
+    creditPrice: 890,
+    tags: ['hot_drop', 'graded'],
+    imageColor: '#B45309',
+    valueDescription: 'Premium chase pool — earlier access in the live lobby',
+    guaranteeText: 'Gold members · ultra rare slot eligible',
+    maxPerUser: null,
+    requiredMembershipTier: 'gold',
+  }),
+  p('43', 'Black Label Chase Vault', 'pokemon', {
+    creditPrice: 2400,
+    tags: ['chase_boost', 'graded'],
+    imageColor: '#0A0A0C',
+    valueDescription: 'Ultra-limited rotation — highest-tier member access',
+    guaranteeText: 'Black members · chase-tier hit rotation (demo)',
+    maxPerUser: 2,
+    requiredMembershipTier: 'black',
   }),
 ];
 

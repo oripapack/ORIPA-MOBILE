@@ -30,7 +30,7 @@ export function HomeBackground() {
       />
       <ExpoLinearGradient
         pointerEvents="none"
-        colors={['rgba(212,175,55,0.07)', 'transparent', 'transparent']}
+        colors={[colors.accentSoft, 'transparent', 'transparent']}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 0.35 }}
         style={StyleSheet.absoluteFillObject}

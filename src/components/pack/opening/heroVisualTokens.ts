@@ -13,8 +13,8 @@ export const HERO_STAGE = {
 };
 
 export const HERO_PACK = {
-  faceGradientTop: '#0f1419',
-  faceGradientBottom: '#06090c',
+  faceGradientTop: '#0c1929',
+  faceGradientBottom: '#030712',
   foilGloss: ['rgba(255,255,255,0)', 'rgba(255,255,255,0.07)', 'rgba(255,255,255,0)'] as const,
   edgeHighlight: 'rgba(255,255,255,0.22)',
   edgeShadow: 'rgba(0,0,0,0.45)',

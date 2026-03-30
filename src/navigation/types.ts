@@ -24,6 +24,8 @@ export type RootStackParamList = {
   PayoutMethod: undefined;
   /** Promo codes + referral link (Profile → rewards). */
   Promotions: undefined;
+  /** Paid membership — Silver / Gold / Black (demo CTA until IAP). */
+  Membership: undefined;
 };
 
 export type RootTabParamList = {

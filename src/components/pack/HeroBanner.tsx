@@ -74,14 +74,14 @@ export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
         <Svg width={BANNER_W} height={220}>
           <Defs>
             <LinearGradient id="heroGrad" x1="0" y1="0" x2="1" y2="1">
-              <Stop offset="0" stopColor="#050a06" />
-              <Stop offset="0.32" stopColor="#0f1f14" />
-              <Stop offset="0.65" stopColor="#142010" />
-              <Stop offset="1" stopColor="#020403" />
+              <Stop offset="0" stopColor="#020617" />
+              <Stop offset="0.32" stopColor="#0A1228" />
+              <Stop offset="0.65" stopColor="#0E1629" />
+              <Stop offset="1" stopColor="#030712" />
             </LinearGradient>
             <LinearGradient id="heroHot" x1="1" y1="0" x2="0.2" y2="0.85">
-              <Stop offset="0" stopColor="rgba(196, 30, 58, 0.42)" />
-              <Stop offset="0.4" stopColor="rgba(212, 175, 55, 0.18)" />
+              <Stop offset="0" stopColor="rgba(230, 0, 18, 0.38)" />
+              <Stop offset="0.4" stopColor="rgba(56, 189, 248, 0.2)" />
               <Stop offset="1" stopColor="rgba(255,255,255,0)" />
             </LinearGradient>
           </Defs>

@@ -6,7 +6,7 @@ import { HomeBackground } from '../components/shared/HomeBackground';
 import { HeroBanner } from '../components/pack/HeroBanner';
 import { DropLobbyHero } from '../components/home/DropLobbyHero';
 import { LobbyPackRail } from '../components/home/LobbyPackRail';
-import { RecentHitsStrip } from '../components/home/RecentHitsStrip';
+import { LiveHitsStrip } from '../components/home/LiveHitsStrip';
 import { CategoryTabBar } from '../components/pack/CategoryTabBar';
 import { FilterSortRow } from '../components/pack/FilterSortRow';
 import { PackSubfilterBar } from '../components/pack/PackSubfilterBar';
@@ -115,7 +115,7 @@ export function HomeScreen() {
                     }}
                   />
                 ) : null}
-                <RecentHitsStrip />
+                <LiveHitsStrip />
                 <LobbyPackRail
                   titleKey="home.lobby.railNewTitle"
                   subtitleKey="home.lobby.railNewSub"
@@ -178,11 +178,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 999,
     padding: 4,
-    backgroundColor: 'rgba(12, 20, 10, 0.88)',
+    backgroundColor: 'rgba(10, 16, 32, 0.92)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.headerHairline,
     borderLeftWidth: 3,
-    borderLeftColor: 'rgba(212,175,55,0.35)',
+    borderLeftColor: colors.accentBorder,
   },
   modeBtn: {
     flex: 1,
@@ -192,9 +192,9 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   modeBtnActive: {
-    backgroundColor: 'rgba(232, 197, 71, 0.14)',
+    backgroundColor: colors.goldSoft,
     borderWidth: 1,
-    borderColor: 'rgba(232, 197, 71, 0.42)',
+    borderColor: colors.accentBorder,
   },
   modeBtnText: {
     fontSize: fontSize.sm,

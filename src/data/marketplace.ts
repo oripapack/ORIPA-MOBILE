@@ -9,14 +9,8 @@ export type ListingCategory = 'pokemon' | 'one_piece' | 'yugioh' | 'sports' | 'o
 /** Partner fulfillment origin — mock only (no geolocation). */
 export type FulfillmentRegion = 'us' | 'japan' | 'eu';
 
-/** Region chips — “near you” maps to `assumedLocalRegion` (MVP: US). */
-export type MarketplaceRegionFilterId = 'all' | 'near_you' | 'japan' | 'europe';
-
-/**
- * MVP: treat app user as browsing from this region for “Near you” and local-first sort.
- * Replace with real profile/geo later without changing filter IDs.
- */
-export const ASSUMED_LOCAL_FULFILLMENT_REGION: FulfillmentRegion = 'us';
+/** Region chips for “Ships from” (mock — no geolocation). */
+export type MarketplaceRegionFilterId = 'all' | 'us' | 'japan' | 'europe';
 
 export interface MarketplaceStore {
   id: string;
@@ -72,27 +66,19 @@ export interface MarketplaceListing {
 
 export type MarketplaceSortId = 'recommended' | 'newest' | 'price_low' | 'price_high' | 'sale_first';
 
-export function storeMatchesRegionFilter(
-  store: MarketplaceStore,
-  filter: MarketplaceRegionFilterId,
-  assumedLocal: FulfillmentRegion = ASSUMED_LOCAL_FULFILLMENT_REGION,
-): boolean {
+export function storeMatchesRegionFilter(store: MarketplaceStore, filter: MarketplaceRegionFilterId): boolean {
   if (filter === 'all') return true;
-  if (filter === 'near_you') return store.fulfillmentRegion === assumedLocal;
+  if (filter === 'us') return store.fulfillmentRegion === 'us';
   if (filter === 'japan') return store.fulfillmentRegion === 'japan';
   if (filter === 'europe') return store.fulfillmentRegion === 'eu';
   return true;
 }
 
-export function filterListingsByRegion(
-  listings: MarketplaceListing[],
-  filter: MarketplaceRegionFilterId,
-  assumedLocal: FulfillmentRegion = ASSUMED_LOCAL_FULFILLMENT_REGION,
-): MarketplaceListing[] {
+export function filterListingsByRegion(listings: MarketplaceListing[], filter: MarketplaceRegionFilterId): MarketplaceListing[] {
   if (filter === 'all') return listings;
   return listings.filter((l) => {
     const s = getStoreById(l.storeId);
-    return s ? storeMatchesRegionFilter(s, filter, assumedLocal) : false;
+    return s ? storeMatchesRegionFilter(s, filter) : false;
   });
 }
 

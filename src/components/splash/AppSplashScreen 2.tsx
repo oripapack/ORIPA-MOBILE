@@ -104,13 +104,13 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
   return (
     <Animated.View style={[styles.root, rootStyle]} pointerEvents="auto">
       <LinearGradient
-        colors={['#030504', '#0A100C', '#0C1410']}
+        colors={['#020617', '#050A14', '#0A1228']}
         locations={[0, 0.42, 1]}
         style={StyleSheet.absoluteFillObject}
       />
       <LinearGradient
         pointerEvents="none"
-        colors={['rgba(34,197,94,0.07)', 'transparent', 'transparent']}
+        colors={['rgba(56,189,248,0.09)', 'transparent', 'transparent']}
         start={{ x: 0.15, y: 0 }}
         end={{ x: 0.85, y: 0.45 }}
         style={StyleSheet.absoluteFillObject}
@@ -124,7 +124,7 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
 
       <Animated.View style={[styles.spotlight, spotlightStyle]} pointerEvents="none">
         <LinearGradient
-          colors={['rgba(232,197,71,0.35)', 'rgba(34,197,94,0.08)', 'transparent']}
+          colors={['rgba(56,189,248,0.22)', 'rgba(255,203,5,0.06)', 'transparent']}
           start={{ x: 0.5, y: 0.4 }}
           end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -133,7 +133,7 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
 
       <Animated.View style={[styles.shimmerBand, shimmerBandStyle]} pointerEvents="none">
         <LinearGradient
-          colors={['transparent', 'rgba(245,237,214,0.04)', 'rgba(232,197,71,0.06)', 'transparent']}
+          colors={['transparent', 'rgba(240,247,255,0.05)', 'rgba(56,189,248,0.08)', 'transparent']}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={styles.shimmerGrad}

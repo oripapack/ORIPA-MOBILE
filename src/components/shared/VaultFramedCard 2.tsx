@@ -7,10 +7,10 @@ import { radius, spacing } from '../../tokens/spacing';
 const BR = 10;
 
 const GRADIENTS = {
-  /** Default — dark felt + green depth (matches Friends identity vault). */
-  vault: ['rgba(21,32,24,0.98)', 'rgba(12,18,14,0.99)'] as const,
-  /** Deeper felt — e.g. “best pull” / casino-adjacent highlights. */
-  felt: ['rgba(8,14,10,0.98)', 'rgba(5,8,6,0.99)'] as const,
+  /** Default — deep blue vault + holo edge */
+  vault: ['rgba(14,22,40,0.98)', 'rgba(8,12,22,0.99)'] as const,
+  /** Deeper void — featured / emphasis */
+  felt: ['rgba(6,10,20,0.98)', 'rgba(3,6,14,0.99)'] as const,
 };
 
 export type VaultFill = keyof typeof GRADIENTS;
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.28)',
+    borderColor: colors.accentBorder,
     shadowColor: 'rgba(0,0,0,0.5)',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.35,
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     top: 14,
     bottom: 14,
     width: 3,
-    backgroundColor: colors.gold,
-    opacity: 0.45,
+    backgroundColor: colors.accent,
+    opacity: 0.55,
     zIndex: 2,
   },
   bracketTL: {
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderTopWidth: 1.5,
     borderLeftWidth: 1.5,
-    borderColor: 'rgba(232,197,71,0.45)',
+    borderColor: colors.accentBorder,
     zIndex: 1,
   },
   bracketBR: {
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderBottomWidth: 1.5,
     borderRightWidth: 1.5,
-    borderColor: 'rgba(232,197,71,0.32)',
+    borderColor: 'rgba(56, 189, 248, 0.28)',
     zIndex: 1,
   },
   inner: {

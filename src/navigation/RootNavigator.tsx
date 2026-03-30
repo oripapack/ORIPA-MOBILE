@@ -24,6 +24,7 @@ import { LinkedAccountsScreen } from '../screens/LinkedAccountsScreen';
 import { IdentityVerificationScreen } from '../screens/IdentityVerificationScreen';
 import { PayoutMethodScreen } from '../screens/PayoutMethodScreen';
 import { PromotionsScreen } from '../screens/PromotionsScreen';
+import { MembershipScreen } from '../screens/MembershipScreen';
 import { PackDetailsScreen } from '../screens/PackDetailsScreen';
 import { FriendProfileScreen } from '../screens/FriendProfileScreen';
 import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
@@ -41,6 +42,7 @@ import { hasVerifiedPhone } from '../lib/clerkPhone';
 import { hasCompletedProfileOnboarding } from '../lib/clerkProfile';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { usePromotionStore } from '../store/promotionStore';
+import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { AppBootEntrance, BOOT_ENTRANCE_SPRING } from '../components/splash/AppBootEntrance';
 import { AppSplashScreen } from '../components/splash/AppSplashScreen';
 import { GuestModeProvider } from '../context/GuestModeContext';
@@ -137,6 +139,17 @@ function RootStack() {
         <Stack.Screen
           name="TierBenefits"
           component={TierBenefitsScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.textPrimary,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.surfaceElevated },
+          }}
+        />
+        <Stack.Screen
+          name="Membership"
+          component={MembershipScreen}
           options={{
             headerShown: true,
             headerTintColor: colors.textPrimary,
@@ -260,10 +273,12 @@ function RootStack() {
 function GuestHydration() {
   const hydrate = useGuestBrowseStore((s) => s.hydrate);
   const hydratePromotions = usePromotionStore((s) => s.hydrate);
+  const hydrateMembershipSim = useMembershipSimulationStore((s) => s.hydrate);
   useEffect(() => {
     void hydrate();
     void hydratePromotions();
-  }, [hydrate, hydratePromotions]);
+    void hydrateMembershipSim();
+  }, [hydrate, hydratePromotions, hydrateMembershipSim]);
   return null;
 }
 

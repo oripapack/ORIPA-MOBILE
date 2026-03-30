@@ -129,11 +129,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: 'rgba(232,197,71,0.1)',
+    backgroundColor: colors.goldSoft,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(232,197,71,0.2)',
+    borderColor: colors.demoNoteBorder,
   },
   rowLabel: {
     flex: 1,

@@ -11,7 +11,10 @@ import { colors } from '../../tokens/colors';
 import { fontSize, fontWeight } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
+import { useMembershipSimulationStore } from '../../store/membershipSimulationStore';
+import { membershipMeetsRequired } from '../../data/membershipPlans';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
+import { navigationRef } from '../../navigation/navigationRef';
 import { PackOddsModal } from './PackOddsModal';
 
 const WIN_W = Dimensions.get('window').width;
@@ -78,6 +81,10 @@ export function PackCard({ pack, onPress }: Props) {
   const openPack = useAppStore((s) => s.openPack);
   const isPackOpening = useAppStore((s) => s.modals.packOpening);
   const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
+  const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
+  const requiredTier = pack.requiredMembershipTier;
+  const membershipLocked =
+    !!requiredTier && !membershipMeetsRequired(simulatedTier, requiredTier);
   const pct = Math.round((pack.remainingInventory / pack.totalInventory) * 100);
   const loc = getLocalizedPackFields(pack, t);
   const topHit = getMockPackTopHit(pack);
@@ -179,10 +186,16 @@ export function PackCard({ pack, onPress }: Props) {
     }).start();
   };
 
+  const ctaBlocked = isPackOpening || awaitingFulfillment;
+  const openLockedPack = () => {
+    if (navigationRef.isReady()) navigationRef.navigate('Membership');
+  };
+
   return (
     <Animated.View
       style={[
         styles.card,
+        membershipLocked && styles.cardMemberLocked,
         {
           transform: [{ scale: cardScale }],
           borderLeftColor: rail,
@@ -289,6 +302,17 @@ export function PackCard({ pack, onPress }: Props) {
             {loc.valueDescription}
           </Text>
         </View>
+        {membershipLocked && requiredTier ? (
+          <View style={styles.memberLockOverlay} pointerEvents="none">
+            <View style={styles.memberLockPill}>
+              <Text style={styles.memberLockPillText}>
+                {t('membership.benefits.memberPackLockedShort', {
+                  tier: t(`membership.tierName_${requiredTier}`),
+                })}
+              </Text>
+            </View>
+          </View>
+        ) : null}
       </TouchableOpacity>
 
       <View style={styles.meta}>
@@ -371,7 +395,7 @@ export function PackCard({ pack, onPress }: Props) {
               ? tierPulse.interpolate({ inputRange: [0, 1], outputRange: [18, 34] })
               : ctaGlow.interpolate({ inputRange: [0, 1], outputRange: [14, 24] }),
           },
-          (isPackOpening || awaitingFulfillment) && styles.ctaDisabled,
+          ctaBlocked && styles.ctaDisabled,
         ]}
         onLayout={(e) => setCtaW(e.nativeEvent.layout.width)}
       >
@@ -384,12 +408,12 @@ export function PackCard({ pack, onPress }: Props) {
               'overflow-hidden',
               'bg-slate-900/75 border-amber-300/40',
             ].join(' ')}
-            onPress={() => openPack(pack)}
+            onPress={() => (membershipLocked ? openLockedPack() : openPack(pack))}
             onPressIn={ctaPressIn}
             onPressOut={ctaPressOut}
             onHoverIn={ctaHoverIn}
             onHoverOut={ctaHoverOut}
-            disabled={isPackOpening || awaitingFulfillment}
+            disabled={ctaBlocked}
           >
             <LinearGradient
               pointerEvents="none"
@@ -431,7 +455,7 @@ export function PackCard({ pack, onPress }: Props) {
               <Text
                 style={styles.ctaText}
               >
-                {t('packCard.openPack')}
+                {membershipLocked ? t('packCard.unlockMembershipCta') : t('packCard.openPack')}
               </Text>
             </View>
           </Pressable>
@@ -461,6 +485,31 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 14 },
     shadowOpacity: 0.18,
     shadowRadius: 22,
+  },
+  cardMemberLocked: {
+    opacity: 0.92,
+  },
+  memberLockOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 3,
+    justifyContent: 'flex-end',
+    padding: spacing.base,
+  },
+  memberLockPill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 6,
+    borderRadius: radius.md,
+    backgroundColor: 'rgba(0,0,0,0.78)',
+    borderWidth: 1,
+    borderColor: colors.casinoFeltBorder,
+  },
+  memberLockPillText: {
+    fontSize: 10,
+    fontWeight: fontWeight.black,
+    color: colors.casinoGold,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
   },
   hero: {
     height: PACK_IMG_H,

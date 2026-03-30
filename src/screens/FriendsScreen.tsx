@@ -256,11 +256,19 @@ export function FriendsScreen() {
             )}
           </View>
 
-          {/* 1 — Recent activity (horizontal — primary focus) */}
+          {/* Friends activity — primary; empty state adds CTA directly below */}
           <View style={styles.sectionActivity}>
             <Text style={styles.sectionEyebrow}>{t('friends.sectionActivity')}</Text>
             {friends.length === 0 || activityFeed.length === 0 ? (
-              <Text style={styles.inlineEmpty}>{t('friends.emptyActivity')}</Text>
+              <>
+                <Text style={styles.inlineEmpty}>{t('friends.emptyActivity')}</Text>
+                <PrimaryButton
+                  label={t('friends.emptyCta')}
+                  onPress={openAdd}
+                  variant="red"
+                  style={styles.addFriendsBelowActivity}
+                />
+              </>
             ) : (
               <View style={styles.activityCarouselBleed}>
                 <ScrollView
@@ -290,53 +298,9 @@ export function FriendsScreen() {
             )}
           </View>
 
-          {/* 2 — Leaderboard (compact) */}
-          <View style={styles.sectionLeaderboard}>
-            <Text style={styles.sectionEyebrowSm}>{t('friends.sectionLeaderboard')}</Text>
-            <Text style={styles.sectionHintCompact}>{t('friends.leaderboardPreviewHint')}</Text>
-            {leaderboardPreview.length === 0 ? (
-              <Text style={styles.inlineEmptySm}>{t('friends.emptyLeaderboardHint')}</Text>
-            ) : (
-              <View style={styles.leaderboardBlock}>
-                {leaderboardPreview.map((e) => (
-                  <TouchableOpacity
-                    key={e.username}
-                    style={[styles.lbRow, e.isCurrentUser && styles.lbRowMe]}
-                    onPress={openLeaderboard}
-                    activeOpacity={0.88}
-                  >
-                    <Text style={styles.lbRank}>{e.rank}</Text>
-                    <Text style={styles.lbEmoji}>{e.avatarEmoji}</Text>
-                    <View style={styles.lbMeta}>
-                      <Text style={styles.lbName} numberOfLines={1}>
-                        {e.displayName}
-                        {e.isCurrentUser ? ` (${t('social.you')})` : ''}
-                      </Text>
-                      <Text style={styles.lbUn} numberOfLines={1}>
-                        @{e.username}
-                      </Text>
-                    </View>
-                    <Text style={styles.lbVal}>{formatUsd(e.value)}</Text>
-                  </TouchableOpacity>
-                ))}
-                <TouchableOpacity style={styles.seeAllBtn} onPress={openLeaderboard} activeOpacity={0.85}>
-                  <Text style={styles.seeAllText}>{t('friends.leaderboardSeeAll')}</Text>
-                  <Ionicons name="chevron-forward" size={14} color={colors.gold} />
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-
-          {/* 3 — Squad */}
-          <View style={styles.sectionSquad}>
-            <Text style={styles.sectionEyebrowSm}>{t('friends.sectionSquad')}</Text>
-            {friends.length === 0 ? (
-              <View style={styles.emptySquadInline}>
-                <Text style={styles.emptySquadTitleSm}>{t('friends.emptySquadTitle')}</Text>
-                <Text style={styles.emptySquadBodySm}>{t('friends.emptySquadBody')}</Text>
-                <PrimaryButton label={t('friends.emptyCta')} onPress={openAdd} variant="red" style={styles.emptyCtaSm} />
-              </View>
-            ) : (
+          {friends.length > 0 ? (
+            <View style={styles.sectionFriends}>
+              <Text style={styles.sectionEyebrowSm}>{t('friends.sectionFriends')}</Text>
               <View style={styles.squadBlock}>
                 {friendRows.map(({ entry, profile }) => {
                   const ring = accentForId(entry.username);
@@ -369,6 +333,43 @@ export function FriendsScreen() {
                     </TouchableOpacity>
                   );
                 })}
+              </View>
+            </View>
+          ) : null}
+
+          {/* Leaderboard (after connections / add-friends CTA) */}
+          <View style={styles.sectionLeaderboard}>
+            <Text style={styles.sectionEyebrowSm}>{t('friends.sectionLeaderboard')}</Text>
+            <Text style={styles.sectionHintCompact}>{t('friends.leaderboardPreviewHint')}</Text>
+            {leaderboardPreview.length === 0 ? (
+              <Text style={styles.inlineEmptySm}>{t('friends.emptyLeaderboardHint')}</Text>
+            ) : (
+              <View style={styles.leaderboardBlock}>
+                {leaderboardPreview.map((e) => (
+                  <TouchableOpacity
+                    key={e.username}
+                    style={[styles.lbRow, e.isCurrentUser && styles.lbRowMe]}
+                    onPress={openLeaderboard}
+                    activeOpacity={0.88}
+                  >
+                    <Text style={styles.lbRank}>{e.rank}</Text>
+                    <Text style={styles.lbEmoji}>{e.avatarEmoji}</Text>
+                    <View style={styles.lbMeta}>
+                      <Text style={styles.lbName} numberOfLines={1}>
+                        {e.displayName}
+                        {e.isCurrentUser ? ` (${t('social.you')})` : ''}
+                      </Text>
+                      <Text style={styles.lbUn} numberOfLines={1}>
+                        @{e.username}
+                      </Text>
+                    </View>
+                    <Text style={styles.lbVal}>{formatUsd(e.value)}</Text>
+                  </TouchableOpacity>
+                ))}
+                <TouchableOpacity style={styles.seeAllBtn} onPress={openLeaderboard} activeOpacity={0.85}>
+                  <Text style={styles.seeAllText}>{t('friends.leaderboardSeeAll')}</Text>
+                  <Ionicons name="chevron-forward" size={14} color={colors.gold} />
+                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -493,8 +494,8 @@ const styles = StyleSheet.create({
   sectionLeaderboard: {
     marginBottom: spacing.lg + spacing.xs,
   },
-  sectionSquad: {
-    marginBottom: spacing.md,
+  sectionFriends: {
+    marginBottom: spacing.lg + spacing.xs,
   },
   sectionHintCompact: {
     fontSize: 10,
@@ -543,7 +544,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(255,255,255,0.06)',
   },
   lbRowMe: {
-    backgroundColor: 'rgba(232,197,71,0.06)',
+    backgroundColor: colors.accentSoft,
   },
   lbRank: {
     width: 24,
@@ -580,7 +581,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     paddingVertical: spacing.sm + 2,
-    backgroundColor: 'rgba(232,197,71,0.06)',
+    backgroundColor: colors.accentSoft,
   },
   seeAllText: {
     fontSize: fontSize.xs,
@@ -650,29 +651,10 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: 2,
   },
-  emptySquadInline: {
-    paddingVertical: spacing.sm,
-    alignItems: 'center',
-  },
-  emptySquadTitleSm: {
-    fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
-    color: colors.textPrimary,
-    textAlign: 'center',
-    marginBottom: spacing.xs,
-  },
-  emptySquadBodySm: {
-    fontSize: fontSize.xs,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 18,
-    marginBottom: spacing.md,
-    maxWidth: 300,
-    opacity: 0.9,
-  },
-  emptyCtaSm: {
+  addFriendsBelowActivity: {
+    marginTop: spacing.md,
     minWidth: 200,
-    alignSelf: 'center',
+    alignSelf: 'stretch',
   },
   socialFooter: {
     marginTop: spacing.xl,

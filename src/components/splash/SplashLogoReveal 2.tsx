@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.black,
     color: colors.gold,
     letterSpacing: -0.5,
-    textShadowColor: 'rgba(232,197,71,0.35)',
+    textShadowColor: 'rgba(56, 189, 248, 0.35)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
   },

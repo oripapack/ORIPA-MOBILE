@@ -19,6 +19,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import type { PullRarityTier } from '../../data/mockUser';
+import { WinningsSummaryCard } from './WinningsSummaryCard';
 
 const TIER_POOL: Record<PullRarityTier, string> = {
   common: 'Common Prize Pool',
@@ -75,6 +76,7 @@ export function WonPrizesModal() {
   const convertIds = useMemo(() => pulls.filter((p) => !shipSelected[p.id]).map((p) => p.id), [pulls, shipSelected]);
 
   const shipCount = shipIds.length;
+  const convertCount = convertIds.length;
   const convertAmount = useMemo(
     () => pulls.reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0),
     [pulls],
@@ -86,6 +88,32 @@ export function WonPrizesModal() {
         .reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0),
     [pulls, shipSelected],
   );
+
+  const selectionState = useMemo(() => {
+    if (shipCount === 0) return 'none' as const;
+    if (convertCount === 0) return 'all' as const;
+    return 'some' as const;
+  }, [shipCount, convertCount]);
+
+  const topHelperText = useMemo(() => {
+    if (selectionState === 'all') return 'All selected cards will be shipped.';
+    return 'Select the cards you want shipped. Everything else converts automatically.';
+  }, [selectionState]);
+
+  const summaryAmount = selectionState === 'none' ? convertAmount : convertSelectedAmount;
+
+  const primaryCtaLabel = useMemo(() => {
+    const coins = summaryAmount.toLocaleString();
+    if (selectionState === 'all') return 'Ship Selected Cards';
+    if (selectionState === 'none') return `Get ${coins} Coins`;
+    return `Ship ${shipCount} + Get ${coins} Coins`;
+  }, [selectionState, shipCount, summaryAmount]);
+
+  const footerSubcopy = useMemo(() => {
+    if (selectionState === 'all') return `${shipCount} card${shipCount === 1 ? '' : 's'} marked for shipping`;
+    if (selectionState === 'none') return 'Unselected cards convert instantly to coins.';
+    return `${convertCount} convert · ${shipCount} ship`;
+  }, [selectionState, shipCount, convertCount]);
 
   const onPrimaryPress = () => {
     if (pulls.length === 0) return;
@@ -126,17 +154,16 @@ export function WonPrizesModal() {
           </View>
 
           <Text style={styles.instructions}>
-            Choose the prizes you want shipped. Any unselected prizes will be converted into points.
+            Unselected cards convert instantly to coins. Shipping is optional.
           </Text>
 
-          <View style={styles.poolHeader}>
-            <Text style={styles.poolTitle}>
-              Pending pulls · {pulls.length} item{pulls.length === 1 ? '' : 's'}
+          <WinningsSummaryCard amount={summaryAmount} currencyLabel="Coins" helperText={topHelperText} />
+
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>
+              Pending winnings · {pulls.length} item{pulls.length === 1 ? '' : 's'}
             </Text>
-            <View style={styles.poolCoins}>
-              <Text style={styles.coinIcon}>🪙</Text>
-              <Text style={styles.poolCoinValue}>{convertAmount.toLocaleString()}</Text>
-            </View>
+            <Text style={styles.sectionHint}>Tap to toggle shipping</Text>
           </View>
 
           {pulls.map((pull) => {
@@ -165,8 +192,13 @@ export function WonPrizesModal() {
                 </View>
 
                 <View style={styles.itemBody}>
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>{TIER_BADGE[tier]}</Text>
+                  <View style={styles.itemTopRow}>
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>{TIER_BADGE[tier]}</Text>
+                    </View>
+                    <View style={[styles.intentPill, checked ? styles.intentShip : styles.intentConvert]}>
+                      <Text style={styles.intentText}>{checked ? 'Shipping' : 'Converts'}</Text>
+                    </View>
                   </View>
                   <Text style={styles.itemName} numberOfLines={2}>
                     {pull.result ?? '—'}
@@ -184,19 +216,21 @@ export function WonPrizesModal() {
             );
           })}
 
-          <Text style={styles.hint}>
-            Tap items to mark for shipping. Unselected items will be converted into points.
-          </Text>
+          <Text style={styles.hint}>Select the cards you want shipped. Everything else converts automatically.</Text>
         </ScrollView>
 
         <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
           <PrimaryButton
-            label={shipCount > 0 ? `${shipCount} to ship + convert the rest` : 'Convert all into Points'}
-            variant={shipCount > 0 ? 'black' : 'red'}
+            label={primaryCtaLabel}
+            variant={selectionState === 'none' ? 'red' : 'black'}
             onPress={onPrimaryPress}
             style={styles.footerBtn}
           />
-          <Text style={styles.footerSub}>🪙 {convertSelectedAmount.toLocaleString()} will be converted</Text>
+          <Text style={styles.footerSub}>
+            {selectionState === 'all' ? 'Shipping only' : `🪙 ${summaryAmount.toLocaleString()} converts`}
+            {'  ·  '}
+            {footerSubcopy}
+          </Text>
         </View>
       </View>
 
@@ -207,13 +241,13 @@ export function WonPrizesModal() {
             <TouchableOpacity style={styles.confirmClose} onPress={() => setShowConvertConfirm(false)}>
               <Text style={styles.confirmCloseText}>✕</Text>
             </TouchableOpacity>
-            <Text style={styles.confirmTitle}>Convert items to points</Text>
-            <Text style={styles.confirmBody}>Converted points will be added to your points balance.</Text>
+            <Text style={styles.confirmTitle}>Convert to coins</Text>
+            <Text style={styles.confirmBody}>Coins will be added to your balance instantly.</Text>
             <View style={styles.confirmRow}>
-              <Text style={styles.confirmLabel}>Points to be Received</Text>
+              <Text style={styles.confirmLabel}>Coins to be received</Text>
               <View style={styles.confirmValue}>
                 <Text style={styles.coinIcon}>🪙</Text>
-                <Text style={styles.confirmAmount}>{convertSelectedAmount.toLocaleString()}</Text>
+                <Text style={styles.confirmAmount}>{summaryAmount.toLocaleString()}</Text>
               </View>
             </View>
             <PrimaryButton label="Confirm" variant="red" onPress={onConfirmConvert} />
@@ -247,42 +281,41 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     color: colors.textSecondary,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
   },
-  poolHeader: {
+  sectionHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
+    marginTop: spacing.xl,
     marginBottom: spacing.sm,
+    gap: spacing.md,
   },
-  poolTitle: {
+  sectionTitle: {
     fontSize: fontSize.sm,
     fontWeight: fontWeight.bold,
     color: colors.textPrimary,
+    flex: 1,
   },
-  poolCoins: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  poolCoinValue: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
-    color: colors.textPrimary,
+  sectionHint: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    fontWeight: fontWeight.medium,
   },
   itemCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.surfaceMuted,
     borderRadius: radius.lg,
     padding: spacing.md,
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: colors.borderLight,
     gap: spacing.sm,
+    marginBottom: spacing.sm,
   },
   itemCardSelected: {
-    borderColor: 'rgba(225, 29, 46, 0.45)',
-    backgroundColor: '#FFF5F5',
+    borderColor: colors.redGlow,
+    backgroundColor: colors.surfaceElevated,
   },
   checkbox: {
     width: 24,
@@ -332,18 +365,45 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
   },
+  itemTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
+    marginBottom: 4,
+  },
   badge: {
     alignSelf: 'flex-start',
     backgroundColor: colors.nearBlack,
     paddingHorizontal: spacing.sm,
     paddingVertical: 2,
     borderRadius: radius.sm,
-    marginBottom: 4,
   },
   badgeText: {
     color: colors.white,
     fontSize: fontSize.xs,
     fontWeight: fontWeight.bold,
+  },
+  intentPill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: radius.full,
+    borderWidth: 1,
+  },
+  intentShip: {
+    backgroundColor: 'rgba(196, 30, 58, 0.14)',
+    borderColor: 'rgba(196, 30, 58, 0.45)',
+  },
+  intentConvert: {
+    backgroundColor: colors.goldSoft,
+    borderColor: 'rgba(232, 197, 71, 0.35)',
+  },
+  intentText: {
+    color: colors.textPrimary,
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.bold,
+    letterSpacing: 0.2,
   },
   itemName: {
     fontSize: fontSize.sm,
@@ -384,9 +444,10 @@ const styles = StyleSheet.create({
   },
   footerSub: {
     textAlign: 'center',
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.bold,
     color: colors.textSecondary,
+    lineHeight: 18,
   },
   confirmOverlay: {
     flex: 1,

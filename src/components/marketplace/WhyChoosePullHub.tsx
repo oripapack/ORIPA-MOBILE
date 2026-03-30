@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: 'rgba(212, 175, 55, 0.28)',
+    borderColor: colors.accentBorder,
     marginBottom: 4,
   },
   pointPillText: {

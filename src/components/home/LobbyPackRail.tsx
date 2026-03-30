@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   rule: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(212,175,55,0.22)',
+    backgroundColor: colors.headerHairline,
     marginTop: 4,
     maxWidth: 120,
   },

@@ -57,7 +57,7 @@ export function DropLobbyHero({ pack, onBrowseFloor }: Props) {
           />
           <LinearGradient
             pointerEvents="none"
-            colors={['rgba(212,175,55,0.22)', 'transparent', 'transparent']}
+            colors={[colors.headerHairline, 'transparent', 'transparent']}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 0.55 }}
             style={StyleSheet.absoluteFillObject}
@@ -137,10 +137,10 @@ const styles = StyleSheet.create({
   frame: {
     borderRadius: radius.lg,
     overflow: 'hidden',
-    backgroundColor: 'rgba(8,12,10,0.94)',
+    backgroundColor: 'rgba(8,12,22,0.94)',
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.28)',
-    shadowColor: 'rgba(212,175,55,0.35)',
+    borderColor: colors.accentBorder,
+    shadowColor: colors.accentGlow,
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.45,
     shadowRadius: 28,
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     top: 12,
     bottom: 12,
     width: 3,
-    backgroundColor: colors.gold,
+    backgroundColor: colors.accent,
     opacity: 0.55,
     zIndex: 4,
     borderTopRightRadius: 2,
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderTopWidth: 2,
     borderLeftWidth: 2,
-    borderColor: 'rgba(232,197,71,0.55)',
+    borderColor: colors.accentBorder,
     zIndex: 5,
   },
   bracketTR: {
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderTopWidth: 2,
     borderRightWidth: 2,
-    borderColor: 'rgba(232,197,71,0.55)',
+    borderColor: colors.accentBorder,
     zIndex: 5,
   },
   bracketBL: {
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderBottomWidth: 2,
     borderLeftWidth: 2,
-    borderColor: 'rgba(232,197,71,0.4)',
+    borderColor: 'rgba(56, 189, 248, 0.32)',
     zIndex: 5,
   },
   bracketBR: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderBottomWidth: 2,
     borderRightWidth: 2,
-    borderColor: 'rgba(232,197,71,0.4)',
+    borderColor: 'rgba(56, 189, 248, 0.32)',
     zIndex: 5,
   },
   hero: {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: fontWeight.bold,
     letterSpacing: 2,
-    color: 'rgba(245,237,214,0.65)',
+    color: 'rgba(240,247,255,0.7)',
     marginBottom: 6,
     textTransform: 'uppercase',
   },
@@ -235,15 +235,15 @@ const styles = StyleSheet.create({
   sub: {
     marginTop: 6,
     fontSize: fontSize.sm,
-    color: 'rgba(245,237,214,0.82)',
+    color: 'rgba(226,232,240,0.88)',
     lineHeight: 20,
   },
   meta: {
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
-    backgroundColor: 'rgba(5,8,6,0.75)',
+    backgroundColor: 'rgba(5,8,18,0.78)',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(212,175,55,0.2)',
+    borderTopColor: 'rgba(56, 189, 248, 0.22)',
   },
   metaRow: {
     flexDirection: 'row',
@@ -290,9 +290,9 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     alignItems: 'center',
     borderRadius: radius.md,
-    backgroundColor: 'rgba(232,197,71,0.14)',
+    backgroundColor: colors.goldSoft,
     borderWidth: 1,
-    borderColor: 'rgba(232,197,71,0.45)',
+    borderColor: colors.accentBorder,
   },
   floorText: {
     fontSize: fontSize.sm,

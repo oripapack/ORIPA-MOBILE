@@ -28,8 +28,16 @@ export function HeroRevealEngine({
   skipNonce: number;
   onRevealDone: () => void;
 }) {
-  const tv = REVEAL_RARITY_VISUAL[revealRarity];
   const h = useHeroReveal({ roll, revealRarity, replayKey, skipNonce, onRevealDone });
+
+  /**
+   * Prevent "outcome spoilers":
+   * Do not let rarity colors leak before the reveal moment.
+   * We only switch to the real rarity visuals once the reveal/result phases start.
+   */
+  const effectiveRarity: RevealRarity =
+    h.phase === 'reveal' || h.phase === 'result' ? revealRarity : 'common';
+  const tv = REVEAL_RARITY_VISUAL[effectiveRarity];
 
   const dim = h.bgDim;
   const pulse = h.glowPulse.interpolate({ inputRange: [0, 1], outputRange: [0.15, tv.glowStrength] });
@@ -50,8 +58,7 @@ export function HeroRevealEngine({
           ? 'rgba(56,189,248,1)'
           : '#FFFFFF';
 
-  const chromeAccent =
-    h.phase === 'primed' ? tv.accent : 'rgba(148, 163, 184, 0.85)';
+  const chromeAccent = h.phase === 'reveal' || h.phase === 'result' ? tv.accent : 'rgba(148, 163, 184, 0.85)';
 
   return (
     <View style={styles.root}>
@@ -143,7 +150,7 @@ export function HeroRevealEngine({
       {/* Chase-only particles (premium) */}
       <PremiumChaseParticles
         active={
-          (h.phase === 'primed' || h.phase === 'reveal' || h.phase === 'result') && revealRarity === 'chase'
+          (h.phase === 'reveal' || h.phase === 'result') && revealRarity === 'chase'
         }
         revealRarity={revealRarity}
       />

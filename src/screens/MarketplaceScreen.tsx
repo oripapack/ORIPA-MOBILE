@@ -41,7 +41,7 @@ const SORT_IDS: MarketplaceSortId[] = [
   'sale_first',
 ];
 
-const REGION_FILTER_IDS: MarketplaceRegionFilterId[] = ['all', 'near_you', 'japan', 'europe'];
+const REGION_FILTER_IDS: MarketplaceRegionFilterId[] = ['all', 'us', 'japan', 'europe'];
 
 export function MarketplaceScreen() {
   const { t } = useTranslation();
@@ -191,7 +191,7 @@ export function MarketplaceScreen() {
           </ScrollView>
         </View>
 
-        {/* Region / ships-from (mock — MVP assumes US for “Near you”) */}
+        {/* Region / ships-from (mock — US · Japan · EU inventory) */}
         <View style={styles.regionBlock}>
           <Text style={styles.regionLabel}>{t('marketplace.regionRowLabel')}</Text>
           <ScrollView

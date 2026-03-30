@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
   modeChipOnSheet: {
     borderWidth: 0,
     borderColor: 'transparent',
-    backgroundColor: 'rgba(232,197,71,0.1)',
+    backgroundColor: colors.goldSoft,
   },
   modeChipTextOnSheet: {
     color: colors.textPrimary,

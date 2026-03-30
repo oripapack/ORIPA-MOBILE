@@ -10,16 +10,17 @@ import { colors } from '../tokens/colors';
 import { fontSize, fontWeight } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { useAppStore } from '../store/useAppStore';
+import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { isClerkEnabled } from '../config/clerk';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { useRequireAuth } from '../hooks/useRequireAuth';
-import { deriveSocialProfileFromUser, getActivityHighlights } from '../data/socialMock';
+import { deriveSocialProfileFromUser } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
 import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
-import { ActivityStrip } from '../components/social/ActivityStrip';
+import { HitRateCard } from '../components/account/HitRateCard';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { ListRow } from '../components/shared/ListRow';
 
@@ -33,10 +34,13 @@ export function AccountScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<AccountNav>();
   const user = useAppStore((s) => s.user);
+  const pullHistory = useAppStore((s) => s.user.pullHistory);
+  const coinBalance = useAppStore((s) => s.user.credits);
   const { refreshControl } = usePullToRefresh();
   const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
   const forceAuthWall = useGuestBrowseStore((s) => s.forceAuthWall);
   const { requireAuth } = useRequireAuth();
+  const simulatedMemberTier = useMembershipSimulationStore((s) => s.simulatedTier);
 
   const showGuestSignInCard = isClerkEnabled && !clerkSignedIn;
   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
@@ -46,8 +50,6 @@ export function AccountScreen() {
   }, [forceAuthWall]);
 
   const pct = Math.min(100, Math.round((user.xp / user.xpToNextTier) * 100));
-  const highlights = useMemo(() => getActivityHighlights(socialProfile), [socialProfile]);
-
   const tierColors: Record<string, string> = {
     Starter: '#6B7280',
     Bronze: '#92400E',
@@ -116,6 +118,13 @@ export function AccountScreen() {
                 {socialProfile.status}
               </Text>
             ) : null}
+            {simulatedMemberTier ? (
+              <View style={styles.pullHubMemberBadge}>
+                <Text style={styles.pullHubMemberBadgeText}>
+                  {t(`membership.badgeShort_${simulatedMemberTier}`)}
+                </Text>
+              </View>
+            ) : null}
           </View>
         </View>
         <Text style={styles.profileBio} numberOfLines={3}>
@@ -123,16 +132,28 @@ export function AccountScreen() {
         </Text>
         <View style={styles.profileStatsRow}>
           <View style={styles.profileStat}>
-            <Text style={styles.profileStatVal}>{socialProfile.stats.packsOpened}</Text>
-            <Text style={styles.profileStatLab}>Packs</Text>
+            <Text style={styles.profileStatVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+              {socialProfile.stats.packsOpened}
+            </Text>
+            <Text style={styles.profileStatLab}>{t('account.profileStatPacks')}</Text>
           </View>
           <View style={styles.profileStat}>
-            <Text style={styles.profileStatVal}>{formatUsd(socialProfile.stats.totalEstimatedValue)}</Text>
-            <Text style={styles.profileStatLab}>Value</Text>
+            <Text style={styles.profileStatVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+              {formatUsd(socialProfile.stats.totalEstimatedValue)}
+            </Text>
+            <Text style={styles.profileStatLab}>{t('account.profileStatValue')}</Text>
           </View>
           <View style={styles.profileStat}>
-            <Text style={styles.profileStatVal}>{socialProfile.luckScore}</Text>
-            <Text style={styles.profileStatLab}>Luck</Text>
+            <Text style={styles.profileStatVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+              {socialProfile.luckScore}
+            </Text>
+            <Text style={styles.profileStatLab}>{t('account.profileStatLuck')}</Text>
+          </View>
+          <View style={styles.profileStat}>
+            <Text style={styles.profileStatVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+              {coinBalance.toLocaleString()}
+            </Text>
+            <Text style={styles.profileStatLab}>{t('account.profileStatCoins')}</Text>
           </View>
         </View>
         <Text style={styles.joined}>
@@ -140,14 +161,27 @@ export function AccountScreen() {
         </Text>
       </VaultFramedCard>
 
-      {/* Tier + display name — primary profile block */}
+      <VaultFramedCard style={styles.rewardsCard} contentStyle={styles.rewardsCardInner}>
+        <ListRow
+          label={t('membership.accountRowTitle')}
+          icon={<Ionicons name="ribbon-outline" size={22} color={colors.gold} />}
+          rightContent={
+            simulatedMemberTier ? (
+              <Text style={styles.memberRowPill}>{t(`membership.badge_${simulatedMemberTier}`)}</Text>
+            ) : null
+          }
+          onPress={() => navigation.navigate('Membership')}
+        />
+      </VaultFramedCard>
+
+      {/* Collector level (XP progression) */}
       <VaultFramedCard style={styles.tierCard} contentStyle={styles.tierCardInner}>
         <Text style={styles.tierDisplayName} numberOfLines={2}>
           {user.displayName}
         </Text>
         <View style={styles.tierTop}>
           <View style={styles.tierTitleBlock}>
-            <Text style={styles.tierEyebrow}>{t('rewards.tier')}</Text>
+            <Text style={styles.tierEyebrow}>{t('account.collectorLevelEyebrow')}</Text>
             <Text style={[styles.tierName, { color: tierColor }]}>{user.tier.toUpperCase()}</Text>
           </View>
           <View style={styles.tierBadge}>
@@ -170,7 +204,7 @@ export function AccountScreen() {
           onPress={() => navigation.navigate('TierBenefits')}
           activeOpacity={0.75}
         >
-          <Text style={styles.viewBenefitsText}>{t('rewards.viewBenefits')}</Text>
+          <Text style={styles.viewBenefitsText}>{t('account.viewLevelRewards')}</Text>
         </TouchableOpacity>
       </VaultFramedCard>
 
@@ -204,6 +238,11 @@ export function AccountScreen() {
         </View>
       </VaultFramedCard>
 
+      <Text style={styles.section}>{t('social.rarityMix')}</Text>
+      <View style={styles.rarityMixBlock}>
+        <RarityBreakdownMini breakdown={socialProfile.stats.rarityBreakdown} />
+      </View>
+
       <Text style={styles.section}>{t('social.bestPull')}</Text>
       <VaultFramedCard fill="felt" style={styles.bestCard}>
         <Text style={styles.bestName} numberOfLines={2}>
@@ -213,11 +252,7 @@ export function AccountScreen() {
         <Text style={styles.bestSub}>{t('social.estimatedValue')}</Text>
       </VaultFramedCard>
 
-      <Text style={styles.section}>{t('social.rarityMix')}</Text>
-      <RarityBreakdownMini breakdown={socialProfile.stats.rarityBreakdown} />
-
-      <Text style={styles.section}>{t('social.highlights')}</Text>
-      <ActivityStrip items={highlights} />
+      <HitRateCard pullHistory={pullHistory} />
 
       <Text style={styles.section}>{t('social.recentPulls')}</Text>
       {socialProfile.recentPulls.length === 0 ? (
@@ -227,15 +262,15 @@ export function AccountScreen() {
       )}
 
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.btnDark} onPress={goPullHistory} activeOpacity={0.88}>
-          <Text style={styles.btnDarkText}>{t('account.pullHistoryCta')}</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.btnOutline}
           onPress={() => navigation.navigate('FriendsLeaderboard')}
           activeOpacity={0.88}
         >
           <Text style={styles.btnOutlineText}>{t('social.openLeaderboard')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnDark} onPress={goPullHistory} activeOpacity={0.88}>
+          <Text style={styles.btnDarkText}>{t('account.pullHistoryCta')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -364,6 +399,30 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.6,
   },
+  pullHubMemberBadge: {
+    marginTop: spacing.xs + 2,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: radius.sm,
+    backgroundColor: colors.demoNoteBg,
+    borderWidth: 1,
+    borderColor: colors.demoNoteBorder,
+  },
+  pullHubMemberBadgeText: {
+    fontSize: 9,
+    fontWeight: fontWeight.black,
+    color: colors.gold,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  memberRowPill: {
+    fontSize: 10,
+    fontWeight: fontWeight.bold,
+    color: colors.gold,
+    maxWidth: 120,
+    textAlign: 'right',
+  },
   profileBio: {
     marginTop: spacing.sm,
     fontSize: fontSize.sm,
@@ -386,17 +445,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileStatVal: {
-    fontSize: fontSize.sm,
+    fontSize: fontSize.xs,
     fontWeight: fontWeight.black,
     color: colors.textPrimary,
+    maxWidth: '100%',
   },
   profileStatLab: {
     marginTop: 2,
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: fontWeight.bold,
     color: colors.textMuted,
-    letterSpacing: 0.4,
+    letterSpacing: 0.35,
     textTransform: 'uppercase',
+  },
+  rarityMixBlock: {
+    marginBottom: spacing.lg,
   },
   joined: {
     marginTop: spacing.md,
