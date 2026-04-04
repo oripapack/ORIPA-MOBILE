@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 import { PUBLIC_WEB_ORIGIN } from '../../config/app';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -62,13 +62,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   body: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     lineHeight: 20,
     marginBottom: spacing.md,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   link: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.gold,
   },
   copyBtn: {
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   copyText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
 });

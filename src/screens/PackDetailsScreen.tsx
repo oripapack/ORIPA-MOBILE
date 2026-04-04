@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { navigationRef } from '../navigation/navigationRef';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   missing: {
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   },
   missingTitle: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: 6,
   },
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.white,
     marginBottom: 6,
   },
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginBottom: 6,
   },
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
   },
   footer: {
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.nearBlack,
   },
   ctaInner: {
@@ -362,13 +362,13 @@ const styles = StyleSheet.create({
   ctaSub: {
     marginTop: 2,
     fontSize: 11,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: 'rgba(2,6,23,0.72)',
     letterSpacing: 0.2,
   },
   ctaArrow: {
     fontSize: 26,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.nearBlack,
     marginTop: -2,
   },
@@ -382,14 +382,14 @@ const styles = StyleSheet.create({
   },
   specLabel: {
     fontSize: 12,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },
   specValue: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   oddsBtn: {
@@ -406,13 +406,13 @@ const styles = StyleSheet.create({
   },
   oddsBtnText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: 0.2,
   },
   oddsBtnChevron: {
     fontSize: 22,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     marginTop: -2,
   },
@@ -430,14 +430,14 @@ const styles = StyleSheet.create({
   topHitBody: { flex: 1, minWidth: 0 },
   topHitName: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     lineHeight: 20,
   },
   topHitMeta: {
     marginTop: 4,
     fontSize: 12,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textSecondary,
   },
   finePrint: {
@@ -463,13 +463,13 @@ const styles = StyleSheet.create({
   },
   pullsTier: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 1.4,
   },
   pullsChance: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   pullsExamples: {

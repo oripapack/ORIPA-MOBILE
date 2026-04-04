@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { creditBundles } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
@@ -152,20 +152,20 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
 const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
   subtitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     marginBottom: spacing.sm,
     lineHeight: 20,
   },
   mockNote: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.redDark,
     backgroundColor: colors.promoBannerBg,
     padding: spacing.sm,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   },
   probabilityLinkText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.red,
     textDecorationLine: 'underline',
   },
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   discountBadgeText: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
     letterSpacing: 0.5,
   },
@@ -230,29 +230,29 @@ const styles = StyleSheet.create({
   },
   pointsLine: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: 2,
   },
   approxLine: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     marginTop: 2,
   },
   priceNow: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.red,
   },
   priceList: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   priceWas: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     textDecorationLine: 'line-through',
     marginTop: 2,
@@ -265,25 +265,25 @@ const styles = StyleSheet.create({
   },
   jpyWas: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     textDecorationLine: 'line-through',
   },
   jpyNow: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.red,
   },
   jpyList: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
     marginTop: 4,
   },
   bundleBonus: {
     fontSize: fontSize.xs,
     color: colors.green,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     marginTop: 6,
   },
   buyBtn: {
@@ -295,12 +295,12 @@ const styles = StyleSheet.create({
   },
   buyBtnText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
   },
   disclaimer: {
     fontSize: 10,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     lineHeight: 15,
     marginTop: spacing.sm,
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   },
   routingNote: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textSecondary,
     lineHeight: 18,
     marginBottom: spacing.sm,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   },
   trustText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     textAlign: 'center',
   },

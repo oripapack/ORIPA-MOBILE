@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { mockLiveHits } from '../../data/mockRecentHits';
 import { formatUsd } from '../../lib/socialFormat';
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   kicker: {
     fontSize: 9,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 2,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -90,13 +90,13 @@ const styles = StyleSheet.create({
   },
   user: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textSecondary,
     marginBottom: 4,
   },
   pull: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     lineHeight: 18,
     minHeight: 36,
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   val: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.casinoGold,
     flex: 1,
   },
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 9,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },

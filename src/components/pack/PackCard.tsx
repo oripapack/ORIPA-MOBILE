@@ -8,7 +8,7 @@ import { ChipTagType, Pack } from '../../data/mockPacks';
 import { getMockPackTopHit } from '../../data/mockTopHits';
 import { getMockPackOdds } from '../../data/mockPackOdds';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 import { useMembershipSimulationStore } from '../../store/membershipSimulationStore';
@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
   },
   memberLockPillText: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.casinoGold,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
   },
   badgeMainText: {
     fontSize: 11,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.casinoGold,
     letterSpacing: 1.2,
   },
@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
   },
   badgeSecondaryText: {
     fontSize: 11,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: 'rgba(255,255,255,0.92)',
     letterSpacing: 1.1,
   },
@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
   imageTitle: {
     color: colors.white,
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     marginBottom: 6,
     lineHeight: 22,
     textShadowColor: 'rgba(0,0,0,0.45)',
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
   valueLine: {
     color: 'rgba(255,255,255,0.88)',
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     letterSpacing: 0.2,
   },
   meta: {
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
   },
   topHitLabel: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   },
   chaseText: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.casinoGold,
     letterSpacing: 1.1,
   },
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
   },
   topHitName: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: 6,
   },
@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
   },
   rarityText: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 0.2,
   },
@@ -689,7 +689,7 @@ const styles = StyleSheet.create({
   },
   topHitValue: {
     fontSize: 11,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   priceRow: {
@@ -710,20 +710,20 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   credits: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textSecondary,
   },
   remaining: {
     flex: 1,
     fontSize: 10,
     color: colors.textMuted,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     textAlign: 'right',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
@@ -741,7 +741,7 @@ const styles = StyleSheet.create({
   },
   limitText: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.red,
     marginBottom: 6,
     letterSpacing: 0.3,
@@ -763,7 +763,7 @@ const styles = StyleSheet.create({
   },
   oddsBtnText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
     letterSpacing: 0.2,
   },
@@ -812,7 +812,7 @@ const styles = StyleSheet.create({
   ctaText: {
     color: colors.nearBlack,
     fontSize: fontSize.base,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 1,
     textTransform: 'uppercase',
   },

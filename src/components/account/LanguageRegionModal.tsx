@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useTranslation } from 'react-i18next';
 import {
@@ -124,12 +124,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   cancel: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textSecondary,
   },
   scroll: {
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -174,16 +174,16 @@ const styles = StyleSheet.create({
   rowLabel: {
     fontSize: fontSize.base,
     color: colors.textPrimary,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
   },
   rowLabelSelected: {
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.redDark,
   },
   check: {
     fontSize: fontSize.lg,
     color: colors.red,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
   doneBtn: {
     marginHorizontal: spacing.base,
@@ -196,6 +196,6 @@ const styles = StyleSheet.create({
   doneText: {
     color: colors.white,
     fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
 });

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ChipTagType } from '../../data/mockPacks';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 const chipStyle: Record<ChipTagType, { bg: string; text: string; border: string }> = {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     letterSpacing: 0.2,
   },
 });

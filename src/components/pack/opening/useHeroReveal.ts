@@ -40,18 +40,18 @@ function buildEscalatingShake(packShakeX: Animated.Value): Animated.CompositeAni
 }
 
 const TIMING = {
-  focus: 400,
+  focus: 320,
   anticipation: 900,
   flash: 220,
   reveal: 650,
-  value: 420,
+  value: 380,
 };
 
-const BADGE_DELAY_MS = 150;
-const VALUE_DELAY_MS = 150;
+const BADGE_DELAY_MS = 120;
+const VALUE_DELAY_MS = 120;
 
-/** Rails / sparks ramp before taps count */
-const ARMING_MS = 620;
+/** Rails / sparks ramp before taps count (shorter = less passive “waiting room”) */
+const ARMING_MS = 400;
 
 function randInt(min: number, max: number) {
   return Math.floor(min + Math.random() * (max - min + 1));
@@ -110,8 +110,15 @@ export function useHeroReveal({
   const floatY = useRef(new Animated.Value(0)).current;
   /** Full-frame “camera” punch during rupture (1 → 1.03 → 0.98 → 1). */
   const cameraPunch = useRef(new Animated.Value(1)).current;
+  /** Slow bob on the pack during arming + spinning so the stage feels alive, not slide-like. */
+  const packBobY = useRef(new Animated.Value(0)).current;
+  /** Quick tilt nudge per tap while charging. */
+  const packTiltDeg = useRef(new Animated.Value(0)).current;
 
   const stopFloatRef = useRef<Animated.CompositeAnimation | null>(null);
+  const bobLoopRef = useRef<Animated.CompositeAnimation | null>(null);
+  /** Prevents double-firing `runPrimedBurst` from rapid taps on the commit beat. */
+  const burstLockRef = useRef(false);
 
   const reset = useCallback(() => {
     setPhase('intro');
@@ -145,9 +152,14 @@ export function useHeroReveal({
     valueY.setValue(10);
     floatY.setValue(0);
     cameraPunch.setValue(1);
+    packBobY.setValue(0);
+    packTiltDeg.setValue(0);
     didFinishRef.current = false;
     stopFloatRef.current?.stop();
     stopFloatRef.current = null;
+    bobLoopRef.current?.stop();
+    bobLoopRef.current = null;
+    burstLockRef.current = false;
   }, [
     auraOpacity,
     badgeOpacity,
@@ -176,6 +188,8 @@ export function useHeroReveal({
     foilOpacity,
     cardShadow,
     cameraPunch,
+    packBobY,
+    packTiltDeg,
   ]);
 
   const finish = useCallback(() => {
@@ -238,6 +252,10 @@ export function useHeroReveal({
     valueOpacity.setValue(1);
     valueY.setValue(0);
     cameraPunch.setValue(1);
+    packBobY.setValue(0);
+    packTiltDeg.setValue(0);
+    bobLoopRef.current?.stop();
+    bobLoopRef.current = null;
     finish();
   }, [
     auraOpacity,
@@ -302,19 +320,26 @@ export function useHeroReveal({
       Animated.spring(cameraPunch, { toValue: 1, friction: 11, tension: 180, useNativeDriver: true }),
     ]);
 
-    // Pre-reveal freeze: hold the frame, slightly deepen focus, then flash.
+    const cardInDelayMs = 68;
+
+    // Pre-reveal freeze: hold the frame, slightly deepen focus, then one overlapping “rupture” beat
+    // (pack tear + card emergence share time — reads as motion, not successive slides).
     Animated.timing(bgDim, {
       toValue: revealDim + 0.06,
-      duration: 80,
+      duration: 68,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start(() => {
       setTimeout(() => {
-        Animated.parallel([
-          Animated.timing(packOpacity, { toValue: 0, duration: 160, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        setTimeout(() => setPhase('reveal'), 88);
+
+        cardY.setValue(-34);
+
+        const ruptureParallel = Animated.parallel([
+          Animated.timing(packOpacity, { toValue: 0, duration: 118, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
           Animated.timing(packSplit, {
             toValue: 1,
-            duration: 260,
+            duration: 210,
             easing: Easing.bezier(0.33, 0, 0.14, 1),
             useNativeDriver: true,
           }),
@@ -326,65 +351,67 @@ export function useHeroReveal({
           Animated.sequence([
             Animated.timing(afterglowOpacity, {
               toValue: pacing.afterglowPeak,
-              duration: 90,
+              duration: 78,
               easing: Easing.out(Easing.cubic),
               useNativeDriver: true,
             }),
-            Animated.timing(afterglowOpacity, { toValue: 0, duration: 380, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            Animated.timing(afterglowOpacity, { toValue: 0, duration: 340, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
           ]),
           Animated.sequence([
-            Animated.timing(silhouetteOpacity, { toValue: 1, duration: 80, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-            Animated.timing(silhouetteOpacity, { toValue: 0, duration: 130, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            Animated.timing(silhouetteOpacity, { toValue: 0.72, duration: 44, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            Animated.timing(silhouetteOpacity, { toValue: 0, duration: 95, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
           ]),
-          Animated.timing(bgDim, { toValue: revealDim, duration: 160, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-          Animated.timing(vignetteOpacity, { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-        ]).start(() => {
-      setPhase('reveal');
-      cardY.setValue(-40);
+          Animated.timing(bgDim, { toValue: revealDim, duration: 140, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.timing(vignetteOpacity, { toValue: 1, duration: 200, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.sequence([
+            Animated.delay(cardInDelayMs),
+            Animated.parallel([
+              Animated.timing(cardOpacity, { toValue: 1, duration: 175, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+              Animated.sequence([
+                Animated.timing(cardY, { toValue: 11, duration: 252, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+                Animated.spring(cardY, { toValue: 0, friction: 8, tension: 118, useNativeDriver: true }),
+              ]),
+              Animated.sequence([
+                Animated.timing(cardScale, { toValue: 1.05, duration: Math.round(TIMING.reveal * 0.5), easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(cardScale, { toValue: 1, duration: Math.round(TIMING.reveal * 0.42), easing: Easing.inOut(Easing.cubic), useNativeDriver: true }),
+              ]),
+              Animated.timing(cardShadow, { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+              Animated.timing(flip, { toValue: 1, duration: flipMs, easing: Easing.bezier(0.16, 1, 0.3, 1), useNativeDriver: true }),
+              Animated.sequence([
+                Animated.timing(auraOpacity, { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(auraOpacity, { toValue: 0.78, duration: 240, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+                Animated.timing(auraOpacity, { toValue: 1, duration: 240, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+              ]),
+            ]),
+          ]),
+        ]);
 
-      Animated.parallel([
-        Animated.timing(cardOpacity, { toValue: 1, duration: 120, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-        // Weighted drop: high → slightly below center → settle.
-        Animated.sequence([
-          Animated.timing(cardY, { toValue: 12, duration: 275, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
-          Animated.spring(cardY, { toValue: 0, friction: 8, tension: 112, useNativeDriver: true }),
-        ]),
-        Animated.sequence([
-          Animated.timing(cardScale, { toValue: 1.05, duration: Math.round(TIMING.reveal * 0.55), easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-          Animated.timing(cardScale, { toValue: 1, duration: Math.round(TIMING.reveal * 0.45), easing: Easing.inOut(Easing.cubic), useNativeDriver: true }),
-        ]),
-        Animated.timing(cardShadow, { toValue: 1, duration: 240, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-        Animated.timing(flip, { toValue: 1, duration: flipMs, easing: Easing.bezier(0.16, 1, 0.3, 1), useNativeDriver: true }),
-        Animated.sequence([
-          Animated.timing(auraOpacity, { toValue: 1, duration: 240, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-          Animated.timing(auraOpacity, { toValue: 0.78, duration: 260, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-          Animated.timing(auraOpacity, { toValue: 1, duration: 260, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-        ]),
-      ]).start(() => {
-        setTimeout(() => {
-          foilX.setValue(-140);
-          foilOpacity.setValue(0);
-          Animated.parallel([
-            Animated.timing(foilOpacity, { toValue: 1, duration: 140, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-            Animated.timing(foilX, { toValue: 140, duration: 400, easing: Easing.inOut(Easing.cubic), useNativeDriver: true }),
-          ]).start(() => {
-            Animated.timing(foilOpacity, { toValue: 0, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
-          });
-        }, pacing.foilDelayMs);
+        ruptureParallel.start(({ finished }) => {
+          if (!finished) return;
 
-        Animated.sequence([
-          Animated.delay(BADGE_DELAY_MS),
-          Animated.parallel([
-            Animated.timing(badgeOpacity, { toValue: 1, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-            Animated.spring(badgeScale, { toValue: 1, friction: 7, tension: 140, useNativeDriver: true }),
-          ]),
-          Animated.delay(VALUE_DELAY_MS),
-          Animated.parallel([
-            Animated.timing(valueOpacity, { toValue: 1, duration: TIMING.value, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-            Animated.spring(valueY, { toValue: 0, friction: 9, tension: 130, useNativeDriver: true }),
-          ]),
-        ]).start(() => finish());
-      });
+          setTimeout(() => {
+            foilX.setValue(-140);
+            foilOpacity.setValue(0);
+            Animated.parallel([
+              Animated.timing(foilOpacity, { toValue: 1, duration: 130, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+              Animated.timing(foilX, { toValue: 140, duration: 380, easing: Easing.inOut(Easing.cubic), useNativeDriver: true }),
+            ]).start(() => {
+              Animated.timing(foilOpacity, { toValue: 0, duration: 165, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+            });
+          }, pacing.foilDelayMs);
+
+          Animated.sequence([
+            Animated.delay(BADGE_DELAY_MS),
+            Animated.parallel([
+              Animated.timing(badgeOpacity, { toValue: 1, duration: 165, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+              Animated.spring(badgeScale, { toValue: 1, friction: 7, tension: 140, useNativeDriver: true }),
+            ]),
+            Animated.delay(VALUE_DELAY_MS),
+            Animated.parallel([
+              Animated.timing(valueOpacity, { toValue: 1, duration: TIMING.value, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+              Animated.spring(valueY, { toValue: 0, friction: 9, tension: 130, useNativeDriver: true }),
+            ]),
+          ]).start(() => finish());
         });
       }, pacing.freezeMs);
     });
@@ -461,6 +488,13 @@ export function useHeroReveal({
   }, [glowPulse, leakOpacity, packShakeX, railShimmer, runOpenAndReveal]);
 
   const onTapCharge = useCallback(() => {
+    if (phase === 'commit') {
+      if (burstLockRef.current) return;
+      burstLockRef.current = true;
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      runPrimedBurst();
+      return;
+    }
     if (phase !== 'spinning') return;
     const required = tapsRequiredRef.current;
     const next = Math.min(required, tapsRef.current + 1);
@@ -479,10 +513,38 @@ export function useHeroReveal({
       ]),
     ]).start();
 
+    const tiltDir = next % 2 === 0 ? 1 : -1;
+    packTiltDeg.stopAnimation();
+    packTiltDeg.setValue(0);
+    Animated.sequence([
+      Animated.timing(packTiltDeg, {
+        toValue: tiltDir * 2.4,
+        duration: 38,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.spring(packTiltDeg, { toValue: 0, friction: 6, tension: 132, useNativeDriver: true }),
+    ]).start();
+
     if (next >= required) {
-      runPrimedBurst();
+      tapCharge.setValue(1);
+      Animated.parallel([
+        Animated.timing(leakOpacity, {
+          toValue: 0.94,
+          duration: 220,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.spring(packScale, { toValue: 1.06, friction: 5, tension: 118, useNativeDriver: true }),
+      ]).start();
+      if (Platform.OS !== 'web') {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+      // Wait for explicit commit tap — perceived agency only; pull was already rolled in `PackOpeningModal`.
+      setPhase('commit');
+      burstLockRef.current = false;
     }
-  }, [glowPulse, leakOpacity, packScale, phase, runPrimedBurst, tapCharge]);
+  }, [glowPulse, leakOpacity, packScale, packTiltDeg, phase, runPrimedBurst, tapCharge]);
 
   useEffect(() => {
     reset();
@@ -569,6 +631,49 @@ export function useHeroReveal({
     skipToEnd();
   }, [skipNonce, skipToEnd]);
 
+  useEffect(() => {
+    const live =
+      phase === 'arming' || phase === 'spinning' || phase === 'commit';
+    if (!live) {
+      bobLoopRef.current?.stop();
+      bobLoopRef.current = null;
+      Animated.timing(packBobY, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }).start();
+      return;
+    }
+
+    bobLoopRef.current?.stop();
+    packBobY.setValue(0);
+    const amp = phase === 'commit' ? 4.4 : 2.8;
+    const halfMs = phase === 'commit' ? 520 : 760;
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(packBobY, {
+          toValue: -amp,
+          duration: halfMs,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(packBobY, {
+          toValue: amp,
+          duration: halfMs,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    bobLoopRef.current = loop;
+    loop.start();
+    return () => {
+      bobLoopRef.current?.stop();
+      bobLoopRef.current = null;
+    };
+  }, [phase, packBobY]);
+
   return {
     phase,
     tapCount,
@@ -601,6 +706,8 @@ export function useHeroReveal({
     packShakeX,
     railShimmer,
     cameraPunch,
+    packBobY,
+    packTiltDeg,
     skipToEnd,
   };
 }

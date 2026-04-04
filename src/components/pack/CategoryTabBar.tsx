@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { HOME_NICHE_CATEGORIES } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 export function CategoryTabBar() {
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textSecondary,
   },
   labelActive: {

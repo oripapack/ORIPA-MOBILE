@@ -2,6 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
+import {
+  useFonts,
+  Outfit_100Thin,
+  Outfit_200ExtraLight,
+  Outfit_300Light,
+  Outfit_400Regular,
+  Outfit_500Medium,
+  Outfit_600SemiBold,
+  Outfit_700Bold,
+  Outfit_800ExtraBold,
+  Outfit_900Black,
+} from '@expo-google-fonts/outfit';
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { hydrateLocaleFromStorage } from './src/i18n';
@@ -13,9 +25,10 @@ import { PhysicalGoodsPaymentRoot } from './src/payments';
 import { CLERK_PUBLISHABLE_KEY, isClerkEnabled } from './src/config/clerk';
 import { ClerkSessionBridge } from './src/components/account/ClerkSessionBridge';
 import { colors } from './src/tokens/colors';
+import { brandFont } from './src/tokens/typography';
 
-/** Mitigate RN default Text weight drift (explicit regular weight when unspecified). */
-const baseTextStyle = { fontWeight: '400' as const };
+/** Default text: Outfit regular (weights use explicit `brandFont` faces in styles). */
+const baseTextStyle = { fontFamily: brandFont.regular } as const;
 const T = Text as typeof Text & { defaultProps?: { style?: unknown } };
 const TI = TextInput as typeof TextInput & { defaultProps?: { style?: unknown } };
 T.defaultProps = { ...T.defaultProps, style: [T.defaultProps?.style, baseTextStyle] };
@@ -23,6 +36,17 @@ TI.defaultProps = { ...TI.defaultProps, style: [TI.defaultProps?.style, baseText
 
 export default function App() {
   const [localeReady, setLocaleReady] = useState(false);
+  const [fontsLoaded] = useFonts({
+    Outfit_100Thin,
+    Outfit_200ExtraLight,
+    Outfit_300Light,
+    Outfit_400Regular,
+    Outfit_500Medium,
+    Outfit_600SemiBold,
+    Outfit_700Bold,
+    Outfit_800ExtraBold,
+    Outfit_900Black,
+  });
 
   useEffect(() => {
     void hydrateLocaleFromStorage().then(() => setLocaleReady(true));
@@ -54,7 +78,7 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {!localeReady ? (
+      {!localeReady || !fontsLoaded ? (
         <View style={[styles.root, { backgroundColor: colors.background }]} />
       ) : isClerkEnabled ? (
         <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../../tokens/colors';
-import { fontSize, fontWeight } from '../../../tokens/typography';
+import { fontSize, brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import { packArtBase } from './sharedStage';
@@ -57,14 +57,14 @@ const styles = StyleSheet.create({
   title: {
     color: colors.white,
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 4,
   },
   body: {
     marginTop: spacing.md,
     color: 'rgba(255,255,255,0.65)',
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     letterSpacing: 1,
   },
 });

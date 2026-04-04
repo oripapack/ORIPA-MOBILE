@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import type { Pack } from '../../data/mockPacks';
 import { LobbyPackTile, type LobbyRailVariant } from './LobbyPackTile';
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.4,
   },

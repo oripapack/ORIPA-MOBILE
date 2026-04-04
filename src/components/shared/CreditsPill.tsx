@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   amount: {
     color: colors.white,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     marginRight: spacing.xs,
   },
   addBtn: {
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   addText: {
     color: colors.white,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     lineHeight: 20,
   },
 });

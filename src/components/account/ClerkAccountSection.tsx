@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '@clerk/clerk-expo';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { AppUserUnsafeMetadata } from '../../lib/clerkProfile';
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     marginBottom: spacing.md,
     textTransform: 'uppercase',
@@ -83,18 +83,18 @@ const styles = StyleSheet.create({
   },
   contactLabel: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textSecondary,
     marginBottom: 4,
   },
   contactValue: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   contactValueMuted: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textMuted,
   },
 });

@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 
@@ -29,7 +29,7 @@ export function NotificationsScreen() {
       title: t('notifications.navTitle'),
       headerShown: true,
       headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontWeight: fontWeight.bold },
+      headerTitleStyle: { fontFamily: brandFont.bold },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.surfaceElevated },
     });
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   rowText: { flex: 1, minWidth: 0 },
   rowTitle: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   rowSub: {

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   instructions: {
@@ -293,14 +293,14 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     flex: 1,
   },
   sectionHint: {
     fontSize: fontSize.xs,
     color: colors.textMuted,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
   },
   itemCard: {
     flexDirection: 'row',
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   checkmark: {
     color: colors.white,
     fontSize: 14,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
   thumb: {
     width: 64,
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   badgeText: {
     color: colors.white,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
   intentPill: {
     alignSelf: 'flex-start',
@@ -402,12 +402,12 @@ const styles = StyleSheet.create({
   intentText: {
     color: colors.textPrimary,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 0.2,
   },
   itemName: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   itemMeta: {
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   },
   itemCoinValue: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   coinIcon: {
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   footerSub: {
     textAlign: 'center',
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textSecondary,
     lineHeight: 18,
   },
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   },
   confirmTitle: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
     paddingRight: spacing.xl,
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   confirmLabel: {
     fontSize: fontSize.sm,
     color: colors.textSecondary,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
   },
   confirmValue: {
     flexDirection: 'row',
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
   },
   confirmAmount: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
 });

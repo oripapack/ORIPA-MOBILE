@@ -16,7 +16,7 @@ import { MEMBERSHIP_PLANS, type MembershipTierId } from '../data/membershipPlans
 import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -39,7 +39,7 @@ export function MembershipScreen() {
       title: t('membership.navTitle'),
       headerShown: true,
       headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontWeight: fontWeight.bold, fontSize: fontSize.md },
+      headerTitleStyle: { fontFamily: brandFont.bold, fontSize: fontSize.md },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.surfaceElevated },
     });
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   activeBannerTitle: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.chipBestValueText,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
@@ -167,13 +167,13 @@ const styles = StyleSheet.create({
   },
   activeBannerLink: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
     textDecorationLine: 'underline',
   },
   heroEyebrow: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     paddingHorizontal: spacing.base,
     marginTop: spacing.xs,
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   },
   valueTitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
     marginBottom: spacing.xs,
   },
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.gold,
     letterSpacing: 0.3,
   },

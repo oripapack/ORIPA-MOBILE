@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 
 /** PullHub wordmark — editorial split weight for the splash only. */
 export function SplashLogoReveal() {
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   pull: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.gold,
     letterSpacing: -0.5,
     textShadowColor: 'rgba(56, 189, 248, 0.35)',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   hub: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     letterSpacing: -0.3,
     opacity: 0.94,

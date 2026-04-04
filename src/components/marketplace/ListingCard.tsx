@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { MarketplaceListing } from '../../data/marketplace';
 
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   regionPillText: {
     fontSize: 8,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
     letterSpacing: 0.3,
   },
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 8,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
     letterSpacing: 0.3,
   },
   title: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     lineHeight: 15,
     minHeight: 30,
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   },
   condition: {
     fontSize: 9,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textSecondary,
     marginTop: 3,
     letterSpacing: 0.2,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginTop: 4,
   },
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: colors.textMuted,
     marginTop: 3,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
   },
   footerDelta: {
     color: colors.chipBestValueText,

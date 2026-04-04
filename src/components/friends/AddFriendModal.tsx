@@ -13,7 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.casinoGold,
     letterSpacing: 2,
     marginBottom: spacing.xs,
@@ -188,13 +188,13 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.white,
     letterSpacing: -0.3,
   },
   cancel: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: 'rgba(248,250,252,0.75)',
   },
   scroll: {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 0.3,
     textTransform: 'uppercase',
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? 14 : 12,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.lg,
     backgroundColor: colors.surfaceElevated,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   },
   demoBrowseTitle: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -263,12 +263,12 @@ const styles = StyleSheet.create({
   },
   demoName: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   demoUn: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
     marginTop: 2,
   },
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   demoAddBtnText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.white,
     letterSpacing: 0.3,
   },

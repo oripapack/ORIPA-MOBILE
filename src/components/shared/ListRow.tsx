@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 
 interface Props {
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   label: {
     flex: 1,
     fontSize: fontSize.base,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textPrimary,
   },
   destructive: {

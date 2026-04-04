@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { mockRecentHits } from '../../data/mockRecentHits';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   kicker: {
     fontSize: 9,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 2,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -74,15 +74,15 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
   },
   user: {
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textSecondary,
   },
   sep: {
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
   },
   pull: {
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   pack: {

@@ -1,20 +1,46 @@
 {
   "tabs": {
-    "home": "Home",
+    "home": "Packs",
     "friends": "Friends",
     "marketplace": "Shop",
     "account": "Player"
   },
   "splash": {
-    "frameLine": "Where every pull begins"
+    "frameLine": "Pull. Win. Repeat."
+  },
+  "coach": {
+    "homeEyebrow": "PULL HUB TIP",
+    "homeTitle": "Start your first pull",
+    "homeBody": "Open mystery packs instantly with credits. Win cards, convert to coins, and pull again.",
+    "homeFlowOpen": "Open",
+    "homeFlowWin": "Win",
+    "homeFlowConvert": "Convert",
+    "homeFlowRepeat": "Repeat",
+    "homeCtaStart": "Start Pulling",
+    "homeDismissSecondary": "Maybe later",
+    "shopTitle": "Two ways to collect",
+    "shopPacksHeading": "Packs",
+    "shopPacksLine1": "Open instantly.",
+    "shopPacksLine2": "Win cards.",
+    "shopPacksLine3": "Convert to coins.",
+    "shopShopHeading": "Shop",
+    "shopShopLine1": "Buy specific cards and ship them home.",
+    "shopCtaContinue": "Continue to Shop",
+    "shopCtaBackPacks": "Back to Packs",
+    "dismiss": "Got it"
   },
   "onboarding": {
     "welcomeTitle": "Welcome to Pull Hub",
-    "welcomeSubtitle": "Sign up to get a free pack — or preview the lobby first.",
+    "welcomeSubtitle": "Your first visit includes a sign-up bonus — create an account now or preview the lobby first.",
+    "firstLaunchPromoPill": "{{credits}} bonus credits · ~${{usd}} value",
     "signUpCta": "Sign up free",
     "signInCta": "Sign in",
     "continueGuest": "Continue as guest",
-    "sheetHint": "Swipe down anytime to browse the app.",
+    "sheetHint": "Swipe down or tap outside the sheet — we’ll confirm before you skip the sign-up offer.",
+    "dismissConfirmTitle": "Skip sign-up?",
+    "dismissConfirmMessage": "You can always create an account later, but this visit’s bonus (about ${{usd}} in credits) is only available if you sign up now.",
+    "dismissConfirmStay": "Keep offer — I’ll sign up",
+    "dismissConfirmLeave": "Continue without account",
     "promptEyebrow": "Nice pull",
     "promptTitle": "Sign up to keep it",
     "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
@@ -430,6 +456,10 @@
       "promo": "Enter promo code"
     },
     "justPulled": "Just pulled",
+    "sectionRequests": "Friend requests",
+    "requestHint": "Wants to connect — accept to add them to your squad.",
+    "acceptRequest": "Accept",
+    "declineRequest": "Decline",
     "sectionActivity": "Friends activity",
     "sectionFriends": "Friends",
     "sectionLeaderboard": "Leaderboard",
@@ -613,8 +643,9 @@
     "done": "Got it"
   },
   "welcome": {
-    "signupPromoTitle": "Free welcome pack",
-    "signupPromoBody": "Create an account now and we’ll add a bonus welcome pack to your first session (demo — grant when live).",
+    "flowMapLine": "Packs tab = mystery pulls in-app · Shop tab = pick cards & ship",
+    "signupPromoTitle": "New player bonus",
+    "signupPromoBody": "Create your account on this first visit and we’ll add {{credits}} bonus credits (about ${{usd}} in pull value) when you sign in.",
     "skip": "Browse without signing in",
     "guestHint": "You can browse the catalog. Sign in to open packs, buy credits, checkout, and use Friends."
   },
@@ -758,6 +789,53 @@
       "chase_boost": "CHASE"
     }
   },
+  "packCatalog": {
+    "1": {
+      "title": "Paldea Beginner Commons",
+      "value": "PAL-era commons & uncommons — great for new binders",
+      "guarantee": "3+ playable cards every open"
+    },
+    "2": {
+      "title": "Scarlet & Violet Booster Hits",
+      "value": "SV-era holos & illustration rare chase slots",
+      "guarantee": "Reverse holo or better in every pack"
+    },
+    "3": {
+      "title": "Paldea Evolved Chase",
+      "value": "ex & double rare hits from Paldea Evolved",
+      "guarantee": "Rare slot or higher guaranteed"
+    },
+    "4": {
+      "title": "Obsidian Flames Premium",
+      "value": "Charizard ex & type-shift chase pool",
+      "guarantee": "Holo rare or better every rip"
+    },
+    "5": {
+      "title": "151 Kanto Collection",
+      "value": "Classic Kanto ex & art rare focus",
+      "guarantee": "Illustration rare in 1-of-8 opens (demo)"
+    },
+    "6": {
+      "title": "Crown Zenith Galarian Gallery",
+      "value": "GG full arts & trainer gallery chases",
+      "guarantee": "Gallery or VSTAR-class hit every 2 packs"
+    },
+    "7": {
+      "title": "Prismatic Evolutions Elite",
+      "value": "Eevee evolutions & ACE SPEC chase lane",
+      "guarantee": "Double rare slot minimum"
+    },
+    "8": {
+      "title": "Charizard ex Special Collection",
+      "value": "Promo Charizard ex & bundled chase cards",
+      "guarantee": "Promo + booster-equivalent value floor"
+    },
+    "9": {
+      "title": "Base Set Era Graded Vault",
+      "value": "WOTC holos & shadowless chase slabs",
+      "guarantee": "PSA 8+ vintage holo in every pack"
+    }
+  },
   "packOpening": {
     "stageEyebrow": "Certified reveal",
     "manageWinnings": "Manage winnings",
@@ -769,6 +847,8 @@
     "live": "LIVE",
     "continue": "Continue",
     "openNext": "Open another",
+    "openAnotherHeadline": "Pull again",
+    "openAnotherSub": "{{credits}} credits · same pack",
     "replay": "Replay animation",
     "youPulled": "You pulled",
     "creditsLabel": "+{{amount}} credits",
@@ -780,7 +860,13 @@
     "resultRare3": "Special card from {{packName}}",
     "resultLegendary1": "Legendary hit from {{packName}}",
     "resultLegendary2": "Mythic pull from {{packName}}",
-    "resultLegendary3": "Game-changing card from {{packName}}"
+    "resultLegendary3": "Game-changing card from {{packName}}",
+    "hudSpinningTitle": "Rip it open",
+    "hudSpinningSub": "Tap fast to charge the break",
+    "hudCommitTitle": "You're in control",
+    "hudCommitSub": "Tap to break the seal — your timing",
+    "hudPrimedTitle": "BREAK!",
+    "hudPrimedSub": "Pack's going…"
   },
   "insufficientCredits": {
     "title": "Not Enough Credits",

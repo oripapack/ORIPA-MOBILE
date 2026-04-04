@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 
@@ -21,7 +21,7 @@ export function PayoutMethodScreen() {
       title: t('payoutMethod.navTitle'),
       headerShown: true,
       headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontWeight: fontWeight.bold },
+      headerTitleStyle: { fontFamily: brandFont.bold },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.surfaceElevated },
     });

@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import type { MembershipPlan } from '../../data/membershipPlans';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 export interface MembershipTierCardProps {
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   popularRibbonText: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
@@ -130,13 +130,13 @@ const styles = StyleSheet.create({
   },
   tierName: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.3,
   },
   badgeMicro: {
     fontSize: 10,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
     marginTop: 4,
     letterSpacing: 0.8,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
   priceLine: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginTop: spacing.sm,
   },

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import { useAppStore } from '../../store/useAppStore';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { Pull } from '../../data/mockUser';
 
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   pullResult: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
     width: '100%',
   },
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   pullCredits: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.green,
     textAlign: 'right',
     width: '100%',

@@ -1,11 +1,15 @@
 import { create } from 'zustand';
 import {
   FriendEntry,
+  IncomingFriendRequest,
+  buildDemoIncomingFriendRequest,
   isValidFriendUsernameFormat,
+  lookupFriendDisplayName,
   normalizeFriendUsername,
 } from '../data/friends';
 import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
+import { SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
 
 interface ModalState {
   insufficientCredits: boolean;
@@ -27,6 +31,8 @@ interface AppStore {
   user: UserState;
   /** Added via friend ID lookup / QR (MVP local list). */
   friends: FriendEntry[];
+  /** Pending inbound friend requests (local / demo until API). */
+  incomingFriendRequests: IncomingFriendRequest[];
   /** Home view mode: discovery lobby vs full catalog floor. */
   homeViewMode: 'discover' | 'browse';
   /** Home: Pokémon / Yu-Gi-Oh! / One Piece / Sports tab. */
@@ -58,7 +64,12 @@ interface AppStore {
   openModal: (modal: keyof ModalState) => void;
   closeModal: (modal: keyof ModalState) => void;
   setSelectedPack: (pack: Pack | null) => void;
-  openPack: (pack: Pack) => boolean; // returns false if not enough credits
+  openPack: (
+    pack: Pack,
+    options?: { keepPackModalOnInsufficient?: boolean },
+  ) => boolean;
+  /** Clears “resume open after credits” when user dismisses buy flow without purchasing. */
+  clearResumePackOpen: () => void;
   applyPackOpenResult: (
     result: { result: string; creditsWon: number; tier: PullRarityTier },
     options?: { persistToVault?: boolean },
@@ -67,13 +78,22 @@ interface AppStore {
   finalizePullFulfillment: (pullIds: string[], choice: 'convert' | 'ship') => void;
   /** Adds a friend by unique username + display name (caller resolves name from lookup). */
   addFriend: (username: string, displayName: string) => AddFriendResult;
+  acceptIncomingFriendRequest: (username: string) => void;
+  declineIncomingFriendRequest: (username: string) => void;
+  addIncomingFriendRequest: (req: Omit<IncomingFriendRequest, 'id'> & { id?: string }) => void;
   /** When Clerk profile onboarding is done — updates local `user` for Account / Friends. */
   setUserFromClerkProfile: (p: { id: string; displayName: string; username: string }) => void;
+}
+
+function initialIncomingFriendRequests(): IncomingFriendRequest[] {
+  if (!SHOW_DEMO_INCOMING_FRIEND_REQUEST) return [];
+  return [buildDemoIncomingFriendRequest()];
 }
 
 export const useAppStore = create<AppStore>((set, get) => ({
   user: mockUser,
   friends: [],
+  incomingFriendRequests: initialIncomingFriendRequests(),
   homeViewMode: 'discover',
   homeNiche: 'pokemon',
   packSubfilter: 'all',
@@ -119,12 +139,15 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   setSelectedPack: (pack) => set({ selectedPack: pack }),
 
+  clearResumePackOpen: () => set({ resumePackOpenAfterCredits: false }),
+
   /**
    * Single-pack opens only (MVP). Credits + XP apply immediately when the user
    * commits to opening; the modal animation only reveals the pull result.
    * Multi-open / quantity pricing is not implemented in MVP (single open only).
    */
-  openPack: (pack) => {
+  openPack: (pack, options) => {
+    const keepPack = options?.keepPackModalOnInsufficient ?? false;
     const { user } = get();
     const grants = user.freePackGrants ?? 0;
     if (grants > 0) {
@@ -145,8 +168,12 @@ export const useAppStore = create<AppStore>((set, get) => ({
       set((state) => ({
         selectedPack: pack,
         resumePackOpenAfterCredits: true,
-        // Close pack opening so the insufficient-credits modal can appear above the app (not hidden under it).
-        modals: { ...state.modals, insufficientCredits: true, packOpening: false },
+        modals: {
+          ...state.modals,
+          insufficientCredits: true,
+          // From pack reveal “open another”, keep this modal open so backing out of buy credits isn’t a dead end.
+          packOpening: keepPack ? true : false,
+        },
       }));
       return false;
     }
@@ -218,8 +245,50 @@ export const useAppStore = create<AppStore>((set, get) => ({
       displayName: displayName.trim() || `Friend ${u.slice(-4)}`,
       addedAt: Date.now(),
     };
-    set({ friends: [entry, ...friends] });
+    set((state) => ({
+      friends: [entry, ...state.friends],
+      incomingFriendRequests: state.incomingFriendRequests.filter((r) => r.username !== u),
+    }));
     return { ok: true };
+  },
+
+  acceptIncomingFriendRequest: (usernameRaw) => {
+    const u = normalizeFriendUsername(usernameRaw);
+    const req = get().incomingFriendRequests.find((r) => r.username === u);
+    if (!req) return;
+    const res = get().addFriend(req.username, req.displayName);
+    if (!res.ok) return;
+    set((state) => ({
+      incomingFriendRequests: state.incomingFriendRequests.filter((r) => r.username !== u),
+    }));
+  },
+
+  declineIncomingFriendRequest: (usernameRaw) => {
+    const u = normalizeFriendUsername(usernameRaw);
+    set((state) => ({
+      incomingFriendRequests: state.incomingFriendRequests.filter((r) => r.username !== u),
+    }));
+  },
+
+  addIncomingFriendRequest: partial => {
+    const username = normalizeFriendUsername(partial.username);
+    if (!isValidFriendUsernameFormat(username)) return;
+    const { friends, incomingFriendRequests, user } = get();
+    if (friends.some((f) => f.username === username)) return;
+    if (incomingFriendRequests.some((r) => r.username === username)) return;
+    if (username === normalizeFriendUsername(user.username)) return;
+    const entry: IncomingFriendRequest = {
+      id:
+        partial.id ??
+        `ifr_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+      username,
+      displayName:
+        partial.displayName.trim() ||
+        lookupFriendDisplayName(username) ||
+        `User ${username.slice(-4)}`,
+      requestedAt: partial.requestedAt ?? Date.now(),
+    };
+    set({ incomingFriendRequests: [entry, ...incomingFriendRequests] });
   },
 
   setUserFromClerkProfile: (p) =>

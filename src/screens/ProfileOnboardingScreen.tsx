@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useClerk, useUser } from '@clerk/clerk-expo';
 import { isClerkAPIResponseError } from '@clerk/clerk-expo';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import { AppUserUnsafeMetadata, isValidAppUsername, normalizeDisplayName } from '../lib/clerkProfile';
@@ -186,32 +186,32 @@ const styles = StyleSheet.create({
   },
   logoPrimary: {
     fontSize: fontSize.hero,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   logoSecondary: {
     fontSize: fontSize.hero,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.red,
     letterSpacing: -0.5,
   },
   title: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
   label: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
@@ -224,13 +224,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textPrimary,
     marginBottom: spacing.md,
   },
   hintInline: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     lineHeight: 18,
     marginBottom: spacing.lg,
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
   },
   btnDisabled: {
@@ -255,13 +255,13 @@ const styles = StyleSheet.create({
   error: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.redDark,
     lineHeight: 20,
   },
   linkMuted: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textMuted,
   },
   signOutWrap: {

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textSecondary,
     marginBottom: spacing.sm,
     textAlign: 'left',
@@ -92,13 +92,13 @@ const styles = StyleSheet.create({
   },
   pointPillText: {
     fontSize: 8,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
     letterSpacing: 0.5,
   },
   heading: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginBottom: 2,
   },

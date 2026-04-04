@@ -13,7 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { DialCodeOption, PHONE_DIAL_CODES } from '../../constants/phoneDialCodes';
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   searchRow: {
@@ -167,12 +167,12 @@ const styles = StyleSheet.create({
   rowName: {
     flex: 1,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textPrimary,
   },
   rowDial: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textSecondary,
     marginRight: spacing.xs,
   },

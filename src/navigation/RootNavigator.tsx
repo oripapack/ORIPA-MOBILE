@@ -7,6 +7,7 @@ import { useAuth, useUser } from '@clerk/clerk-expo';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { HomeScreen } from '../screens/HomeScreen';
 import { FriendsScreen } from '../screens/FriendsScreen';
 import { AccountScreen } from '../screens/AccountScreen';
@@ -31,7 +32,8 @@ import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
 import { navigationRef } from './navigationRef';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { useAppStore } from '../store/useAppStore';
+import { fontSize, brandFont } from '../tokens/typography';
 import { RootStackParamList } from './types';
 import { GuestAuthWallModal } from '../components/auth/GuestAuthWallModal';
 import { LinkPhoneScreen } from '../screens/LinkPhoneScreen';
@@ -46,6 +48,7 @@ import { useMembershipSimulationStore } from '../store/membershipSimulationStore
 import { AppBootEntrance, BOOT_ENTRANCE_SPRING } from '../components/splash/AppBootEntrance';
 import { AppSplashScreen } from '../components/splash/AppSplashScreen';
 import { GuestModeProvider } from '../context/GuestModeContext';
+import { CoachHydration } from '../components/coach/CoachHydration';
 import { OnboardingGate } from '../components/onboarding/OnboardingGate';
 import { useReferralLinkListener } from '../hooks/useReferralLinkListener';
 import { PromotionSync } from '../components/promotions/PromotionSync';
@@ -54,14 +57,20 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
 const TAB_ICONS: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionicons.glyphMap]> = {
-  Marketplace: ['storefront-outline', 'storefront'],
-  Home: ['home-outline', 'home'],
+  /** Shop / singles — cart is distinct from packs (cards) and reads as marketplace checkout. */
+  Marketplace: ['cart-outline', 'cart'],
   Friends: ['people-outline', 'people'],
   Account: ['person-outline', 'person'],
 };
 
 function TabNavigatorInner() {
   const { t } = useTranslation();
+  const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
+  const incomingFriendRequestCount = useAppStore((s) => s.incomingFriendRequests.length);
+  const friendTabBadgeCount =
+    (!isClerkEnabled || clerkSignedIn) && incomingFriendRequestCount > 0
+      ? incomingFriendRequestCount
+      : 0;
 
   return (
     <Tab.Navigator
@@ -75,6 +84,16 @@ function TabNavigatorInner() {
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
         tabBarIcon: ({ focused, color }) => {
+          if (route.name === 'Home') {
+            /* Overlapping playing cards — reads as TCG pack / pulls (Ionicons has no booster glyph). */
+            return (
+              <MaterialCommunityIcons
+                name={focused ? 'cards-playing' : 'cards-playing-outline'}
+                size={25}
+                color={color}
+              />
+            );
+          }
           const pair = TAB_ICONS[route.name];
           const name = pair ? (focused ? pair[1] : pair[0]) : 'ellipse-outline';
           return <Ionicons name={name} size={24} color={color} />;
@@ -83,7 +102,23 @@ function TabNavigatorInner() {
     >
       <Tab.Screen name="Marketplace" component={MarketplaceScreen} options={{ tabBarLabel: t('tabs.marketplace') }} />
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
-      <Tab.Screen name="Friends" component={FriendsScreen} options={{ tabBarLabel: t('tabs.friends') }} />
+      <Tab.Screen
+        name="Friends"
+        component={FriendsScreen}
+        options={{
+          tabBarLabel: t('tabs.friends'),
+          tabBarBadge:
+            friendTabBadgeCount > 0
+              ? friendTabBadgeCount > 99
+                ? '99+'
+                : friendTabBadgeCount
+              : undefined,
+          tabBarBadgeStyle:
+            friendTabBadgeCount > 0
+              ? { backgroundColor: colors.red, color: colors.white, fontSize: 11 }
+              : undefined,
+        }}
+      />
       <Tab.Screen name="Account" component={AccountScreen} options={{ tabBarLabel: t('tabs.account') }} />
     </Tab.Navigator>
   );
@@ -364,6 +399,7 @@ export function RootNavigator() {
   return (
     <NavigationContainer ref={navigationRef}>
       <GuestHydration />
+      <CoachHydration />
       <ReferralLinkBootstrap />
       <PromotionSync />
       <GuestModeProvider>{isClerkEnabled ? <ClerkAuthGate /> : <NonClerkBoot />}</GuestModeProvider>
@@ -391,11 +427,11 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
   },
   stackHeaderTitle: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
 });

@@ -7,7 +7,7 @@ import { AppHeader } from '../components/shared/AppHeader';
 import { ListingCard } from '../components/marketplace/ListingCard';
 import { WhyChoosePullHub } from '../components/marketplace/WhyChoosePullHub';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import {
   marketplaceStores,
@@ -24,6 +24,7 @@ import { demoMarketplacePromoImage } from '../data/demoMedia';
 import { navigationRef } from '../navigation/navigationRef';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useRequireAuth } from '../hooks/useRequireAuth';
+import { ShopCoach } from '../components/coach/ShopCoach';
 
 const CATEGORY_KEYS: (ListingCategory | 'all')[] = [
   'all',
@@ -346,6 +347,7 @@ export function MarketplaceScreen() {
           <Text style={styles.demoNoteText}>{t('marketplace.demoNote')}</Text>
         </View>
       </ScrollView>
+      <ShopCoach />
     </View>
   );
 }
@@ -363,7 +365,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     paddingHorizontal: spacing.base,
     marginBottom: 4,
@@ -422,19 +424,19 @@ const styles = StyleSheet.create({
   },
   catChipText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textSecondary,
   },
   catChipTextActive: {
     color: colors.gold,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
   sortBlock: {
     marginBottom: spacing.md,
   },
   sortLabel: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1.1,
     textTransform: 'uppercase',
@@ -459,7 +461,7 @@ const styles = StyleSheet.create({
   },
   sortChipText: {
     fontSize: 11,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
   },
   sortChipTextActive: {
@@ -470,7 +472,7 @@ const styles = StyleSheet.create({
   },
   regionLabel: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1.1,
     textTransform: 'uppercase',
@@ -495,7 +497,7 @@ const styles = StyleSheet.create({
   },
   regionChipText: {
     fontSize: 11,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textSecondary,
   },
   regionChipTextActive: {
@@ -513,7 +515,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   saleTag: {
@@ -524,7 +526,7 @@ const styles = StyleSheet.create({
   },
   saleTagText: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
     letterSpacing: 0.5,
   },
@@ -534,7 +536,7 @@ const styles = StyleSheet.create({
   },
   sectionEyebrow: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -565,7 +567,7 @@ const styles = StyleSheet.create({
   },
   storeName: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   verifiedIcon: {
@@ -573,7 +575,7 @@ const styles = StyleSheet.create({
   },
   storeShipsFrom: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginBottom: 2,
     letterSpacing: 0.2,
@@ -587,7 +589,7 @@ const styles = StyleSheet.create({
   storeMetaLine: {
     fontSize: 11,
     color: colors.textSecondary,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     marginBottom: 2,
   },
   storeMetaDot: {
@@ -597,7 +599,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.textMuted,
     marginBottom: 4,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
   },
   storeTagline: {
     fontSize: fontSize.xs,
@@ -608,14 +610,14 @@ const styles = StyleSheet.create({
   partnerLine: {
     fontSize: 10,
     color: colors.goldDark,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     marginBottom: 2,
     letterSpacing: 0.2,
   },
   commission: {
     fontSize: 10,
     color: colors.textMuted,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
   },
   emptyWrap: {
     paddingHorizontal: spacing.xl,
@@ -624,7 +626,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginBottom: spacing.xs,
     textAlign: 'center',
@@ -646,7 +648,7 @@ const styles = StyleSheet.create({
   },
   emptyCtaText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
   },
   promoCompact: {
@@ -672,7 +674,7 @@ const styles = StyleSheet.create({
   },
   promoEyebrow: {
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1,
     marginBottom: 2,
@@ -680,7 +682,7 @@ const styles = StyleSheet.create({
   },
   promoTitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
     marginBottom: 2,
   },

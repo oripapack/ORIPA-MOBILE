@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   sortValue: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   sortChevron: {
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   },
   dropdownTitle: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginBottom: spacing.base,
   },
@@ -143,12 +143,12 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   dropdownTextActive: {
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   checkmark: {
     color: colors.gold,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     fontSize: fontSize.base,
   },
 });

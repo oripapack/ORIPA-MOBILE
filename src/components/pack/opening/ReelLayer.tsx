@@ -1,6 +1,6 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
-import { fontWeight } from '../../../tokens/typography';
+import { brandFont } from '../../../tokens/typography';
 import { radius, spacing } from '../../../tokens/spacing';
 import type { RevealCard } from './types';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   cardName: {
     marginTop: 4,
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: 'rgba(248,250,252,0.75)',
     textAlign: 'center',
   },

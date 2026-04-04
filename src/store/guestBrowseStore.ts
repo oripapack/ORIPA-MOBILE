@@ -35,6 +35,8 @@ type Actions = {
   dismissOnboardingSheet: () => Promise<void>;
   showSignupPrompt: () => void;
   hideSignupPrompt: (markHandled?: boolean) => Promise<void>;
+  /** Dev / QA: clear persisted guest + onboarding sheet flags (Clerk session unchanged). */
+  resetLocalOnboardingFlags: () => Promise<void>;
 };
 
 export const useGuestBrowseStore = create<State & Actions>((set, get) => ({
@@ -142,5 +144,26 @@ export const useGuestBrowseStore = create<State & Actions>((set, get) => ({
     } catch {
       /* ignore */
     }
+  },
+
+  resetLocalOnboardingFlags: async () => {
+    try {
+      await Promise.all([
+        AsyncStorage.removeItem(GUEST_KEY),
+        AsyncStorage.removeItem(PROMO_KEY),
+        AsyncStorage.removeItem(ONBOARDING_SHEET_KEY),
+        AsyncStorage.removeItem(FIRST_PACK_PROMPT_KEY),
+      ]);
+    } catch {
+      /* ignore */
+    }
+    set({
+      guestBrowseEnabled: false,
+      welcomePromoSeen: false,
+      onboardingSheetDismissed: false,
+      firstPackSignupPromptHandled: false,
+      signupPromptVisible: false,
+      authWallForced: false,
+    });
   },
 }));

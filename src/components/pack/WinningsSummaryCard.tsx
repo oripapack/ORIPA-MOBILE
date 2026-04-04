@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   label: {
     color: colors.casinoGold,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
     flex: 1,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   pillText: {
     color: colors.casinoGold,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 0.2,
   },
   valueRow: {
@@ -90,14 +90,14 @@ const styles = StyleSheet.create({
   amount: {
     color: colors.textPrimary,
     fontSize: 44,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: -0.8,
     lineHeight: 48,
   },
   amountUnit: {
     color: colors.textSecondary,
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     paddingBottom: 6,
   },
   helper: {

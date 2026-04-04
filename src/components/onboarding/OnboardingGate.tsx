@@ -1,26 +1,23 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { BlurView } from 'expo-blur';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@clerk/clerk-expo';
 import { useGuestBrowseStore } from '../../store/guestBrowseStore';
-import { AuthBottomSheet } from '../auth/AuthBottomSheet';
+import { AuthBottomSheet, type AuthBottomSheetRef } from '../auth/AuthBottomSheet';
 import { AuthScreen } from '../../screens/AuthScreen';
-import { OnboardingSheet } from './OnboardingSheet';
-
-type EmailMode = 'signin' | 'signup';
+import { SIGNUP_PROMO_BONUS_USD } from '../../data/promotions.mock';
 
 /**
- * Blur + dim + draggable sheet; touches pass through to the home shell behind.
- * Auth opens in a native modal sheet after the onboarding sheet animates down.
+ * Same shell as in-app auth (`AuthSheetModal`): full-screen blur + glass slide-up with `AuthScreen`.
+ * Packs stay visible behind the frosted layer.
  */
 export function OnboardingGate() {
+  const { t } = useTranslation();
   const { isSignedIn } = useAuth();
+  const authSheetRef = useRef<AuthBottomSheetRef>(null);
   const dismissOnboardingSheet = useGuestBrowseStore((s) => s.dismissOnboardingSheet);
   const setGuestBrowseEnabled = useGuestBrowseStore((s) => s.setGuestBrowseEnabled);
   const markWelcomePromoSeen = useGuestBrowseStore((s) => s.markWelcomePromoSeen);
-
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<EmailMode>('signin');
 
   const finishPreview = useCallback(async () => {
     await setGuestBrowseEnabled(true);
@@ -28,51 +25,41 @@ export function OnboardingGate() {
     await dismissOnboardingSheet();
   }, [dismissOnboardingSheet, markWelcomePromoSeen, setGuestBrowseEnabled]);
 
+  const confirmDismiss = useCallback(
+    ({ confirm, cancel }: { confirm: () => void; cancel: () => void }) => {
+      Alert.alert(
+        t('onboarding.dismissConfirmTitle'),
+        t('onboarding.dismissConfirmMessage', { usd: SIGNUP_PROMO_BONUS_USD }),
+        [
+          { text: t('onboarding.dismissConfirmStay'), style: 'cancel', onPress: cancel },
+          { text: t('onboarding.dismissConfirmLeave'), style: 'destructive', onPress: confirm },
+        ],
+      );
+    },
+    [t],
+  );
+
   useEffect(() => {
     if (isSignedIn) {
-      setAuthOpen(false);
+      void markWelcomePromoSeen();
       void dismissOnboardingSheet();
     }
-  }, [isSignedIn, dismissOnboardingSheet]);
-
-  const openAuth = useCallback((mode: EmailMode) => {
-    setAuthMode(mode);
-    setAuthOpen(true);
-  }, []);
-
-  const onAuthClose = useCallback(() => {
-    setAuthOpen(false);
-    void finishPreview();
-  }, [finishPreview]);
+  }, [isSignedIn, dismissOnboardingSheet, markWelcomePromoSeen]);
 
   return (
-    <>
-      <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-        <BlurView intensity={32} tint="dark" style={StyleSheet.absoluteFill} pointerEvents="none" />
-        <View style={styles.dim} pointerEvents="none" />
-        <OnboardingSheet
-          onDismiss={finishPreview}
-          onContinueGuest={finishPreview}
-          onSignIn={() => openAuth('signin')}
-          onSignUp={() => openAuth('signup')}
-        />
-      </View>
-
-      <AuthBottomSheet visible={authOpen} onRequestClose={onAuthClose} showBackdrop={false}>
-        <AuthScreen
-          presentation="sheet"
-          welcomeMode={false}
-          initialEmailMode={authMode}
-          onRequestClose={onAuthClose}
-        />
-      </AuthBottomSheet>
-    </>
+    <AuthBottomSheet
+      ref={authSheetRef}
+      visible
+      showBackdrop
+      onRequestClose={() => void finishPreview()}
+      confirmDismiss={confirmDismiss}
+    >
+      <AuthScreen
+        presentation="sheet"
+        welcomeMode
+        onWelcomeSkip={() => authSheetRef.current?.requestCloseWithConfirmation()}
+        onRequestClose={() => authSheetRef.current?.requestCloseWithConfirmation()}
+      />
+    </AuthBottomSheet>
   );
 }
-
-const styles = StyleSheet.create({
-  dim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.32)',
-  },
-});

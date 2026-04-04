@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 import QRCode from 'react-native-qrcode-svg';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 interface Props {
@@ -127,14 +127,14 @@ const styles = StyleSheet.create({
   },
   badge: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.casinoGold,
     letterSpacing: 2,
     marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
@@ -159,14 +159,14 @@ const styles = StyleSheet.create({
   },
   nameLabel: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
   name: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.base,
   },
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   idText: {
     flex: 1,
     fontSize: fontSize.base,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 0.5,
     color: colors.white,
     marginRight: spacing.sm,
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   copyBtnText: {
     color: colors.textPrimary,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
   },
   scanOtherBtn: {
     flexDirection: 'row',
@@ -222,12 +222,12 @@ const styles = StyleSheet.create({
   },
   scanOtherTitle: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   scanOtherSub: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textSecondary,
     marginTop: 2,
     lineHeight: 16,
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   scanOtherChevron: {
     fontSize: 22,
     color: colors.textMuted,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
   },
   doneBtn: {
     height: 52,
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   doneBtnText: {
     color: colors.white,
     fontSize: fontSize.base,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 0.5,
   },
 });

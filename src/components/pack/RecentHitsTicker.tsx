@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, Text, View, ScrollView } from 'react-native';
 import type { ViewStyle } from 'react-native';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type HitRarity = 'Gold' | 'Rainbow' | 'PSA 10' | 'Legendary' | 'Secret Rare';
@@ -198,14 +198,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.gold,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
   },
   subLabel: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textSecondary,
     textTransform: 'uppercase',
     letterSpacing: 1.2,
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   fire: {
@@ -258,11 +258,11 @@ const styles = StyleSheet.create({
     maxWidth: 210,
   },
   user: {
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   card: {
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   rarityPill: {
@@ -275,13 +275,13 @@ const styles = StyleSheet.create({
   },
   rarityText: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
   value: {
     fontSize: 11,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.gold,
   },
 });

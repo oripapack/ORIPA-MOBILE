@@ -37,13 +37,67 @@
     "emptyResults": "Nenhum anúncio corresponde aos filtros.",
     "listingDemoTitle": "Anúncio",
     "listingDemoBody": "O checkout para «{{title}}» ainda não está conectado — esta tela é só de anúncios.",
-    "demoNote": "Demo: pagamentos, carrinho e repasses a vendedores não estão conectados. Abrir boosters fica na aba Início."
+    "demoNote": "Demo: pagamentos, carrinho e repasses a vendedores não estão conectados. Abrir boosters fica na aba Início.",
+    "regionRowLabel": "Ships from",
+    "region_all": "All regions",
+    "region_us": "US",
+    "region_japan": "Japan",
+    "region_europe": "Europe",
+    "shipsFromLine": "Ships from {{place}}",
+    "shipsFromPlace": {
+      "us": "United States",
+      "japan": "Japan",
+      "eu": "European Union"
+    },
+    "regionPill": {
+      "us": "US",
+      "japan": "Japan",
+      "eu": "EU"
+    },
+    "storeCrossBorder": {
+      "from_japan": "International delivery · tracked",
+      "from_eu": "Cross-border EU · duties may apply"
+    },
+    "sortRowLabel": "Sort",
+    "sort_recommended": "Recommended",
+    "sort_newest": "Newest",
+    "sort_price_low": "Lowest price",
+    "sort_price_high": "Highest price",
+    "sort_sale_first": "On sale",
+    "inventoryCount_one": "{{count}} listing",
+    "inventoryCount_other": "{{count}} listings",
+    "partnerProgramLine": "Verified Pull Hub partner",
+    "storeSpecialty": {
+      "pokemon_jp_singles": "Japanese Pokémon & One Piece singles",
+      "sports_sealed": "Sealed wax, rookies & breaks",
+      "yugioh_core": "Meta singles & high-rarity staples",
+      "graded_eu": "Graded slabs & EU-import singles"
+    },
+    "storeShipping": {
+      "dispatch_1_2": "Ships in 1–2 business days",
+      "dispatch_1_2_us": "US fulfillment · 1–2 day dispatch",
+      "dispatch_2_3": "Dispatches in 2–3 business days",
+      "dispatch_2_4_eu": "EU warehouse · 2–4 day dispatch"
+    },
+    "listingShip": {
+      "intl_ok": "Intl · tracked",
+      "us_fast": "US · insured",
+      "eu_tracked": "EU · tracked",
+      "free_eligible": "Free ship $50+ store"
+    },
+    "vsMarket": "{{pct}}% below market avg",
+    "conditionLabel": "{{grade}}",
+    "promoEyebrow": "Partner promo",
+    "emptyTitle": "No matches in this market",
+    "emptyHint": "Try another region, category, or sort — or clear search.",
+    "emptyClearCta": "Clear search & filters"
   },
   "common": {
     "error": "Erro",
     "copied": "Copiado",
     "friendIdCopied": "Friend ID copiado para a área de transferência.",
-    "close": "Close"
+    "close": "Close",
+    "cancel": "Cancel"
   },
   "helpCenter": {
     "navTitle": "Central de ajuda",
@@ -203,7 +257,8 @@
       "railHotTitle": "Hot floor",
       "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
       "railGradedTitle": "Graded vault",
-      "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
+      "railGradedSub": "Slabbed pulls and graded chase — curated for collectors.",
+      "liveHitsKicker": "Live hits"
     }
   },
   "packs": {
@@ -259,7 +314,35 @@
     "searchPlaceholder": "Search by name or @handle…",
     "sectionConnect": "Add & share",
     "leaderboardHint": "See how your squad ranks",
-    "noSearchMatches": "No friends match that search."
+    "noSearchMatches": "No friends match that search.",
+    "sectionInvite": "Invite friends",
+    "inviteLead": "Share your link — new signups can earn welcome rewards (see Rewards for details).",
+    "inviteCopyLink": "Copy link",
+    "promoRewardsLink": "Rewards & promo codes",
+    "followFooterTitle": "Follow Pull Hub",
+    "followFooterSub": "Drops, events, and community updates.",
+    "hubMenuTitle": "Friends",
+    "hubMenu": {
+      "addUsername": "Add friend by username",
+      "scanQr": "Scan QR code",
+      "showQr": "Show your QR code",
+      "shareInvite": "Share invite link",
+      "promo": "Enter promo code"
+    },
+    "justPulled": "Just pulled",
+    "sectionActivity": "Friends activity",
+    "sectionFriends": "Friends",
+    "sectionLeaderboard": "Leaderboard",
+    "leaderboardPreviewHint": "Total estimated value · tap for full board",
+    "leaderboardSeeAll": "See full leaderboard",
+    "emptyActivity": "Add collectors to see their pulls here.",
+    "emptyLeaderboardHint": "Invite friends to climb the board together.",
+    "emptySquadTitle": "No friends yet",
+    "emptySquadBody": "Add collectors to see their pulls, stats, and leaderboard spots.",
+    "sectionRequests": "Friend requests",
+    "requestHint": "Wants to connect — accept to add them to your squad.",
+    "acceptRequest": "Accept",
+    "declineRequest": "Decline"
   },
   "rewards": {
     "title": "Recompensas",
@@ -299,7 +382,19 @@
     "usernameLabel": "Nome de usuário",
     "usernameUnset": "Ainda não definido",
     "emailLabel": "E-mail",
-    "phoneLabel": "Telefone"
+    "phoneLabel": "Telefone",
+    "sectionRewards": "Rewards",
+    "collectorLevelEyebrow": "COLLECTOR LEVEL",
+    "viewLevelRewards": "View Level Rewards →",
+    "profileStatPacks": "Packs",
+    "profileStatValue": "Value",
+    "profileStatLuck": "Luck",
+    "profileStatCoins": "Coins",
+    "hitRateTitle": "Hit rate",
+    "hitRateEmpty": "Open packs to track your last 10 results and hit rate here.",
+    "hitRateSample": "Last {{count}} opens · tracks up to {{window}}",
+    "hitRateMarkHit": "H",
+    "hitRateMarkMiss": "M"
   },
   "shortcuts": {
     "notif": "Alertas",
@@ -360,10 +455,11 @@
     "done": "Entendi"
   },
   "welcome": {
-    "signupPromoTitle": "Booster de boas-vindas grátis",
-    "signupPromoBody": "Crie uma conta agora e adicionaremos um booster bônus à sua primeira sessão (demo — ativação em produção).",
+    "signupPromoTitle": "Bônus para novos jogadores",
+    "signupPromoBody": "Crie a conta nesta primeira visita: ao entrar adicionaremos {{credits}} créditos bônus (cerca de ${{usd}} em valor de aberturas).",
     "skip": "Navegar sem entrar",
-    "guestHint": "Você pode ver o catálogo. Entre para abrir boosters, comprar créditos, pagar e usar Amigos."
+    "guestHint": "Você pode ver o catálogo. Entre para abrir boosters, comprar créditos, pagar e usar Amigos.",
+    "flowMapLine": "Packs tab = mystery pulls in-app · Shop tab = pick cards & ship"
   },
   "auth": {
     "title": "Entrar",
@@ -503,7 +599,8 @@
       "chase_boost": "CHASE"
     },
     "topHit": "Top hit",
-    "chase": "CHASE"
+    "chase": "CHASE",
+    "unlockMembershipCta": "Unlock with membership"
   },
   "packCatalog": {
     "1": {
@@ -572,7 +669,17 @@
     "resultLegendary1": "Hit lendário de {{packName}}",
     "resultLegendary2": "Mythic pull de {{packName}}",
     "resultLegendary3": "Carta que muda o jogo de {{packName}}",
-    "replay": "Repetir animação"
+    "replay": "Repetir animação",
+    "stageEyebrow": "Certified reveal",
+    "manageWinnings": "Manage winnings",
+    "openAnotherHeadline": "Pull again",
+    "openAnotherSub": "{{credits}} credits · same pack",
+    "hudSpinningTitle": "Rip it open",
+    "hudSpinningSub": "Tap fast to charge the break",
+    "hudCommitTitle": "You're in control",
+    "hudCommitSub": "Tap to break the seal — your timing",
+    "hudPrimedTitle": "BREAK!",
+    "hudPrimedSub": "Pack's going…"
   },
   "insufficientCredits": {
     "title": "Créditos insuficientes",
@@ -669,30 +776,148 @@
     "guaranteeTitle": "Garantido",
     "priceTitle": "Preço",
     "remaining": "Restam {{left}} de {{total}}",
-    "ctaDisabled": "Indisponível"
+    "ctaDisabled": "Indisponível",
+    "memberGateTitle": "Members only",
+    "memberGateBody": "This lane needs {{tier}} membership or higher. You can simulate a tier on the Membership screen (demo).",
+    "ctaUnlockMembership": "Unlock — {{tier}}",
+    "ctaUnlockMembershipSub": "Opens membership (demo tier persists on this device)"
   },
   "splash": {
     "frameKicker": "COLLECTOR VAULT",
     "frameHeadline": "Your next pull",
     "frameTagline": "Live drops · Fair odds",
-    "frameLine": "Where every pull begins"
+    "frameLine": "Pull. Win. Repeat."
   },
   "onboarding": {
-    "welcomeTitle": "Welcome to Pull Hub",
-    "welcomeSubtitle": "Sign up to get a free pack — or preview the lobby first.",
-    "signUpCta": "Sign up free",
-    "signInCta": "Sign in",
-    "continueGuest": "Continue as guest",
-    "sheetHint": "Swipe down anytime to browse the app.",
-    "promptEyebrow": "Nice pull",
-    "promptTitle": "Sign up to keep it",
-    "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
-    "promptSignUp": "Claim free pack",
-    "promptSignIn": "I already have an account",
-    "promptLater": "Maybe later",
-    "guestClaimTitle": "Sign in to claim",
-    "guestClaimBody": "Vault saves and rewards need an account — it only takes a moment.",
-    "friendsGuestTitle": "Friends unlock with sign-in",
-    "friendsGuestBody": "Preview the space now. Sign in to add friends, share your QR, and sync your circle."
+    "welcomeTitle": "Bem-vindo ao Pull Hub",
+    "welcomeSubtitle": "A primeira visita inclui bônus de cadastro — crie uma conta agora ou veja o lobby primeiro.",
+    "firstLaunchPromoPill": "{{credits}} créditos bônus · ~${{usd}} de valor",
+    "signUpCta": "Cadastre-se grátis",
+    "signInCta": "Entrar",
+    "continueGuest": "Continuar como convidado",
+    "sheetHint": "Arraste o painel para baixo ou toque na área desfocada atrás. Pediremos confirmação antes de pular a oferta de cadastro.",
+    "dismissConfirmTitle": "Pular cadastro?",
+    "dismissConfirmMessage": "Você pode criar uma conta depois, mas o bônus desta visita (cerca de ${{usd}} em créditos) só está disponível se se cadastrar agora.",
+    "dismissConfirmStay": "Manter oferta — vou me cadastrar",
+    "dismissConfirmLeave": "Continuar sem conta",
+    "promptEyebrow": "Belo pull",
+    "promptTitle": "Cadastre-se para guardar",
+    "promptBody": "Crie uma conta para salvar pulls no cofre, resgatar recompensas e desbloquear seu booster de boas-vindas.",
+    "promptSignUp": "Resgatar booster grátis",
+    "promptSignIn": "Já tenho conta",
+    "promptLater": "Talvez depois",
+    "guestClaimTitle": "Entre para resgatar",
+    "guestClaimBody": "Cofre e recompensas precisam de conta — é rápido.",
+    "friendsGuestTitle": "Amigos com login",
+    "friendsGuestBody": "Veja o espaço agora. Entre para adicionar amigos, compartilhar o QR e sincronizar seu círculo."
+  },
+  "membership": {
+    "navTitle": "Membership",
+    "heroEyebrow": "Pull Hub 会員",
+    "heroTitle": "Membership",
+    "heroLead": "A monthly pass for collectors — coins, status, and curated access to member-only packs and drops. Not a one-off coin bundle.",
+    "valueBlockTitle": "Why membership",
+    "valueBlockBody": "Your tier unlocks a badge, monthly coins, exclusive pack lanes, and earlier windows on select drops — the same rhythm serious collectors expect from a premium Oripa experience.",
+    "mostPopular": "Most popular",
+    "tierName_silver": "Silver",
+    "tierName_gold": "Gold",
+    "tierName_black": "Black",
+    "badge_silver": "Silver member",
+    "badge_gold": "Gold member",
+    "badge_black": "Black member",
+    "badgeShort_silver": "SILVER",
+    "badgeShort_gold": "GOLD",
+    "badgeShort_black": "BLACK",
+    "pricePerMonth": "{{price}} / month",
+    "coinsMonthly": "{{count}} coins each billing cycle",
+    "benefits": {
+      "silver_badge": "Silver badge on your profile",
+      "silver_packs": "Silver member-only packs in the lobby",
+      "early_drops": "Early access to selected drops",
+      "gold_badge": "Gold badge on your profile",
+      "gold_packs": "Gold member-only packs — deeper catalog",
+      "earlier_drops": "Earlier access to selected drops",
+      "premium_drops": "Access to limited premium drops",
+      "black_badge": "Black / VIP badge on your profile",
+      "black_packs": "Black member-only packs — ultra-curated",
+      "earliest_drops": "Earliest access to selected high-demand drops",
+      "ultra_drops": "Ultra-limited drops reserved for Black",
+      "vip_support": "Priority support lane (product)",
+      "memberPackLocked": "Member {{tier}} · Subscribe to unlock",
+      "memberPackLockedShort": "{{tier}} only"
+    },
+    "renewalNote": "Membership renews monthly until canceled.",
+    "cancelAnytime": "Cancel anytime in Account settings (when billing is live).",
+    "memberPackLockNote": "Member-only pack tiles will show a clear tier lock label until you subscribe.",
+    "ctaSubscribe": "Continue with selected plan",
+    "ctaHint": "Billing is not connected in this build — preview only.",
+    "demoAlertTitle": "Membership",
+    "demoAlertBody": "{{tier}} checkout will connect to App Store / Play billing. This is a product preview.",
+    "accountRowTitle": "Pull Hub membership",
+    "accountRowSubtitle": "Silver, Gold, and Black — coins & exclusive packs",
+    "simActivatedTitle": "Demo membership on",
+    "simActivatedBody": "{{tier}} is active. We added {{coins}} credits for this cycle (demo).",
+    "simClearTitle": "Clear demo membership?",
+    "simClearBody": "Member-only packs lock again until you pick a tier.",
+    "simClearConfirm": "Clear",
+    "simActiveTitle": "Demo mode",
+    "simActiveBody": "{{tier}} is active — your tier’s member packs are unlocked.",
+    "simClearLink": "Clear demo membership",
+    "ctaSimSameTier": "Grant monthly credits again",
+    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet."
+  },
+  "promotions": {
+    "enterFromAccount": "Rewards & promo code",
+    "screenTitle": "Rewards",
+    "screenLead": "Invite friends or enter a code. Rewards apply to your wallet right away in this preview.",
+    "sectionReferral": "Invite friends",
+    "sectionCode": "Promo code",
+    "codeExplainer": "One use per account. Try WELCOME, FREEPACK, or LAUNCH.",
+    "codeLabel": "Code",
+    "codePlaceholder": "e.g. WELCOME",
+    "apply": "Apply",
+    "applyCode": "Apply promo code",
+    "referralEyebrow": "Your link",
+    "referralTitle": "Share Pull Hub",
+    "referralBody": "When a friend creates an account from your link, you both can earn rewards. Full referral payouts will use a server ledger at launch.",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "successEyebrow": "Applied",
+    "successCta": "Done",
+    "errorInvalid": "That code isn’t valid.",
+    "errorRedeemed": "You’ve already used this code.",
+    "errorInactive": "This promotion isn’t available."
+  },
+  "coach": {
+    "homeEyebrow": "Pull Hub tip",
+    "homeTitle": "Credits unlock every pack pull",
+    "homeLine1": "This tab is where you spend credits on digital packs — filter by line, sort by price, and chase drops.",
+    "homeLine2": "Running low before a hot drop? Top up credits so you never miss a restock.",
+    "homeLine3": "Shop is for sealed boxes and shipped goods; pulls here happen instantly in-app.",
+    "homeCtaCredits": "Get credits",
+    "shopEyebrow": "Shop vs Packs",
+    "shopTitle": "Two ways to collect — pick the right lane",
+    "shopLine1": "Packs tab = buy credits, open packs, and build your vault digitally.",
+    "shopLine2": "Shop = sealed product and merch with checkout and shipping — great for sealed grails.",
+    "shopLine3": "Most players keep credits ready for pulls, then browse Shop when they want something physical.",
+    "shopCtaPacks": "Back to Packs",
+    "dismiss": "Got it",
+    "homeBody": "Open mystery packs instantly with credits. Win cards, convert to coins, and pull again.",
+    "homeFlowOpen": "Open",
+    "homeFlowWin": "Win",
+    "homeFlowConvert": "Convert",
+    "homeFlowRepeat": "Repeat",
+    "homeCtaStart": "Start Pulling",
+    "homeDismissSecondary": "Maybe later",
+    "shopPacksHeading": "Packs",
+    "shopPacksLine1": "Open instantly.",
+    "shopPacksLine2": "Win cards.",
+    "shopPacksLine3": "Convert to coins.",
+    "shopShopHeading": "Shop",
+    "shopShopLine1": "Buy specific cards and ship them home.",
+    "shopHelper": "Most players open packs first, then shop for favorites.",
+    "shopCreditsHint": "Use credits you already have, or buy more anytime when you want to pull again.",
+    "shopCtaContinue": "Continue to Shop",
+    "shopCtaBackPacks": "Back to Packs"
   }
 }

@@ -19,6 +19,29 @@ export function getAppLogoParts(): { primary: string; secondary: string | null }
   return { primary: APP_DISPLAY_NAME, secondary: null };
 }
 
+/** Two-line wordmark: “Pull” + “Hub” styling — last word gets accent color in the header. */
+export function getLogoWordmarkParts(): { lead: string; accent: string } | null {
+  const parts = APP_DISPLAY_NAME.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return { lead: parts.slice(0, -1).join(' '), accent: parts[parts.length - 1]! };
+  }
+  return null;
+}
+
+/** Monogram for header badge (e.g. Pull Hub → PH). */
+export function getLogoInitials(): string {
+  const parts = APP_DISPLAY_NAME.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    const a = parts[0]?.[0];
+    const b = parts[1]?.[0];
+    if (a && b) return `${a}${b}`.toUpperCase();
+  }
+  if (parts.length === 1 && parts[0]!.length >= 2) {
+    return parts[0]!.slice(0, 2).toUpperCase();
+  }
+  return 'PH';
+}
+
 export const APP_VERSION = packageJson.version;
 export const APP_SLUG = packageJson.name;
 
@@ -30,6 +53,12 @@ export const PUBLIC_WEB_ORIGIN = 'https://pullhub.com';
 
 /** If true, Buy Credits is clearly labeled as mock (no real charges). */
 export const CREDITS_ARE_MOCK = true;
+
+/**
+ * When true, seeds one sample incoming friend request so the Friends tab badge + requests UI
+ * can be exercised without a backend. Turn off for production (or when `CREDITS_ARE_MOCK` is false).
+ */
+export const SHOW_DEMO_INCOMING_FRIEND_REQUEST = CREDITS_ARE_MOCK;
 
 /**
  * When true (and credits are mock), the user must acknowledge the simulation notice once

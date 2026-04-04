@@ -7,7 +7,7 @@ import { CompositeNavigationProp, useNavigation } from '@react-navigation/native
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
   },
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   },
   guestSignInEyebrow: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.red,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
@@ -322,13 +322,13 @@ const styles = StyleSheet.create({
   },
   guestSignInTitle: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   guestSignInBody: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     lineHeight: 20,
     marginBottom: spacing.md,
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   },
   guestSignInBtnText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
   },
   tierCard: {
@@ -382,19 +382,19 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   profileUsername: {
     marginTop: 2,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
   },
   profileStatus: {
     marginTop: 4,
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.red,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
@@ -411,14 +411,14 @@ const styles = StyleSheet.create({
   },
   pullHubMemberBadgeText: {
     fontSize: 9,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.gold,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
   memberRowPill: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
     maxWidth: 120,
     textAlign: 'right',
@@ -446,14 +446,14 @@ const styles = StyleSheet.create({
   },
   profileStatVal: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     maxWidth: '100%',
   },
   profileStatLab: {
     marginTop: 2,
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 0.35,
     textTransform: 'uppercase',
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   },
   tierDisplayName: {
     fontSize: fontSize.hero,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.8,
     marginBottom: spacing.lg,
@@ -487,14 +487,14 @@ const styles = StyleSheet.create({
   },
   tierEyebrow: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1.5,
     marginBottom: 2,
   },
   tierName: {
     fontSize: fontSize.hero - 2,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 1,
   },
   tierBadge: {
@@ -516,12 +516,12 @@ const styles = StyleSheet.create({
   xpText: {
     fontSize: fontSize.sm,
     color: colors.textSecondary,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
   },
   xpPct: {
     fontSize: fontSize.sm,
     color: colors.textSecondary,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
   },
   barTrack: {
     height: 8,
@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
   },
   viewBenefitsText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.red,
   },
   statGrid: {
@@ -557,19 +557,19 @@ const styles = StyleSheet.create({
   },
   statVal: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   statLab: {
     marginTop: 4,
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 0.5,
   },
   section: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -590,13 +590,13 @@ const styles = StyleSheet.create({
   },
   bestName: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.white,
     marginBottom: spacing.sm,
   },
   bestVal: {
     fontSize: fontSize.hero - 4,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.casinoGold,
   },
   bestSub: {
@@ -617,7 +617,7 @@ const styles = StyleSheet.create({
   },
   btnDarkText: {
     color: colors.white,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     fontSize: fontSize.md,
   },
   btnOutline: {
@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
   },
   btnOutlineText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   emptyPulls: {

@@ -21,10 +21,15 @@ export const MOCK_REFERRAL_PROGRAM: ReferralProgramDefinition = {
   referrer: { freePacks: 1 },
 };
 
+/** Demo mapping for “$5 in credits” promo copy and grants — tune against real shop pricing later. */
+export const SIGNUP_PROMO_CREDITS_PER_USD = 100;
+export const SIGNUP_PROMO_BONUS_USD = 5;
+export const SIGNUP_PROMO_BONUS_CREDITS = SIGNUP_PROMO_BONUS_USD * SIGNUP_PROMO_CREDITS_PER_USD;
+
 /**
- * First signup reward — switch to `{ points: 100 }` or `{ freePacks: 1 }` as needed.
+ * First signup reward — applied once per user id in `promotionStore.syncSessionRewards`.
  */
 export const MOCK_SIGNUP_PROMOTION: SignupPromotionConfig = {
   enabled: true,
-  grant: { freePacks: 1 },
+  grant: { points: SIGNUP_PROMO_BONUS_CREDITS },
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
@@ -9,12 +9,84 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 
 const FRAME_W = 236;
 const FRAME_H = 132;
 const OUTER = FRAME_W + 28;
 const OUTER_H = FRAME_H + 28;
+
+const TYPEWRITER_CHAR_MS = 38;
+const TYPEWRITER_START_DELAY_MS = 360;
+
+/**
+ * Tagline types out with a soft blinking cursor; cursor hides after the line completes.
+ */
+function SplashTypewriterLine({ text }: { text: string }) {
+  const [visible, setVisible] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  const [cursorLit, setCursorLit] = useState(true);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (!showCursor) return;
+    const id = setInterval(() => setCursorLit((v) => !v), 400);
+    return () => clearInterval(id);
+  }, [showCursor]);
+
+  useEffect(() => {
+    if (!text.length) {
+      setVisible('');
+      setShowCursor(false);
+      return;
+    }
+    setVisible('');
+    setShowCursor(true);
+    let startTimer: ReturnType<typeof setTimeout> | null = null;
+    let endCursorTimer: ReturnType<typeof setTimeout> | null = null;
+
+    startTimer = setTimeout(() => {
+      let i = 0;
+      intervalRef.current = setInterval(() => {
+        i += 1;
+        setVisible(text.slice(0, i));
+        if (i >= text.length) {
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+          endCursorTimer = setTimeout(() => setShowCursor(false), 340);
+        }
+      }, TYPEWRITER_CHAR_MS);
+    }, TYPEWRITER_START_DELAY_MS);
+
+    return () => {
+      if (startTimer) clearTimeout(startTimer);
+      if (endCursorTimer) clearTimeout(endCursorTimer);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [text]);
+
+  return (
+    <View
+      style={styles.typewriterRow}
+      accessibilityRole="text"
+      accessibilityLabel={text}
+    >
+      <Text style={styles.frameLine} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
+        {visible}
+      </Text>
+      {showCursor ? (
+        <Text style={[styles.typewriterCursor, { opacity: cursorLit ? 1 : 0.22 }]} accessibilityElementsHidden>
+          |
+        </Text>
+      ) : null}
+    </View>
+  );
+}
 
 type Props = {
   frameOpacity: SharedValue<number>;
@@ -24,6 +96,8 @@ type Props = {
   sweep2Progress: SharedValue<number>;
   cornerOpacity: SharedValue<number>;
   scanProgress: SharedValue<number>;
+  /** Optional: looped intensity for inner neon tube behind the frame */
+  neonBreath?: SharedValue<number>;
 };
 
 /** Collectible frame + dual sweeps + corner ornaments + inner scan line. */
@@ -35,6 +109,7 @@ export function SplashCardFrame({
   sweep2Progress,
   cornerOpacity,
   scanProgress,
+  neonBreath,
 }: Props) {
   const { t } = useTranslation();
 
@@ -75,6 +150,13 @@ export function SplashCardFrame({
     };
   });
 
+  const neonTubeStyle = useAnimatedStyle(() => {
+    const b = neonBreath?.value ?? 0;
+    return {
+      opacity: 0.22 + b * 0.72,
+    };
+  });
+
   const corner = (pos: 'tl' | 'tr' | 'bl' | 'br') => {
     const base = { position: 'absolute' as const, width: 20, height: 20, borderColor: colors.accentBorder };
     switch (pos) {
@@ -94,6 +176,25 @@ export function SplashCardFrame({
       <Animated.View style={[styles.glowBlob, glowStyle]} pointerEvents="none" />
 
       <View style={styles.decorWrap}>
+        {neonBreath ? (
+          <Animated.View style={[styles.neonTube, neonTubeStyle]} pointerEvents="none">
+            <LinearGradient
+              colors={[
+                'rgba(56,189,248,0.45)',
+                'rgba(255,203,5,0.28)',
+                'rgba(120,200,255,0.4)',
+                'rgba(56,189,248,0.5)',
+              ]}
+              locations={[0, 0.35, 0.65, 1]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFillObject}
+            />
+          </Animated.View>
+        ) : null}
+        {neonBreath ? (
+          <Animated.View style={[styles.neonRim, neonTubeStyle]} pointerEvents="none" />
+        ) : null}
         <Animated.View style={[corner('tl'), cornerStyle]} />
         <Animated.View style={[corner('tr'), cornerStyle]} />
         <Animated.View style={[corner('bl'), cornerStyle]} />
@@ -134,9 +235,7 @@ export function SplashCardFrame({
           </View>
           {/* One scannable line — keep short (read time vs INTRO_MS in AppSplashScreen). Easter egg / secret word: future hook. */}
           <View style={styles.frameCopy} pointerEvents="none">
-            <Text style={styles.frameLine} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
-              {t('splash.frameLine')}
-            </Text>
+            <SplashTypewriterLine text={t('splash.frameLine')} />
           </View>
           <View style={styles.frameEdge} />
           <Animated.View style={[styles.scanLine, scanStyle]} pointerEvents="none">
@@ -166,6 +265,33 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  neonTube: {
+    position: 'absolute',
+    width: FRAME_W + 16,
+    height: FRAME_H + 16,
+    borderRadius: 18,
+    left: (OUTER - (FRAME_W + 16)) / 2,
+    top: (OUTER_H - (FRAME_H + 16)) / 2,
+    zIndex: 1,
+    overflow: 'hidden',
+  },
+  neonRim: {
+    position: 'absolute',
+    width: FRAME_W + 18,
+    height: FRAME_H + 18,
+    borderRadius: 18,
+    left: (OUTER - (FRAME_W + 18)) / 2,
+    top: (OUTER_H - (FRAME_H + 18)) / 2,
+    zIndex: 1,
+    borderWidth: 1.5,
+    borderColor: 'rgba(167, 243, 255, 0.55)',
+    backgroundColor: 'transparent',
+    shadowColor: colors.accent,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.55,
+    shadowRadius: 18,
+    elevation: 14,
   },
   glowBlob: {
     position: 'absolute',
@@ -208,9 +334,25 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     zIndex: 2,
   },
+  typewriterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    maxWidth: '100%',
+  },
+  typewriterCursor: {
+    fontSize: fontSize.xxl,
+    fontFamily: brandFont.black,
+    color: colors.accent,
+    marginLeft: 1,
+    marginTop: -2,
+    textShadowColor: 'rgba(56, 189, 248, 0.55)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
   frameLine: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
     textAlign: 'center',

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { fontSize, fontWeight } from '../../../tokens/typography';
+import { fontSize, brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import type { RevealRarity } from './types';
@@ -181,13 +181,13 @@ const styles = StyleSheet.create({
   ovrNum: {
     color: '#fff',
     fontSize: 20,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: -0.5,
   },
   ovrLbl: {
     color: 'rgba(255,255,255,0.75)',
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     marginTop: 2,
     letterSpacing: 2,
   },
@@ -198,14 +198,14 @@ const styles = StyleSheet.create({
   },
   fifaTierLbl: {
     fontSize: 11,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 2,
     marginBottom: 6,
   },
   fifaHead: {
     color: 'rgba(248,250,252,0.55)',
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 2,
     textTransform: 'uppercase',
     marginBottom: 4,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   fifaName: {
     color: '#F8FAFC',
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     lineHeight: 22,
   },
   fifaCardBar: {
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
   fifaCreditsBig: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     textAlign: 'center',
     letterSpacing: 0.5,
   },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../../tokens/colors';
-import { fontSize, fontWeight } from '../../../tokens/typography';
+import { fontSize, brandFont } from '../../../tokens/typography';
 import type { PackRollResult, RevealRarity } from './types';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 
@@ -37,20 +37,20 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 1.3,
     color: colors.textMuted,
   },
   value: {
     marginTop: 4,
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: -0.4,
   },
   subtitle: {
     marginTop: 2,
     fontSize: 11,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textSecondary,
     letterSpacing: 1.1,
   },

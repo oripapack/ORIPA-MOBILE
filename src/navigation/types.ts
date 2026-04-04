@@ -1,5 +1,14 @@
+import type { NavigatorScreenParams } from '@react-navigation/native';
+
+export type RootTabParamList = {
+  Marketplace: undefined;
+  Home: undefined;
+  Friends: undefined;
+  Account: undefined;
+};
+
 export type RootStackParamList = {
-  MainTabs: undefined;
+  MainTabs: NavigatorScreenParams<RootTabParamList> | undefined;
   Settings: undefined;
   PackDetails: { packId: string };
   /** Unified checkout: in-app credits (digital) vs marketplace physical goods (Stripe server flow). */
@@ -26,11 +35,4 @@ export type RootStackParamList = {
   Promotions: undefined;
   /** Paid membership — Silver / Gold / Black (demo CTA until IAP). */
   Membership: undefined;
-};
-
-export type RootTabParamList = {
-  Marketplace: undefined;
-  Home: undefined;
-  Friends: undefined;
-  Account: undefined;
 };

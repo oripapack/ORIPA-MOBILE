@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PAYMENT_ROUTING } from '../../payments/physicalGoodsPolicy';
 
@@ -51,13 +51,13 @@ export function MarketplaceCheckoutSection({ listingTitle, listingPrice }: Props
 const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
   lead: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     marginBottom: spacing.lg,
     lineHeight: 20,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
     marginBottom: 4,
     textTransform: 'uppercase',
@@ -80,13 +80,13 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   policy: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     lineHeight: 18,
     marginBottom: spacing.lg,
@@ -100,6 +100,6 @@ const styles = StyleSheet.create({
   ctaText: {
     color: colors.white,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
 });

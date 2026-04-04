@@ -15,10 +15,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useClerk, useSSO, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
+import { SIGNUP_PROMO_BONUS_CREDITS, SIGNUP_PROMO_BONUS_USD } from '../data/promotions.mock';
 
 /** Narrow types for Clerk’s email/password + verification helpers (see Clerk custom-flow docs). */
 type ClerkSignInPwd = {
@@ -44,6 +45,11 @@ type AuthScreenProps = {
   initialEmailMode?: EmailMode;
   /** Modal close (e.g. page sheet). */
   onRequestClose?: () => void;
+  /**
+   * When set with `welcomeMode`, “Browse without signing in” calls this instead of the guest-wall
+   * defaults (e.g. first-launch gate uses the same dismiss confirmation as the close button).
+   */
+  onWelcomeSkip?: () => void;
   /** Compact bottom sheet — less padding, transparent bg (gradient is on shell). */
   presentation?: 'full' | 'sheet';
 };
@@ -56,6 +62,7 @@ export function AuthScreen({
   welcomeMode = false,
   initialEmailMode,
   onRequestClose,
+  onWelcomeSkip,
   presentation = 'full',
 }: AuthScreenProps) {
   const { t } = useTranslation();
@@ -125,12 +132,16 @@ export function AuthScreen({
   const onApple = () => runOAuth('oauth_apple', 'apple');
 
   const onSkipBrowse = useCallback(() => {
+    if (onWelcomeSkip) {
+      onWelcomeSkip();
+      return;
+    }
     void (async () => {
       await setGuestBrowseEnabled(true);
       await markWelcomePromoSeen();
       clearAuthWall();
     })();
-  }, [clearAuthWall, markWelcomePromoSeen, setGuestBrowseEnabled]);
+  }, [clearAuthWall, markWelcomePromoSeen, onWelcomeSkip, setGuestBrowseEnabled]);
 
   const onEmailSubmit = useCallback(async () => {
     if (!signInLoaded || !signUpLoaded) return;
@@ -275,10 +286,26 @@ export function AuthScreen({
           {t('auth.subtitle')}
         </Text>
 
+        {welcomeMode && isSheet ? (
+          <Text style={styles.flowMapLine} accessibilityRole="text">
+            {t('welcome.flowMapLine')}
+          </Text>
+        ) : null}
+
         {welcomeMode && !welcomePromoSeen ? (
-          <View style={styles.promoBanner} accessibilityRole="text">
-            <Text style={styles.promoBannerTitle}>{t('welcome.signupPromoTitle')}</Text>
-            <Text style={styles.promoBannerBody}>{t('welcome.signupPromoBody')}</Text>
+          <View
+            style={[styles.promoBanner, isSheet && styles.promoBannerSheet]}
+            accessibilityRole="text"
+          >
+            <Text style={[styles.promoBannerTitle, isSheet && styles.promoBannerTitleSheet]}>
+              {t('welcome.signupPromoTitle')}
+            </Text>
+            <Text style={[styles.promoBannerBody, isSheet && styles.promoBannerBodySheet]}>
+              {t('welcome.signupPromoBody', {
+                credits: SIGNUP_PROMO_BONUS_CREDITS,
+                usd: SIGNUP_PROMO_BONUS_USD,
+              })}
+            </Text>
           </View>
         ) : null}
 
@@ -326,7 +353,7 @@ export function AuthScreen({
         </View>
 
         {/* Email mode */}
-        <View style={styles.modeRow}>
+        <View style={[styles.modeRow, isSheet && styles.modeRowSheet]}>
           <TouchableOpacity
             onPress={() => setMode('signin')}
             style={[
@@ -338,6 +365,7 @@ export function AuthScreen({
             <Text
               style={[
                 styles.modeChipText,
+                isSheet && styles.modeChipTextSheet,
                 emailMode === 'signin' && (isSheet ? styles.modeChipTextOnSheet : styles.modeChipTextOn),
               ]}
             >
@@ -355,6 +383,7 @@ export function AuthScreen({
             <Text
               style={[
                 styles.modeChipText,
+                isSheet && styles.modeChipTextSheet,
                 emailMode === 'signup' && (isSheet ? styles.modeChipTextOnSheet : styles.modeChipTextOn),
               ]}
             >
@@ -486,17 +515,32 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xxl,
   },
   titleSheet: {
-    fontSize: fontSize.lg,
-    marginBottom: spacing.xs,
-    color: 'rgba(245,237,214,0.96)',
+    fontSize: fontSize.xl,
+    marginBottom: spacing.sm,
+    color: colors.textPrimary,
+    fontFamily: brandFont.black,
   },
   subtitleSheet: {
+    marginBottom: spacing.lg,
+    lineHeight: 22,
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.medium,
+    color: colors.textSecondary,
+  },
+  flowMapLine: {
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.semibold,
+    color: colors.accent,
+    letterSpacing: 0.2,
+    marginTop: -spacing.sm,
     marginBottom: spacing.md,
-    lineHeight: 18,
-    color: 'rgba(196,181,154,0.88)',
+    paddingHorizontal: spacing.md,
+    lineHeight: 17,
   },
   dividerRowSheet: {
-    marginVertical: spacing.md,
+    marginVertical: spacing.lg,
   },
   dividerLineSheet: {
     backgroundColor: 'rgba(255,255,255,0.06)',
@@ -515,17 +559,29 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.06)',
   },
   modeChipSheet: {
-    backgroundColor: 'rgba(255,255,255,0.03)',
-    borderWidth: 0,
-    borderColor: 'transparent',
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.1)',
+    paddingVertical: spacing.md,
+    minHeight: 50,
   },
   modeChipOnSheet: {
-    borderWidth: 0,
-    borderColor: 'transparent',
-    backgroundColor: colors.goldSoft,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255, 203, 5, 0.45)',
+    backgroundColor: 'rgba(255, 203, 5, 0.18)',
+  },
+  modeChipTextSheet: {
+    fontSize: fontSize.md,
+    fontFamily: brandFont.bold,
   },
   modeChipTextOnSheet: {
     color: colors.textPrimary,
+    fontFamily: brandFont.black,
+  },
+  modeRowSheet: {
+    marginTop: spacing.xs,
+    marginBottom: spacing.lg,
+    gap: spacing.md,
   },
   inputSheet: {
     backgroundColor: 'rgba(255,255,255,0.04)',
@@ -574,25 +630,25 @@ const styles = StyleSheet.create({
   },
   logoPrimary: {
     fontSize: fontSize.hero,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   logoSecondary: {
     fontSize: fontSize.hero,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.red,
     letterSpacing: -0.5,
   },
   title: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     lineHeight: 22,
     marginBottom: spacing.lg,
@@ -619,17 +675,17 @@ const styles = StyleSheet.create({
   },
   googleIcon: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: '#4285F4',
   },
   oauthText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   appleText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.white,
   },
   dividerRow: {
@@ -645,7 +701,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textMuted,
   },
   modeRow: {
@@ -668,7 +724,7 @@ const styles = StyleSheet.create({
   },
   modeChipText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textSecondary,
   },
   modeChipTextOn: {
@@ -681,7 +737,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
@@ -696,12 +752,12 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
   },
   verifyHint: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     marginBottom: spacing.sm,
     lineHeight: 20,
@@ -709,43 +765,72 @@ const styles = StyleSheet.create({
   link: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.red,
     textAlign: 'center',
   },
   error: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.redDark,
     lineHeight: 20,
   },
   hint: {
     marginTop: spacing.xl,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     lineHeight: 18,
   },
   promoBanner: {
-    backgroundColor: '#FFF7ED',
+    backgroundColor: 'rgba(248, 250, 252, 0.97)',
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: '#FDBA74',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(15, 23, 42, 0.12)',
     padding: spacing.base,
     marginBottom: spacing.lg,
   },
+  /** Taller card, clearer separation from OAuth row on glass sheets */
+  promoBannerSheet: {
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    marginBottom: spacing.xl,
+    borderColor: 'rgba(56, 189, 248, 0.22)',
+    backgroundColor: 'rgba(248, 250, 252, 0.98)',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.12,
+        shadowRadius: 12,
+      },
+      android: { elevation: 4 },
+    }),
+  },
   promoBannerTitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
+    fontFamily: brandFont.black,
+    color: '#0F172A',
+    marginBottom: spacing.sm,
+    letterSpacing: 0.4,
+  },
+  promoBannerTitleSheet: {
+    fontSize: fontSize.md,
+    letterSpacing: 0.8,
+    color: '#0B1120',
   },
   promoBannerBody: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
-    color: colors.textSecondary,
-    lineHeight: 20,
+    fontFamily: brandFont.medium,
+    color: '#475569',
+    lineHeight: 22,
+  },
+  promoBannerBodySheet: {
+    fontSize: fontSize.base,
+    lineHeight: 24,
+    color: '#334155',
+    fontFamily: brandFont.medium,
   },
   skipBtn: {
     marginTop: spacing.xl,
@@ -754,7 +839,7 @@ const styles = StyleSheet.create({
   },
   skipBtnText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
   },
 });

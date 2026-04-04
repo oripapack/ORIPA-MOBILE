@@ -11,7 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 interface Props {
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     paddingRight: spacing.sm,
   },
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   closeLabel: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.red,
   },
   scroll: {

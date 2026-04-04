@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing, Dimensions,
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { demoHomeHeroBackground } from '../../data/demoMedia';
 
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   closeText: {
     color: 'rgba(255,255,255,0.55)',
     fontSize: 28,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     lineHeight: 30,
   },
   inner: {
@@ -199,14 +199,14 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
     letterSpacing: 1.2,
     marginBottom: spacing.xs,
   },
   headline: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.white,
     lineHeight: 33,
     marginBottom: spacing.sm,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   ctaText: {
     color: colors.white,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 0.3,
   },
   notNow: {
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   },
   notNowText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: 'rgba(255,255,255,0.45)',
     textDecorationLine: 'underline',
   },
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   cardLabel: {
     color: colors.white,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     marginTop: 4,
   },
 });

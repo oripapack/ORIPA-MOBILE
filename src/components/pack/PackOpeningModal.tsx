@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, Easing, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { RarityTier } from '../../audio/packOpeningFeedback';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
-import { PrimaryButton } from '../shared/PrimaryButton';
-import { SecondaryButton } from '../shared/SecondaryButton';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { ChipTagType, Pack } from '../../data/mockPacks';
@@ -113,13 +112,11 @@ export function PackOpeningModal() {
   const packOpenSessionId = useAppStore((s) => s.packOpenSessionId);
   const closeModal = useAppStore((s) => s.closeModal);
   const openModal = useAppStore((s) => s.openModal);
-  const setSelectedPack = useAppStore((s) => s.setSelectedPack);
   const applyPackOpenResult = useAppStore((s) => s.applyPackOpenResult);
   const openPack = useAppStore((s) => s.openPack);
 
   const [pending, setPending] = useState<PackRollResult | null>(null);
   const [skippedToEnd, setSkippedToEnd] = useState(false);
-  const [replayKey, setReplayKey] = useState(0);
   const [skipNonce, setSkipNonce] = useState(0);
   const [engineDone, setEngineDone] = useState(false);
 
@@ -135,7 +132,6 @@ export function PackOpeningModal() {
     rollRef.current = null;
     didApplyRef.current = false;
     setSkippedToEnd(false);
-    setReplayKey(0);
     setSkipNonce(0);
     setEngineDone(false);
   }, [visible]);
@@ -144,7 +140,6 @@ export function PackOpeningModal() {
     if (!visible || !selectedPack) return;
     didApplyRef.current = false;
     setSkippedToEnd(false);
-    setReplayKey(0);
     setSkipNonce(0);
     setEngineDone(false);
 
@@ -195,13 +190,6 @@ export function PackOpeningModal() {
     setSkipNonce((n) => n + 1);
   }, []);
 
-  const replayAnimation = useCallback(() => {
-    setSkippedToEnd(false);
-    setEngineDone(false);
-    setSkipNonce(0);
-    setReplayKey((k) => k + 1);
-  }, []);
-
   useEffect(() => {
     if (!visible || !selectedPack || !pending) return;
     if (didApplyRef.current) return;
@@ -214,7 +202,7 @@ export function PackOpeningModal() {
   const packTint = selectedPack?.imageColor ?? colors.nearBlack;
   const revealCard =
     pending && selectedPack
-      ? resolveRevealCardForTier(pending.tier, packOpenSessionId + replayKey * 997, selectedPack.category)
+      ? resolveRevealCardForTier(pending.tier, packOpenSessionId, selectedPack.category)
       : null;
   const revealRarity = pending ? revealRarityFromTier(pending.tier) : 'common';
 
@@ -235,12 +223,11 @@ export function PackOpeningModal() {
     if (!selectedPack) return;
     // This re-charges credits + increments session id like a real open.
     // In demo mode, we still use store openPack for a consistent “spent credits” story.
-    const ok = openPack(selectedPack);
+    const ok = openPack(selectedPack, { keepPackModalOnInsufficient: true });
     if (!ok) return;
     setSkippedToEnd(false);
     setEngineDone(false);
     setSkipNonce(0);
-    setReplayKey((k) => k + 1);
   }, [openPack, selectedPack]);
 
   const showSkip = !!pending && !engineDone;
@@ -297,8 +284,8 @@ export function PackOpeningModal() {
               revealCard={revealCard}
               revealRarity={revealRarity}
               packTint={packTint}
-              sessionSalt={packOpenSessionId + replayKey * 31}
-              replayKey={replayKey}
+              sessionSalt={packOpenSessionId}
+              replayKey={0}
               skipNonce={skipNonce}
               onRevealDone={onRevealDone}
             />
@@ -306,15 +293,43 @@ export function PackOpeningModal() {
 
           <RevealCtaFade visible={engineDone} instant={skippedToEnd} enterDelayMs={560}>
             <View style={styles.ctaRow}>
-              <PrimaryButton
-                label={t('packOpening.manageWinnings')}
-                variant="red"
+              <TouchableOpacity
+                style={styles.openAnotherBtn}
+                onPress={openAnother}
+                activeOpacity={0.88}
+                accessibilityRole="button"
+                accessibilityLabel={t('packOpening.openNext')}
+              >
+                <LinearGradient
+                  colors={[colors.gold, colors.goldDark]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.openAnotherGradient}
+                >
+                  <View style={styles.openAnotherRow}>
+                    <View style={styles.openAnotherIconCircle}>
+                      <Ionicons name="flash" size={22} color={colors.black} />
+                    </View>
+                    <View style={styles.openAnotherCopy}>
+                      <Text style={styles.openAnotherHeadline}>{t('packOpening.openAnotherHeadline')}</Text>
+                      <Text style={styles.openAnotherSub}>
+                        {t('packOpening.openAnotherSub', {
+                          credits:
+                            selectedPack != null ? selectedPack.creditPrice.toLocaleString() : '—',
+                        })}
+                      </Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={22} color="rgba(2,6,23,0.45)" />
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={goToWonPrizes}
-                style={styles.ctaPrimary}
-              />
-              <SecondaryButton label={t('packOpening.openNext')} onPress={openAnother} style={styles.ctaSecondary} />
-              <TouchableOpacity onPress={replayAnimation} style={styles.replayBtn} hitSlop={10}>
-                <Text style={styles.replayText}>{t('packOpening.replay')}</Text>
+                style={styles.manageWinningsBtn}
+                activeOpacity={0.65}
+                hitSlop={12}
+              >
+                <Text style={styles.manageWinningsText}>{t('packOpening.manageWinnings')}</Text>
               </TouchableOpacity>
             </View>
           </RevealCtaFade>
@@ -357,7 +372,7 @@ const styles = StyleSheet.create({
   },
   stageEyebrow: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: 'rgba(248,250,252,0.38)',
     letterSpacing: 3.2,
     textTransform: 'uppercase',
@@ -370,7 +385,7 @@ const styles = StyleSheet.create({
   },
   titleFifa: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: '#F8FAFC',
     marginBottom: 2,
     letterSpacing: 2.2,
@@ -388,7 +403,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: 'rgba(255,255,255,0.62)',
   },
   livePillFifa: {
@@ -408,7 +423,7 @@ const styles = StyleSheet.create({
   },
   liveText: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: 'rgba(255,255,255,0.68)',
     letterSpacing: 1.6,
   },
@@ -417,23 +432,60 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
     gap: spacing.md,
   },
-  ctaPrimary: {
-    height: 48,
+  openAnotherBtn: {
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.42,
+    shadowRadius: 14,
+    elevation: 10,
   },
-  ctaSecondary: {
-    height: 48,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+  openAnotherGradient: {
+    borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(255,255,255,0.35)',
   },
-  replayBtn: {
-    alignSelf: 'center',
-    paddingVertical: spacing.sm,
+  openAnotherRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    paddingVertical: spacing.md + 4,
+    paddingHorizontal: spacing.base,
   },
-  replayText: {
+  openAnotherIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(2,6,23,0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  openAnotherCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  openAnotherHeadline: {
+    color: colors.black,
+    fontSize: fontSize.lg,
+    fontFamily: brandFont.black,
+    letterSpacing: 0.2,
+    marginBottom: 2,
+  },
+  openAnotherSub: {
+    color: 'rgba(2,6,23,0.62)',
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
-    color: 'rgba(255,255,255,0.45)',
-    letterSpacing: 0.6,
+    fontFamily: brandFont.semibold,
+  },
+  manageWinningsBtn: {
+    paddingVertical: spacing.sm + 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manageWinningsText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: 'rgba(248,250,252,0.52)',
+    letterSpacing: 0.2,
   },
 });

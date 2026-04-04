@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { parseFriendInviteFromQr } from '../../lib/friendQr';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 
@@ -119,13 +119,13 @@ const styles = StyleSheet.create({
   },
   cancel: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.white,
     width: 56,
   },
   headerTitle: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
   },
   permBody: {
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   permBtnText: {
     color: colors.white,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     fontSize: fontSize.base,
   },
   cameraContainer: {
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'rgba(255,255,255,0.85)',
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
   },
   webWrap: {
     flex: 1,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   webTitle: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
@@ -206,6 +206,6 @@ const styles = StyleSheet.create({
   },
   closeWebText: {
     color: colors.white,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
 });

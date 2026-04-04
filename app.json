@@ -79,7 +79,8 @@
         }
       ],
       "./plugins/withNativeFoundation.js",
-      "expo-localization"
+      "expo-localization",
+      "expo-font"
     ]
   }
 }

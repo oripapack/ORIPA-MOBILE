@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PackOdds } from '../../data/mockPackOdds';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   kicker: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     textTransform: 'uppercase',
     letterSpacing: 1.2,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 4,
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.md,
   },
@@ -113,13 +113,13 @@ const styles = StyleSheet.create({
   },
   tierText: {
     fontSize: 11,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     textTransform: 'uppercase',
     letterSpacing: 0.7,
   },
   chance: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   examples: {
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   closeText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
 });

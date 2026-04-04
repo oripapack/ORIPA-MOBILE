@@ -1,16 +1,17 @@
-import React, { useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { LootBoxDisclosure } from '../components/payments/LootBoxDisclosure';
 import { CreditsPurchaseSection } from '../components/payments/CreditsPurchaseSection';
 import { MarketplaceCheckoutSection } from '../components/payments/MarketplaceCheckoutSection';
+import { useAppStore } from '../store/useAppStore';
 
 type Nav = StackNavigationProp<RootStackParamList, 'PaymentPortal'>;
 type R = RouteProp<RootStackParamList, 'PaymentPortal'>;
@@ -34,7 +35,7 @@ export function PaymentPortalScreen() {
       title: t('paymentPortal.navTitle'),
       headerShown: true,
       headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontWeight: fontWeight.bold },
+      headerTitleStyle: { fontFamily: brandFont.bold },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.surfaceElevated },
     });
@@ -46,6 +47,18 @@ export function PaymentPortalScreen() {
       marketplace: t('paymentPortal.tabMarketplace'),
     }),
     [t],
+  );
+
+  /** Leaving without buying enough for `selectedPack` — drop stale resume so later purchases don’t auto-open the wrong pack. */
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        const s = useAppStore.getState();
+        if (!s.resumePackOpenAfterCredits || !s.selectedPack) return;
+        if (s.user.credits >= s.selectedPack.creditPrice) return;
+        s.clearResumePackOpen();
+      };
+    }, []),
   );
 
   return (
@@ -102,7 +115,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
     marginBottom: spacing.sm,
     letterSpacing: 0.6,
@@ -128,11 +141,11 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textSecondary,
   },
   tabTextActive: {
     color: colors.textPrimary,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
 });

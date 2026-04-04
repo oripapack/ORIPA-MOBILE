@@ -7,6 +7,14 @@ export interface FriendEntry {
   addedAt: number;
 }
 
+/** Someone wants to connect — inbox-only until accept / decline (replace with API later). */
+export interface IncomingFriendRequest {
+  id: string;
+  username: string;
+  displayName: string;
+  requestedAt: number;
+}
+
 /**
  * Mock directory for “lookup by username”. Keys are lowercase handles.
  * Replace with API later.
@@ -59,4 +67,15 @@ export function legacyTcgToUsername(raw: string): string | null {
   if (!isValidMemberIdFormat(n)) return null;
   const u = LEGACY_TCG_TO_USERNAME[n];
   return u ? normalizeFriendUsername(u) : null;
+}
+
+/** Sample row for preview builds; real flow will push via store `addIncomingFriendRequest`. */
+export function buildDemoIncomingFriendRequest(): IncomingFriendRequest {
+  const u = normalizeFriendUsername('sam_r');
+  return {
+    id: 'demo_incoming_fr',
+    username: u,
+    displayName: MOCK_USERNAME_DIRECTORY[u] ?? 'Friend',
+    requestedAt: Date.now() - 3_600_000,
+  };
 }

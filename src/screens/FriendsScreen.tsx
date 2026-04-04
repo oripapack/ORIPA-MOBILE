@@ -18,7 +18,7 @@ import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { PrimaryButton } from '../components/shared/PrimaryButton';
 import { HomeBackground } from '../components/shared/HomeBackground';
@@ -71,6 +71,9 @@ export function FriendsScreen() {
   const { isGuest } = useGuestMode();
   const user = useAppStore((s) => s.user);
   const friends = useAppStore((s) => s.friends);
+  const incomingFriendRequests = useAppStore((s) => s.incomingFriendRequests);
+  const acceptIncomingFriendRequest = useAppStore((s) => s.acceptIncomingFriendRequest);
+  const declineIncomingFriendRequest = useAppStore((s) => s.declineIncomingFriendRequest);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
@@ -256,6 +259,38 @@ export function FriendsScreen() {
             )}
           </View>
 
+          {!isGuest && incomingFriendRequests.length > 0 ? (
+            <View style={styles.requestsBlock}>
+              <Text style={styles.sectionEyebrow}>{t('friends.sectionRequests')}</Text>
+              {incomingFriendRequests.map((req) => (
+                <VaultFramedCard key={req.id} contentStyle={styles.requestCardInner}>
+                  <Text style={styles.requestName} numberOfLines={1}>
+                    {req.displayName}
+                  </Text>
+                  <Text style={styles.requestHandle} numberOfLines={1}>
+                    @{req.username}
+                  </Text>
+                  <Text style={styles.requestHint}>{t('friends.requestHint')}</Text>
+                  <View style={styles.requestActions}>
+                    <TouchableOpacity
+                      style={styles.requestDecline}
+                      onPress={() => declineIncomingFriendRequest(req.username)}
+                      activeOpacity={0.85}
+                    >
+                      <Text style={styles.requestDeclineText}>{t('friends.declineRequest')}</Text>
+                    </TouchableOpacity>
+                    <PrimaryButton
+                      label={t('friends.acceptRequest')}
+                      variant="red"
+                      onPress={() => acceptIncomingFriendRequest(req.username)}
+                      style={styles.requestAcceptBtn}
+                    />
+                  </View>
+                </VaultFramedCard>
+              ))}
+            </View>
+          ) : null}
+
           {/* Friends activity — primary; empty state adds CTA directly below */}
           <View style={styles.sectionActivity}>
             <Text style={styles.sectionEyebrow}>{t('friends.sectionActivity')}</Text>
@@ -437,13 +472,13 @@ const styles = StyleSheet.create({
   },
   guestBannerTitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
     marginBottom: spacing.xs,
   },
   guestBannerBody: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     lineHeight: 20,
   },
@@ -455,7 +490,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
   },
@@ -473,16 +508,63 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
   },
+  requestsBlock: {
+    marginBottom: spacing.xl,
+    gap: spacing.md,
+  },
+  requestCardInner: {
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.base,
+    gap: spacing.xs,
+  },
+  requestName: {
+    fontSize: fontSize.md,
+    fontFamily: brandFont.bold,
+    color: colors.textPrimary,
+  },
+  requestHandle: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.medium,
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
+  },
+  requestHint: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    lineHeight: 18,
+    marginBottom: spacing.sm,
+  },
+  requestActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  requestDecline: {
+    flex: 1,
+    paddingVertical: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  requestDeclineText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: colors.textMuted,
+  },
+  requestAcceptBtn: {
+    flex: 1.2,
+    height: 44,
+  },
   sectionEyebrow: {
     fontSize: 11,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 2.2,
     marginBottom: spacing.md,
   },
   sectionEyebrowSm: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 1.6,
     marginBottom: spacing.sm,
@@ -549,7 +631,7 @@ const styles = StyleSheet.create({
   lbRank: {
     width: 24,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.gold,
     textAlign: 'center',
   },
@@ -562,7 +644,7 @@ const styles = StyleSheet.create({
   },
   lbName: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   lbUn: {
@@ -572,7 +654,7 @@ const styles = StyleSheet.create({
   },
   lbVal: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   seeAllBtn: {
@@ -585,7 +667,7 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
   },
   squadBlock: {
@@ -624,7 +706,7 @@ const styles = StyleSheet.create({
   },
   squadAvatarText: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
   },
   squadMeta: {
     flex: 1,
@@ -632,12 +714,12 @@ const styles = StyleSheet.create({
   },
   squadName: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   squadHandle: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textMuted,
     marginTop: 2,
   },
@@ -666,7 +748,7 @@ const styles = StyleSheet.create({
   },
   socialFooterTitle: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',

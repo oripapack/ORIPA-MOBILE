@@ -12,7 +12,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PACK_OPENING_TIER_ODDS } from '../../data/lootBoxOdds';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -90,13 +90,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
   lead: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     marginBottom: spacing.md,
     lineHeight: 20,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   scrollContent: { paddingBottom: spacing.sm },
   tableHead: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
@@ -120,18 +120,18 @@ const styles = StyleSheet.create({
   },
   tier: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   pct: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textSecondary,
   },
   footnote: {
     marginTop: spacing.md,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     lineHeight: 18,
   },
@@ -146,6 +146,6 @@ const styles = StyleSheet.create({
   doneText: {
     color: colors.white,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
 });

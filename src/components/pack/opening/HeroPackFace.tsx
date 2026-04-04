@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getAppLogoParts } from '../../../config/app';
-import { fontSize, fontWeight } from '../../../tokens/typography';
+import { fontSize, brandFont } from '../../../tokens/typography';
 import { radius } from '../../../tokens/spacing';
 import { HERO_PACK } from './heroVisualTokens';
 
@@ -115,13 +115,13 @@ const styles = StyleSheet.create({
   brandPrimary: {
     color: 'rgba(248, 250, 252, 0.96)',
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: -0.8,
   },
   brandSecondary: {
     color: 'rgba(226, 232, 240, 0.75)',
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 2.2,
     textTransform: 'uppercase',
   },
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     color: 'rgba(148, 163, 184, 0.9)',
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
   },
@@ -149,14 +149,14 @@ const styles = StyleSheet.create({
   sealed: {
     color: 'rgba(248, 250, 252, 0.92)',
     fontSize: 13,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 4,
   },
   cert: {
     marginTop: 10,
     color: 'rgba(148, 163, 184, 0.88)',
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
   },

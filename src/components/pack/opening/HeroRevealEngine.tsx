@@ -1,5 +1,8 @@
 import React from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { colors } from '../../../tokens/colors';
+import { brandFont } from '../../../tokens/typography';
 import type { PackRollResult, RevealCard, RevealRarity } from './types';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import { useHeroReveal } from './useHeroReveal';
@@ -28,6 +31,7 @@ export function HeroRevealEngine({
   skipNonce: number;
   onRevealDone: () => void;
 }) {
+  const { t } = useTranslation();
   const h = useHeroReveal({ roll, revealRarity, replayKey, skipNonce, onRevealDone });
 
   /**
@@ -70,7 +74,11 @@ export function HeroRevealEngine({
         railShimmer={h.railShimmer}
         accent={tv.accent}
         sparkLevel={
-          h.phase === 'primed' ? 2 : h.phase === 'arming' || h.phase === 'spinning' ? 1 : 0
+          h.phase === 'primed' || h.phase === 'commit'
+            ? 2
+            : h.phase === 'arming' || h.phase === 'spinning'
+              ? 1
+              : 0
         }
       />
 
@@ -96,7 +104,17 @@ export function HeroRevealEngine({
           styles.packWrap,
           {
             opacity: h.packOpacity,
-            transform: [{ translateX: h.packShakeX }, { scale: h.packScale }],
+            transform: [
+              { translateX: h.packShakeX },
+              { translateY: h.packBobY },
+              {
+                rotateZ: h.packTiltDeg.interpolate({
+                  inputRange: [-8, 8],
+                  outputRange: ['-8deg', '8deg'],
+                }),
+              },
+              { scale: h.packScale },
+            ],
           },
         ]}
       >
@@ -222,18 +240,11 @@ export function HeroRevealEngine({
         </Animated.View>
       </View>
 
-      {/* Tap-to-build HUD */}
-      {h.phase === 'arming' ? (
-        <View style={styles.hud} pointerEvents="none">
-          <Text style={styles.hudTitle}>Firing up…</Text>
-          <Text style={styles.hudSub}>Rails charging — get ready</Text>
-        </View>
-      ) : null}
+      {/* Tap-to-build HUD — arming has no title card (rails + pack motion carry it); reduces “slide deck” feel */}
       {h.phase === 'spinning' ? (
         <View style={styles.hud} pointerEvents="none">
-          <Text style={styles.hudTitle}>Tap to open</Text>
+          <Text style={styles.hudTitle}>{t('packOpening.hudSpinningTitle')}</Text>
           <View style={styles.hudBarTrack}>
-            {/* Use scaleX instead of width (native driver-safe). */}
             <Animated.View
               style={[
                 styles.hudBarFill,
@@ -244,13 +255,30 @@ export function HeroRevealEngine({
               ]}
             />
           </View>
-          <Text style={styles.hudSub}>Keep tapping…</Text>
+          <Text style={styles.hudSub}>{t('packOpening.hudSpinningSub')}</Text>
+        </View>
+      ) : null}
+      {h.phase === 'commit' ? (
+        <View style={styles.hud} pointerEvents="none">
+          <Text style={[styles.hudTitle, styles.hudCommitCue]}>{t('packOpening.hudCommitTitle')}</Text>
+          <View style={[styles.hudBarTrack, styles.hudBarCommit]}>
+            <Animated.View
+              style={[
+                styles.hudBarFill,
+                {
+                  backgroundColor: colors.gold,
+                  transform: [{ scaleX: h.tapCharge }],
+                },
+              ]}
+            />
+          </View>
+          <Text style={styles.hudSub}>{t('packOpening.hudCommitSub')}</Text>
         </View>
       ) : null}
       {h.phase === 'primed' ? (
         <View style={styles.hud} pointerEvents="none">
-          <Text style={[styles.hudTitle, styles.hudPrimed]}>BREAK!</Text>
-          <Text style={styles.hudSub}>Pack&apos;s going…</Text>
+          <Text style={[styles.hudTitle, styles.hudPrimed]}>{t('packOpening.hudPrimedTitle')}</Text>
+          <Text style={styles.hudSub}>{t('packOpening.hudPrimedSub')}</Text>
         </View>
       ) : null}
       </Animated.View>
@@ -389,9 +417,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.16)',
   },
-  badgeText: { color: '#fff', fontSize: 10, fontWeight: '900', letterSpacing: 1.6 },
+  badgeText: { color: '#fff', fontSize: 10, fontFamily: brandFont.black, letterSpacing: 1.6 },
   valueOverlay: { position: 'absolute', left: 0, right: 0, bottom: -26, alignItems: 'center' },
-  valueText: { fontSize: 12, fontWeight: '800', letterSpacing: 0.3, opacity: 0.95 },
+  valueText: { fontSize: 12, fontFamily: brandFont.extraBold, letterSpacing: 0.3, opacity: 0.95 },
   hud: {
     position: 'absolute',
     left: 0,
@@ -403,7 +431,7 @@ const styles = StyleSheet.create({
   hudTitle: {
     color: 'rgba(248,250,252,0.9)',
     fontSize: 12,
-    fontWeight: '800',
+    fontFamily: brandFont.extraBold,
     letterSpacing: 1.8,
     textTransform: 'uppercase',
     marginBottom: 8,
@@ -417,6 +445,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.12)',
   },
+  hudBarCommit: {
+    borderColor: colors.goldDark,
+    backgroundColor: 'rgba(255, 203, 5, 0.12)',
+  },
+  hudCommitCue: {
+    color: colors.gold,
+    textShadowColor: 'rgba(255, 203, 5, 0.35)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 12,
+  },
   hudBarFill: {
     height: '100%',
     borderRadius: 999,
@@ -427,7 +465,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: 'rgba(248,250,252,0.55)',
     fontSize: 11,
-    fontWeight: '700',
+    fontFamily: brandFont.bold,
     letterSpacing: 0.6,
   },
   hudPrimed: {

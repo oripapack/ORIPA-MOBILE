@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { PullHistoryRow, useCompletedPullsSorted } from '../components/account/PullHistoryRow';
@@ -23,7 +23,7 @@ export function PullHistoryScreen() {
       title: t('pullHistoryScreen.navTitle'),
       headerShown: true,
       headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontWeight: fontWeight.bold },
+      headerTitleStyle: { fontFamily: brandFont.bold },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.surfaceElevated },
     });
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginBottom: spacing.xs,
   },

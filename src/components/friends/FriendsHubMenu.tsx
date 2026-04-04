@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Action = 'addUsername' | 'scanQr' | 'showQr' | 'shareInvite' | 'promo';
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   sheetTitle: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     flex: 1,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   cancel: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
   },
 });

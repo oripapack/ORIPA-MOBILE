@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { FriendActivityFeedItem, SocialRarity } from '../../data/socialMock';
 import { formatUsd, formatRelativeTime } from '../../lib/socialFormat';
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   user: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   time: {
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   justPulledText: {
     fontSize: 9,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
@@ -198,12 +198,12 @@ const styles = StyleSheet.create({
   },
   rarityPillText: {
     fontSize: 8,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 0.5,
   },
   cardName: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
     lineHeight: 20,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.casinoGold,
   },
   pack: {

@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   kicker: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 2.4,
     textTransform: 'uppercase',
     color: colors.textMuted,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 2,
     color: 'rgba(240,247,255,0.7)',
     marginBottom: 6,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.white,
     letterSpacing: -0.8,
     lineHeight: 30,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   metaColRight: { alignItems: 'flex-end' },
   metaLabel: {
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 1.6,
     color: colors.textMuted,
     textTransform: 'uppercase',
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   },
   metaValue: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   actions: {
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   },
   oddsText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: 0.3,
   },
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
   },
   floorText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.gold,
     letterSpacing: 0.4,
   },

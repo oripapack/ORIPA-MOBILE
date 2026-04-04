@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
@@ -32,7 +32,7 @@ export function TierBenefitsScreen() {
       title: t('tierBenefits.navTitle'),
       headerShown: true,
       headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontWeight: fontWeight.bold },
+      headerTitleStyle: { fontFamily: brandFont.bold },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.surfaceElevated },
     });
@@ -128,13 +128,13 @@ const styles = StyleSheet.create({
   },
   tierName: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 0.5,
   },
   minXp: {
     fontSize: fontSize.xs,
     color: colors.textMuted,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
   },
   pill: {
     alignSelf: 'flex-start',
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.red,
   },
   perk: {

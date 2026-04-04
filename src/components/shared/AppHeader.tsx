@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { CreditsPill } from './CreditsPill';
-import { getAppLogoParts } from '../../config/app';
+import { APP_DISPLAY_NAME, getLogoInitials, getLogoWordmarkParts } from '../../config/app';
 import { navigationRef } from '../../navigation/navigationRef';
 import { useRequireAuth } from '../../hooks/useRequireAuth';
 
@@ -16,8 +17,9 @@ interface Props {
 
 export function AppHeader({ onSearch }: Props) {
   const insets = useSafeAreaInsets();
-  const { primary, secondary } = getAppLogoParts();
   const { requireAuth } = useRequireAuth();
+  const initials = getLogoInitials();
+  const wordmark = getLogoWordmarkParts();
 
   const goCredits = () => {
     requireAuth(() => {
@@ -29,15 +31,36 @@ export function AppHeader({ onSearch }: Props) {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
-      {/* Logo */}
-      <View style={styles.logo}>
-        <View>
-          <Text style={styles.logoText}>{primary}</Text>
-          <View style={styles.logoAccent} />
+      {/* Logo: gradient monogram + wordmark (no split underline) */}
+      <View
+        style={styles.logo}
+        accessibilityRole="header"
+        accessibilityLabel={APP_DISPLAY_NAME}
+      >
+        <LinearGradient
+          colors={[colors.gold, colors.accent]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.monogramRing}
+        >
+          <View style={styles.monogramInner}>
+            <Text style={styles.monogramText} numberOfLines={1}>
+              {initials}
+            </Text>
+          </View>
+        </LinearGradient>
+        <View style={styles.wordmarkCol}>
+          {wordmark ? (
+            <Text style={styles.wordmarkLine} numberOfLines={1}>
+              <Text style={styles.wordmarkLead}>{wordmark.lead}</Text>
+              <Text style={styles.wordmarkAccent}> {wordmark.accent}</Text>
+            </Text>
+          ) : (
+            <Text style={styles.wordmarkSingle} numberOfLines={1}>
+              {APP_DISPLAY_NAME}
+            </Text>
+          )}
         </View>
-        {secondary != null && secondary.length > 0 ? (
-          <Text style={styles.logoDot}>{secondary}</Text>
-        ) : null}
       </View>
 
       {/* Right controls */}
@@ -71,27 +94,49 @@ const styles = StyleSheet.create({
   logo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: spacing.sm,
+    flexShrink: 1,
   },
-  logoText: {
-    fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+  monogramRing: {
+    borderRadius: 12,
+    padding: 1.5,
+  },
+  monogramInner: {
+    minWidth: 36,
+    height: 36,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+    backgroundColor: colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  monogramText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
-    letterSpacing: -0.5,
+    letterSpacing: 0.5,
   },
-  logoAccent: {
-    marginTop: 4,
-    height: 3,
-    width: 36,
-    borderRadius: 2,
-    backgroundColor: colors.gold,
-    opacity: 0.95,
+  wordmarkCol: {
+    justifyContent: 'center',
+    flexShrink: 1,
   },
-  logoDot: {
-    fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+  wordmarkLine: {
+    fontSize: fontSize.lg,
+    letterSpacing: -0.35,
+  },
+  wordmarkLead: {
+    color: colors.textPrimary,
+    fontFamily: brandFont.bold,
+  },
+  wordmarkAccent: {
     color: colors.gold,
-    letterSpacing: -0.5,
+    fontFamily: brandFont.black,
+  },
+  wordmarkSingle: {
+    fontSize: fontSize.lg,
+    fontFamily: brandFont.black,
+    color: colors.textPrimary,
+    letterSpacing: -0.35,
   },
   right: {
     flexDirection: 'row',

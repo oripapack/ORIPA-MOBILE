@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { SHOW_SIMULATION_DISCLOSURE } from '../../config/app';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from './PrimaryButton';
 
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.md,
     textAlign: 'center',
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   body: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textSecondary,
     lineHeight: 22,
     marginBottom: 0,
@@ -129,14 +129,14 @@ const styles = StyleSheet.create({
   },
   titleJa: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
     textAlign: 'center',
   },
   bodyJa: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textSecondary,
     lineHeight: 24,
     textAlign: 'left',

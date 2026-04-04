@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle } from 'react';
 import { Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
-import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -24,19 +23,36 @@ const DISMISS_THRESHOLD = 88;
 
 const SPRING_OUT = { damping: 18, stiffness: 260, mass: 0.55 } as const;
 
+export type ConfirmDismissActions = {
+  confirm: () => void;
+  cancel: () => void;
+};
+
+export type AuthBottomSheetRef = {
+  /** Run the same dismiss guard as backdrop / swipe (e.g. header close button). */
+  requestCloseWithConfirmation: () => void;
+};
+
 type Props = {
   visible: boolean;
   onRequestClose: () => void;
   /** When false, only the panel is shown (parent already rendered blur). Tap outside still dismisses. */
   showBackdrop?: boolean;
+  /**
+   * When set, backdrop tap / swipe / ref close runs this instead of closing immediately.
+   * Call `actions.confirm()` to animate closed; `actions.cancel()` to snap the sheet open (e.g. alert dismissed).
+   */
+  confirmDismiss?: (actions: ConfirmDismissActions) => void;
   children: React.ReactNode;
 };
 
 /**
- * Slide-up auth shell: one fullscreen blur + dim; the sheet is **transparent** so there is no
- * second “card” rectangle — only the shared frosted layer behind the form.
+ * Slide-up auth shell: solid dim (no blur) so the lobby behind stays readable; sheet stays transparent.
  */
-export function AuthBottomSheet({ visible, onRequestClose, showBackdrop = true, children }: Props) {
+export const AuthBottomSheet = forwardRef<AuthBottomSheetRef, Props>(function AuthBottomSheet(
+  { visible, onRequestClose, showBackdrop = true, confirmDismiss, children },
+  ref,
+) {
   const insets = useSafeAreaInsets();
   const translateY = useSharedValue(OFFSCREEN);
   const startY = useSharedValue(0);
@@ -48,6 +64,33 @@ export function AuthBottomSheet({ visible, onRequestClose, showBackdrop = true, 
       });
     },
     [translateY],
+  );
+
+  const animateOpen = useCallback(() => {
+    translateY.value = withSpring(0, BOOT_ENTRANCE_SPRING);
+  }, [translateY]);
+
+  const beginClose = useCallback(() => {
+    snapClosed(onRequestClose);
+  }, [snapClosed, onRequestClose]);
+
+  const promptDismiss = useCallback(() => {
+    if (confirmDismiss) {
+      confirmDismiss({
+        confirm: () => beginClose(),
+        cancel: () => animateOpen(),
+      });
+    } else {
+      beginClose();
+    }
+  }, [confirmDismiss, beginClose, animateOpen]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      requestCloseWithConfirmation: () => promptDismiss(),
+    }),
+    [promptDismiss],
   );
 
   useEffect(() => {
@@ -68,9 +111,7 @@ export function AuthBottomSheet({ visible, onRequestClose, showBackdrop = true, 
     })
     .onEnd((e) => {
       if (translateY.value > DISMISS_THRESHOLD || e.velocityY > 900) {
-        translateY.value = withSpring(OFFSCREEN, SPRING_OUT, (finished) => {
-          if (finished) runOnJS(onRequestClose)();
-        });
+        runOnJS(promptDismiss)();
       } else {
         translateY.value = withSpring(0, BOOT_ENTRANCE_SPRING);
       }
@@ -86,12 +127,11 @@ export function AuthBottomSheet({ visible, onRequestClose, showBackdrop = true, 
     <View style={styles.root} pointerEvents="box-none">
       {showBackdrop ? (
         <>
-          <Pressable style={StyleSheet.absoluteFill} onPress={() => snapClosed(onRequestClose)} />
-          <BlurView intensity={56} tint="dark" style={StyleSheet.absoluteFill} pointerEvents="none" />
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => promptDismiss()} />
           <View style={styles.dim} pointerEvents="none" />
         </>
       ) : (
-        <Pressable style={styles.dismissHit} onPress={() => snapClosed(onRequestClose)} />
+        <Pressable style={styles.dismissHit} onPress={() => promptDismiss()} />
       )}
 
       <GestureDetector gesture={pan}>
@@ -119,7 +159,7 @@ export function AuthBottomSheet({ visible, onRequestClose, showBackdrop = true, 
       </GestureDetector>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   root: {
@@ -134,7 +174,7 @@ const styles = StyleSheet.create({
   },
   dim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.12)',
+    backgroundColor: 'rgba(5, 10, 22, 0.55)',
   },
   /**
    * Still no solid fill — only a light “rim” + shadow so users can see where the sheet ends

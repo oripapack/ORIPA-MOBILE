@@ -8,6 +8,11 @@ export type PackOpeningPhase =
   | 'arming'
   /** Tap-to-charge */
   | 'spinning'
+  /**
+   * Meter full — user must tap again to trigger the break (agency / “my timing”).
+   * Does **not** change the pre-rolled outcome; presentation only.
+   */
+  | 'commit'
   /** Full charge: shake + strobes before the pack breaks */
   | 'primed'
   | 'slowing'

@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
 import { ListRow } from '../components/shared/ListRow';
 import { LegalDocumentModal } from '../components/legal/LegalDocumentModal';
@@ -27,6 +27,7 @@ import { isClerkEnabled } from '../config/clerk';
 import { AccountSignOutFooter } from '../components/account/AccountSignOutFooter';
 import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
+import { resetLocalOnboardingStateAndReload } from '../lib/resetLocalOnboardingState';
 
 type LegalSheet = 'terms' | 'privacy' | 'promo' | 'payment' | null;
 
@@ -166,6 +167,32 @@ export function SettingsScreen() {
           />
         </VaultFramedCard>
 
+        {__DEV__ ? (
+          <>
+            <Text style={styles.sectionHeader}>Developer</Text>
+            <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
+              <ListRow
+                label="Reset local onboarding"
+                icon={<Ionicons name="refresh-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
+                onPress={() => {
+                  Alert.alert(
+                    'Reset local onboarding?',
+                    'Clears guest/onboarding flags, coach tips, welcome banner, and simulation disclosure on this device. You stay signed in. The app will reload.',
+                    [
+                      { text: 'Cancel', style: 'cancel' },
+                      {
+                        text: 'Reset',
+                        style: 'destructive',
+                        onPress: () => void resetLocalOnboardingStateAndReload(),
+                      },
+                    ],
+                  );
+                }}
+              />
+            </VaultFramedCard>
+          </>
+        ) : null}
+
         <Text style={styles.version}>{t('account.version', { name: APP_DISPLAY_NAME, version: APP_VERSION })}</Text>
         <AccountSignOutFooter visible={isClerkEnabled && clerkSignedIn} />
       </ScrollView>
@@ -215,7 +242,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
   },
   headerSpacer: {
@@ -231,7 +258,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -250,7 +277,7 @@ const styles = StyleSheet.create({
   },
   localeValue: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textMuted,
     maxWidth: 160,
     textAlign: 'right',

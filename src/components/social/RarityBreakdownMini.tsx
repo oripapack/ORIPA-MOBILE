@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import type { RarityBreakdown } from '../../data/socialMock';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { rarityColor } from './rarityStyles';
 import type { SocialRarity } from '../../data/socialMock';
@@ -52,5 +52,5 @@ const styles = StyleSheet.create({
   legend: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   legRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   dot: { width: 6, height: 6, borderRadius: 3 },
-  legText: { fontSize: fontSize.xs, color: colors.textSecondary, fontWeight: fontWeight.medium },
+  legText: { fontSize: fontSize.xs, color: colors.textSecondary, fontFamily: brandFont.medium },
 });

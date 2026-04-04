@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SocialUserProfile } from '../../data/socialMock';
 import { buildCompareRows } from '../../data/socialMock';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { formatUsd } from '../../lib/socialFormat';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
@@ -129,12 +129,12 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     gap: spacing.sm,
   },
-  headName: { flex: 1, fontSize: fontSize.sm, fontWeight: fontWeight.bold, color: colors.textPrimary },
+  headName: { flex: 1, fontSize: fontSize.sm, fontFamily: brandFont.bold, color: colors.textPrimary },
   headYou: { textAlign: 'left' },
   headThem: { textAlign: 'right' },
   vs: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 1,
   },
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   row: { marginBottom: spacing.md },
   rowLabel: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   cellText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   done: {
@@ -181,5 +181,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  doneText: { color: colors.white, fontWeight: fontWeight.black, fontSize: fontSize.md },
+  doneText: { color: colors.white, fontFamily: brandFont.black, fontSize: fontSize.md },
 });

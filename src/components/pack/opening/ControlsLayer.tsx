@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { fontWeight } from '../../../tokens/typography';
+import { brandFont } from '../../../tokens/typography';
 import type { PackOpeningPhase } from './types';
 
 /**
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   txt: {
     color: '#e2e8f0',
     fontSize: 11,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },

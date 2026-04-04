@@ -13,7 +13,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { mockPacks, type Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   closeBtn: {
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: fontSize.base,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
     marginBottom: 6,
   },
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: fontSize.base,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   sub: {
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   },
   priceText: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.gold,
   },
 });

@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { isClerkAPIResponseError, useClerk, useUser } from '@clerk/clerk-expo';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import {
@@ -330,32 +330,32 @@ const styles = StyleSheet.create({
   },
   logoPrimary: {
     fontSize: fontSize.hero,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   logoSecondary: {
     fontSize: fontSize.hero,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.red,
     letterSpacing: -0.5,
   },
   title: {
     fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
   fieldLabel: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   },
   countryDial: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
   phoneInput: {
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textPrimary,
     minHeight: 50,
   },
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.white,
   },
   btnDisabled: {
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
   },
   verifyHint: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textSecondary,
     marginBottom: spacing.sm,
     lineHeight: 20,
@@ -440,32 +440,32 @@ const styles = StyleSheet.create({
   },
   link: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.red,
   },
   linkMuted: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.textMuted,
   },
   error: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     color: colors.redDark,
     lineHeight: 20,
   },
   hint: {
     marginTop: spacing.xl,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     lineHeight: 18,
   },
   hintSecondary: {
     marginTop: spacing.sm,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.regular,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     lineHeight: 18,
   },

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { HOME_SUBFILTER_KEYS } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 export function PackSubfilterBar() {
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
   },
   labelActive: {

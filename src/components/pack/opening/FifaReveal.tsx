@@ -7,7 +7,7 @@ import {
   type RarityTier,
 } from '../../../audio/packOpeningFeedback';
 import { colors } from '../../../tokens/colors';
-import { fontSize, fontWeight } from '../../../tokens/typography';
+import { fontSize, brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
 import { getAppLogoParts } from '../../../config/app';
 import { useTranslation } from 'react-i18next';
@@ -431,20 +431,20 @@ const styles = StyleSheet.create({
   packArtTitle: {
     color: colors.white,
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 4,
   },
   packArtSub: {
     color: 'rgba(255,255,255,0.65)',
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     letterSpacing: 4,
     marginTop: 6,
   },
   packHint: {
     marginTop: spacing.lg,
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     color: 'rgba(255,255,255,0.5)',
     letterSpacing: 1,
   },

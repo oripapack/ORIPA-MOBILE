@@ -12,12 +12,13 @@ import { FilterSortRow } from '../components/pack/FilterSortRow';
 import { PackSubfilterBar } from '../components/pack/PackSubfilterBar';
 import { PackCard } from '../components/pack/PackCard';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
+import { HomeCoach } from '../components/coach/HomeCoach';
 import { colors } from '../tokens/colors';
 import { mockPacks, packBelongsToHomeNiche, packMatchesSubfilter } from '../data/mockPacks';
 import { useWelcomeBannerDismissed } from '../hooks/useWelcomeBannerDismissed';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useAppStore } from '../store/useAppStore';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
 
 /**
@@ -161,6 +162,7 @@ export function HomeScreen() {
       />
 
       <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
+      <HomeCoach />
     </View>
   );
 }
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
   },
   modeBtnText: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.textMuted,
   },
   modeBtnTextActive: {
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
   },
   browseTitle: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   browseSub: {

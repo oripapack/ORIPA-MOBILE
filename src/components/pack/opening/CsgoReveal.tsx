@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { hapticPackReveal, hapticPackResult, type RarityTier } from '../../../audio/packOpeningFeedback';
-import { fontSize, fontWeight } from '../../../tokens/typography';
+import { fontSize, brandFont } from '../../../tokens/typography';
 import { radius, spacing } from '../../../tokens/spacing';
 import type { HomeNicheCategory } from '../../../data/mockPacks';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   cardName: {
     marginTop: 4,
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: 'rgba(248,250,252,0.75)',
     textAlign: 'center',
   },

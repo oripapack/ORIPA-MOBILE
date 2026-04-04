@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
@@ -53,7 +53,7 @@ export function FriendsLeaderboardScreen() {
       title: t('social.leaderboardNavTitle'),
       headerShown: true,
       headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontWeight: fontWeight.bold },
+      headerTitleStyle: { fontFamily: brandFont.bold },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.surfaceElevated },
     });
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   tabOn: { backgroundColor: colors.nearBlack, borderColor: colors.nearBlack },
-  tabText: { fontSize: fontSize.xs, fontWeight: fontWeight.bold, color: colors.textSecondary },
+  tabText: { fontSize: fontSize.xs, fontFamily: brandFont.bold, color: colors.textSecondary },
   tabTextOn: { color: colors.white },
   lead: {
     fontSize: fontSize.sm,
@@ -151,13 +151,13 @@ const styles = StyleSheet.create({
   rowMe: { borderColor: 'rgba(225,29,46,0.35)', backgroundColor: 'rgba(225,29,46,0.04)' },
   rank: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     width: 28,
   },
   emoji: { fontSize: 22 },
   rowMeta: { flex: 1, minWidth: 0 },
-  rowName: { fontSize: fontSize.md, fontWeight: fontWeight.bold, color: colors.textPrimary },
+  rowName: { fontSize: fontSize.md, fontFamily: brandFont.bold, color: colors.textPrimary },
   rowUn: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 2 },
-  rowVal: { fontSize: fontSize.md, fontWeight: fontWeight.black, color: colors.red },
+  rowVal: { fontSize: fontSize.md, fontFamily: brandFont.black, color: colors.red },
 });

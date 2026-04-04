@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import type { SocialPullEvent } from '../../data/socialMock';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { formatRelativeTime, formatUsd } from '../../lib/socialFormat';
 import { rarityColor, rarityLabel } from './rarityStyles';
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   cardName: {
     flex: 1,
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     lineHeight: 20,
   },
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   badgeHit: { backgroundColor: 'rgba(245,158,11,0.15)' },
   badgeText: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.red,
     letterSpacing: 0.5,
   },
@@ -116,11 +116,11 @@ const styles = StyleSheet.create({
   },
   rarityText: {
     fontSize: 10,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
   },
   value: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   time: {

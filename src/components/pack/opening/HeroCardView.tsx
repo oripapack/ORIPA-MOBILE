@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { fontSize, fontWeight } from '../../../tokens/typography';
+import { fontSize, brandFont } from '../../../tokens/typography';
 import { radius, spacing } from '../../../tokens/spacing';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import { HERO_CARD_STOCK } from './heroVisualTokens';
@@ -135,14 +135,14 @@ const styles = StyleSheet.create({
   },
   nameLabel: {
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: HERO_CARD_STOCK.micro,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
   },
   name: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: HERO_CARD_STOCK.nameplate,
     letterSpacing: -0.4,
     lineHeight: 22,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   rarityText: {
     fontSize: 9,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: 1.2,
   },
   valueCol: {
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   estLabel: {
     fontSize: 9,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: HERO_CARD_STOCK.micro,
     letterSpacing: 0.8,
     marginBottom: 2,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   valueNum: {
     fontSize: fontSize.md,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     letterSpacing: -0.3,
     textAlign: 'right',
   },

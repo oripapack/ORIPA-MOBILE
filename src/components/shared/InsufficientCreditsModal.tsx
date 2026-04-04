@@ -4,7 +4,7 @@ import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from './PrimaryButton';
 import { SecondaryButton } from './SecondaryButton';
@@ -19,14 +19,20 @@ export function InsufficientCreditsModal() {
   const visible = useAppStore((s) => s.modals.insufficientCredits);
   const selectedPack = useAppStore((s) => s.selectedPack);
   const closeModal = useAppStore((s) => s.closeModal);
+  const clearResumePackOpen = useAppStore((s) => s.clearResumePackOpen);
   const userCredits = useAppStore((s) => s.user.credits);
 
   const needed = selectedPack ? selectedPack.creditPrice - userCredits : 0;
   const packLoc = selectedPack ? getLocalizedPackFields(selectedPack, t) : null;
 
+  const dismiss = () => {
+    clearResumePackOpen();
+    closeModal('insufficientCredits');
+  };
+
   return (
     <Modal visible={visible} transparent animationType="fade" {...transparentModalIOSProps}>
-      <Pressable style={styles.overlay} onPress={() => closeModal('insufficientCredits')}>
+      <Pressable style={styles.overlay} onPress={dismiss}>
         <Pressable style={styles.modal} onPress={() => {}}>
           <View style={styles.iconWrap}>
             <MaterialCommunityIcons name="wallet" size={32} color="#EA580C" />
@@ -60,6 +66,7 @@ export function InsufficientCreditsModal() {
             style={styles.primaryBtn}
             onPress={() => {
               closeModal('insufficientCredits');
+              // keep resumePackOpenAfterCredits for CreditsPurchaseSection resume
               requireAuth(() => {
                 if (navigationRef.isReady()) {
                   navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
@@ -67,10 +74,7 @@ export function InsufficientCreditsModal() {
               });
             }}
           />
-          <SecondaryButton
-            label={t('insufficientCredits.cancel')}
-            onPress={() => closeModal('insufficientCredits')}
-          />
+          <SecondaryButton label={t('insufficientCredits.cancel')} onPress={dismiss} />
         </Pressable>
       </Pressable>
     </Modal>
@@ -104,7 +108,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.xl,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     textAlign: 'center',
     marginBottom: spacing.sm,
@@ -126,14 +130,14 @@ const styles = StyleSheet.create({
   packInfoLabel: {
     fontSize: fontSize.xs,
     color: colors.textMuted,
-    fontWeight: fontWeight.medium,
+    fontFamily: brandFont.medium,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   packInfoValue: {
     fontSize: fontSize.sm,
     color: colors.textPrimary,
-    fontWeight: fontWeight.semibold,
+    fontFamily: brandFont.semibold,
     marginBottom: spacing.xs,
   },
   primaryBtn: {

@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
-import { fontSize, fontWeight } from '../tokens/typography';
+import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
@@ -62,7 +62,7 @@ export function FriendProfileScreen() {
       title: profile ? `@${profile.username}` : t('social.profileNavTitle'),
       headerShown: true,
       headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontWeight: fontWeight.bold },
+      headerTitleStyle: { fontFamily: brandFont.bold },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.surfaceElevated },
     });
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, paddingHorizontal: spacing.lg, backgroundColor: colors.background },
   errTitle: {
     fontSize: fontSize.lg,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     borderRadius: radius.lg,
   },
-  errBtnText: { color: colors.white, fontWeight: fontWeight.bold },
+  errBtnText: { color: colors.white, fontFamily: brandFont.bold },
   hero: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
   avatar: {
     fontSize: 48,
@@ -240,11 +240,11 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   heroText: { flex: 1, minWidth: 0 },
-  dn: { fontSize: fontSize.xl, fontWeight: fontWeight.black, color: colors.textPrimary },
-  un: { fontSize: fontSize.sm, fontWeight: fontWeight.semibold, color: colors.textMuted, marginTop: 2 },
+  dn: { fontSize: fontSize.xl, fontFamily: brandFont.black, color: colors.textPrimary },
+  un: { fontSize: fontSize.sm, fontFamily: brandFont.semibold, color: colors.textMuted, marginTop: 2 },
   status: {
     fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
+    fontFamily: brandFont.bold,
     color: colors.red,
     marginTop: spacing.xs,
   },
@@ -269,11 +269,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
   },
-  statVal: { fontSize: fontSize.lg, fontWeight: fontWeight.black, color: colors.textPrimary },
-  statLab: { fontSize: 10, fontWeight: fontWeight.bold, color: colors.textMuted, marginTop: 4, letterSpacing: 0.5 },
+  statVal: { fontSize: fontSize.lg, fontFamily: brandFont.black, color: colors.textPrimary },
+  statLab: { fontSize: 10, fontFamily: brandFont.bold, color: colors.textMuted, marginTop: 4, letterSpacing: 0.5 },
   section: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
+    fontFamily: brandFont.black,
     color: colors.textMuted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.casinoFeltBorder,
   },
-  bestName: { fontSize: fontSize.lg, fontWeight: fontWeight.black, color: colors.white, marginBottom: spacing.sm },
-  bestVal: { fontSize: fontSize.hero - 4, fontWeight: fontWeight.black, color: colors.casinoGold },
+  bestName: { fontSize: fontSize.lg, fontFamily: brandFont.black, color: colors.white, marginBottom: spacing.sm },
+  bestVal: { fontSize: fontSize.hero - 4, fontFamily: brandFont.black, color: colors.casinoGold },
   bestSub: { fontSize: fontSize.xs, color: 'rgba(248,250,252,0.65)', marginTop: 4 },
   actions: { gap: spacing.sm, marginTop: spacing.lg },
   btnDark: {
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnDarkText: { color: colors.white, fontWeight: fontWeight.black, fontSize: fontSize.md },
+  btnDarkText: { color: colors.white, fontFamily: brandFont.black, fontSize: fontSize.md },
   btnOutline: {
     height: 52,
     borderRadius: radius.lg,
@@ -308,9 +308,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnOutlineText: { color: colors.textPrimary, fontWeight: fontWeight.black, fontSize: fontSize.md },
+  btnOutlineText: { color: colors.textPrimary, fontFamily: brandFont.black, fontSize: fontSize.md },
   btnGhost: { height: 48, alignItems: 'center', justifyContent: 'center' },
-  btnGhostText: { color: colors.textSecondary, fontWeight: fontWeight.semibold, fontSize: fontSize.sm },
+  btnGhostText: { color: colors.textSecondary, fontFamily: brandFont.semibold, fontSize: fontSize.sm },
   selfLb: { marginTop: spacing.md },
   emptyPulls: {
     fontSize: fontSize.sm,
