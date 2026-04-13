@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(sed -i '' \"s/prizeLine = 'pokemon'/prizeLine = 'onboarding'/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/pack/opening/CsgoReveal.tsx\")",
+      "Bash(sed -i '' \"s/HomeNicheCategory = 'pokemon'/HomeNicheCategory = 'onboarding'/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/pack/opening/stripGenerator.ts\")",
+      "Bash(sed -i '' \"s/prizeLine ?? 'pokemon'/prizeLine ?? 'onboarding'/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/pack/opening/usePackOpening.ts\")"
     ]
   }
 }

@@ -44,7 +44,7 @@ export function usePackOpening({
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const prevSkipRef = useRef(0);
 
-  const line = prizeLine ?? 'pokemon';
+  const line = prizeLine ?? 'onboarding';
   const { strip, winIndex } = useMemo(
     () => buildCsgoStrip(revealCard, sessionSalt, line),
     [revealCard, sessionSalt, line],
