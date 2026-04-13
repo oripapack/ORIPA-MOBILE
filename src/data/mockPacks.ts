@@ -1,12 +1,58 @@
 import { demoPackHeroImage } from './demoMedia';
 import type { MembershipTierId } from './membershipPlans';
 
-export type ChipTagType = 'new' | 'new_user' | 'best_value' | 'graded' | 'hot_drop' | 'bonus_pack' | 'chase_boost';
+// ---------------------------------------------------------------------------
+// Tag types
+// ---------------------------------------------------------------------------
 
-/** Home niche tabs — every demo pack belongs to exactly one product line. */
-export type HomeNicheCategory = 'pokemon' | 'yugioh' | 'one_piece' | 'sports';
+export type ChipTagType =
+  | 'new'
+  | 'new_user'
+  | 'best_value'
+  | 'graded'
+  | 'hot_drop'
+  | 'bonus_pack'
+  | 'chase_boost'
+  // MVP pack-tier badges
+  | 'first_time'   // onboarding: 初回限定
+  | 'low_cost'     // micro: 低額高回転
+  | 'high_return'  // premium: 高還元
+  | 'premium_pack'; // premium: プレミアム感
 
-export type PackCategory = HomeNicheCategory;
+// ---------------------------------------------------------------------------
+// Category types — MVP uses 3 dedicated tiers instead of TCG genres
+// ---------------------------------------------------------------------------
+
+/**
+ * The three intent-based groups shown in the "All" view.
+ * Maps 1-to-1 with HomeNicheCategory but is used independently for
+ * section headers so the two concerns stay decoupled.
+ */
+export type PackGroup = 'first_time' | 'low_cost' | 'high_value';
+
+/** Home niche tabs — each MVP pack belongs to exactly one tier.
+ *  'all' is a virtual tab that shows every pack grouped by PackGroup.
+ */
+export type HomeNicheCategory = 'all' | 'onboarding' | 'micro' | 'premium';
+
+export type PackCategory = 'onboarding' | 'micro' | 'premium';
+
+/**
+ * Prize types supported in a pack.
+ * 'card' = traditional TCG card (existing behaviour).
+ * Others are physical/digital prizes (future fulfilment integrations).
+ */
+export type PrizeType = 'card' | 'console' | 'smartphone' | 'points' | 'coupon';
+
+/**
+ * Identifies which of the three MVP pack tiers this pack belongs to.
+ * Uses PackCategory (never 'all') — 'all' is a UI-only virtual tab.
+ */
+export type PackTier = PackCategory;
+
+// ---------------------------------------------------------------------------
+// Pack interface
+// ---------------------------------------------------------------------------
 
 export interface Pack {
   id: string;
@@ -23,24 +69,78 @@ export interface Pack {
   maxPerUser: number | null;
   /** Member-only: requires this tier or higher (Silver < Gold < Black). */
   requiredMembershipTier?: MembershipTierId;
+
+  // --- MVP extensions ---
+
+  /** Which tier this pack belongs to. Mirrors `category` for typed call-sites. */
+  packTier: PackTier;
+
+  /**
+   * When true, this pack may only be opened once per account.
+   * Business-logic enforcement lives in `useAppStore.openPack()` (and eventually
+   * server-side) — `usedFirstTimePackIds` tracks which packs have been used.
+   */
+  isFirstTimePack?: boolean;
+
+  /**
+   * Prize types that can appear in this pack.
+   * Defaults to ['card'] when absent (legacy behaviour).
+   * Enables future fulfilment routing without changing the opening engine.
+   */
+  prizeTypes?: PrizeType[];
+
+  /** Short marketing copy for the featured / biggest prize in the pack. */
+  highlightPrize?: string;
+
+  /**
+   * Intent-based group used for "All packs" grouped view.
+   * Derived from category but stored explicitly for fast filtering.
+   */
+  packGroup: PackGroup;
 }
 
-export const HOME_NICHE_CATEGORIES: HomeNicheCategory[] = ['pokemon', 'yugioh', 'one_piece', 'sports'];
+// ---------------------------------------------------------------------------
+// Category constants
+// ---------------------------------------------------------------------------
+
+/** All tab options including the virtual "all" tab. */
+export const HOME_NICHE_CATEGORIES: HomeNicheCategory[] = [
+  'all',
+  'onboarding',
+  'micro',
+  'premium',
+];
+
+/** The three display groups used in the "All packs" grouped view. */
+export const PACK_GROUPS: PackGroup[] = ['first_time', 'low_cost', 'high_value'];
+
+/** Emoji + label for each group header in the "All" view. */
+export const PACK_GROUP_META: Record<PackGroup, { emoji: string; labelKey: string }> = {
+  first_time: { emoji: '🔥', labelKey: 'packGroup.first_time' },
+  low_cost:   { emoji: '💰', labelKey: 'packGroup.low_cost' },
+  high_value: { emoji: '🚀', labelKey: 'packGroup.high_value' },
+};
 
 export type PackSubfilter = 'all' | ChipTagType;
 
 export const HOME_SUBFILTER_KEYS: PackSubfilter[] = [
   'all',
-  'new',
-  'hot_drop',
-  'graded',
+  'first_time',
+  'low_cost',
+  'high_return',
+  'premium_pack',
   'best_value',
+  'hot_drop',
   'chase_boost',
-  'bonus_pack',
   'new_user',
 ];
 
+// ---------------------------------------------------------------------------
+// Filter helpers (API unchanged — HomeScreen uses these directly)
+// ---------------------------------------------------------------------------
+
 export function packBelongsToHomeNiche(pack: Pack, niche: HomeNicheCategory): boolean {
+  if (niche === 'all') return true;
   return pack.category === niche;
 }
 
@@ -49,10 +149,20 @@ export function packMatchesSubfilter(pack: Pack, sub: PackSubfilter): boolean {
   return pack.tags.includes(sub);
 }
 
+// ---------------------------------------------------------------------------
+// Internal builder
+// ---------------------------------------------------------------------------
+
+const CATEGORY_TO_GROUP: Record<PackCategory, PackGroup> = {
+  onboarding: 'first_time',
+  micro: 'low_cost',
+  premium: 'high_value',
+};
+
 function p(
   id: string,
   title: string,
-  category: HomeNicheCategory,
+  category: PackCategory,
   args: {
     creditPrice: number;
     tags: ChipTagType[];
@@ -63,399 +173,105 @@ function p(
     totalInventory?: number;
     remainingInventory?: number;
     requiredMembershipTier?: MembershipTierId;
+    isFirstTimePack?: boolean;
+    prizeTypes?: PrizeType[];
+    highlightPrize?: string;
   },
 ): Pack {
-  const n = parseInt(id, 10);
-  const invBase = Number.isFinite(n) ? 52000 - n * 1100 : 40000;
   return {
     id,
     title,
     category,
+    packTier: category,
+    packGroup: CATEGORY_TO_GROUP[category],
     tags: args.tags,
     imageColor: args.imageColor,
     imageUrl: demoPackHeroImage(id),
     creditPrice: args.creditPrice,
     totalInventory: args.totalInventory ?? 50000,
-    remainingInventory: args.remainingInventory ?? Math.max(800, invBase),
+    remainingInventory: args.remainingInventory ?? 49000,
     valueDescription: args.valueDescription,
     guaranteeText: args.guaranteeText,
     maxPerUser: args.maxPerUser,
     requiredMembershipTier: args.requiredMembershipTier,
+    isFirstTimePack: args.isFirstTimePack,
+    prizeTypes: args.prizeTypes,
+    highlightPrize: args.highlightPrize,
   };
 }
 
+// ---------------------------------------------------------------------------
+// MVP Pack catalog — exactly 3 packs, ordered: Welcome → Lucky Mini → Ultra Chase
+// ---------------------------------------------------------------------------
+
 /**
- * Demo catalog: 10 packs per genre, cheap → expensive credits.
- * Titles and copy match real product lines so simulated pulls stay on-theme.
+ * The only packs visible to users in the MVP.
+ * Display order: welcome_pack → lucky_mini → ultra_chase.
  */
 export const mockPacks: Pack[] = [
-  // ——— Pokémon (ids 1–10) ———
-  p('1', 'Paldea Beginner Commons', 'pokemon', {
-    creditPrice: 85,
-    tags: ['new_user', 'best_value'],
-    imageColor: '#14532D',
-    valueDescription: 'PAL-era commons & uncommons — great for new binders',
-    guaranteeText: '3+ playable cards every open',
-    maxPerUser: 6,
-  }),
-  p('2', 'Scarlet & Violet Booster Hits', 'pokemon', {
-    creditPrice: 125,
-    tags: ['new'],
-    imageColor: '#4F46E5',
-    valueDescription: 'SV-era holos & illustration rare chase slots',
-    guaranteeText: 'Reverse holo or better in every pack',
-    maxPerUser: null,
-  }),
-  p('3', 'Paldea Evolved Chase', 'pokemon', {
-    creditPrice: 220,
-    tags: ['best_value'],
-    imageColor: '#0E7490',
-    valueDescription: 'ex & double rare hits from Paldea Evolved',
-    guaranteeText: 'Rare slot or higher guaranteed',
-    maxPerUser: null,
-  }),
-  p('4', 'Obsidian Flames Premium', 'pokemon', {
-    creditPrice: 360,
-    tags: ['hot_drop'],
-    imageColor: '#9A3412',
-    valueDescription: 'Charizard ex & type-shift chase pool',
-    guaranteeText: 'Holo rare or better every rip',
-    maxPerUser: null,
-  }),
-  p('5', '151 Kanto Collection', 'pokemon', {
-    creditPrice: 520,
-    tags: ['chase_boost'],
-    imageColor: '#BE123C',
-    valueDescription: 'Classic Kanto ex & art rare focus',
-    guaranteeText: 'Illustration rare in 1-of-8 opens (demo)',
-    maxPerUser: null,
-  }),
-  p('6', 'Crown Zenith Galarian Gallery', 'pokemon', {
-    creditPrice: 780,
-    tags: ['hot_drop'],
-    imageColor: '#6D28D9',
-    valueDescription: 'GG full arts & trainer gallery chases',
-    guaranteeText: 'Gallery or VSTAR-class hit every 2 packs',
-    maxPerUser: 3,
-  }),
-  p('7', 'Prismatic Evolutions Elite', 'pokemon', {
-    creditPrice: 1180,
-    tags: ['graded'],
-    imageColor: '#831843',
-    valueDescription: 'Eevee evolutions & ACE SPEC chase lane',
-    guaranteeText: 'Double rare slot minimum',
-    maxPerUser: 2,
-  }),
-  p('8', 'Charizard ex Special Collection', 'pokemon', {
-    creditPrice: 1850,
-    tags: ['hot_drop', 'chase_boost'],
-    imageColor: '#EA580C',
-    valueDescription: 'Promo Charizard ex & bundled chase cards',
-    guaranteeText: 'Promo + booster-equivalent value floor',
-    maxPerUser: 2,
-  }),
-  p('9', 'Base Set Era Graded Vault', 'pokemon', {
-    creditPrice: 4200,
-    tags: ['graded', 'chase_boost'],
-    imageColor: '#312E81',
-    valueDescription: 'WOTC holos & shadowless chase slabs',
-    guaranteeText: 'PSA 8+ vintage holo in every pack',
+  // ——— 1. Onboarding ———————————————————————————————————————————————————————
+  p('welcome_pack', 'Welcome Pack', 'onboarding', {
+    creditPrice: 500,
+    tags: ['first_time', 'best_value', 'new_user'],
+    imageColor: '#0F4C2A',
+    valueDescription: 'First-time pack — high return, low risk. Perfect intro to Pull Hub.',
+    guaranteeText: 'Guaranteed value ≥ 100 % of pack price · 1 per account · no tricks',
     maxPerUser: 1,
-  }),
-  p('10', 'PSA 10 Trophy Showcase', 'pokemon', {
-    creditPrice: 8500,
-    tags: ['graded', 'chase_boost'],
-    imageColor: '#1E1B4B',
-    valueDescription: 'Modern SAR & trophy-grade slabs',
-    guaranteeText: 'PSA 10 or BGS 9.5+ chase rotation',
-    maxPerUser: 1,
+    totalInventory: 99999,
+    remainingInventory: 98500,
+    isFirstTimePack: true,
+    prizeTypes: ['card', 'points'],
+    highlightPrize: 'Up to 3× bonus coins',
   }),
 
-  // ——— One Piece TCG (ids 11–20) ———
-  p('11', 'Romance Dawn Reprint Starters', 'one_piece', {
-    creditPrice: 95,
-    tags: ['new_user', 'best_value'],
-    imageColor: '#1E3A5F',
-    valueDescription: 'ST-01 / early leaders & commons',
-    guaranteeText: 'Leader or key character in every pack',
-    maxPerUser: 8,
-  }),
-  p('12', 'Paramount War Leaders', 'one_piece', {
-    creditPrice: 145,
-    tags: ['new'],
-    imageColor: '#134E4A',
-    valueDescription: 'OP-02 leader rares & event cards',
-    guaranteeText: 'SR or parallel in 1-of-4 opens (demo)',
+  // ——— 2. Micro / High-frequency ———————————————————————————————————————————
+  p('lucky_mini', 'Lucky Mini', 'micro', {
+    creditPrice: 10,
+    tags: ['low_cost', 'hot_drop', 'chase_boost'],
+    imageColor: '#1A2E5A',
+    valueDescription: 'Tiny price, massive upside — Nintendo Switch / PS5 / iPhone in the pool.',
+    guaranteeText: 'Card every pull · big prize in rotation (1-in-50 demo odds)',
     maxPerUser: null,
-  }),
-  p('13', 'OP-05 Awakening of the New Era', 'one_piece', {
-    creditPrice: 265,
-    tags: ['best_value'],
-    imageColor: '#14532D',
-    valueDescription: 'Manga rare & character SR pool',
-    guaranteeText: 'Super rare or better every pack',
-    maxPerUser: null,
-  }),
-  p('14', 'OP-06 Wings of the Captain', 'one_piece', {
-    creditPrice: 390,
-    tags: ['hot_drop'],
-    imageColor: '#166534',
-    valueDescription: 'Alt-art leaders & foil chase slots',
-    guaranteeText: 'DON!! card + rare slot guaranteed',
-    maxPerUser: null,
-  }),
-  p('15', 'OP-07 500 Years in the Future', 'one_piece', {
-    creditPrice: 540,
-    tags: ['chase_boost'],
-    imageColor: '#991B1B',
-    valueDescription: 'Egghead arc SR chase & manga panels',
-    guaranteeText: 'Leader alt art in 1-of-10 opens (demo)',
-    maxPerUser: null,
-  }),
-  p('16', 'OP-08 Two Legends', 'one_piece', {
-    creditPrice: 720,
-    tags: ['hot_drop'],
-    imageColor: '#7C2D12',
-    valueDescription: 'Dual-leader meta & parallel foils',
-    guaranteeText: 'Two rare+ slots per open',
-    maxPerUser: null,
-  }),
-  p('17', 'OP-09 Emperors in the New World', 'one_piece', {
-    creditPrice: 1050,
-    tags: ['graded'],
-    imageColor: '#4C1D95',
-    valueDescription: 'Yonko-era chases & full-art events',
-    guaranteeText: 'SR+ with foil treatment every rip',
-    maxPerUser: 2,
-  }),
-  p('18', 'Leader Alt Art Vault', 'one_piece', {
-    creditPrice: 1680,
-    tags: ['hot_drop', 'chase_boost'],
-    imageColor: '#881337',
-    valueDescription: 'ST & OP-01–OP-09 alt-art leaders',
-    guaranteeText: 'Alt-art or manga rare in 1-of-6 opens',
-    maxPerUser: 2,
-  }),
-  p('19', 'Manga Rare & Don!! Chase', 'one_piece', {
-    creditPrice: 2980,
-    tags: ['graded', 'chase_boost'],
-    imageColor: '#0F172A',
-    valueDescription: 'Serialized parallels & top manga hits',
-    guaranteeText: 'Serialized or manga rare floor',
-    maxPerUser: 1,
-  }),
-  p('20', 'Holy Grail PSA Manga Slot', 'one_piece', {
-    creditPrice: 7800,
-    tags: ['graded', 'chase_boost'],
-    imageColor: '#312E81',
-    valueDescription: 'Graded chase leaders & trophy panels',
-    guaranteeText: 'PSA 9+ graded hit every pack',
-    maxPerUser: 1,
+    totalInventory: 500000,
+    remainingInventory: 495000,
+    isFirstTimePack: false,
+    prizeTypes: ['card', 'console', 'smartphone', 'coupon'],
+    highlightPrize: 'Nintendo Switch · PS5 · iPhone 16',
   }),
 
-  // ——— Yu-Gi-Oh! (ids 21–30) ———
-  p('21', 'Speed Duel & Structure Mix', 'yugioh', {
-    creditPrice: 75,
-    tags: ['new_user', 'best_value'],
-    imageColor: '#1A0A2E',
-    valueDescription: 'Starter staples & common reprints',
-    guaranteeText: '8+ playable cards per open',
-    maxPerUser: 10,
-  }),
-  p('22', 'Photon Hypernova', 'yugioh', {
-    creditPrice: 130,
-    tags: ['new'],
-    imageColor: '#312E81',
-    valueDescription: 'Kashtira & Tearlaments-era secrets',
-    guaranteeText: 'Super rare or higher every pack',
+  // ——— 3. Premium / Whale ——————————————————————————————————————————————————
+  p('ultra_chase', 'Ultra Chase', 'premium', {
+    creditPrice: 10000,
+    tags: ['premium_pack', 'high_return', 'chase_boost', 'graded'],
+    imageColor: '#1B0A3A',
+    valueDescription: 'High-stakes vault pull — trophy slabs and ultra-rare hits.',
+    guaranteeText: 'Chase-tier hit every open · 120 %+ return rate (demo)',
     maxPerUser: null,
-  }),
-  p('23', 'Maze of Millennia', 'yugioh', {
-    creditPrice: 245,
-    tags: ['best_value'],
-    imageColor: '#4C1D95',
-    valueDescription: 'Collector’s rare chase pool',
-    guaranteeText: 'Ultra rare minimum rarity',
-    maxPerUser: null,
-  }),
-  p('24', 'Legacy of Destruction', 'yugioh', {
-    creditPrice: 395,
-    tags: ['hot_drop'],
-    imageColor: '#581C87',
-    valueDescription: 'Voiceless Voice & Sinful Spoils support',
-    guaranteeText: 'Secret rare slot enabled',
-    maxPerUser: null,
-  }),
-  p('25', 'Rage of the Abyss', 'yugioh', {
-    creditPrice: 555,
-    tags: ['chase_boost'],
-    imageColor: '#701A75',
-    valueDescription: 'Abyss-themed ultras & quarter-century slots',
-    guaranteeText: 'Ultra rare or higher — no commons-only',
-    maxPerUser: null,
-  }),
-  p('26', 'Phantom Nightmare', 'yugioh', {
-    creditPrice: 820,
-    tags: ['hot_drop'],
-    imageColor: '#1E1B4B',
-    valueDescription: 'Nightmare Magician & Fiendsmith chase',
-    guaranteeText: 'Super rare+ in every 2 packs',
-    maxPerUser: null,
-  }),
-  p('27', 'Battles of Legend: Terminal Revenge', 'yugioh', {
-    creditPrice: 1280,
-    tags: ['graded'],
-    imageColor: '#312E81',
-    valueDescription: 'High-impact reprints & ghost rare chase',
-    guaranteeText: 'Secret rare or collector’s rare every pack',
-    maxPerUser: 2,
-  }),
-  p('28', 'Quarter Century Chronicle', 'yugioh', {
-    creditPrice: 2150,
-    tags: ['hot_drop', 'chase_boost'],
-    imageColor: '#4C1D95',
-    valueDescription: 'Quarter-century secret & nostalgia hits',
-    guaranteeText: 'QC secret or starlight chase lane',
-    maxPerUser: 2,
-  }),
-  p('29', 'LOB 1st Edition Chase', 'yugioh', {
-    creditPrice: 4650,
-    tags: ['graded', 'chase_boost'],
-    imageColor: '#172554',
-    valueDescription: 'Legend of Blue Eyes vintage ultra chase',
-    guaranteeText: 'LOB-era holo or graded slab',
-    maxPerUser: 1,
-  }),
-  p('30', 'Starlight Anniversary God Box', 'yugioh', {
-    creditPrice: 9200,
-    tags: ['graded', 'chase_boost'],
-    imageColor: '#0F172A',
-    valueDescription: 'Starlight & prize-card tier chases',
-    guaranteeText: 'Starlight or equivalent top rarity',
-    maxPerUser: 1,
-  }),
-
-  // ——— Sports cards (ids 31–40) ———
-  p('31', 'Hobby Rookie Mixer', 'sports', {
-    creditPrice: 90,
-    tags: ['new_user', 'best_value'],
-    imageColor: '#1E3A5F',
-    valueDescription: 'NFL / NBA / MLB base & insert mix',
-    guaranteeText: 'Rookie card in every pack',
-    maxPerUser: null,
-  }),
-  p('32', 'Prizm Retail Hits', 'sports', {
-    creditPrice: 155,
-    tags: ['new'],
-    imageColor: '#0C4A6E',
-    valueDescription: 'Silver & base Prizm rookies',
-    guaranteeText: 'Insert or parallel every 2 opens',
-    maxPerUser: null,
-  }),
-  p('33', 'Optic Holo Rookies', 'sports', {
-    creditPrice: 285,
-    tags: ['best_value'],
-    imageColor: '#14532D',
-    valueDescription: 'Rated rookie holos & downtown chase',
-    guaranteeText: 'Holo rookie or key insert',
-    maxPerUser: null,
-  }),
-  p('34', 'Select Concourse', 'sports', {
-    creditPrice: 445,
-    tags: ['hot_drop'],
-    imageColor: '#854D0E',
-    valueDescription: 'Concourse silvers & tri-color parallels',
-    guaranteeText: 'Numbered or SP in 1-of-5 opens (demo)',
-    maxPerUser: null,
-  }),
-  p('35', 'Mosaic Fast Break', 'sports', {
-    creditPrice: 665,
-    tags: ['chase_boost'],
-    imageColor: '#422006',
-    valueDescription: 'Genesis & reactive gold parallels',
-    guaranteeText: 'Mosaic parallel every rip',
-    maxPerUser: null,
-  }),
-  p('36', 'National Treasures RPA Chase', 'sports', {
-    creditPrice: 980,
-    tags: ['hot_drop'],
-    imageColor: '#1C1917',
-    valueDescription: 'On-card autos & patch relics',
-    guaranteeText: 'Relic or auto hit every 3 packs',
-    maxPerUser: null,
-  }),
-  p('37', 'Flawless Gem Hits', 'sports', {
-    creditPrice: 1520,
-    tags: ['graded'],
-    imageColor: '#0F172A',
-    valueDescription: 'Diamond & gemstone parallel rookies',
-    guaranteeText: 'Gem mint candidate or PSA slab',
-    maxPerUser: 2,
-  }),
-  p('38', 'The Cup /99 RPA', 'sports', {
-    creditPrice: 2680,
-    tags: ['hot_drop', 'chase_boost'],
-    imageColor: '#78350F',
-    valueDescription: 'Hockey & basketball cup RPAs',
-    guaranteeText: 'Premium patch or auto slot',
-    maxPerUser: 1,
-  }),
-  p('39', '1986 Fleer Basketball Chase', 'sports', {
-    creditPrice: 5800,
-    tags: ['graded', 'chase_boost'],
-    imageColor: '#7F1D1D',
-    valueDescription: 'Vintage wax-era grail chase',
-    guaranteeText: 'Graded vintage or iconic rookie',
-    maxPerUser: 1,
-  }),
-  p('40', 'Logoman 1/1 Vault', 'sports', {
-    creditPrice: 9800,
-    tags: ['graded', 'chase_boost'],
-    imageColor: '#F59E0B',
-    valueDescription: '1/1 shields & laundry-tag logoman chases',
-    guaranteeText: '1-of-1 or /5 hit rotation (demo)',
-    maxPerUser: 1,
-  }),
-  // Member-only lanes (demo — unlock via Account → Membership → simulate)
-  p('41', 'Silver Member Lounge', 'pokemon', {
-    creditPrice: 320,
-    tags: ['new', 'best_value'],
-    imageColor: '#475569',
-    valueDescription: 'Curated holos & illustration rares for Silver members',
-    guaranteeText: 'Member lane — reverse holo or better every open',
-    maxPerUser: null,
-    requiredMembershipTier: 'silver',
-  }),
-  p('42', 'Gold Atelier Select', 'pokemon', {
-    creditPrice: 890,
-    tags: ['hot_drop', 'graded'],
-    imageColor: '#B45309',
-    valueDescription: 'Premium chase pool — earlier access in the live lobby',
-    guaranteeText: 'Gold members · ultra rare slot eligible',
-    maxPerUser: null,
-    requiredMembershipTier: 'gold',
-  }),
-  p('43', 'Black Label Chase Vault', 'pokemon', {
-    creditPrice: 2400,
-    tags: ['chase_boost', 'graded'],
-    imageColor: '#0A0A0C',
-    valueDescription: 'Ultra-limited rotation — highest-tier member access',
-    guaranteeText: 'Black members · chase-tier hit rotation (demo)',
-    maxPerUser: 2,
-    requiredMembershipTier: 'black',
+    totalInventory: 10000,
+    remainingInventory: 9800,
+    isFirstTimePack: false,
+    prizeTypes: ['card'],
+    highlightPrize: 'PSA 10 Trophy Card · 1/1 holy grail chase',
   }),
 ];
 
+// ---------------------------------------------------------------------------
+// Deprecated category list — kept for scripts / docs parity only
+// ---------------------------------------------------------------------------
+
 /**
- * @deprecated Home uses `HOME_NICHE_CATEGORIES` + `PackSubfilter`; kept for scripts / docs parity.
+ * @deprecated Use `HOME_NICHE_CATEGORIES` instead.
  */
 export const categories: { key: PackCategory | 'all'; label: string }[] = [
   { key: 'all', label: 'All' },
-  { key: 'pokemon', label: 'Pokémon' },
-  { key: 'yugioh', label: 'Yu-Gi-Oh!' },
-  { key: 'one_piece', label: 'One Piece' },
-  { key: 'sports', label: 'Sports' },
+  { key: 'onboarding', label: 'Welcome' },
+  { key: 'micro', label: 'Mini' },
+  { key: 'premium', label: 'Premium' },
 ];
+
+// ---------------------------------------------------------------------------
+// Credit bundles (unchanged)
+// ---------------------------------------------------------------------------
 
 export interface CreditBundle {
   id: string;

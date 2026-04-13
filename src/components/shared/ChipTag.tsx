@@ -14,6 +14,10 @@ const chipStyle: Record<ChipTagType, { bg: string; text: string; border: string 
   hot_drop: { bg: colors.chipHotDrop, text: colors.chipHotDropText, border: colors.chipHotDropBorder },
   bonus_pack: { bg: colors.chipBestValue, text: colors.chipBestValueText, border: colors.chipBestValueBorder },
   chase_boost: { bg: colors.chipHotDrop, text: colors.chipHotDropText, border: colors.chipHotDropBorder },
+  first_time: { bg: 'rgba(22,163,74,0.15)', text: '#4ADE80', border: 'rgba(74,222,128,0.35)' },
+  low_cost: { bg: 'rgba(245,158,11,0.15)', text: '#FCD34D', border: 'rgba(252,211,77,0.35)' },
+  high_return: { bg: 'rgba(168,85,247,0.15)', text: '#C084FC', border: 'rgba(192,132,252,0.35)' },
+  premium_pack: { bg: 'rgba(124,58,237,0.15)', text: '#A78BFA', border: 'rgba(167,139,250,0.35)' },
 };
 
 interface Props {

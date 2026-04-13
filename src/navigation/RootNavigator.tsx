@@ -309,11 +309,13 @@ function GuestHydration() {
   const hydrate = useGuestBrowseStore((s) => s.hydrate);
   const hydratePromotions = usePromotionStore((s) => s.hydrate);
   const hydrateMembershipSim = useMembershipSimulationStore((s) => s.hydrate);
+  const hydrateFirstTimePacks = useAppStore((s) => s.hydrateFirstTimePacks);
   useEffect(() => {
     void hydrate();
     void hydratePromotions();
     void hydrateMembershipSim();
-  }, [hydrate, hydratePromotions, hydrateMembershipSim]);
+    void hydrateFirstTimePacks();
+  }, [hydrate, hydratePromotions, hydrateMembershipSim, hydrateFirstTimePacks]);
   return null;
 }
 

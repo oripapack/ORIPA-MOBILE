@@ -1,4 +1,4 @@
-import type { HomeNicheCategory, Pack } from './mockPacks';
+import type { PackCategory, Pack } from './mockPacks';
 
 export type OddsTier = 'Top hit' | 'Ultra' | 'Rare' | 'Common';
 
@@ -15,99 +15,77 @@ export type PackOdds = {
 
 const NOTE = 'Demo probabilities. Final rates may change before launch.';
 
-const ROWS: Record<HomeNicheCategory, TierOddsRow[]> = {
-  pokemon: [
+const ROWS: Record<PackCategory, TierOddsRow[]> = {
+  onboarding: [
     {
       tier: 'Top hit',
-      chance: '0.5%',
-      examples: ['PSA 10 SAR Charizard', 'Illustration rare chase'],
+      chance: '10%',
+      examples: ['3× coin bonus', 'Welcome surprise card'],
     },
     {
       tier: 'Ultra',
-      chance: '5%',
-      examples: ['Full-art ex', 'Special illustration rare'],
+      chance: '20%',
+      examples: ['2× coin bonus', 'Holographic promo'],
     },
     {
       tier: 'Rare',
-      chance: '20%',
-      examples: ['Double rare', 'Holo rare', 'Trainer gallery'],
+      chance: '30%',
+      examples: ['Rare card', '1.5× coin return'],
     },
     {
       tier: 'Common',
-      chance: '74.5%',
-      examples: ['Reverse holo', 'Common / uncommon playables'],
+      chance: '40%',
+      examples: ['Standard card', '1× coin return'],
     },
   ],
-  one_piece: [
+  micro: [
     {
       tier: 'Top hit',
-      chance: '0.5%',
-      examples: ['PSA 10 leader alt art', 'Serialized manga rare'],
+      chance: '2%',
+      examples: ['Nintendo Switch', 'PS5', 'iPhone 16'],
     },
     {
       tier: 'Ultra',
-      chance: '5%',
-      examples: ['Manga rare', 'Alt-art leader', 'Parallel SR'],
+      chance: '8%',
+      examples: ['Gift coupon (¥5,000)', 'Ultra rare card'],
     },
     {
       tier: 'Rare',
-      chance: '20%',
-      examples: ['Super rare character', 'Event counter'],
+      chance: '25%',
+      examples: ['Rare card', 'Coin bonus ×2'],
     },
     {
       tier: 'Common',
-      chance: '74.5%',
-      examples: ['DON!!', 'Commons & uncommons'],
+      chance: '65%',
+      examples: ['Standard card', 'Small coin return'],
     },
   ],
-  yugioh: [
+  premium: [
     {
       tier: 'Top hit',
-      chance: '0.5%',
-      examples: ['Starlight rare', 'Ghost rare', 'LOB 1st holo'],
+      chance: '5%',
+      examples: ['PSA 10 Trophy Card', '1/1 holy grail'],
     },
     {
       tier: 'Ultra',
-      chance: '5%',
-      examples: ['Secret rare', 'Collector rare', 'Quarter-century secret'],
+      chance: '15%',
+      examples: ['Chase-grade slab', 'PSA 9+ vintage holo'],
     },
     {
       tier: 'Rare',
-      chance: '20%',
-      examples: ['Ultra rare', 'Super rare staples'],
+      chance: '30%',
+      examples: ['Graded card hit', 'Premium rare'],
     },
     {
       tier: 'Common',
-      chance: '74.5%',
-      examples: ['Common reprints', 'Normal monsters'],
-    },
-  ],
-  sports: [
-    {
-      tier: 'Top hit',
-      chance: '0.5%',
-      examples: ['Logoman 1/1', 'Rookie patch auto /10'],
-    },
-    {
-      tier: 'Ultra',
-      chance: '5%',
-      examples: ['Gold /10', 'RPA /25', 'Flawless diamond'],
-    },
-    {
-      tier: 'Rare',
-      chance: '20%',
-      examples: ['Silver Prizm RC', 'Optic holo', 'Select concourse'],
-    },
-    {
-      tier: 'Common',
-      chance: '74.5%',
-      examples: ['Base rookies', 'Inserts', 'Parallels'],
+      chance: '50%',
+      examples: ['High-value standard', 'Base chase card'],
     },
   ],
 };
 
 export function getMockPackOdds(pack: Pack): PackOdds {
-  const rows = ROWS[pack.category];
+  const rows = ROWS[pack.category] ?? ROWS.onboarding;
   return {
     rows,
     note: NOTE,

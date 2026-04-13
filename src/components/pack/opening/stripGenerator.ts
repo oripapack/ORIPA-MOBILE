@@ -13,7 +13,7 @@ export type CsgoStrip = {
 export function buildCsgoStrip(
   winning: RevealCard,
   sessionSalt: number,
-  prizeLine: HomeNicheCategory = 'pokemon',
+  prizeLine: HomeNicheCategory = 'onboarding',
 ): CsgoStrip {
   const len = 44 + (sessionSalt % 13);
   const winIndex = 26 + (sessionSalt % 11);

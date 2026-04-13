@@ -24,6 +24,10 @@ const PACK_IMG_H = 192;
 
 /** Show up to two tags as readable badges (avoid confusing +N). */
 const TAG_PRIORITY: ChipTagType[] = [
+  'first_time',
+  'premium_pack',
+  'low_cost',
+  'high_return',
   'hot_drop',
   'new_user',
   'chase_boost',
@@ -48,6 +52,14 @@ function secondaryTag(tags: ChipTagType[], primary: ChipTagType | undefined): Ch
 function railColor(tag: ChipTagType | undefined): string {
   if (!tag) return colors.textMuted;
   switch (tag) {
+    case 'first_time':
+      return '#22C55E';
+    case 'premium_pack':
+      return '#7C3AED';
+    case 'low_cost':
+      return '#F59E0B';
+    case 'high_return':
+      return '#A855F7';
     case 'hot_drop':
     case 'new_user':
       return colors.red;
@@ -81,6 +93,8 @@ export function PackCard({ pack, onPress }: Props) {
   const openPack = useAppStore((s) => s.openPack);
   const isPackOpening = useAppStore((s) => s.modals.packOpening);
   const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
+  const usedFirstTimePackIds = useAppStore((s) => s.usedFirstTimePackIds);
+  const firstTimeUsed = !!pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id);
   const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
   const requiredTier = pack.requiredMembershipTier;
   const membershipLocked =
@@ -186,7 +200,7 @@ export function PackCard({ pack, onPress }: Props) {
     }).start();
   };
 
-  const ctaBlocked = isPackOpening || awaitingFulfillment;
+  const ctaBlocked = isPackOpening || awaitingFulfillment || firstTimeUsed;
   const openLockedPack = () => {
     if (navigationRef.isReady()) navigationRef.navigate('Membership');
   };
@@ -455,7 +469,11 @@ export function PackCard({ pack, onPress }: Props) {
               <Text
                 style={styles.ctaText}
               >
-                {membershipLocked ? t('packCard.unlockMembershipCta') : t('packCard.openPack')}
+                {membershipLocked
+                ? t('packCard.unlockMembershipCta')
+                : firstTimeUsed
+                  ? t('packCard.firstTimeUsed')
+                  : t('packCard.openPack')}
               </Text>
             </View>
           </Pressable>

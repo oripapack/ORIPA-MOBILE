@@ -50,7 +50,7 @@ type Props = {
 export function CsgoReveal({
   winningCard,
   sessionSalt,
-  prizeLine = 'pokemon',
+  prizeLine = 'onboarding',
   replayKey,
   skipNonce,
   audioTier,

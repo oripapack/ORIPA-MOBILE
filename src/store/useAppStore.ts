@@ -10,6 +10,7 @@ import {
 import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
 import { SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
+import { claimFirstTimePack, loadClaimedFirstTimePacks } from '../lib/firstTimePack';
 
 interface ModalState {
   insufficientCredits: boolean;
@@ -35,7 +36,7 @@ interface AppStore {
   incomingFriendRequests: IncomingFriendRequest[];
   /** Home view mode: discovery lobby vs full catalog floor. */
   homeViewMode: 'discover' | 'browse';
-  /** Home: Pokémon / Yu-Gi-Oh! / One Piece / Sports tab. */
+  /** Home: onboarding / micro / premium tab. */
   homeNiche: HomeNicheCategory;
   /** Home: tag/cohort filter within the selected niche. */
   packSubfilter: PackSubfilter;
@@ -44,6 +45,12 @@ interface AppStore {
   selectedPack: Pack | null;
   /** Pull ids waiting for ship vs convert (batch session). */
   pendingFulfillmentPullIds: string[];
+  /**
+   * Pack IDs the user has already opened that are marked `isFirstTimePack`.
+   * Checked in `openPack()` to enforce the 1-per-account rule.
+   * In production this must also be enforced server-side.
+   */
+  usedFirstTimePackIds: string[];
   /** Prevents double-applying pull rewards (e.g. React Strict Mode / effect re-runs). */
   _packOpenRewardApplied: boolean;
   /** Increments on every successful `openPack` so pack UI re-rolls even when `selectedPack` is the same reference. */
@@ -68,7 +75,7 @@ interface AppStore {
     pack: Pack,
     options?: { keepPackModalOnInsufficient?: boolean },
   ) => boolean;
-  /** Clears “resume open after credits” when user dismisses buy flow without purchasing. */
+  /** Clears "resume open after credits" when user dismisses buy flow without purchasing. */
   clearResumePackOpen: () => void;
   applyPackOpenResult: (
     result: { result: string; creditsWon: number; tier: PullRarityTier },
@@ -76,6 +83,16 @@ interface AppStore {
   ) => void;
   /** After Won Prizes: add credits (convert) or mark shipped — no credits. */
   finalizePullFulfillment: (pullIds: string[], choice: 'convert' | 'ship') => void;
+  /**
+   * Records that the user has consumed a first-time pack.
+   * Called inside `openPack` automatically — no need to call manually.
+   */
+  markFirstTimePackUsed: (packId: string) => void;
+  /**
+   * Load persisted first-time pack claims (AsyncStorage + Supabase) into in-memory state.
+   * Call once on app startup / after sign-in (see GuestHydration in RootNavigator).
+   */
+  hydrateFirstTimePacks: () => Promise<void>;
   /** Adds a friend by unique username + display name (caller resolves name from lookup). */
   addFriend: (username: string, displayName: string) => AddFriendResult;
   acceptIncomingFriendRequest: (username: string) => void;
@@ -95,7 +112,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   friends: [],
   incomingFriendRequests: initialIncomingFriendRequests(),
   homeViewMode: 'discover',
-  homeNiche: 'pokemon',
+  homeNiche: 'onboarding',
   packSubfilter: 'all',
   sortOrder: 'recommended',
   modals: {
@@ -109,6 +126,24 @@ export const useAppStore = create<AppStore>((set, get) => ({
   _packOpenRewardApplied: false,
   packOpenSessionId: 0,
   resumePackOpenAfterCredits: false,
+  usedFirstTimePackIds: [],
+
+  markFirstTimePackUsed: (packId) =>
+    set((state) => ({
+      usedFirstTimePackIds: state.usedFirstTimePackIds.includes(packId)
+        ? state.usedFirstTimePackIds
+        : [...state.usedFirstTimePackIds, packId],
+    })),
+
+  hydrateFirstTimePacks: async () => {
+    const { user } = get();
+    if (!user.id) return;
+    const claimed = await loadClaimedFirstTimePacks(user.id);
+    if (claimed.length === 0) return;
+    set((state) => ({
+      usedFirstTimePackIds: [...new Set([...state.usedFirstTimePackIds, ...claimed])],
+    }));
+  },
 
   addCredits: (amount) =>
     set((state) => ({
@@ -148,8 +183,38 @@ export const useAppStore = create<AppStore>((set, get) => ({
    */
   openPack: (pack, options) => {
     const keepPack = options?.keepPackModalOnInsufficient ?? false;
-    const { user } = get();
+    const { user, usedFirstTimePackIds } = get();
+
+    // --- First-time pack guard ---
+    // Layer 1 (fast, in-memory): block immediately if already claimed this session.
+    if (pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id)) {
+      return false;
+    }
+
     const grants = user.freePackGrants ?? 0;
+    const firstTimeUpdate = pack.isFirstTimePack
+      ? { usedFirstTimePackIds: [...usedFirstTimePackIds, pack.id] }
+      : {};
+
+    // Layer 2 (persistent, async): write claim to AsyncStorage + Supabase BEFORE the
+    // open completes. If the server rejects (duplicate row), we undo the open.
+    // This fires for every first-time pack attempt — not just when the modal opens —
+    // so a direct API replay is blocked at the DB unique-constraint level.
+    if (pack.isFirstTimePack) {
+      void claimFirstTimePack(user.id, pack.id).then((result) => {
+        if (!result.allowed) {
+          // Server says already claimed — undo the open and close the modal.
+          set((state) => ({
+            usedFirstTimePackIds: state.usedFirstTimePackIds.includes(pack.id)
+              ? state.usedFirstTimePackIds
+              : [...state.usedFirstTimePackIds, pack.id],
+            modals: { ...state.modals, packOpening: false, wonPrizes: false },
+            pendingFulfillmentPullIds: state.pendingFulfillmentPullIds,
+          }));
+        }
+      });
+    }
+
     if (grants > 0) {
       set((state) => ({
         selectedPack: pack,
@@ -161,6 +226,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
           ...state.user,
           freePackGrants: grants - 1,
         },
+        ...firstTimeUpdate,
       }));
       return true;
     }
@@ -171,7 +237,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         modals: {
           ...state.modals,
           insufficientCredits: true,
-          // From pack reveal “open another”, keep this modal open so backing out of buy credits isn’t a dead end.
+          // From pack reveal "open another", keep this modal open so backing out of buy credits isn't a dead end.
           packOpening: keepPack ? true : false,
         },
       }));
@@ -188,6 +254,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         credits: state.user.credits - pack.creditPrice,
         xp: state.user.xp + Math.floor(pack.creditPrice * 0.1),
       },
+      ...firstTimeUpdate,
     }));
     return true;
   },
