@@ -21,7 +21,10 @@ export function PackSubfilterBar() {
       >
         {HOME_SUBFILTER_KEYS.map((key) => {
           const active = packSubfilter === key;
-          const label = key === 'all' ? t('home.subfilterAll') : t(`chips.${key}`);
+          const label =
+            key === 'all'
+              ? t('home.subfilterAll')
+              : t(`chips.${key}`, { defaultValue: key.replace(/_/g, ' ') });
           return (
             <TouchableOpacity
               key={key}
@@ -42,9 +45,9 @@ export function PackSubfilterBar() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: 'rgba(12, 20, 10, 0.88)',
+    backgroundColor: colors.surfaceElevated,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.headerHairline,
+    borderBottomColor: colors.border,
   },
   scroll: {
     paddingHorizontal: spacing.base,
@@ -56,20 +59,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: 6,
     borderRadius: radius.md,
-    backgroundColor: 'rgba(22, 32, 24, 0.85)',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   chipActive: {
-    borderColor: colors.gold,
-    backgroundColor: 'rgba(34, 44, 32, 0.95)',
+    borderColor: colors.accentBorder,
+    backgroundColor: colors.accentSoft,
   },
   label: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: colors.textSecondary,
   },
   labelActive: {
-    color: colors.gold,
+    color: colors.accentDark,
   },
 });

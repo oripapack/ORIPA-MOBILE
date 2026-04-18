@@ -88,9 +88,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
-    backgroundColor: 'rgba(14, 22, 14, 0.75)',
+    backgroundColor: colors.background,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.headerHairline,
+    borderBottomColor: colors.border,
   },
   sortBtn: {
     flexDirection: 'row',
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   checkmark: {
-    color: colors.gold,
+    color: colors.accentDark,
     fontFamily: brandFont.bold,
     fontSize: fontSize.base,
   },

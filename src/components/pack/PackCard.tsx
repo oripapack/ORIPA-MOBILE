@@ -144,11 +144,19 @@ export function PackCard({ pack, onPress }: Props) {
           {primary ? (
             <View style={styles.badgeCluster} pointerEvents="none">
               <View style={styles.badgeMain}>
-                <Text style={styles.badgeMainText}>{t(`packCard.shortBadge.${primary}`)}</Text>
+                <Text style={styles.badgeMainText}>
+                  {t(`packCard.shortBadge.${primary}`, {
+                    defaultValue: String(primary).replace(/_/g, ' ').toUpperCase(),
+                  })}
+                </Text>
               </View>
               {secondary ? (
                 <View style={styles.badgeSecondary}>
-                  <Text style={styles.badgeSecondaryText}>{t(`packCard.shortBadge.${secondary}`)}</Text>
+                  <Text style={styles.badgeSecondaryText}>
+                    {t(`packCard.shortBadge.${secondary}`, {
+                      defaultValue: String(secondary).replace(/_/g, ' ').toUpperCase(),
+                    })}
+                  </Text>
                 </View>
               ) : null}
             </View>

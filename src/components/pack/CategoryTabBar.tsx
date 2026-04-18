@@ -29,7 +29,7 @@ export function CategoryTabBar() {
               activeOpacity={0.7}
             >
               <Text style={[styles.label, active && styles.labelActive]}>
-                {t(`categories.${key}`)}
+                {t(`categories.${key}`, { defaultValue: key })}
               </Text>
             </TouchableOpacity>
           );
@@ -41,9 +41,9 @@ export function CategoryTabBar() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: 'rgba(12, 20, 10, 0.88)',
+    backgroundColor: colors.surfaceElevated,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.headerHairline,
+    borderBottomColor: colors.border,
   },
   scroll: {
     paddingHorizontal: spacing.base,
@@ -54,18 +54,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.xs + 2,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(22, 32, 24, 0.95)',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   tabActive: {
-    backgroundColor: colors.nearBlack,
-    borderColor: colors.gold,
-    shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.55,
-    shadowRadius: 10,
-    elevation: 6,
+    backgroundColor: colors.accentSoft,
+    borderColor: colors.accentBorder,
+    shadowColor: colors.accent,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 2,
   },
   label: {
     fontSize: fontSize.sm,
@@ -73,6 +73,6 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   labelActive: {
-    color: colors.gold,
+    color: colors.accentDark,
   },
 });

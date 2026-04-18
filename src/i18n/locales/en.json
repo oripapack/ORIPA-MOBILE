@@ -503,6 +503,9 @@
   },
   "categories": {
     "all": "All",
+    "onboarding": "Welcome",
+    "micro": "Mini",
+    "premium": "Premium",
     "featured": "Featured",
     "new": "New",
     "pokemon": "Pokémon",
@@ -511,6 +514,11 @@
     "sports": "Sports",
     "graded": "Graded",
     "hot_drops": "Hot Drops"
+  },
+  "packGroup": {
+    "first_time": "Starter & welcome",
+    "low_cost": "Budget floor",
+    "high_value": "Chase & premium"
   },
   "hero": {
     "eyebrow": "WELCOME BONUS",
@@ -871,12 +879,16 @@
   },
   "chips": {
     "new": "New",
-    "new_user": "New User",
-    "best_value": "Best Value",
+    "new_user": "New player",
+    "first_time": "First pack",
+    "low_cost": "Low cost",
+    "high_return": "High return",
+    "premium_pack": "Premium",
+    "best_value": "Best value",
     "graded": "Graded",
-    "hot_drop": "Hot Drop",
-    "bonus_pack": "Bonus Pack",
-    "chase_boost": "Chase Boost"
+    "hot_drop": "Hot drop",
+    "bonus_pack": "Bonus pack",
+    "chase_boost": "Chase boost"
   },
   "packCard": {
     "openPack": "Open pack",
@@ -890,6 +902,10 @@
     "shortBadge": {
       "new": "NEW",
       "new_user": "WELCOME",
+      "first_time": "WELCOME",
+      "low_cost": "MINI",
+      "high_return": "CHASE",
+      "premium_pack": "ELITE",
       "best_value": "VALUE",
       "graded": "VAULT",
       "hot_drop": "HOT",
