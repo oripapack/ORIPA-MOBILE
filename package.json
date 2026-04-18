@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
+    "build": "npx expo export -p web",
     "start": "expo start",
     "start:tunnel": "expo start --tunnel",
     "android": "expo run:android",
@@ -13,6 +14,7 @@
     "validate:i18n": "node scripts/validate-i18n-locales.mjs",
     "sync:i18n": "node scripts/sync-i18n-missing-from-en.mjs",
     "apply:i18n": "node scripts/apply-i18n-translations.mjs"
+
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.19.31",
