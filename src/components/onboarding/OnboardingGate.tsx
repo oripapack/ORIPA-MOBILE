@@ -8,8 +8,7 @@ import { AuthScreen } from '../../screens/AuthScreen';
 import { SIGNUP_PROMO_BONUS_USD } from '../../data/promotions.mock';
 
 /**
- * Same shell as in-app auth (`AuthSheetModal`): full-screen blur + glass slide-up with `AuthScreen`.
- * Packs stay visible behind the frosted layer.
+ * First-launch welcome: slide-up `AuthScreen` with a solid dim + opaque sheet (no blur).
  */
 export function OnboardingGate() {
   const { t } = useTranslation();

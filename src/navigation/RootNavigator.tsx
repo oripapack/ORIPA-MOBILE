@@ -12,6 +12,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { FriendsScreen } from '../screens/FriendsScreen';
 import { AccountScreen } from '../screens/AccountScreen';
 import { MarketplaceScreen } from '../screens/MarketplaceScreen';
+import { VaultScreen } from '../screens/VaultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { PaymentPortalScreen } from '../screens/PaymentPortalScreen';
 import { HelpCenterScreen } from '../screens/HelpCenterScreen';
@@ -59,6 +60,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 const TAB_ICONS: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionicons.glyphMap]> = {
   /** Shop / singles — cart is distinct from packs (cards) and reads as marketplace checkout. */
   Marketplace: ['cart-outline', 'cart'],
+  Vault: ['file-tray-stacked-outline', 'file-tray-stacked'],
   Friends: ['people-outline', 'people'],
   Account: ['person-outline', 'person'],
 };
@@ -71,15 +73,18 @@ function TabNavigatorInner() {
     (!isClerkEnabled || clerkSignedIn) && incomingFriendRequestCount > 0
       ? incomingFriendRequestCount
       : 0;
+  const pendingVaultCount = useAppStore((s) => s.pendingFulfillmentPullIds.length);
+  const vaultTabBadgeCount =
+    (!isClerkEnabled || clerkSignedIn) && pendingVaultCount > 0 ? pendingVaultCount : 0;
 
   return (
     <Tab.Navigator
-      // Bar order follows <Tab.Screen /> order (Shop first). Default *selected* tab is Home (packs).
+      // Bar order: Shop → Vault → Packs (center) → Friends → Player (far right). Default tab is Packs.
       initialRouteName="Home"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: colors.gold,
+        tabBarActiveTintColor: colors.accentDark,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
@@ -101,6 +106,23 @@ function TabNavigatorInner() {
       })}
     >
       <Tab.Screen name="Marketplace" component={MarketplaceScreen} options={{ tabBarLabel: t('tabs.marketplace') }} />
+      <Tab.Screen
+        name="Vault"
+        component={VaultScreen}
+        options={{
+          tabBarLabel: t('tabs.vault'),
+          tabBarBadge:
+            vaultTabBadgeCount > 0
+              ? vaultTabBadgeCount > 99
+                ? '99+'
+                : vaultTabBadgeCount
+              : undefined,
+          tabBarBadgeStyle:
+            vaultTabBadgeCount > 0
+              ? { backgroundColor: colors.goldDark, color: colors.nearBlack, fontSize: 11 }
+              : undefined,
+        }}
+      />
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
       <Tab.Screen
         name="Friends"

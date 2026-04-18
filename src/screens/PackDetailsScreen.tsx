@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
@@ -9,15 +9,19 @@ import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { navigationRef } from '../navigation/navigationRef';
 import { useRequireAuth } from '../hooks/useRequireAuth';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, type PackOpenQuantity } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { membershipMeetsRequired } from '../data/membershipPlans';
 import { mockPacks, type Pack } from '../data/mockPacks';
 import { getLocalizedPackFields } from '../i18n/packCopy';
 import { demoPackHeroImage } from '../data/demoMedia';
 import { PackOddsModal } from '../components/pack/PackOddsModal';
+import { PackOpenQuantitySelector } from '../components/pack/PackOpenQuantitySelector';
+import { PackMultiOpenSummary } from '../components/pack/PackMultiOpenSummary';
+import { PackRushConfirmModal } from '../components/pack/PackRushConfirmModal';
+import { packOpenTotalCredits } from '../lib/packMultiOpen';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
-import { getMockPackOdds } from '../data/mockPackOdds';
+import { EMPTY_PACK_ODDS, getMockPackOdds } from '../data/mockPackOdds';
 import { getMockPackTopHit } from '../data/mockTopHits';
 
 type Props = {
@@ -33,6 +37,8 @@ export function PackDetailsScreen({ route }: Props) {
   const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
   const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
   const [oddsOpen, setOddsOpen] = useState(false);
+  const [openQuantity, setOpenQuantity] = useState<PackOpenQuantity>(1);
+  const [rushConfirmOpen, setRushConfirmOpen] = useState(false);
 
   const pack = useMemo<Pack | undefined>(
     () => mockPacks.find((p) => String(p.id) === String(route.params.packId)),
@@ -40,6 +46,30 @@ export function PackDetailsScreen({ route }: Props) {
   );
 
   const loc = pack ? getLocalizedPackFields(pack, t) : null;
+
+  const soldOut = !!(pack && pack.remainingInventory <= 0);
+  const requiredTier = pack?.requiredMembershipTier;
+  const tierGate = !!(requiredTier && pack && !membershipMeetsRequired(simulatedTier, requiredTier));
+  /** Member-only packs show unlock CTA unless inventory is gone. */
+  const membershipLocked = !!(pack && tierGate && !soldOut);
+  const openBlocked = isPackOpening || awaitingFulfillment || soldOut;
+  const bulkBusy = isPackOpening || awaitingFulfillment;
+  const canBulk10 = !!(pack && !membershipLocked && !soldOut && pack.remainingInventory >= 10);
+  const canBulk100 = !!(pack && !membershipLocked && !soldOut && pack.remainingInventory >= 100);
+
+  const odds = useMemo(() => (pack ? getMockPackOdds(pack) : EMPTY_PACK_ODDS), [pack]);
+  const topHit = useMemo(() => (pack ? getMockPackTopHit(pack) : null), [pack]);
+
+  useEffect(() => {
+    setOpenQuantity(1);
+    setRushConfirmOpen(false);
+  }, [route.params.packId]);
+
+  useEffect(() => {
+    if (!pack) return;
+    if (openQuantity === 10 && !canBulk10) setOpenQuantity(1);
+    else if (openQuantity === 100 && !canBulk100) setOpenQuantity(canBulk10 ? 10 : 1);
+  }, [pack, openQuantity, canBulk10, canBulk100]);
 
   if (!pack || !loc) {
     return (
@@ -56,15 +86,32 @@ export function PackDetailsScreen({ route }: Props) {
     );
   }
 
-  const requiredTier = pack.requiredMembershipTier;
-  const tierGate =
-    !!requiredTier && !membershipMeetsRequired(simulatedTier, requiredTier);
-  const soldOut = pack.remainingInventory <= 0;
-  /** Member-only packs show unlock CTA unless inventory is gone. */
-  const membershipLocked = tierGate && !soldOut;
-  const openBlocked = isPackOpening || awaitingFulfillment || soldOut;
-  const odds = useMemo(() => getMockPackOdds(pack), [pack]);
-  const topHit = useMemo(() => getMockPackTopHit(pack), [pack]);
+  const commitOpen = (qty: PackOpenQuantity) => {
+    if (qty > 1 && pack.remainingInventory < qty) {
+      Alert.alert(t('packDetails.bulkStockTitle'), t('packDetails.bulkStockBody', { count: qty }));
+      return;
+    }
+    requireAuth(() => {
+      openPack(pack, { quantity: qty });
+    });
+  };
+
+  const onPressPrimaryCta = () => {
+    if (membershipLocked) {
+      if (navigationRef.isReady()) navigationRef.navigate('Membership');
+      return;
+    }
+    if (openBlocked) return;
+    if (openQuantity > 1 && pack.remainingInventory < openQuantity) {
+      Alert.alert(t('packDetails.bulkStockTitle'), t('packDetails.bulkStockBody', { count: openQuantity }));
+      return;
+    }
+    if (openQuantity === 100) {
+      setRushConfirmOpen(true);
+      return;
+    }
+    commitOpen(openQuantity);
+  };
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom }]}>
@@ -75,7 +122,7 @@ export function PackDetailsScreen({ route }: Props) {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 140 }}
+        contentContainerStyle={{ paddingBottom: 300 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.hero}>
@@ -168,41 +215,67 @@ export function PackDetailsScreen({ route }: Props) {
 
       <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, spacing.base) }]}>
         <View style={styles.footerGlass} pointerEvents="none" />
-        <TouchableOpacity
-          style={[styles.cta, openBlocked && !membershipLocked ? styles.ctaDisabled : null]}
-          activeOpacity={0.9}
-          disabled={membershipLocked ? isPackOpening || awaitingFulfillment : openBlocked}
-          onPress={() => {
-            if (membershipLocked) {
-              if (navigationRef.isReady()) navigationRef.navigate('Membership');
-              return;
-            }
-            requireAuth(() => {
-              openPack(pack);
-            });
-          }}
-        >
-          <View style={styles.ctaInner}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.ctaText}>
-                {membershipLocked
-                  ? t('packDetails.ctaUnlockMembership', {
-                      tier: t(`membership.tierName_${requiredTier}`),
-                    })
-                  : openBlocked
-                    ? t('packDetails.ctaDisabled')
-                    : t('packCard.openPack')}
-              </Text>
-              <Text style={styles.ctaSub}>
-                {membershipLocked
-                  ? t('packDetails.ctaUnlockMembershipSub')
-                  : `${pack.creditPrice.toLocaleString()} ${t('packCard.credits')} · ${pack.remainingInventory.toLocaleString()} left`}
-              </Text>
+        <View style={styles.footerStack}>
+          {!membershipLocked ? (
+            <>
+              <PackOpenQuantitySelector
+                value={openQuantity}
+                onChange={setOpenQuantity}
+                disabled={bulkBusy || soldOut}
+                disabled10={!canBulk10}
+                disabled100={!canBulk100}
+              />
+              <PackMultiOpenSummary quantity={openQuantity} creditPrice={pack.creditPrice} />
+            </>
+          ) : null}
+
+          <TouchableOpacity
+            style={[styles.cta, openBlocked && !membershipLocked ? styles.ctaDisabled : null]}
+            activeOpacity={0.9}
+            disabled={membershipLocked ? isPackOpening || awaitingFulfillment : openBlocked}
+            onPress={onPressPrimaryCta}
+          >
+            <View style={styles.ctaInner}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.ctaText}>
+                  {membershipLocked
+                    ? t('packDetails.ctaUnlockMembership', {
+                        tier: t(`membership.tierName_${requiredTier}`),
+                      })
+                    : openBlocked
+                      ? t('packDetails.ctaDisabled')
+                      : openQuantity === 1
+                        ? t('packDetails.multiOpen.ctaOpenPack')
+                        : openQuantity === 10
+                          ? t('packDetails.multiOpen.ctaFastOpen')
+                          : t('packDetails.multiOpen.ctaRush')}
+                </Text>
+                <Text style={styles.ctaSub}>
+                  {membershipLocked
+                    ? t('packDetails.ctaUnlockMembershipSub')
+                    : openBlocked
+                      ? t('packDetails.ctaDisabled')
+                      : t('packDetails.multiOpen.ctaSubInventory', {
+                          left: pack.remainingInventory.toLocaleString(),
+                        })}
+                </Text>
+              </View>
+              <Text style={styles.ctaArrow}>›</Text>
             </View>
-            <Text style={styles.ctaArrow}>›</Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
       </View>
+
+      <PackRushConfirmModal
+        visible={rushConfirmOpen}
+        packCount={100}
+        totalCredits={packOpenTotalCredits(pack.creditPrice, 100)}
+        onCancel={() => setRushConfirmOpen(false)}
+        onConfirm={() => {
+          setRushConfirmOpen(false);
+          commitOpen(100);
+        }}
+      />
 
       <PackOddsModal visible={oddsOpen} onClose={() => setOddsOpen(false)} packTitle={loc.title} odds={odds} />
     </View>
@@ -327,12 +400,15 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm,
     backgroundColor: 'rgba(0,0,0,0.0)',
   },
+  footerStack: {
+    gap: spacing.md,
+  },
   footerGlass: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    top: -18,
+    top: -36,
     backgroundColor: 'rgba(2,6,23,0.72)',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.08)',

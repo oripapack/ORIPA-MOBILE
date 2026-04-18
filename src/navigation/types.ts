@@ -3,6 +3,7 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 export type RootTabParamList = {
   Marketplace: undefined;
   Home: undefined;
+  Vault: undefined;
   Friends: undefined;
   Account: undefined;
 };

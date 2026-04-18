@@ -72,7 +72,7 @@ export function CoachSpotlight({
           pointerEvents="box-none"
         >
           <LinearGradient
-            colors={['rgba(56, 189, 248, 0.35)', 'rgba(255, 203, 5, 0.28)']}
+            colors={['rgba(62, 92, 118, 0.22)', 'rgba(232, 228, 220, 0.55)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.cardRing}
@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
   },
   dim: {
     ...StyleSheet.absoluteFillObject,
-    /** Navy scrim — readable UI behind, no frosted blur */
-    backgroundColor: 'rgba(5, 10, 22, 0.58)',
+    /** Scrim — warm neutral so the sheet reads as studio, not casino pit. */
+    backgroundColor: 'rgba(28, 36, 48, 0.45)',
   },
   cardWrap: {
     paddingHorizontal: spacing.base,
@@ -167,10 +167,10 @@ const styles = StyleSheet.create({
   },
   cardInner: {
     borderRadius: radius.xl - 1,
-    backgroundColor: 'rgba(8, 12, 22, 0.97)',
+    backgroundColor: colors.surfaceElevated,
     padding: spacing.lg,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: colors.border,
   },
   eyebrow: {
     fontSize: fontSize.xs,
@@ -201,17 +201,17 @@ const styles = StyleSheet.create({
   },
   comparePrimaryBlock: {
     borderLeftWidth: 3,
-    borderLeftColor: colors.gold,
+    borderLeftColor: colors.accent,
     paddingLeft: spacing.md,
     paddingVertical: spacing.md,
     marginLeft: 1,
-    backgroundColor: 'rgba(255, 203, 5, 0.08)',
+    backgroundColor: colors.accentSoft,
     borderRadius: radius.md,
   },
   comparePrimaryHeading: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.gold,
+    color: colors.accentDark,
     letterSpacing: -0.3,
     marginBottom: spacing.sm,
   },
@@ -224,16 +224,16 @@ const styles = StyleSheet.create({
   },
   compareDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: colors.border,
     marginVertical: spacing.sm + 2,
   },
   compareSecondaryBlock: {
     borderLeftWidth: 2,
-    borderLeftColor: 'rgba(255,255,255,0.12)',
+    borderLeftColor: colors.border,
     paddingLeft: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: colors.surfaceMuted,
   },
   compareSecondaryHeading: {
     fontSize: fontSize.sm,
@@ -260,9 +260,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.md,
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: colors.surfaceMuted,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: colors.border,
   },
   flowStep: {
     fontSize: fontSize.xs,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   },
   flowArrow: {
     fontSize: fontSize.xs,
-    color: 'rgba(255,255,255,0.28)',
+    color: colors.textMuted,
     fontFamily: brandFont.medium,
   },
   actions: {

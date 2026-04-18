@@ -4,39 +4,20 @@ import * as Haptics from 'expo-haptics';
 import { hapticPackEnter, hapticPackReveal, hapticPackResult } from '../../../audio/packOpeningFeedback';
 import type { PackOpeningPhase, PackRollResult, RevealRarity } from './types';
 
-/** Rarity-tuned pauses and flash weight (AAA: common snappy → chase heavy). */
+/** Rarity-tuned pauses, flash strength (peak opacity), and foil — common stays restrained; chase stays big. */
 function getRevealPacing(rarity: RevealRarity) {
   switch (rarity) {
     case 'common':
-      return { freezeMs: 160, foilDelayMs: 320, flashIn: 66, flashOut: 102, afterglowPeak: 0.82 };
+      return { freezeMs: 160, foilDelayMs: 0, flashIn: 38, flashOut: 62, flashPeak: 0.3, afterglowPeak: 0.34 };
     case 'rare':
-      return { freezeMs: 170, foilDelayMs: 350, flashIn: 72, flashOut: 112, afterglowPeak: 0.86 };
+      return { freezeMs: 170, foilDelayMs: 350, flashIn: 48, flashOut: 76, flashPeak: 0.55, afterglowPeak: 0.68 };
     case 'ultra_rare':
-      return { freezeMs: 180, foilDelayMs: 385, flashIn: 78, flashOut: 120, afterglowPeak: 0.9 };
+      return { freezeMs: 180, foilDelayMs: 385, flashIn: 58, flashOut: 92, flashPeak: 0.74, afterglowPeak: 0.8 };
     case 'chase':
-      return { freezeMs: 200, foilDelayMs: 430, flashIn: 96, flashOut: 148, afterglowPeak: 1 };
+      return { freezeMs: 200, foilDelayMs: 430, flashIn: 86, flashOut: 128, flashPeak: 0.96, afterglowPeak: 1 };
     default:
-      return { freezeMs: 170, foilDelayMs: 350, flashIn: 70, flashOut: 110, afterglowPeak: 0.88 };
+      return { freezeMs: 170, foilDelayMs: 350, flashIn: 50, flashOut: 78, flashPeak: 0.52, afterglowPeak: 0.72 };
   }
-}
-
-/** Escalating shake: 3 → 6 → 10 → 16px, then settle (organic build). */
-function buildEscalatingShake(packShakeX: Animated.Value): Animated.CompositeAnimation {
-  const targets = [
-    3, -3, 3, -3, 6, -6, 6, -6, 10, -10, 10, -10, 16, -16, 16, -16, 16, -16, 16, -16,
-  ];
-  const steps = targets.map((t) =>
-    Animated.timing(packShakeX, {
-      toValue: t,
-      duration: 42,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }),
-  );
-  return Animated.sequence([
-    ...steps,
-    Animated.timing(packShakeX, { toValue: 0, duration: 68, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-  ]);
 }
 
 const TIMING = {
@@ -62,12 +43,17 @@ export function useHeroReveal({
   revealRarity,
   replayKey,
   skipNonce,
+  suppressInitialEnterHaptic,
+  introDelayMs = 0,
   onRevealDone,
 }: {
   roll: PackRollResult;
   revealRarity: RevealRarity;
   replayKey: number;
   skipNonce: number;
+  suppressInitialEnterHaptic?: boolean;
+  /** Delays rip-stage intro (e.g. reel → hero handoff). */
+  introDelayMs?: number;
   onRevealDone: () => void;
 }) {
   // Stable identity for effect deps when the same pack is opened again with a new roll (parent also remounts via key).
@@ -91,7 +77,6 @@ export function useHeroReveal({
 
   const flashOpacity = useRef(new Animated.Value(0)).current;
   const afterglowOpacity = useRef(new Animated.Value(0)).current;
-  const silhouetteOpacity = useRef(new Animated.Value(0)).current;
 
   const cardOpacity = useRef(new Animated.Value(0)).current;
   const cardScale = useRef(new Animated.Value(0.96)).current;
@@ -112,6 +97,8 @@ export function useHeroReveal({
   const cameraPunch = useRef(new Animated.Value(1)).current;
   /** Slow bob on the pack during arming + spinning so the stage feels alive, not slide-like. */
   const packBobY = useRef(new Animated.Value(0)).current;
+  /** Lifts pack slightly during rupture so the card reads as replacing it in the same focal plane. */
+  const packRevealLift = useRef(new Animated.Value(0)).current;
   /** Quick tilt nudge per tap while charging. */
   const packTiltDeg = useRef(new Animated.Value(0)).current;
 
@@ -136,7 +123,6 @@ export function useHeroReveal({
     tapsRequiredRef.current = randInt(5, 8);
     flashOpacity.setValue(0);
     afterglowOpacity.setValue(0);
-    silhouetteOpacity.setValue(0);
     cardOpacity.setValue(0);
     cardScale.setValue(0.96);
     cardY.setValue(22);
@@ -153,6 +139,7 @@ export function useHeroReveal({
     floatY.setValue(0);
     cameraPunch.setValue(1);
     packBobY.setValue(0);
+    packRevealLift.setValue(0);
     packTiltDeg.setValue(0);
     didFinishRef.current = false;
     stopFloatRef.current?.stop();
@@ -179,7 +166,7 @@ export function useHeroReveal({
     packSplit,
     packOpacity,
     packScale,
-    silhouetteOpacity,
+    packRevealLift,
     valueOpacity,
     valueY,
     badgeScale,
@@ -237,7 +224,7 @@ export function useHeroReveal({
     railShimmer.setValue(1);
     flashOpacity.setValue(0);
     afterglowOpacity.setValue(0);
-    silhouetteOpacity.setValue(0);
+    packRevealLift.setValue(0);
     cardOpacity.setValue(1);
     cardScale.setValue(1);
     cardY.setValue(0);
@@ -273,7 +260,7 @@ export function useHeroReveal({
     tapCharge,
     packSplit,
     packOpacity,
-    silhouetteOpacity,
+    packRevealLift,
     valueOpacity,
     valueY,
     badgeScale,
@@ -295,13 +282,11 @@ export function useHeroReveal({
             : 0.35;
     const revealDim = 0.42 + intensity * 0.14;
     const flipMs =
-      revealRarity === 'common'
-        ? Math.round(TIMING.reveal * 0.88)
-        : revealRarity === 'rare'
-          ? Math.round(TIMING.reveal * 0.94)
-          : revealRarity === 'ultra_rare'
-            ? Math.round(TIMING.reveal * 1.02)
-            : Math.round(TIMING.reveal * 1.08);
+      revealRarity === 'rare'
+        ? Math.round(TIMING.reveal * 0.76)
+        : revealRarity === 'ultra_rare'
+          ? Math.round(TIMING.reveal * 0.84)
+          : Math.round(TIMING.reveal * 0.94);
 
     packShakeX.setValue(0);
     Animated.timing(railShimmer, {
@@ -314,10 +299,10 @@ export function useHeroReveal({
     setPhase('landing');
     hapticPackReveal();
 
-    /** One restrained impact pop — avoids the cheap zoom-in/zoom-out “wobble”. */
+    /** Minimal camera nudge — practical reveal, not a stunt zoom. */
     const cameraImpact = Animated.sequence([
-      Animated.timing(cameraPunch, { toValue: 1.014, duration: 70, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      Animated.spring(cameraPunch, { toValue: 1, friction: 11, tension: 180, useNativeDriver: true }),
+      Animated.timing(cameraPunch, { toValue: 1.006, duration: 55, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.spring(cameraPunch, { toValue: 1, friction: 12, tension: 200, useNativeDriver: true }),
     ]);
 
     const cardInDelayMs = 68;
@@ -334,18 +319,55 @@ export function useHeroReveal({
         setTimeout(() => setPhase('reveal'), 88);
 
         cardY.setValue(-34);
+        if (revealRarity === 'common') {
+          flip.setValue(1);
+        }
+
+        const cardInnerAnims: Animated.CompositeAnimation[] = [
+          Animated.timing(cardOpacity, { toValue: 1, duration: 175, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.sequence([
+            Animated.timing(cardY, { toValue: 11, duration: 252, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+            Animated.spring(cardY, { toValue: 0, friction: 8, tension: 118, useNativeDriver: true }),
+          ]),
+          Animated.sequence([
+            Animated.timing(cardScale, { toValue: 1.05, duration: Math.round(TIMING.reveal * 0.5), easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            Animated.timing(cardScale, { toValue: 1, duration: Math.round(TIMING.reveal * 0.42), easing: Easing.inOut(Easing.cubic), useNativeDriver: true }),
+          ]),
+          Animated.timing(cardShadow, { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.sequence([
+            Animated.timing(auraOpacity, { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            Animated.timing(auraOpacity, { toValue: 0.78, duration: 240, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+            Animated.timing(auraOpacity, { toValue: 1, duration: 240, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+          ]),
+        ];
+        if (revealRarity !== 'common') {
+          cardInnerAnims.push(
+            Animated.timing(flip, { toValue: 1, duration: flipMs, easing: Easing.bezier(0.16, 1, 0.3, 1), useNativeDriver: true }),
+          );
+        }
 
         const ruptureParallel = Animated.parallel([
-          Animated.timing(packOpacity, { toValue: 0, duration: 118, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-          Animated.timing(packSplit, {
-            toValue: 1,
+          Animated.timing(packOpacity, { toValue: 0, duration: 195, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.timing(packScale, {
+            toValue: 0.9,
             duration: 210,
-            easing: Easing.bezier(0.33, 0, 0.14, 1),
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(packRevealLift, {
+            toValue: -14,
+            duration: 210,
+            easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
           cameraImpact,
           Animated.sequence([
-            Animated.timing(flashOpacity, { toValue: 1, duration: pacing.flashIn, easing: Easing.linear, useNativeDriver: true }),
+            Animated.timing(flashOpacity, {
+              toValue: pacing.flashPeak,
+              duration: pacing.flashIn,
+              easing: Easing.linear,
+              useNativeDriver: true,
+            }),
             Animated.timing(flashOpacity, { toValue: 0, duration: pacing.flashOut, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
           ]),
           Animated.sequence([
@@ -357,48 +379,26 @@ export function useHeroReveal({
             }),
             Animated.timing(afterglowOpacity, { toValue: 0, duration: 340, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
           ]),
-          Animated.sequence([
-            Animated.timing(silhouetteOpacity, { toValue: 0.72, duration: 44, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-            Animated.timing(silhouetteOpacity, { toValue: 0, duration: 95, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-          ]),
           Animated.timing(bgDim, { toValue: revealDim, duration: 140, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
           Animated.timing(vignetteOpacity, { toValue: 1, duration: 200, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-          Animated.sequence([
-            Animated.delay(cardInDelayMs),
-            Animated.parallel([
-              Animated.timing(cardOpacity, { toValue: 1, duration: 175, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-              Animated.sequence([
-                Animated.timing(cardY, { toValue: 11, duration: 252, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
-                Animated.spring(cardY, { toValue: 0, friction: 8, tension: 118, useNativeDriver: true }),
-              ]),
-              Animated.sequence([
-                Animated.timing(cardScale, { toValue: 1.05, duration: Math.round(TIMING.reveal * 0.5), easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-                Animated.timing(cardScale, { toValue: 1, duration: Math.round(TIMING.reveal * 0.42), easing: Easing.inOut(Easing.cubic), useNativeDriver: true }),
-              ]),
-              Animated.timing(cardShadow, { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-              Animated.timing(flip, { toValue: 1, duration: flipMs, easing: Easing.bezier(0.16, 1, 0.3, 1), useNativeDriver: true }),
-              Animated.sequence([
-                Animated.timing(auraOpacity, { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-                Animated.timing(auraOpacity, { toValue: 0.78, duration: 240, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-                Animated.timing(auraOpacity, { toValue: 1, duration: 240, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-              ]),
-            ]),
-          ]),
+          Animated.sequence([Animated.delay(cardInDelayMs), Animated.parallel(cardInnerAnims)]),
         ]);
 
         ruptureParallel.start(({ finished }) => {
           if (!finished) return;
 
-          setTimeout(() => {
-            foilX.setValue(-140);
-            foilOpacity.setValue(0);
-            Animated.parallel([
-              Animated.timing(foilOpacity, { toValue: 1, duration: 130, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-              Animated.timing(foilX, { toValue: 140, duration: 380, easing: Easing.inOut(Easing.cubic), useNativeDriver: true }),
-            ]).start(() => {
-              Animated.timing(foilOpacity, { toValue: 0, duration: 165, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
-            });
-          }, pacing.foilDelayMs);
+          if (revealRarity !== 'common') {
+            setTimeout(() => {
+              foilX.setValue(-140);
+              foilOpacity.setValue(0);
+              Animated.parallel([
+                Animated.timing(foilOpacity, { toValue: 1, duration: 130, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(foilX, { toValue: 140, duration: 380, easing: Easing.inOut(Easing.cubic), useNativeDriver: true }),
+              ]).start(() => {
+                Animated.timing(foilOpacity, { toValue: 0, duration: 165, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+              });
+            }, pacing.foilDelayMs);
+          }
 
           Animated.sequence([
             Animated.delay(BADGE_DELAY_MS),
@@ -429,9 +429,9 @@ export function useHeroReveal({
     flashOpacity,
     flip,
     packOpacity,
-    packSplit,
+    packScale,
+    packRevealLift,
     revealRarity,
-    silhouetteOpacity,
     valueOpacity,
     valueY,
     vignetteOpacity,
@@ -445,47 +445,42 @@ export function useHeroReveal({
   const runPrimedBurst = useCallback(() => {
     setPhase('primed');
     if (Platform.OS !== 'web') {
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-      setTimeout(() => {
-        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      }, 380);
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
 
-    const shake = buildEscalatingShake(packShakeX);
+    packShakeX.setValue(0);
 
-    const strobe = Animated.loop(
-      Animated.sequence([
-        Animated.timing(railShimmer, { toValue: 1, duration: 72, easing: Easing.linear, useNativeDriver: true }),
-        Animated.timing(railShimmer, { toValue: 0.3, duration: 78, easing: Easing.linear, useNativeDriver: true }),
-      ]),
-      { iterations: 9 },
-    );
-
-    const energyRamp = Animated.parallel([
+    Animated.parallel([
+      Animated.timing(packScale, {
+        toValue: 1.075,
+        duration: 200,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
       Animated.timing(leakOpacity, {
         toValue: 0.98,
-        duration: 185,
+        duration: 240,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
       Animated.timing(glowPulse, {
         toValue: 1,
-        duration: 165,
+        duration: 200,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
-    ]);
-
-    Animated.sequence([
-      Animated.parallel([shake, strobe]),
-      energyRamp,
+      Animated.timing(railShimmer, {
+        toValue: 0.52,
+        duration: 260,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
     ]).start(({ finished }) => {
       if (!finished) return;
-      packShakeX.setValue(0);
-      railShimmer.setValue(0.72);
+      railShimmer.setValue(0.5);
       runOpenAndReveal();
     });
-  }, [glowPulse, leakOpacity, packShakeX, railShimmer, runOpenAndReveal]);
+  }, [glowPulse, leakOpacity, packScale, packShakeX, railShimmer, runOpenAndReveal]);
 
   const onTapCharge = useCallback(() => {
     if (phase === 'commit') {
@@ -547,57 +542,77 @@ export function useHeroReveal({
   }, [glowPulse, leakOpacity, packScale, packTiltDeg, phase, runPrimedBurst, tapCharge]);
 
   useEffect(() => {
-    reset();
-    hapticPackEnter();
+    let cancelled = false;
 
-    const intensity = revealRarity === 'chase' ? 1 : revealRarity === 'ultra_rare' ? 0.8 : revealRarity === 'rare' ? 0.6 : 0.35;
-    const focusDim = 0.22 + intensity * 0.18;
+    const startIntro = () => {
+      if (cancelled) return;
+      reset();
+      if (!suppressInitialEnterHaptic) {
+        hapticPackEnter();
+      }
 
-    // Focus: background dim + pack enters + glow pulse begins
-    Animated.parallel([
-      Animated.timing(bgDim, { toValue: focusDim, duration: TIMING.focus, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      Animated.spring(packScale, { toValue: 1, friction: 7, tension: 90, useNativeDriver: true }),
-      Animated.timing(glowPulse, { toValue: 1, duration: TIMING.focus, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-    ]).start(() => {
-      // Rails / sparks ramp — then taps register (interactive friction)
-      setPhase('arming');
+      const intensity = revealRarity === 'chase' ? 1 : revealRarity === 'ultra_rare' ? 0.8 : revealRarity === 'rare' ? 0.6 : 0.35;
+      const focusDim = 0.22 + intensity * 0.18;
+
       Animated.parallel([
-        Animated.timing(leakOpacity, {
-          toValue: 0.34,
-          duration: Math.round(ARMING_MS * 0.75),
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-        Animated.timing(railShimmer, {
-          toValue: 0.52,
-          duration: ARMING_MS,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-        Animated.sequence([
-          Animated.timing(packScale, { toValue: 1.02, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-          Animated.spring(packScale, { toValue: 1, friction: 7, tension: 120, useNativeDriver: true }),
-        ]),
+        Animated.timing(bgDim, { toValue: focusDim, duration: TIMING.focus, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        Animated.spring(packScale, { toValue: 1, friction: 7, tension: 90, useNativeDriver: true }),
+        Animated.timing(glowPulse, { toValue: 1, duration: TIMING.focus, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       ]).start(() => {
-        setPhase('spinning');
-        tapsRef.current = 0;
-        setTapCount(0);
-        tapCharge.setValue(0);
-        Animated.timing(leakOpacity, {
-          toValue: 0.35,
-          duration: 280,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }).start();
+        if (cancelled) return;
+        setPhase('arming');
+        Animated.parallel([
+          Animated.timing(leakOpacity, {
+            toValue: 0.34,
+            duration: Math.round(ARMING_MS * 0.75),
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(railShimmer, {
+            toValue: 0.52,
+            duration: ARMING_MS,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(packScale, { toValue: 1.02, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            Animated.spring(packScale, { toValue: 1, friction: 7, tension: 120, useNativeDriver: true }),
+          ]),
+        ]).start(() => {
+          if (cancelled) return;
+          setPhase('spinning');
+          tapsRef.current = 0;
+          setTapCount(0);
+          tapCharge.setValue(0);
+          Animated.timing(leakOpacity, {
+            toValue: 0.35,
+            duration: 280,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }).start();
+        });
       });
-    });
+    };
+
+    const delayTimer =
+      introDelayMs > 0
+        ? setTimeout(() => {
+            startIntro();
+          }, introDelayMs)
+        : null;
+    if (introDelayMs <= 0) {
+      startIntro();
+    }
 
     return () => {
+      cancelled = true;
+      if (delayTimer) clearTimeout(delayTimer);
       stopFloatRef.current?.stop();
     };
   }, [
     rollId,
     replayKey,
+    introDelayMs,
     auraOpacity,
     badgeOpacity,
     badgeScale,
@@ -616,7 +631,7 @@ export function useHeroReveal({
     railShimmer,
     reset,
     revealRarity,
-    silhouetteOpacity,
+    suppressInitialEnterHaptic,
     valueOpacity,
     valueY,
   ]);
@@ -688,7 +703,6 @@ export function useHeroReveal({
     tapCharge,
     flashOpacity,
     afterglowOpacity,
-    silhouetteOpacity,
     cardOpacity,
     cardScale,
     cardY,
@@ -707,6 +721,7 @@ export function useHeroReveal({
     railShimmer,
     cameraPunch,
     packBobY,
+    packRevealLift,
     packTiltDeg,
     skipToEnd,
   };

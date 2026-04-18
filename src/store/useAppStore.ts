@@ -8,9 +8,13 @@ import {
   normalizeFriendUsername,
 } from '../data/friends';
 import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
+import { VAULT_HOLD_DAYS } from '../lib/vaultConstants';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
 import { SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
 import { claimFirstTimePack, loadClaimedFirstTimePacks } from '../lib/firstTimePack';
+
+/** Bulk opens: 10 or 100 pulls in one session (credits only). */
+export type PackOpenQuantity = 1 | 10 | 100;
 
 interface ModalState {
   insufficientCredits: boolean;
@@ -20,7 +24,7 @@ interface ModalState {
    */
   quantitySheet: boolean;
   packOpening: boolean;
-  /** Ship vs convert — shown right after pack opening (see `WonPrizesModal`). */
+  /** Vault vs convert — shown right after pack opening (see `WonPrizesModal`). */
   wonPrizes: boolean;
 }
 
@@ -43,7 +47,7 @@ interface AppStore {
   sortOrder: 'recommended' | 'price_asc' | 'price_desc' | 'newest' | 'best_value' | 'popular';
   modals: ModalState;
   selectedPack: Pack | null;
-  /** Pull ids waiting for ship vs convert (batch session). */
+  /** Pull ids waiting for Vault vs convert (batch session). */
   pendingFulfillmentPullIds: string[];
   /**
    * Pack IDs the user has already opened that are marked `isFirstTimePack`.
@@ -55,11 +59,15 @@ interface AppStore {
   _packOpenRewardApplied: boolean;
   /** Increments on every successful `openPack` so pack UI re-rolls even when `selectedPack` is the same reference. */
   packOpenSessionId: number;
+  /** How many pulls this `packOpening` session represents (1 = animated reveal; 10/100 = summary flow). */
+  packOpenQuantity: PackOpenQuantity;
   /**
    * User tried to open a pack but lacked credits — after buying credits we should return them to the flow
    * (navigate back + reopen pack modal) instead of leaving them on a dead screen.
    */
   resumePackOpenAfterCredits: boolean;
+  /** Quantity the user was trying to open when `resumePackOpenAfterCredits` was set. */
+  resumePackOpenQuantity: PackOpenQuantity;
 
   // Actions
   addCredits: (amount: number) => void;
@@ -73,7 +81,7 @@ interface AppStore {
   setSelectedPack: (pack: Pack | null) => void;
   openPack: (
     pack: Pack,
-    options?: { keepPackModalOnInsufficient?: boolean },
+    options?: { keepPackModalOnInsufficient?: boolean; quantity?: PackOpenQuantity },
   ) => boolean;
   /** Clears "resume open after credits" when user dismisses buy flow without purchasing. */
   clearResumePackOpen: () => void;
@@ -81,8 +89,21 @@ interface AppStore {
     result: { result: string; creditsWon: number; tier: PullRarityTier },
     options?: { persistToVault?: boolean },
   ) => void;
-  /** After Won Prizes: add credits (convert) or mark shipped — no credits. */
-  finalizePullFulfillment: (pullIds: string[], choice: 'convert' | 'ship') => void;
+  applyBulkPackOpenResults: (
+    results: { result: string; creditsWon: number; tier: PullRarityTier }[],
+    options?: { persistToVault?: boolean },
+  ) => void;
+  /**
+   * After post-open sheet: items in `convertIds` credit the wallet and leave pull history;
+   * items in `vaultIds` become `vaulted` with a hold timer (shipping from Vault later).
+   */
+  finalizePendingFulfillment: (opts: { vaultIds: string[]; convertIds: string[] }) => void;
+  /** User requests physical shipment from Vault (demo: state only). */
+  requestVaultShipment: (pullId: string) => void;
+  /** Instant coin conversion for a vaulted item. */
+  convertVaultPullToCoins: (pullId: string) => void;
+  /** Auto-convert vaulted items past `vaultExpiresAt` (call on interval / resume). */
+  processVaultExpiries: () => void;
   /**
    * Records that the user has consumed a first-time pack.
    * Called inside `openPack` automatically — no need to call manually.
@@ -125,7 +146,9 @@ export const useAppStore = create<AppStore>((set, get) => ({
   pendingFulfillmentPullIds: [],
   _packOpenRewardApplied: false,
   packOpenSessionId: 0,
+  packOpenQuantity: 1,
   resumePackOpenAfterCredits: false,
+  resumePackOpenQuantity: 1,
   usedFirstTimePackIds: [],
 
   markFirstTimePackUsed: (packId) =>
@@ -174,36 +197,29 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   setSelectedPack: (pack) => set({ selectedPack: pack }),
 
-  clearResumePackOpen: () => set({ resumePackOpenAfterCredits: false }),
+  clearResumePackOpen: () =>
+    set({ resumePackOpenAfterCredits: false, resumePackOpenQuantity: 1 }),
 
   /**
-   * Single-pack opens only (MVP). Credits + XP apply immediately when the user
-   * commits to opening; the modal animation only reveals the pull result.
-   * Multi-open / quantity pricing is not implemented in MVP (single open only).
+   * Opens one pack (free grant or credits) or a bulk session (10 / 100, credits only).
+   * Credits + XP apply immediately when the user commits; the modal reveals or summarizes pulls.
    */
   openPack: (pack, options) => {
     const keepPack = options?.keepPackModalOnInsufficient ?? false;
+    const quantity: PackOpenQuantity = options?.quantity ?? 1;
     const { user, usedFirstTimePackIds } = get();
 
-    // --- First-time pack guard ---
-    // Layer 1 (fast, in-memory): block immediately if already claimed this session.
     if (pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id)) {
       return false;
     }
 
-    const grants = user.freePackGrants ?? 0;
     const firstTimeUpdate = pack.isFirstTimePack
       ? { usedFirstTimePackIds: [...usedFirstTimePackIds, pack.id] }
       : {};
 
-    // Layer 2 (persistent, async): write claim to AsyncStorage + Supabase BEFORE the
-    // open completes. If the server rejects (duplicate row), we undo the open.
-    // This fires for every first-time pack attempt — not just when the modal opens —
-    // so a direct API replay is blocked at the DB unique-constraint level.
     if (pack.isFirstTimePack) {
       void claimFirstTimePack(user.id, pack.id).then((result) => {
         if (!result.allowed) {
-          // Server says already claimed — undo the open and close the modal.
           set((state) => ({
             usedFirstTimePackIds: state.usedFirstTimePackIds.includes(pack.id)
               ? state.usedFirstTimePackIds
@@ -215,10 +231,14 @@ export const useAppStore = create<AppStore>((set, get) => ({
       });
     }
 
-    if (grants > 0) {
+    const grants = user.freePackGrants ?? 0;
+    const useFreeGrant = quantity === 1 && grants > 0;
+    if (useFreeGrant) {
       set((state) => ({
         selectedPack: pack,
         resumePackOpenAfterCredits: false,
+        resumePackOpenQuantity: 1,
+        packOpenQuantity: 1,
         modals: { ...state.modals, packOpening: true },
         _packOpenRewardApplied: false,
         packOpenSessionId: state.packOpenSessionId + 1,
@@ -230,10 +250,13 @@ export const useAppStore = create<AppStore>((set, get) => ({
       }));
       return true;
     }
-    if (user.credits < pack.creditPrice) {
+
+    const totalCost = pack.creditPrice * quantity;
+    if (user.credits < totalCost) {
       set((state) => ({
         selectedPack: pack,
         resumePackOpenAfterCredits: true,
+        resumePackOpenQuantity: quantity,
         modals: {
           ...state.modals,
           insufficientCredits: true,
@@ -243,16 +266,23 @@ export const useAppStore = create<AppStore>((set, get) => ({
       }));
       return false;
     }
+
+    if (quantity > 1 && pack.remainingInventory < quantity) {
+      return false;
+    }
+
     set((state) => ({
       selectedPack: pack,
       resumePackOpenAfterCredits: false,
+      resumePackOpenQuantity: 1,
+      packOpenQuantity: quantity,
       modals: { ...state.modals, packOpening: true },
       _packOpenRewardApplied: false,
       packOpenSessionId: state.packOpenSessionId + 1,
       user: {
         ...state.user,
-        credits: state.user.credits - pack.creditPrice,
-        xp: state.user.xp + Math.floor(pack.creditPrice * 0.1),
+        credits: state.user.credits - totalCost,
+        xp: state.user.xp + Math.floor(totalCost * 0.1),
       },
       ...firstTimeUpdate,
     }));
@@ -261,7 +291,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   /**
    * Called when the reveal finishes: records pull as **pending** (no wallet credits yet).
-   * User must complete **Won Prizes** (ship vs convert) before credits are applied.
+   * User must complete post-open fulfillment (Vault vs convert) before credits apply.
    */
   applyPackOpenResult: (result, options) => {
     const { selectedPack, _packOpenRewardApplied } = get();
@@ -295,6 +325,45 @@ export const useAppStore = create<AppStore>((set, get) => ({
         user: {
           ...state.user,
           pullHistory: [pull, ...state.user.pullHistory],
+        },
+      };
+    });
+  },
+
+  applyBulkPackOpenResults: (results, options) => {
+    const { selectedPack, _packOpenRewardApplied } = get();
+    if (!selectedPack || _packOpenRewardApplied || results.length === 0) return;
+
+    const persistToVault = options?.persistToVault !== false;
+
+    set((state) => {
+      if (!persistToVault) {
+        return { _packOpenRewardApplied: true };
+      }
+
+      const baseTime = Date.now();
+      const pulls: Pull[] = results.map((result, i) => {
+        const convertCreditValue = result.creditsWon;
+        return {
+          id: `pull_${baseTime}_${i}_${Math.random().toString(16).slice(2)}`,
+          packId: selectedPack.id,
+          packTitle: selectedPack.title,
+          result: result.result,
+          creditsWon: result.creditsWon,
+          timestamp: new Date(),
+          fulfillment: 'pending' as const,
+          convertCreditValue,
+          tier: result.tier,
+        };
+      });
+      const newIds = pulls.map((p) => p.id);
+
+      return {
+        _packOpenRewardApplied: true,
+        pendingFulfillmentPullIds: [...newIds, ...state.pendingFulfillmentPullIds],
+        user: {
+          ...state.user,
+          pullHistory: [...pulls, ...state.user.pullHistory],
         },
       };
     });
@@ -370,27 +439,113 @@ export const useAppStore = create<AppStore>((set, get) => ({
       },
     })),
 
-  finalizePullFulfillment: (pullIds, choice) => {
+  finalizePendingFulfillment: ({ vaultIds, convertIds }) => {
+    const vSet = new Set(vaultIds);
+    const cSet = new Set(convertIds);
     set((state) => {
-      const idSet = new Set(pullIds);
-      const pulls = state.user.pullHistory.filter((p) => idSet.has(p.id) && p.fulfillment === 'pending');
-      if (pulls.length === 0) return state;
+      const pendingPulls = state.user.pullHistory.filter(
+        (p) => p.fulfillment === 'pending' && (vSet.has(p.id) || cSet.has(p.id)),
+      );
+      if (pendingPulls.length === 0) return state;
 
-      const creditsToAdd =
-        choice === 'convert'
-          ? pulls.reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0)
-          : 0;
-      const nextFulfillment = choice === 'convert' ? 'converted' : 'shipped';
+      const creditsToAdd = pendingPulls
+        .filter((p) => cSet.has(p.id))
+        .reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0);
+
+      const clearedIds = new Set([...vaultIds, ...convertIds]);
+      const now = new Date();
 
       return {
-        pendingFulfillmentPullIds: state.pendingFulfillmentPullIds.filter((id) => !idSet.has(id)),
+        pendingFulfillmentPullIds: state.pendingFulfillmentPullIds.filter((id) => !clearedIds.has(id)),
         modals: { ...state.modals, wonPrizes: false },
         user: {
           ...state.user,
           credits: state.user.credits + creditsToAdd,
+          pullHistory: state.user.pullHistory.map((p) => {
+            if (p.fulfillment !== 'pending') return p;
+            if (cSet.has(p.id)) {
+              return { ...p, fulfillment: 'converted' as const };
+            }
+            if (vSet.has(p.id)) {
+              const vaultExpiresAt = new Date(now);
+              vaultExpiresAt.setDate(vaultExpiresAt.getDate() + VAULT_HOLD_DAYS);
+              return {
+                ...p,
+                fulfillment: 'vaulted' as const,
+                vaultExpiresAt,
+                vaultHoldDays: VAULT_HOLD_DAYS,
+              };
+            }
+            return p;
+          }),
+        },
+      };
+    });
+  },
+
+  requestVaultShipment: (pullId) => {
+    set((state) => ({
+      user: {
+        ...state.user,
+        pullHistory: state.user.pullHistory.map((p) =>
+          p.id === pullId && p.fulfillment === 'vaulted'
+            ? {
+                ...p,
+                fulfillment: 'shipped' as const,
+                vaultExpiresAt: undefined,
+                vaultHoldDays: undefined,
+              }
+            : p,
+        ),
+      },
+    }));
+  },
+
+  convertVaultPullToCoins: (pullId) => {
+    set((state) => {
+      const pull = state.user.pullHistory.find((p) => p.id === pullId);
+      if (!pull || pull.fulfillment !== 'vaulted') return state;
+      const amt = pull.creditsWon ?? pull.convertCreditValue ?? 0;
+      return {
+        user: {
+          ...state.user,
+          credits: state.user.credits + amt,
           pullHistory: state.user.pullHistory.map((p) =>
-            idSet.has(p.id) && p.fulfillment === 'pending' ? { ...p, fulfillment: nextFulfillment } : p,
+            p.id === pullId
+              ? {
+                  ...p,
+                  fulfillment: 'converted' as const,
+                  vaultExpiresAt: undefined,
+                  vaultHoldDays: undefined,
+                }
+              : p,
           ),
+        },
+      };
+    });
+  },
+
+  processVaultExpiries: () => {
+    const now = Date.now();
+    set((state) => {
+      let creditsToAdd = 0;
+      const nextHistory = state.user.pullHistory.map((p) => {
+        if (p.fulfillment !== 'vaulted' || !p.vaultExpiresAt) return p;
+        if (p.vaultExpiresAt.getTime() > now) return p;
+        creditsToAdd += p.creditsWon ?? p.convertCreditValue ?? 0;
+        return {
+          ...p,
+          fulfillment: 'converted' as const,
+          vaultExpiresAt: undefined,
+          vaultHoldDays: undefined,
+        };
+      });
+      if (creditsToAdd === 0) return state;
+      return {
+        user: {
+          ...state.user,
+          credits: state.user.credits + creditsToAdd,
+          pullHistory: nextHistory,
         },
       };
     });

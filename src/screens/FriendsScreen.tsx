@@ -500,9 +500,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: colors.surfaceElevated,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: colors.border,
   },
   headerBtnPlaceholder: {
     width: 44,
@@ -611,8 +611,8 @@ const styles = StyleSheet.create({
   leaderboardBlock: {
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-    backgroundColor: 'rgba(5,8,6,0.5)',
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceElevated,
     overflow: 'hidden',
     marginBottom: spacing.xs,
   },
@@ -623,7 +623,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm + 2,
     paddingHorizontal: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: colors.borderLight,
   },
   lbRowMe: {
     backgroundColor: colors.accentSoft,
@@ -668,7 +668,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: colors.accentDark,
   },
   squadBlock: {
     gap: spacing.sm,
@@ -678,12 +678,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: 'rgba(21,32,24,0.75)',
+    backgroundColor: colors.surfaceMuted,
     borderRadius: radius.md,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: colors.borderLight,
     overflow: 'hidden',
   },
   squadAccent: {
@@ -698,10 +698,11 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(0,0,0,0.25)',
+    backgroundColor: colors.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
+    borderColor: colors.borderLight,
     marginLeft: 2,
   },
   squadAvatarText: {
@@ -743,7 +744,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
     paddingBottom: spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.1)',
+    borderTopColor: colors.border,
     alignItems: 'center',
   },
   socialFooterTitle: {

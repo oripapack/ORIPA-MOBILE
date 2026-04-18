@@ -63,8 +63,9 @@ Top-of-app **demo banner** (`DemoBanner`, `SHOW_DEMO_BANNER`) reminds users cred
 
 1. **Marketplace** — Browse physical listings (mock `src/data/marketplace.ts`), partner-style copy.  
 2. **Home** — Pack catalog: categories, filters, sort, hero/banners; entry to **pack opening** modals.  
-3. **Friends** — Friend list, add by ID, QR modals (`AddFriendModal`, `MyQrModal`, `QrScannerModal`).  
-4. **Account** — Tier card, member ID, shortcuts (notifications, hot drops info, recent pulls, promos info), recent pulls + full history links, account rows (shipping, payout, identity, linked accounts), support (help center, contact mailto, FAQ), settings, **logout** (Clerk when signed in).
+3. **Vault** — Collection grid of pulls (see **Vault tab — implementation status** below).  
+4. **Friends** — Friend list, add by ID, QR modals (`AddFriendModal`, `MyQrModal`, `QrScannerModal`).  
+5. **Account** — Tier card, member ID, shortcuts (notifications, hot drops info, recent pulls, promos info), recent pulls + full history links, account rows (shipping, payout, identity, linked accounts), support (help center, contact mailto, FAQ), settings, **logout** (Clerk when signed in).
 
 ### Stack screens (`RootStackParamList`) — selected
 
@@ -109,11 +110,32 @@ Top-of-app **demo banner** (`DemoBanner`, `SHOW_DEMO_BANNER`) reminds users cred
 | Global pack modals | `src/components/pack/GlobalPackModals.tsx` |
 | Pack open animation / reveal | `PackOpeningModal.tsx` |
 | Post-open ship vs convert | `WonPrizesModal.tsx` |
+| Vault tab (MVP UI) | `VaultScreen.tsx`, `src/lib/vaultPulls.ts` |
 | Header, credits pill | `AppHeader.tsx`, `CreditsPill.tsx` |
 | Legal modals | `LegalDocumentModal` + `src/legal/inAppLegalCopy.ts` |
 | Marketplace cards | `src/components/marketplace/ListingCard.tsx` |
 | Tier benefits (sample data) | `src/data/tierBenefits.ts` |
 | Shipping address persistence (device) | AsyncStorage in `ShippingAddressScreen` |
+
+---
+
+## Vault tab — implementation status (to finish later)
+
+**What exists today (client-only MVP):**
+
+- The **Vault** tab is **not** a separate backend collection. It lists `user.pullHistory` rows where `fulfillment !== 'converted'` (`useVaultPullsSorted` in `src/lib/vaultPulls.ts`).
+- **Signed-in opens:** After a pack reveal, `applyPackOpenResult` appends a `Pull` with `fulfillment: 'pending'` (see `useAppStore`). **Guests** use `persistToVault: false` — nothing is saved to history for vault.
+- There is **no** explicit “send to vault” action; hits appear automatically once persisted.
+- **Won Prizes** (`finalizePullFulfillment`): **convert** → `fulfillment: 'converted'` (row leaves the Vault tab but stays in **Pull history**); **ship** → `fulfillment: 'shipped'` (stays on Vault). **Ship is state-only** — no real fulfillment / tracking API yet.
+- Data lives in **Zustand** (plus mock seed in `mockUser`); **no Supabase / server vault** table or sync.
+
+**What we still need to implement (when ready):**
+
+- **Server-backed vault** (e.g. Supabase `vault_items` or equivalent), tied to Clerk user id, with RLS.
+- Optional **domain split**: immutable open log vs mutable vault items (for listing, grading, shipping workflows).
+- **Real fulfillment** for shipped items (queues, addresses, carrier integration, or ops handoff).
+- **Persistence** across devices / reinstall (hydrate vault from API on login).
+- Product rules for **guests** (if any local preview before sign-in) and **marketplace** (e.g. list-from-vault).
 
 ---
 

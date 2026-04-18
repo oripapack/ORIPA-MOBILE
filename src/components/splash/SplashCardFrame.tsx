@@ -180,10 +180,10 @@ export function SplashCardFrame({
           <Animated.View style={[styles.neonTube, neonTubeStyle]} pointerEvents="none">
             <LinearGradient
               colors={[
-                'rgba(56,189,248,0.45)',
-                'rgba(255,203,5,0.28)',
-                'rgba(120,200,255,0.4)',
-                'rgba(56,189,248,0.5)',
+                'rgba(62,92,118,0.14)',
+                'rgba(232,228,220,0.5)',
+                'rgba(255,252,248,0.35)',
+                'rgba(62,92,118,0.12)',
               ]}
               locations={[0, 0.35, 0.65, 1]}
               start={{ x: 0, y: 0 }}
@@ -204,9 +204,9 @@ export function SplashCardFrame({
           <LinearGradient
             colors={[
               'transparent',
-              'rgba(240,247,255,0.06)',
-              'rgba(56,189,248,0.14)',
-              'rgba(255,203,5,0.06)',
+              'rgba(255,255,255,0.25)',
+              'rgba(62,92,118,0.08)',
+              'rgba(139,115,85,0.04)',
               'transparent',
             ]}
             start={{ x: 0, y: 0.5 }}
@@ -217,7 +217,7 @@ export function SplashCardFrame({
 
         <Animated.View style={[styles.sweep2Clip, sweep2Style]} pointerEvents="none">
           <LinearGradient
-            colors={['transparent', 'rgba(56,189,248,0.1)', 'rgba(240,247,255,0.06)', 'transparent']}
+            colors={['transparent', 'rgba(62,92,118,0.06)', 'rgba(255,255,255,0.2)', 'transparent']}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={styles.sweep2Grad}
@@ -227,7 +227,7 @@ export function SplashCardFrame({
         <Animated.View style={[styles.frameOuter, frameStyle]}>
           <View style={styles.frameInner}>
             <LinearGradient
-              colors={['rgba(56,189,248,0.35)', 'rgba(255,203,5,0.08)', 'rgba(56,189,248,0.28)']}
+              colors={['rgba(62,92,118,0.1)', 'rgba(255,252,248,0.85)', 'rgba(62,92,118,0.08)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={StyleSheet.absoluteFillObject}
@@ -240,7 +240,7 @@ export function SplashCardFrame({
           <View style={styles.frameEdge} />
           <Animated.View style={[styles.scanLine, scanStyle]} pointerEvents="none">
             <LinearGradient
-              colors={['transparent', 'rgba(56,189,248,0.35)', 'rgba(240,247,255,0.18)', 'transparent']}
+              colors={['transparent', 'rgba(62,92,118,0.2)', 'rgba(255,255,255,0.4)', 'transparent']}
               start={{ x: 0, y: 0.5 }}
               end={{ x: 1, y: 0.5 }}
               style={StyleSheet.absoluteFillObject}
@@ -285,20 +285,20 @@ const styles = StyleSheet.create({
     top: (OUTER_H - (FRAME_H + 18)) / 2,
     zIndex: 1,
     borderWidth: 1.5,
-    borderColor: 'rgba(167, 243, 255, 0.55)',
+    borderColor: 'rgba(62, 92, 118, 0.22)',
     backgroundColor: 'transparent',
-    shadowColor: colors.accent,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.55,
-    shadowRadius: 18,
-    elevation: 14,
+    shadowColor: colors.shadowStrong,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 14,
+    elevation: 8,
   },
   glowBlob: {
     position: 'absolute',
     width: FRAME_W + 92,
     height: FRAME_H + 76,
     borderRadius: 30,
-    backgroundColor: 'rgba(56,189,248,0.12)',
+    backgroundColor: 'rgba(62,92,118,0.06)',
   },
   frameOuter: {
     width: FRAME_W,
@@ -306,11 +306,11 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 1.5,
     overflow: 'hidden',
-    shadowColor: colors.accent,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 22,
-    elevation: 16,
+    shadowColor: colors.shadowStrong,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 18,
+    elevation: 10,
     zIndex: 2,
   },
   frameInner: {
@@ -346,9 +346,9 @@ const styles = StyleSheet.create({
     color: colors.accent,
     marginLeft: 1,
     marginTop: -2,
-    textShadowColor: 'rgba(56, 189, 248, 0.55)',
+    textShadowColor: 'rgba(62, 92, 118, 0.15)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    textShadowRadius: 6,
   },
   frameLine: {
     fontSize: fontSize.xxl,
@@ -356,9 +356,9 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     letterSpacing: -0.5,
     textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.55)',
+    textShadowColor: 'rgba(255,255,255,0.8)',
     textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 12,
+    textShadowRadius: 4,
   },
   scanLine: {
     position: 'absolute',

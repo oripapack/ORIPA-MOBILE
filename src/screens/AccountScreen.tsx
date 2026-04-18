@@ -51,10 +51,10 @@ export function AccountScreen() {
 
   const pct = Math.min(100, Math.round((user.xp / user.xpToNextTier) * 100));
   const tierColors: Record<string, string> = {
-    Starter: '#6B7280',
-    Bronze: '#92400E',
-    Silver: '#6B7280',
-    Gold: '#B45309',
+    Starter: colors.accentDark,
+    Bronze: colors.goldDark,
+    Silver: colors.accentSapphire,
+    Gold: colors.gold,
   };
   const tierColor = tierColors[user.tier] ?? colors.textSecondary;
 
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.red,
+    color: colors.magentaDark,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
   },
@@ -439,9 +439,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.xs,
-    backgroundColor: 'rgba(2,6,23,0.24)',
+    backgroundColor: colors.surfaceMuted,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
     alignItems: 'center',
   },
   profileStatVal: {
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
   viewBenefitsText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.red,
+    color: colors.accentDark,
   },
   statGrid: {
     flexDirection: 'row',
@@ -591,18 +591,18 @@ const styles = StyleSheet.create({
   bestName: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.white,
+    color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   bestVal: {
     fontSize: fontSize.hero - 4,
     fontFamily: brandFont.black,
-    color: colors.casinoGold,
+    color: colors.accent,
   },
   bestSub: {
     marginTop: 4,
     fontSize: fontSize.xs,
-    color: 'rgba(248,250,252,0.65)',
+    color: colors.textSecondary,
   },
   actions: {
     gap: spacing.sm,

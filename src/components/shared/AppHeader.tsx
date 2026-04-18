@@ -38,7 +38,7 @@ export function AppHeader({ onSearch }: Props) {
         accessibilityLabel={APP_DISPLAY_NAME}
       >
         <LinearGradient
-          colors={[colors.gold, colors.accent]}
+          colors={[colors.accentSapphire, colors.accent]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.monogramRing}
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.bold,
   },
   wordmarkAccent: {
-    color: colors.gold,
+    color: colors.accent,
     fontFamily: brandFont.black,
   },
   wordmarkSingle: {

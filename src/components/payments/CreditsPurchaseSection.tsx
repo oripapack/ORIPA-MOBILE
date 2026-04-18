@@ -38,11 +38,9 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
     addCredits(credits);
 
     const s0 = useAppStore.getState();
-    if (
-      !s0.resumePackOpenAfterCredits ||
-      !s0.selectedPack ||
-      s0.user.credits < s0.selectedPack.creditPrice
-    ) {
+    const qty = s0.resumePackOpenQuantity ?? 1;
+    const need = s0.selectedPack ? s0.selectedPack.creditPrice * qty : 0;
+    if (!s0.resumePackOpenAfterCredits || !s0.selectedPack || s0.user.credits < need) {
       return;
     }
 
@@ -56,8 +54,9 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
       setTimeout(() => {
         const s = useAppStore.getState();
         const pack = s.selectedPack;
-        if (pack && s.user.credits >= pack.creditPrice) {
-          s.openPack(pack);
+        const q = s.resumePackOpenQuantity ?? 1;
+        if (pack && s.user.credits >= pack.creditPrice * q) {
+          s.openPack(pack, { quantity: q });
         }
       }, delay);
     });

@@ -456,8 +456,8 @@ const styles = StyleSheet.create({
     borderColor: colors.borderLight,
   },
   sortChipActive: {
-    borderColor: colors.goldSoft,
-    backgroundColor: 'rgba(232, 197, 71, 0.08)',
+    borderColor: colors.accentBorder,
+    backgroundColor: colors.accentSoft,
   },
   sortChipText: {
     fontSize: 11,
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   sortChipTextActive: {
-    color: colors.gold,
+    color: colors.accentDark,
   },
   regionBlock: {
     marginBottom: spacing.md,
@@ -492,8 +492,8 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   regionChipActive: {
-    borderColor: colors.gold,
-    backgroundColor: 'rgba(232, 197, 71, 0.07)',
+    borderColor: colors.accent,
+    backgroundColor: colors.accentSoft,
   },
   regionChipText: {
     fontSize: 11,
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   regionChipTextActive: {
-    color: colors.gold,
+    color: colors.accentDark,
   },
   section: {
     marginBottom: spacing.lg,
@@ -643,13 +643,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.gold,
-    backgroundColor: 'rgba(232, 197, 71, 0.08)',
+    borderColor: colors.accentBorder,
+    backgroundColor: colors.accentSoft,
   },
   emptyCtaText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: colors.accentDark,
   },
   promoCompact: {
     flexDirection: 'row',

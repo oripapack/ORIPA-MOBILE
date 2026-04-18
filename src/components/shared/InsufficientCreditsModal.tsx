@@ -21,8 +21,10 @@ export function InsufficientCreditsModal() {
   const closeModal = useAppStore((s) => s.closeModal);
   const clearResumePackOpen = useAppStore((s) => s.clearResumePackOpen);
   const userCredits = useAppStore((s) => s.user.credits);
+  const resumeQty = useAppStore((s) => s.resumePackOpenQuantity ?? 1);
 
-  const needed = selectedPack ? selectedPack.creditPrice - userCredits : 0;
+  const totalCost = selectedPack ? selectedPack.creditPrice * resumeQty : 0;
+  const needed = selectedPack ? Math.max(0, totalCost - userCredits) : 0;
   const packLoc = selectedPack ? getLocalizedPackFields(selectedPack, t) : null;
 
   const dismiss = () => {
@@ -49,9 +51,15 @@ export function InsufficientCreditsModal() {
               <Text style={styles.packInfoValue}>{packLoc?.title ?? selectedPack.title}</Text>
               <Text style={styles.packInfoLabel}>{t('insufficientCredits.costLabel')}</Text>
               <Text style={styles.packInfoValue}>
-                {t('insufficientCredits.creditsLine', {
-                  amount: selectedPack.creditPrice.toLocaleString(),
-                })}
+                {resumeQty > 1
+                  ? t('insufficientCredits.costLineBulk', {
+                      perPack: selectedPack.creditPrice.toLocaleString(),
+                      count: resumeQty,
+                      total: totalCost.toLocaleString(),
+                    })
+                  : t('insufficientCredits.creditsLine', {
+                      amount: selectedPack.creditPrice.toLocaleString(),
+                    })}
               </Text>
               <Text style={styles.packInfoLabel}>{t('insufficientCredits.balanceLabel')}</Text>
               <Text style={styles.packInfoValue}>

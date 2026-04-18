@@ -7,7 +7,7 @@ import { colors } from '../../tokens/colors';
 const { width: W, height: H } = Dimensions.get('window');
 
 /**
- * Felt wash + edge vignette + subtle top spotlight — vault / lobby atmosphere.
+ * Soft lilac-tinted wash — TCG hobby energy without darkening the UI.
  */
 export function HomeBackground() {
   return (
@@ -24,15 +24,12 @@ export function HomeBackground() {
       </Svg>
       <ExpoLinearGradient
         pointerEvents="none"
-        colors={['rgba(0,0,0,0.42)', 'transparent', 'rgba(0,0,0,0.38)']}
-        locations={[0, 0.48, 1]}
-        style={StyleSheet.absoluteFillObject}
-      />
-      <ExpoLinearGradient
-        pointerEvents="none"
-        colors={[colors.accentSoft, 'transparent', 'transparent']}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 0.35 }}
+        colors={[
+          'rgba(255,255,255,0.55)',
+          'rgba(124,58,237,0.04)',
+          'rgba(79,70,229,0.06)',
+        ]}
+        locations={[0, 0.45, 1]}
         style={StyleSheet.absoluteFillObject}
       />
     </View>

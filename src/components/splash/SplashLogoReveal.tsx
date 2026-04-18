@@ -22,11 +22,11 @@ const styles = StyleSheet.create({
   pull: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
-    color: colors.gold,
+    color: colors.accent,
     letterSpacing: -0.5,
-    textShadowColor: 'rgba(56, 189, 248, 0.35)',
+    textShadowColor: 'rgba(62, 92, 118, 0.12)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 12,
+    textShadowRadius: 8,
   },
   hub: {
     fontSize: fontSize.xxl,
@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     letterSpacing: -0.3,
     opacity: 0.94,
-    textShadowColor: 'rgba(0,0,0,0.45)',
+    textShadowColor: 'rgba(28, 36, 48, 0.06)',
     textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
+    textShadowRadius: 4,
   },
 });

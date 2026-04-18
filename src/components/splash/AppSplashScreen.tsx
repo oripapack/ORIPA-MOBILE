@@ -14,6 +14,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { SplashCardFrame } from './SplashCardFrame';
 import { SplashLogoReveal } from './SplashLogoReveal';
+import { colors } from '../../tokens/colors';
 
 const { width: SW } = Dimensions.get('window');
 
@@ -144,27 +145,27 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
   return (
     <Animated.View style={[styles.root, rootStyle]} pointerEvents="auto">
       <LinearGradient
-        colors={['#020617', '#050A14', '#0A1228']}
+        colors={[colors.homeGradientTop, colors.homeGradientMid, colors.homeGradientBottom]}
         locations={[0, 0.42, 1]}
         style={StyleSheet.absoluteFillObject}
       />
       <LinearGradient
         pointerEvents="none"
-        colors={['rgba(56,189,248,0.09)', 'transparent', 'transparent']}
+        colors={[colors.accentSoft, 'transparent', 'transparent']}
         start={{ x: 0.15, y: 0 }}
         end={{ x: 0.85, y: 0.45 }}
         style={StyleSheet.absoluteFillObject}
       />
       <LinearGradient
         pointerEvents="none"
-        colors={['rgba(0,0,0,0.48)', 'transparent', 'rgba(0,0,0,0.4)']}
+        colors={['rgba(255,252,248,0.5)', 'transparent', 'rgba(237,233,226,0.4)']}
         locations={[0, 0.5, 1]}
         style={StyleSheet.absoluteFillObject}
       />
 
       <Animated.View style={[styles.spotlight, spotlightStyle]} pointerEvents="none">
         <LinearGradient
-          colors={['rgba(56,189,248,0.22)', 'rgba(255,203,5,0.06)', 'transparent']}
+          colors={['rgba(62,92,118,0.08)', 'rgba(139,115,85,0.04)', 'transparent']}
           start={{ x: 0.5, y: 0.4 }}
           end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -173,7 +174,7 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
 
       <Animated.View style={[styles.shimmerBand, shimmerBandStyle]} pointerEvents="none">
         <LinearGradient
-          colors={['transparent', 'rgba(240,247,255,0.06)', 'rgba(56,189,248,0.07)', 'transparent']}
+          colors={['transparent', 'rgba(255,255,255,0.35)', 'rgba(62,92,118,0.04)', 'transparent']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={styles.shimmerGrad}

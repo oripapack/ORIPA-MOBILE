@@ -295,12 +295,10 @@ const styles = StyleSheet.create({
   modeSwitch: {
     flexDirection: 'row',
     borderRadius: 999,
-    padding: 4,
-    backgroundColor: 'rgba(10, 16, 32, 0.92)',
+    padding: 3,
+    backgroundColor: colors.surfaceMuted,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.headerHairline,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.accentBorder,
+    borderColor: colors.border,
   },
   modeBtn: {
     flex: 1,
@@ -310,17 +308,17 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   modeBtnActive: {
-    backgroundColor: colors.goldSoft,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
+    backgroundColor: colors.surfaceElevated,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
   modeBtnText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
   },
   modeBtnTextActive: {
-    color: colors.gold,
+    color: colors.textPrimary,
   },
   catalogIntro: {
     paddingHorizontal: spacing.base,

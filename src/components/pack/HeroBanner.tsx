@@ -19,48 +19,30 @@ interface Props {
 export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
   const { t } = useTranslation();
   const float = useRef(new Animated.Value(0)).current;
-  const sheen = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const loop = Animated.loop(
       Animated.sequence([
-        Animated.parallel([
-          Animated.timing(float, {
-            toValue: 1,
-            duration: 2400,
-            easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
-          }),
-          Animated.timing(sheen, {
-            toValue: 1,
-            duration: 3200,
-            easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.parallel([
-          Animated.timing(float, {
-            toValue: 0,
-            duration: 2400,
-            easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
-          }),
-          Animated.timing(sheen, {
-            toValue: 0,
-            duration: 3200,
-            easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
-          }),
-        ]),
+        Animated.timing(float, {
+          toValue: 1,
+          duration: 2600,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(float, {
+          toValue: 0,
+          duration: 2600,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
       ]),
     );
     loop.start();
     return () => loop.stop();
-  }, [float, sheen]);
+  }, [float]);
 
-  const cardLift = float.interpolate({ inputRange: [0, 1], outputRange: [0, -5] });
-  const cardTilt = float.interpolate({ inputRange: [0, 1], outputRange: ['-2deg', '-5deg'] });
-  const glowOpacity = sheen.interpolate({ inputRange: [0, 1], outputRange: [0.35, 0.7] });
+  const cardLift = float.interpolate({ inputRange: [0, 1], outputRange: [0, -4] });
+  const cardTilt = float.interpolate({ inputRange: [0, 1], outputRange: ['-1.5deg', '-4deg'] });
 
   return (
     <View style={styles.container}>
@@ -74,23 +56,20 @@ export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
         <Svg width={BANNER_W} height={220}>
           <Defs>
             <LinearGradient id="heroGrad" x1="0" y1="0" x2="1" y2="1">
-              <Stop offset="0" stopColor="#020617" />
-              <Stop offset="0.32" stopColor="#0A1228" />
-              <Stop offset="0.65" stopColor="#0E1629" />
-              <Stop offset="1" stopColor="#030712" />
+              <Stop offset="0" stopColor="#FFFFFF" stopOpacity={0.88} />
+              <Stop offset="0.5" stopColor="#FAFBFC" stopOpacity={0.82} />
+              <Stop offset="1" stopColor="#F6F7F9" stopOpacity={0.9} />
             </LinearGradient>
-            <LinearGradient id="heroHot" x1="1" y1="0" x2="0.2" y2="0.85">
-              <Stop offset="0" stopColor="rgba(230, 0, 18, 0.38)" />
-              <Stop offset="0.4" stopColor="rgba(56, 189, 248, 0.2)" />
+            <LinearGradient id="heroTint" x1="1" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor="rgba(62, 92, 118, 0.04)" />
+              <Stop offset="0.55" stopColor="rgba(62, 92, 118, 0.01)" />
               <Stop offset="1" stopColor="rgba(255,255,255,0)" />
             </LinearGradient>
           </Defs>
           <Rect x={0} y={0} width={BANNER_W} height={220} fill="url(#heroGrad)" />
-          <Rect x={0} y={0} width={BANNER_W} height={220} fill="url(#heroHot)" opacity={0.88} />
+          <Rect x={0} y={0} width={BANNER_W} height={220} fill="url(#heroTint)" />
         </Svg>
       </View>
-
-      <Animated.View style={[styles.hotGlow, { opacity: glowOpacity }]} pointerEvents="none" />
 
       {onDismiss ? (
         <TouchableOpacity
@@ -120,7 +99,6 @@ export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
         ) : null}
       </View>
 
-      {/* Decorative card stack */}
       <Animated.View
         style={[
           styles.cardStack,
@@ -144,7 +122,7 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: spacing.base,
     marginTop: spacing.base,
-    borderRadius: radius.xl,
+    borderRadius: radius.lg,
     padding: spacing.xl,
     flexDirection: 'row',
     alignItems: 'center',
@@ -152,29 +130,20 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.12)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.35,
-    shadowRadius: 28,
-    elevation: 12,
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceElevated,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 14,
+    elevation: 3,
   },
   bgPhoto: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.42,
+    opacity: 0.26,
   },
   bgSvg: {
     ...StyleSheet.absoluteFillObject,
-  },
-  hotGlow: {
-    position: 'absolute',
-    left: '58%',
-    top: -40,
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: colors.red,
-    opacity: 0.5,
   },
   closeBtn: {
     position: 'absolute',
@@ -187,7 +156,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   closeText: {
-    color: 'rgba(255,255,255,0.55)',
+    color: colors.textMuted,
     fontSize: 28,
     fontFamily: brandFont.regular,
     lineHeight: 30,
@@ -199,40 +168,35 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.gold,
+    fontFamily: brandFont.semibold,
+    color: colors.accent,
     letterSpacing: 1.2,
     marginBottom: spacing.xs,
   },
   headline: {
-    fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.white,
-    lineHeight: 33,
+    fontSize: fontSize.xl,
+    fontFamily: brandFont.bold,
+    color: colors.textPrimary,
+    lineHeight: 28,
     marginBottom: spacing.sm,
   },
   subtext: {
     fontSize: fontSize.sm,
-    color: 'rgba(255,255,255,0.65)',
+    color: colors.textSecondary,
     lineHeight: 19,
     marginBottom: spacing.base,
   },
   cta: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.red,
+    backgroundColor: colors.nearBlack,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm + 2,
     borderRadius: radius.md,
-    shadowColor: colors.red,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.45,
-    shadowRadius: 14,
-    elevation: 6,
   },
   ctaText: {
     color: colors.white,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: brandFont.semibold,
     letterSpacing: 0.3,
   },
   notNow: {
@@ -243,7 +207,7 @@ const styles = StyleSheet.create({
   notNowText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
-    color: 'rgba(255,255,255,0.45)',
+    color: colors.textMuted,
     textDecorationLine: 'underline',
   },
   cardStack: {
@@ -258,40 +222,35 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
+    borderColor: colors.border,
   },
   cardBack2: {
-    backgroundColor: '#2A1810',
+    backgroundColor: '#D4CEC4',
     top: 0,
     left: 8,
     transform: [{ rotate: '8deg' }],
   },
   cardBack1: {
-    backgroundColor: '#5C1F1F',
+    backgroundColor: '#C5D4C8',
     top: 2,
     left: 4,
     transform: [{ rotate: '4deg' }],
   },
   cardFront: {
-    backgroundColor: colors.red,
+    backgroundColor: colors.nearBlack,
     top: 4,
     left: 0,
     transform: [{ rotate: '-2deg' }],
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 8,
   },
   cardEmoji: {
     fontSize: 24,
   },
   cardLabel: {
-    color: colors.white,
+    color: colors.textOnDark,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: brandFont.semibold,
     marginTop: 4,
   },
 });

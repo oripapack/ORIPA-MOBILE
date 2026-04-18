@@ -55,7 +55,8 @@ export function PaymentPortalScreen() {
       return () => {
         const s = useAppStore.getState();
         if (!s.resumePackOpenAfterCredits || !s.selectedPack) return;
-        if (s.user.credits >= s.selectedPack.creditPrice) return;
+        const qty = s.resumePackOpenQuantity ?? 1;
+        if (s.user.credits >= s.selectedPack.creditPrice * qty) return;
         s.clearResumePackOpen();
       };
     }, []),

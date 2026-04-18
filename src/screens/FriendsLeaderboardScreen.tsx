@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  tabOn: { backgroundColor: colors.nearBlack, borderColor: colors.nearBlack },
+  tabOn: { backgroundColor: colors.accentDark, borderColor: colors.accentDark },
   tabText: { fontSize: fontSize.xs, fontFamily: brandFont.bold, color: colors.textSecondary },
   tabTextOn: { color: colors.white },
   lead: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
   },
-  rowMe: { borderColor: 'rgba(225,29,46,0.35)', backgroundColor: 'rgba(225,29,46,0.04)' },
+  rowMe: { borderColor: colors.accentBorder, backgroundColor: colors.accentSoft },
   rank: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
@@ -159,5 +159,5 @@ const styles = StyleSheet.create({
   rowMeta: { flex: 1, minWidth: 0 },
   rowName: { fontSize: fontSize.md, fontFamily: brandFont.bold, color: colors.textPrimary },
   rowUn: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 2 },
-  rowVal: { fontSize: fontSize.md, fontFamily: brandFont.black, color: colors.red },
+  rowVal: { fontSize: fontSize.md, fontFamily: brandFont.black, color: colors.accentDark },
 });

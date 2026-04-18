@@ -7,10 +7,10 @@ import { radius, spacing } from '../../tokens/spacing';
 const BR = 10;
 
 const GRADIENTS = {
-  /** Default — deep blue vault + holo edge */
-  vault: ['rgba(14,22,40,0.98)', 'rgba(8,12,22,0.99)'] as const,
-  /** Deeper void — featured / emphasis */
-  felt: ['rgba(6,10,20,0.98)', 'rgba(3,6,14,0.99)'] as const,
+  /** Default — white mat with soft depth */
+  vault: ['rgba(255,255,255,0.98)', 'rgba(245,242,235,0.99)'] as const,
+  /** Featured — warm rag panel */
+  felt: ['rgba(255,252,248,0.99)', 'rgba(232,228,220,0.98)'] as const,
 };
 
 export type VaultFill = keyof typeof GRADIENTS;
@@ -23,8 +23,7 @@ export type VaultFramedCardProps = {
 };
 
 /**
- * Shared “display case” frame: left gold rail + corner brackets + gradient fill.
- * Use for primary content blocks so the app reads as one premium system.
+ * Display-case frame: ink rail + corner brackets + soft paper fill.
  */
 export function VaultFramedCard({ children, style, contentStyle, fill = 'vault' }: VaultFramedCardProps) {
   const grad = GRADIENTS[fill];
@@ -44,12 +43,12 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.accentBorder,
-    shadowColor: 'rgba(0,0,0,0.5)',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.35,
-    shadowRadius: 22,
-    elevation: 10,
+    borderColor: colors.border,
+    shadowColor: colors.shadowStrong,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 1,
+    shadowRadius: 18,
+    elevation: 6,
   },
   rail: {
     position: 'absolute',
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
     bottom: 14,
     width: 3,
     backgroundColor: colors.accent,
-    opacity: 0.55,
+    opacity: 0.45,
     zIndex: 2,
   },
   bracketTL: {
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderBottomWidth: 1.5,
     borderRightWidth: 1.5,
-    borderColor: 'rgba(56, 189, 248, 0.28)',
+    borderColor: colors.accentBorder,
     zIndex: 1,
   },
   inner: {

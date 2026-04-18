@@ -8,10 +8,13 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
+  withRepeat,
+  withSequence,
   withTiming,
 } from 'react-native-reanimated';
 import { SplashCardFrame } from './SplashCardFrame';
 import { SplashLogoReveal } from './SplashLogoReveal';
+import { colors } from '../../tokens/colors';
 
 const { width: SW } = Dimensions.get('window');
 
@@ -23,47 +26,70 @@ type Props = {
   onExitStart?: () => void;
 };
 
-/** Minimum time before exit can run — long enough to read `splash.frameLine` (~2 words). */
-const INTRO_MS = 1650;
-const EXIT_MS = 400;
+/** Minimum time before exit can run — matches “rise + accent” choreography. */
+const INTRO_MS = 2350;
+const EXIT_MS = 520;
+
+/** Smooth luxury ease — less bouncy than the previous back-ease card pop. */
+const easeLuxury = Easing.bezier(0.22, 1, 0.36, 1);
 
 /**
- * Branded boot overlay — layered spotlight, dual sweeps, corner brackets, scan line, wordmark.
+ * Branded boot overlay — variant: vertical drift + hero “rises into frame” (vs prior horizontal shimmer + back-scale).
  */
 export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Props) {
   const overlayOpacity = useSharedValue(1);
   const frameOpacity = useSharedValue(0);
-  const frameScale = useSharedValue(0.91);
+  const frameScale = useSharedValue(0.87);
   const frameGlow = useSharedValue(0);
   const logoOpacity = useSharedValue(0);
-  const logoLift = useSharedValue(10);
-  const logoScale = useSharedValue(0.94);
+  const logoLift = useSharedValue(14);
+  const logoScale = useSharedValue(0.96);
   const sweepProgress = useSharedValue(0);
   const sweep2Progress = useSharedValue(0);
   const cornerOpacity = useSharedValue(0);
   const scanProgress = useSharedValue(0);
   const ambientPulse = useSharedValue(0);
   const bgShimmer = useSharedValue(0);
+  /** Whole card + logo column: cinematic rise + micro rotation into place */
+  const heroRise = useSharedValue(0);
+  const heroRotate = useSharedValue(-1.4);
+  /** Looped cyan / gold “neon tube” pulse behind the hero card */
+  const neonBreath = useSharedValue(0);
 
   const [introFinished, setIntroFinished] = useState(false);
   const exitStarted = useRef(false);
 
   useEffect(() => {
-    ambientPulse.value = withTiming(1, { duration: 1200, easing: Easing.out(Easing.cubic) });
-    bgShimmer.value = withDelay(140, withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.quad) }));
+    ambientPulse.value = withTiming(1, { duration: 1650, easing: Easing.inOut(Easing.cubic) });
+    bgShimmer.value = withDelay(120, withTiming(1, { duration: 1750, easing: Easing.inOut(Easing.quad) }));
 
-    frameOpacity.value = withTiming(1, { duration: 480, easing: Easing.out(Easing.cubic) });
-    frameScale.value = withTiming(1, { duration: 620, easing: Easing.out(Easing.back(1.05)) });
-    frameGlow.value = withTiming(1, { duration: 560, easing: Easing.out(Easing.cubic) });
-    cornerOpacity.value = withDelay(200, withTiming(1, { duration: 500, easing: Easing.out(Easing.cubic) }));
+    heroRise.value = withTiming(1, { duration: 920, easing: easeLuxury });
+    heroRotate.value = withTiming(0, { duration: 980, easing: easeLuxury });
 
-    logoOpacity.value = withDelay(340, withTiming(1, { duration: 420, easing: Easing.out(Easing.cubic) }));
-    logoLift.value = withDelay(340, withTiming(0, { duration: 440, easing: Easing.out(Easing.cubic) }));
-    logoScale.value = withDelay(340, withTiming(1, { duration: 460, easing: Easing.out(Easing.cubic) }));
+    frameOpacity.value = withTiming(1, { duration: 520, easing: easeLuxury });
+    frameScale.value = withTiming(1, { duration: 780, easing: easeLuxury });
+    frameGlow.value = withTiming(1, { duration: 900, easing: Easing.out(Easing.cubic) });
+    cornerOpacity.value = withDelay(240, withTiming(1, { duration: 560, easing: easeLuxury }));
 
-    scanProgress.value = withDelay(380, withTiming(1, { duration: 720, easing: Easing.out(Easing.cubic) }));
-    sweepProgress.value = withDelay(520, withTiming(1, { duration: 560, easing: Easing.inOut(Easing.cubic) }));
-    sweep2Progress.value = withDelay(600, withTiming(1, { duration: 520, easing: Easing.inOut(Easing.cubic) }));
+    logoOpacity.value = withDelay(420, withTiming(1, { duration: 480, easing: easeLuxury }));
+    logoLift.value = withDelay(420, withTiming(0, { duration: 520, easing: easeLuxury }));
+    logoScale.value = withDelay(420, withTiming(1, { duration: 540, easing: easeLuxury }));
+
+    scanProgress.value = withDelay(440, withTiming(1, { duration: 780, easing: Easing.out(Easing.cubic) }));
+    sweepProgress.value = withDelay(640, withTiming(1, { duration: 620, easing: Easing.inOut(Easing.cubic) }));
+    sweep2Progress.value = withDelay(740, withTiming(1, { duration: 580, easing: Easing.inOut(Easing.cubic) }));
+
+    neonBreath.value = withDelay(
+      320,
+      withRepeat(
+        withSequence(
+          withTiming(1, { duration: 1350, easing: Easing.inOut(Easing.sin) }),
+          withTiming(0.18, { duration: 1550, easing: Easing.inOut(Easing.sin) }),
+        ),
+        -1,
+        false,
+      ),
+    );
 
     const t = setTimeout(() => setIntroFinished(true), INTRO_MS);
     return () => clearTimeout(t);
@@ -92,39 +118,54 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
   }));
 
   const spotlightStyle = useAnimatedStyle(() => ({
-    opacity: 0.1 + ambientPulse.value * 0.22,
-    transform: [{ scale: 0.88 + ambientPulse.value * 0.14 }],
+    opacity: 0.08 + ambientPulse.value * 0.2,
+    transform: [{ scale: 0.9 + ambientPulse.value * 0.1 }],
   }));
 
   const shimmerBandStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(bgShimmer.value, [0, 0.35, 0.7, 1], [0, 0.14, 0.1, 0]),
-    transform: [{ translateX: interpolate(bgShimmer.value, [0, 1], [-SW * 0.35, SW * 0.35]) }],
+    opacity: interpolate(bgShimmer.value, [0, 0.35, 0.7, 1], [0, 0.12, 0.09, 0]),
+    transform: [{ translateY: interpolate(bgShimmer.value, [0, 1], [-SW * 0.42, SW * 0.42]) }],
   }));
+
+  const heroGroupStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: interpolate(heroRise.value, [0, 1], [34, 0]),
+      },
+      {
+        rotateZ: `${heroRotate.value}deg`,
+      },
+      { scale: interpolate(heroRise.value, [0, 1], [0.94, 1]) },
+    ],
+  }));
+
+  // neonBreath is passed into `SplashCardFrame` for a tighter edge-lit look
+  // (no large background glows in this variant).
 
   return (
     <Animated.View style={[styles.root, rootStyle]} pointerEvents="auto">
       <LinearGradient
-        colors={['#020617', '#050A14', '#0A1228']}
+        colors={[colors.homeGradientTop, colors.homeGradientMid, colors.homeGradientBottom]}
         locations={[0, 0.42, 1]}
         style={StyleSheet.absoluteFillObject}
       />
       <LinearGradient
         pointerEvents="none"
-        colors={['rgba(56,189,248,0.09)', 'transparent', 'transparent']}
+        colors={[colors.accentSoft, 'transparent', 'transparent']}
         start={{ x: 0.15, y: 0 }}
         end={{ x: 0.85, y: 0.45 }}
         style={StyleSheet.absoluteFillObject}
       />
       <LinearGradient
         pointerEvents="none"
-        colors={['rgba(0,0,0,0.48)', 'transparent', 'rgba(0,0,0,0.4)']}
+        colors={['rgba(255,252,248,0.5)', 'transparent', 'rgba(237,233,226,0.4)']}
         locations={[0, 0.5, 1]}
         style={StyleSheet.absoluteFillObject}
       />
 
       <Animated.View style={[styles.spotlight, spotlightStyle]} pointerEvents="none">
         <LinearGradient
-          colors={['rgba(56,189,248,0.22)', 'rgba(255,203,5,0.06)', 'transparent']}
+          colors={['rgba(62,92,118,0.08)', 'rgba(139,115,85,0.04)', 'transparent']}
           start={{ x: 0.5, y: 0.4 }}
           end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -133,14 +174,14 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
 
       <Animated.View style={[styles.shimmerBand, shimmerBandStyle]} pointerEvents="none">
         <LinearGradient
-          colors={['transparent', 'rgba(240,247,255,0.05)', 'rgba(56,189,248,0.08)', 'transparent']}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
+          colors={['transparent', 'rgba(255,255,255,0.35)', 'rgba(62,92,118,0.04)', 'transparent']}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
           style={styles.shimmerGrad}
         />
       </Animated.View>
 
-      <View style={styles.center}>
+      <Animated.View style={[styles.center, heroGroupStyle]}>
         <SplashCardFrame
           frameOpacity={frameOpacity}
           frameScale={frameScale}
@@ -149,11 +190,12 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
           sweep2Progress={sweep2Progress}
           cornerOpacity={cornerOpacity}
           scanProgress={scanProgress}
+          neonBreath={neonBreath}
         />
         <Animated.View style={[styles.logoBlock, logoAnimStyle]}>
           <SplashLogoReveal />
         </Animated.View>
-      </View>
+      </Animated.View>
 
     </Animated.View>
   );

@@ -1,5 +1,8 @@
-/** After a pack opens, user must choose ship vs convert — until then, `pending`. */
-export type PullFulfillment = 'pending' | 'converted' | 'shipped';
+/**
+ * After a pack opens, user chooses Vault vs convert — until then, `pending`.
+ * `vaulted`: secured hold with optional ship / trade / resale from Vault.
+ */
+export type PullFulfillment = 'pending' | 'vaulted' | 'converted' | 'shipped';
 
 /** Lowest → highest: common (green) … mythic (red). */
 export type PullRarityTier = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
@@ -14,9 +17,13 @@ export interface Pull {
   timestamp: Date;
   /**
    * Legacy pulls may omit this — treat as already settled for Rewards UI.
-   * New pulls start as `pending` until Won Prizes flow completes.
+   * New pulls start as `pending` until post-open fulfillment completes.
    */
   fulfillment?: PullFulfillment;
+  /** Set when `fulfillment === 'vaulted'` — auto-converts to coins after this instant. */
+  vaultExpiresAt?: Date;
+  /** Hold length granted when the item entered the Vault (e.g. 14). */
+  vaultHoldDays?: number;
   /** Credits added to wallet if user taps “Convert to points” (matches reveal `creditsWon`). */
   convertCreditValue?: number;
   /** From pack opening reveal — for Won Prizes UI. */

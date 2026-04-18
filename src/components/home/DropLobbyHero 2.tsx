@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
-import { fontSize, fontWeight } from '../../tokens/typography';
+import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
@@ -12,21 +12,44 @@ import { getMockPackTopHit } from '../../data/mockTopHits';
 import { getMockPackOdds } from '../../data/mockPackOdds';
 import { PackOddsModal } from '../pack/PackOddsModal';
 import { navigationRef } from '../../navigation/navigationRef';
+import { useAppStore } from '../../store/useAppStore';
+import { useMembershipSimulationStore } from '../../store/membershipSimulationStore';
+import { membershipMeetsRequired } from '../../data/membershipPlans';
 
 const W = Dimensions.get('window').width - spacing.base * 2;
+const HERO_H = Math.min(192, W * 0.48);
+const CARD_RADIUS = radius.lg;
 
 type Props = {
   pack: Pack;
-  onBrowseFloor?: () => void;
 };
 
-/** Featured drop — vault showcase framing, spotlight, asymmetry (not a generic SaaS card). */
-export function DropLobbyHero({ pack, onBrowseFloor }: Props) {
+/** Featured pack — product-style card (image, copy, single primary CTA). */
+export function DropLobbyHero({ pack }: Props) {
   const { t } = useTranslation();
   const loc = getLocalizedPackFields(pack, t);
   const topHit = getMockPackTopHit(pack);
   const odds = useMemo(() => getMockPackOdds(pack), [pack]);
   const [oddsOpen, setOddsOpen] = useState(false);
+
+  const openPack = useAppStore((s) => s.openPack);
+  const isPackOpening = useAppStore((s) => s.modals.packOpening);
+  const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
+  const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
+  const requiredTier = pack.requiredMembershipTier;
+  const membershipLocked =
+    !!requiredTier && !membershipMeetsRequired(simulatedTier, requiredTier);
+  const ctaBlocked = isPackOpening || awaitingFulfillment;
+
+  const goDetails = () => {
+    if (navigationRef.isReady()) navigationRef.navigate('PackDetails', { packId: String(pack.id) });
+  };
+
+  const openLockedPack = () => {
+    if (navigationRef.isReady()) navigationRef.navigate('Membership');
+  };
+
+  const subtitle = topHit ? `${topHit.name} · ${topHit.estValue}` : loc.valueDescription;
 
   return (
     <View style={styles.section}>
@@ -35,85 +58,69 @@ export function DropLobbyHero({ pack, onBrowseFloor }: Props) {
         <Text style={styles.kicker}>{t('home.lobby.featuredKicker')}</Text>
       </View>
 
-      <Pressable
-        onPress={() => navigationRef.isReady() && navigationRef.navigate('PackDetails', { packId: String(pack.id) })}
-        style={({ pressed }) => [styles.frame, pressed && styles.pressed]}
-      >
-        <View style={styles.bracketTL} />
-        <View style={styles.bracketTR} />
-        <View style={styles.bracketBL} />
-        <View style={styles.bracketBR} />
-        <View style={styles.rail} />
-
-        <View style={[styles.hero, { backgroundColor: pack.imageColor ?? colors.nearBlack }]}>
-          {pack.imageUrl ? (
-            <Image source={{ uri: pack.imageUrl }} style={StyleSheet.absoluteFillObject} contentFit="cover" />
-          ) : null}
-          <LinearGradient
-            pointerEvents="none"
-            colors={['rgba(0,0,0,0.15)', 'rgba(0,0,0,0.55)', 'rgba(5,8,6,0.92)']}
-            locations={[0, 0.45, 1]}
-            style={StyleSheet.absoluteFillObject}
-          />
-          <LinearGradient
-            pointerEvents="none"
-            colors={[colors.headerHairline, 'transparent', 'transparent']}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 0.55 }}
-            style={StyleSheet.absoluteFillObject}
-          />
-
-          <View style={styles.heroCopy}>
-            <Text style={styles.eyebrow}>{t('home.lobby.featuredEyebrow')}</Text>
-            <Text style={styles.title} numberOfLines={2}>
-              {loc.title}
-            </Text>
-            <Text style={styles.sub} numberOfLines={2}>
-              {topHit ? `${topHit.name} · ${topHit.estValue}` : loc.valueDescription}
-            </Text>
+      <View style={styles.card}>
+        <Pressable
+          onPress={goDetails}
+          style={({ pressed }) => [styles.heroPress, pressed && styles.pressed]}
+          accessibilityRole="button"
+          accessibilityLabel={loc.title}
+        >
+          <View style={[styles.hero, { backgroundColor: pack.imageColor ?? colors.surfaceMuted }]}>
+            {pack.imageUrl ? (
+              <Image source={{ uri: pack.imageUrl }} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+            ) : null}
+            <LinearGradient
+              pointerEvents="none"
+              colors={['transparent', 'rgba(0,0,0,0.14)']}
+              locations={[0.82, 1]}
+              style={StyleSheet.absoluteFillObject}
+            />
           </View>
-        </View>
+        </Pressable>
 
         <View style={styles.meta}>
-          <View style={styles.metaRow}>
-            <View style={styles.metaCol}>
-              <Text style={styles.metaLabel}>{t('home.lobby.price')}</Text>
-              <Text style={styles.metaValue}>
-                {pack.creditPrice.toLocaleString()} {t('packCard.credits')}
-              </Text>
-            </View>
-            <View style={[styles.metaCol, styles.metaColRight]}>
-              <Text style={styles.metaLabel}>{t('home.lobby.remaining')}</Text>
-              <Text style={styles.metaValue}>
-                {pack.remainingInventory.toLocaleString()} / {pack.totalInventory.toLocaleString()}
-              </Text>
-            </View>
-          </View>
+          <Text style={styles.featuredEyebrow}>{t('home.lobby.featuredEyebrow')}</Text>
+          <Text style={styles.title} numberOfLines={2}>
+            {loc.title}
+          </Text>
+          <Text style={styles.sub} numberOfLines={2}>
+            {subtitle}
+          </Text>
 
-          <View style={styles.actions}>
-            <Pressable onPress={() => setOddsOpen(true)} style={styles.oddsBtn}>
-              <Text style={styles.oddsText}>{t('home.lobby.viewOdds')}</Text>
-            </Pressable>
-            {onBrowseFloor ? (
-              <Pressable onPress={onBrowseFloor} style={styles.floorBtn}>
-                <Text style={styles.floorText}>{t('home.lobby.enterFloor')}</Text>
-              </Pressable>
-            ) : null}
-          </View>
+          <Text style={styles.metadataRow}>
+            {t('packCard.metadataRow', {
+              defaultValue: '{{credits}} credits • {{remaining}} remaining',
+              credits: pack.creditPrice.toLocaleString(),
+              remaining: pack.remainingInventory.toLocaleString(),
+            })}
+          </Text>
+
+          <Pressable
+            style={[styles.primaryCta, ctaBlocked && styles.primaryCtaDisabled]}
+            onPress={() => (membershipLocked ? openLockedPack() : openPack(pack))}
+            disabled={ctaBlocked}
+          >
+            <Text style={styles.primaryCtaText}>
+              {membershipLocked ? t('packCard.unlockMembershipCta') : t('packCard.openPack')}
+            </Text>
+          </Pressable>
+
+          <Pressable onPress={() => setOddsOpen(true)} hitSlop={8} style={styles.oddsLinkHit}>
+            <Text style={styles.oddsLink}>{t('home.lobby.viewOdds')}</Text>
+          </Pressable>
         </View>
-      </Pressable>
+      </View>
 
       <PackOddsModal visible={oddsOpen} onClose={() => setOddsOpen(false)} packTitle={loc.title} odds={odds} />
     </View>
   );
 }
 
-const BR = 14;
 const styles = StyleSheet.create({
   section: {
     paddingHorizontal: spacing.base,
     paddingTop: spacing.lg,
-    paddingBottom: spacing.sm,
+    paddingBottom: spacing.md,
   },
   kickerRow: {
     flexDirection: 'row',
@@ -123,181 +130,92 @@ const styles = StyleSheet.create({
   },
   kickerLine: {
     width: 28,
-    height: 2,
-    backgroundColor: colors.gold,
-    opacity: 0.85,
+    height: 1,
+    backgroundColor: colors.border,
   },
   kicker: {
     fontSize: 10,
-    fontWeight: fontWeight.black,
-    letterSpacing: 2.4,
+    fontFamily: brandFont.semibold,
+    letterSpacing: 2,
     textTransform: 'uppercase',
     color: colors.textMuted,
   },
-  frame: {
-    borderRadius: radius.lg,
+  card: {
+    borderRadius: CARD_RADIUS,
     overflow: 'hidden',
-    backgroundColor: 'rgba(8,12,22,0.94)',
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
-    shadowColor: colors.accentGlow,
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.45,
-    shadowRadius: 28,
-    elevation: 14,
+    backgroundColor: colors.surfaceElevated,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
   },
-  pressed: { opacity: 0.97 },
-  rail: {
-    position: 'absolute',
-    left: 0,
-    top: 12,
-    bottom: 12,
-    width: 3,
-    backgroundColor: colors.accent,
-    opacity: 0.55,
-    zIndex: 4,
-    borderTopRightRadius: 2,
-    borderBottomRightRadius: 2,
-  },
-  bracketTL: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    width: BR,
-    height: BR,
-    borderTopWidth: 2,
-    borderLeftWidth: 2,
-    borderColor: colors.accentBorder,
-    zIndex: 5,
-  },
-  bracketTR: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: BR,
-    height: BR,
-    borderTopWidth: 2,
-    borderRightWidth: 2,
-    borderColor: colors.accentBorder,
-    zIndex: 5,
-  },
-  bracketBL: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    width: BR,
-    height: BR,
-    borderBottomWidth: 2,
-    borderLeftWidth: 2,
-    borderColor: 'rgba(56, 189, 248, 0.32)',
-    zIndex: 5,
-  },
-  bracketBR: {
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
-    width: BR,
-    height: BR,
-    borderBottomWidth: 2,
-    borderRightWidth: 2,
-    borderColor: 'rgba(56, 189, 248, 0.32)',
-    zIndex: 5,
+  pressed: { opacity: 0.98 },
+  heroPress: {
+    overflow: 'hidden',
   },
   hero: {
-    height: Math.min(200, W * 0.48),
-    justifyContent: 'flex-end',
-    paddingLeft: spacing.md + 4,
-    paddingRight: spacing.base,
-  },
-  heroCopy: {
-    paddingBottom: spacing.base,
-    paddingTop: spacing.sm,
-    maxWidth: '88%',
-  },
-  eyebrow: {
-    fontSize: 9,
-    fontWeight: fontWeight.bold,
-    letterSpacing: 2,
-    color: 'rgba(240,247,255,0.7)',
-    marginBottom: 6,
-    textTransform: 'uppercase',
-  },
-  title: {
-    fontSize: fontSize.xxl,
-    fontWeight: fontWeight.black,
-    color: colors.white,
-    letterSpacing: -0.8,
-    lineHeight: 30,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 10,
-  },
-  sub: {
-    marginTop: 6,
-    fontSize: fontSize.sm,
-    color: 'rgba(226,232,240,0.88)',
-    lineHeight: 20,
+    height: HERO_H,
+    width: '100%',
   },
   meta: {
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.md,
-    backgroundColor: 'rgba(5,8,18,0.78)',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(56, 189, 248, 0.22)',
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.lg + 2,
+    backgroundColor: colors.surfaceElevated,
   },
-  metaRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: spacing.md,
-  },
-  metaCol: { flex: 1 },
-  metaColRight: { alignItems: 'flex-end' },
-  metaLabel: {
-    fontSize: 9,
-    fontWeight: fontWeight.bold,
-    letterSpacing: 1.6,
-    color: colors.textMuted,
+  featuredEyebrow: {
+    fontSize: 10,
+    fontFamily: brandFont.semibold,
+    letterSpacing: 1.4,
     textTransform: 'uppercase',
-    marginBottom: 4,
+    color: colors.textMuted,
+    marginBottom: spacing.sm,
   },
-  metaValue: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
+  title: {
+    fontSize: fontSize.md,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
+    letterSpacing: -0.2,
+    lineHeight: 22,
+    marginBottom: spacing.sm,
   },
-  actions: {
-    flexDirection: 'row',
-    gap: spacing.sm,
+  sub: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.regular,
+    color: colors.textSecondary,
+    lineHeight: 20,
+    marginBottom: spacing.lg,
+  },
+  metadataRow: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.regular,
+    color: colors.textSecondary,
+    marginBottom: spacing.lg,
+    lineHeight: 20,
+  },
+  primaryCta: {
+    height: 48,
+    borderRadius: radius.md,
+    backgroundColor: colors.nearBlack,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primaryCtaDisabled: {
+    opacity: 0.5,
+  },
+  primaryCtaText: {
+    color: colors.white,
+    fontSize: fontSize.base,
+    fontFamily: brandFont.semibold,
+    letterSpacing: 0.2,
+  },
+  oddsLinkHit: {
+    alignSelf: 'center',
     marginTop: spacing.md,
+    paddingVertical: spacing.xs,
   },
-  oddsBtn: {
-    flex: 1,
-    paddingVertical: 11,
-    alignItems: 'center',
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.14)',
-    backgroundColor: 'rgba(255,255,255,0.04)',
-  },
-  oddsText: {
+  oddsLink: {
     fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
-    color: colors.textPrimary,
-    letterSpacing: 0.3,
-  },
-  floorBtn: {
-    flex: 1,
-    paddingVertical: 11,
-    alignItems: 'center',
-    borderRadius: radius.md,
-    backgroundColor: colors.goldSoft,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
-  },
-  floorText: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.black,
-    color: colors.gold,
-    letterSpacing: 0.4,
+    fontFamily: brandFont.medium,
+    color: colors.accent,
+    textDecorationLine: 'underline',
   },
 });

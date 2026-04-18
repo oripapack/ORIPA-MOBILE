@@ -549,14 +549,14 @@ const styles = StyleSheet.create({
     color: 'rgba(196,181,154,0.75)',
   },
   oauthBtnSheet: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: 'rgba(255,255,255,0.1)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.09)',
+    borderColor: 'rgba(255,255,255,0.14)',
   },
   appleBtnSheet: {
-    backgroundColor: 'rgba(0,0,0,0.12)',
+    backgroundColor: 'rgba(0,0,0,0.35)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: 'rgba(255,255,255,0.12)',
   },
   modeChipSheet: {
     backgroundColor: 'rgba(255,255,255,0.06)',
@@ -796,8 +796,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
     marginBottom: spacing.xl,
-    borderColor: 'rgba(56, 189, 248, 0.22)',
-    backgroundColor: 'rgba(248, 250, 252, 0.98)',
+    borderColor: colors.accentBorder,
+    backgroundColor: '#F8FAFC',
     ...Platform.select({
       ios: {
         shadowColor: '#000',

@@ -30,7 +30,9 @@ export function PullHistoryRow({ pull }: Props) {
         <Text style={styles.pullCredits} numberOfLines={1}>
           {pull.fulfillment === 'shipped'
             ? t('rewards.shipped')
-            : `+${pull.creditsWon.toLocaleString()}`}
+            : pull.fulfillment === 'vaulted'
+              ? t('rewards.inVault')
+              : `+${pull.creditsWon.toLocaleString()}`}
         </Text>
         <Text style={styles.pullDate}>
           {pull.timestamp.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   label: {
-    color: colors.casinoGold,
+    color: colors.textMuted,
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
     letterSpacing: 0.6,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
   },
   pillText: {
-    color: colors.casinoGold,
+    color: colors.accentDark,
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
     letterSpacing: 0.2,

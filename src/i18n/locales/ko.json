@@ -3,7 +3,8 @@
     "home": "홈",
     "friends": "친구",
     "marketplace": "샵",
-    "account": "계정"
+    "account": "계정",
+    "vault": "Vault"
   },
   "marketplace": {
     "storeTitle": "Pull Hub 스토어",
@@ -125,7 +126,8 @@
       "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
       "railGradedTitle": "Graded vault",
       "railGradedSub": "Slabbed pulls and graded chase — curated for collectors.",
-      "liveHitsKicker": "Live hits"
+      "liveHitsKicker": "Live hits",
+      "hotFloorChip": "Hot"
     }
   },
   "packs": {
@@ -375,7 +377,8 @@
     },
     "topHit": "탑 히트",
     "chase": "CHASE",
-    "unlockMembershipCta": "Unlock with membership"
+    "unlockMembershipCta": "Unlock with membership",
+    "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
   "packCatalog": {
     "1": {
@@ -454,7 +457,29 @@
     "hudCommitTitle": "You're in control",
     "hudCommitSub": "Tap to break the seal — your timing",
     "hudPrimedTitle": "BREAK!",
-    "hudPrimedSub": "Pack's going…"
+    "hudPrimedSub": "Pack's going…",
+    "bulkPackSubtitle": "{{title}} · ×{{count}}",
+    "bulkSummaryTitle": "{{count}} pulls",
+    "bulkTotalCredits": "Total card value: {{amount}} credits (if converted)",
+    "bulkBestHit": "Best hit",
+    "bulkRowCredits": "+{{amount}} credits",
+    "tier_common": "Common",
+    "tier_rare": "Rare",
+    "tier_epic": "Epic",
+    "tier_legendary": "Legendary",
+    "tier_mythic": "Mythic",
+    "faceKicker": "Live sleeve",
+    "faceHeadline": "SURGE",
+    "facePackFallback": "Mystery TCG pack",
+    "faceSeal": "Tamper-evident digital seal",
+    "faceRightSealed": "SEALED",
+    "faceRightCert": "Odds on file",
+    "valueOverlay": "{{amount}} CR",
+    "reelTapToSlow": "Tap to slow the reel",
+    "reelSlowing": "Locking in…",
+    "reelLocked": "Locked",
+    "reelSub": "Your pull is already sealed — this is the pace.",
+    "reelTapToSlowA11y": "Slow the pack reel"
   },
   "insufficientCredits": {
     "title": "크레딧 부족",
@@ -465,7 +490,8 @@
     "balanceLabel": "내 잔액",
     "creditsLine": "{{amount}} 크레딧",
     "buyCredits": "크레딧 구매",
-    "cancel": "취소"
+    "cancel": "취소",
+    "costLineBulk": "{{perPack}} × {{count}} packs = {{total}} Credits"
   },
   "friendsAlerts": {
     "copiedTitle": "복사됨",
@@ -780,7 +806,39 @@
     "memberGateTitle": "Members only",
     "memberGateBody": "This lane needs {{tier}} membership or higher. You can simulate a tier on the Membership screen (demo).",
     "ctaUnlockMembership": "Unlock — {{tier}}",
-    "ctaUnlockMembershipSub": "Opens membership (demo tier persists on this device)"
+    "ctaUnlockMembershipSub": "Opens membership (demo tier persists on this device)",
+    "open10": "Open 10",
+    "open100": "Open 100",
+    "bulk100Title": "Open 100 packs?",
+    "bulk100Body": "This opens {{count}} packs at once for {{credits}} credits. You’ll review everything in Won Prizes next.",
+    "bulkCancel": "Not now",
+    "bulkConfirm": "Open 100",
+    "bulkStockTitle": "Not enough stock",
+    "bulkStockBody": "This pack doesn’t have {{count}} pulls left in the demo catalog.",
+    "multiOpen": {
+      "quantity": "Quantity",
+      "standardTitle": "Standard Open",
+      "standardLead": "Full reveal experience — one pack at a time.",
+      "standardCredits": "{{credits}} credits",
+      "fastTitle": "Fast Open",
+      "fastLead": "Quick reveal · batch summary when you’re done.",
+      "fastTotal": "{{total}} credits total",
+      "perPack": "{{each}} each",
+      "rushTitle": "100 Pack Rush",
+      "rushLead1": "Fast reveal mode",
+      "rushLead2": "Best hits stay spotlighted in your recap.",
+      "rushTotal": "{{total}} credits total",
+      "ctaOpenPack": "Open Pack",
+      "ctaFastOpen": "Start Fast Open",
+      "ctaRush": "Begin Rush",
+      "ctaSubInventory": "{{left}} left in this lane",
+      "rushModalKicker": "Premium session",
+      "rushModalTitle": "Ready for the Rush?",
+      "rushModalBody": "Open {{count}} packs for {{total}} credits?",
+      "rushModalDisclosure": "Credits apply on confirm — your recap keeps best hits visible.",
+      "rushModalCancel": "Cancel",
+      "rushModalConfirm": "Begin Rush"
+    }
   },
   "splash": {
     "frameKicker": "COLLECTOR VAULT",
@@ -919,5 +977,18 @@
     "shopCreditsHint": "Use credits you already have, or buy more anytime when you want to pull again.",
     "shopCtaContinue": "Continue to Shop",
     "shopCtaBackPacks": "Back to Packs"
+  },
+  "vaultScreen": {
+    "title": "Vault",
+    "lead": "Hits you’ve kept or are shipping. Converted pulls stay in pull history only.",
+    "pullHistoryLink": "Full pull history →",
+    "emptyTitle": "Nothing in your vault yet",
+    "emptyBody": "Open packs on Packs — your hits land here until you convert them to coins.",
+    "guestTitle": "Sign in to use your vault",
+    "guestBody": "Guest pulls aren’t saved. Create an account to build your collection.",
+    "guestCta": "Sign in",
+    "statusPending": "Tap to decide ship or coins",
+    "statusShipped": "Shipping",
+    "statusKept": "In collection"
   }
 }

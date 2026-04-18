@@ -34,7 +34,7 @@ function rarityColors(r: HitRarity) {
   switch (r) {
     case 'Gold':
       return {
-        pill: { backgroundColor: 'rgba(232, 197, 71, 0.16)', borderColor: 'rgba(232, 197, 71, 0.5)' } as ViewStyle,
+        pill: { backgroundColor: colors.goldPillBg, borderColor: colors.goldPillBorder } as ViewStyle,
         text: colors.gold,
       };
     case 'PSA 10':
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     backgroundColor: 'rgba(0,0,0,0.42)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(232, 197, 71, 0.22)',
+    borderColor: colors.goldBorderHairline,
     overflow: 'hidden',
   },
   labelRow: {
@@ -238,9 +238,9 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: 'rgba(232, 197, 71, 0.10)',
+    backgroundColor: colors.goldWashMedium,
     borderWidth: 1,
-    borderColor: 'rgba(232, 197, 71, 0.35)',
+    borderColor: colors.goldBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },

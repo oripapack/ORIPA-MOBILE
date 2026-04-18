@@ -19,20 +19,36 @@ export function HeroRevealEngine({
   revealCard,
   revealRarity,
   packTint,
+  packFaceTitle,
   replayKey,
   skipNonce,
+  suppressInitialEnterHaptic,
+  introDelayMs,
   onRevealDone,
 }: {
   roll: PackRollResult;
   revealCard: RevealCard;
   revealRarity: RevealRarity;
   packTint: string;
+  packFaceTitle?: string;
   replayKey: number;
   skipNonce: number;
+  /** When true, skip the opening haptic (e.g. reel phase already primed the moment). */
+  suppressInitialEnterHaptic?: boolean;
+  /** ms before rip intro begins (reel handoff). */
+  introDelayMs?: number;
   onRevealDone: () => void;
 }) {
   const { t } = useTranslation();
-  const h = useHeroReveal({ roll, revealRarity, replayKey, skipNonce, onRevealDone });
+  const h = useHeroReveal({
+    roll,
+    revealRarity,
+    replayKey,
+    skipNonce,
+    suppressInitialEnterHaptic,
+    introDelayMs,
+    onRevealDone,
+  });
 
   /**
    * Prevent "outcome spoilers":
@@ -46,9 +62,6 @@ export function HeroRevealEngine({
   const dim = h.bgDim;
   const pulse = h.glowPulse.interpolate({ inputRange: [0, 1], outputRange: [0.15, tv.glowStrength] });
   const leak = h.leakOpacity.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
-  const split = h.packSplit.interpolate({ inputRange: [0, 1], outputRange: [0, 40] });
-  const splitLeftRot = h.packSplit.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-5deg'] });
-  const splitRightRot = h.packSplit.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '5deg'] });
 
   const flipDeg = h.flip.interpolate({ inputRange: [0, 1], outputRange: ['90deg', '0deg'] });
   const valueText = `${roll.creditsWon.toLocaleString()} CR`;
@@ -60,7 +73,7 @@ export function HeroRevealEngine({
         ? 'rgba(125,211,252,1)'
         : revealRarity === 'rare'
           ? 'rgba(56,189,248,1)'
-          : '#FFFFFF';
+          : 'rgba(241,245,249,0.88)';
 
   const chromeAccent = h.phase === 'reveal' || h.phase === 'result' ? tv.accent : 'rgba(148, 163, 184, 0.85)';
 
@@ -106,7 +119,7 @@ export function HeroRevealEngine({
             opacity: h.packOpacity,
             transform: [
               { translateX: h.packShakeX },
-              { translateY: h.packBobY },
+              { translateY: Animated.add(h.packBobY, h.packRevealLift) },
               {
                 rotateZ: h.packTiltDeg.interpolate({
                   inputRange: [-8, 8],
@@ -129,22 +142,14 @@ export function HeroRevealEngine({
             },
           ]}
         />
-        {/* Pack split illusion (two halves) */}
+        {/* Sealed face (two SVG halves, no tear — open is scale + fade in hook). */}
         <View style={styles.packSplitRow}>
-          <Animated.View
-            style={{
-              transform: [{ translateX: Animated.multiply(split, -1) }, { rotate: splitLeftRot }],
-            }}
-          >
-            <View style={[styles.packHalf, styles.packHalfLeft]}>
-              <HeroPackFace side="left" packAccent={packTint} />
-            </View>
-          </Animated.View>
-          <Animated.View style={{ transform: [{ translateX: split }, { rotate: splitRightRot }] }}>
-            <View style={[styles.packHalf, styles.packHalfRight]}>
-              <HeroPackFace side="right" packAccent={packTint} />
-            </View>
-          </Animated.View>
+          <View style={[styles.packHalf, styles.packHalfLeft]}>
+            <HeroPackFace side="left" packAccent={packTint} packLine={packFaceTitle} />
+          </View>
+          <View style={[styles.packHalf, styles.packHalfRight]}>
+            <HeroPackFace side="right" packAccent={packTint} packLine={packFaceTitle} />
+          </View>
         </View>
       </Animated.View>
 
@@ -157,11 +162,6 @@ export function HeroRevealEngine({
         style={[styles.afterglow, { opacity: h.afterglowOpacity, backgroundColor: flashColor }]}
         pointerEvents="none"
       />
-
-      {/* Silhouette */}
-      <Animated.View style={[styles.silhouette, { opacity: h.silhouetteOpacity }]} pointerEvents="none">
-        <View style={styles.silhouetteCard} />
-      </Animated.View>
 
       <RevealAuraHalo accent={tv.accent} opacity={h.auraOpacity} />
 
@@ -208,24 +208,25 @@ export function HeroRevealEngine({
 
           <HeroCardView card={revealCard} revealRarity={revealRarity} valueText={valueText} />
 
-          {/* Single foil sweep (one pass) */}
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              styles.foilWrap,
-              {
-                opacity: h.foilOpacity,
-                transform: [{ translateX: h.foilX }, { rotate: '-18deg' }],
-              },
-            ]}
-          >
-            <LinearGradient
-              colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.28)', 'rgba(255,255,255,0)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.foil}
-            />
-          </Animated.View>
+          {revealRarity !== 'common' ? (
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                styles.foilWrap,
+                {
+                  opacity: h.foilOpacity,
+                  transform: [{ translateX: h.foilX }, { rotate: '-18deg' }],
+                },
+              ]}
+            >
+              <LinearGradient
+                colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.28)', 'rgba(255,255,255,0)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.foil}
+              />
+            </Animated.View>
+          ) : null}
 
           <Animated.View style={[styles.badgeOverlay, { opacity: h.badgeOpacity, transform: [{ scale: h.badgeScale }] }]}>
             <View style={[styles.badge, { backgroundColor: tv.ovrBg }]}>
@@ -234,7 +235,7 @@ export function HeroRevealEngine({
           </Animated.View>
           <Animated.View style={[styles.valueOverlay, { opacity: h.valueOpacity, transform: [{ translateY: h.valueY }] }]}>
             <Text style={[styles.valueText, { color: 'rgba(226, 232, 240, 0.88)' }]}>
-              Pull Hub · {valueText}
+              {t('packOpening.valueOverlay', { amount: roll.creditsWon.toLocaleString() })}
             </Text>
           </Animated.View>
         </Animated.View>
@@ -377,15 +378,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     zIndex: 9,
     opacity: 0,
-  },
-  silhouette: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', zIndex: 11 },
-  silhouetteCard: {
-    width: HERO_CARD_WIDTH,
-    height: 380,
-    borderRadius: 18,
-    backgroundColor: 'rgba(15, 23, 42, 0.35)',
-    borderWidth: 1,
-    borderColor: 'rgba(148, 163, 184, 0.2)',
   },
   cardCenter: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', zIndex: 20 },
   cardShadow: {

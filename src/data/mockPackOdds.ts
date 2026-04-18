@@ -13,6 +13,9 @@ export type PackOdds = {
   note: string;
 };
 
+/** Safe empty placeholder when pack is unresolved (hooks run before screen guard). */
+export const EMPTY_PACK_ODDS: PackOdds = { rows: [], note: '' };
+
 const NOTE = 'Demo probabilities. Final rates may change before launch.';
 
 const ROWS: Record<PackCategory, TierOddsRow[]> = {

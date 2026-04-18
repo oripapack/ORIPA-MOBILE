@@ -288,9 +288,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.casinoFeltBorder,
   },
-  bestName: { fontSize: fontSize.lg, fontFamily: brandFont.black, color: colors.white, marginBottom: spacing.sm },
-  bestVal: { fontSize: fontSize.hero - 4, fontFamily: brandFont.black, color: colors.casinoGold },
-  bestSub: { fontSize: fontSize.xs, color: 'rgba(248,250,252,0.65)', marginTop: 4 },
+  bestName: { fontSize: fontSize.lg, fontFamily: brandFont.black, color: colors.textPrimary, marginBottom: spacing.sm },
+  bestVal: { fontSize: fontSize.hero - 4, fontFamily: brandFont.black, color: colors.accent },
+  bestSub: { fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 4 },
   actions: { gap: spacing.sm, marginTop: spacing.lg },
   btnDark: {
     height: 52,

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAppStore } from './src/store/useAppStore';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
@@ -56,10 +57,17 @@ export default function App() {
     void WebBrowser.maybeCompleteAuthSession();
   }, []);
 
+  useEffect(() => {
+    const sweep = () => useAppStore.getState().processVaultExpiries();
+    sweep();
+    const id = setInterval(sweep, 60_000);
+    return () => clearInterval(id);
+  }, []);
+
   const tree = (
     <PhysicalGoodsPaymentRoot>
       <SafeAreaProvider>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <View style={styles.root}>
           <SimulationDisclosure />
           {__DEV__ && !isClerkEnabled ? (

@@ -9,25 +9,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
-import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../store/useAppStore';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import type { PullRarityTier } from '../../data/mockUser';
 import { WinningsSummaryCard } from './WinningsSummaryCard';
-
-const TIER_POOL: Record<PullRarityTier, string> = {
-  common: 'Common Prize Pool',
-  rare: 'Rare Prize Pool',
-  epic: 'Epic Prize Pool',
-  legendary: 'Legendary Prize Pool',
-  mythic: 'Mythic Prize Pool',
-};
+import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
 
 const TIER_BADGE: Record<PullRarityTier, string> = {
   common: 'Common',
@@ -38,8 +31,8 @@ const TIER_BADGE: Record<PullRarityTier, string> = {
 };
 
 /**
- * Post-opening flow (inspo: clove “Won Prizes”): choose ship vs convert to credits.
- * Credits are only added when user confirms convert or ship.
+ * Post-opening fulfillment: convert to coins by default; optionally check rows to store in Vault.
+ * Shipping is initiated later from the Vault.
  */
 export function WonPrizesModal() {
   const { t } = useTranslation();
@@ -48,18 +41,18 @@ export function WonPrizesModal() {
   const closeModal = useAppStore((s) => s.closeModal);
   const pendingIds = useAppStore((s) => s.pendingFulfillmentPullIds);
   const user = useAppStore((s) => s.user);
-  const finalizePullFulfillment = useAppStore((s) => s.finalizePullFulfillment);
+  const finalizePendingFulfillment = useAppStore((s) => s.finalizePendingFulfillment);
 
-  const [shipSelected, setShipSelected] = useState<Record<string, boolean>>({});
+  /** When true, this pull is stored in the Vault; when false, it converts to coins (default). */
+  const [vaultSelected, setVaultSelected] = useState<Record<string, boolean>>({});
   const [showConvertConfirm, setShowConvertConfirm] = useState(false);
 
   useEffect(() => {
     if (!visible) return;
-    setShipSelected({});
+    setVaultSelected({});
     setShowConvertConfirm(false);
   }, [visible, pendingIds.length]);
 
-  /** Avoid ghost state: modal flag true but nothing to show — would block interaction on some devices. */
   useEffect(() => {
     if (!visible) return;
     if (pendingIds.length === 0) {
@@ -72,65 +65,78 @@ export function WonPrizesModal() {
     return user.pullHistory.filter((p) => idSet.has(p.id) && p.fulfillment === 'pending');
   }, [pendingIds, user.pullHistory]);
 
-  const shipIds = useMemo(() => pulls.filter((p) => shipSelected[p.id]).map((p) => p.id), [pulls, shipSelected]);
-  const convertIds = useMemo(() => pulls.filter((p) => !shipSelected[p.id]).map((p) => p.id), [pulls, shipSelected]);
+  const vaultIds = useMemo(
+    () => pulls.filter((p) => vaultSelected[p.id]).map((p) => p.id),
+    [pulls, vaultSelected],
+  );
+  const convertIds = useMemo(
+    () => pulls.filter((p) => !vaultSelected[p.id]).map((p) => p.id),
+    [pulls, vaultSelected],
+  );
 
-  const shipCount = shipIds.length;
+  const vaultCount = vaultIds.length;
   const convertCount = convertIds.length;
-  const convertAmount = useMemo(
+
+  const convertAmountTotal = useMemo(
     () => pulls.reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0),
     [pulls],
   );
-  const convertSelectedAmount = useMemo(
+  const coinsToReceiveAmount = useMemo(
     () =>
       pulls
-        .filter((p) => !shipSelected[p.id])
+        .filter((p) => !vaultSelected[p.id])
         .reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0),
-    [pulls, shipSelected],
+    [pulls, vaultSelected],
   );
 
   const selectionState = useMemo(() => {
-    if (shipCount === 0) return 'none' as const;
-    if (convertCount === 0) return 'all' as const;
-    return 'some' as const;
-  }, [shipCount, convertCount]);
+    if (convertCount === 0) return 'allVault' as const;
+    if (vaultCount === 0) return 'allConvert' as const;
+    return 'mixed' as const;
+  }, [vaultCount, convertCount]);
 
-  const topHelperText = useMemo(() => {
-    if (selectionState === 'all') return 'All selected cards will be shipped.';
-    return 'Select the cards you want shipped. Everything else converts automatically.';
-  }, [selectionState]);
+  const summaryCardAmount = selectionState === 'allConvert' ? convertAmountTotal : coinsToReceiveAmount;
 
-  const summaryAmount = selectionState === 'none' ? convertAmount : convertSelectedAmount;
+  const summaryHelperText = useMemo(() => {
+    if (selectionState === 'allVault') {
+      return t('wonPrizesModal.summaryAllVault', { days: VAULT_HOLD_DAYS });
+    }
+    if (selectionState === 'allConvert') {
+      return t('wonPrizesModal.summaryAllConvert');
+    }
+    return t('wonPrizesModal.summaryMixed', { days: VAULT_HOLD_DAYS });
+  }, [selectionState, t]);
 
   const primaryCtaLabel = useMemo(() => {
-    const coins = summaryAmount.toLocaleString();
-    if (selectionState === 'all') return 'Ship Selected Cards';
-    if (selectionState === 'none') return `Get ${coins} Coins`;
-    return `Ship ${shipCount} + Get ${coins} Coins`;
-  }, [selectionState, shipCount, summaryAmount]);
+    const coins = coinsToReceiveAmount.toLocaleString();
+    if (selectionState === 'allVault') return t('wonPrizesModal.ctaAllVault');
+    if (selectionState === 'allConvert') return t('wonPrizesModal.ctaAllConvert', { coins });
+    return t('wonPrizesModal.ctaMixed', { vaultCount, coins });
+  }, [selectionState, coinsToReceiveAmount, vaultCount, t]);
 
   const footerSubcopy = useMemo(() => {
-    if (selectionState === 'all') return `${shipCount} card${shipCount === 1 ? '' : 's'} marked for shipping`;
-    if (selectionState === 'none') return 'Unselected cards convert instantly to coins.';
-    return `${convertCount} convert · ${shipCount} ship`;
-  }, [selectionState, shipCount, convertCount]);
+    if (selectionState === 'allVault') return t('wonPrizesModal.footerAllVault', { count: vaultCount });
+    if (selectionState === 'allConvert') return t('wonPrizesModal.footerAllConvert');
+    return t('wonPrizesModal.footerMixed', { vaultCount, convertCount });
+  }, [selectionState, vaultCount, convertCount, t]);
+
+  const runFulfillment = () => {
+    finalizePendingFulfillment({ vaultIds, convertIds });
+    setVaultSelected({});
+  };
 
   const onPrimaryPress = () => {
     if (pulls.length === 0) return;
-    if (shipCount > 0) {
-      finalizePullFulfillment(shipIds, 'ship');
-    }
-    if (convertIds.length > 0) {
+    if (convertCount > 0) {
       setShowConvertConfirm(true);
+      return;
     }
+    runFulfillment();
   };
 
   const onConfirmConvert = () => {
     setShowConvertConfirm(false);
-    if (convertIds.length > 0) {
-      finalizePullFulfillment(convertIds, 'convert');
-    }
-    setShipSelected({});
+    runFulfillment();
   };
 
   if (!visible) return null;
@@ -150,38 +156,41 @@ export function WonPrizesModal() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.topBar}>
-            <Text style={styles.pageTitle}>Won Prizes</Text>
+            <Text style={styles.pageTitle}>{t('wonPrizesModal.title')}</Text>
           </View>
 
-          <Text style={styles.instructions}>
-            Unselected cards convert instantly to coins. Shipping is optional.
-          </Text>
+          <Text style={styles.instructions}>{t('wonPrizesModal.lead')}</Text>
 
-          <WinningsSummaryCard amount={summaryAmount} currencyLabel="Coins" helperText={topHelperText} />
+          <WinningsSummaryCard
+            label={t('wonPrizesModal.summaryLabel')}
+            amount={summaryCardAmount}
+            currencyLabel={t('wonPrizesModal.coinsLabel')}
+            helperText={summaryHelperText}
+          />
 
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>
-              Pending winnings · {pulls.length} item{pulls.length === 1 ? '' : 's'}
+              {t('wonPrizesModal.sectionTitle', { count: pulls.length })}
             </Text>
-            <Text style={styles.sectionHint}>Tap to toggle shipping</Text>
+            <Text style={styles.sectionHint}>{t('wonPrizesModal.sectionHint')}</Text>
           </View>
 
           {pulls.map((pull) => {
             const tier: PullRarityTier = pull.tier ?? 'common';
-            const checked = !!shipSelected[pull.id];
+            const toVault = !!vaultSelected[pull.id];
             const itemValue = pull.creditsWon ?? pull.convertCreditValue ?? 0;
             return (
               <Pressable
                 key={pull.id}
-                style={[styles.itemCard, checked && styles.itemCardSelected]}
-                onPress={() => setShipSelected((s) => ({ ...s, [pull.id]: !s[pull.id] }))}
+                style={[styles.itemCard, toVault && styles.itemCardVaultPick]}
+                onPress={() => setVaultSelected((s) => ({ ...s, [pull.id]: !s[pull.id] }))}
               >
                 <TouchableOpacity
-                  style={[styles.checkbox, checked && styles.checkboxOn]}
-                  onPress={() => setShipSelected((s) => ({ ...s, [pull.id]: !s[pull.id] }))}
+                  style={[styles.checkbox, toVault && styles.checkboxVaultOn]}
+                  onPress={() => setVaultSelected((s) => ({ ...s, [pull.id]: !s[pull.id] }))}
                   activeOpacity={0.8}
                 >
-                  {checked ? <Text style={styles.checkmark}>✓</Text> : null}
+                  {toVault ? <Text style={styles.checkmark}>✓</Text> : null}
                 </TouchableOpacity>
 
                 <View style={styles.thumb}>
@@ -196,8 +205,10 @@ export function WonPrizesModal() {
                     <View style={styles.badge}>
                       <Text style={styles.badgeText}>{TIER_BADGE[tier]}</Text>
                     </View>
-                    <View style={[styles.intentPill, checked ? styles.intentShip : styles.intentConvert]}>
-                      <Text style={styles.intentText}>{checked ? 'Shipping' : 'Converts'}</Text>
+                    <View style={[styles.intentPill, toVault ? styles.intentVault : styles.intentConvert]}>
+                      <Text style={styles.intentText}>
+                        {toVault ? t('wonPrizesModal.pillVault') : t('wonPrizesModal.pillConvert')}
+                      </Text>
                     </View>
                   </View>
                   <Text style={styles.itemName} numberOfLines={2}>
@@ -216,42 +227,48 @@ export function WonPrizesModal() {
             );
           })}
 
-          <Text style={styles.hint}>Select the cards you want shipped. Everything else converts automatically.</Text>
+          <Text style={styles.hint}>{t('wonPrizesModal.checkboxHint')}</Text>
         </ScrollView>
 
         <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
           <PrimaryButton
             label={primaryCtaLabel}
-            variant={selectionState === 'none' ? 'red' : 'black'}
+            variant={selectionState === 'allVault' ? 'black' : 'red'}
             onPress={onPrimaryPress}
             style={styles.footerBtn}
           />
           <Text style={styles.footerSub}>
-            {selectionState === 'all' ? 'Shipping only' : `🪙 ${summaryAmount.toLocaleString()} converts`}
+            {selectionState === 'allConvert'
+              ? t('wonPrizesModal.footerCoinsOnly', { coins: coinsToReceiveAmount.toLocaleString() })
+              : t('wonPrizesModal.footerVaultLine', { days: VAULT_HOLD_DAYS })}
             {'  ·  '}
             {footerSubcopy}
           </Text>
         </View>
       </View>
 
-      {/* Confirmation — inspo: “Convert items to points” sheet */}
       <Modal visible={showConvertConfirm} transparent animationType="fade" {...transparentModalIOSProps}>
         <Pressable style={styles.confirmOverlay} onPress={() => setShowConvertConfirm(false)}>
           <Pressable style={styles.confirmCard} onPress={() => {}}>
             <TouchableOpacity style={styles.confirmClose} onPress={() => setShowConvertConfirm(false)}>
               <Text style={styles.confirmCloseText}>✕</Text>
             </TouchableOpacity>
-            <Text style={styles.confirmTitle}>Convert to coins</Text>
-            <Text style={styles.confirmBody}>Coins will be added to your balance instantly.</Text>
+            <Text style={styles.confirmTitle}>{t('wonPrizesModal.confirmTitle')}</Text>
+            <Text style={styles.confirmBody}>{t('wonPrizesModal.confirmBody')}</Text>
             <View style={styles.confirmRow}>
-              <Text style={styles.confirmLabel}>Coins to be received</Text>
+              <Text style={styles.confirmLabel}>{t('wonPrizesModal.confirmCoinsLabel')}</Text>
               <View style={styles.confirmValue}>
                 <Text style={styles.coinIcon}>🪙</Text>
-                <Text style={styles.confirmAmount}>{summaryAmount.toLocaleString()}</Text>
+                <Text style={styles.confirmAmount}>{coinsToReceiveAmount.toLocaleString()}</Text>
               </View>
             </View>
-            <PrimaryButton label="Confirm" variant="red" onPress={onConfirmConvert} />
-            <SecondaryButton label="Cancel" onPress={() => setShowConvertConfirm(false)} />
+            {vaultCount > 0 ? (
+              <Text style={styles.confirmVaultNote}>
+                {t('wonPrizesModal.confirmVaultNote', { count: vaultCount, days: VAULT_HOLD_DAYS })}
+              </Text>
+            ) : null}
+            <PrimaryButton label={t('wonPrizesModal.confirmCta')} variant="red" onPress={onConfirmConvert} />
+            <SecondaryButton label={t('wonPrizesModal.confirmCancel')} onPress={() => setShowConvertConfirm(false)} />
           </Pressable>
         </Pressable>
       </Modal>
@@ -313,9 +330,9 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginBottom: spacing.sm,
   },
-  itemCardSelected: {
-    borderColor: colors.redGlow,
-    backgroundColor: colors.surfaceElevated,
+  itemCardVaultPick: {
+    borderColor: colors.goldBorderHeavy,
+    backgroundColor: colors.goldTintSubtle,
   },
   checkbox: {
     width: 24,
@@ -327,9 +344,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.surfaceElevated,
   },
-  checkboxOn: {
-    backgroundColor: colors.red,
-    borderColor: colors.red,
+  checkboxVaultOn: {
+    backgroundColor: colors.gold,
+    borderColor: colors.goldDark,
   },
   checkmark: {
     color: colors.white,
@@ -391,13 +408,13 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     borderWidth: 1,
   },
-  intentShip: {
-    backgroundColor: 'rgba(196, 30, 58, 0.14)',
-    borderColor: 'rgba(196, 30, 58, 0.45)',
+  intentVault: {
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.goldBorderStrong,
   },
   intentConvert: {
-    backgroundColor: colors.goldSoft,
-    borderColor: 'rgba(232, 197, 71, 0.35)',
+    backgroundColor: 'rgba(196, 30, 58, 0.14)',
+    borderColor: 'rgba(196, 30, 58, 0.45)',
   },
   intentText: {
     color: colors.textPrimary,
@@ -491,7 +508,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
   },
   confirmLabel: {
     fontSize: fontSize.sm,
@@ -507,5 +524,12 @@ const styles = StyleSheet.create({
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
     color: colors.textPrimary,
+  },
+  confirmVaultNote: {
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.medium,
+    color: colors.textMuted,
+    marginBottom: spacing.lg,
+    lineHeight: 18,
   },
 });

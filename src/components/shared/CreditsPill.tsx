@@ -39,13 +39,13 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
   amount: {
-    color: colors.white,
+    color: colors.textPrimary,
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
     marginRight: spacing.xs,
   },
   addBtn: {
-    backgroundColor: colors.red,
+    backgroundColor: colors.nearBlack,
     width: 34,
     height: 34,
     borderRadius: radius.full,

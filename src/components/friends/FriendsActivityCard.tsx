@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     paddingLeft: spacing.md + 2,
-    backgroundColor: 'rgba(12,18,14,0.94)',
+    backgroundColor: colors.surfaceElevated,
     borderWidth: 1,
     minHeight: 148,
   },
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 6,
     borderWidth: 1,
-    backgroundColor: 'rgba(0,0,0,0.25)',
+    backgroundColor: colors.surfaceMuted,
   },
   justPulledText: {
     fontSize: 9,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 6,
     borderWidth: 1,
-    backgroundColor: 'rgba(0,0,0,0.22)',
+    backgroundColor: colors.surfaceMuted,
   },
   rarityPillText: {
     fontSize: 8,

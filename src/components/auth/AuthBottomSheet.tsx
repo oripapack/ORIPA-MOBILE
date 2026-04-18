@@ -9,6 +9,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { BOOT_ENTRANCE_SPRING } from '../splash/AppBootEntrance';
 
@@ -47,7 +48,7 @@ type Props = {
 };
 
 /**
- * Slide-up auth shell: solid dim (no blur) so the lobby behind stays readable; sheet stays transparent.
+ * Slide-up auth shell: solid dim (no blur) + opaque sheet panel so lobby chrome doesn’t bleed through copy.
  */
 export const AuthBottomSheet = forwardRef<AuthBottomSheetRef, Props>(function AuthBottomSheet(
   { visible, onRequestClose, showBackdrop = true, confirmDismiss, children },
@@ -147,7 +148,7 @@ export const AuthBottomSheet = forwardRef<AuthBottomSheetRef, Props>(function Au
           pointerEvents="auto"
         >
           <LinearGradient
-            colors={['rgba(255,255,255,0.1)', 'rgba(255,255,255,0)']}
+            colors={['rgba(255,255,255,0.07)', 'rgba(255,255,255,0)']}
             style={styles.sheetTopGlow}
             pointerEvents="none"
           />
@@ -174,19 +175,16 @@ const styles = StyleSheet.create({
   },
   dim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(5, 10, 22, 0.55)',
+    backgroundColor: 'rgba(5, 10, 22, 0.88)',
   },
-  /**
-   * Still no solid fill — only a light “rim” + shadow so users can see where the sheet ends
-   * without a second opaque layer.
-   */
+  /** Opaque panel so title, promo, and OAuth rows stay readable over a busy lobby. */
   sheet: {
     zIndex: 2,
     width: '100%',
     alignSelf: 'stretch',
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
-    backgroundColor: 'transparent',
+    backgroundColor: colors.surfaceElevated,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     borderTopWidth: StyleSheet.hairlineWidth,
