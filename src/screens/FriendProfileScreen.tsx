@@ -28,6 +28,7 @@ import { SocialPullRow } from '../components/social/SocialPullRow';
 import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
+import { FriendVaultShopSection } from '../components/friends/FriendVaultShopSection';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendProfile'>;
 type Rt = RouteProp<RootStackParamList, 'FriendProfile'>;
@@ -137,6 +138,8 @@ export function FriendProfileScreen() {
             <Text style={styles.statLab}>{t('social.statLuck')}</Text>
           </View>
         </View>
+
+        <FriendVaultShopSection sellerUsername={normalized} isSelf={isSelf} />
 
         <Text style={styles.section}>{t('social.bestPull')}</Text>
         <View style={styles.bestCard}>

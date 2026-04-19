@@ -97,12 +97,15 @@ export function RevealCtaFade({
   visible,
   instant,
   enterDelayMs = 520,
+  enterDurationMs = 520,
   children,
 }: {
   visible: boolean;
   instant: boolean;
   /** Breathing room after hero settles before CTAs claim focus */
   enterDelayMs?: number;
+  /** Opacity ramp length once delay elapses */
+  enterDurationMs?: number;
   children: React.ReactNode;
 }) {
   const opacity = useRef(new Animated.Value(0)).current;
@@ -126,19 +129,19 @@ export function RevealCtaFade({
       Animated.parallel([
         Animated.timing(opacity, {
           toValue: 1,
-          duration: 520,
+          duration: enterDurationMs,
           easing: Easing.out(Easing.cubic),
           useNativeDriver: true,
         }),
         Animated.spring(translateY, {
           toValue: 0,
-          friction: 9,
-          tension: 98,
+          friction: 11,
+          tension: 68,
           useNativeDriver: true,
         }),
       ]),
     ]).start();
-  }, [visible, instant, enterDelayMs, opacity, translateY]);
+  }, [visible, instant, enterDelayMs, enterDurationMs, opacity, translateY]);
 
   if (!visible) return null;
 

@@ -6,6 +6,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -23,8 +24,9 @@ import { useGuestBrowseStore } from '../../store/guestBrowseStore';
 import { isClerkEnabled } from '../../config/clerk';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
-import { DEFAULT_PACK_OPENING_STYLE } from '../../config/packOpeningAnimation';
+import { DEFAULT_PACK_OPENING_STYLE, USE_PROTOTYPE_LINEUP_PACK_OPEN } from '../../config/packOpeningAnimation';
 import { PackOpeningEngine } from './opening/PackOpeningEngine';
+import { PrototypePackOpenFlow } from './openingPrototype/PrototypePackOpenFlow';
 import { StadiumGradient, Spotlight } from './opening/sharedStage';
 import { resolveRevealCardForTier } from './opening/mockRevealCards';
 import { generatePackOpenResult, bestRollFromResults } from './opening/generatePackRoll';
@@ -210,7 +212,19 @@ export function PackOpeningModal() {
     setSkipNonce(0);
   }, [openPack, selectedPack]);
 
+  const sharePullFromReveal = useCallback(() => {
+    if (!pending || !revealCard) return;
+    const tierLabel = t(`packOpening.tier_${pending.tier}`);
+    const msg = t('packOpening.shareMessage', {
+      name: revealCard.name,
+      tier: tierLabel,
+      credits: pending.creditsWon.toLocaleString(),
+    });
+    void Share.share({ message: msg });
+  }, [pending, revealCard, t]);
+
   const showSkip = !!pending && !engineDone && !isBulkOpen;
+  const compactPackHeader = !!(pending && engineDone && !isBulkOpen);
 
   return (
     <Modal
@@ -238,17 +252,25 @@ export function PackOpeningModal() {
         >
           <View style={styles.headerRow}>
             <View style={styles.headerTextBlock}>
-              <Text style={styles.titleFifa}>{t('packOpening.title')}</Text>
-              <Text style={styles.subFifa} numberOfLines={2}>
-                {selectedPack
-                  ? isBulkOpen
-                    ? t('packOpening.bulkPackSubtitle', {
-                        title: getLocalizedPackFields(selectedPack, t).title,
-                        count: packOpenQuantity,
-                      })
-                    : getLocalizedPackFields(selectedPack, t).title
-                  : ''}
-              </Text>
+              {compactPackHeader ? (
+                <Text style={styles.titleCompact} numberOfLines={1}>
+                  {selectedPack ? getLocalizedPackFields(selectedPack, t).title : ''}
+                </Text>
+              ) : (
+                <>
+                  <Text style={styles.titleFifa}>{t('packOpening.title')}</Text>
+                  <Text style={styles.subFifa} numberOfLines={2}>
+                    {selectedPack
+                      ? isBulkOpen
+                        ? t('packOpening.bulkPackSubtitle', {
+                            title: getLocalizedPackFields(selectedPack, t).title,
+                            count: packOpenQuantity,
+                          })
+                        : getLocalizedPackFields(selectedPack, t).title
+                      : ''}
+                  </Text>
+                </>
+              )}
             </View>
             <View style={styles.headerRight}>
               {showSkip && (
@@ -263,76 +285,103 @@ export function PackOpeningModal() {
             </View>
           </View>
 
-          {pending && revealCard ? (
-            <PackOpeningEngine
-              key={`pack-open-${packOpenSessionId}`}
-              style={DEFAULT_PACK_OPENING_STYLE}
-              roll={pending}
-              revealCard={revealCard}
-              revealRarity={revealRarity}
-              packTint={packTint}
-              packFaceTitle={packFaceTitle}
-              sessionSalt={packOpenSessionId}
-              replayKey={0}
-              skipNonce={skipNonce}
-              onRevealDone={onRevealDone}
-            />
-          ) : null}
+          <View style={styles.body}>
+            {pending && revealCard ? (
+              USE_PROTOTYPE_LINEUP_PACK_OPEN ? (
+                <PrototypePackOpenFlow
+                  key={`pack-open-proto-${packOpenSessionId}`}
+                  roll={pending}
+                  revealCard={revealCard}
+                  revealRarity={revealRarity}
+                  packTint={packTint}
+                  packFaceTitle={packFaceTitle}
+                  sessionSalt={packOpenSessionId}
+                  replayKey={0}
+                  skipNonce={skipNonce}
+                  onRevealDone={onRevealDone}
+                  onStoreInVault={goToWonPrizes}
+                  onSharePull={sharePullFromReveal}
+                />
+              ) : (
+                <PackOpeningEngine
+                  key={`pack-open-${packOpenSessionId}`}
+                  style={DEFAULT_PACK_OPENING_STYLE}
+                  roll={pending}
+                  revealCard={revealCard}
+                  revealRarity={revealRarity}
+                  packTint={packTint}
+                  packFaceTitle={packFaceTitle}
+                  sessionSalt={packOpenSessionId}
+                  replayKey={0}
+                  skipNonce={skipNonce}
+                  onRevealDone={onRevealDone}
+                />
+              )
+            ) : null}
 
-          {isBulkOpen && bulkRolls && bulkBest ? (
-            <View style={styles.bulkSummary}>
-              <Text style={styles.bulkTitle}>{t('packOpening.bulkSummaryTitle', { count: packOpenQuantity })}</Text>
-              <Text style={styles.bulkTotal}>
-                {t('packOpening.bulkTotalCredits', { amount: bulkTotalCredits.toLocaleString() })}
-              </Text>
-              <View style={styles.bulkBestRow}>
-                <Text style={styles.bulkBestLabel}>{t('packOpening.bulkBestHit')}</Text>
-                <Text style={styles.bulkBestTier}>{t(`packOpening.tier_${bulkBest.tier}`)}</Text>
-                <Text style={styles.bulkBestResult} numberOfLines={2}>
-                  {bulkBest.result}
+            {isBulkOpen && bulkRolls && bulkBest ? (
+              <View style={styles.bulkSummary}>
+                <Text style={styles.bulkTitle}>{t('packOpening.bulkSummaryTitle', { count: packOpenQuantity })}</Text>
+                <Text style={styles.bulkTotal}>
+                  {t('packOpening.bulkTotalCredits', { amount: bulkTotalCredits.toLocaleString() })}
                 </Text>
-                <Text style={styles.bulkBestCredits}>
-                  {t('packOpening.bulkRowCredits', { amount: bulkBest.creditsWon.toLocaleString() })}
-                </Text>
-              </View>
-              {bulkTierCounts ? (
-                <Text style={styles.bulkTierLine} numberOfLines={2}>
-                  {(['mythic', 'legendary', 'epic', 'rare', 'common'] as const)
-                    .flatMap((tier) => {
-                      const n = bulkTierCounts[tier];
-                      if (!n) return [];
-                      return [`${t(`packOpening.tier_${tier}`)} ×${n}`];
-                    })
-                    .join(' · ')}
-                </Text>
-              ) : null}
-              <ScrollView
-                style={styles.bulkScroll}
-                contentContainerStyle={styles.bulkScrollContent}
-                showsVerticalScrollIndicator
-              >
-                {bulkRolls.map((r, idx) => (
-                  <View key={`bulk-${packOpenSessionId}-${idx}`} style={styles.bulkRow}>
-                    <Text style={styles.bulkRowIdx}>#{idx + 1}</Text>
-                    <View style={styles.bulkRowMid}>
-                      <Text style={styles.bulkRowTier}>{t(`packOpening.tier_${r.tier}`)}</Text>
-                      <Text style={styles.bulkRowResult} numberOfLines={1}>
-                        {r.result}
-                      </Text>
+                <View style={styles.bulkBestRow}>
+                  <Text style={styles.bulkBestLabel}>{t('packOpening.bulkBestHit')}</Text>
+                  <Text style={styles.bulkBestTier}>{t(`packOpening.tier_${bulkBest.tier}`)}</Text>
+                  <Text style={styles.bulkBestResult} numberOfLines={2}>
+                    {bulkBest.result}
+                  </Text>
+                  <Text style={styles.bulkBestCredits}>
+                    {t('packOpening.bulkRowCredits', { amount: bulkBest.creditsWon.toLocaleString() })}
+                  </Text>
+                </View>
+                {bulkTierCounts ? (
+                  <Text style={styles.bulkTierLine} numberOfLines={2}>
+                    {(['mythic', 'legendary', 'epic', 'rare', 'common'] as const)
+                      .flatMap((tier) => {
+                        const n = bulkTierCounts[tier];
+                        if (!n) return [];
+                        return [`${t(`packOpening.tier_${tier}`)} ×${n}`];
+                      })
+                      .join(' · ')}
+                  </Text>
+                ) : null}
+                <ScrollView
+                  style={styles.bulkScroll}
+                  contentContainerStyle={styles.bulkScrollContent}
+                  showsVerticalScrollIndicator
+                >
+                  {bulkRolls.map((r, idx) => (
+                    <View key={`bulk-${packOpenSessionId}-${idx}`} style={styles.bulkRow}>
+                      <Text style={styles.bulkRowIdx}>#{idx + 1}</Text>
+                      <View style={styles.bulkRowMid}>
+                        <Text style={styles.bulkRowTier}>{t(`packOpening.tier_${r.tier}`)}</Text>
+                        <Text style={styles.bulkRowResult} numberOfLines={1}>
+                          {r.result}
+                        </Text>
+                      </View>
+                      <Text style={styles.bulkRowCredits}>{r.creditsWon.toLocaleString()}</Text>
                     </View>
-                    <Text style={styles.bulkRowCredits}>{r.creditsWon.toLocaleString()}</Text>
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
-          ) : null}
+                  ))}
+                </ScrollView>
+              </View>
+            ) : null}
+          </View>
 
           <RevealCtaFade
             visible={engineDone}
             instant={skippedToEnd || isBulkOpen}
-            enterDelayMs={isBulkOpen ? 120 : 560}
+            enterDelayMs={isBulkOpen ? 120 : 720}
+            enterDurationMs={isBulkOpen ? 520 : 720}
           >
-            <View style={styles.ctaRow}>
+            {compactPackHeader ? (
+              <LinearGradient
+                colors={['transparent', 'rgba(2,6,23,0.55)']}
+                style={styles.ctaBridge}
+                pointerEvents="none"
+              />
+            ) : null}
+            <View style={[styles.ctaRow, compactPackHeader && styles.ctaRowTight]}>
               {!isBulkOpen ? (
                 <TouchableOpacity
                   style={styles.openAnotherBtn}
@@ -389,10 +438,14 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     width: '100%',
-    maxWidth: 520,
-    alignSelf: 'center',
-    paddingHorizontal: spacing.base,
+    alignSelf: 'stretch',
+    paddingHorizontal: 0,
     zIndex: 2,
+  },
+  body: {
+    flex: 1,
+    minHeight: 0,
+    width: '100%',
   },
   stageHeader: {
     marginBottom: spacing.md,
@@ -407,6 +460,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
+    paddingHorizontal: spacing.base,
   },
   headerTextBlock: {
     flex: 1,
@@ -432,6 +486,13 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     letterSpacing: 2.2,
     textTransform: 'uppercase',
+  },
+  titleCompact: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: 'rgba(226,232,240,0.55)',
+    letterSpacing: 0.2,
+    marginTop: 2,
   },
   subFifa: {
     fontSize: fontSize.xs,
@@ -469,10 +530,21 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.68)',
     letterSpacing: 1.6,
   },
+  ctaBridge: {
+    width: '100%',
+    height: 20,
+    marginTop: -4,
+  },
   ctaRow: {
-    marginTop: spacing.xl,
-    paddingTop: spacing.lg,
+    marginTop: spacing.sm,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.xs,
+    paddingHorizontal: spacing.base,
     gap: spacing.md,
+  },
+  ctaRowTight: {
+    marginTop: 0,
+    paddingTop: spacing.xs,
   },
   openAnotherBtn: {
     borderRadius: radius.lg,
@@ -534,6 +606,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: spacing.md,
     minHeight: 0,
+    paddingHorizontal: spacing.base,
   },
   bulkTitle: {
     fontSize: fontSize.lg,

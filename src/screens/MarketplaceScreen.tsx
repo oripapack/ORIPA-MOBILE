@@ -1,5 +1,14 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Keyboard,
+} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -22,7 +31,6 @@ import {
 } from '../data/marketplace';
 import { demoMarketplacePromoImage } from '../data/demoMedia';
 import { navigationRef } from '../navigation/navigationRef';
-import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { ShopCoach } from '../components/coach/ShopCoach';
 
@@ -47,7 +55,6 @@ const REGION_FILTER_IDS: MarketplaceRegionFilterId[] = ['all', 'us', 'japan', 'e
 export function MarketplaceScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
   const searchRef = useRef<TextInput>(null);
   const [query, setQuery] = useState('');
@@ -90,12 +97,30 @@ export function MarketplaceScreen() {
     [sortedListings],
   );
 
+  const storeSections = useMemo(() => {
+    return marketplaceStores
+      .map((store) => {
+        const rows = sortedListings.filter((l) => {
+          if (l.storeId !== store.id) return false;
+          if (saleListings.length > 0 && l.badge === 'sale') return false;
+          return true;
+        });
+        if (rows.length === 0) return null;
+        const inv = sortedListings.filter((l) => l.storeId === store.id).length;
+        return { store, rows, inv };
+      })
+      .filter((s): s is NonNullable<typeof s> => s != null);
+  }, [sortedListings, saleListings]);
+
   const resetBrowse = () => {
     setQuery('');
     setCategory('all');
     setSort('recommended');
     setRegionFilter('all');
+    Keyboard.dismiss();
   };
+
+  const hasResults = sortedListings.length > 0;
 
   const regionShortLabel = (storeId: string) => {
     const s = getStoreById(storeId);
@@ -124,12 +149,12 @@ export function MarketplaceScreen() {
         style={styles.scroll}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
-        refreshControl={refreshControl}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
       >
         <Text style={[styles.pageTitle, { paddingTop: spacing.sm }]}>{t('marketplace.storeTitle')}</Text>
         <Text style={styles.lead}>{t('marketplace.storeLead')}</Text>
 
-        {/* Search — market scan */}
         <View style={styles.searchShell}>
           <Ionicons name="search" size={18} color={colors.textMuted} style={styles.searchIcon} />
           <TextInput
@@ -140,10 +165,24 @@ export function MarketplaceScreen() {
             value={query}
             onChangeText={setQuery}
             returnKeyType="search"
+            onSubmitEditing={() => Keyboard.dismiss()}
+            accessibilityLabel={t('marketplace.searchA11yLabel')}
           />
+          {query.length > 0 ? (
+            <TouchableOpacity
+              onPress={() => {
+                setQuery('');
+                searchRef.current?.focus();
+              }}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel={t('marketplace.clearSearchA11y')}
+            >
+              <Ionicons name="close-circle" size={20} color={colors.textMuted} />
+            </TouchableOpacity>
+          ) : null}
         </View>
 
-        {/* Categories */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -157,6 +196,8 @@ export function MarketplaceScreen() {
                 style={[styles.catChip, active && styles.catChipActive]}
                 onPress={() => setCategory(key)}
                 activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
               >
                 <Text style={[styles.catChipText, active && styles.catChipTextActive]}>
                   {t(`marketplace.cat_${key}`)}
@@ -166,13 +207,12 @@ export function MarketplaceScreen() {
           })}
         </ScrollView>
 
-        {/* Sort */}
-        <View style={styles.sortBlock}>
-          <Text style={styles.sortLabel}>{t('marketplace.sortRowLabel')}</Text>
+        <View style={styles.refinePanel}>
+          <Text style={styles.refineTitle}>{t('marketplace.refineTitle')}</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.sortScroll}
+            contentContainerStyle={styles.refineChipRow}
           >
             {SORT_IDS.map((id) => {
               const active = sort === id;
@@ -182,6 +222,8 @@ export function MarketplaceScreen() {
                   style={[styles.sortChip, active && styles.sortChipActive]}
                   onPress={() => setSort(id)}
                   activeOpacity={0.85}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}
                 >
                   <Text style={[styles.sortChipText, active && styles.sortChipTextActive]}>
                     {t(`marketplace.sort_${id}`)}
@@ -190,15 +232,10 @@ export function MarketplaceScreen() {
               );
             })}
           </ScrollView>
-        </View>
-
-        {/* Region / ships-from (mock — US · Japan · EU inventory) */}
-        <View style={styles.regionBlock}>
-          <Text style={styles.regionLabel}>{t('marketplace.regionRowLabel')}</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.regionScroll}
+            contentContainerStyle={styles.refineChipRowSecond}
           >
             {REGION_FILTER_IDS.map((id) => {
               const active = regionFilter === id;
@@ -208,6 +245,8 @@ export function MarketplaceScreen() {
                   style={[styles.regionChip, active && styles.regionChipActive]}
                   onPress={() => setRegionFilter(id)}
                   activeOpacity={0.85}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}
                 >
                   <Text style={[styles.regionChipText, active && styles.regionChipTextActive]}>
                     {t(`marketplace.region_${id}`)}
@@ -217,6 +256,12 @@ export function MarketplaceScreen() {
             })}
           </ScrollView>
         </View>
+
+        {hasResults ? (
+          <View accessibilityLiveRegion="polite">
+            <Text style={styles.resultsMeta}>{t('marketplace.resultsCount', { count: sortedListings.length })}</Text>
+          </View>
+        ) : null}
 
         {/* Sale row */}
         {saleListings.length > 0 ? (
@@ -244,75 +289,62 @@ export function MarketplaceScreen() {
           </View>
         ) : null}
 
-        {/* Partner storefronts */}
-        <Text style={styles.sectionEyebrow}>{t('marketplace.sectionStores')}</Text>
+        {storeSections.length > 0 ? (
+          <>
+            <Text style={styles.sectionEyebrow}>{t('marketplace.sectionStores')}</Text>
+            {storeSections.map(({ store, rows, inv }) => (
+              <View key={store.id} style={styles.storeBlock}>
+                <View style={styles.storeHeader}>
+                  <View style={styles.storeTitleRow}>
+                    <Text style={styles.storeName}>{store.name}</Text>
+                    {store.verified ? (
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={18}
+                        color={colors.gold}
+                        accessibilityLabel={t('marketplace.verified')}
+                        style={styles.verifiedIcon}
+                      />
+                    ) : null}
+                  </View>
 
-        {marketplaceStores.map((store) => {
-          const rows = sortedListings.filter((l) => {
-            if (l.storeId !== store.id) return false;
-            if (saleListings.length > 0 && l.badge === 'sale') return false;
-            return true;
-          });
-          if (rows.length === 0) return null;
-
-          const inv = sortedListings.filter((l) => l.storeId === store.id).length;
-
-          return (
-            <View key={store.id} style={styles.storeBlock}>
-              <View style={styles.storeHeader}>
-                <View style={styles.storeTitleRow}>
-                  <Text style={styles.storeName}>{store.name}</Text>
-                  {store.verified ? (
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={18}
-                      color={colors.gold}
-                      accessibilityLabel={t('marketplace.verified')}
-                      style={styles.verifiedIcon}
-                    />
+                  <Text style={styles.storeShipsFrom}>{shipsFromLineForStore(store)}</Text>
+                  {store.crossBorderKey ? (
+                    <Text style={styles.storeCrossBorder}>
+                      {t(`marketplace.storeCrossBorder.${store.crossBorderKey}`)}
+                    </Text>
                   ) : null}
+
+                  <Text style={styles.storeMetaLine}>
+                    {t('marketplace.inventoryCount', { count: inv })}{' '}
+                    <Text style={styles.storeMetaDot}>·</Text>{' '}
+                    {t(`marketplace.storeShipping.${store.shippingKey}`)}
+                  </Text>
+
+                  <Text style={styles.storeSpecialty}>{t(`marketplace.storeSpecialty.${store.specialtyKey}`)}</Text>
+                  <Text style={styles.storeTagline}>{store.tagline}</Text>
                 </View>
 
-                <Text style={styles.storeShipsFrom}>{shipsFromLineForStore(store)}</Text>
-                {store.crossBorderKey ? (
-                  <Text style={styles.storeCrossBorder}>
-                    {t(`marketplace.storeCrossBorder.${store.crossBorderKey}`)}
-                  </Text>
-                ) : null}
-
-                <Text style={styles.storeMetaLine}>
-                  {t('marketplace.inventoryCount', { count: inv })}{' '}
-                  <Text style={styles.storeMetaDot}>·</Text>{' '}
-                  {t(`marketplace.storeShipping.${store.shippingKey}`)}
-                </Text>
-
-                <Text style={styles.storeSpecialty}>{t(`marketplace.storeSpecialty.${store.specialtyKey}`)}</Text>
-                <Text style={styles.storeTagline}>{store.tagline}</Text>
-                <Text style={styles.partnerLine}>{t('marketplace.partnerProgramLine')}</Text>
-                <Text style={styles.commission}>
-                  {t('marketplace.commissionLine', { pct: Math.round(store.commissionRate * 100) })}
-                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.hRowStore}
+                >
+                  {rows.map((listing) => (
+                    <ListingCard
+                      key={listing.id}
+                      listing={listing}
+                      shipsFromShort={regionFilter === 'all' ? regionShortLabel(listing.storeId) : undefined}
+                      onPress={() => onListingPress(listing)}
+                    />
+                  ))}
+                </ScrollView>
               </View>
+            ))}
+          </>
+        ) : null}
 
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.hRowStore}
-              >
-                {rows.map((listing) => (
-                  <ListingCard
-                    key={listing.id}
-                    listing={listing}
-                    shipsFromShort={regionFilter === 'all' ? regionShortLabel(listing.storeId) : undefined}
-                    onPress={() => onListingPress(listing)}
-                  />
-                ))}
-              </ScrollView>
-            </View>
-          );
-        })}
-
-        {sortedListings.length === 0 ? (
+        {!hasResults ? (
           <View style={styles.emptyWrap}>
             <Text style={styles.emptyTitle}>{t('marketplace.emptyTitle')}</Text>
             <Text style={styles.emptyHint}>{t('marketplace.emptyHint')}</Text>
@@ -322,30 +354,37 @@ export function MarketplaceScreen() {
           </View>
         ) : null}
 
-        <WhyChoosePullHub />
+        {hasResults ? (
+          <>
+            <View style={styles.promoCompact}>
+              <Image
+                source={{ uri: demoMarketplacePromoImage }}
+                style={styles.promoThumb}
+                resizeMode="cover"
+                accessibilityIgnoresInvertColors
+              />
+              <View style={styles.promoCopy}>
+                <Text style={styles.promoEyebrow}>{t('marketplace.promoEyebrow')}</Text>
+                <Text style={styles.promoTitle} numberOfLines={1}>
+                  {t('marketplace.promoTitle')}
+                </Text>
+                <Text style={styles.promoBody} numberOfLines={2}>
+                  {t('marketplace.promoBody')}
+                </Text>
+              </View>
+            </View>
 
-        {/* Compact promo — supporting, after browse */}
-        <View style={styles.promoCompact}>
-          <Image
-            source={{ uri: demoMarketplacePromoImage }}
-            style={styles.promoThumb}
-            resizeMode="cover"
-            accessibilityIgnoresInvertColors
-          />
-          <View style={styles.promoCopy}>
-            <Text style={styles.promoEyebrow}>{t('marketplace.promoEyebrow')}</Text>
-            <Text style={styles.promoTitle} numberOfLines={1}>
-              {t('marketplace.promoTitle')}
-            </Text>
-            <Text style={styles.promoBody} numberOfLines={2}>
-              {t('marketplace.promoBody')}
-            </Text>
+            <WhyChoosePullHub />
+
+            <View style={styles.demoNote}>
+              <Text style={styles.demoNoteText}>{t('marketplace.demoNote')}</Text>
+            </View>
+          </>
+        ) : (
+          <View style={[styles.demoNote, styles.demoNoteEmpty]}>
+            <Text style={styles.demoNoteText}>{t('marketplace.demoNote')}</Text>
           </View>
-        </View>
-
-        <View style={styles.demoNote}>
-          <Text style={styles.demoNoteText}>{t('marketplace.demoNote')}</Text>
-        </View>
+        )}
       </ScrollView>
       <ShopCoach />
     </View>
@@ -398,6 +437,46 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     color: colors.textPrimary,
     paddingVertical: spacing.sm,
+    minWidth: 0,
+  },
+  refinePanel: {
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surfaceElevated,
+    borderWidth: 1,
+    borderColor: colors.border,
+    gap: spacing.xs,
+  },
+  refineTitle: {
+    fontSize: 10,
+    fontFamily: brandFont.bold,
+    color: colors.textMuted,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    marginBottom: 2,
+    paddingHorizontal: 2,
+  },
+  refineChipRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingRight: spacing.xs,
+  },
+  refineChipRowSecond: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingRight: spacing.xs,
+    marginTop: 2,
+  },
+  resultsMeta: {
+    fontSize: 11,
+    fontFamily: brandFont.semibold,
+    color: colors.textMuted,
+    paddingHorizontal: spacing.base,
+    marginBottom: spacing.sm,
   },
   catScroll: {
     paddingHorizontal: spacing.base,
@@ -431,22 +510,6 @@ const styles = StyleSheet.create({
     color: colors.gold,
     fontFamily: brandFont.bold,
   },
-  sortBlock: {
-    marginBottom: spacing.md,
-  },
-  sortLabel: {
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
-    letterSpacing: 1.1,
-    textTransform: 'uppercase',
-    paddingHorizontal: spacing.base,
-    marginBottom: spacing.xs,
-  },
-  sortScroll: {
-    paddingHorizontal: spacing.base,
-    gap: 8,
-  },
   sortChip: {
     paddingHorizontal: spacing.sm,
     paddingVertical: 7,
@@ -466,22 +529,6 @@ const styles = StyleSheet.create({
   },
   sortChipTextActive: {
     color: colors.accentDark,
-  },
-  regionBlock: {
-    marginBottom: spacing.md,
-  },
-  regionLabel: {
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
-    letterSpacing: 1.1,
-    textTransform: 'uppercase',
-    paddingHorizontal: spacing.base,
-    marginBottom: spacing.xs,
-  },
-  regionScroll: {
-    paddingHorizontal: spacing.base,
-    gap: 8,
   },
   regionChip: {
     paddingHorizontal: spacing.sm,
@@ -535,11 +582,10 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xs,
   },
   sectionEyebrow: {
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
-    letterSpacing: 1.2,
-    textTransform: 'uppercase',
+    color: colors.textSecondary,
+    letterSpacing: 0.2,
     paddingHorizontal: spacing.base,
     marginBottom: spacing.sm,
     marginTop: spacing.xs,
@@ -604,20 +650,8 @@ const styles = StyleSheet.create({
   storeTagline: {
     fontSize: fontSize.xs,
     color: colors.textSecondary,
-    marginBottom: 4,
-    lineHeight: 18,
-  },
-  partnerLine: {
-    fontSize: 10,
-    color: colors.goldDark,
-    fontFamily: brandFont.semibold,
     marginBottom: 2,
-    letterSpacing: 0.2,
-  },
-  commission: {
-    fontSize: 10,
-    color: colors.textMuted,
-    fontFamily: brandFont.medium,
+    lineHeight: 18,
   },
   emptyWrap: {
     paddingHorizontal: spacing.xl,
@@ -655,6 +689,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: spacing.base,
+    marginTop: spacing.md,
     marginBottom: spacing.lg,
     padding: spacing.sm,
     borderRadius: radius.lg,
@@ -690,6 +725,9 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: colors.textSecondary,
     lineHeight: 15,
+  },
+  demoNoteEmpty: {
+    marginTop: spacing.md,
   },
   demoNote: {
     marginHorizontal: spacing.base,

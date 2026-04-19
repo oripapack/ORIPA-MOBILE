@@ -1,12 +1,30 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Dimensions, Easing, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import { brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
-import { ReelPackShell } from './ReelPackShell';
+import { ReelBackRim } from './ReelBackRim';
+import { ReelRingSlot } from './ReelRingSlot';
 import { usePackReel } from './usePackReel';
+
+const WIN_W = Dimensions.get('window').width;
+/**
+ * Ring radius vs window width: too large reads as a flat strip; slightly tighter keeps an arc
+ * readable once the stage is tilted (overhead camera).
+ */
+const RING_RADIUS = WIN_W * 0.88;
+/** Zoomed-out stage — whole ring reads as environment. */
+const REEL_STAGE_SCALE = 0.63;
+/** Downward view: enough to read the ring, not so steep that the center pack warps. */
+const REEL_CAMERA_TILT_X = '25deg';
+/** Higher = milder foreshortening (cleaner pack art, still reads 3D). */
+const REEL_STAGE_PERSPECTIVE = 1120;
+/** Hinge toward the back/top of the stage — reads like a camera slightly above & behind. */
+const REEL_STAGE_ORIGIN = '50% 30%';
+/** Reframe after tilt so the arc sits comfortably under the title. */
+const REEL_STAGE_POST_TILT_Y = 16;
 
 function hexWithAlpha(hex: string, aa: string): string {
   if (typeof hex === 'string' && /^#[0-9A-Fa-f]{6}$/.test(hex)) return `${hex}${aa}`;
@@ -53,8 +71,10 @@ function ReelStageBackdrop({ winTint, dimExtra }: { winTint: string; dimExtra: n
 
 const PACK_W = 82;
 const PACK_H = Math.round(PACK_W * 1.38);
+/** Extra vertical room for overhead arc + tilt (avoid clipping top/bottom of packs). */
+const REEL_CANVAS_H = PACK_H + 96;
 const MARKER_H = 18;
-const CENTER_BLOCK_H = MARKER_H + PACK_H + MARKER_H + 8;
+const CENTER_BLOCK_H = MARKER_H + REEL_CANVAS_H * REEL_STAGE_SCALE + MARKER_H + 20;
 
 const HANDOFF_MS = 840;
 const LOCK_BEAT_MS = 220;
@@ -97,7 +117,7 @@ export function PackReelPhase({
     setLandedOnce(true);
   };
 
-  const { reelX, shells, winIndex, slotW, packW, uiPhase, motionStarted, onUserSlowTap } = usePackReel({
+  const { reelX, shells, winIndex, slotW, packW, screenCx, uiPhase, motionStarted, onUserSlowTap } = usePackReel({
     sessionSalt,
     winTint,
     skipNonce,
@@ -153,8 +173,8 @@ export function PackReelPhase({
   const dimExtra = uiPhase === 'slow' ? 0.08 : 0;
 
   const entranceOpacity = entranceProgress.interpolate({
-    inputRange: [0, 0.12, 1],
-    outputRange: [0, 0.92, 1],
+    inputRange: [0, 0.05, 1],
+    outputRange: [0.92, 1, 1],
   });
   const entranceScale = entranceProgress.interpolate({
     inputRange: [0, 1],
@@ -212,26 +232,40 @@ export function PackReelPhase({
 
         <View style={styles.centerZone}>
           <View style={styles.markerTop} pointerEvents="none" />
-          <View style={styles.reelClip}>
-            <Animated.View
+          <View style={styles.reelRingStage}>
+            <View
+              collapsable={false}
               style={[
-                styles.reelRow,
+                styles.reelRingScale,
                 {
-                  transform: [{ translateX: reelX }],
+                  transformOrigin: REEL_STAGE_ORIGIN,
+                  transform: [
+                    { perspective: REEL_STAGE_PERSPECTIVE },
+                    { rotateX: REEL_CAMERA_TILT_X },
+                    { translateY: REEL_STAGE_POST_TILT_Y },
+                    { scale: REEL_STAGE_SCALE },
+                  ],
                 },
               ]}
             >
-              {shells.map((s, i) => (
-                <View key={s.key} style={[styles.slot, { width: slotW }]}>
-                  <ReelPackShell
-                    width={packW}
-                    height={Math.round(packW * 1.38)}
-                    tint={s.tint}
-                    lockEmphasis={i === winIndex && uiPhase === 'landed' ? 1 : 0}
+              <View style={[styles.reelRingCanvas, { width: WIN_W, height: REEL_CANVAS_H }]}>
+                <ReelBackRim reelX={reelX} screenCx={screenCx} ringRadius={RING_RADIUS} sessionSalt={sessionSalt} />
+                {shells.map((s, i) => (
+                  <ReelRingSlot
+                    key={s.key}
+                    reelX={reelX}
+                    index={i}
+                    shell={s}
+                    slotW={slotW}
+                    packW={packW}
+                    packH={PACK_H}
+                    screenCx={screenCx}
+                    ringRadius={RING_RADIUS}
+                    lockEmphasis={i === winIndex && uiPhase === 'landed'}
                   />
-                </View>
-              ))}
-            </Animated.View>
+                ))}
+              </View>
+            </View>
           </View>
           <View style={styles.markerBottom} pointerEvents="none" />
         </View>
@@ -282,22 +316,23 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    top: '18%',
+    top: '14%',
     height: CENTER_BLOCK_H,
     justifyContent: 'center',
   },
-  reelClip: {
-    height: PACK_H + 8,
-    overflow: 'hidden',
-  },
-  reelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-  slot: {
+  reelRingStage: {
+    overflow: 'visible',
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: REEL_CANVAS_H * REEL_STAGE_SCALE,
+  },
+  reelRingScale: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reelRingCanvas: {
+    position: 'relative',
+    overflow: 'visible',
   },
   markerTop: {
     alignSelf: 'center',

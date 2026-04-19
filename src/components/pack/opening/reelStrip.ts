@@ -24,10 +24,12 @@ export function buildReelShells(sessionSalt: number, winTint: string): {
   packW: number;
 } {
   const packW = 82;
-  const gap = 14;
+  /** Wide gaps so the ring reads as separate packs — open space shows depth, not “see-through” faces. */
+  const gap = 52;
   const slotW = packW + gap;
-  const len = 34 + (sessionSalt % 11);
-  const winIndex = 16 + (sessionSalt % 9);
+  /** Fewer shells than before; spacing does most of the work for a lighter carousel. */
+  const len = 26 + (sessionSalt % 7);
+  const winIndex = 11 + (sessionSalt % 9);
 
   const shells: ReelShell[] = [];
   for (let i = 0; i < len; i += 1) {

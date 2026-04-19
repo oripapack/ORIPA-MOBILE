@@ -276,6 +276,13 @@ function VaultTile({
             {urgent ? t('vaultScreen.notifyBeforeConvert') : timerLabel}
           </Text>
         ) : null}
+        {pull.listedPriceCredits != null && pull.listedPriceCredits > 0 ? (
+          <View style={styles.tileListedPill}>
+            <Text style={styles.tileListedPillText}>
+              {t('vaultScreen.listedPill', { coins: pull.listedPriceCredits.toLocaleString() })}
+            </Text>
+          </View>
+        ) : null}
         <Text
           style={[
             styles.tileStatus,
@@ -392,6 +399,22 @@ const styles = StyleSheet.create({
   },
   tileTimerUrgent: {
     color: colors.gold,
+  },
+  tileListedPill: {
+    alignSelf: 'flex-start',
+    marginTop: 6,
+    paddingVertical: 3,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radius.full,
+    backgroundColor: colors.accentSoft,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+  },
+  tileListedPillText: {
+    fontSize: 10,
+    fontFamily: brandFont.bold,
+    color: colors.accentDark,
+    letterSpacing: 0.3,
   },
   tileStatus: {
     fontSize: fontSize.xs,

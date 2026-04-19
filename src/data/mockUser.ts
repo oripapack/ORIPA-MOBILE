@@ -28,6 +28,8 @@ export interface Pull {
   convertCreditValue?: number;
   /** From pack opening reveal — for Won Prizes UI. */
   tier?: PullRarityTier;
+  /** When set, this vaulted hit is listed on your public Vault shop for friends (coins). */
+  listedPriceCredits?: number;
 }
 
 export interface UserState {

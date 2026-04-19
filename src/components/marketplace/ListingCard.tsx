@@ -37,13 +37,15 @@ export function ListingCard({ listing, shipsFromShort, onPress }: Props) {
 
   const footerLine = deltaLine ?? shipLine;
 
+  const a11yLabel = [listing.title, listing.price, listing.subtitle].filter(Boolean).join('. ');
+
   return (
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.88}
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={listing.title}
+      accessibilityLabel={a11yLabel}
     >
       <View style={[styles.thumb, { backgroundColor: listing.imageColor }]}>
         {listing.imageUrl ? (

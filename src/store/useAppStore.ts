@@ -9,6 +9,12 @@ import {
 } from '../data/friends';
 import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
 import { VAULT_HOLD_DAYS } from '../lib/vaultConstants';
+import {
+  createInitialFriendVaultShop,
+  listingIdForPull,
+  removeListingsForPullId,
+  type PublicVaultListing,
+} from '../lib/friendVaultShop';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
 import { SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
 import { claimFirstTimePack, loadClaimedFirstTimePacks } from '../lib/firstTimePack';
@@ -121,6 +127,24 @@ interface AppStore {
   addIncomingFriendRequest: (req: Omit<IncomingFriendRequest, 'id'> & { id?: string }) => void;
   /** When Clerk profile onboarding is done — updates local `user` for Account / Friends. */
   setUserFromClerkProfile: (p: { id: string; displayName: string; username: string }) => void;
+
+  /**
+   * Public Vault shop rows keyed by seller username (lowercase). Merges demo NPC listings
+   * with your live listings when you list from Vault.
+   */
+  friendVaultShopByUser: Record<string, PublicVaultListing[]>;
+  /** List a vaulted pull at a coin price (visible on friends’ view of your shop — demo: local only). */
+  listVaultPullForSale: (pullId: string, priceCredits: number) => boolean;
+  /** Remove public listing; pull stays vaulted. */
+  unlistVaultPullForSale: (pullId: string) => void;
+  /**
+   * Buyer (current user) purchases a listing from `sellerUsername`’s shop.
+   * Returns `ok` | `insufficient` | `not_found` | `own_listing`.
+   */
+  purchaseFriendVaultListing: (
+    sellerUsername: string,
+    listingId: string,
+  ) => 'ok' | 'insufficient' | 'not_found' | 'own_listing';
 }
 
 function initialIncomingFriendRequests(): IncomingFriendRequest[] {
@@ -150,6 +174,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   resumePackOpenAfterCredits: false,
   resumePackOpenQuantity: 1,
   usedFirstTimePackIds: [],
+  friendVaultShopByUser: createInitialFriendVaultShop(),
 
   markFirstTimePackUsed: (packId) =>
     set((state) => ({
@@ -484,21 +509,27 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   requestVaultShipment: (pullId) => {
-    set((state) => ({
-      user: {
-        ...state.user,
-        pullHistory: state.user.pullHistory.map((p) =>
-          p.id === pullId && p.fulfillment === 'vaulted'
-            ? {
-                ...p,
-                fulfillment: 'shipped' as const,
-                vaultExpiresAt: undefined,
-                vaultHoldDays: undefined,
-              }
-            : p,
-        ),
-      },
-    }));
+    set((state) => {
+      const u = normalizeFriendUsername(state.user.username);
+      const shop = removeListingsForPullId(state.friendVaultShopByUser, u, pullId);
+      return {
+        friendVaultShopByUser: shop,
+        user: {
+          ...state.user,
+          pullHistory: state.user.pullHistory.map((p) =>
+            p.id === pullId && p.fulfillment === 'vaulted'
+              ? {
+                  ...p,
+                  fulfillment: 'shipped' as const,
+                  vaultExpiresAt: undefined,
+                  vaultHoldDays: undefined,
+                  listedPriceCredits: undefined,
+                }
+              : p,
+          ),
+        },
+      };
+    });
   },
 
   convertVaultPullToCoins: (pullId) => {
@@ -506,7 +537,10 @@ export const useAppStore = create<AppStore>((set, get) => ({
       const pull = state.user.pullHistory.find((p) => p.id === pullId);
       if (!pull || pull.fulfillment !== 'vaulted') return state;
       const amt = pull.creditsWon ?? pull.convertCreditValue ?? 0;
+      const u = normalizeFriendUsername(state.user.username);
+      const shop = removeListingsForPullId(state.friendVaultShopByUser, u, pullId);
       return {
+        friendVaultShopByUser: shop,
         user: {
           ...state.user,
           credits: state.user.credits + amt,
@@ -517,6 +551,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
                   fulfillment: 'converted' as const,
                   vaultExpiresAt: undefined,
                   vaultHoldDays: undefined,
+                  listedPriceCredits: undefined,
                 }
               : p,
           ),
@@ -529,6 +564,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     const now = Date.now();
     set((state) => {
       let creditsToAdd = 0;
+      const seller = normalizeFriendUsername(state.user.username);
       const nextHistory = state.user.pullHistory.map((p) => {
         if (p.fulfillment !== 'vaulted' || !p.vaultExpiresAt) return p;
         if (p.vaultExpiresAt.getTime() > now) return p;
@@ -538,10 +574,24 @@ export const useAppStore = create<AppStore>((set, get) => ({
           fulfillment: 'converted' as const,
           vaultExpiresAt: undefined,
           vaultHoldDays: undefined,
+          listedPriceCredits: undefined,
         };
       });
       if (creditsToAdd === 0) return state;
+      const expiredIds = state.user.pullHistory
+        .filter(
+          (p) =>
+            p.fulfillment === 'vaulted' &&
+            p.vaultExpiresAt &&
+            p.vaultExpiresAt.getTime() <= now,
+        )
+        .map((p) => p.id);
+      let shop = state.friendVaultShopByUser;
+      for (const id of expiredIds) {
+        shop = removeListingsForPullId(shop, seller, id);
+      }
       return {
+        friendVaultShopByUser: shop,
         user: {
           ...state.user,
           credits: state.user.credits + creditsToAdd,
@@ -549,5 +599,99 @@ export const useAppStore = create<AppStore>((set, get) => ({
         },
       };
     });
+  },
+
+  listVaultPullForSale: (pullId, priceCredits) => {
+    const price = Math.floor(priceCredits);
+    if (price < 1) return false;
+    const pull = get().user.pullHistory.find((p) => p.id === pullId);
+    if (!pull || pull.fulfillment !== 'vaulted') return false;
+    const u = normalizeFriendUsername(get().user.username);
+    const listing: PublicVaultListing = {
+      id: listingIdForPull(pullId),
+      sellerUsername: u,
+      pullId,
+      priceCredits: price,
+      result: pull.result,
+      packTitle: pull.packTitle,
+      packId: pull.packId,
+      tier: pull.tier,
+      isDemo: false,
+    };
+    set((state) => {
+      const prev = state.friendVaultShopByUser[u] ?? [];
+      const rest = prev.filter((l) => l.pullId !== pullId);
+      return {
+        user: {
+          ...state.user,
+          pullHistory: state.user.pullHistory.map((p) =>
+            p.id === pullId ? { ...p, listedPriceCredits: price } : p,
+          ),
+        },
+        friendVaultShopByUser: {
+          ...state.friendVaultShopByUser,
+          [u]: [listing, ...rest],
+        },
+      };
+    });
+    return true;
+  },
+
+  unlistVaultPullForSale: (pullId) => {
+    set((state) => {
+      const u = normalizeFriendUsername(state.user.username);
+      const shop = removeListingsForPullId(state.friendVaultShopByUser, u, pullId);
+      return {
+        friendVaultShopByUser: shop,
+        user: {
+          ...state.user,
+          pullHistory: state.user.pullHistory.map((p) =>
+            p.id === pullId ? { ...p, listedPriceCredits: undefined } : p,
+          ),
+        },
+      };
+    });
+  },
+
+  purchaseFriendVaultListing: (sellerUsernameRaw, listingId) => {
+    const seller = normalizeFriendUsername(sellerUsernameRaw);
+    const me = normalizeFriendUsername(get().user.username);
+    const rows = get().friendVaultShopByUser[seller] ?? [];
+    const listing = rows.find((l) => l.id === listingId);
+    if (!listing) return 'not_found';
+    if (seller === me) return 'own_listing';
+    if (get().user.credits < listing.priceCredits) return 'insufficient';
+
+    const price = listing.priceCredits;
+    const exp = new Date();
+    exp.setDate(exp.getDate() + VAULT_HOLD_DAYS);
+    const newPull: Pull = {
+      id: `pull_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+      packId: listing.packId,
+      packTitle: listing.packTitle,
+      result: listing.result,
+      creditsWon: price,
+      timestamp: new Date(),
+      fulfillment: 'vaulted',
+      convertCreditValue: price,
+      tier: listing.tier ?? 'rare',
+      vaultExpiresAt: exp,
+      vaultHoldDays: VAULT_HOLD_DAYS,
+    };
+
+    set((state) => {
+      const r = state.friendVaultShopByUser[seller] ?? [];
+      const nextRows = r.filter((l) => l.id !== listingId);
+      return {
+        friendVaultShopByUser: { ...state.friendVaultShopByUser, [seller]: nextRows },
+        user: {
+          ...state.user,
+          credits: state.user.credits - price,
+          pullHistory: [newPull, ...state.user.pullHistory],
+        },
+      };
+    });
+
+    return 'ok';
   },
 }));

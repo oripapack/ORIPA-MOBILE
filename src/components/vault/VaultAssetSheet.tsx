@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Modal,
   View,
@@ -20,6 +20,8 @@ import { SecondaryButton } from '../shared/SecondaryButton';
 import type { Pull } from '../../data/mockUser';
 import { formatVaultTimeLeft, vaultExpiryNoticeActive, vaultMillisRemaining } from '../../lib/vaultTime';
 import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
+import { ListForSaleModal } from './ListForSaleModal';
+import { useAppStore } from '../../store/useAppStore';
 
 type Props = {
   visible: boolean;
@@ -38,10 +40,14 @@ export function VaultAssetSheet({
 }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const [listOpen, setListOpen] = useState(false);
+  const listVaultPullForSale = useAppStore((s) => s.listVaultPullForSale);
+  const unlistVaultPullForSale = useAppStore((s) => s.unlistVaultPullForSale);
 
   const coinValue = pull ? pull.creditsWon ?? pull.convertCreditValue ?? 0 : 0;
   const isVaulted = pull?.fulfillment === 'vaulted';
   const isShipped = pull?.fulfillment === 'shipped';
+  const listedPrice = pull?.listedPriceCredits;
 
   const timerLine = useMemo(() => {
     if (!pull || !isVaulted || !pull.vaultExpiresAt) return null;
@@ -94,83 +100,129 @@ export function VaultAssetSheet({
     Alert.alert(t('vaultAsset.soonTitle'), t('vaultAsset.tradeSoonBody'));
   };
 
-  const onList = () => {
-    Alert.alert(t('vaultAsset.soonTitle'), t('vaultAsset.listSoonBody'));
+  const confirmUnlist = () => {
+    Alert.alert(t('vaultAsset.ctaUnlist'), t('vaultAsset.unlistBody'), [
+      { text: t('vaultAsset.cancel'), style: 'cancel' },
+      {
+        text: t('vaultAsset.ctaUnlist'),
+        style: 'destructive',
+        onPress: () => {
+          unlistVaultPullForSale(pull.id);
+          onClose();
+        },
+      },
+    ]);
+  };
+
+  const onConfirmListPrice = (price: number) => {
+    const ok = listVaultPullForSale(pull.id, price);
+    setListOpen(false);
+    if (ok) onClose();
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      {...transparentModalIOSProps}
-      onRequestClose={onClose}
-    >
-      <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable
-          style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]}
-          onPress={(e) => e.stopPropagation()}
-        >
-          <View style={styles.grabberWrap}>
-            <View style={styles.grabber} />
-          </View>
-
-          <Text style={styles.kicker}>{t('vaultAsset.sheetKicker')}</Text>
-          <Text style={styles.title} numberOfLines={3}>
-            {pull.result}
-          </Text>
-          <Text style={styles.pack} numberOfLines={2}>
-            {getLocalizedPackTitle(pull.packId, pull.packTitle, t)}
-          </Text>
-
-          {isVaulted && timerLine ? (
-            <View style={[styles.timerCard, showExpiryNotice && styles.timerCardUrgent]}>
-              <Text style={[styles.timerLabel, showExpiryNotice && styles.timerLabelUrgent]}>
-                {showExpiryNotice ? t('vaultAsset.timerUrgent') : t('vaultAsset.timerLabel')}
-              </Text>
-              <Text style={styles.timerValue}>{timerLine}</Text>
-              <Text style={styles.timerFine}>
-                {t('vaultAsset.timerFine', { days: pull.vaultHoldDays ?? VAULT_HOLD_DAYS })}
-              </Text>
+    <>
+      <Modal
+        visible={visible}
+        transparent
+        animationType="slide"
+        {...transparentModalIOSProps}
+        onRequestClose={onClose}
+      >
+        <Pressable style={styles.backdrop} onPress={onClose}>
+          <Pressable
+            style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <View style={styles.grabberWrap}>
+              <View style={styles.grabber} />
             </View>
-          ) : null}
 
-          {isShipped ? (
-            <View style={styles.statusBanner}>
-              <Text style={styles.statusBannerText}>{t('vaultAsset.shipStatusLine')}</Text>
-            </View>
-          ) : null}
+            <Text style={styles.kicker}>{t('vaultAsset.sheetKicker')}</Text>
+            <Text style={styles.title} numberOfLines={3}>
+              {pull.result}
+            </Text>
+            <Text style={styles.pack} numberOfLines={2}>
+              {getLocalizedPackTitle(pull.packId, pull.packTitle, t)}
+            </Text>
 
-          {isVaulted ? (
-            <>
-              <PrimaryButton label={t('vaultAsset.ctaShip')} onPress={confirmShip} style={styles.cta} />
-              <View style={styles.rowButtons}>
-                <TouchableOpacity style={styles.secondaryHalf} onPress={onTrade} accessibilityRole="button">
-                  <Text style={styles.secondaryHalfText}>{t('vaultAsset.ctaTrade')}</Text>
-                  <Text style={styles.soonPill}>{t('vaultAsset.soonPill')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.secondaryHalf} onPress={onList} accessibilityRole="button">
-                  <Text style={styles.secondaryHalfText}>{t('vaultAsset.ctaList')}</Text>
-                  <Text style={styles.soonPill}>{t('vaultAsset.soonPill')}</Text>
-                </TouchableOpacity>
+            {listedPrice != null && listedPrice > 0 ? (
+              <View style={styles.listedBanner}>
+                <Text style={styles.listedBannerText}>
+                  {t('vaultAsset.listedLine', { coins: listedPrice.toLocaleString() })}
+                </Text>
               </View>
-              <SecondaryButton
-                label={t('vaultAsset.ctaConvert', { coins: coinValue.toLocaleString() })}
-                onPress={confirmConvert}
-              />
-            </>
-          ) : null}
+            ) : null}
 
-          {!isVaulted && !isShipped ? (
-            <Text style={styles.readOnly}>{t('vaultAsset.readOnly')}</Text>
-          ) : null}
+            {isVaulted && timerLine ? (
+              <View style={[styles.timerCard, showExpiryNotice && styles.timerCardUrgent]}>
+                <Text style={[styles.timerLabel, showExpiryNotice && styles.timerLabelUrgent]}>
+                  {showExpiryNotice ? t('vaultAsset.timerUrgent') : t('vaultAsset.timerLabel')}
+                </Text>
+                <Text style={styles.timerValue}>{timerLine}</Text>
+                <Text style={styles.timerFine}>
+                  {t('vaultAsset.timerFine', { days: pull.vaultHoldDays ?? VAULT_HOLD_DAYS })}
+                </Text>
+              </View>
+            ) : null}
 
-          <TouchableOpacity onPress={onClose} style={styles.dismiss} accessibilityRole="button">
-            <Text style={styles.dismissText}>{t('vaultAsset.close')}</Text>
-          </TouchableOpacity>
+            {isShipped ? (
+              <View style={styles.statusBanner}>
+                <Text style={styles.statusBannerText}>{t('vaultAsset.shipStatusLine')}</Text>
+              </View>
+            ) : null}
+
+            {isVaulted ? (
+              <>
+                <PrimaryButton label={t('vaultAsset.ctaShip')} onPress={confirmShip} style={styles.cta} />
+                <View style={styles.rowButtons}>
+                  <TouchableOpacity style={styles.secondaryHalf} onPress={onTrade} accessibilityRole="button">
+                    <Text style={styles.secondaryHalfText}>{t('vaultAsset.ctaTrade')}</Text>
+                    <Text style={styles.soonPill}>{t('vaultAsset.soonPill')}</Text>
+                  </TouchableOpacity>
+                  {listedPrice != null && listedPrice > 0 ? (
+                    <TouchableOpacity
+                      style={styles.secondaryHalf}
+                      onPress={confirmUnlist}
+                      accessibilityRole="button"
+                    >
+                      <Text style={styles.secondaryHalfText}>{t('vaultAsset.ctaUnlist')}</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.secondaryHalfAccent}
+                      onPress={() => setListOpen(true)}
+                      accessibilityRole="button"
+                    >
+                      <Text style={styles.secondaryHalfTextAccent}>{t('vaultAsset.ctaList')}</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+                <SecondaryButton
+                  label={t('vaultAsset.ctaConvert', { coins: coinValue.toLocaleString() })}
+                  onPress={confirmConvert}
+                />
+              </>
+            ) : null}
+
+            {!isVaulted && !isShipped ? (
+              <Text style={styles.readOnly}>{t('vaultAsset.readOnly')}</Text>
+            ) : null}
+
+            <TouchableOpacity onPress={onClose} style={styles.dismiss} accessibilityRole="button">
+              <Text style={styles.dismissText}>{t('vaultAsset.close')}</Text>
+            </TouchableOpacity>
+          </Pressable>
         </Pressable>
-      </Pressable>
-    </Modal>
+      </Modal>
+
+      <ListForSaleModal
+        visible={listOpen}
+        suggestedCredits={coinValue}
+        onClose={() => setListOpen(false)}
+        onConfirm={onConfirmListPrice}
+      />
+    </>
   );
 }
 
@@ -214,6 +266,20 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.medium,
     color: colors.textSecondary,
     marginBottom: spacing.lg,
+    lineHeight: 20,
+  },
+  listedBanner: {
+    backgroundColor: colors.accentSoft,
+    borderRadius: radius.lg,
+    padding: spacing.base,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+  },
+  listedBannerText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: colors.accentDark,
     lineHeight: 20,
   },
   timerCard: {
@@ -277,10 +343,26 @@ const styles = StyleSheet.create({
     borderColor: colors.borderLight,
     alignItems: 'center',
   },
+  secondaryHalfAccent: {
+    flex: 1,
+    backgroundColor: colors.accentSoft,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    alignItems: 'center',
+  },
   secondaryHalfText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
     color: colors.textPrimary,
+    textAlign: 'center',
+  },
+  secondaryHalfTextAccent: {
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.bold,
+    color: colors.accentDark,
     textAlign: 'center',
   },
   soonPill: {

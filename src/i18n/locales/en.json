@@ -30,7 +30,8 @@
     "notifyBeforeConvert": "Final day — ship, trade, or convert",
     "timerDaysLeft": "{{count}}d left in Vault",
     "timerHoursLeft": "{{count}}h left in Vault",
-    "timerEnded": "Hold ended"
+    "timerEnded": "Hold ended",
+    "listedPill": "Listed · 🪙 {{coins}}"
   },
   "wonPrizesModal": {
     "title": "Cash out or Vault",
@@ -72,17 +73,40 @@
     "convertTitle": "Convert to coins?",
     "convertBody": "Cash out {{coins}} coins now. The physical claim for this Vault slot closes.",
     "convertConfirm": "Convert now",
+    "ctaConvert": "Convert for {{coins}} coins",
     "cancel": "Cancel",
     "ctaShip": "Request shipment",
     "ctaTrade": "Offer trade",
-    "ctaList": "List for sale",
+    "ctaList": "List for coins",
+    "ctaUnlist": "Delist",
+    "listedLine": "Listed · 🪙 {{coins}} · public to friends",
+    "unlistBody": "This removes the public listing. The card stays in your Vault.",
     "soonPill": "SOON",
     "soonTitle": "Coming soon",
-    "tradeSoonBody": "Peer trades will open from Vault — you’ll be able to send secure offers to friends.",
-    "listSoonBody": "Marketplace listing from Vault is almost here — list price, photos, and buyer chat in one flow.",
+    "tradeSoonBody": "Peer trades will open from Vault — send offers, counter, and lock in when both sides agree (separate from fixed-price shop).",
     "shipStatusLine": "Shipment is queued for this item. We’ll notify you when the label is ready.",
     "readOnly": "This item isn’t editable from here.",
     "close": "Close"
+  },
+  "vaultList": {
+    "title": "List on your public Vault",
+    "body": "Friends can buy this hit with coins. You keep it vaulted until it sells or you delist.",
+    "priceLabel": "Price (coins)",
+    "pricePlaceholder": "e.g. 500",
+    "confirm": "List for {{coins}} coins"
+  },
+  "friendVaultShop": {
+    "sectionTitle": "Public Vault shop",
+    "sectionHint": "Coins-only · listed hits from this collector.",
+    "buy": "Buy",
+    "buyTitle": "Buy with coins?",
+    "buyBody": "Spend {{coins}} coins for {{card}}? It moves to your Vault.",
+    "buyConfirm": "Buy now",
+    "boughtTitle": "Added to your Vault",
+    "boughtBody": "Check the Vault tab — your new hit is secured there.",
+    "ownTitle": "That’s your listing",
+    "ownBody": "Delist from your Vault if you want to change the price.",
+    "manageHint": "In Vault"
   },
   "splash": {
     "frameLine": "Pull. Win. Repeat."
@@ -180,7 +204,12 @@
   },
   "marketplace": {
     "storeTitle": "Marketplace",
-    "storeLead": "Filter by US, Japan, or EU shipping — trusted partners, promos, and slabs in one place (pack opening stays on Home).",
+    "storeLead": "Singles and sealed from verified sellers. Pack opening is on Packs.",
+    "refineTitle": "Refine",
+    "resultsCount_one": "{{count}} listing",
+    "resultsCount_other": "{{count}} listings",
+    "searchA11yLabel": "Search the shop",
+    "clearSearchA11y": "Clear search text",
     "searchPlaceholder": "Search singles, sealed, sets, or stores…",
     "regionRowLabel": "Ships from",
     "region_all": "All regions",
@@ -239,7 +268,7 @@
     "cat_one_piece": "One Piece",
     "cat_yugioh": "Yu-Gi-Oh!",
     "cat_sports": "Sports",
-    "whyTitle": "Why choose Pull Hub Store?",
+    "whyTitle": "Why shop here",
     "whyPointLabel1": "Point 1",
     "whyPointLabel2": "Point 2",
     "whyPointLabel3": "Point 3",
@@ -251,7 +280,7 @@
     "whyPoint3Body": "We aggregate inventory from trusted sellers across regions — from Japanese promos to English staples and sealed wax.",
     "specialPrice": "Special price",
     "saleOn": "SALE",
-    "sectionStores": "Partner storefronts",
+    "sectionStores": "Shop by seller",
     "verified": "Verified",
     "commissionLine": "Pull Hub fee on sales: {{pct}}%",
     "badgeSale": "SALE",
@@ -1014,7 +1043,16 @@
     "reelSlowing": "Locking in…",
     "reelLocked": "Locked",
     "reelSub": "Your pull is already sealed — this is the pace.",
-    "reelTapToSlowA11y": "Slow the pack reel"
+    "reelTapToSlowA11y": "Slow the pack reel",
+    "skippedToResult": "Skipped to result",
+    "resultStatCoins": "Coins won",
+    "resultStatVaultValue": "Vault value",
+    "resultStatTier": "Tier",
+    "resultWinCredits": "+{{amount}} credits",
+    "resultWinVaultLine": "{{value}} vault value",
+    "storeInVault": "Store in vault",
+    "sharePull": "Share",
+    "shareMessage": "I just pulled {{name}} ({{tier}}) — +{{credits}} credits!"
   },
   "insufficientCredits": {
     "title": "Not Enough Credits",
