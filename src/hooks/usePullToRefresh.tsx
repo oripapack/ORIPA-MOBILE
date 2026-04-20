@@ -33,9 +33,9 @@ export function usePullToRefresh(options: Options = {}) {
     <RefreshControl
       refreshing={refreshing}
       onRefresh={onRefresh}
-      tintColor={colors.red}
+      tintColor={colors.gold}
       {...(Platform.OS === 'android'
-        ? { colors: [colors.red] as [string], progressBackgroundColor: colors.surfaceElevated }
+        ? { colors: [colors.gold] as [string], progressBackgroundColor: colors.surfaceElevated }
         : {})}
     />
   );

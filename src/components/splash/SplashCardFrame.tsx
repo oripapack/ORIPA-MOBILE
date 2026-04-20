@@ -180,10 +180,10 @@ export function SplashCardFrame({
           <Animated.View style={[styles.neonTube, neonTubeStyle]} pointerEvents="none">
             <LinearGradient
               colors={[
-                'rgba(62,92,118,0.14)',
-                'rgba(232,228,220,0.5)',
-                'rgba(255,252,248,0.35)',
-                'rgba(62,92,118,0.12)',
+                'rgba(56,189,248,0.22)',
+                'rgba(192,132,252,0.2)',
+                'rgba(232,197,71,0.16)',
+                'rgba(45,212,191,0.14)',
               ]}
               locations={[0, 0.35, 0.65, 1]}
               start={{ x: 0, y: 0 }}
@@ -204,9 +204,9 @@ export function SplashCardFrame({
           <LinearGradient
             colors={[
               'transparent',
-              'rgba(255,255,255,0.25)',
-              'rgba(62,92,118,0.08)',
-              'rgba(139,115,85,0.04)',
+              'rgba(255,255,255,0.12)',
+              'rgba(192,132,252,0.12)',
+              'rgba(232,197,71,0.06)',
               'transparent',
             ]}
             start={{ x: 0, y: 0.5 }}
@@ -217,7 +217,7 @@ export function SplashCardFrame({
 
         <Animated.View style={[styles.sweep2Clip, sweep2Style]} pointerEvents="none">
           <LinearGradient
-            colors={['transparent', 'rgba(62,92,118,0.06)', 'rgba(255,255,255,0.2)', 'transparent']}
+            colors={['transparent', 'rgba(56,189,248,0.1)', 'rgba(255,255,255,0.08)', 'transparent']}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={styles.sweep2Grad}
@@ -227,7 +227,7 @@ export function SplashCardFrame({
         <Animated.View style={[styles.frameOuter, frameStyle]}>
           <View style={styles.frameInner}>
             <LinearGradient
-              colors={['rgba(62,92,118,0.1)', 'rgba(255,252,248,0.85)', 'rgba(62,92,118,0.08)']}
+              colors={['rgba(40,32,68,0.92)', 'rgba(22,18,42,0.97)', 'rgba(30,26,54,0.94)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={StyleSheet.absoluteFillObject}
@@ -240,7 +240,7 @@ export function SplashCardFrame({
           <View style={styles.frameEdge} />
           <Animated.View style={[styles.scanLine, scanStyle]} pointerEvents="none">
             <LinearGradient
-              colors={['transparent', 'rgba(62,92,118,0.2)', 'rgba(255,255,255,0.4)', 'transparent']}
+              colors={['transparent', 'rgba(192,132,252,0.25)', 'rgba(255,255,255,0.12)', 'transparent']}
               start={{ x: 0, y: 0.5 }}
               end={{ x: 1, y: 0.5 }}
               style={StyleSheet.absoluteFillObject}
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     letterSpacing: -0.5,
     textAlign: 'center',
-    textShadowColor: 'rgba(255,255,255,0.8)',
+    textShadowColor: 'rgba(192,132,252,0.45)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
   },

@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
@@ -58,6 +60,70 @@ import { PromotionSync } from '../components/promotions/PromotionSync';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
+const tabBarDockStyles = StyleSheet.create({
+  root: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
+  topRim: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+  },
+});
+
+/**
+ * Dock-style bar: stable jewel tones (no muddy blur tint) + beveled top for 3D depth.
+ * iOS gets a very light blur under the gradients; Android uses gradients only.
+ */
+function PremiumTabBarBackground() {
+  return (
+    <View style={tabBarDockStyles.root}>
+      {Platform.OS === 'ios' ? (
+        <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
+      ) : null}
+
+      {/* Base slab — matches app surfaces, darker toward bottom (receding plane) */}
+      <LinearGradient
+        colors={[colors.surfaceMuted, '#16122A', colors.background]}
+        locations={[0, 0.5, 1]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+
+      {/* Top “lit face” — subtle 3D bevel */}
+      <LinearGradient
+        colors={['rgba(255,255,255,0.11)', 'rgba(255,255,255,0.02)', 'transparent']}
+        locations={[0, 0.18, 1]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
+
+      {/* Gold → amethyst hairline rim (premium edge) */}
+      <LinearGradient
+        colors={['rgba(232,197,71,0.5)', 'rgba(192,132,252,0.25)', 'rgba(56,189,248,0.15)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={tabBarDockStyles.topRim}
+        pointerEvents="none"
+      />
+
+      {/* Bottom weight — grounds the dock */}
+      <LinearGradient
+        colors={['transparent', 'rgba(0,0,0,0.22)']}
+        locations={[0.55, 1]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
+    </View>
+  );
+}
+
 const TAB_ICONS: Record<string, [keyof typeof Ionicons.glyphMap, keyof typeof Ionicons.glyphMap]> = {
   /** Shop / singles — cart is distinct from packs (cards) and reads as marketplace checkout. */
   Marketplace: ['cart-outline', 'cart'],
@@ -85,9 +151,10 @@ function TabNavigatorInner() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: colors.accentDark,
+        tabBarActiveTintColor: colors.gold,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: styles.tabBar,
+        tabBarBackground: PremiumTabBarBackground,
         tabBarLabelStyle: styles.tabLabel,
         tabBarIcon: ({ focused, color }) => {
           if (route.name === 'Home') {
@@ -120,7 +187,7 @@ function TabNavigatorInner() {
               : undefined,
           tabBarBadgeStyle:
             vaultTabBadgeCount > 0
-              ? { backgroundColor: colors.goldDark, color: colors.nearBlack, fontSize: 11 }
+              ? { backgroundColor: colors.goldDark, color: colors.ink, fontSize: 11 }
               : undefined,
         }}
       />
@@ -458,17 +525,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   tabBar: {
-    backgroundColor: colors.tabBarBg,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.headerHairline,
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
     height: 82,
     paddingBottom: 16,
     paddingTop: 8,
-    shadowColor: colors.shadowStrong,
-    shadowOffset: { width: 0, height: -8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
-    elevation: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.45,
+    shadowRadius: 28,
+    elevation: 20,
   },
   tabLabel: {
     fontSize: fontSize.xs,

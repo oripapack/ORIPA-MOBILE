@@ -59,13 +59,13 @@ const styles = StyleSheet.create({
     borderColor: colors.borderLight,
   },
   tabActive: {
-    backgroundColor: colors.accentSoft,
-    borderColor: colors.accentBorder,
-    shadowColor: colors.accent,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    elevation: 2,
+    backgroundColor: colors.goldSoft,
+    borderColor: colors.goldBorderMuted,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.22,
+    shadowRadius: 8,
+    elevation: 3,
   },
   label: {
     fontSize: fontSize.sm,
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   labelActive: {
-    color: colors.accentDark,
+    color: colors.gold,
+    fontFamily: brandFont.bold,
   },
 });

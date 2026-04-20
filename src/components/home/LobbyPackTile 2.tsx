@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { elevation, radius, spacing } from '../../tokens/spacing';
 import type { ChipTagType, Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { getMockPackTopHit } from '../../data/mockTopHits';
@@ -13,13 +13,13 @@ import { navigationRef } from '../../navigation/navigationRef';
 
 export type LobbyRailVariant = 'new' | 'hot' | 'graded';
 
-const HOT_RAIL = 'rgba(185, 90, 75, 0.45)';
-const HOT_BORDER = 'rgba(185, 90, 75, 0.2)';
+const HOT_RAIL = 'rgba(244, 114, 182, 0.38)';
+const HOT_BORDER = 'rgba(244, 114, 182, 0.28)';
 
-const GRADED_RAIL = 'rgba(107, 80, 150, 0.4)';
-const GRADED_BORDER = 'rgba(107, 80, 150, 0.2)';
+const GRADED_RAIL = 'rgba(56, 189, 248, 0.35)';
+const GRADED_BORDER = 'rgba(56, 189, 248, 0.26)';
 
-const THUMB_FADE = ['transparent', 'rgba(0,0,0,0.08)'] as const;
+const THUMB_FADE = ['transparent', 'rgba(7,5,15,0.55)'] as const;
 
 const CARD_RADIUS = radius.lg;
 /** Horizontal gap between tiles (must match LobbyPackRail scroll gap). */
@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceElevated,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
+    ...elevation.lobbyTile,
   },
   wrapHot: {
     borderColor: HOT_BORDER,
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: radius.sm,
-    backgroundColor: 'rgba(255,255,255,0.94)',
+    backgroundColor: colors.surfaceElevated,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
   },
@@ -215,8 +216,8 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
   },
   tagPillHot: {
-    backgroundColor: 'rgba(185, 90, 75, 0.08)',
-    borderColor: 'rgba(185, 90, 75, 0.22)',
+    backgroundColor: 'rgba(244, 114, 182, 0.1)',
+    borderColor: 'rgba(244, 114, 182, 0.28)',
   },
   tagPillGraded: {
     backgroundColor: colors.chipGraded,

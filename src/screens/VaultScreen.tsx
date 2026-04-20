@@ -299,7 +299,7 @@ function VaultTile({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: colors.homeGradientBottom },
   listContent: { paddingTop: spacing.sm, flexGrow: 1 },
   headerBlock: { marginBottom: spacing.lg },
   pageEyebrow: {

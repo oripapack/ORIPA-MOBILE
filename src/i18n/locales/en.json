@@ -568,7 +568,9 @@
     "note": "Replace this placeholder with real payout onboarding when Stripe Connect or your PSP is integrated."
   },
   "settings": {
-    "title": "Settings"
+    "title": "Settings",
+    "sectionProfile": "Your account",
+    "sectionWallet": "Wallet & verification"
   },
   "demoBanner": "Preview build — credits & rewards are simulated.",
   "demoSimulation": {

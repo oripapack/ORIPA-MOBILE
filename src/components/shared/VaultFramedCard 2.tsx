@@ -7,10 +7,10 @@ import { radius, spacing } from '../../tokens/spacing';
 const BR = 10;
 
 const GRADIENTS = {
-  /** Default — white mat with soft depth */
-  vault: ['rgba(255,255,255,0.98)', 'rgba(245,242,235,0.99)'] as const,
-  /** Featured — warm rag panel */
-  felt: ['rgba(255,252,248,0.99)', 'rgba(232,228,220,0.98)'] as const,
+  /** Default — dark satin mat with gallery depth */
+  vault: ['rgba(36, 30, 58, 0.97)', 'rgba(22, 18, 42, 0.99)'] as const,
+  /** Featured — warmer plum panel */
+  felt: ['rgba(42, 34, 64, 0.99)', 'rgba(28, 24, 48, 0.98)'] as const,
 };
 
 export type VaultFill = keyof typeof GRADIENTS;

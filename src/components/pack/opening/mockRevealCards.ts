@@ -41,7 +41,7 @@ const POOLS: Record<PackCategory, RevealCard[]> = {
     { id: 'pm_c1', name: 'Base Chase Card', image: '🃏', rarity: 'common', value: 1000, color: '#1B0A3A' },
     { id: 'pm_c2', name: 'High-Value Standard', image: '✨', rarity: 'common', value: 1200, color: '#2D1A6B' },
     { id: 'pm_c3', name: 'Vintage Reprint', image: '📜', rarity: 'common', value: 1100, color: '#1C1048' },
-    { id: 'pm_r1', name: 'Graded Card Hit', image: '🏅', rarity: 'rare', value: 5000, color: '#7C3AED' },
+    { id: 'pm_r1', name: 'Graded Card Hit', image: '🏅', rarity: 'rare', value: 5000, color: '#C084FC' },
     { id: 'pm_r2', name: 'Premium Rare', image: '⭐', rarity: 'rare', value: 6000, color: '#4C1D95' },
     { id: 'pm_r3', name: 'PSA 9 Vintage Holo', image: '🌟', rarity: 'rare', value: 8000, color: '#5B21B6' },
     { id: 'pm_u1', name: 'Chase-Grade Slab', image: '💜', rarity: 'ultra_rare', value: 30000, color: '#312E81' },

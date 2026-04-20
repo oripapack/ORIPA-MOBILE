@@ -1,120 +1,126 @@
 /**
- * TCG / hobby light — crisp white cards on a soft violet-tinted canvas.
- * Primary energy: vivid violet + indigo (CTAs, links, frames). Value / Vault: warm amber-gold.
- * Hot drops & hype: magenta accent. Red reserved for urgency and errors only.
+ * Jewel vault — dark premium shell with multi-tone accents (not flat monochrome).
+ * Gold = value / CTAs on gold; amethyst = primary digital energy; sapphire, jade, coral = variety.
+ * Red stays for urgency; ink = legible type on gold surfaces.
  */
 export const colors = {
-  // Base — whisper of lilac so screens don’t read as flat office gray
-  background: '#F5F4FA',
-  surfaceElevated: '#FFFFFF',
-  surfaceMuted: '#EFEEF6',
+  background: '#07050F',
+  surfaceElevated: '#14102A',
+  surfaceMuted: '#1C1733',
   white: '#FFFFFF',
-  black: '#0F0B14',
-  /** Deep violet-ink — primary CTA fills */
-  nearBlack: '#312A44',
+  black: '#020108',
+  /** Velvet slabs, media bars — sits above background with subtle violet depth */
+  nearBlack: '#241B3D',
+  /** High-contrast type on gold / champagne fills */
+  ink: '#0A0614',
 
-  // Text — slightly plum-tinted neutrals
-  textPrimary: '#1E1B2E',
-  textSecondary: '#5C566E',
-  textMuted: '#8A8499',
-  textOnDark: '#FAF8FF',
+  textPrimary: '#F4F0FF',
+  textSecondary: '#B4ABCC',
+  textMuted: '#8B82A8',
+  textOnDark: '#FAF7FF',
 
-  border: '#E4E1ED',
-  borderLight: '#EFEDF5',
+  border: 'rgba(196, 181, 255, 0.14)',
+  borderLight: 'rgba(196, 181, 255, 0.07)',
 
-  // Brand — urgency / errors (unchanged role)
-  red: '#B91C1C',
-  redDark: '#991B1B',
-  redGlow: 'rgba(185, 28, 28, 0.12)',
+  red: '#F43F5E',
+  redDark: '#E11D48',
+  redGlow: 'rgba(244, 63, 94, 0.2)',
 
-  /** Loot / Vault / coins — amber-gold (reads clearly next to violet) */
-  gold: '#B45309',
-  goldDark: '#92400E',
-  goldSoft: 'rgba(180, 83, 9, 0.12)',
-  /** Amber washes & borders (replace legacy yellow-gold rgba in components) */
-  goldTintSubtle: 'rgba(180, 83, 9, 0.06)',
-  goldWash: 'rgba(180, 83, 9, 0.08)',
-  goldWash2: 'rgba(180, 83, 9, 0.07)',
-  goldWashMedium: 'rgba(180, 83, 9, 0.1)',
-  goldWashStrong: 'rgba(180, 83, 9, 0.14)',
-  goldBorderHairline: 'rgba(180, 83, 9, 0.22)',
-  goldBorderMuted: 'rgba(180, 83, 9, 0.28)',
-  goldBorder: 'rgba(180, 83, 9, 0.35)',
-  goldBorderStrong: 'rgba(180, 83, 9, 0.45)',
-  goldBorderHeavy: 'rgba(180, 83, 9, 0.52)',
-  goldPillBg: 'rgba(180, 83, 9, 0.16)',
-  goldPillBorder: 'rgba(180, 83, 9, 0.5)',
+  /** Vault / loot — bright antique gold */
+  gold: '#E8C547',
+  goldDark: '#C9A227',
+  goldSoft: 'rgba(232, 197, 71, 0.16)',
+  goldTintSubtle: 'rgba(232, 197, 71, 0.07)',
+  goldWash: 'rgba(232, 197, 71, 0.1)',
+  goldWash2: 'rgba(232, 197, 71, 0.08)',
+  goldWashMedium: 'rgba(232, 197, 71, 0.12)',
+  goldWashStrong: 'rgba(232, 197, 71, 0.16)',
+  goldBorderHairline: 'rgba(232, 197, 71, 0.28)',
+  goldBorderMuted: 'rgba(232, 197, 71, 0.34)',
+  goldBorder: 'rgba(232, 197, 71, 0.42)',
+  goldBorderStrong: 'rgba(232, 197, 71, 0.52)',
+  goldBorderHeavy: 'rgba(232, 197, 71, 0.6)',
+  goldPillBg: 'rgba(232, 197, 71, 0.18)',
+  goldPillBorder: 'rgba(232, 197, 71, 0.55)',
 
-  green: '#15803D',
+  green: '#34D399',
 
-  /** Main accent — violet (pack-opening energy, links, primary highlights) */
-  accent: '#7C3AED',
-  accentDark: '#6D28D9',
-  accentSoft: 'rgba(124, 58, 237, 0.1)',
-  accentBorder: 'rgba(124, 58, 237, 0.28)',
-  accentGlow: 'rgba(124, 58, 237, 0.18)',
+  /** Primary accent — amethyst (highlights, links) */
+  accent: '#C084FC',
+  accentDark: '#7E22CE',
+  accentSoft: 'rgba(192, 132, 252, 0.14)',
+  accentBorder: 'rgba(192, 132, 252, 0.38)',
+  accentGlow: 'rgba(192, 132, 252, 0.25)',
 
-  /** Secondary electric note — indigo/sapphire for gradients & duo accents */
-  accentSapphire: '#4F46E5',
-  accentSapphireSoft: 'rgba(79, 70, 229, 0.12)',
+  /** Sapphire — cool jewel contrast */
+  accentSapphire: '#38BDF8',
+  accentSapphireSoft: 'rgba(56, 189, 248, 0.14)',
 
-  /** Hype / chase / limited — magenta (use sparingly) */
-  magenta: '#C026D3',
-  magentaDark: '#A21CAF',
-  magentaSoft: 'rgba(192, 38, 211, 0.12)',
-  magentaBorder: 'rgba(192, 38, 211, 0.35)',
+  /** Coral / copper — warm tertiary (rings, variety) */
+  accentCopper: '#FB923C',
+  accentCopperSoft: 'rgba(251, 146, 60, 0.14)',
 
-  /** Home wash — cool lilac vertical gradient */
-  homeGradientTop: '#FBFAFF',
-  homeGradientMid: '#F5F4FA',
-  homeGradientBottom: '#EDEAF7',
-  headerHairline: 'rgba(49, 42, 68, 0.08)',
+  /** Jade — mint jewel for special highlights */
+  accentJade: '#2DD4BF',
+  accentJadeSoft: 'rgba(45, 212, 191, 0.12)',
 
-  headerBarBg: 'rgba(255, 255, 255, 0.94)',
-  tabBarBg: 'rgba(255, 255, 255, 0.98)',
+  /** Hype / chase — orchid pink */
+  magenta: '#F472B6',
+  magentaDark: '#EC4899',
+  magentaSoft: 'rgba(244, 114, 182, 0.14)',
+  magentaBorder: 'rgba(244, 114, 182, 0.38)',
 
-  chipNew: 'rgba(124, 58, 237, 0.12)',
-  chipNewText: '#6D28D9',
-  chipNewBorder: 'rgba(124, 58, 237, 0.28)',
+  /** Home wash — vertical jewel drift (plum → sapphire → ink) */
+  homeGradientTop: '#1A1035',
+  homeGradientMid: '#0F1730',
+  homeGradientBottom: '#07050F',
+  headerHairline: 'rgba(232, 197, 71, 0.18)',
 
-  chipBestValue: 'rgba(21, 128, 61, 0.1)',
-  chipBestValueText: '#166534',
-  chipBestValueBorder: 'rgba(22, 163, 74, 0.22)',
+  headerBarBg: 'rgba(10, 8, 18, 0.92)',
+  tabBarBg: 'rgba(10, 8, 18, 0.96)',
 
-  chipHotDrop: 'rgba(192, 38, 211, 0.12)',
-  chipHotDropText: '#A21CAF',
-  chipHotDropBorder: 'rgba(192, 38, 211, 0.32)',
+  chipNew: 'rgba(192, 132, 252, 0.16)',
+  chipNewText: '#E9D5FF',
+  chipNewBorder: 'rgba(192, 132, 252, 0.35)',
 
-  chipGraded: 'rgba(79, 70, 229, 0.12)',
-  chipGradedText: '#4338CA',
-  chipGradedBorder: 'rgba(79, 70, 229, 0.28)',
+  chipBestValue: 'rgba(45, 212, 191, 0.14)',
+  chipBestValueText: '#5EEAD4',
+  chipBestValueBorder: 'rgba(45, 212, 191, 0.3)',
 
-  chipNewUser: 'rgba(180, 83, 9, 0.12)',
-  chipNewUserText: '#9A3412',
-  chipNewUserBorder: 'rgba(180, 83, 9, 0.22)',
+  chipHotDrop: 'rgba(244, 114, 182, 0.16)',
+  chipHotDropText: '#FBCFE8',
+  chipHotDropBorder: 'rgba(244, 114, 182, 0.35)',
 
-  creditsPillBg: '#EFEEF6',
+  chipGraded: 'rgba(56, 189, 248, 0.14)',
+  chipGradedText: '#7DD3FC',
+  chipGradedBorder: 'rgba(56, 189, 248, 0.32)',
 
-  promoBannerBg: 'rgba(192, 38, 211, 0.08)',
-  promoBannerBorder: 'rgba(124, 58, 237, 0.22)',
-  verifiedPillBg: 'rgba(21, 128, 61, 0.1)',
-  verifiedPillText: '#166534',
-  demoNoteBg: 'rgba(124, 58, 237, 0.08)',
-  demoNoteBorder: 'rgba(124, 58, 237, 0.22)',
-  demoNoteText: '#6D28D9',
-  warningBannerBg: 'rgba(180, 83, 9, 0.08)',
-  warningBannerBorder: '#B45309',
-  warningBannerText: '#78350F',
+  chipNewUser: 'rgba(251, 146, 60, 0.14)',
+  chipNewUserText: '#FDBA74',
+  chipNewUserBorder: 'rgba(251, 146, 60, 0.32)',
 
-  shadow: 'rgba(30, 27, 46, 0.06)',
-  shadowStrong: 'rgba(30, 27, 46, 0.11)',
-  shadowCard: 'rgba(30, 27, 46, 0.08)',
+  creditsPillBg: 'rgba(28, 23, 51, 0.92)',
+
+  promoBannerBg: 'rgba(244, 114, 182, 0.1)',
+  promoBannerBorder: 'rgba(192, 132, 252, 0.3)',
+  verifiedPillBg: 'rgba(52, 211, 153, 0.12)',
+  verifiedPillText: '#6EE7B7',
+  demoNoteBg: 'rgba(192, 132, 252, 0.1)',
+  demoNoteBorder: 'rgba(192, 132, 252, 0.32)',
+  demoNoteText: '#E9D5FF',
+  warningBannerBg: 'rgba(251, 146, 60, 0.12)',
+  warningBannerBorder: '#FB923C',
+  warningBannerText: '#FDBA74',
+
+  shadow: 'rgba(0, 0, 0, 0.5)',
+  shadowStrong: 'rgba(0, 0, 0, 0.65)',
+  shadowCard: 'rgba(126, 34, 206, 0.18)',
 
   /**
-   * Premium panels — soft lilac paper (legacy names preserved for imports).
+   * Premium panels — deep felt with gold trim (legacy names preserved for imports).
    */
-  casinoFelt: '#EDEAF5',
-  casinoGold: '#7C3AED',
-  casinoGoldDark: '#6D28D9',
-  casinoFeltBorder: 'rgba(124, 58, 237, 0.14)',
+  casinoFelt: '#1E1836',
+  casinoGold: '#E8C547',
+  casinoGoldDark: '#C9A227',
+  casinoFeltBorder: 'rgba(232, 197, 71, 0.22)',
 } as const;

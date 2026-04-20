@@ -47,7 +47,14 @@ import {
 import { formatUsd } from '../lib/socialFormat';
 import { PUBLIC_WEB_ORIGIN } from '../config/app';
 
-const RING_PALETTE = [colors.red, colors.gold, '#2563EB', '#7C3AED', '#059669', '#EA580C'];
+const RING_PALETTE = [
+  colors.red,
+  colors.gold,
+  colors.accentSapphire,
+  colors.accent,
+  colors.accentJade,
+  colors.accentCopper,
+];
 
 function accentForId(id: string): string {
   let h = 0;

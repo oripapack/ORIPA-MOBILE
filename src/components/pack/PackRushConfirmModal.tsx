@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   primaryLabel: {
     fontSize: fontSize.base,
     fontFamily: brandFont.black,
-    color: colors.nearBlack,
+    color: colors.ink,
   },
   secondary: {
     paddingVertical: spacing.sm,

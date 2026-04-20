@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+import { spacing, elevation } from '../../tokens/spacing';
 import { CreditsPill } from './CreditsPill';
 import { APP_DISPLAY_NAME, getLogoInitials, getLogoWordmarkParts } from '../../config/app';
 import { navigationRef } from '../../navigation/navigationRef';
@@ -30,66 +31,82 @@ export function AppHeader({ onSearch }: Props) {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
-      {/* Logo: gradient monogram + wordmark (no split underline) */}
-      <View
-        style={styles.logo}
-        accessibilityRole="header"
-        accessibilityLabel={APP_DISPLAY_NAME}
-      >
-        <LinearGradient
-          colors={[colors.accentSapphire, colors.accent]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.monogramRing}
-        >
-          <View style={styles.monogramInner}>
-            <Text style={styles.monogramText} numberOfLines={1}>
-              {initials}
-            </Text>
-          </View>
-        </LinearGradient>
-        <View style={styles.wordmarkCol}>
-          {wordmark ? (
-            <Text style={styles.wordmarkLine} numberOfLines={1}>
-              <Text style={styles.wordmarkLead}>{wordmark.lead}</Text>
-              <Text style={styles.wordmarkAccent}> {wordmark.accent}</Text>
-            </Text>
-          ) : (
-            <Text style={styles.wordmarkSingle} numberOfLines={1}>
-              {APP_DISPLAY_NAME}
-            </Text>
-          )}
-        </View>
-      </View>
+    <View style={[styles.shell, { paddingTop: insets.top + spacing.sm }, elevation.chromeBar]}>
+      <BlurView
+        intensity={Platform.OS === 'ios' ? 52 : 40}
+        tint="dark"
+        style={StyleSheet.absoluteFill}
+      />
+      <View style={styles.scrim} pointerEvents="none" />
+      <LinearGradient
+        pointerEvents="none"
+        colors={['rgba(232,197,71,0.06)', 'transparent', 'rgba(192,132,252,0.05)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
 
-      {/* Right controls */}
-      <View style={styles.right}>
-        <CreditsPill onAdd={goCredits} />
-        <TouchableOpacity style={styles.iconBtn} onPress={onSearch}>
-          <Ionicons name="search" size={22} color={colors.textPrimary} />
-        </TouchableOpacity>
+      <View style={styles.row}>
+        <View
+          style={styles.logo}
+          accessibilityRole="header"
+          accessibilityLabel={APP_DISPLAY_NAME}
+        >
+          <LinearGradient
+            colors={[colors.accentSapphire, colors.accent, colors.goldDark]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.monogramRing}
+          >
+            <View style={styles.monogramInner}>
+              <Text style={styles.monogramText} numberOfLines={1}>
+                {initials}
+              </Text>
+            </View>
+          </LinearGradient>
+          <View style={styles.wordmarkCol}>
+            {wordmark ? (
+              <Text style={styles.wordmarkLine} numberOfLines={1}>
+                <Text style={styles.wordmarkLead}>{wordmark.lead}</Text>
+                <Text style={styles.wordmarkAccent}> {wordmark.accent}</Text>
+              </Text>
+            ) : (
+              <Text style={styles.wordmarkSingle} numberOfLines={1}>
+                {APP_DISPLAY_NAME}
+              </Text>
+            )}
+          </View>
+        </View>
+
+        <View style={styles.right}>
+          <CreditsPill onAdd={goCredits} />
+          <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75}>
+            <Ionicons name="search" size={20} color={colors.textPrimary} />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  shell: {
+    position: 'relative',
+    overflow: 'hidden',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.headerHairline,
+    paddingHorizontal: spacing.base,
+    paddingBottom: spacing.md,
+    zIndex: 2,
+  },
+  scrim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(7,5,15,0.42)',
+  },
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.md,
-    backgroundColor: colors.headerBarBg,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.headerHairline,
-    shadowColor: colors.shadowStrong,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    elevation: 4,
-    zIndex: 2,
   },
   logo: {
     flexDirection: 'row',
@@ -106,7 +123,7 @@ const styles = StyleSheet.create({
     height: 36,
     paddingHorizontal: 6,
     borderRadius: 10,
-    backgroundColor: colors.background,
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -129,7 +146,7 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.bold,
   },
   wordmarkAccent: {
-    color: colors.accent,
+    color: colors.gold,
     fontFamily: brandFont.black,
   },
   wordmarkSingle: {
@@ -144,9 +161,13 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   iconBtn: {
-    width: 36,
-    height: 36,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderLight,
   },
 });

@@ -158,7 +158,11 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
       />
       <LinearGradient
         pointerEvents="none"
-        colors={['rgba(255,252,248,0.5)', 'transparent', 'rgba(237,233,226,0.4)']}
+        colors={[
+          'rgba(232,197,71,0.1)',
+          'transparent',
+          'rgba(192,132,252,0.08)',
+        ]}
         locations={[0, 0.5, 1]}
         style={StyleSheet.absoluteFillObject}
       />
@@ -174,7 +178,12 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
 
       <Animated.View style={[styles.shimmerBand, shimmerBandStyle]} pointerEvents="none">
         <LinearGradient
-          colors={['transparent', 'rgba(255,255,255,0.35)', 'rgba(62,92,118,0.04)', 'transparent']}
+          colors={[
+            'transparent',
+            'rgba(255,255,255,0.1)',
+            'rgba(56,189,248,0.08)',
+            'transparent',
+          ]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={styles.shimmerGrad}

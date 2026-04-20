@@ -38,30 +38,48 @@ function PackGroupHeader({ group }: { group: PackGroup }) {
   const meta = PACK_GROUP_META[group];
   const label = t(meta.labelKey, { defaultValue: group });
   return (
-    <View style={groupStyles.header}>
-      <Text style={groupStyles.emoji}>{meta.emoji}</Text>
-      <Text style={groupStyles.label}>{label}</Text>
+    <View style={groupStyles.headerWrap}>
+      <View style={groupStyles.header}>
+        <View style={groupStyles.accentRule} />
+        <Text style={groupStyles.emoji}>{meta.emoji}</Text>
+        <Text style={groupStyles.label}>{label}</Text>
+      </View>
     </View>
   );
 }
 
 const groupStyles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  headerWrap: {
     paddingHorizontal: spacing.base,
     paddingTop: spacing.lg,
     paddingBottom: spacing.sm,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+  },
+  accentRule: {
+    width: 3,
+    height: 22,
+    borderRadius: 2,
+    backgroundColor: colors.gold,
   },
   emoji: {
     fontSize: 18,
   },
   label: {
-    fontSize: fontSize.base,
+    flex: 1,
+    fontSize: fontSize.sm,
     fontFamily: brandFont.black,
     color: colors.textPrimary,
-    letterSpacing: 0.4,
+    letterSpacing: 1.1,
     textTransform: 'uppercase',
   },
 });

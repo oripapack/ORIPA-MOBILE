@@ -10,8 +10,8 @@ import { AppUserUnsafeMetadata } from '../../lib/clerkProfile';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 
 /**
- * Username (handle), email, phone — display name lives on the tier card.
- * Renders only when Clerk is configured and the tree is under `ClerkProvider`.
+ * Settings (and similar): signed-in identity — username, email, phone.
+ * Renders section title + card only when Clerk is on and `useUser()` is available.
  */
 export function ClerkAccountSection() {
   if (!isClerkEnabled) return null;
@@ -35,51 +35,61 @@ function ClerkAccountSectionInner() {
   const phone = user.primaryPhoneNumber?.phoneNumber;
 
   return (
-    <VaultFramedCard style={styles.wrap}>
-      <Text style={styles.eyebrow}>{t('account.accountDetailsEyebrow')}</Text>
-
-      <View style={styles.fieldBlock}>
-        <Text style={styles.contactLabel}>{t('account.usernameLabel')}</Text>
-        <Text style={username ? styles.contactValue : styles.contactValueMuted} numberOfLines={1}>
-          {username || t('account.usernameUnset')}
-        </Text>
-      </View>
-
-      {email ? (
-        <View style={styles.fieldBlock}>
-          <Text style={styles.contactLabel}>{t('account.emailLabel')}</Text>
-          <Text style={styles.contactValue} numberOfLines={2}>
-            {email}
+    <>
+      <Text style={styles.sectionHeader}>{t('settings.sectionProfile')}</Text>
+      <VaultFramedCard style={styles.wrap} contentStyle={styles.cardInner}>
+        <View style={[styles.fieldBlock, !email && !phone && styles.fieldBlockLast]}>
+          <Text style={styles.contactLabel}>{t('account.usernameLabel')}</Text>
+          <Text style={username ? styles.contactValue : styles.contactValueMuted} numberOfLines={1}>
+            {username || t('account.usernameUnset')}
           </Text>
         </View>
-      ) : null}
 
-      {phone ? (
-        <View style={styles.fieldBlock}>
-          <Text style={styles.contactLabel}>{t('account.phoneLabel')}</Text>
-          <Text style={styles.contactValue} numberOfLines={2}>
-            {phone}
-          </Text>
-        </View>
-      ) : null}
-    </VaultFramedCard>
+        {email ? (
+          <View style={[styles.fieldBlock, !phone && styles.fieldBlockLast]}>
+            <Text style={styles.contactLabel}>{t('account.emailLabel')}</Text>
+            <Text style={styles.contactValue} numberOfLines={2}>
+              {email}
+            </Text>
+          </View>
+        ) : null}
+
+        {phone ? (
+          <View style={[styles.fieldBlock, styles.fieldBlockLast]}>
+            <Text style={styles.contactLabel}>{t('account.phoneLabel')}</Text>
+            <Text style={styles.contactValue} numberOfLines={2}>
+              {phone}
+            </Text>
+          </View>
+        ) : null}
+      </VaultFramedCard>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    marginBottom: spacing.lg,
-  },
-  eyebrow: {
+  sectionHeader: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
     color: colors.textMuted,
-    marginBottom: spacing.md,
-    textTransform: 'uppercase',
     letterSpacing: 1,
+    textTransform: 'uppercase',
+    marginTop: spacing.sm,
+    marginBottom: spacing.xs,
+    paddingLeft: spacing.xs,
+  },
+  wrap: {
+    marginBottom: spacing.lg,
+  },
+  cardInner: {
+    paddingTop: spacing.md,
+    paddingBottom: spacing.md,
   },
   fieldBlock: {
     marginBottom: spacing.md,
+  },
+  fieldBlockLast: {
+    marginBottom: 0,
   },
   contactLabel: {
     fontSize: fontSize.xs,

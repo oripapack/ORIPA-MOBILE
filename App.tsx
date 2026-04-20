@@ -75,7 +75,7 @@ export default function App() {
   const tree = (
     <PhysicalGoodsPaymentRoot>
       <SafeAreaProvider>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <View style={styles.root}>
           <SimulationDisclosure />
           {__DEV__ && !isClerkEnabled ? (

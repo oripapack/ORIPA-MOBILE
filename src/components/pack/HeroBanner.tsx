@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing, Dimensions, Image } from 'react-native';
+import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { elevation, radius, spacing } from '../../tokens/spacing';
 import { demoHomeHeroBackground } from '../../data/demoMedia';
 
 const { width: BANNER_W } = Dimensions.get('window');
@@ -56,14 +57,14 @@ export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
         <Svg width={BANNER_W} height={220}>
           <Defs>
             <LinearGradient id="heroGrad" x1="0" y1="0" x2="1" y2="1">
-              <Stop offset="0" stopColor="#FFFFFF" stopOpacity={0.88} />
-              <Stop offset="0.5" stopColor="#FAFBFC" stopOpacity={0.82} />
-              <Stop offset="1" stopColor="#F6F7F9" stopOpacity={0.9} />
+              <Stop offset="0" stopColor="#120A22" stopOpacity={0.94} />
+              <Stop offset="0.45" stopColor="#0F1428" stopOpacity={0.9} />
+              <Stop offset="1" stopColor="#1A1035" stopOpacity={0.92} />
             </LinearGradient>
             <LinearGradient id="heroTint" x1="1" y1="0" x2="0" y2="1">
-              <Stop offset="0" stopColor="rgba(62, 92, 118, 0.04)" />
-              <Stop offset="0.55" stopColor="rgba(62, 92, 118, 0.01)" />
-              <Stop offset="1" stopColor="rgba(255,255,255,0)" />
+              <Stop offset="0" stopColor="rgba(232, 197, 71, 0.09)" />
+              <Stop offset="0.5" stopColor="rgba(192, 132, 252, 0.07)" />
+              <Stop offset="1" stopColor="rgba(56, 189, 248, 0.05)" />
             </LinearGradient>
           </Defs>
           <Rect x={0} y={0} width={BANNER_W} height={220} fill="url(#heroGrad)" />
@@ -90,6 +91,12 @@ export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
         </Text>
         <Text style={styles.subtext}>{t('hero.sub')}</Text>
         <TouchableOpacity style={styles.cta} onPress={onBrowsePacks} activeOpacity={0.88}>
+          <ExpoLinearGradient
+            colors={[colors.gold, colors.goldDark]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFillObject}
+          />
           <Text style={styles.ctaText}>{t('hero.browsePacks')}</Text>
         </TouchableOpacity>
         {onDismiss ? (
@@ -130,17 +137,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: colors.goldBorderHairline,
     backgroundColor: colors.surfaceElevated,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 14,
-    elevation: 3,
+    ...elevation.heroBanner,
   },
   bgPhoto: {
     ...StyleSheet.absoluteFillObject,
-    opacity: 0.26,
+    opacity: 0.38,
   },
   bgSvg: {
     ...StyleSheet.absoluteFillObject,
@@ -169,7 +172,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
-    color: colors.accent,
+    color: colors.gold,
     letterSpacing: 1.2,
     marginBottom: spacing.xs,
   },
@@ -188,16 +191,20 @@ const styles = StyleSheet.create({
   },
   cta: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.nearBlack,
+    borderRadius: radius.md,
+    overflow: 'hidden',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm + 2,
-    borderRadius: radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.goldBorder,
+    position: 'relative',
   },
   ctaText: {
-    color: colors.white,
+    color: colors.ink,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    letterSpacing: 0.3,
+    fontFamily: brandFont.bold,
+    letterSpacing: 0.35,
+    zIndex: 1,
   },
   notNow: {
     marginTop: spacing.sm,
@@ -225,13 +232,13 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   cardBack2: {
-    backgroundColor: '#D4CEC4',
+    backgroundColor: '#243B56',
     top: 0,
     left: 8,
     transform: [{ rotate: '8deg' }],
   },
   cardBack1: {
-    backgroundColor: '#C5D4C8',
+    backgroundColor: '#1F4A45',
     top: 2,
     left: 4,
     transform: [{ rotate: '4deg' }],

@@ -13,6 +13,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader } from '../components/shared/AppHeader';
+import { HomeBackground } from '../components/shared/HomeBackground';
 import { ListingCard } from '../components/marketplace/ListingCard';
 import { WhyChoosePullHub } from '../components/marketplace/WhyChoosePullHub';
 import { colors } from '../tokens/colors';
@@ -144,6 +145,7 @@ export function MarketplaceScreen() {
 
   return (
     <View style={styles.root}>
+      <HomeBackground />
       <AppHeader onSearch={() => searchRef.current?.focus()} />
       <ScrollView
         style={styles.scroll}
@@ -394,10 +396,11 @@ export function MarketplaceScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.homeGradientBottom,
   },
   scroll: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   content: {
     paddingHorizontal: 0,

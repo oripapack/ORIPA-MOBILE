@@ -103,7 +103,9 @@ export function SettingsScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.sectionHeader}>{t('account.sectionAccount')}</Text>
+        <ClerkAccountSection />
+
+        <Text style={styles.sectionHeader}>{t('settings.sectionWallet')}</Text>
         <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
           {accountRowKeys.map((key) => (
             <ListRow
@@ -130,8 +132,6 @@ export function SettingsScreen() {
             />
           ))}
         </VaultFramedCard>
-
-        <ClerkAccountSection />
 
         <Text style={styles.sectionHeader}>{t('account.sectionLegal')}</Text>
         <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>

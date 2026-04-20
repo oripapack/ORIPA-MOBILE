@@ -94,7 +94,9 @@
     "emptyClearCta": "Clear search & filters"
   },
   "settings": {
-    "title": "設定"
+    "title": "設定",
+    "sectionProfile": "アカウント",
+    "sectionWallet": "ウォレット・本人確認"
   },
   "demoBanner": "プレビュー版 — クレジットと報酬はシミュレーションです。",
   "welcome": {

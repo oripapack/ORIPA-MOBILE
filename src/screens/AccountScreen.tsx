@@ -20,6 +20,7 @@ import { deriveSocialProfileFromUser } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
 import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
+import { HomeBackground } from '../components/shared/HomeBackground';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
 import { progressionFromTotalXp } from '../lib/collectorProgression';
@@ -112,12 +113,14 @@ export function AccountScreen() {
   );
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
-      showsVerticalScrollIndicator={false}
-      refreshControl={refreshControl}
-    >
+    <View style={styles.screenRoot}>
+      <HomeBackground />
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
+        showsVerticalScrollIndicator={false}
+        refreshControl={refreshControl}
+      >
       <Text style={styles.pageTitle}>{t('account.title')}</Text>
 
       {showGuestSignInCard ? (
@@ -308,14 +311,19 @@ export function AccountScreen() {
           <Text style={styles.quickLabel}>{t('account.quickSettings')}</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screenRoot: {
+    flex: 1,
+    backgroundColor: colors.homeGradientBottom,
+  },
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: 'transparent',
   },
   content: {
     paddingHorizontal: spacing.base,
