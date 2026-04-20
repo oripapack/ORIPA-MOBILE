@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 import { useAppStore } from './src/store/useAppStore';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, StyleSheet } from 'react-native';
@@ -62,6 +63,13 @@ export default function App() {
     sweep();
     const id = setInterval(sweep, 60_000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (next) => {
+      if (next === 'active') useAppStore.getState().recordCollectorActivity();
+    });
+    return () => sub.remove();
   }, []);
 
   const tree = (

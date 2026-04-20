@@ -22,6 +22,7 @@ import { formatVaultTimeLeft, vaultExpiryNoticeActive, vaultMillisRemaining } fr
 import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
 import { ListForSaleModal } from './ListForSaleModal';
 import { useAppStore } from '../../store/useAppStore';
+import { formatVaultExchangeUsd } from '../../lib/vaultExchange';
 
 type Props = {
   visible: boolean;
@@ -47,7 +48,8 @@ export function VaultAssetSheet({
   const coinValue = pull ? pull.creditsWon ?? pull.convertCreditValue ?? 0 : 0;
   const isVaulted = pull?.fulfillment === 'vaulted';
   const isShipped = pull?.fulfillment === 'shipped';
-  const listedPrice = pull?.listedPriceCredits;
+  const listedUsd = pull?.vaultExchangeListUsd;
+  const suggestedListUsd = Math.max(5, Math.round(coinValue / 20));
 
   const timerLine = useMemo(() => {
     if (!pull || !isVaulted || !pull.vaultExpiresAt) return null;
@@ -146,10 +148,10 @@ export function VaultAssetSheet({
               {getLocalizedPackTitle(pull.packId, pull.packTitle, t)}
             </Text>
 
-            {listedPrice != null && listedPrice > 0 ? (
+            {listedUsd != null && listedUsd >= 1 ? (
               <View style={styles.listedBanner}>
                 <Text style={styles.listedBannerText}>
-                  {t('vaultAsset.listedLine', { coins: listedPrice.toLocaleString() })}
+                  {t('vaultAsset.listedLine', { price: formatVaultExchangeUsd(listedUsd) })}
                 </Text>
               </View>
             ) : null}
@@ -180,7 +182,7 @@ export function VaultAssetSheet({
                     <Text style={styles.secondaryHalfText}>{t('vaultAsset.ctaTrade')}</Text>
                     <Text style={styles.soonPill}>{t('vaultAsset.soonPill')}</Text>
                   </TouchableOpacity>
-                  {listedPrice != null && listedPrice > 0 ? (
+                  {listedUsd != null && listedUsd >= 1 ? (
                     <TouchableOpacity
                       style={styles.secondaryHalf}
                       onPress={confirmUnlist}
@@ -218,7 +220,7 @@ export function VaultAssetSheet({
 
       <ListForSaleModal
         visible={listOpen}
-        suggestedCredits={coinValue}
+        suggestedPriceUsd={suggestedListUsd}
         onClose={() => setListOpen(false)}
         onConfirm={onConfirmListPrice}
       />

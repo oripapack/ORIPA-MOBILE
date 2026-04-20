@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import type { PrototypePackFlowPhase, PrototypePackOpenFlowProps } from './flowTypes';
-import { PackSelectionCarousel } from './PackSelectionCarousel';
+import { PackSelectionCarousel, lineupPackTintAt } from './PackSelectionCarousel';
 import { SelectedPackStage } from './SelectedPackStage';
 import { RipOpenInteraction } from './RipOpenInteraction';
 import { RevealTransition } from './RevealTransition';
@@ -99,6 +99,12 @@ export function PrototypePackOpenFlow({
   /** Lineup only mounts for these phases so it never steals flex height from reveal / rip (was causing the huge black gap). */
   const showCarouselLayer = phase === 'carousel' || phase === 'selecting' || phase === 'centered';
 
+  const shellTint = useMemo(
+    () =>
+      selectedLineupIndex != null ? lineupPackTintAt(selectedLineupIndex, packTint, sessionSalt) : packTint,
+    [selectedLineupIndex, packTint, sessionSalt],
+  );
+
   return (
     <View style={[styles.wrap, styles.wrapStage]}>
       <View style={styles.stage}>
@@ -120,7 +126,7 @@ export function PrototypePackOpenFlow({
 
         {phase === 'centered' ? (
           <View style={styles.layerAbs} pointerEvents="none">
-            <SelectedPackStage packTint={packTint} visible onSettled={onCenterSettled} />
+            <SelectedPackStage packTint={shellTint} visible onSettled={onCenterSettled} />
           </View>
         ) : null}
 
@@ -129,7 +135,7 @@ export function PrototypePackOpenFlow({
             {/* Lighter than the old 0.72 layer — matches the settled focus step so it does not
                 read like a cut to a different “mode” when the centered stage unmounts. */}
             <View style={styles.ripDim} pointerEvents="none" />
-            <RipOpenInteraction packTint={packTint} onRipComplete={onRipComplete} />
+            <RipOpenInteraction packTint={shellTint} onRipComplete={onRipComplete} />
           </View>
         ) : null}
 

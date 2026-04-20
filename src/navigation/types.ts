@@ -36,4 +36,6 @@ export type RootStackParamList = {
   Promotions: undefined;
   /** Paid membership — Silver / Gold / Black (demo CTA until IAP). */
   Membership: undefined;
+  /** Full collector quest list + streak (Player tab links here). */
+  CollectorQuests: undefined;
 };

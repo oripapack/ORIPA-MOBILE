@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next';
 import { brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
 import { ReelPackShell } from '../opening/ReelPackShell';
@@ -39,6 +40,13 @@ const VARIANT_TINTS = [
 
 const COUNT = 7;
 const DEFAULT_FOCUS_INDEX = Math.floor(COUNT / 2);
+
+/** Same tint logic as the carousel slots — use for focus + rip so the shell matches the pick. */
+export function lineupPackTintAt(index: number, packTint: string, sessionSalt: number): string {
+  if (index < 0 || index >= COUNT) return packTint;
+  if (index === DEFAULT_FOCUS_INDEX) return packTint;
+  return VARIANT_TINTS[(sessionSalt + index * 11) % VARIANT_TINTS.length]!;
+}
 
 function tintRgba(hex: string, alpha: number): string {
   if (hex.startsWith('#') && hex.length === 7) {
@@ -182,6 +190,7 @@ export function PackSelectionCarousel({
   selectedIndex = null,
   selectionLocked = false,
 }: Props) {
+  const { t } = useTranslation();
   const scrollRef = useRef<ScrollView>(null);
   const [scrollX, setScrollX] = useState(0);
   const didCenterRef = useRef(false);
@@ -189,11 +198,10 @@ export function PackSelectionCarousel({
   const popAnims = useRef(Array.from({ length: COUNT }, () => new Animated.Value(0))).current;
   const commitScales = useRef(Array.from({ length: COUNT }, () => new Animated.Value(0))).current;
 
-  const tints = useMemo(() => {
-    return Array.from({ length: COUNT }, (_, i) =>
-      i === DEFAULT_FOCUS_INDEX ? packTint : VARIANT_TINTS[(sessionSalt + i * 11) % VARIANT_TINTS.length],
-    );
-  }, [packTint, sessionSalt]);
+  const tints = useMemo(
+    () => Array.from({ length: COUNT }, (_, i) => lineupPackTintAt(i, packTint, sessionSalt)),
+    [packTint, sessionSalt],
+  );
 
   useEffect(() => {
     const springs = popAnims.map((val, i) => {
@@ -261,7 +269,7 @@ export function PackSelectionCarousel({
   return (
     <View style={styles.wrap}>
       <PackCarouselAmbient packTint={packTint} />
-      <Text style={styles.hint}>Packs drop in one by one · swipe the row, then tap your pick</Text>
+      <Text style={styles.hint}>{t('packOpening.lineupHint')}</Text>
       <View style={styles.carouselBand}>
         <ScrollView
           ref={scrollRef}

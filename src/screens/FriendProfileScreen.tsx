@@ -28,7 +28,7 @@ import { SocialPullRow } from '../components/social/SocialPullRow';
 import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
-import { FriendVaultShopSection } from '../components/friends/FriendVaultShopSection';
+import { FriendVaultShowcaseSection } from '../components/friends/FriendVaultShowcaseSection';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendProfile'>;
 type Rt = RouteProp<RootStackParamList, 'FriendProfile'>;
@@ -139,7 +139,11 @@ export function FriendProfileScreen() {
           </View>
         </View>
 
-        <FriendVaultShopSection sellerUsername={normalized} isSelf={isSelf} />
+        <FriendVaultShowcaseSection
+          sellerUsername={normalized}
+          isSelf={isSelf}
+          friendEntry={friends.find((f) => f.username === normalized) ?? null}
+        />
 
         <Text style={styles.section}>{t('social.bestPull')}</Text>
         <View style={styles.bestCard}>

@@ -1,0 +1,172 @@
+import React, { useCallback, useLayoutEffect } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import type { RootStackParamList } from '../navigation/types';
+import { useAppStore } from '../store/useAppStore';
+import { COLLECTOR_QUESTS } from '../data/collectorQuests';
+import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
+import { VaultFramedCard } from '../components/shared/VaultFramedCard';
+import { colors } from '../tokens/colors';
+import { fontSize, brandFont } from '../tokens/typography';
+import { spacing } from '../tokens/spacing';
+
+type Nav = StackNavigationProp<RootStackParamList, 'CollectorQuests'>;
+
+export function CollectorQuestsScreen() {
+  const { t } = useTranslation();
+  const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: t('account.collectorQuestsTitle'),
+      headerShown: true,
+      headerTintColor: colors.textPrimary,
+      headerTitleStyle: { fontFamily: brandFont.bold, fontSize: fontSize.md },
+      headerShadowVisible: false,
+      headerStyle: { backgroundColor: colors.surfaceElevated },
+    });
+  }, [navigation, t]);
+  const streak = useAppStore((s) => s.collectorStreakDays);
+  const best = useAppStore((s) => s.collectorStreakBest);
+  const questProgress = useAppStore((s) => s.collectorQuestProgress);
+  const claimQuest = useAppStore((s) => s.claimCollectorQuest);
+
+  const onClaim = useCallback(
+    (id: string) => {
+      claimQuest(id);
+    },
+    [claimQuest],
+  );
+
+  const dailies = COLLECTOR_QUESTS.filter((q) => q.kind === 'daily');
+  const weeklies = COLLECTOR_QUESTS.filter((q) => q.kind === 'weekly');
+
+  return (
+    <ScrollView
+      style={styles.root}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
+      showsVerticalScrollIndicator={false}
+    >
+      <Text style={styles.lead}>{t('progression.questsResetHint')}</Text>
+
+      <VaultFramedCard style={styles.card} contentStyle={styles.cardInner}>
+        <Text style={styles.eyebrow}>{t('progression.streakEyebrow')}</Text>
+        <View style={styles.streakRow}>
+          <View style={styles.streakMain}>
+            <Text style={styles.streakVal}>{streak}</Text>
+            <Text style={styles.streakLab}>{t('progression.streakDaysLabel')}</Text>
+          </View>
+          <View style={styles.streakDivider} />
+          <View style={styles.streakSide}>
+            <Text style={styles.streakBestLab}>{t('progression.streakBest')}</Text>
+            <Text style={styles.streakBestVal}>{best}</Text>
+          </View>
+        </View>
+        <Text style={styles.streakFine}>{t('progression.streakFine')}</Text>
+      </VaultFramedCard>
+
+      <Text style={styles.section}>{t('progression.questsDaily')}</Text>
+      <VaultFramedCard style={styles.card} contentStyle={styles.questBlock}>
+        {dailies.map((q) => (
+          <CollectorQuestRow key={q.id} def={q} row={questProgress[q.id]} onClaim={onClaim} />
+        ))}
+      </VaultFramedCard>
+
+      <Text style={styles.section}>{t('progression.questsWeekly')}</Text>
+      <VaultFramedCard style={styles.card} contentStyle={styles.questBlock}>
+        {weeklies.map((q) => (
+          <CollectorQuestRow key={q.id} def={q} row={questProgress[q.id]} onClaim={onClaim} />
+        ))}
+      </VaultFramedCard>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  content: {
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.sm,
+  },
+  lead: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    lineHeight: 20,
+    marginBottom: spacing.lg,
+  },
+  card: {
+    marginBottom: spacing.lg,
+  },
+  cardInner: {
+    padding: spacing.lg,
+  },
+  questBlock: {
+    padding: spacing.lg,
+    paddingBottom: spacing.sm,
+  },
+  eyebrow: {
+    fontSize: 10,
+    fontFamily: brandFont.black,
+    color: colors.textMuted,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    marginBottom: spacing.sm,
+  },
+  streakRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  streakMain: { flex: 1 },
+  streakVal: {
+    fontSize: fontSize.hero,
+    fontFamily: brandFont.black,
+    color: colors.textPrimary,
+    letterSpacing: -1,
+  },
+  streakLab: {
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.semibold,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  streakDivider: {
+    width: StyleSheet.hairlineWidth,
+    height: 44,
+    backgroundColor: colors.borderLight,
+    marginHorizontal: spacing.md,
+  },
+  streakSide: { alignItems: 'flex-end' },
+  streakBestLab: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    fontFamily: brandFont.medium,
+  },
+  streakBestVal: {
+    fontSize: fontSize.lg,
+    fontFamily: brandFont.black,
+    color: colors.textPrimary,
+    marginTop: 2,
+  },
+  streakFine: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    lineHeight: 18,
+  },
+  section: {
+    fontSize: 10,
+    fontFamily: brandFont.black,
+    color: colors.textMuted,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    marginBottom: spacing.md,
+    marginTop: spacing.xs,
+  },
+});

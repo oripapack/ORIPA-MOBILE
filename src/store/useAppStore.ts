@@ -18,6 +18,16 @@ import {
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
 import { SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
 import { claimFirstTimePack, loadClaimedFirstTimePacks } from '../lib/firstTimePack';
+import { userWithSyncedProgression, tierXpBonusForPull } from '../lib/collectorProgression';
+import {
+  loadCollectorGame,
+  saveCollectorGame,
+  currentQuestWeekKey,
+  localYmd,
+  ymdAddDays,
+} from '../lib/collectorGamePersistence';
+import { COLLECTOR_QUESTS, initialQuestProgress } from '../data/collectorQuests';
+import { bumpQuestTrack } from './collectorGameHelpers';
 
 /** Bulk opens: 10 or 100 pulls in one session (credits only). */
 export type PackOpenQuantity = 1 | 10 | 100;
@@ -129,22 +139,36 @@ interface AppStore {
   setUserFromClerkProfile: (p: { id: string; displayName: string; username: string }) => void;
 
   /**
-   * Public Vault shop rows keyed by seller username (lowercase). Merges demo NPC listings
-   * with your live listings when you list from Vault.
+   * Vault Exchange: active USD listings keyed by seller username (lowercase).
+   * Merges demo NPC rows with listings you create from your Vault.
    */
   friendVaultShopByUser: Record<string, PublicVaultListing[]>;
-  /** List a vaulted pull at a coin price (visible on friends’ view of your shop — demo: local only). */
-  listVaultPullForSale: (pullId: string, priceCredits: number) => boolean;
-  /** Remove public listing; pull stays vaulted. */
+  /** Create a Vault Exchange listing (fixed USD, card checkout — client stub). */
+  listVaultPullForSale: (pullId: string, priceUsd: number) => boolean;
+  /** Remove listing; pull stays vaulted. */
   unlistVaultPullForSale: (pullId: string) => void;
   /**
-   * Buyer (current user) purchases a listing from `sellerUsername`’s shop.
-   * Returns `ok` | `insufficient` | `not_found` | `own_listing`.
+   * Buyer completes a Vault Exchange purchase after cash payment (demo: stub confirms payment).
+   * Does not spend in-app coins. Returns `ok` | `not_found` | `own_listing`.
    */
   purchaseFriendVaultListing: (
     sellerUsername: string,
     listingId: string,
-  ) => 'ok' | 'insufficient' | 'not_found' | 'own_listing';
+  ) => 'ok' | 'not_found' | 'own_listing';
+
+  /** Daily streak + weekly/daily quest resets (idempotent same calendar day). */
+  collectorStreakDays: number;
+  collectorStreakBest: number;
+  collectorStreakLastYmd: string | null;
+  collectorQuestWeekKey: string;
+  collectorLastDailyYmd: string | null;
+  collectorQuestProgress: Record<string, { progress: number; claimed: boolean }>;
+  collectorGameHydrated: boolean;
+
+  recordCollectorActivity: () => void;
+  hydrateCollectorGame: () => Promise<void>;
+  grantCollectorXp: (amount: number) => void;
+  claimCollectorQuest: (questId: string) => boolean;
 }
 
 function initialIncomingFriendRequests(): IncomingFriendRequest[] {
@@ -152,8 +176,23 @@ function initialIncomingFriendRequests(): IncomingFriendRequest[] {
   return [buildDemoIncomingFriendRequest()];
 }
 
-export const useAppStore = create<AppStore>((set, get) => ({
-  user: mockUser,
+const seededUser = userWithSyncedProgression({ ...mockUser }, mockUser.xp);
+
+export const useAppStore = create<AppStore>((set, get) => {
+  const persistCollector = () => {
+    const s = get();
+    void saveCollectorGame(s.user.id, {
+      streakDays: s.collectorStreakDays,
+      streakBest: s.collectorStreakBest,
+      lastStreakYmd: s.collectorStreakLastYmd,
+      questWeekKey: s.collectorQuestWeekKey,
+      lastDailyYmd: s.collectorLastDailyYmd,
+      questProgress: s.collectorQuestProgress,
+    });
+  };
+
+  return {
+  user: seededUser,
   friends: [],
   incomingFriendRequests: initialIncomingFriendRequests(),
   homeViewMode: 'discover',
@@ -175,6 +214,155 @@ export const useAppStore = create<AppStore>((set, get) => ({
   resumePackOpenQuantity: 1,
   usedFirstTimePackIds: [],
   friendVaultShopByUser: createInitialFriendVaultShop(),
+  collectorStreakDays: 0,
+  collectorStreakBest: 0,
+  collectorStreakLastYmd: null,
+  collectorQuestWeekKey: currentQuestWeekKey(),
+  collectorLastDailyYmd: null,
+  collectorQuestProgress: initialQuestProgress(),
+  collectorGameHydrated: false,
+
+  hydrateCollectorGame: async () => {
+    const { user } = get();
+    const loaded = await loadCollectorGame(user.id);
+    const week = currentQuestWeekKey();
+
+    if (!loaded) {
+      set((state) => ({
+        collectorQuestWeekKey: week,
+        collectorQuestProgress: initialQuestProgress(),
+        collectorGameHydrated: true,
+        user: userWithSyncedProgression(state.user, state.user.xp),
+      }));
+      persistCollector();
+      return;
+    }
+
+    let questProgress = { ...initialQuestProgress(), ...loaded.questProgress };
+    for (const q of COLLECTOR_QUESTS) {
+      if (!questProgress[q.id]) questProgress[q.id] = { progress: 0, claimed: false };
+    }
+
+    let questWeekKey = loaded.questWeekKey || week;
+    if (questWeekKey !== week) {
+      questWeekKey = week;
+      for (const q of COLLECTOR_QUESTS) {
+        if (q.kind === 'weekly') questProgress[q.id] = { progress: 0, claimed: false };
+      }
+    }
+
+    set({
+      collectorStreakDays: loaded.streakDays,
+      collectorStreakBest: loaded.streakBest,
+      collectorStreakLastYmd: loaded.lastStreakYmd,
+      collectorQuestWeekKey: questWeekKey,
+      collectorLastDailyYmd: loaded.lastDailyYmd ?? null,
+      collectorQuestProgress: questProgress,
+      collectorGameHydrated: true,
+      user: userWithSyncedProgression(get().user, get().user.xp),
+    });
+    persistCollector();
+  },
+
+  recordCollectorActivity: () => {
+    const today = localYmd(new Date());
+    const week = currentQuestWeekKey();
+    const yesterday = ymdAddDays(today, -1);
+
+    set((state) => {
+      let {
+        collectorStreakDays: streak,
+        collectorStreakBest: best,
+        collectorStreakLastYmd: last,
+        collectorQuestWeekKey: qwk,
+        collectorLastDailyYmd: lastDaily,
+        collectorQuestProgress: qp,
+        user,
+      } = state;
+
+      let questProgress = { ...qp };
+      let xpBonus = 0;
+
+      if (qwk !== week) {
+        qwk = week;
+        for (const q of COLLECTOR_QUESTS) {
+          if (q.kind === 'weekly') questProgress[q.id] = { progress: 0, claimed: false };
+        }
+      }
+
+      if (lastDaily !== today) {
+        for (const q of COLLECTOR_QUESTS) {
+          if (q.kind === 'daily') questProgress[q.id] = { progress: 0, claimed: false };
+        }
+        lastDaily = today;
+        xpBonus += 12;
+      }
+
+      if (last === today) {
+        questProgress = bumpQuestTrack(questProgress, 'daily_login', 1);
+        const synced = userWithSyncedProgression(user, user.xp + xpBonus);
+        return {
+          collectorQuestWeekKey: qwk,
+          collectorLastDailyYmd: lastDaily,
+          collectorQuestProgress: questProgress,
+          user: synced,
+        };
+      }
+
+      if (!last) {
+        streak = 1;
+      } else if (last === yesterday) {
+        streak += 1;
+      } else {
+        streak = 1;
+      }
+      last = today;
+      best = Math.max(best, streak);
+      questProgress = bumpQuestTrack(questProgress, 'daily_login', 1);
+
+      const synced = userWithSyncedProgression(user, user.xp + xpBonus);
+      return {
+        collectorStreakDays: streak,
+        collectorStreakBest: best,
+        collectorStreakLastYmd: last,
+        collectorQuestWeekKey: qwk,
+        collectorLastDailyYmd: lastDaily,
+        collectorQuestProgress: questProgress,
+        user: synced,
+      };
+    });
+    persistCollector();
+  },
+
+  grantCollectorXp: (amount) => {
+    const n = Math.floor(amount);
+    if (n <= 0) return;
+    set((state) => ({
+      user: userWithSyncedProgression(state.user, state.user.xp + n),
+    }));
+  },
+
+  claimCollectorQuest: (questId) => {
+    const def = COLLECTOR_QUESTS.find((q) => q.id === questId);
+    if (!def) return false;
+    const row = get().collectorQuestProgress[questId];
+    if (!row || row.claimed || row.progress < def.target) return false;
+    let ok = false;
+    set((state) => {
+      const r = state.collectorQuestProgress[questId];
+      if (!r || r.claimed || r.progress < def.target) return state;
+      ok = true;
+      return {
+        collectorQuestProgress: {
+          ...state.collectorQuestProgress,
+          [questId]: { ...r, claimed: true },
+        },
+        user: userWithSyncedProgression(state.user, state.user.xp + def.xpReward),
+      };
+    });
+    if (ok) persistCollector();
+    return ok;
+  },
 
   markFirstTimePackUsed: (packId) =>
     set((state) => ({
@@ -227,7 +415,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   /**
    * Opens one pack (free grant or credits) or a bulk session (10 / 100, credits only).
-   * Credits + XP apply immediately when the user commits; the modal reveals or summarizes pulls.
+   * Credits deduct on commit; collector XP applies when pulls are recorded (`applyPackOpenResult` / bulk).
    */
   openPack: (pack, options) => {
     const keepPack = options?.keepPackModalOnInsufficient ?? false;
@@ -307,7 +495,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
       user: {
         ...state.user,
         credits: state.user.credits - totalCost,
-        xp: state.user.xp + Math.floor(totalCost * 0.1),
       },
       ...firstTimeUpdate,
     }));
@@ -344,15 +531,21 @@ export const useAppStore = create<AppStore>((set, get) => ({
         tier: result.tier,
       };
 
+      const xpGain = 22 + tierXpBonusForPull(result.tier);
+      const synced = userWithSyncedProgression(state.user, state.user.xp + xpGain);
+      const qp = bumpQuestTrack(state.collectorQuestProgress, 'pack_opens', 1);
+
       return {
         _packOpenRewardApplied: true,
         pendingFulfillmentPullIds: [pull.id, ...state.pendingFulfillmentPullIds],
+        collectorQuestProgress: qp,
         user: {
-          ...state.user,
+          ...synced,
           pullHistory: [pull, ...state.user.pullHistory],
         },
       };
     });
+    if (persistToVault) persistCollector();
   },
 
   applyBulkPackOpenResults: (results, options) => {
@@ -383,15 +576,21 @@ export const useAppStore = create<AppStore>((set, get) => ({
       });
       const newIds = pulls.map((p) => p.id);
 
+      const xpGain = results.reduce((sum, r) => sum + 22 + tierXpBonusForPull(r.tier), 0);
+      const synced = userWithSyncedProgression(state.user, state.user.xp + xpGain);
+      const qp = bumpQuestTrack(state.collectorQuestProgress, 'pack_opens', results.length);
+
       return {
         _packOpenRewardApplied: true,
         pendingFulfillmentPullIds: [...newIds, ...state.pendingFulfillmentPullIds],
+        collectorQuestProgress: qp,
         user: {
-          ...state.user,
+          ...synced,
           pullHistory: [...pulls, ...state.user.pullHistory],
         },
       };
     });
+    if (persistToVault) persistCollector();
   },
 
   addFriend: (usernameRaw, displayName) => {
@@ -409,7 +608,10 @@ export const useAppStore = create<AppStore>((set, get) => ({
     set((state) => ({
       friends: [entry, ...state.friends],
       incomingFriendRequests: state.incomingFriendRequests.filter((r) => r.username !== u),
+      collectorQuestProgress: bumpQuestTrack(state.collectorQuestProgress, 'friends_added', 1),
+      user: userWithSyncedProgression(state.user, state.user.xp + 45),
     }));
+    persistCollector();
     return { ok: true };
   },
 
@@ -467,6 +669,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   finalizePendingFulfillment: ({ vaultIds, convertIds }) => {
     const vSet = new Set(vaultIds);
     const cSet = new Set(convertIds);
+    let didUpdate = false;
     set((state) => {
       const pendingPulls = state.user.pullHistory.filter(
         (p) => p.fulfillment === 'pending' && (vSet.has(p.id) || cSet.has(p.id)),
@@ -480,11 +683,19 @@ export const useAppStore = create<AppStore>((set, get) => ({
       const clearedIds = new Set([...vaultIds, ...convertIds]);
       const now = new Date();
 
+      const xpAdd = vaultIds.length * 28 + convertIds.length * 14;
+      let qp = state.collectorQuestProgress;
+      if (vaultIds.length) qp = bumpQuestTrack(qp, 'vault_secured', vaultIds.length);
+      if (convertIds.length) qp = bumpQuestTrack(qp, 'vault_convert', convertIds.length);
+      const synced = userWithSyncedProgression(state.user, state.user.xp + xpAdd);
+
+      didUpdate = true;
       return {
         pendingFulfillmentPullIds: state.pendingFulfillmentPullIds.filter((id) => !clearedIds.has(id)),
         modals: { ...state.modals, wonPrizes: false },
+        collectorQuestProgress: qp,
         user: {
-          ...state.user,
+          ...synced,
           credits: state.user.credits + creditsToAdd,
           pullHistory: state.user.pullHistory.map((p) => {
             if (p.fulfillment !== 'pending') return p;
@@ -506,6 +717,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         },
       };
     });
+    if (didUpdate) persistCollector();
   },
 
   requestVaultShipment: (pullId) => {
@@ -523,7 +735,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
                   fulfillment: 'shipped' as const,
                   vaultExpiresAt: undefined,
                   vaultHoldDays: undefined,
-                  listedPriceCredits: undefined,
+                  vaultExchangeListUsd: undefined,
                 }
               : p,
           ),
@@ -533,16 +745,21 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   convertVaultPullToCoins: (pullId) => {
+    let did = false;
     set((state) => {
       const pull = state.user.pullHistory.find((p) => p.id === pullId);
       if (!pull || pull.fulfillment !== 'vaulted') return state;
       const amt = pull.creditsWon ?? pull.convertCreditValue ?? 0;
       const u = normalizeFriendUsername(state.user.username);
       const shop = removeListingsForPullId(state.friendVaultShopByUser, u, pullId);
+      const qp = bumpQuestTrack(state.collectorQuestProgress, 'vault_convert', 1);
+      const synced = userWithSyncedProgression(state.user, state.user.xp + 18);
+      did = true;
       return {
         friendVaultShopByUser: shop,
+        collectorQuestProgress: qp,
         user: {
-          ...state.user,
+          ...synced,
           credits: state.user.credits + amt,
           pullHistory: state.user.pullHistory.map((p) =>
             p.id === pullId
@@ -551,13 +768,14 @@ export const useAppStore = create<AppStore>((set, get) => ({
                   fulfillment: 'converted' as const,
                   vaultExpiresAt: undefined,
                   vaultHoldDays: undefined,
-                  listedPriceCredits: undefined,
+                  vaultExchangeListUsd: undefined,
                 }
               : p,
           ),
         },
       };
     });
+    if (did) persistCollector();
   },
 
   processVaultExpiries: () => {
@@ -574,7 +792,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
           fulfillment: 'converted' as const,
           vaultExpiresAt: undefined,
           vaultHoldDays: undefined,
-          listedPriceCredits: undefined,
+          vaultExchangeListUsd: undefined,
         };
       });
       if (creditsToAdd === 0) return state;
@@ -601,8 +819,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
     });
   },
 
-  listVaultPullForSale: (pullId, priceCredits) => {
-    const price = Math.floor(priceCredits);
+  listVaultPullForSale: (pullId, priceUsd) => {
+    const price = Math.floor(priceUsd);
     if (price < 1) return false;
     const pull = get().user.pullHistory.find((p) => p.id === pullId);
     if (!pull || pull.fulfillment !== 'vaulted') return false;
@@ -611,7 +829,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
       id: listingIdForPull(pullId),
       sellerUsername: u,
       pullId,
-      priceCredits: price,
+      listPriceUsd: price,
       result: pull.result,
       packTitle: pull.packTitle,
       packId: pull.packId,
@@ -625,7 +843,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         user: {
           ...state.user,
           pullHistory: state.user.pullHistory.map((p) =>
-            p.id === pullId ? { ...p, listedPriceCredits: price } : p,
+            p.id === pullId ? { ...p, vaultExchangeListUsd: price } : p,
           ),
         },
         friendVaultShopByUser: {
@@ -646,7 +864,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         user: {
           ...state.user,
           pullHistory: state.user.pullHistory.map((p) =>
-            p.id === pullId ? { ...p, listedPriceCredits: undefined } : p,
+            p.id === pullId ? { ...p, vaultExchangeListUsd: undefined } : p,
           ),
         },
       };
@@ -660,9 +878,9 @@ export const useAppStore = create<AppStore>((set, get) => ({
     const listing = rows.find((l) => l.id === listingId);
     if (!listing) return 'not_found';
     if (seller === me) return 'own_listing';
-    if (get().user.credits < listing.priceCredits) return 'insufficient';
 
-    const price = listing.priceCredits;
+    const priceUsd = listing.listPriceUsd;
+    const notionalCredits = Math.max(100, Math.round(priceUsd * 10));
     const exp = new Date();
     exp.setDate(exp.getDate() + VAULT_HOLD_DAYS);
     const newPull: Pull = {
@@ -670,10 +888,10 @@ export const useAppStore = create<AppStore>((set, get) => ({
       packId: listing.packId,
       packTitle: listing.packTitle,
       result: listing.result,
-      creditsWon: price,
+      creditsWon: notionalCredits,
       timestamp: new Date(),
       fulfillment: 'vaulted',
-      convertCreditValue: price,
+      convertCreditValue: notionalCredits,
       tier: listing.tier ?? 'rare',
       vaultExpiresAt: exp,
       vaultHoldDays: VAULT_HOLD_DAYS,
@@ -686,7 +904,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
         friendVaultShopByUser: { ...state.friendVaultShopByUser, [seller]: nextRows },
         user: {
           ...state.user,
-          credits: state.user.credits - price,
           pullHistory: [newPull, ...state.user.pullHistory],
         },
       };
@@ -694,4 +911,5 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
     return 'ok';
   },
-}));
+};
+});

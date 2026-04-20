@@ -429,6 +429,7 @@
   },
   "packOpening": {
     "title": "パック開封",
+    "lineupHint": "パックが順に並びます · 横にスワイプしてから選んでタップ",
     "opening": "開封中…",
     "suspense": "何が出た？",
     "revealing": "公開中…",

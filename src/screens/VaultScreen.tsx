@@ -24,6 +24,7 @@ import { VaultAssetSheet } from '../components/vault/VaultAssetSheet';
 import { useVaultPullsSorted } from '../lib/vaultPulls';
 import { formatVaultTimeLeft, vaultExpiryNoticeActive, vaultMillisRemaining } from '../lib/vaultTime';
 import { VAULT_HOLD_DAYS } from '../lib/vaultConstants';
+import { formatVaultExchangeUsd } from '../lib/vaultExchange';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
@@ -276,10 +277,10 @@ function VaultTile({
             {urgent ? t('vaultScreen.notifyBeforeConvert') : timerLabel}
           </Text>
         ) : null}
-        {pull.listedPriceCredits != null && pull.listedPriceCredits > 0 ? (
+        {pull.vaultExchangeListUsd != null && pull.vaultExchangeListUsd >= 1 ? (
           <View style={styles.tileListedPill}>
             <Text style={styles.tileListedPillText}>
-              {t('vaultScreen.listedPill', { coins: pull.listedPriceCredits.toLocaleString() })}
+              {t('vaultScreen.listedPill', { price: formatVaultExchangeUsd(pull.vaultExchangeListUsd) })}
             </Text>
           </View>
         ) : null}

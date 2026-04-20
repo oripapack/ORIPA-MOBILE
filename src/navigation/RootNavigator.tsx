@@ -27,6 +27,7 @@ import { IdentityVerificationScreen } from '../screens/IdentityVerificationScree
 import { PayoutMethodScreen } from '../screens/PayoutMethodScreen';
 import { PromotionsScreen } from '../screens/PromotionsScreen';
 import { MembershipScreen } from '../screens/MembershipScreen';
+import { CollectorQuestsScreen } from '../screens/CollectorQuestsScreen';
 import { PackDetailsScreen } from '../screens/PackDetailsScreen';
 import { FriendProfileScreen } from '../screens/FriendProfileScreen';
 import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
@@ -216,6 +217,13 @@ function RootStack() {
           }}
         />
         <Stack.Screen
+          name="CollectorQuests"
+          component={CollectorQuestsScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="Notifications"
           component={NotificationsScreen}
           options={{
@@ -332,12 +340,25 @@ function GuestHydration() {
   const hydratePromotions = usePromotionStore((s) => s.hydrate);
   const hydrateMembershipSim = useMembershipSimulationStore((s) => s.hydrate);
   const hydrateFirstTimePacks = useAppStore((s) => s.hydrateFirstTimePacks);
+  const hydrateCollectorGame = useAppStore((s) => s.hydrateCollectorGame);
+  const recordCollectorActivity = useAppStore((s) => s.recordCollectorActivity);
   useEffect(() => {
     void hydrate();
     void hydratePromotions();
     void hydrateMembershipSim();
     void hydrateFirstTimePacks();
-  }, [hydrate, hydratePromotions, hydrateMembershipSim, hydrateFirstTimePacks]);
+    void (async () => {
+      await hydrateCollectorGame();
+      recordCollectorActivity();
+    })();
+  }, [
+    hydrate,
+    hydratePromotions,
+    hydrateMembershipSim,
+    hydrateFirstTimePacks,
+    hydrateCollectorGame,
+    recordCollectorActivity,
+  ]);
   return null;
 }
 

@@ -12,7 +12,7 @@
     "lead": "Your pulls live here first — a private, premium hold where you trade, list, ship later, or cash out. Converted hits stay in pull history only.",
     "benefitsTitle": "Why the Vault wins",
     "benefit1": "• Keep hits inside Pull Hub — build a real collection, not one-off shipments.",
-    "benefit2": "• Trade peer-to-peer and list on the marketplace when those lanes go live.",
+    "benefit2": "• Vault Exchange: friends see your whole Vault — request anything; only your listings get Buy now (card checkout).",
     "benefit3": "• Request shipment on your schedule — fewer rushed labels, calmer fulfillment.",
     "benefit4": "• Every secured item shows a clear storage timer so you always know what happens next.",
     "benefit5": "• We’ll nudge you before time’s up — then unused items liquidate to coins automatically.",
@@ -31,7 +31,7 @@
     "timerDaysLeft": "{{count}}d left in Vault",
     "timerHoursLeft": "{{count}}h left in Vault",
     "timerEnded": "Hold ended",
-    "listedPill": "Listed · 🪙 {{coins}}"
+    "listedPill": "Buy now · {{price}}"
   },
   "wonPrizesModal": {
     "title": "Cash out or Vault",
@@ -77,10 +77,10 @@
     "cancel": "Cancel",
     "ctaShip": "Request shipment",
     "ctaTrade": "Offer trade",
-    "ctaList": "List for coins",
+    "ctaList": "List on Vault Exchange",
     "ctaUnlist": "Delist",
-    "listedLine": "Listed · 🪙 {{coins}} · public to friends",
-    "unlistBody": "This removes the public listing. The card stays in your Vault.",
+    "listedLine": "Vault Exchange · {{price}} · Buy now for friends",
+    "unlistBody": "This removes the Vault Exchange listing. The card stays in your Vault.",
     "soonPill": "SOON",
     "soonTitle": "Coming soon",
     "tradeSoonBody": "Peer trades will open from Vault — send offers, counter, and lock in when both sides agree (separate from fixed-price shop).",
@@ -89,24 +89,102 @@
     "close": "Close"
   },
   "vaultList": {
-    "title": "List on your public Vault",
-    "body": "Friends can buy this hit with coins. You keep it vaulted until it sells or you delist.",
-    "priceLabel": "Price (coins)",
-    "pricePlaceholder": "e.g. 500",
-    "confirm": "List for {{coins}} coins"
+    "title": "Vault Exchange listing",
+    "body": "Set a fixed USD price. Friends can buy instantly with card checkout (no coins). You keep the hit vaulted until it sells or you delist.",
+    "priceLabel": "Price (USD, whole dollars)",
+    "pricePlaceholder": "e.g. 99",
+    "confirm": "List for {{price}}"
   },
   "friendVaultShop": {
-    "sectionTitle": "Public Vault shop",
-    "sectionHint": "Coins-only · listed hits from this collector.",
-    "buy": "Buy",
-    "buyTitle": "Buy with coins?",
-    "buyBody": "Spend {{coins}} coins for {{card}}? It moves to your Vault.",
-    "buyConfirm": "Buy now",
+    "sectionTitle": "Vault Exchange",
+    "sectionHint": "Cash listings only.",
+    "buy": "Buy now",
+    "buyTitle": "Buy with card?",
+    "buyBody": "{{price}} for {{card}} — moves to your Vault after payment.",
+    "buyConfirm": "Continue to checkout",
     "boughtTitle": "Added to your Vault",
     "boughtBody": "Check the Vault tab — your new hit is secured there.",
     "ownTitle": "That’s your listing",
-    "ownBody": "Delist from your Vault if you want to change the price.",
-    "manageHint": "In Vault"
+    "ownBody": "Change price or delist from the Vault tab.",
+    "manageHint": "Vault tab"
+  },
+  "vaultExchange": {
+    "checkoutKicker": "VAULT EXCHANGE",
+    "checkoutTitle": "Secure card checkout",
+    "checkoutBody": "Peer sales use real payments (e.g. Stripe) — not wallet coins. This build simulates a successful charge so you can test the flow.",
+    "checkoutSimulateCta": "Simulate paid checkout",
+    "checkoutCancel": "Not now",
+    "friendSectionTitle": "Their Vault",
+    "friendSectionHint": "Full collection is visible. Request, offer, or ask on anything. Only Vault Exchange listings show Buy now with a cash price.",
+    "emptyVault": "No secured hits in the Vault yet. When they vault pulls, everything shows up here for discovery.",
+    "badgeBuyNow": "BUY NOW",
+    "badgeRequestable": "REQUESTABLE",
+    "tileRequestable": "Tap · request or offer",
+    "tileYourListing": "Your listing · edit in Vault",
+    "sheetKicker": "COLLECTOR VAULT",
+    "buyNowCta": "Buy now",
+    "buyNowFine": "Charged in USD. Platform fee may apply at real checkout.",
+    "requestableLead": "Not listed for instant sale. You can still show interest — the seller may add a Vault Exchange price later.",
+    "actionRequest": "Request",
+    "actionOffer": "Make offer",
+    "actionAsk": "Ask if available",
+    "selfSheetHint": "Others browse this same grid. To enable Buy now, add a Vault Exchange listing from your Vault tab.",
+    "purchaseOkTitle": "Purchase complete",
+    "purchaseOkBody": "The hit is in your Vault. Production will route card funds through Pull Hub before payout to the seller.",
+    "purchaseFailTitle": "Couldn’t complete",
+    "purchaseFailBody": "That listing may have just sold or been delisted. Refresh and try again.",
+    "stub": {
+      "requestTitle": "Request (demo)",
+      "requestBody": "Production: we’d route a structured request to {{handle}} so they can reply or list on Vault Exchange.",
+      "offerTitle": "Offer (demo)",
+      "offerBody": "Production: send a trade or cash offer thread — separate from fixed-price Buy now.",
+      "askTitle": "Ask availability (demo)",
+      "askBody": "Production: a light nudge to {{handle}} — still not a purchase until they list or accept."
+    }
+  },
+  "progression": {
+    "rankBand_0": "Studio regular",
+    "rankBand_1": "Gallery curator",
+    "rankBand_2": "Vault archivist",
+    "rankBand_3": "Chase specialist",
+    "rankBand_4": "House collector",
+    "levelLabel": "Level {{level}}",
+    "loyaltyEyebrow": "Loyalty tier",
+    "xpIntoLevel": "{{current}} / {{next}} XP this level",
+    "streakEyebrow": "Collector streak",
+    "streakDaysLabel": "day streak",
+    "streakBest": "Personal best",
+    "streakFine": "Visit on consecutive days to build your streak. Miss a day and it resets — by design, not a trap.",
+    "questsDaily": "Today",
+    "questsWeekly": "This week",
+    "questsResetHint": "Weekly goals refresh each Monday. Rewards are collector XP only — not pack odds.",
+    "questProgress": "{{current}} / {{target}}",
+    "claimXp": "Claim +{{xp}} XP",
+    "claimed": "Claimed",
+    "questKindDaily": "Daily",
+    "questKindWeekly": "Weekly"
+  },
+  "quests": {
+    "daily_collector_log": {
+      "title": "Collector’s log",
+      "desc": "Check in with Pull Hub today. Keeps your streak and completes this daily goal."
+    },
+    "weekly_open_packs": {
+      "title": "Open five packs",
+      "desc": "Any packs count — pace yourself. Progress tracks when a pull is secured to your session."
+    },
+    "weekly_secure_vault": {
+      "title": "Secure two hits",
+      "desc": "Send two pulls to your Vault from the post-open sheet."
+    },
+    "weekly_convert": {
+      "title": "Convert one Vault hit",
+      "desc": "Cash a vaulted item to coins once this week."
+    },
+    "weekly_add_friend": {
+      "title": "Grow your circle",
+      "desc": "Add one friend by username — trades and Vault Exchange are better together."
+    }
   },
   "splash": {
     "frameLine": "Pull. Win. Repeat."
@@ -704,7 +782,24 @@
     "usernameLabel": "Username",
     "usernameUnset": "Not set yet",
     "emailLabel": "Email",
-    "phoneLabel": "Phone"
+    "phoneLabel": "Phone",
+    "heroVaultValue": "Vault value",
+    "heroCoins": "Coins",
+    "heroMembership": "Membership",
+    "heroLevelLine": "Level {{level}} · {{rank}}",
+    "sectionProgression": "Progression",
+    "sectionCollection": "Collection",
+    "sectionQuickActions": "Quick actions",
+    "viewAllQuests": "View all quests",
+    "claimRewardsCta_one": "Claim {{count}} reward",
+    "claimRewardsCta_other": "Claim {{count}} rewards",
+    "viewTierBenefitsLink": "Tier benefits →",
+    "collectorQuestsTitle": "Collector quests",
+    "quickVault": "Vault",
+    "quickPullHistory": "Pull history",
+    "quickLeaderboard": "Leaderboard",
+    "quickPromotions": "Rewards",
+    "quickSettings": "Settings"
   },
   "promotions": {
     "enterFromAccount": "Rewards & promo code",
@@ -1020,6 +1115,7 @@
     "hudCommitSub": "Tap to break the seal — your timing",
     "hudPrimedTitle": "Reveal",
     "hudPrimedSub": "Showing your pull…",
+    "lineupHint": "Packs drop in one by one · swipe the row, then tap your pick",
     "bulkPackSubtitle": "{{title}} · ×{{count}}",
     "bulkSummaryTitle": "{{count}} pulls",
     "bulkTotalCredits": "Total card value: {{amount}} credits (if converted)",

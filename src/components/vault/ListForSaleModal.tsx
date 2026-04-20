@@ -18,25 +18,28 @@ import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
+import { formatVaultExchangeUsd } from '../../lib/vaultExchange';
 
-const PRESETS = [100, 250, 500, 1000, 2500] as const;
+const PRESETS = [25, 49, 99, 199, 499] as const;
 
 type Props = {
   visible: boolean;
-  suggestedCredits: number;
+  /** Hint from coin value / tier — whole USD. */
+  suggestedPriceUsd: number;
   onClose: () => void;
-  onConfirm: (priceCredits: number) => void;
+  onConfirm: (priceUsd: number) => void;
 };
 
-export function ListForSaleModal({ visible, suggestedCredits, onClose, onConfirm }: Props) {
+export function ListForSaleModal({ visible, suggestedPriceUsd, onClose, onConfirm }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const [raw, setRaw] = useState(String(Math.max(100, suggestedCredits)));
+  const hint = Math.max(5, Math.round(suggestedPriceUsd));
+  const [raw, setRaw] = useState(String(hint));
 
   useEffect(() => {
     if (!visible) return;
-    setRaw(String(Math.max(100, Math.floor(suggestedCredits))));
-  }, [visible, suggestedCredits]);
+    setRaw(String(Math.max(5, Math.floor(suggestedPriceUsd))));
+  }, [visible, suggestedPriceUsd]);
 
   const parsed = Math.max(1, Math.floor(Number(raw.replace(/[^0-9]/g, '')) || 0));
 
@@ -71,7 +74,7 @@ export function ListForSaleModal({ visible, suggestedCredits, onClose, onConfirm
             ))}
           </View>
           <PrimaryButton
-            label={t('vaultList.confirm', { coins: parsed.toLocaleString() })}
+            label={t('vaultList.confirm', { price: formatVaultExchangeUsd(parsed) })}
             variant="red"
             onPress={() => onConfirm(parsed)}
             style={styles.cta}

@@ -1,12 +1,13 @@
 import type { PullRarityTier } from '../data/mockUser';
 
-/** A hit visible on a friend’s public Vault shop — coins-only purchase (demo: local store). */
+/** Active Vault Exchange listing — instant purchase via cash checkout (stub in app). */
 export type PublicVaultListing = {
   id: string;
   sellerUsername: string;
   /** Seller’s pull id when listed from a real Vault row; synthetic for demo NPC rows. */
   pullId: string;
-  priceCredits: number;
+  /** Seller’s fixed ask in whole USD. */
+  listPriceUsd: number;
   result: string;
   packTitle: string;
   packId: string;
@@ -27,7 +28,7 @@ export function createInitialFriendVaultShop(): Record<string, PublicVaultListin
         id: 'listing_demo_sam_1',
         sellerUsername: 'sam_r',
         pullId: 'pull_demo_sam_1',
-        priceCredits: 420,
+        listPriceUsd: 99,
         result: 'VSTAR Universe promo',
         packTitle: 'Crown Zenith Galarian Gallery',
         packId: '6',
@@ -38,7 +39,7 @@ export function createInitialFriendVaultShop(): Record<string, PublicVaultListin
         id: 'listing_demo_sam_2',
         sellerUsername: 'sam_r',
         pullId: 'pull_demo_sam_2',
-        priceCredits: 180,
+        listPriceUsd: 49,
         result: 'Trainer gallery rare',
         packTitle: 'Paldea Evolved Chase',
         packId: '3',
@@ -51,7 +52,7 @@ export function createInitialFriendVaultShop(): Record<string, PublicVaultListin
         id: 'listing_demo_casey_1',
         sellerUsername: 'casey_m',
         pullId: 'pull_demo_casey_1',
-        priceCredits: 650,
+        listPriceUsd: 649,
         result: 'Charizard ex SAR',
         packTitle: 'Obsidian Flames Premium',
         packId: '4',

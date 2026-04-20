@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
-import { brandFont } from '../../../tokens/typography';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
 import { spacing } from '../../../tokens/spacing';
 import { ReelPackShell } from '../opening/ReelPackShell';
 import { CAROUSEL_PACK_DIMS } from './PackSelectionCarousel';
-import { PROTOTYPE_PACK_RIP_GESTURE } from '../../../config/packOpeningAnimation';
 
 const easeOut = Easing.bezier(0.33, 0.86, 0.2, 1);
 const easeSoft = Easing.bezier(0.25, 0.46, 0.45, 0.94);
@@ -23,7 +21,6 @@ export function SelectedPackStage({ packTint, visible, onSettled }: Props) {
   const packS = useRef(new Animated.Value(0.88)).current;
   const packO = useRef(new Animated.Value(0)).current;
   const packY = useRef(new Animated.Value(22)).current;
-  const captionO = useRef(new Animated.Value(0)).current;
   const settledRef = useRef(false);
 
   useEffect(() => {
@@ -33,7 +30,6 @@ export function SelectedPackStage({ packTint, visible, onSettled }: Props) {
       packS.setValue(0.88);
       packO.setValue(0);
       packY.setValue(22);
-      captionO.setValue(0);
       return;
     }
 
@@ -69,12 +65,7 @@ export function SelectedPackStage({ packTint, visible, onSettled }: Props) {
           }),
         ]),
       ]),
-      Animated.timing(captionO, {
-        toValue: 1,
-        duration: 380,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
+      /** Short beat before the tear step (instruction only shows there). */
       Animated.delay(260),
     ]);
 
@@ -87,7 +78,7 @@ export function SelectedPackStage({ packTint, visible, onSettled }: Props) {
     return () => {
       anim.stop();
     };
-  }, [visible, captionO, dim, onSettled, packO, packS, packY]);
+  }, [visible, dim, onSettled, packO, packS, packY]);
 
   if (!visible) return null;
 
@@ -115,13 +106,6 @@ export function SelectedPackStage({ packTint, visible, onSettled }: Props) {
         >
           <ReelPackShell width={Math.round(w * 1.08)} height={Math.round(h * 1.08)} tint={packTint} lockEmphasis={0} />
         </Animated.View>
-        <Animated.View style={{ opacity: captionO }}>
-          <Text style={styles.caption}>
-            {PROTOTYPE_PACK_RIP_GESTURE === 'tap'
-              ? 'Tap the pack when it settles to open'
-              : 'Swipe firmly across the seal to slice it open'}
-          </Text>
-        </Animated.View>
       </View>
     </View>
   );
@@ -137,12 +121,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: spacing.xl * 2,
-  },
-  caption: {
-    marginTop: spacing.lg,
-    color: 'rgba(248,250,252,0.78)',
-    fontSize: 13,
-    fontFamily: brandFont.semibold,
-    letterSpacing: 0.2,
   },
 });

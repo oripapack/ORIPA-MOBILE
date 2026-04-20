@@ -20,9 +20,13 @@ import { deriveSocialProfileFromUser } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
 import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
-import { HitRateCard } from '../components/account/HitRateCard';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
-import { ListRow } from '../components/shared/ListRow';
+import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
+import { progressionFromTotalXp } from '../lib/collectorProgression';
+import { countClaimableQuests, pickPreviewQuests } from '../lib/collectorQuestPreview';
+
+const PREVIEW_PULLS = 2;
+const PREVIEW_QUESTS = 3;
 
 type AccountNav = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Account'>,
@@ -34,8 +38,11 @@ export function AccountScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<AccountNav>();
   const user = useAppStore((s) => s.user);
-  const pullHistory = useAppStore((s) => s.user.pullHistory);
   const coinBalance = useAppStore((s) => s.user.credits);
+  const questProgress = useAppStore((s) => s.collectorQuestProgress);
+  const claimQuest = useAppStore((s) => s.claimCollectorQuest);
+  const streak = useAppStore((s) => s.collectorStreakDays);
+  const streakBest = useAppStore((s) => s.collectorStreakBest);
   const { refreshControl } = usePullToRefresh();
   const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
   const forceAuthWall = useGuestBrowseStore((s) => s.forceAuthWall);
@@ -44,12 +51,7 @@ export function AccountScreen() {
 
   const showGuestSignInCard = isClerkEnabled && !clerkSignedIn;
   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
-
-  const onGuestSignIn = useCallback(() => {
-    forceAuthWall();
-  }, [forceAuthWall]);
-
-  const pct = Math.min(100, Math.round((user.xp / user.xpToNextTier) * 100));
+  const prog = progressionFromTotalXp(user.xp);
   const tierColors: Record<string, string> = {
     Starter: colors.accentDark,
     Bronze: colors.goldDark,
@@ -57,6 +59,16 @@ export function AccountScreen() {
     Gold: colors.gold,
   };
   const tierColor = tierColors[user.tier] ?? colors.textSecondary;
+
+  const previewQuests = useMemo(() => pickPreviewQuests(questProgress, PREVIEW_QUESTS), [questProgress]);
+  const claimableCount = useMemo(() => countClaimableQuests(questProgress), [questProgress]);
+
+  const onClaim = useCallback(
+    (id: string) => {
+      claimQuest(id);
+    },
+    [claimQuest],
+  );
 
   const goPullHistory = useCallback(() => {
     requireAuth(() => navigation.navigate('PullHistory'));
@@ -66,6 +78,39 @@ export function AccountScreen() {
     requireAuth(() => navigation.navigate('Promotions'));
   }, [navigation, requireAuth]);
 
+  const goLeaderboard = useCallback(() => {
+    navigation.navigate('FriendsLeaderboard');
+  }, [navigation]);
+
+  const goVault = useCallback(() => {
+    navigation.navigate('Vault');
+  }, [navigation]);
+
+  const goQuests = useCallback(() => {
+    navigation.navigate('CollectorQuests');
+  }, [navigation]);
+
+  const goMembership = useCallback(() => {
+    requireAuth(() => navigation.navigate('Membership'));
+  }, [navigation, requireAuth]);
+
+  const goTierBenefits = useCallback(() => {
+    navigation.navigate('TierBenefits');
+  }, [navigation]);
+
+  const goSettings = useCallback(() => {
+    navigation.navigate('Settings');
+  }, [navigation]);
+
+  const onGuestSignIn = useCallback(() => {
+    forceAuthWall();
+  }, [forceAuthWall]);
+
+  const recentPulls = useMemo(
+    () => socialProfile.recentPulls.slice(0, PREVIEW_PULLS),
+    [socialProfile.recentPulls],
+  );
+
   return (
     <ScrollView
       style={styles.container}
@@ -73,18 +118,7 @@ export function AccountScreen() {
       showsVerticalScrollIndicator={false}
       refreshControl={refreshControl}
     >
-      <View style={styles.titleRow}>
-        <Text style={styles.pageTitle}>{t('account.title')}</Text>
-        <TouchableOpacity
-          style={styles.settingsBtn}
-          onPress={() => navigation.navigate('Settings')}
-          activeOpacity={0.85}
-          accessibilityRole="button"
-          accessibilityLabel={t('settings.title')}
-        >
-          <Ionicons name="settings-outline" size={22} color={colors.textPrimary} />
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.pageTitle}>{t('account.title')}</Text>
 
       {showGuestSignInCard ? (
         <VaultFramedCard style={styles.guestSignInCard}>
@@ -103,148 +137,124 @@ export function AccountScreen() {
         </VaultFramedCard>
       ) : null}
 
-      <VaultFramedCard style={styles.profileCard}>
-        <View style={styles.profileHero}>
-          <Text style={styles.profileAvatar}>{socialProfile.avatarEmoji}</Text>
-          <View style={styles.profileMeta}>
-            <Text style={styles.profileName} numberOfLines={1}>
+      {/* 1 · Hero profile */}
+      <VaultFramedCard style={styles.heroCard}>
+        <View style={styles.heroTop}>
+          <Text style={styles.heroAvatar}>{socialProfile.avatarEmoji}</Text>
+          <View style={styles.heroMeta}>
+            <Text style={styles.heroName} numberOfLines={1}>
               {socialProfile.displayName}
             </Text>
-            <Text style={styles.profileUsername} numberOfLines={1}>
+            <Text style={styles.heroUsername} numberOfLines={1}>
               @{socialProfile.username}
             </Text>
-            {socialProfile.status ? (
-              <Text style={styles.profileStatus} numberOfLines={1}>
-                {socialProfile.status}
-              </Text>
-            ) : null}
-            {simulatedMemberTier ? (
-              <View style={styles.pullHubMemberBadge}>
-                <Text style={styles.pullHubMemberBadgeText}>
-                  {t(`membership.badgeShort_${simulatedMemberTier}`)}
-                </Text>
-              </View>
-            ) : null}
           </View>
-        </View>
-        <Text style={styles.profileBio} numberOfLines={3}>
-          {socialProfile.bio}
-        </Text>
-        <View style={styles.profileStatsRow}>
-          <View style={styles.profileStat}>
-            <Text style={styles.profileStatVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
-              {socialProfile.stats.packsOpened}
-            </Text>
-            <Text style={styles.profileStatLab}>{t('account.profileStatPacks')}</Text>
-          </View>
-          <View style={styles.profileStat}>
-            <Text style={styles.profileStatVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
-              {formatUsd(socialProfile.stats.totalEstimatedValue)}
-            </Text>
-            <Text style={styles.profileStatLab}>{t('account.profileStatValue')}</Text>
-          </View>
-          <View style={styles.profileStat}>
-            <Text style={styles.profileStatVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
-              {socialProfile.luckScore}
-            </Text>
-            <Text style={styles.profileStatLab}>{t('account.profileStatLuck')}</Text>
-          </View>
-          <View style={styles.profileStat}>
-            <Text style={styles.profileStatVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
-              {coinBalance.toLocaleString()}
-            </Text>
-            <Text style={styles.profileStatLab}>{t('account.profileStatCoins')}</Text>
-          </View>
-        </View>
-        <Text style={styles.joined}>
-          {t('social.joined', { date: new Date(socialProfile.joinDateIso).toLocaleDateString() })}
-        </Text>
-      </VaultFramedCard>
-
-      <VaultFramedCard style={styles.rewardsCard} contentStyle={styles.rewardsCardInner}>
-        <ListRow
-          label={t('membership.accountRowTitle')}
-          icon={<Ionicons name="ribbon-outline" size={22} color={colors.gold} />}
-          rightContent={
-            simulatedMemberTier ? (
-              <Text style={styles.memberRowPill}>{t(`membership.badge_${simulatedMemberTier}`)}</Text>
-            ) : null
-          }
-          onPress={() => navigation.navigate('Membership')}
-        />
-      </VaultFramedCard>
-
-      {/* Collector level (XP progression) */}
-      <VaultFramedCard style={styles.tierCard} contentStyle={styles.tierCardInner}>
-        <Text style={styles.tierDisplayName} numberOfLines={2}>
-          {user.displayName}
-        </Text>
-        <View style={styles.tierTop}>
-          <View style={styles.tierTitleBlock}>
-            <Text style={styles.tierEyebrow}>{t('account.collectorLevelEyebrow')}</Text>
-            <Text style={[styles.tierName, { color: tierColor }]}>{user.tier.toUpperCase()}</Text>
-          </View>
-          <View style={styles.tierBadge}>
-            <Text style={styles.tierBadgeText}>🏆</Text>
-          </View>
-        </View>
-
-        <View style={styles.xpRow}>
-          <Text style={styles.xpText}>
-            {user.xp.toLocaleString()} / {user.xpToNextTier.toLocaleString()} XP
-          </Text>
-          <Text style={styles.xpPct}>{pct}%</Text>
-        </View>
-        <View style={styles.barTrack}>
-          <View style={[styles.barFill, { width: `${pct}%` as `${number}%`, backgroundColor: tierColor }]} />
         </View>
 
         <TouchableOpacity
-          style={styles.viewBenefitsBtn}
-          onPress={() => navigation.navigate('TierBenefits')}
-          activeOpacity={0.75}
+          style={styles.membershipRow}
+          onPress={goMembership}
+          activeOpacity={0.82}
+          accessibilityRole="button"
+          accessibilityLabel={t('account.heroMembership')}
         >
-          <Text style={styles.viewBenefitsText}>{t('account.viewLevelRewards')}</Text>
+          <View style={styles.membershipRowLeft}>
+            <Ionicons name="ribbon-outline" size={20} color={colors.gold} />
+            <View style={styles.membershipCopy}>
+              <Text style={styles.membershipLabel}>{t('account.heroMembership')}</Text>
+              <Text style={styles.membershipValue} numberOfLines={1}>
+                {simulatedMemberTier
+                  ? t(`membership.badge_${simulatedMemberTier}`)
+                  : t('membership.navTitle')}
+              </Text>
+            </View>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+        </TouchableOpacity>
+
+        <Text style={styles.levelLine}>
+          {t('account.heroLevelLine', {
+            level: prog.level,
+            rank: t(`progression.rankBand_${prog.rankBand}`),
+          })}
+        </Text>
+
+        <View style={styles.heroMetrics}>
+          <View style={styles.heroMetric}>
+            <Text style={styles.heroMetricVal}>{coinBalance.toLocaleString()}</Text>
+            <Text style={styles.heroMetricLab}>{t('account.heroCoins')}</Text>
+          </View>
+          <View style={styles.heroMetricDivider} />
+          <View style={styles.heroMetric}>
+            <Text style={styles.heroMetricVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
+              {formatUsd(socialProfile.stats.totalEstimatedValue)}
+            </Text>
+            <Text style={styles.heroMetricLab}>{t('account.heroVaultValue')}</Text>
+          </View>
+        </View>
+      </VaultFramedCard>
+
+      {/* 2 · Progression snapshot */}
+      <Text style={styles.sectionEyebrow}>{t('account.sectionProgression')}</Text>
+      <VaultFramedCard style={styles.blockCard} contentStyle={styles.blockInner}>
+        <View style={styles.xpRow}>
+          <Text style={styles.xpText}>
+            {t('progression.xpIntoLevel', {
+              current: prog.xpIntoLevel.toLocaleString(),
+              next: prog.xpForNextLevel.toLocaleString(),
+            })}
+          </Text>
+          <Text style={styles.xpPct}>{prog.pctInLevel}%</Text>
+        </View>
+        <View style={styles.barTrack}>
+          <View
+            style={[styles.barFill, { width: `${prog.pctInLevel}%` as `${number}%`, backgroundColor: tierColor }]}
+          />
+        </View>
+
+        <View style={styles.streakInline}>
+          <View>
+            <Text style={styles.streakInlineVal}>{streak}</Text>
+            <Text style={styles.streakInlineLab}>{t('progression.streakDaysLabel')}</Text>
+          </View>
+          <View style={styles.streakInlineRight}>
+            <Text style={styles.streakInlineBestLab}>{t('progression.streakBest')}</Text>
+            <Text style={styles.streakInlineBestVal}>{streakBest}</Text>
+          </View>
+        </View>
+
+        {previewQuests.map((def, idx) => (
+          <CollectorQuestRow
+            key={def.id}
+            def={def}
+            row={questProgress[def.id]}
+            onClaim={onClaim}
+            compact
+            isLast={idx === previewQuests.length - 1}
+          />
+        ))}
+
+        {claimableCount > 0 ? (
+          <TouchableOpacity style={styles.claimCta} onPress={goQuests} activeOpacity={0.88}>
+            <Text style={styles.claimCtaText}>
+              {t('account.claimRewardsCta', { count: claimableCount })}
+            </Text>
+          </TouchableOpacity>
+        ) : null}
+
+        <TouchableOpacity onPress={goQuests} hitSlop={8} style={styles.viewAllQuestsBtn}>
+          <Text style={styles.viewAllQuestsText}>{t('account.viewAllQuests')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={goTierBenefits} hitSlop={8} style={styles.tierLink}>
+          <Text style={styles.tierLinkText}>{t('account.viewTierBenefitsLink')}</Text>
         </TouchableOpacity>
       </VaultFramedCard>
 
-      <Text style={styles.section}>{t('account.sectionRewards')}</Text>
-      <VaultFramedCard style={styles.rewardsCard} contentStyle={styles.rewardsCardInner}>
-        <ListRow
-          label={t('promotions.enterFromAccount')}
-          icon={<Text>🎁</Text>}
-          onPress={goPromotions}
-        />
-      </VaultFramedCard>
-
-      <VaultFramedCard style={styles.statGridWrap}>
-        <View style={styles.statGrid}>
-        <View style={styles.statCell}>
-          <Text style={styles.statVal}>{socialProfile.stats.packsOpened}</Text>
-          <Text style={styles.statLab}>{t('social.statPacks')}</Text>
-        </View>
-        <View style={styles.statCell}>
-          <Text style={styles.statVal}>{formatUsd(socialProfile.stats.totalEstimatedValue)}</Text>
-          <Text style={styles.statLab}>{t('social.statValue')}</Text>
-        </View>
-        <View style={styles.statCell}>
-          <Text style={styles.statVal}>{socialProfile.stats.chaseHits}</Text>
-          <Text style={styles.statLab}>{t('social.statChase')}</Text>
-        </View>
-        <View style={styles.statCell}>
-          <Text style={styles.statVal}>{socialProfile.luckScore}</Text>
-          <Text style={styles.statLab}>{t('social.statLuck')}</Text>
-        </View>
-        </View>
-      </VaultFramedCard>
-
-      <Text style={styles.section}>{t('social.rarityMix')}</Text>
-      <View style={styles.rarityMixBlock}>
-        <RarityBreakdownMini breakdown={socialProfile.stats.rarityBreakdown} />
-      </View>
-
-      <Text style={styles.section}>{t('social.bestPull')}</Text>
-      <VaultFramedCard fill="felt" style={styles.bestCard}>
+      {/* 3 · Collection highlights */}
+      <Text style={styles.sectionEyebrow}>{t('account.sectionCollection')}</Text>
+      <VaultFramedCard style={styles.bestCard} contentStyle={styles.bestInner}>
+        <Text style={styles.bestKicker}>{t('social.bestPull')}</Text>
         <Text style={styles.bestName} numberOfLines={2}>
           {socialProfile.stats.bestPullCardName}
         </Text>
@@ -252,28 +262,52 @@ export function AccountScreen() {
         <Text style={styles.bestSub}>{t('social.estimatedValue')}</Text>
       </VaultFramedCard>
 
-      <HitRateCard pullHistory={pullHistory} />
-
-      <Text style={styles.section}>{t('social.recentPulls')}</Text>
-      {socialProfile.recentPulls.length === 0 ? (
+      <Text style={styles.subsection}>{t('social.recentPulls')}</Text>
+      {recentPulls.length === 0 ? (
         <Text style={styles.emptyPulls}>{t('social.noRecentPulls')}</Text>
       ) : (
-        socialProfile.recentPulls.map((pull) => <SocialPullRow key={pull.id} pull={pull} />)
+        recentPulls.map((pull) => <SocialPullRow key={pull.id} pull={pull} />)
       )}
 
-      <View style={styles.actions}>
-        <TouchableOpacity
-          style={styles.btnOutline}
-          onPress={() => navigation.navigate('FriendsLeaderboard')}
-          activeOpacity={0.88}
-        >
-          <Text style={styles.btnOutlineText}>{t('social.openLeaderboard')}</Text>
+      <VaultFramedCard style={styles.rarityCard} contentStyle={styles.rarityInner}>
+        <Text style={styles.subsectionInCard}>{t('social.rarityMix')}</Text>
+        <RarityBreakdownMini breakdown={socialProfile.stats.rarityBreakdown} />
+      </VaultFramedCard>
+
+      {/* 4 · Quick actions */}
+      <Text style={styles.sectionEyebrow}>{t('account.sectionQuickActions')}</Text>
+      <View style={styles.quickGrid}>
+        <TouchableOpacity style={styles.quickCell} onPress={goVault} activeOpacity={0.88}>
+          <View style={styles.quickIconWrap}>
+            <Ionicons name="file-tray-stacked-outline" size={22} color={colors.textPrimary} />
+          </View>
+          <Text style={styles.quickLabel}>{t('account.quickVault')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnDark} onPress={goPullHistory} activeOpacity={0.88}>
-          <Text style={styles.btnDarkText}>{t('account.pullHistoryCta')}</Text>
+        <TouchableOpacity style={styles.quickCell} onPress={goPullHistory} activeOpacity={0.88}>
+          <View style={styles.quickIconWrap}>
+            <Ionicons name="time-outline" size={22} color={colors.textPrimary} />
+          </View>
+          <Text style={styles.quickLabel}>{t('account.quickPullHistory')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quickCell} onPress={goLeaderboard} activeOpacity={0.88}>
+          <View style={styles.quickIconWrap}>
+            <Ionicons name="trophy-outline" size={22} color={colors.textPrimary} />
+          </View>
+          <Text style={styles.quickLabel}>{t('account.quickLeaderboard')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quickCell} onPress={goPromotions} activeOpacity={0.88}>
+          <View style={styles.quickIconWrap}>
+            <Ionicons name="gift-outline" size={22} color={colors.textPrimary} />
+          </View>
+          <Text style={styles.quickLabel}>{t('account.quickPromotions')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quickCell} onPress={goSettings} activeOpacity={0.88}>
+          <View style={styles.quickIconWrap}>
+            <Ionicons name="settings-outline" size={22} color={colors.textPrimary} />
+          </View>
+          <Text style={styles.quickLabel}>{t('account.quickSettings')}</Text>
         </TouchableOpacity>
       </View>
-
     </ScrollView>
   );
 }
@@ -287,27 +321,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingBottom: 120,
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: spacing.base,
-  },
   pageTitle: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
-  },
-  settingsBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surfaceElevated,
-    borderWidth: 1,
-    borderColor: colors.border,
+    marginBottom: spacing.base,
   },
   guestSignInCard: {
     marginBottom: spacing.base,
@@ -346,167 +365,132 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.bold,
     color: colors.white,
   },
-  tierCard: {
-    marginBottom: spacing.base,
-  },
-  tierCardInner: {
-    paddingTop: spacing.xl + 2,
-    paddingBottom: spacing.xl + 2,
-  },
-  profileCard: {
-    marginBottom: spacing.base,
-  },
-  statGridWrap: {
+  heroCard: {
     marginBottom: spacing.lg,
   },
-  profileHero: {
+  heroTop: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
+    marginBottom: spacing.md,
   },
-  profileAvatar: {
-    width: 48,
-    height: 48,
-    lineHeight: 48,
+  heroAvatar: {
+    width: 56,
+    height: 56,
+    lineHeight: 54,
     textAlign: 'center',
-    borderRadius: 24,
+    borderRadius: 28,
     overflow: 'hidden',
     backgroundColor: colors.background,
-    fontSize: 26,
+    fontSize: 30,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  profileMeta: {
+  heroMeta: {
     flex: 1,
     minWidth: 0,
   },
-  profileName: {
-    fontSize: fontSize.md,
+  heroName: {
+    fontSize: fontSize.lg,
     fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
-  profileUsername: {
+  heroUsername: {
     marginTop: 2,
-    fontSize: fontSize.xs,
+    fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
     color: colors.textMuted,
   },
-  profileStatus: {
-    marginTop: 4,
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.magentaDark,
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
-  },
-  pullHubMemberBadge: {
-    marginTop: spacing.xs + 2,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: radius.sm,
-    backgroundColor: colors.demoNoteBg,
-    borderWidth: 1,
-    borderColor: colors.demoNoteBorder,
-  },
-  pullHubMemberBadgeText: {
-    fontSize: 9,
-    fontFamily: brandFont.black,
-    color: colors.gold,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
-  },
-  memberRowPill: {
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.gold,
-    maxWidth: 120,
-    textAlign: 'right',
-  },
-  profileBio: {
-    marginTop: spacing.sm,
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    lineHeight: 20,
-  },
-  profileStatsRow: {
-    marginTop: spacing.md,
+  membershipRow: {
     flexDirection: 'row',
-    gap: spacing.xs,
-  },
-  profileStat: {
-    flex: 1,
-    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    marginBottom: spacing.sm,
     backgroundColor: colors.surfaceMuted,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radius.lg,
+    borderWidth: 1,
     borderColor: colors.borderLight,
+  },
+  membershipRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    flex: 1,
+    minWidth: 0,
+  },
+  membershipCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  membershipLabel: {
+    fontSize: 10,
+    fontFamily: brandFont.bold,
+    color: colors.textMuted,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  membershipValue: {
+    marginTop: 2,
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.bold,
+    color: colors.textPrimary,
+  },
+  levelLine: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: colors.textSecondary,
+    marginBottom: spacing.md,
+  },
+  heroMetrics: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    backgroundColor: colors.surfaceElevated,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  heroMetric: {
+    flex: 1,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
     alignItems: 'center',
   },
-  profileStatVal: {
-    fontSize: fontSize.xs,
+  heroMetricDivider: {
+    width: StyleSheet.hairlineWidth,
+    alignSelf: 'stretch',
+    backgroundColor: colors.borderLight,
+  },
+  heroMetricVal: {
+    fontSize: fontSize.lg,
     fontFamily: brandFont.black,
     color: colors.textPrimary,
     maxWidth: '100%',
   },
-  profileStatLab: {
-    marginTop: 2,
-    fontSize: 9,
+  heroMetricLab: {
+    marginTop: 4,
+    fontSize: 10,
     fontFamily: brandFont.bold,
     color: colors.textMuted,
-    letterSpacing: 0.35,
+    letterSpacing: 0.4,
     textTransform: 'uppercase',
   },
-  rarityMixBlock: {
+  sectionEyebrow: {
+    fontSize: 10,
+    fontFamily: brandFont.black,
+    color: colors.textMuted,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    marginBottom: spacing.md,
+    marginTop: spacing.xs,
+  },
+  blockCard: {
     marginBottom: spacing.lg,
   },
-  joined: {
-    marginTop: spacing.md,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-  },
-  tierDisplayName: {
-    fontSize: fontSize.hero,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
-    letterSpacing: -0.8,
-    marginBottom: spacing.lg,
-    lineHeight: 40,
-  },
-  tierTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: spacing.base,
-  },
-  tierTitleBlock: {
-    flex: 1,
-    minWidth: 0,
-    paddingRight: spacing.sm,
-  },
-  tierEyebrow: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
-    letterSpacing: 1.5,
-    marginBottom: 2,
-  },
-  tierName: {
-    fontSize: fontSize.hero - 2,
-    fontFamily: brandFont.black,
-    letterSpacing: 1,
-  },
-  tierBadge: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.full,
-    backgroundColor: colors.background,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tierBadgeText: {
-    fontSize: 28,
+  blockInner: {
+    padding: spacing.lg,
   },
   xpRow: {
     flexDirection: 'row',
@@ -517,6 +501,8 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     color: colors.textSecondary,
     fontFamily: brandFont.medium,
+    flex: 1,
+    paddingRight: spacing.sm,
   },
   xpPct: {
     fontSize: fontSize.sm,
@@ -527,66 +513,89 @@ const styles = StyleSheet.create({
     height: 8,
     backgroundColor: colors.borderLight,
     borderRadius: radius.full,
-    marginBottom: spacing.base,
+    marginBottom: spacing.md,
     overflow: 'hidden',
   },
   barFill: {
     height: '100%',
     borderRadius: radius.full,
   },
-  viewBenefitsBtn: {
-    alignSelf: 'flex-start',
+  streakInline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.md,
+    paddingBottom: spacing.md,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderLight,
   },
-  viewBenefitsText: {
+  streakInlineVal: {
+    fontSize: fontSize.xxl,
+    fontFamily: brandFont.black,
+    color: colors.textPrimary,
+  },
+  streakInlineLab: {
+    fontSize: fontSize.xs,
+    color: colors.textSecondary,
+    marginTop: 2,
+    fontFamily: brandFont.medium,
+  },
+  streakInlineRight: {
+    alignItems: 'flex-end',
+  },
+  streakInlineBestLab: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+  },
+  streakInlineBestVal: {
+    fontSize: fontSize.lg,
+    fontFamily: brandFont.black,
+    color: colors.textPrimary,
+    marginTop: 2,
+  },
+  claimCta: {
+    marginTop: spacing.sm,
+    backgroundColor: colors.nearBlack,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+  },
+  claimCtaText: {
+    color: colors.white,
+    fontFamily: brandFont.bold,
+    fontSize: fontSize.sm,
+  },
+  viewAllQuestsBtn: {
+    marginTop: spacing.md,
+    alignItems: 'center',
+  },
+  viewAllQuestsText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
     color: colors.accentDark,
   },
-  statGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
+  tierLink: {
+    marginTop: spacing.sm,
+    alignItems: 'center',
   },
-  statCell: {
-    width: '47%',
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-    borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
+  tierLinkText: {
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.medium,
+    color: colors.textMuted,
   },
-  statVal: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+  bestCard: {
+    marginBottom: spacing.md,
   },
-  statLab: {
-    marginTop: 4,
+  bestInner: {
+    padding: spacing.lg,
+  },
+  bestKicker: {
     fontSize: 10,
     fontFamily: brandFont.bold,
     color: colors.textMuted,
-    letterSpacing: 0.5,
-  },
-  section: {
-    fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.textMuted,
-    letterSpacing: 1.2,
+    letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: spacing.md,
-    marginTop: spacing.sm,
-  },
-  rewardsCard: {
-    marginBottom: spacing.lg,
-  },
-  rewardsCardInner: {
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingRight: 0,
-    paddingLeft: 11,
-  },
-  bestCard: {
-    marginBottom: spacing.lg,
+    marginBottom: spacing.xs,
   },
   bestName: {
     fontSize: fontSize.lg,
@@ -604,38 +613,61 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xs,
     color: colors.textSecondary,
   },
-  actions: {
-    gap: spacing.sm,
-    marginTop: spacing.lg,
+  subsection: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.bold,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+    marginTop: spacing.xs,
   },
-  btnDark: {
-    height: 52,
-    borderRadius: radius.lg,
-    backgroundColor: colors.nearBlack,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnDarkText: {
-    color: colors.white,
-    fontFamily: brandFont.black,
-    fontSize: fontSize.md,
-  },
-  btnOutline: {
-    height: 52,
-    borderRadius: radius.lg,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnOutlineText: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+  subsectionInCard: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.bold,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
   },
   emptyPulls: {
     fontSize: fontSize.sm,
     color: colors.textSecondary,
     marginBottom: spacing.md,
+  },
+  rarityCard: {
+    marginTop: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  rarityInner: {
+    padding: spacing.lg,
+  },
+  quickGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
+    marginBottom: spacing.xl,
+  },
+  quickCell: {
+    width: '48%',
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  quickIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.surfaceMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickLabel: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.bold,
+    color: colors.textPrimary,
+    textAlign: 'center',
   },
 });
