@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useClerk, useSSO, useSignIn, useSignUp } from '@clerk/clerk-expo';
+import { HomeBackground } from '../components/shared/HomeBackground';
 import { colors } from '../tokens/colors';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
@@ -230,20 +231,32 @@ export function AuthScreen({
 
   if (!signInLoaded || !signUpLoaded) {
     return (
-      <View style={[styles.centered, isSheet && styles.centeredSheet, { paddingTop: isSheet ? 0 : insets.top }]}>
-        <ActivityIndicator size="large" color={colors.red} />
+      <View style={isSheet ? styles.sheetOuter : styles.welcomeScreenRoot}>
+        {!isSheet ? <HomeBackground /> : null}
+        <View
+          style={[
+            styles.centered,
+            isSheet && styles.centeredSheet,
+            !isSheet && styles.centeredOnArt,
+            { paddingTop: isSheet ? 0 : insets.top },
+          ]}
+        >
+          <ActivityIndicator size="large" color={isSheet ? colors.red : colors.gold} />
+        </View>
       </View>
     );
   }
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.flex, isSheet && styles.flexSheet]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? (isSheet ? 24 : 48) : 0}
-    >
+    <View style={isSheet ? styles.sheetOuter : styles.welcomeScreenRoot}>
+      {!isSheet ? <HomeBackground /> : null}
+      <KeyboardAvoidingView
+        style={[isSheet ? styles.flexSheet : styles.flexOverWelcome]}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? (isSheet ? 24 : 48) : 0}
+      >
       <ScrollView
-        style={[styles.flex, isSheet && styles.scrollSheet]}
+        style={[isSheet ? styles.flex : styles.scrollOnArt, isSheet && styles.scrollSheet]}
         contentContainerStyle={[
           styles.scrollContent,
           isSheet && styles.scrollContentSheet,
@@ -294,13 +307,29 @@ export function AuthScreen({
 
         {welcomeMode && !welcomePromoSeen ? (
           <View
-            style={[styles.promoBanner, isSheet && styles.promoBannerSheet]}
+            style={[
+              styles.promoBanner,
+              isSheet && styles.promoBannerSheet,
+              !isSheet && styles.promoBannerOnArt,
+            ]}
             accessibilityRole="text"
           >
-            <Text style={[styles.promoBannerTitle, isSheet && styles.promoBannerTitleSheet]}>
+            <Text
+              style={[
+                styles.promoBannerTitle,
+                isSheet && styles.promoBannerTitleSheet,
+                !isSheet && styles.promoBannerTitleOnArt,
+              ]}
+            >
               {t('welcome.signupPromoTitle')}
             </Text>
-            <Text style={[styles.promoBannerBody, isSheet && styles.promoBannerBodySheet]}>
+            <Text
+              style={[
+                styles.promoBannerBody,
+                isSheet && styles.promoBannerBodySheet,
+                !isSheet && styles.promoBannerBodyOnArt,
+              ]}
+            >
               {t('welcome.signupPromoBody', {
                 credits: SIGNUP_PROMO_BONUS_CREDITS,
                 usd: SIGNUP_PROMO_BONUS_USD,
@@ -483,16 +512,36 @@ export function AuthScreen({
           <Text style={[styles.hint, isSheet && styles.hintSheet]}>{t('auth.dashboardHint')}</Text>
         )}
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  welcomeScreenRoot: {
+    flex: 1,
+    backgroundColor: colors.homeGradientBottom,
+  },
+  sheetOuter: {
+    flex: 1,
+  },
   flex: { flex: 1, backgroundColor: colors.surfaceElevated },
+  flexOverWelcome: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  scrollOnArt: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
   flexSheet: {
     flex: 1,
     width: '100%',
     minHeight: 0,
+    backgroundColor: 'transparent',
+  },
+  centeredOnArt: {
+    flex: 1,
     backgroundColor: 'transparent',
   },
   scrollSheet: {
@@ -589,7 +638,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   primaryBtnSheet: {
-    shadowColor: colors.red,
+    shadowColor: colors.accent,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.22,
     shadowRadius: 10,
@@ -637,7 +686,7 @@ const styles = StyleSheet.create({
   logoSecondary: {
     fontSize: fontSize.hero,
     fontFamily: brandFont.black,
-    color: colors.red,
+    color: colors.gold,
     letterSpacing: -0.5,
   },
   title: {
@@ -719,8 +768,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceElevated,
   },
   modeChipOn: {
-    borderColor: colors.red,
-    backgroundColor: colors.surfaceMuted,
+    borderColor: colors.goldBorder,
+    backgroundColor: colors.goldSoft,
   },
   modeChipText: {
     fontSize: fontSize.sm,
@@ -742,13 +791,15 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   primaryBtn: {
-    backgroundColor: colors.red,
+    backgroundColor: colors.accentDark,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
     minHeight: 52,
     justifyContent: 'center',
     marginTop: spacing.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.12)',
   },
   primaryBtnText: {
     fontSize: fontSize.md,
@@ -766,7 +817,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.red,
+    color: colors.accent,
     textAlign: 'center',
   },
   error: {
@@ -790,6 +841,25 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(15, 23, 42, 0.12)',
     padding: spacing.base,
     marginBottom: spacing.lg,
+  },
+  /** Full-screen auth on jewel background — no “light card on dark” clash */
+  promoBannerOnArt: {
+    backgroundColor: colors.surfaceMuted,
+    borderColor: colors.goldBorderMuted,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  promoBannerTitleOnArt: {
+    color: colors.gold,
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.black,
+    marginBottom: spacing.sm,
+    letterSpacing: 0.5,
+  },
+  promoBannerBodyOnArt: {
+    color: colors.textSecondary,
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.medium,
+    lineHeight: 22,
   },
   /** Taller card, clearer separation from OAuth row on glass sheets */
   promoBannerSheet: {

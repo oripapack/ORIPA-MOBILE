@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Image,
   Keyboard,
+  Modal,
+  Pressable,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
@@ -62,6 +64,14 @@ export function MarketplaceScreen() {
   const [category, setCategory] = useState<ListingCategory | 'all'>('all');
   const [sort, setSort] = useState<MarketplaceSortId>('recommended');
   const [regionFilter, setRegionFilter] = useState<MarketplaceRegionFilterId>('all');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const activeFilterCount = useMemo(() => {
+    let n = 0;
+    if (sort !== 'recommended') n += 1;
+    if (regionFilter !== 'all') n += 1;
+    return n;
+  }, [sort, regionFilter]);
 
   const storeNameById = useMemo(() => {
     const m = new Map<string, string>();
@@ -118,6 +128,7 @@ export function MarketplaceScreen() {
     setCategory('all');
     setSort('recommended');
     setRegionFilter('all');
+    setFiltersOpen(false);
     Keyboard.dismiss();
   };
 
@@ -185,78 +196,48 @@ export function MarketplaceScreen() {
           ) : null}
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.catScroll}
-        >
-          {CATEGORY_KEYS.map((key) => {
-            const active = category === key;
-            return (
-              <TouchableOpacity
-                key={key}
-                style={[styles.catChip, active && styles.catChipActive]}
-                onPress={() => setCategory(key)}
-                activeOpacity={0.85}
-                accessibilityRole="button"
-                accessibilityState={{ selected: active }}
-              >
-                <Text style={[styles.catChipText, active && styles.catChipTextActive]}>
-                  {t(`marketplace.cat_${key}`)}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-
-        <View style={styles.refinePanel}>
-          <Text style={styles.refineTitle}>{t('marketplace.refineTitle')}</Text>
+        <View style={styles.catRow}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.refineChipRow}
+            style={styles.catScrollFlex}
+            contentContainerStyle={styles.catScroll}
           >
-            {SORT_IDS.map((id) => {
-              const active = sort === id;
+            {CATEGORY_KEYS.map((key) => {
+              const active = category === key;
               return (
                 <TouchableOpacity
-                  key={id}
-                  style={[styles.sortChip, active && styles.sortChipActive]}
-                  onPress={() => setSort(id)}
+                  key={key}
+                  style={[styles.catChip, active && styles.catChipActive]}
+                  onPress={() => setCategory(key)}
                   activeOpacity={0.85}
                   accessibilityRole="button"
                   accessibilityState={{ selected: active }}
                 >
-                  <Text style={[styles.sortChipText, active && styles.sortChipTextActive]}>
-                    {t(`marketplace.sort_${id}`)}
+                  <Text style={[styles.catChipText, active && styles.catChipTextActive]}>
+                    {t(`marketplace.cat_${key}`)}
                   </Text>
                 </TouchableOpacity>
               );
             })}
           </ScrollView>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.refineChipRowSecond}
+          <TouchableOpacity
+            style={styles.filterFab}
+            onPress={() => {
+              Keyboard.dismiss();
+              setFiltersOpen(true);
+            }}
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel={t('marketplace.openFiltersA11y')}
           >
-            {REGION_FILTER_IDS.map((id) => {
-              const active = regionFilter === id;
-              return (
-                <TouchableOpacity
-                  key={id}
-                  style={[styles.regionChip, active && styles.regionChipActive]}
-                  onPress={() => setRegionFilter(id)}
-                  activeOpacity={0.85}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: active }}
-                >
-                  <Text style={[styles.regionChipText, active && styles.regionChipTextActive]}>
-                    {t(`marketplace.region_${id}`)}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+            <Ionicons name="options-outline" size={22} color={colors.textPrimary} />
+            {activeFilterCount > 0 ? (
+              <View style={styles.filterBadge}>
+                <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
+              </View>
+            ) : null}
+          </TouchableOpacity>
         </View>
 
         {hasResults ? (
@@ -388,6 +369,92 @@ export function MarketplaceScreen() {
           </View>
         )}
       </ScrollView>
+
+      <Modal
+        visible={filtersOpen}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setFiltersOpen(false)}
+      >
+        <View style={styles.modalRoot}>
+          <Pressable style={styles.modalBackdrop} onPress={() => setFiltersOpen(false)} />
+          <View style={[styles.modalSheet, { paddingBottom: insets.bottom + spacing.lg }]}>
+            <View style={styles.modalGrabber} />
+            <View style={styles.modalHeaderRow}>
+              <Text style={styles.modalTitle}>{t('marketplace.filtersModalTitle')}</Text>
+              <TouchableOpacity
+                onPress={() => setFiltersOpen(false)}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel={t('marketplace.filtersDone')}
+              >
+                <Ionicons name="close" size={26} color={colors.textMuted} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalSectionLabel}>{t('marketplace.sortRowLabel')}</Text>
+            <View style={styles.modalChipWrap}>
+              {SORT_IDS.map((id) => {
+                const active = sort === id;
+                return (
+                  <TouchableOpacity
+                    key={id}
+                    style={[styles.sortChip, active && styles.sortChipActive]}
+                    onPress={() => setSort(id)}
+                    activeOpacity={0.85}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: active }}
+                  >
+                    <Text style={[styles.sortChipText, active && styles.sortChipTextActive]}>
+                      {t(`marketplace.sort_${id}`)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <Text style={[styles.modalSectionLabel, styles.modalSectionLabelSpaced]}>
+              {t('marketplace.regionRowLabel')}
+            </Text>
+            <View style={styles.modalChipWrap}>
+              {REGION_FILTER_IDS.map((id) => {
+                const active = regionFilter === id;
+                return (
+                  <TouchableOpacity
+                    key={id}
+                    style={[styles.regionChip, active && styles.regionChipActive]}
+                    onPress={() => setRegionFilter(id)}
+                    activeOpacity={0.85}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: active }}
+                  >
+                    <Text style={[styles.regionChipText, active && styles.regionChipTextActive]}>
+                      {t(`marketplace.region_${id}`)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <View style={styles.modalFooter}>
+              <TouchableOpacity
+                style={styles.modalResetBtn}
+                onPress={() => {
+                  setSort('recommended');
+                  setRegionFilter('all');
+                }}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.modalResetText}>{t('marketplace.filtersReset')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalDoneBtn} onPress={() => setFiltersOpen(false)} activeOpacity={0.88}>
+                <Text style={styles.modalDoneText}>{t('marketplace.filtersDone')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       <ShopCoach />
     </View>
   );
@@ -442,38 +509,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     minWidth: 0,
   },
-  refinePanel: {
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.md,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.sm,
-    paddingHorizontal: spacing.sm,
-    borderRadius: radius.lg,
-    backgroundColor: colors.surfaceElevated,
-    borderWidth: 1,
-    borderColor: colors.border,
-    gap: spacing.xs,
-  },
-  refineTitle: {
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    marginBottom: 2,
-    paddingHorizontal: 2,
-  },
-  refineChipRow: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingRight: spacing.xs,
-  },
-  refineChipRowSecond: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingRight: spacing.xs,
-    marginTop: 2,
-  },
   resultsMeta: {
     fontSize: 11,
     fontFamily: brandFont.semibold,
@@ -481,10 +516,136 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     marginBottom: spacing.sm,
   },
+  catRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+    paddingLeft: spacing.base,
+    paddingRight: spacing.xs,
+  },
+  catScrollFlex: {
+    flex: 1,
+    minWidth: 0,
+  },
   catScroll: {
-    paddingHorizontal: spacing.base,
     gap: 8,
-    paddingBottom: spacing.sm,
+    paddingRight: spacing.xs,
+    paddingVertical: 2,
+  },
+  filterFab: {
+    position: 'relative',
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.sm,
+    backgroundColor: colors.surfaceElevated,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  filterBadge: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    minWidth: 17,
+    height: 17,
+    borderRadius: 9,
+    backgroundColor: colors.gold,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    borderWidth: 1,
+    borderColor: colors.background,
+  },
+  filterBadgeText: {
+    fontSize: 9,
+    fontFamily: brandFont.black,
+    color: colors.nearBlack,
+  },
+  modalRoot: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(2,6,23,0.5)',
+  },
+  modalSheet: {
+    backgroundColor: colors.surfaceElevated,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.sm,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: colors.border,
+  },
+  modalGrabber: {
+    alignSelf: 'center',
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.border,
+    marginBottom: spacing.md,
+  },
+  modalHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.lg,
+  },
+  modalTitle: {
+    fontSize: fontSize.lg,
+    fontFamily: brandFont.black,
+    color: colors.textPrimary,
+    flex: 1,
+    paddingRight: spacing.sm,
+  },
+  modalSectionLabel: {
+    fontSize: 10,
+    fontFamily: brandFont.bold,
+    color: colors.textMuted,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    marginBottom: spacing.sm,
+  },
+  modalSectionLabelSpaced: {
+    marginTop: spacing.md,
+  },
+  modalChipWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: spacing.sm,
+  },
+  modalFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    marginTop: spacing.lg,
+  },
+  modalResetBtn: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+  },
+  modalResetText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: colors.textMuted,
+  },
+  modalDoneBtn: {
+    flex: 1,
+    backgroundColor: colors.nearBlack,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+  },
+  modalDoneText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.bold,
+    color: colors.white,
   },
   catChip: {
     paddingHorizontal: spacing.md,

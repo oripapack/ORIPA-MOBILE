@@ -12,6 +12,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { HomeBackground } from '../shared/HomeBackground';
 import { SplashCardFrame } from './SplashCardFrame';
 import { SplashLogoReveal } from './SplashLogoReveal';
 import { colors } from '../../tokens/colors';
@@ -144,32 +145,17 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
 
   return (
     <Animated.View style={[styles.root, rootStyle]} pointerEvents="auto">
-      <LinearGradient
-        colors={[colors.homeGradientTop, colors.homeGradientMid, colors.homeGradientBottom]}
-        locations={[0, 0.42, 1]}
-        style={StyleSheet.absoluteFillObject}
-      />
-      <LinearGradient
-        pointerEvents="none"
-        colors={[colors.accentSoft, 'transparent', 'transparent']}
-        start={{ x: 0.15, y: 0 }}
-        end={{ x: 0.85, y: 0.45 }}
-        style={StyleSheet.absoluteFillObject}
-      />
-      <LinearGradient
-        pointerEvents="none"
-        colors={[
-          'rgba(232,197,71,0.1)',
-          'transparent',
-          'rgba(192,132,252,0.08)',
-        ]}
-        locations={[0, 0.5, 1]}
-        style={StyleSheet.absoluteFillObject}
-      />
+      <View style={styles.artLayer} pointerEvents="none">
+        <HomeBackground />
+      </View>
 
       <Animated.View style={[styles.spotlight, spotlightStyle]} pointerEvents="none">
         <LinearGradient
-          colors={['rgba(62,92,118,0.08)', 'rgba(139,115,85,0.04)', 'transparent']}
+          colors={[
+            'rgba(192,132,252,0.14)',
+            'rgba(56,189,248,0.06)',
+            'transparent',
+          ]}
           start={{ x: 0.5, y: 0.4 }}
           end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -217,6 +203,9 @@ const styles = StyleSheet.create({
     elevation: 2000,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  artLayer: {
+    ...StyleSheet.absoluteFillObject,
   },
   spotlight: {
     position: 'absolute',

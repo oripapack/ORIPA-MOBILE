@@ -7,6 +7,10 @@
     "vault": "Vault"
   },
   "marketplace": {
+    "filtersModalTitle": "並べ替え・発送元",
+    "filtersDone": "完了",
+    "filtersReset": "リセット",
+    "openFiltersA11y": "並べ替えと地域フィルターを開く",
     "storeTitle": "Pull Hub ストア",
     "storeLead": "認証パートナー店のシングル・未開封を閲覧。決済は今後対応 — ここは一覧のみ（パック開封はホーム）。",
     "searchPlaceholder": "カード・セット・店名で検索…",
