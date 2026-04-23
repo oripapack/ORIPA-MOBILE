@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,6 @@ import {
   Keyboard,
   Modal,
   Pressable,
-  Animated,
-  LayoutAnimation,
-  Platform,
-  UIManager,
-  Easing,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
@@ -60,16 +55,6 @@ const SORT_IDS: MarketplaceSortId[] = [
 
 const REGION_FILTER_IDS: MarketplaceRegionFilterId[] = ['all', 'us', 'japan', 'europe'];
 
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
-
-function bumpMarketplaceLayout() {
-  LayoutAnimation.configureNext(
-    LayoutAnimation.create(200, LayoutAnimation.Types.easeInEaseOut, LayoutAnimation.Properties.opacity),
-  );
-}
-
 export function MarketplaceScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -79,59 +64,7 @@ export function MarketplaceScreen() {
   const [category, setCategory] = useState<ListingCategory | 'all'>('all');
   const [sort, setSort] = useState<MarketplaceSortId>('recommended');
   const [regionFilter, setRegionFilter] = useState<MarketplaceRegionFilterId>('all');
-  const [filtersModalVisible, setFiltersModalVisible] = useState(false);
-  const filtersVisibleRef = useRef(false);
-  const backdropOp = useRef(new Animated.Value(0)).current;
-  const sheetSlide = useRef(new Animated.Value(1)).current;
-  const resultsOpacity = useRef(new Animated.Value(1)).current;
-
-  const closeFilters = useCallback(() => {
-    if (!filtersVisibleRef.current) return;
-    Animated.parallel([
-      Animated.timing(backdropOp, {
-        toValue: 0,
-        duration: 200,
-        easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(sheetSlide, {
-        toValue: 1,
-        duration: 220,
-        easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
-      }),
-    ]).start(({ finished }) => {
-      if (finished) setFiltersModalVisible(false);
-    });
-  }, [backdropOp, sheetSlide]);
-
-  const openFilters = useCallback(() => {
-    Keyboard.dismiss();
-    setFiltersModalVisible(true);
-  }, []);
-
-  useLayoutEffect(() => {
-    filtersVisibleRef.current = filtersModalVisible;
-    if (!filtersModalVisible) return undefined;
-    backdropOp.setValue(0);
-    sheetSlide.setValue(1);
-    const anim = Animated.parallel([
-      Animated.timing(backdropOp, {
-        toValue: 1,
-        duration: 240,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.spring(sheetSlide, {
-        toValue: 0,
-        damping: 26,
-        stiffness: 280,
-        useNativeDriver: true,
-      }),
-    ]);
-    anim.start();
-    return () => anim.stop();
-  }, [filtersModalVisible, backdropOp, sheetSlide]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const activeFilterCount = useMemo(() => {
     let n = 0;
@@ -191,30 +124,15 @@ export function MarketplaceScreen() {
   }, [sortedListings, saleListings]);
 
   const resetBrowse = () => {
-    bumpMarketplaceLayout();
     setQuery('');
     setCategory('all');
     setSort('recommended');
     setRegionFilter('all');
+    setFiltersOpen(false);
     Keyboard.dismiss();
-    closeFilters();
   };
 
   const hasResults = sortedListings.length > 0;
-
-  useEffect(() => {
-    if (!hasResults) return undefined;
-    resultsOpacity.stopAnimation();
-    resultsOpacity.setValue(0.45);
-    const pulse = Animated.timing(resultsOpacity, {
-      toValue: 1,
-      duration: 220,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    });
-    pulse.start();
-    return () => pulse.stop();
-  }, [sortedListings.length, sort, regionFilter, category, query, hasResults, resultsOpacity]);
 
   const regionShortLabel = (storeId: string) => {
     const s = getStoreById(storeId);
@@ -279,42 +197,36 @@ export function MarketplaceScreen() {
         </View>
 
         <View style={styles.catRow}>
-          {/*
-            Wrap horizontal ScrollView so it cannot paint under the filter control (flex + RN scroll
-            sizing). overflow: 'hidden' clips chips; flexShrink: 0 reserves a fixed lane for the button.
-          */}
-          <View style={styles.catScrollOuter}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.catScrollView}
-              contentContainerStyle={styles.catScroll}
-            >
-              {CATEGORY_KEYS.map((key) => {
-                const active = category === key;
-                return (
-                  <TouchableOpacity
-                    key={key}
-                    style={[styles.catChip, active && styles.catChipActive]}
-                    onPress={() => {
-                      bumpMarketplaceLayout();
-                      setCategory(key);
-                    }}
-                    activeOpacity={0.85}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: active }}
-                  >
-                    <Text style={[styles.catChipText, active && styles.catChipTextActive]}>
-                      {t(`marketplace.cat_${key}`)}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.catScrollFlex}
+            contentContainerStyle={styles.catScroll}
+          >
+            {CATEGORY_KEYS.map((key) => {
+              const active = category === key;
+              return (
+                <TouchableOpacity
+                  key={key}
+                  style={[styles.catChip, active && styles.catChipActive]}
+                  onPress={() => setCategory(key)}
+                  activeOpacity={0.85}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}
+                >
+                  <Text style={[styles.catChipText, active && styles.catChipTextActive]}>
+                    {t(`marketplace.cat_${key}`)}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
           <TouchableOpacity
             style={styles.filterFab}
-            onPress={openFilters}
+            onPress={() => {
+              Keyboard.dismiss();
+              setFiltersOpen(true);
+            }}
             activeOpacity={0.85}
             accessibilityRole="button"
             accessibilityLabel={t('marketplace.openFiltersA11y')}
@@ -330,9 +242,7 @@ export function MarketplaceScreen() {
 
         {hasResults ? (
           <View accessibilityLiveRegion="polite">
-            <Animated.Text style={[styles.resultsMeta, { opacity: resultsOpacity }]}>
-              {t('marketplace.resultsCount', { count: sortedListings.length })}
-            </Animated.Text>
+            <Text style={styles.resultsMeta}>{t('marketplace.resultsCount', { count: sortedListings.length })}</Text>
           </View>
         ) : null}
 
@@ -461,45 +371,19 @@ export function MarketplaceScreen() {
       </ScrollView>
 
       <Modal
-        visible={filtersModalVisible}
-        animationType="none"
+        visible={filtersOpen}
+        animationType="slide"
         transparent
-        onRequestClose={closeFilters}
+        onRequestClose={() => setFiltersOpen(false)}
       >
         <View style={styles.modalRoot}>
-          <Pressable style={styles.modalBackdropHit} onPress={closeFilters} accessibilityRole="button">
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                StyleSheet.absoluteFill,
-                {
-                  backgroundColor: 'rgba(2,6,23,1)',
-                  opacity: backdropOp.interpolate({ inputRange: [0, 1], outputRange: [0, 0.5] }),
-                },
-              ]}
-            />
-          </Pressable>
-          <Animated.View
-            style={[
-              styles.modalSheet,
-              {
-                paddingBottom: insets.bottom + spacing.lg,
-                transform: [
-                  {
-                    translateY: sheetSlide.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, 140],
-                    }),
-                  },
-                ],
-              },
-            ]}
-          >
+          <Pressable style={styles.modalBackdrop} onPress={() => setFiltersOpen(false)} />
+          <View style={[styles.modalSheet, { paddingBottom: insets.bottom + spacing.lg }]}>
             <View style={styles.modalGrabber} />
             <View style={styles.modalHeaderRow}>
               <Text style={styles.modalTitle}>{t('marketplace.filtersModalTitle')}</Text>
               <TouchableOpacity
-                onPress={closeFilters}
+                onPress={() => setFiltersOpen(false)}
                 hitSlop={12}
                 accessibilityRole="button"
                 accessibilityLabel={t('marketplace.filtersDone')}
@@ -516,10 +400,7 @@ export function MarketplaceScreen() {
                   <TouchableOpacity
                     key={id}
                     style={[styles.sortChip, active && styles.sortChipActive]}
-                    onPress={() => {
-                      bumpMarketplaceLayout();
-                      setSort(id);
-                    }}
+                    onPress={() => setSort(id)}
                     activeOpacity={0.85}
                     accessibilityRole="button"
                     accessibilityState={{ selected: active }}
@@ -542,10 +423,7 @@ export function MarketplaceScreen() {
                   <TouchableOpacity
                     key={id}
                     style={[styles.regionChip, active && styles.regionChipActive]}
-                    onPress={() => {
-                      bumpMarketplaceLayout();
-                      setRegionFilter(id);
-                    }}
+                    onPress={() => setRegionFilter(id)}
                     activeOpacity={0.85}
                     accessibilityRole="button"
                     accessibilityState={{ selected: active }}
@@ -562,7 +440,6 @@ export function MarketplaceScreen() {
               <TouchableOpacity
                 style={styles.modalResetBtn}
                 onPress={() => {
-                  bumpMarketplaceLayout();
                   setSort('recommended');
                   setRegionFilter('all');
                 }}
@@ -570,11 +447,11 @@ export function MarketplaceScreen() {
               >
                 <Text style={styles.modalResetText}>{t('marketplace.filtersReset')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalDoneBtn} onPress={closeFilters} activeOpacity={0.88}>
+              <TouchableOpacity style={styles.modalDoneBtn} onPress={() => setFiltersOpen(false)} activeOpacity={0.88}>
                 <Text style={styles.modalDoneText}>{t('marketplace.filtersDone')}</Text>
               </TouchableOpacity>
             </View>
-          </Animated.View>
+          </View>
         </View>
       </Modal>
 
@@ -644,32 +521,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.sm,
     paddingLeft: spacing.base,
-    paddingRight: spacing.base,
+    paddingRight: spacing.xs,
   },
-  catScrollOuter: {
+  catScrollFlex: {
     flex: 1,
     minWidth: 0,
-    marginRight: spacing.sm,
-    overflow: 'hidden',
-  },
-  catScrollView: {
-    width: '100%',
   },
   catScroll: {
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: 8,
     paddingRight: spacing.xs,
     paddingVertical: 2,
   },
   filterFab: {
     position: 'relative',
-    flexShrink: 0,
     width: 44,
     height: 44,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: spacing.sm,
     backgroundColor: colors.surfaceElevated,
     borderWidth: 1,
     borderColor: colors.border,
@@ -697,8 +567,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
-  modalBackdropHit: {
+  modalBackdrop: {
     ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(2,6,23,0.5)',
   },
   modalSheet: {
     backgroundColor: colors.surfaceElevated,

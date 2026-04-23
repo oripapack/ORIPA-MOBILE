@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -112,18 +112,6 @@ export function AccountScreen() {
     [socialProfile.recentPulls],
   );
 
-  const contentIntro = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    contentIntro.setValue(0);
-    Animated.timing(contentIntro, {
-      toValue: 1,
-      duration: 400,
-      delay: 30,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [contentIntro]);
-
   return (
     <View style={styles.screenRoot}>
       <HomeBackground />
@@ -133,20 +121,7 @@ export function AccountScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={refreshControl}
       >
-        <Animated.View
-          style={{
-            opacity: contentIntro,
-            transform: [
-              {
-                translateY: contentIntro.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [14, 0],
-                }),
-              },
-            ],
-          }}
-        >
-          <Text style={styles.pageTitle}>{t('account.title')}</Text>
+      <Text style={styles.pageTitle}>{t('account.title')}</Text>
 
       {showGuestSignInCard ? (
         <VaultFramedCard style={styles.guestSignInCard}>
@@ -336,7 +311,6 @@ export function AccountScreen() {
           <Text style={styles.quickLabel}>{t('account.quickSettings')}</Text>
         </TouchableOpacity>
       </View>
-        </Animated.View>
       </ScrollView>
     </View>
   );

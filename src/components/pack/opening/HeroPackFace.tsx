@@ -11,34 +11,21 @@ type Props = {
   packAccent: string;
   /** Reserved for future copy on the face — unused in liquid-only shell. */
   packLine?: string;
-  /**
-   * Brand tint wash on the face (0–0.35). Default is subtle for motion; lineup / reel uses higher
-   * so each product reads distinct.
-   */
-  accentWash?: number;
-  /** Foil strip + micro “print” bars — reads like sealed retail, not a flat gradient card. */
-  showProductChrome?: boolean;
 };
 
 const VB_W = 105;
 const VB_H = 270;
 
-function hexWithAlpha(hex: string, aa: string): string {
-  if (typeof hex === 'string' && /^#[0-9A-Fa-f]{6}$/.test(hex)) return `${hex}${aa}`;
-  return 'rgba(56,189,248,0.15)';
-}
-
-function LiquidGlassArt({ side, strength = 1 }: { side: Side; strength?: number }) {
+function LiquidGlassArt({ side }: { side: Side }) {
   const uid = `hpf-${side}`;
   const mirror = side === 'right';
-  const o = (v: number) => Math.min(1, v * strength);
 
   const blobs = (
     <>
-      <Ellipse cx={26} cy={68} rx={46} ry={62} fill={`url(#${uid}-b1)`} opacity={o(0.95)} />
-      <Ellipse cx={58} cy={168} rx={40} ry={54} fill={`url(#${uid}-b2)`} opacity={o(0.9)} />
-      <Ellipse cx={44} cy={128} rx={58} ry={36} fill={`url(#${uid}-b3)`} opacity={o(0.75)} />
-      <Ellipse cx={72} cy={228} rx={52} ry={44} fill={`url(#${uid}-b4)`} opacity={o(0.55)} />
+      <Ellipse cx={26} cy={68} rx={46} ry={62} fill={`url(#${uid}-b1)`} opacity={0.95} />
+      <Ellipse cx={58} cy={168} rx={40} ry={54} fill={`url(#${uid}-b2)`} opacity={0.9} />
+      <Ellipse cx={44} cy={128} rx={58} ry={36} fill={`url(#${uid}-b3)`} opacity={0.75} />
+      <Ellipse cx={72} cy={228} rx={52} ry={44} fill={`url(#${uid}-b4)`} opacity={0.55} />
     </>
   );
 
@@ -49,7 +36,7 @@ function LiquidGlassArt({ side, strength = 1 }: { side: Side; strength?: number 
         stroke={HERO_PACK.liquidFlow}
         strokeWidth={1.35}
         fill="none"
-        opacity={o(0.88)}
+        opacity={0.88}
         strokeLinecap="round"
       />
       <Path
@@ -57,7 +44,7 @@ function LiquidGlassArt({ side, strength = 1 }: { side: Side; strength?: number 
         stroke={HERO_PACK.liquidFlowAlt}
         strokeWidth={1.1}
         fill="none"
-        opacity={o(0.72)}
+        opacity={0.72}
         strokeLinecap="round"
       />
       <Path
@@ -65,7 +52,7 @@ function LiquidGlassArt({ side, strength = 1 }: { side: Side; strength?: number 
         stroke={HERO_PACK.liquidFlow}
         strokeWidth={1.05}
         fill="none"
-        opacity={o(0.55)}
+        opacity={0.55}
         strokeLinecap="round"
       />
       <Path
@@ -73,7 +60,7 @@ function LiquidGlassArt({ side, strength = 1 }: { side: Side; strength?: number 
         stroke="rgba(255,255,255,0.1)"
         strokeWidth={0.85}
         fill="none"
-        opacity={o(0.65)}
+        opacity={0.65}
         strokeLinecap="round"
       />
     </>
@@ -125,16 +112,9 @@ function LiquidGlassArt({ side, strength = 1 }: { side: Side; strength?: number 
 }
 
 /**
- * Sealed-pack face (one half of the tear): liquid-glass + optional retail chrome.
+ * Sealed-pack face (one half of the tear): liquid-glass only — no type or chrome.
  */
-export function HeroPackFace({
-  side,
-  packAccent,
-  packLine: _packLine,
-  accentWash = 0.08,
-  showProductChrome = false,
-}: Props) {
-  const wash = Math.min(0.32, Math.max(0, accentWash));
+export function HeroPackFace({ side, packAccent, packLine: _packLine }: Props) {
   const spineGrad =
     side === 'left'
       ? {
@@ -165,47 +145,23 @@ export function HeroPackFace({
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
       />
-      <LiquidGlassArt side={side} strength={showProductChrome ? 1.06 : 1} />
+      <LiquidGlassArt side={side} />
       <LinearGradient
         colors={[...HERO_PACK.causticSheen]}
         start={causticStart}
         end={causticEnd}
-        style={[styles.causticLayer, showProductChrome && styles.causticLayerRetail]}
+        style={styles.causticLayer}
         pointerEvents="none"
       />
       <View
-        style={[StyleSheet.absoluteFill, { backgroundColor: packAccent, opacity: wash }]}
+        style={[StyleSheet.absoluteFill, { backgroundColor: packAccent, opacity: 0.08 }]}
         pointerEvents="none"
       />
-      {showProductChrome ? (
-        <LinearGradient
-          pointerEvents="none"
-          colors={[
-            hexWithAlpha(packAccent, '00'),
-            hexWithAlpha(packAccent, '22'),
-            'rgba(255,255,255,0.14)',
-            hexWithAlpha(packAccent, '1a'),
-            hexWithAlpha(packAccent, '00'),
-          ]}
-          locations={[0, 0.28, 0.5, 0.72, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.holoStrip}
-        />
-      ) : null}
-      {showProductChrome ? (
-        <LinearGradient
-          pointerEvents="none"
-          colors={['rgba(0,0,0,0.14)', 'transparent', 'transparent', 'rgba(0,0,0,0.2)']}
-          locations={[0, 0.28, 0.72, 1]}
-          style={StyleSheet.absoluteFill}
-        />
-      ) : null}
       <LinearGradient
         colors={[...HERO_PACK.foilGloss]}
         start={foilStart}
         end={foilEnd}
-        style={[styles.foilSheen, showProductChrome && styles.foilSheenRetail]}
+        style={styles.foilSheen}
         pointerEvents="none"
       />
       <LinearGradient {...spineGrad} style={spineStyle} />
@@ -224,13 +180,6 @@ export function HeroPackFace({
         style={styles.edgeBottom}
         pointerEvents="none"
       />
-      {showProductChrome ? (
-        <View pointerEvents="none" style={styles.microRow}>
-          {[3, 5, 2, 7, 4, 2, 6, 3, 4].map((h, i) => (
-            <View key={i} style={[styles.microBar, { height: h * 1.35 }]} />
-          ))}
-        </View>
-      ) : null}
     </View>
   );
 }
@@ -245,41 +194,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     opacity: 0.85,
   },
-  causticLayerRetail: {
-    opacity: 0.95,
-  },
-  holoStrip: {
-    position: 'absolute',
-    left: '7%',
-    right: '7%',
-    top: '30%',
-    height: '11%',
-    borderRadius: 4,
-    overflow: 'hidden',
-    opacity: 0.92,
-  },
   foilSheen: {
     ...StyleSheet.absoluteFillObject,
     opacity: 0.88,
-  },
-  foilSheenRetail: {
-    opacity: 0.98,
-  },
-  microRow: {
-    position: 'absolute',
-    left: '10%',
-    right: '10%',
-    bottom: '6%',
-    height: 14,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  microBar: {
-    width: 2,
-    marginHorizontal: 2,
-    borderRadius: 1,
-    backgroundColor: 'rgba(226, 232, 240, 0.16)',
   },
   spine: {
     position: 'absolute',
