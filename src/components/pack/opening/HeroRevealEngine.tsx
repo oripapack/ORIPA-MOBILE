@@ -145,10 +145,22 @@ export function HeroRevealEngine({
         {/* Sealed face (two SVG halves, no tear — open is scale + fade in hook). */}
         <View style={styles.packSplitRow}>
           <View style={[styles.packHalf, styles.packHalfLeft]}>
-            <HeroPackFace side="left" packAccent={packTint} packLine={packFaceTitle} />
+            <HeroPackFace
+              side="left"
+              packAccent={packTint}
+              packLine={packFaceTitle}
+              accentWash={0.14}
+              showProductChrome
+            />
           </View>
           <View style={[styles.packHalf, styles.packHalfRight]}>
-            <HeroPackFace side="right" packAccent={packTint} packLine={packFaceTitle} />
+            <HeroPackFace
+              side="right"
+              packAccent={packTint}
+              packLine={packFaceTitle}
+              accentWash={0.14}
+              showProductChrome
+            />
           </View>
         </View>
       </Animated.View>

@@ -474,7 +474,7 @@ export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
                   ]}
                 >
                   <View style={styles.faceFill}>
-                    <HeroPackFace side="left" packAccent={packTint} />
+                    <HeroPackFace side="left" packAccent={packTint} accentWash={0.14} showProductChrome />
                   </View>
                 </Animated.View>
                 <Animated.View style={[styles.seam, seamStyle]} />
@@ -491,7 +491,7 @@ export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
                   ]}
                 >
                   <View style={styles.faceFill}>
-                    <HeroPackFace side="right" packAccent={packTint} />
+                    <HeroPackFace side="right" packAccent={packTint} accentWash={0.14} showProductChrome />
                   </View>
                 </Animated.View>
               </View>

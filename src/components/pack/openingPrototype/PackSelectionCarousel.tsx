@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
 import { ReelPackShell } from '../opening/ReelPackShell';
+import { playPackLineupPick, playPackLineupSnap, preloadPackLineupSfx } from '../../../audio/packLineupSfx';
 
 const WIN_W = Dimensions.get('window').width;
 /** Hero packs in the lineup (also drives rip + centered stage via `CAROUSEL_PACK_DIMS`). */
@@ -40,6 +41,10 @@ const VARIANT_TINTS = [
 
 const COUNT = 7;
 const DEFAULT_FOCUS_INDEX = Math.floor(COUNT / 2);
+/** Stronger parallax + vignette so the carousel reads “premium” vs flat strips. */
+const DEPTH_NORM = WIN_W * 0.44;
+const DEPTH_SCALE_MAX = 0.15;
+const DEPTH_OPACITY_MIN = 0.5;
 
 /** Same tint logic as the carousel slots — use for focus + rip so the shell matches the pick. */
 export function lineupPackTintAt(index: number, packTint: string, sessionSalt: number): string {
@@ -194,6 +199,7 @@ export function PackSelectionCarousel({
   const scrollRef = useRef<ScrollView>(null);
   const [scrollX, setScrollX] = useState(0);
   const didCenterRef = useRef(false);
+  const lastSnapIndexRef = useRef<number | null>(null);
 
   const popAnims = useRef(Array.from({ length: COUNT }, () => new Animated.Value(0))).current;
   const commitScales = useRef(Array.from({ length: COUNT }, () => new Animated.Value(0))).current;
@@ -202,6 +208,10 @@ export function PackSelectionCarousel({
     () => Array.from({ length: COUNT }, (_, i) => lineupPackTintAt(i, packTint, sessionSalt)),
     [packTint, sessionSalt],
   );
+
+  useEffect(() => {
+    preloadPackLineupSfx();
+  }, []);
 
   useEffect(() => {
     const springs = popAnims.map((val, i) => {
@@ -243,6 +253,24 @@ export function PackSelectionCarousel({
     setScrollX(e.nativeEvent.contentOffset.x);
   }, []);
 
+  const onScrollBeginDrag = useCallback(() => {
+    preloadPackLineupSfx();
+  }, []);
+
+  const onMomentumScrollEnd = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const x = e.nativeEvent.contentOffset.x;
+    const idx = Math.round(x / SLOT);
+    const clamped = Math.max(0, Math.min(COUNT - 1, idx));
+    if (lastSnapIndexRef.current === null) {
+      lastSnapIndexRef.current = clamped;
+      return;
+    }
+    if (clamped !== lastSnapIndexRef.current) {
+      lastSnapIndexRef.current = clamped;
+      playPackLineupSnap();
+    }
+  }, []);
+
   const onContentSizeChange = useCallback((_w: number, _h: number) => {
     if (didCenterRef.current) return;
     didCenterRef.current = true;
@@ -250,6 +278,7 @@ export function PackSelectionCarousel({
     requestAnimationFrame(() => {
       scrollRef.current?.scrollTo({ x, y: 0, animated: false });
       setScrollX(x);
+      lastSnapIndexRef.current = DEFAULT_FOCUS_INDEX;
     });
   }, []);
 
@@ -261,6 +290,7 @@ export function PackSelectionCarousel({
       if (Platform.OS !== 'web') {
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
       }
+      playPackLineupPick();
       onSelectIndex(i);
     },
     [interactionEnabled, onSelectIndex],
@@ -271,25 +301,61 @@ export function PackSelectionCarousel({
       <PackCarouselAmbient packTint={packTint} />
       <Text style={styles.hint}>{t('packOpening.lineupHint')}</Text>
       <View style={styles.carouselBand}>
-        <ScrollView
-          ref={scrollRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          decelerationRate="fast"
-          snapToInterval={SLOT}
-          snapToAlignment="start"
-          contentContainerStyle={[styles.scrollContent, { paddingHorizontal: EDGE_PAD }]}
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          scrollEnabled={interactionEnabled}
-          onContentSizeChange={onContentSizeChange}
-        >
+        <View pointerEvents="none" style={styles.edgeVignetteWrap}>
+          <LinearGradient
+            colors={['rgba(2,6,23,0.92)', 'rgba(2,6,23,0.35)', 'transparent']}
+            locations={[0, 0.55, 1]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.edgeVignetteLeft}
+          />
+          <LinearGradient
+            colors={['transparent', 'rgba(2,6,23,0.35)', 'rgba(2,6,23,0.92)']}
+            locations={[0, 0.45, 1]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.edgeVignetteRight}
+          />
+        </View>
+        <LinearGradient
+          pointerEvents="none"
+          colors={['transparent', 'rgba(248,250,252,0.1)', 'rgba(248,250,252,0.2)', 'rgba(248,250,252,0.1)', 'transparent']}
+          locations={[0, 0.38, 0.5, 0.62, 1]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={styles.centerHairline}
+        />
+        <View pointerEvents="none" style={styles.floorGlow}>
+          <LinearGradient
+            colors={['rgba(255,255,255,0.07)', 'rgba(148,163,184,0.04)', 'transparent']}
+            locations={[0, 0.45, 1]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={styles.floorGradient}
+          />
+        </View>
+        <Animated.View style={styles.stageTilt}>
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            decelerationRate="fast"
+            snapToInterval={SLOT}
+            snapToAlignment="start"
+            contentContainerStyle={[styles.scrollContent, { paddingHorizontal: EDGE_PAD }]}
+            onScroll={onScroll}
+            onScrollBeginDrag={onScrollBeginDrag}
+            onMomentumScrollEnd={onMomentumScrollEnd}
+            scrollEventThrottle={16}
+            scrollEnabled={interactionEnabled}
+            onContentSizeChange={onContentSizeChange}
+          >
           {tints.map((tint, i) => {
             const cx = EDGE_PAD + i * SLOT + SLOT / 2;
             const dist = Math.abs(cx - viewportCenter);
-            const norm = Math.min(1, dist / (WIN_W * 0.52));
-            const depthScale = 1 - norm * 0.11;
-            const depthOpacity = 0.62 + (1 - norm) * 0.38;
+            const norm = Math.min(1, dist / DEPTH_NORM);
+            const depthScale = 1 - norm * DEPTH_SCALE_MAX;
+            const depthOpacity = DEPTH_OPACITY_MIN + (1 - norm) * (1 - DEPTH_OPACITY_MIN);
             const z = 100 - Math.round(dist / 8);
 
             const pop = popAnims[i];
@@ -352,6 +418,7 @@ export function PackSelectionCarousel({
                     <View
                       style={[
                         styles.ring,
+                        norm < 0.22 ? styles.ringFocus : null,
                         isChosen && selectionLocked ? { borderColor: tintRgba(tint, 0.95), borderWidth: 2 } : null,
                         isChosen && selectionLocked
                           ? {
@@ -364,7 +431,12 @@ export function PackSelectionCarousel({
                           : null,
                       ]}
                     >
-                      <ReelPackShell width={PACK_W} height={PACK_H} tint={tint} lockEmphasis={0} />
+                      <ReelPackShell
+                        width={PACK_W}
+                        height={PACK_H}
+                        tint={tint}
+                        lockEmphasis={norm < 0.18 ? 0.35 : 0}
+                      />
                     </View>
                   </View>
                   </Animated.View>
@@ -372,7 +444,8 @@ export function PackSelectionCarousel({
               </Pressable>
             );
           })}
-        </ScrollView>
+          </ScrollView>
+        </Animated.View>
       </View>
     </View>
   );
@@ -401,15 +474,67 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     zIndex: 1,
+    overflow: 'hidden',
+  },
+  edgeVignetteWrap: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 4,
+  },
+  edgeVignetteLeft: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: WIN_W * 0.26,
+  },
+  edgeVignetteRight: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: WIN_W * 0.26,
+  },
+  centerHairline: {
+    position: 'absolute',
+    top: '10%',
+    left: '14%',
+    right: '14%',
+    height: 2,
+    borderRadius: 1,
+    zIndex: 3,
+    opacity: 0.85,
+  },
+  floorGlow: {
+    position: 'absolute',
+    left: '8%',
+    right: '8%',
+    bottom: '6%',
+    height: 56,
+    zIndex: 2,
+  },
+  floorGradient: {
+    flex: 1,
+    borderRadius: 999,
+    opacity: 0.9,
+  },
+  stageTilt: {
+    flex: 1,
+    minHeight: 0,
+    zIndex: 1,
+    transform: [{ perspective: 1180 }, { rotateX: '7deg' }],
   },
   hint: {
-    color: 'rgba(226,232,240,0.82)',
+    color: 'rgba(241,245,249,0.9)',
     fontSize: 13,
     fontFamily: brandFont.medium,
     textAlign: 'center',
     marginBottom: spacing.md,
     paddingHorizontal: spacing.base,
     zIndex: 1,
+    letterSpacing: 0.35,
+    textShadowColor: 'rgba(0,0,0,0.45)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 6,
   },
   scrollContent: {
     alignItems: 'center',
@@ -439,6 +564,14 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 1,
     borderColor: 'transparent',
+  },
+  ringFocus: {
+    borderColor: 'rgba(248,250,252,0.22)',
+    shadowColor: '#f8fafc',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.22,
+    shadowRadius: 14,
+    elevation: 8,
   },
 });
 

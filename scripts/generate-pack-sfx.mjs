@@ -82,11 +82,43 @@ function hitSamples() {
   return out;
 }
 
+/** Pack lineup carousel — slot snap (soft mechanical tick). */
+function lineupSnapSamples() {
+  const sr = 44100;
+  const len = Math.floor(sr * 0.038);
+  const out = new Float32Array(len);
+  for (let i = 0; i < len; i++) {
+    const t = i / len;
+    const env = Math.pow(Math.sin(Math.PI * t), 0.85);
+    out[i] = (Math.random() * 2 - 1) * 0.2 * env;
+  }
+  return out;
+}
+
+/** Pack lineup — user locked a pack (brighter than snap). */
+function lineupPickSamples() {
+  const sr = 44100;
+  const len = Math.floor(sr * 0.072);
+  const out = new Float32Array(len);
+  for (let i = 0; i < len; i++) {
+    const t = i / sr;
+    const env = Math.exp(-t * 28);
+    const f = 380 + 240 * (1 - Math.exp(-t * 120));
+    out[i] = Math.sin((2 * Math.PI * f * i) / sr) * 0.34 * env;
+  }
+  return out;
+}
+
 const outDir = path.join(__dirname, '..', 'assets', 'sounds');
 fs.mkdirSync(outDir, { recursive: true });
 
 writeWav(path.join(outDir, 'pack_tear.wav'), tearSamples());
 writeWav(path.join(outDir, 'pack_reveal.wav'), revealSamples());
 writeWav(path.join(outDir, 'pack_hit.wav'), hitSamples());
+writeWav(path.join(outDir, 'pack_lineup_snap.wav'), lineupSnapSamples());
+writeWav(path.join(outDir, 'pack_lineup_pick.wav'), lineupPickSamples());
 
-console.log('Wrote pack_tear.wav, pack_reveal.wav, pack_hit.wav →', outDir);
+console.log(
+  'Wrote pack_tear.wav, pack_reveal.wav, pack_hit.wav, pack_lineup_snap.wav, pack_lineup_pick.wav →',
+  outDir,
+);
