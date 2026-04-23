@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
-import type { Pack } from '../../data/mockPacks';
+import { packImageSource, type Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { getMockPackTopHit } from '../../data/mockTopHits';
 import { getMockPackOdds } from '../../data/mockPackOdds';
@@ -69,7 +69,7 @@ export function DropLobbyHero({ pack, onBrowseFloor }: Props) {
         >
           <View style={[styles.hero, { backgroundColor: pack.imageColor ?? colors.surfaceMuted }]}>
             {pack.imageUrl ? (
-              <Image source={{ uri: pack.imageUrl }} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+              <Image source={packImageSource(pack.imageUrl)} style={StyleSheet.absoluteFillObject} contentFit="cover" />
             ) : null}
             <LinearGradient
               pointerEvents="none"
