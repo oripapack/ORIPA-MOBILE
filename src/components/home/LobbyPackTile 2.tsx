@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { elevation, radius, spacing } from '../../tokens/spacing';
-import type { ChipTagType, Pack } from '../../data/mockPacks';
+import { packImageSource, type ChipTagType, type Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { getMockPackTopHit } from '../../data/mockTopHits';
 import { navigationRef } from '../../navigation/navigationRef';
@@ -58,6 +58,7 @@ export function LobbyPackTile({ pack, railVariant }: Props) {
   const topHit = getMockPackTopHit(pack);
   const accent = pack.imageColor ?? colors.surfaceMuted;
   const imgUri = pack.imageUrl ?? topHit?.imageUrl;
+  const imgSource = packImageSource(typeof imgUri === 'string' || typeof imgUri === 'number' ? imgUri : undefined);
 
   const tag = useMemo(() => priorityTag(pack, railVariant), [pack, railVariant]);
   const tagLabel = tag ? t(`packCard.shortBadge.${tag}`) : '';
@@ -86,8 +87,8 @@ export function LobbyPackTile({ pack, railVariant }: Props) {
 
       <View style={styles.column}>
         <View style={[styles.thumb, { height: thumbH, backgroundColor: accent }]}>
-          {imgUri ? (
-            <Image source={{ uri: imgUri }} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+          {imgSource != null ? (
+            <Image source={imgSource} style={StyleSheet.absoluteFillObject} contentFit="cover" />
           ) : null}
           <LinearGradient
             pointerEvents="none"

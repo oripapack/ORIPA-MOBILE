@@ -60,7 +60,8 @@ export interface Pack {
   category: PackCategory;
   tags: ChipTagType[];
   imageColor: string;
-  imageUrl?: string;
+  /** URI string (remote) or `require()` result (local asset). */
+  imageUrl?: string | number;
   creditPrice: number;
   totalInventory: number;
   remainingInventory: number;
@@ -176,6 +177,7 @@ function p(
     isFirstTimePack?: boolean;
     prizeTypes?: PrizeType[];
     highlightPrize?: string;
+    imageUrl?: string | number;
   },
 ): Pack {
   return {
@@ -186,7 +188,7 @@ function p(
     packGroup: CATEGORY_TO_GROUP[category],
     tags: args.tags,
     imageColor: args.imageColor,
-    imageUrl: demoPackHeroImage(id),
+    imageUrl: args.imageUrl ?? demoPackHeroImage(id),
     creditPrice: args.creditPrice,
     totalInventory: args.totalInventory ?? 50000,
     remainingInventory: args.remainingInventory ?? 49000,
@@ -198,6 +200,19 @@ function p(
     prizeTypes: args.prizeTypes,
     highlightPrize: args.highlightPrize,
   };
+}
+
+/**
+ * Returns an expo-image-compatible source from a pack's imageUrl field.
+ * Local assets (require() = number) are passed through directly;
+ * remote URLs are wrapped in { uri }.
+ */
+export function packImageSource(
+  imageUrl: string | number | undefined,
+): { uri: string } | number | undefined {
+  if (imageUrl == null) return undefined;
+  if (typeof imageUrl === 'number') return imageUrl;
+  return { uri: imageUrl };
 }
 
 // ---------------------------------------------------------------------------
@@ -213,7 +228,8 @@ export const mockPacks: Pack[] = [
   p('welcome_pack', 'Welcome Pack', 'onboarding', {
     creditPrice: 500,
     tags: ['first_time', 'best_value', 'new_user'],
-    imageColor: '#0F4C2A',
+    imageColor: '#0F1A2E',
+    imageUrl: require('../../assets/pack-images/welcome_pack.png'),
     valueDescription: 'First-time pack — high return, low risk. Perfect intro to Pull Hub.',
     guaranteeText: 'Guaranteed value ≥ 100 % of pack price · 1 per account · no tricks',
     maxPerUser: 1,

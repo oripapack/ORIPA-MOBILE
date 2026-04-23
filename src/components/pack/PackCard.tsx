@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
-import { ChipTagType, Pack } from '../../data/mockPacks';
+import { ChipTagType, Pack, packImageSource } from '../../data/mockPacks';
 import { getMockPackTopHit } from '../../data/mockTopHits';
 import { getMockPackOdds } from '../../data/mockPackOdds';
 import { colors } from '../../tokens/colors';
@@ -110,10 +110,10 @@ export function PackCard({ pack, onPress }: Props) {
         accessibilityLabel={loc.title}
       >
         <View style={[styles.hero, { backgroundColor: pack.imageColor ?? colors.surfaceMuted }]}>
-          {pack.imageUrl ? (
+          {pack.imageUrl != null ? (
             <>
               <Image
-                source={{ uri: pack.imageUrl }}
+                source={packImageSource(pack.imageUrl)}
                 style={styles.heroImage}
                 contentFit="cover"
                 cachePolicy="memory-disk"
