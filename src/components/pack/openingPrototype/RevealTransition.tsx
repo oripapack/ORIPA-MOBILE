@@ -16,6 +16,7 @@ import { brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
 import type { PackRollResult, RevealCard, RevealRarity } from '../opening/types';
 import { tierCelebrationFor } from '../opening/tierCelebration';
+import { SlabRevealHero } from './SlabRevealHero';
 
 const easeOut = Easing.bezier(0.33, 0.86, 0.2, 1);
 const easeDrift = Easing.bezier(0.22, 1, 0.36, 1);
@@ -127,8 +128,9 @@ export function RevealTransition({
   const tv = tierCelebrationFor(roll.tier);
   const tierLabel = t(`packOpening.tier_${roll.tier}`);
 
-  const heroSize = Math.min(280, WIN_W * 0.58);
-  const artSize = Math.round(heroSize * 0.4);
+  const slabW = Math.min(276, WIN_W * 0.78);
+  const slabH = Math.round(slabW * 1.42);
+  const heroPlatePad = 52;
 
   const fade = useRef(new Animated.Value(0)).current;
   const lift = useRef(new Animated.Value(T.rootLiftPx)).current;
@@ -338,7 +340,10 @@ export function RevealTransition({
             <View
               style={[
                 styles.heroPlateWrap,
-                { width: heroSize + 48, height: heroSize + 48 },
+                {
+                  width: slabW + heroPlatePad,
+                  height: slabH + heroPlatePad,
+                },
               ]}
             >
               <Animated.View
@@ -346,14 +351,14 @@ export function RevealTransition({
                 style={[
                   styles.heroHalo,
                   {
-                    width: heroSize + 40,
-                    height: heroSize + 40,
-                    borderRadius: (heroSize + 40) / 2,
+                    width: slabW + 36,
+                    height: slabH + 36,
+                    borderRadius: 22,
                     backgroundColor: tv.halo,
                     opacity: haloOpacity,
                     transform: [{ scale: haloScale }],
-                    top: 4,
-                    left: 4,
+                    top: 8,
+                    left: 8,
                   },
                 ]}
               />
@@ -361,32 +366,22 @@ export function RevealTransition({
                 style={[
                   styles.heroPlate,
                   {
-                    width: heroSize,
-                    height: heroSize,
-                    borderRadius: heroSize / 2,
+                    width: slabW,
+                    height: slabH,
+                    borderRadius: 18,
                     borderColor: tv.border,
                     opacity: heroOp,
                     transform: [{ translateY: heroY }, { scale: heroScale }],
                   },
                 ]}
               >
-              <LinearGradient
-                colors={[
-                  `${revealCard.color}44`,
-                  'rgba(15,23,42,0.92)',
-                  'rgba(2,6,23,0.95)',
-                ]}
-                start={{ x: 0.1, y: 0 }}
-                end={{ x: 0.9, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
-              <LinearGradient
-                colors={[tv.glow, 'transparent']}
-                style={styles.heroInnerGlow}
-                start={{ x: 0.5, y: 0 }}
-                end={{ x: 0.5, y: 1 }}
-              />
-              <Text style={[styles.heroArt, { fontSize: artSize }]}>{revealCard.image}</Text>
+                <SlabRevealHero
+                  revealCard={revealCard}
+                  slabW={slabW}
+                  slabH={slabH}
+                  borderColor={tv.border}
+                  accentColor={tv.accent}
+                />
               </Animated.View>
             </View>
             <Animated.Text
@@ -517,17 +512,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   heroPlate: {
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
     overflow: 'hidden',
-  },
-  heroInnerGlow: {
-    ...StyleSheet.absoluteFillObject,
-    opacity: 0.35,
-  },
-  heroArt: {
-    textAlign: 'center',
   },
   heroName: {
     marginTop: spacing.md,

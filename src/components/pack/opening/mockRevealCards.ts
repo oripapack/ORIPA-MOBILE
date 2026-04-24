@@ -3,6 +3,9 @@ import type { HomeNicheCategory, PackCategory } from '../../../data/mockPacks';
 import type { RevealCard, RevealRarity } from './types';
 import { revealRarityFromTier } from './types';
 
+/** Demo slab artwork — swap for real card art when catalog is wired. */
+const welcomePackArt = require('../../../../assets/pack-images/welcome_pack.png');
+
 const WEIGHTS: Record<RevealRarity, number> = {
   common: 52,
   rare: 26,
@@ -12,16 +15,16 @@ const WEIGHTS: Record<RevealRarity, number> = {
 
 const POOLS: Record<PackCategory, RevealCard[]> = {
   onboarding: [
-    { id: 'ob_c1', name: 'Welcome Card', image: '🎁', rarity: 'common', value: 50, color: '#166534' },
+    { id: 'ob_c1', name: 'Welcome Card', image: '🎁', rarity: 'common', value: 50, color: '#166534', artwork: welcomePackArt },
     { id: 'ob_c2', name: 'Promo Coin Bonus', image: '🪙', rarity: 'common', value: 50, color: '#CA8A04' },
     { id: 'ob_c3', name: 'Starter Pack Card', image: '🃏', rarity: 'common', value: 55, color: '#14532D' },
-    { id: 'ob_r1', name: 'First-Pull Rare', image: '⭐', rarity: 'rare', value: 100, color: '#CA8A04' },
+    { id: 'ob_r1', name: 'First-Pull Rare', image: '⭐', rarity: 'rare', value: 100, color: '#CA8A04', artwork: welcomePackArt },
     { id: 'ob_r2', name: 'Bonus Holo', image: '✨', rarity: 'rare', value: 110, color: '#86198F' },
     { id: 'ob_r3', name: 'Welcome Promo', image: '🎉', rarity: 'rare', value: 105, color: '#EA580C' },
     { id: 'ob_u1', name: '2× Coin Bonus', image: '💰', rarity: 'ultra_rare', value: 200, color: '#CA8A04' },
     { id: 'ob_u2', name: 'Surprise Rare Card', image: '🌟', rarity: 'ultra_rare', value: 180, color: '#1E1B4B' },
     { id: 'ob_u3', name: 'Premium Welcome Hit', image: '🏆', rarity: 'ultra_rare', value: 220, color: '#831843' },
-    { id: 'ob_ch1', name: '3× Bonus Coins', image: '👑', rarity: 'chase', value: 500, color: '#881337' },
+    { id: 'ob_ch1', name: '3× Bonus Coins', image: '👑', rarity: 'chase', value: 500, color: '#881337', artwork: welcomePackArt },
     { id: 'ob_ch2', name: 'Welcome Chase Surprise', image: '💎', rarity: 'chase', value: 600, color: '#9F1239' },
   ],
   micro: [
@@ -47,7 +50,7 @@ const POOLS: Record<PackCategory, RevealCard[]> = {
     { id: 'pm_u1', name: 'Chase-Grade Slab', image: '💜', rarity: 'ultra_rare', value: 30000, color: '#312E81' },
     { id: 'pm_u2', name: 'PSA 9+ Alt Art', image: '🔮', rarity: 'ultra_rare', value: 50000, color: '#1E1B4B' },
     { id: 'pm_u3', name: 'Ultra Rare Slab', image: '💎', rarity: 'ultra_rare', value: 40000, color: '#3730A3' },
-    { id: 'pm_ch1', name: 'PSA 10 Trophy Card', image: '👑', rarity: 'chase', value: 500000, color: '#881337' },
+    { id: 'pm_ch1', name: 'PSA 10 Trophy Card', image: '👑', rarity: 'chase', value: 500000, color: '#881337', artwork: welcomePackArt },
     { id: 'pm_ch2', name: '1/1 Holy Grail Chase', image: '🏆', rarity: 'chase', value: 1000000, color: '#9F1239' },
   ],
 };

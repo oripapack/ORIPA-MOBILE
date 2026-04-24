@@ -1,3 +1,4 @@
+import type { ImageSourcePropType } from 'react-native';
 import type { RarityTier } from '../../../audio/packOpeningFeedback';
 
 export type PackOpeningStyle = 'csgo' | 'fifa' | 'hybrid';
@@ -28,6 +29,8 @@ export interface RevealCard {
   name: string;
   /** Demo: emoji or short glyph for card art */
   image: string;
+  /** Optional slab artwork (`require(...)` or `{ uri }`). When absent, a monogram fallback is shown. */
+  artwork?: ImageSourcePropType;
   rarity: RevealRarity;
   value: number;
   color: string;
