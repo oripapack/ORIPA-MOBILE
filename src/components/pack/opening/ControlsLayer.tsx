@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { brandFont } from '../../../tokens/typography';
 import type { PackOpeningPhase } from './types';
 
@@ -17,15 +18,16 @@ export function ControlsLayer({
   onSkip: () => void;
   onReplay: () => void;
 }) {
+  const { t } = useTranslation();
   if (!show) return null;
   const canSkip = phase !== 'idle' && phase !== 'result';
   return (
     <View style={styles.row} pointerEvents="box-none">
       <TouchableOpacity onPress={onSkip} disabled={!canSkip} style={[styles.btn, !canSkip && styles.disabled]}>
-        <Text style={styles.txt}>Skip</Text>
+        <Text style={styles.txt}>{t('packOpeningEngine.skip')}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={onReplay} style={styles.btn}>
-        <Text style={styles.txt}>Replay</Text>
+        <Text style={styles.txt}>{t('packOpeningEngine.replay')}</Text>
       </TouchableOpacity>
     </View>
   );

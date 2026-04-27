@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, Text, View, ScrollView } from 'react-native';
 import type { ViewStyle } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -70,6 +71,7 @@ function formatUsd(n: number) {
 }
 
 export function RecentHitsTicker() {
+  const { t } = useTranslation();
   const scrollRef = useRef<ScrollView | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastTRef = useRef<number | null>(null);
@@ -121,9 +123,9 @@ export function RecentHitsTicker() {
   return (
     <View style={styles.wrap} onLayout={onLayout}>
       <View style={styles.labelRow} pointerEvents="none">
-        <Text style={styles.label}>Recent Hits</Text>
+        <Text style={styles.label}>{t('recentHits.title')}</Text>
         <View style={styles.dot} />
-        <Text style={styles.subLabel}>live</Text>
+        <Text style={styles.subLabel}>{t('recentHits.live')}</Text>
       </View>
 
       <ScrollView
@@ -156,7 +158,7 @@ export function RecentHitsTicker() {
             <Text style={styles.fire}>🔥</Text>
             <Text style={styles.text} numberOfLines={1}>
               <Text style={styles.user}>{h.username}</Text>
-              <Text style={styles.text}> pulled </Text>
+              <Text style={styles.text}> {t('recentHits.pulled')} </Text>
               <Text style={styles.card}>{h.card}</Text>
             </Text>
             {(() => {

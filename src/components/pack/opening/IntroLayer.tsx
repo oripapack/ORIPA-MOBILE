@@ -1,5 +1,6 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../tokens/colors';
 import { fontSize, brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
@@ -20,14 +21,15 @@ export function IntroLayer({
   packTint: string;
   revealRarity: RevealRarity;
 }) {
+  const { t } = useTranslation();
   const tv = REVEAL_RARITY_VISUAL[revealRarity];
   return (
     <Animated.View style={[styles.wrap, { opacity, transform: [{ scale }] }]} pointerEvents="none">
       <Animated.View style={[styles.halo, { borderColor: tv.border, shadowColor: tv.glow, opacity: glow }]} />
       <View style={[packArtBase, { backgroundColor: packTint }]}>
         <Text style={styles.emoji}>🎴</Text>
-        <Text style={styles.title}>PULLHUB</Text>
-        <Text style={styles.body}>Opening pack...</Text>
+        <Text style={styles.title}>{t('packOpeningEngine.brandTitle')}</Text>
+        <Text style={styles.body}>{t('packOpeningEngine.openingPack')}</Text>
       </View>
     </Animated.View>
   );

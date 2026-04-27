@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Svg, { Circle, Defs, LinearGradient, Polyline, Stop } from 'react-native-svg';
+import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import Animated, {
   clamp,
   Easing,
@@ -286,6 +287,14 @@ export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
     transform: [{ rotateZ: `${(tilt.value * 180) / Math.PI}deg` }],
   }));
 
+  const leakStyle = useAnimatedStyle(() => {
+    const o = open.value;
+    return {
+      opacity: interpolate(o, [0, 0.12, 1], [0, 0.55, 0.2]),
+      transform: [{ scale: interpolate(o, [0, 1], [1.02, 1.08]) }],
+    };
+  });
+
   const leftStyle = useAnimatedStyle(() => {
     const o = open.value;
     const wO = o * o * (3 - 2 * o);
@@ -390,10 +399,30 @@ export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
   return (
     <View style={styles.hit}>
       <Text style={styles.instruction}>
-        {USE_TAP_TO_OPEN ? 'Tap the pack to tear it open' : 'Slash through the pack — a firm swipe cuts it open'}
+        {USE_TAP_TO_OPEN
+          ? 'Tap to open'
+          : 'Slash to open — a firm swipe cuts the seal'}
       </Text>
       <GestureDetector gesture={activeGesture}>
         <Animated.View style={[styles.stage, { width: stage, height: stage }]}>
+          <View pointerEvents="none" style={styles.backdrop}>
+            <ExpoLinearGradient
+              colors={['rgba(2,6,23,0.0)', 'rgba(2,6,23,0.45)', 'rgba(0,0,0,0.78)']}
+              locations={[0, 0.45, 1]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+          </View>
+          <Animated.View pointerEvents="none" style={[styles.leak, leakStyle]}>
+            <ExpoLinearGradient
+              colors={['rgba(248,250,252,0.0)', 'rgba(248,250,252,0.14)', 'rgba(253,230,138,0.08)', 'rgba(248,250,252,0.0)']}
+              locations={[0, 0.35, 0.62, 1]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+          </Animated.View>
           <Animated.View style={[styles.cutFlash, cutFlashStyle]} pointerEvents="none" />
 
           {trailPoints.length > 0 && trailVisible ? (
@@ -511,15 +540,25 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.lg,
   },
   instruction: {
-    color: 'rgba(148,163,184,0.9)',
+    color: 'rgba(226,232,240,0.72)',
     fontSize: 12,
-    fontFamily: brandFont.medium,
+    fontFamily: brandFont.semibold,
     marginBottom: spacing.md,
     paddingHorizontal: spacing.lg,
     textAlign: 'center',
+    letterSpacing: 0.6,
   },
   stage: {
     position: 'relative',
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+    borderRadius: 999,
+  },
+  leak: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
   },
   cutFlash: {
     ...StyleSheet.absoluteFillObject,

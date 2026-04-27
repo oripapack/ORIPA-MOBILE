@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 import { fontSize, brandFont } from '../../../tokens/typography';
 import { radius, spacing } from '../../../tokens/spacing';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
@@ -16,6 +17,7 @@ export function HeroCardView({
   revealRarity: RevealRarity;
   valueText: string;
 }) {
+  const { t } = useTranslation();
   const tv = REVEAL_RARITY_VISUAL[revealRarity];
 
   return (
@@ -42,7 +44,7 @@ export function HeroCardView({
         </View>
 
         <View style={styles.nameBlock}>
-          <Text style={styles.nameLabel}>Card</Text>
+          <Text style={styles.nameLabel}>{t('packOpeningEngine.cardLabel')}</Text>
           <Text style={styles.name} numberOfLines={2}>
             {card.name}
           </Text>
@@ -55,7 +57,7 @@ export function HeroCardView({
             <Text style={[styles.rarityText, { color: tv.accent }]}>{tv.label}</Text>
           </View>
           <View style={styles.valueCol}>
-            <Text style={styles.estLabel}>Est. value</Text>
+            <Text style={styles.estLabel}>{t('packOpeningEngine.estValueLabel')}</Text>
             <Text style={[styles.valueNum, { color: HERO_CARD_STOCK.nameplate }]} numberOfLines={1}>
               {valueText}
             </Text>

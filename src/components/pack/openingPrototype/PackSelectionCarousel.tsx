@@ -26,7 +26,7 @@ const PACK_H = Math.round(PACK_W * 1.38);
 const GAP = 34;
 const SLOT = PACK_W + GAP;
 /** Horizontal padding so each snap position centers a pack under the viewport. */
-const EDGE_PAD = WIN_W / 2 - SLOT / 2;
+const EDGE_PAD = WIN_W / 2 - PACK_W / 2;
 
 const VARIANT_TINTS = [
   '#1e3a5f',
@@ -40,6 +40,7 @@ const VARIANT_TINTS = [
 
 const COUNT = 7;
 const DEFAULT_FOCUS_INDEX = Math.floor(COUNT / 2);
+const SNAP_OFFSETS = Array.from({ length: COUNT }, (_, i) => i * SLOT);
 
 /** Same tint logic as the carousel slots — use for focus + rip so the shell matches the pick. */
 export function lineupPackTintAt(index: number, packTint: string, sessionSalt: number): string {
@@ -61,6 +62,7 @@ function tintRgba(hex: string, alpha: number): string {
 function PackCarouselAmbient({ packTint }: { packTint: string }) {
   const driftA = useRef(new Animated.Value(0)).current;
   const driftB = useRef(new Animated.Value(0)).current;
+  const spotlight = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const loopA = Animated.loop(
@@ -97,11 +99,19 @@ function PackCarouselAmbient({ packTint }: { packTint: string }) {
     );
     loopA.start();
     loopB.start();
+    const spot = Animated.loop(
+      Animated.sequence([
+        Animated.timing(spotlight, { toValue: 1, duration: 3600, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(spotlight, { toValue: 0, duration: 3600, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+      ]),
+    );
+    spot.start();
     return () => {
       loopA.stop();
       loopB.stop();
+      spot.stop();
     };
-  }, [driftA, driftB]);
+  }, [driftA, driftB, spotlight]);
 
   const sheenX = driftA.interpolate({
     inputRange: [0, 1],
@@ -117,6 +127,7 @@ function PackCarouselAmbient({ packTint }: { packTint: string }) {
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {/* Vault chamber base */}
       <LinearGradient
         colors={['#020617', '#0f172a', accentSoft, '#020617']}
         locations={[0, 0.35, 0.55, 1]}
@@ -124,6 +135,28 @@ function PackCarouselAmbient({ packTint }: { packTint: string }) {
         end={{ x: 0.85, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
+      {/* Radial-ish spotlight (tight behind center packs). */}
+      <Animated.View
+        style={[
+          styles.spotWrap,
+          {
+            opacity: spotlight.interpolate({ inputRange: [0, 1], outputRange: [0.55, 0.78] }),
+            transform: [
+              {
+                scale: spotlight.interpolate({ inputRange: [0, 1], outputRange: [0.98, 1.04] }),
+              },
+            ],
+          },
+        ]}
+      >
+        <LinearGradient
+          colors={['rgba(255,255,255,0.10)', 'transparent', 'transparent']}
+          locations={[0, 0.45, 1]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
       <LinearGradient
         colors={['rgba(248,250,252,0.14)', 'transparent', 'transparent']}
         locations={[0, 0.35, 1]}
@@ -163,6 +196,36 @@ function PackCarouselAmbient({ packTint }: { packTint: string }) {
           style={styles.sheenGradient}
         />
       </Animated.View>
+
+      {/* Subtle dust particles (luxury, not “sparkle”) */}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.dustField,
+          {
+            opacity: driftB.interpolate({ inputRange: [0, 1], outputRange: [0.18, 0.28] }),
+            transform: [{ translateY: driftA.interpolate({ inputRange: [0, 1], outputRange: [6, -6] }) }],
+          },
+        ]}
+      >
+        {Array.from({ length: 14 }, (_, i) => {
+          const left = ((i * 37) % 100) / 100 * WIN_W;
+          const top = (((i * 19) % 60) + 20) / 100 * 640;
+          const s = 1 + ((i % 5) * 0.12);
+          return <View key={i} style={[styles.dustDot, { left, top, transform: [{ scale: s }] }]} />;
+        })}
+      </Animated.View>
+
+      {/* Soft “floor” under the lineup */}
+      <View style={styles.floorWrap}>
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.55)', 'rgba(0,0,0,0.85)']}
+          locations={[0, 0.55, 1]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={styles.floorGradient}
+        />
+      </View>
     </View>
   );
 }
@@ -243,15 +306,32 @@ export function PackSelectionCarousel({
     setScrollX(e.nativeEvent.contentOffset.x);
   }, []);
 
+  const centerOnIndex = useCallback(
+    (index: number, animated: boolean) => {
+      const x = Math.max(0, index * SLOT);
+      scrollRef.current?.scrollTo({ x, y: 0, animated });
+      setScrollX(x);
+    },
+    [scrollRef],
+  );
+
   const onContentSizeChange = useCallback((_w: number, _h: number) => {
     if (didCenterRef.current) return;
     didCenterRef.current = true;
-    const x = DEFAULT_FOCUS_INDEX * SLOT;
     requestAnimationFrame(() => {
-      scrollRef.current?.scrollTo({ x, y: 0, animated: false });
-      setScrollX(x);
+      centerOnIndex(DEFAULT_FOCUS_INDEX, false);
     });
-  }, []);
+  }, [centerOnIndex]);
+
+  useEffect(() => {
+    if (!selectionLocked) return;
+    if (selectedIndex == null || selectedIndex < 0 || selectedIndex >= COUNT) return;
+    // On selection lock, gently bring the chosen pack to center so the user feels
+    // the exact pack they tapped becomes the “hero”.
+    requestAnimationFrame(() => {
+      centerOnIndex(selectedIndex, true);
+    });
+  }, [centerOnIndex, selectedIndex, selectionLocked]);
 
   const viewportCenter = scrollX + WIN_W / 2;
 
@@ -270,13 +350,27 @@ export function PackSelectionCarousel({
     <View style={styles.wrap}>
       <PackCarouselAmbient packTint={packTint} />
       <Text style={styles.hint}>{t('packOpening.lineupHint')}</Text>
+      <View pointerEvents="none" style={styles.edgeFade} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        <LinearGradient
+          colors={['rgba(2,6,23,0.92)', 'rgba(2,6,23,0.0)']}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={[styles.edgeFadeSide, { left: 0 }]}
+        />
+        <LinearGradient
+          colors={['rgba(2,6,23,0.0)', 'rgba(2,6,23,0.92)']}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={[styles.edgeFadeSide, { right: 0 }]}
+        />
+      </View>
       <View style={styles.carouselBand}>
         <ScrollView
           ref={scrollRef}
           horizontal
           showsHorizontalScrollIndicator={false}
-          decelerationRate="fast"
-          snapToInterval={SLOT}
+          decelerationRate="normal"
+          snapToOffsets={SNAP_OFFSETS}
           snapToAlignment="start"
           contentContainerStyle={[styles.scrollContent, { paddingHorizontal: EDGE_PAD }]}
           onScroll={onScroll}
@@ -285,11 +379,12 @@ export function PackSelectionCarousel({
           onContentSizeChange={onContentSizeChange}
         >
           {tints.map((tint, i) => {
-            const cx = EDGE_PAD + i * SLOT + SLOT / 2;
+            const cx = EDGE_PAD + i * SLOT + PACK_W / 2;
             const dist = Math.abs(cx - viewportCenter);
             const norm = Math.min(1, dist / (WIN_W * 0.52));
-            const depthScale = 1 - norm * 0.11;
-            const depthOpacity = 0.62 + (1 - norm) * 0.38;
+            // Physical depth: center feels a touch closer + clearer, sides fall back gently.
+            const depthScale = 0.92 + (1 - norm) * 0.11;
+            const depthOpacity = 0.52 + (1 - norm) * 0.48;
             const z = 100 - Math.round(dist / 8);
 
             const pop = popAnims[i];
@@ -307,7 +402,10 @@ export function PackSelectionCarousel({
               outputRange: [0.42, 1],
               extrapolate: 'clamp',
             });
-            const packScale = isChosen ? Animated.multiply(scalePop, commitBoost) : scalePop;
+            const chosenLockBoost = isChosen && selectionLocked ? 1.06 : 1;
+            const packScale = isChosen
+              ? Animated.multiply(scalePop, Animated.multiply(commitBoost, chosenLockBoost))
+              : scalePop;
 
             return (
               <Pressable
@@ -316,7 +414,21 @@ export function PackSelectionCarousel({
                 onPress={() => onPackPress(i)}
                 style={[styles.slot, { width: SLOT }]}
               >
-                <View style={[styles.slotDim, dimOthers && styles.slotDimmed]}>
+                <Animated.View
+                  style={[
+                    styles.slotDim,
+                    dimOthers && styles.slotDimmed,
+                    dimOthers
+                      ? {
+                          transform: [
+                            {
+                              translateY: 10,
+                            },
+                          ],
+                        }
+                      : null,
+                  ]}
+                >
                   <Animated.View
                     style={[
                       styles.popShell,
@@ -335,6 +447,11 @@ export function PackSelectionCarousel({
                               extrapolate: 'clamp',
                             }),
                           },
+                          dimOthers
+                            ? {
+                                translateX: isChosen ? 0 : i < (selectedIndex ?? 0) ? -18 : 18,
+                              }
+                            : { translateX: 0 },
                         ],
                       },
                     ]}
@@ -349,6 +466,16 @@ export function PackSelectionCarousel({
                       },
                     ]}
                   >
+                    <View
+                      pointerEvents="none"
+                      style={[
+                        styles.packShadow,
+                        {
+                          opacity: 0.18 + (1 - norm) * 0.22,
+                          transform: [{ scaleX: 0.92 + (1 - norm) * 0.16 }],
+                        },
+                      ]}
+                    />
                     <View
                       style={[
                         styles.ring,
@@ -368,7 +495,7 @@ export function PackSelectionCarousel({
                     </View>
                   </View>
                   </Animated.View>
-                </View>
+                </Animated.View>
               </Pressable>
             );
           })}
@@ -395,6 +522,41 @@ const styles = StyleSheet.create({
     width: WIN_W * 0.55,
     height: '100%',
   },
+  spotWrap: {
+    position: 'absolute',
+    left: '10%',
+    right: '10%',
+    top: '18%',
+    height: 340,
+    borderRadius: 999,
+  },
+  floorWrap: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 220,
+    opacity: 0.9,
+  },
+  floorGradient: {
+    width: '100%',
+    height: '100%',
+  },
+  dustField: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 2,
+  },
+  dustDot: {
+    position: 'absolute',
+    width: 2,
+    height: 2,
+    borderRadius: 2,
+    backgroundColor: 'rgba(226,232,240,0.55)',
+    shadowColor: 'rgba(255,255,255,0.45)',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+  },
   carouselBand: {
     flex: 1,
     minHeight: 0,
@@ -410,6 +572,20 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     paddingHorizontal: spacing.base,
     zIndex: 1,
+  },
+  edgeFade: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 3,
+  },
+  edgeFadeSide: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: Math.min(72, WIN_W * 0.18),
   },
   scrollContent: {
     alignItems: 'center',
@@ -433,6 +609,14 @@ const styles = StyleSheet.create({
   packLift: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  packShadow: {
+    position: 'absolute',
+    bottom: -18,
+    width: PACK_W * 0.9,
+    height: 26,
+    borderRadius: 999,
+    backgroundColor: '#000',
   },
   ring: {
     borderRadius: 18,

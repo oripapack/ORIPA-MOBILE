@@ -31,7 +31,7 @@ const TIER_BADGE: Record<PullRarityTier, string> = {
 };
 
 /**
- * Post-opening fulfillment: convert to coins by default; optionally check rows to store in Vault.
+ * Post-opening fulfillment: convert to credits by default; optionally check rows to store in Vault.
  * Shipping is initiated later from the Vault.
  */
 export function WonPrizesModal() {
@@ -43,7 +43,7 @@ export function WonPrizesModal() {
   const user = useAppStore((s) => s.user);
   const finalizePendingFulfillment = useAppStore((s) => s.finalizePendingFulfillment);
 
-  /** When true, this pull is stored in the Vault; when false, it converts to coins (default). */
+  /** When true, this pull is stored in the Vault; when false, it converts to credits (default). */
   const [vaultSelected, setVaultSelected] = useState<Record<string, boolean>>({});
   const [showConvertConfirm, setShowConvertConfirm] = useState(false);
 
@@ -81,7 +81,7 @@ export function WonPrizesModal() {
     () => pulls.reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0),
     [pulls],
   );
-  const coinsToReceiveAmount = useMemo(
+  const creditsToReceiveAmount = useMemo(
     () =>
       pulls
         .filter((p) => !vaultSelected[p.id])
@@ -95,7 +95,7 @@ export function WonPrizesModal() {
     return 'mixed' as const;
   }, [vaultCount, convertCount]);
 
-  const summaryCardAmount = selectionState === 'allConvert' ? convertAmountTotal : coinsToReceiveAmount;
+  const summaryCardAmount = selectionState === 'allConvert' ? convertAmountTotal : creditsToReceiveAmount;
 
   const summaryHelperText = useMemo(() => {
     if (selectionState === 'allVault') {
@@ -108,11 +108,11 @@ export function WonPrizesModal() {
   }, [selectionState, t]);
 
   const primaryCtaLabel = useMemo(() => {
-    const coins = coinsToReceiveAmount.toLocaleString();
+    const coins = creditsToReceiveAmount.toLocaleString();
     if (selectionState === 'allVault') return t('wonPrizesModal.ctaAllVault');
     if (selectionState === 'allConvert') return t('wonPrizesModal.ctaAllConvert', { coins });
     return t('wonPrizesModal.ctaMixed', { vaultCount, coins });
-  }, [selectionState, coinsToReceiveAmount, vaultCount, t]);
+  }, [selectionState, creditsToReceiveAmount, vaultCount, t]);
 
   const footerSubcopy = useMemo(() => {
     if (selectionState === 'allVault') return t('wonPrizesModal.footerAllVault', { count: vaultCount });
@@ -239,7 +239,7 @@ export function WonPrizesModal() {
           />
           <Text style={styles.footerSub}>
             {selectionState === 'allConvert'
-              ? t('wonPrizesModal.footerCoinsOnly', { coins: coinsToReceiveAmount.toLocaleString() })
+              ? t('wonPrizesModal.footerCoinsOnly', { coins: creditsToReceiveAmount.toLocaleString() })
               : t('wonPrizesModal.footerVaultLine', { days: VAULT_HOLD_DAYS })}
             {'  ·  '}
             {footerSubcopy}
@@ -259,7 +259,7 @@ export function WonPrizesModal() {
               <Text style={styles.confirmLabel}>{t('wonPrizesModal.confirmCoinsLabel')}</Text>
               <View style={styles.confirmValue}>
                 <Text style={styles.coinIcon}>🪙</Text>
-                <Text style={styles.confirmAmount}>{coinsToReceiveAmount.toLocaleString()}</Text>
+                <Text style={styles.confirmAmount}>{creditsToReceiveAmount.toLocaleString()}</Text>
               </View>
             </View>
             {vaultCount > 0 ? (

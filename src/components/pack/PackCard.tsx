@@ -15,6 +15,7 @@ import { useMembershipSimulationStore } from '../../store/membershipSimulationSt
 import { membershipMeetsRequired } from '../../data/membershipPlans';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { navigationRef } from '../../navigation/navigationRef';
+import { useRequireAuth } from '../../hooks/useRequireAuth';
 import { PackOddsModal } from './PackOddsModal';
 
 const WIN_W = Dimensions.get('window').width;
@@ -56,6 +57,7 @@ interface Props {
 
 export function PackCard({ pack, onPress }: Props) {
   const { t } = useTranslation();
+  const { requireAuth } = useRequireAuth();
   const openPack = useAppStore((s) => s.openPack);
   const isPackOpening = useAppStore((s) => s.modals.packOpening);
   const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
@@ -233,7 +235,13 @@ export function PackCard({ pack, onPress }: Props) {
 
         <Pressable
           style={[styles.primaryCta, ctaBlocked && styles.primaryCtaDisabled]}
-          onPress={() => (membershipLocked ? openLockedPack() : openPack(pack))}
+          onPress={() =>
+            membershipLocked
+              ? openLockedPack()
+              : requireAuth(() => {
+                  void openPack(pack);
+                })
+          }
           disabled={ctaBlocked}
         >
           <Text style={styles.primaryCtaText}>

@@ -169,19 +169,19 @@ export function SettingsScreen() {
 
         {__DEV__ ? (
           <>
-            <Text style={styles.sectionHeader}>Developer</Text>
+            <Text style={styles.sectionHeader}>{t('settings.devSection')}</Text>
             <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
               <ListRow
-                label="Reset local onboarding"
+                label={t('settings.devResetLocalOnboarding')}
                 icon={<Ionicons name="refresh-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
                 onPress={() => {
                   Alert.alert(
-                    'Reset local onboarding?',
-                    'Clears guest/onboarding flags, coach tips, welcome banner, and simulation disclosure on this device. You stay signed in. The app will reload.',
+                    t('settings.devResetAlertTitle'),
+                    t('settings.devResetAlertBody'),
                     [
-                      { text: 'Cancel', style: 'cancel' },
+                      { text: t('common.cancel'), style: 'cancel' },
                       {
-                        text: 'Reset',
+                        text: t('settings.devResetConfirm'),
                         style: 'destructive',
                         onPress: () => void resetLocalOnboardingStateAndReload(),
                       },

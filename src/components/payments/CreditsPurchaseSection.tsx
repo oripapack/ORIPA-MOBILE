@@ -56,7 +56,7 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
         const pack = s.selectedPack;
         const q = s.resumePackOpenQuantity ?? 1;
         if (pack && s.user.credits >= pack.creditPrice * q) {
-          s.openPack(pack, { quantity: q });
+          void s.openPack(pack, { quantity: q });
         }
       }, delay);
     });

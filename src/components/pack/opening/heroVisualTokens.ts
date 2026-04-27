@@ -39,12 +39,15 @@ export const HERO_PACK = {
   spine: 'rgba(15, 23, 42, 0.9)',
   holoRail: 'rgba(125, 211, 252, 0.22)',
   holoRailAlt: 'rgba(244, 114, 182, 0.12)',
-  /** SVG liquid blobs (radial stops) */
-  liquidBlobA: 'rgba(56, 189, 248, 0.22)',
-  liquidBlobB: 'rgba(167, 139, 250, 0.14)',
-  liquidBlobC: 'rgba(45, 212, 191, 0.1)',
-  liquidFlow: 'rgba(186, 230, 253, 0.35)',
-  liquidFlowAlt: 'rgba(244, 114, 182, 0.2)',
+  /**
+   * SVG surface accents (radial stops)
+   * Keep neutral + premium (steel/silver) to avoid “neon blob” reads in the lineup.
+   */
+  liquidBlobA: 'rgba(226, 232, 240, 0.16)',
+  liquidBlobB: 'rgba(148, 163, 184, 0.12)',
+  liquidBlobC: 'rgba(241, 245, 249, 0.08)',
+  liquidFlow: 'rgba(226, 232, 240, 0.20)',
+  liquidFlowAlt: 'rgba(148, 163, 184, 0.16)',
   glassVeil: 'rgba(248, 250, 252, 0.06)',
   glassRim: 'rgba(255, 255, 255, 0.14)',
 };

@@ -15,6 +15,7 @@ import { navigationRef } from '../../navigation/navigationRef';
 import { useAppStore } from '../../store/useAppStore';
 import { useMembershipSimulationStore } from '../../store/membershipSimulationStore';
 import { membershipMeetsRequired } from '../../data/membershipPlans';
+import { useRequireAuth } from '../../hooks/useRequireAuth';
 
 const W = Dimensions.get('window').width - spacing.base * 2;
 const HERO_H = Math.min(192, W * 0.48);
@@ -29,6 +30,7 @@ type Props = {
 /** Featured pack — product-style card (image, copy, single primary CTA). */
 export function DropLobbyHero({ pack, onBrowseFloor }: Props) {
   const { t } = useTranslation();
+  const { requireAuth } = useRequireAuth();
   const loc = getLocalizedPackFields(pack, t);
   const topHit = getMockPackTopHit(pack);
   const odds = useMemo(() => getMockPackOdds(pack), [pack]);
@@ -99,7 +101,13 @@ export function DropLobbyHero({ pack, onBrowseFloor }: Props) {
 
           <Pressable
             style={[styles.primaryCta, ctaBlocked && styles.primaryCtaDisabled]}
-            onPress={() => (membershipLocked ? openLockedPack() : openPack(pack))}
+            onPress={() =>
+              membershipLocked
+                ? openLockedPack()
+                : requireAuth(() => {
+                    void openPack(pack);
+                  })
+            }
             disabled={ctaBlocked}
           >
             <Text style={styles.primaryCtaText}>

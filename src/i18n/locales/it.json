@@ -91,14 +91,24 @@
     "promoEyebrow": "Partner promo",
     "emptyTitle": "No matches in this market",
     "emptyHint": "Try another region, category, or sort — or clear search.",
-    "emptyClearCta": "Clear search & filters"
+    "emptyClearCta": "Clear search & filters",
+    "refineTitle": "Refine",
+    "filtersModalTitle": "Sort & region",
+    "filtersDone": "Done",
+    "filtersReset": "Reset",
+    "openFiltersA11y": "Open sort and region filters",
+    "resultsCount_one": "{{count}} listing",
+    "resultsCount_other": "{{count}} listings",
+    "searchA11yLabel": "Search the shop",
+    "clearSearchA11y": "Clear search text"
   },
   "common": {
     "error": "Errore",
     "copied": "Copiato",
     "friendIdCopied": "Friend ID copiato negli appunti.",
     "close": "Close",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "vs": "vs"
   },
   "helpCenter": {
     "navTitle": "Centro assistenza",
@@ -234,7 +244,14 @@
     "note": "Sostituisci questo testo con onboarding reale quando Stripe Connect o il PSP sarà integrato."
   },
   "settings": {
-    "title": "Impostazioni"
+    "title": "Impostazioni",
+    "sectionProfile": "Your account",
+    "sectionWallet": "Wallet & verification",
+    "devSection": "Sviluppatore",
+    "devResetLocalOnboarding": "Reimposta onboarding locale",
+    "devResetAlertTitle": "Reimpostare onboarding locale?",
+    "devResetAlertBody": "Cancella flag guest/onboarding, suggerimenti, banner di benvenuto e avviso di simulazione su questo dispositivo. Rimarrai connesso. L’app verrà ricaricata.",
+    "devResetConfirm": "Reimposta"
   },
   "demoBanner": "Build anteprima — crediti e ricompense simulate.",
   "home": {
@@ -276,7 +293,10 @@
     "one_piece": "One Piece",
     "sports": "Sport",
     "graded": "Graded",
-    "hot_drops": "Hot Drops"
+    "hot_drops": "Hot Drops",
+    "onboarding": "Welcome",
+    "micro": "Mini",
+    "premium": "Premium"
   },
   "hero": {
     "eyebrow": "BONUS BENVENUTO",
@@ -355,7 +375,8 @@
     "noPullsTitle": "Ancora nessuna giocata",
     "noPullsBody": "Apri la tua prima busta — hit e crediti appariranno qui.",
     "latestWins": "Ultimi hit",
-    "viewFullHistory": "Cronologia completa →"
+    "viewFullHistory": "Cronologia completa →",
+    "inVault": "Vault"
   },
   "account": {
     "title": "Giocatore",
@@ -396,7 +417,24 @@
     "hitRateEmpty": "Open packs to track your last 10 results and hit rate here.",
     "hitRateSample": "Last {{count}} opens · tracks up to {{window}}",
     "hitRateMarkHit": "H",
-    "hitRateMarkMiss": "M"
+    "hitRateMarkMiss": "M",
+    "heroVaultValue": "Vault value",
+    "heroCoins": "Coins",
+    "heroMembership": "Membership",
+    "heroLevelLine": "Level {{level}} · {{rank}}",
+    "sectionProgression": "Progression",
+    "sectionCollection": "Collection",
+    "sectionQuickActions": "Quick actions",
+    "viewAllQuests": "View all quests",
+    "claimRewardsCta_one": "Claim {{count}} reward",
+    "claimRewardsCta_other": "Claim {{count}} rewards",
+    "viewTierBenefitsLink": "Tier benefits →",
+    "collectorQuestsTitle": "Collector quests",
+    "quickVault": "Vault",
+    "quickPullHistory": "Pull history",
+    "quickLeaderboard": "Leaderboard",
+    "quickPromotions": "Rewards",
+    "quickSettings": "Settings"
   },
   "shortcuts": {
     "notif": "Avvisi",
@@ -584,7 +622,11 @@
     "graded": "Graded",
     "hot_drop": "Hot Drop",
     "bonus_pack": "Busta bonus",
-    "chase_boost": "Chase boost"
+    "chase_boost": "Chase boost",
+    "first_time": "First pack",
+    "low_cost": "Low cost",
+    "high_return": "High return",
+    "premium_pack": "Premium"
   },
   "packCard": {
     "openPack": "Gioca ora",
@@ -598,7 +640,11 @@
       "graded": "VAULT",
       "hot_drop": "HOT",
       "bonus_pack": "BONUS",
-      "chase_boost": "CHASE"
+      "chase_boost": "CHASE",
+      "first_time": "WELCOME",
+      "low_cost": "MINI",
+      "high_return": "CHASE",
+      "premium_pack": "ELITE"
     },
     "topHit": "Top hit",
     "chase": "CHASE",
@@ -704,7 +750,19 @@
     "reelSlowing": "Locking in…",
     "reelLocked": "Locked",
     "reelSub": "Your pull is already sealed — this is the pace.",
-    "reelTapToSlowA11y": "Slow the pack reel"
+    "reelTapToSlowA11y": "Slow the pack reel",
+    "lineupHint": "Packs drop in one by one · swipe the row, then tap your pick",
+    "reelEntering": "Opening the gallery",
+    "reelEnteringSub": "Lining up your lane — hang tight.",
+    "skippedToResult": "Skipped to result",
+    "resultStatCoins": "Coins won",
+    "resultStatVaultValue": "Vault value",
+    "resultStatTier": "Tier",
+    "resultWinCredits": "+{{amount}} credits",
+    "resultWinVaultLine": "{{value}} vault value",
+    "storeInVault": "Store in vault",
+    "sharePull": "Share",
+    "shareMessage": "I just pulled {{name}} ({{tier}}) — +{{credits}} credits!"
   },
   "insufficientCredits": {
     "title": "Crediti insufficienti",
@@ -803,42 +861,49 @@
     "priceTitle": "Prezzo",
     "remaining": "{{left}} di {{total}} disponibili",
     "ctaDisabled": "Non disponibile",
-    "memberGateTitle": "Members only",
-    "memberGateBody": "This lane needs {{tier}} membership or higher. You can simulate a tier on the Membership screen (demo).",
-    "ctaUnlockMembership": "Unlock — {{tier}}",
-    "ctaUnlockMembershipSub": "Opens membership (demo tier persists on this device)",
+    "memberGateTitle": "Solo membri",
+    "memberGateBody": "Questa corsia richiede l’abbonamento {{tier}} o superiore. Puoi simulare un livello nella schermata Membership (demo).",
+    "ctaUnlockMembership": "Sblocca — {{tier}}",
+    "ctaUnlockMembershipSub": "Apre Membership (il livello demo resta su questo dispositivo)",
     "open10": "Open 10",
     "open100": "Open 100",
     "bulk100Title": "Open 100 packs?",
     "bulk100Body": "This opens {{count}} packs at once for {{credits}} credits. You’ll review everything in Won Prizes next.",
     "bulkCancel": "Not now",
     "bulkConfirm": "Open 100",
-    "bulkStockTitle": "Not enough stock",
-    "bulkStockBody": "This pack doesn’t have {{count}} pulls left in the demo catalog.",
+    "bulkStockTitle": "Stock insufficiente",
+    "bulkStockBody": "Questo pacco non ha {{count}} pull rimanenti nel catalogo demo.",
     "multiOpen": {
-      "quantity": "Quantity",
-      "standardTitle": "Standard Open",
-      "standardLead": "Full reveal experience — one pack at a time.",
-      "standardCredits": "{{credits}} credits",
-      "fastTitle": "Fast Open",
-      "fastLead": "Quick reveal · batch summary when you’re done.",
-      "fastTotal": "{{total}} credits total",
-      "perPack": "{{each}} each",
-      "rushTitle": "100 Pack Rush",
-      "rushLead1": "Fast reveal mode",
-      "rushLead2": "Best hits stay spotlighted in your recap.",
-      "rushTotal": "{{total}} credits total",
-      "ctaOpenPack": "Open Pack",
-      "ctaFastOpen": "Start Fast Open",
-      "ctaRush": "Begin Rush",
-      "ctaSubInventory": "{{left}} left in this lane",
-      "rushModalKicker": "Premium session",
-      "rushModalTitle": "Ready for the Rush?",
-      "rushModalBody": "Open {{count}} packs for {{total}} credits?",
-      "rushModalDisclosure": "Credits apply on confirm — your recap keeps best hits visible.",
-      "rushModalCancel": "Cancel",
-      "rushModalConfirm": "Begin Rush"
-    }
+      "quantity": "Quantità",
+      "standardTitle": "Apertura standard",
+      "standardLead": "Esperienza completa — un pacco alla volta.",
+      "standardCredits": "{{credits}} crediti",
+      "fastTitle": "Apertura rapida",
+      "fastLead": "Rivelazione veloce · riepilogo a lotto a fine sessione.",
+      "fastTotal": "{{total}} crediti totali",
+      "perPack": "{{each}} ciascuno",
+      "rushTitle": "Rush da 100 pacchi",
+      "rushLead1": "Modalità veloce",
+      "rushLead2": "I migliori hit restano in evidenza nel recap.",
+      "rushTotal": "{{total}} crediti totali",
+      "ctaOpenPack": "Apri pacco",
+      "ctaFastOpen": "Avvia apertura rapida",
+      "ctaRush": "Inizia rush",
+      "ctaSubInventory": "{{left}} rimasti in questa corsia",
+      "rushModalKicker": "Sessione premium",
+      "rushModalTitle": "Pronto per il Rush?",
+      "rushModalBody": "Aprire {{count}} pacchi per {{total}} crediti?",
+      "rushModalDisclosure": "I crediti vengono applicati alla conferma — il recap mantiene visibili i migliori hit.",
+      "rushModalCancel": "Annulla",
+      "rushModalConfirm": "Inizia rush"
+    },
+    "specTitle": "Dettagli del pacco",
+    "specRemainingLabel": "Rimanenti",
+    "specTagsLabel": "Tag",
+    "viewOdds": "Vedi probabilità",
+    "topHitPreviewTitle": "Anteprima top hit",
+    "topHitPreviewFinePrint": "Solo anteprima. Media e valori demo possono cambiare prima del lancio.",
+    "whatYouCanPullTitle": "Cosa puoi trovare"
   },
   "splash": {
     "frameKicker": "COLLECTOR VAULT",
@@ -989,6 +1054,204 @@
     "guestCta": "Sign in",
     "statusPending": "Tap to decide ship or coins",
     "statusShipped": "Shipping",
-    "statusKept": "In collection"
+    "statusKept": "In collection",
+    "eyebrow": "SECURED STORAGE",
+    "benefitsTitle": "Why the Vault wins",
+    "benefit1": "• Keep hits inside Pull Hub — build a real collection, not one-off shipments.",
+    "benefit2": "• Vault Exchange: friends see your whole Vault — request anything; only your listings get Buy now (card checkout).",
+    "benefit3": "• Request shipment on your schedule — fewer rushed labels, calmer fulfillment.",
+    "benefit4": "• Every secured item shows a clear storage timer so you always know what happens next.",
+    "benefit5": "• We’ll nudge you before time’s up — then unused items liquidate to credits automatically.",
+    "benefitFine": "Complimentary hold: {{days}} days per item. You can convert to credits anytime.",
+    "statusVaulted": "Secured in Vault",
+    "notifyBeforeConvert": "Final day — ship, trade, or convert",
+    "timerDaysLeft": "{{count}}d left in Vault",
+    "timerHoursLeft": "{{count}}h left in Vault",
+    "timerEnded": "Hold ended",
+    "listedPill": "Buy now · {{price}}"
+  },
+  "wonPrizesModal": {
+    "title": "Cash out or Vault",
+    "lead": "By default every hit converts to credits as soon as you confirm. Check any row to secure it in the Vault instead — trade, list, or ship later. Shipping starts from the Vault when you’re ready.",
+    "summaryLabel": "Converting to credits",
+    "coinsLabel": "Credits",
+    "summaryAllVault": "Everything here is headed to your Vault with a {{days}}-day complimentary hold. No credits until you convert from Vault or the hold ends.",
+    "summaryAllConvert": "You’re cashing the full batch to credits — credits land as soon as you confirm.",
+    "summaryMixed": "Unchecked rows convert to credits on confirm. Checked rows stay in your Vault for {{days}} days.",
+    "sectionTitle_one": "This session · {{count}} item",
+    "sectionTitle_other": "This session · {{count}} items",
+    "sectionHint": "Check for Vault",
+    "pillVault": "Vault",
+    "pillConvert": "Credits",
+    "checkboxHint": "Default: converts to credits when you confirm. Checked rows go to your Vault instead.",
+    "ctaAllVault": "Store everything in Vault",
+    "ctaAllConvert": "Convert all · {{coins}} credits",
+    "ctaMixed": "Convert {{coins}} credits · Vault {{vaultCount}}",
+    "footerAllVault": "{{count}} secured",
+    "footerAllConvert": "Instant credit",
+    "footerMixed": "{{convertCount}} convert · {{vaultCount}} vault",
+    "footerVaultLine": "{{days}}-day Vault hold · auto-convert if untouched",
+    "footerCoinsOnly": "{{coins}} credits on confirm",
+    "confirmTitle": "Confirm credit conversion",
+    "confirmBody": "We’ll credit your wallet immediately for every row converting to credits. Vault rows stay secured.",
+    "confirmCoinsLabel": "Credits to receive",
+    "confirmVaultNote": "The other {{count}} secured hits keep their {{days}}-day Vault hold.",
+    "confirmCta": "Confirm",
+    "confirmCancel": "Cancel"
+  },
+  "vaultAsset": {
+    "sheetKicker": "VAULT ASSET",
+    "timerLabel": "Storage timer",
+    "timerUrgent": "Auto-convert soon",
+    "timerFine": "After the timer, Pull Hub credits the credit value automatically unless you ship or move the item. Hold length: {{days}} days.",
+    "requestShipTitle": "Queue shipment?",
+    "requestShipBody": "We’ll prepare this Vault item for fulfillment. You can track status from pull history once logistics are live.",
+    "requestShipConfirm": "Queue shipment",
+    "convertTitle": "Convert to credits?",
+    "convertBody": "Cash out {{coins}} credits now. The physical claim for this Vault slot closes.",
+    "convertConfirm": "Convert now",
+    "ctaConvert": "Convert for {{coins}} credits",
+    "cancel": "Cancel",
+    "ctaShip": "Request shipment",
+    "ctaTrade": "Offer trade",
+    "ctaList": "List on Vault Exchange",
+    "ctaUnlist": "Delist",
+    "listedLine": "Vault Exchange · {{price}} · Buy now for friends",
+    "unlistBody": "This removes the Vault Exchange listing. The card stays in your Vault.",
+    "soonPill": "SOON",
+    "soonTitle": "Coming soon",
+    "tradeSoonBody": "Peer trades will open from Vault — send offers, counter, and lock in when both sides agree (separate from fixed-price shop).",
+    "shipStatusLine": "Shipment is queued for this item. We’ll notify you when the label is ready.",
+    "readOnly": "This item isn’t editable from here.",
+    "close": "Close"
+  },
+  "vaultList": {
+    "title": "Vault Exchange listing",
+    "body": "Set a fixed USD price. Friends can buy instantly with card checkout (no credits). You keep the hit vaulted until it sells or you delist.",
+    "priceLabel": "Price (USD, whole dollars)",
+    "pricePlaceholder": "e.g. 99",
+    "confirm": "List for {{price}}"
+  },
+  "friendVaultShop": {
+    "sectionTitle": "Vault Exchange",
+    "sectionHint": "Cash listings only.",
+    "buy": "Buy now",
+    "buyTitle": "Buy with card?",
+    "buyBody": "{{price}} for {{card}} — moves to your Vault after payment.",
+    "buyConfirm": "Continue to checkout",
+    "boughtTitle": "Added to your Vault",
+    "boughtBody": "Check the Vault tab — your new hit is secured there.",
+    "ownTitle": "That’s your listing",
+    "ownBody": "Change price or delist from the Vault tab.",
+    "manageHint": "Vault tab"
+  },
+  "vaultExchange": {
+    "checkoutKicker": "VAULT EXCHANGE",
+    "checkoutTitle": "Secure card checkout",
+    "checkoutBody": "Peer sales use real payments (e.g. Stripe) — not wallet credits. This build simulates a successful charge so you can test the flow.",
+    "checkoutSimulateCta": "Simulate paid checkout",
+    "checkoutCancel": "Not now",
+    "friendSectionTitle": "Their Vault",
+    "friendSectionHint": "Full collection is visible. Request, offer, or ask on anything. Only Vault Exchange listings show Buy now with a cash price.",
+    "emptyVault": "No secured hits in the Vault yet. When they vault pulls, everything shows up here for discovery.",
+    "badgeBuyNow": "BUY NOW",
+    "badgeRequestable": "REQUESTABLE",
+    "tileRequestable": "Tap · request or offer",
+    "tileYourListing": "Your listing · edit in Vault",
+    "sheetKicker": "COLLECTOR VAULT",
+    "buyNowCta": "Buy now",
+    "buyNowFine": "Charged in USD. Platform fee may apply at real checkout.",
+    "requestableLead": "Not listed for instant sale. You can still show interest — the seller may add a Vault Exchange price later.",
+    "actionRequest": "Request",
+    "actionOffer": "Make offer",
+    "actionAsk": "Ask if available",
+    "selfSheetHint": "Others browse this same grid. To enable Buy now, add a Vault Exchange listing from your Vault tab.",
+    "purchaseOkTitle": "Purchase complete",
+    "purchaseOkBody": "The hit is in your Vault. Production will route card funds through Pull Hub before payout to the seller.",
+    "purchaseFailTitle": "Couldn’t complete",
+    "purchaseFailBody": "That listing may have just sold or been delisted. Refresh and try again.",
+    "stub": {
+      "requestTitle": "Request (demo)",
+      "requestBody": "Production: we’d route a structured request to {{handle}} so they can reply or list on Vault Exchange.",
+      "offerTitle": "Offer (demo)",
+      "offerBody": "Production: send a trade or cash offer thread — separate from fixed-price Buy now.",
+      "askTitle": "Ask availability (demo)",
+      "askBody": "Production: a light nudge to {{handle}} — still not a purchase until they list or accept."
+    }
+  },
+  "progression": {
+    "rankBand_0": "Studio regular",
+    "rankBand_1": "Gallery curator",
+    "rankBand_2": "Vault archivist",
+    "rankBand_3": "Chase specialist",
+    "rankBand_4": "House collector",
+    "levelLabel": "Level {{level}}",
+    "loyaltyEyebrow": "Loyalty tier",
+    "xpIntoLevel": "{{current}} / {{next}} XP this level",
+    "streakEyebrow": "Collector streak",
+    "streakDaysLabel": "day streak",
+    "streakBest": "Personal best",
+    "streakFine": "Visit on consecutive days to build your streak. Miss a day and it resets — by design, not a trap.",
+    "questsDaily": "Today",
+    "questsWeekly": "This week",
+    "questsResetHint": "Weekly goals refresh each Monday. Rewards are collector XP only — not pack odds.",
+    "questProgress": "{{current}} / {{target}}",
+    "claimXp": "Claim +{{xp}} XP",
+    "claimed": "Claimed",
+    "questKindDaily": "Daily",
+    "questKindWeekly": "Weekly"
+  },
+  "quests": {
+    "daily_collector_log": {
+      "title": "Collector’s log",
+      "desc": "Check in with Pull Hub today. Keeps your streak and completes this daily goal."
+    },
+    "weekly_open_packs": {
+      "title": "Open five packs",
+      "desc": "Any packs count — pace yourself. Progress tracks when a pull is secured to your session."
+    },
+    "weekly_secure_vault": {
+      "title": "Secure two hits",
+      "desc": "Send two pulls to your Vault from the post-open sheet."
+    },
+    "weekly_convert": {
+      "title": "Convert one Vault hit",
+      "desc": "Cash a vaulted item to coins once this week."
+    },
+    "weekly_add_friend": {
+      "title": "Grow your circle",
+      "desc": "Add one friend by username — trades and Vault Exchange are better together."
+    }
+  },
+  "phonePicker": {
+    "title": "Paese / regione",
+    "close": "Chiudi",
+    "searchPlaceholder": "Cerca",
+    "empty": "Nessuna corrispondenza"
+  },
+  "packOdds": {
+    "kicker": "Probabilità del pacco"
+  },
+  "packOpeningEngine": {
+    "brandTitle": "PULL HUB",
+    "openingPack": "Apertura del pacco…",
+    "skip": "Salta",
+    "replay": "Rigioca",
+    "cardLabel": "Carta",
+    "estValueLabel": "Valore st.",
+    "estimatedValueLabel": "Valore stimato"
+  },
+  "recentHits": {
+    "title": "Hit recenti",
+    "live": "live",
+    "pulled": "ha trovato"
+  },
+  "packGroup": {
+    "first_time": "Starter & welcome",
+    "low_cost": "Budget floor",
+    "high_value": "Chase & premium"
+  },
+  "credits": {
+    "abbrev": "CR"
   }
 }

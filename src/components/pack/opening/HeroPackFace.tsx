@@ -22,10 +22,10 @@ function LiquidGlassArt({ side }: { side: Side }) {
 
   const blobs = (
     <>
-      <Ellipse cx={26} cy={68} rx={46} ry={62} fill={`url(#${uid}-b1)`} opacity={0.95} />
-      <Ellipse cx={58} cy={168} rx={40} ry={54} fill={`url(#${uid}-b2)`} opacity={0.9} />
-      <Ellipse cx={44} cy={128} rx={58} ry={36} fill={`url(#${uid}-b3)`} opacity={0.75} />
-      <Ellipse cx={72} cy={228} rx={52} ry={44} fill={`url(#${uid}-b4)`} opacity={0.55} />
+      <Ellipse cx={28} cy={72} rx={40} ry={52} fill={`url(#${uid}-b1)`} opacity={0.55} />
+      <Ellipse cx={60} cy={166} rx={34} ry={46} fill={`url(#${uid}-b2)`} opacity={0.48} />
+      <Ellipse cx={44} cy={128} rx={48} ry={30} fill={`url(#${uid}-b3)`} opacity={0.42} />
+      <Ellipse cx={72} cy={224} rx={42} ry={36} fill={`url(#${uid}-b4)`} opacity={0.32} />
     </>
   );
 
@@ -36,7 +36,7 @@ function LiquidGlassArt({ side }: { side: Side }) {
         stroke={HERO_PACK.liquidFlow}
         strokeWidth={1.35}
         fill="none"
-        opacity={0.88}
+        opacity={0.45}
         strokeLinecap="round"
       />
       <Path
@@ -44,7 +44,7 @@ function LiquidGlassArt({ side }: { side: Side }) {
         stroke={HERO_PACK.liquidFlowAlt}
         strokeWidth={1.1}
         fill="none"
-        opacity={0.72}
+        opacity={0.34}
         strokeLinecap="round"
       />
       <Path
@@ -52,7 +52,7 @@ function LiquidGlassArt({ side }: { side: Side }) {
         stroke={HERO_PACK.liquidFlow}
         strokeWidth={1.05}
         fill="none"
-        opacity={0.55}
+        opacity={0.26}
         strokeLinecap="round"
       />
       <Path
@@ -60,7 +60,7 @@ function LiquidGlassArt({ side }: { side: Side }) {
         stroke="rgba(255,255,255,0.1)"
         strokeWidth={0.85}
         fill="none"
-        opacity={0.65}
+        opacity={0.26}
         strokeLinecap="round"
       />
     </>
@@ -145,7 +145,9 @@ export function HeroPackFace({ side, packAccent, packLine: _packLine }: Props) {
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
       />
-      <LiquidGlassArt side={side} />
+      <View pointerEvents="none" style={styles.surfaceArt}>
+        <LiquidGlassArt side={side} />
+      </View>
       <LinearGradient
         colors={[...HERO_PACK.causticSheen]}
         start={causticStart}
@@ -154,7 +156,7 @@ export function HeroPackFace({ side, packAccent, packLine: _packLine }: Props) {
         pointerEvents="none"
       />
       <View
-        style={[StyleSheet.absoluteFill, { backgroundColor: packAccent, opacity: 0.08 }]}
+        style={[StyleSheet.absoluteFill, { backgroundColor: packAccent, opacity: 0.06 }]}
         pointerEvents="none"
       />
       <LinearGradient
@@ -164,6 +166,25 @@ export function HeroPackFace({ side, packAccent, packLine: _packLine }: Props) {
         style={styles.foilSheen}
         pointerEvents="none"
       />
+
+      {/* Inner bevel + vignette to read as sealed object (not a flat UI card). */}
+      <LinearGradient
+        pointerEvents="none"
+        colors={['rgba(255,255,255,0.18)', 'rgba(255,255,255,0.04)', 'rgba(0,0,0,0.32)']}
+        locations={[0, 0.55, 1]}
+        start={{ x: 0.25, y: 0.05 }}
+        end={{ x: 0.8, y: 1 }}
+        style={styles.innerBevel}
+      />
+      <LinearGradient
+        pointerEvents="none"
+        colors={['rgba(0,0,0,0.0)', 'rgba(0,0,0,0.55)']}
+        locations={[0, 1]}
+        start={{ x: 0.5, y: 0.35 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.innerVignette}
+      />
+
       <LinearGradient {...spineGrad} style={spineStyle} />
       <LinearGradient
         colors={['rgba(255,255,255,0.2)', 'rgba(255,255,255,0)', 'rgba(0,0,0,0.35)']}
@@ -190,6 +211,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderColor: HERO_PACK.edgeHighlight,
   },
+  surfaceArt: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.38,
+  },
   causticLayer: {
     ...StyleSheet.absoluteFillObject,
     opacity: 0.85,
@@ -197,6 +222,14 @@ const styles = StyleSheet.create({
   foilSheen: {
     ...StyleSheet.absoluteFillObject,
     opacity: 0.88,
+  },
+  innerBevel: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.8,
+  },
+  innerVignette: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.55,
   },
   spine: {
     position: 'absolute',

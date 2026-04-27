@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PackOdds } from '../../data/mockPackOdds';
 import { colors } from '../../tokens/colors';
@@ -27,12 +28,13 @@ function tierPillColor(tier: string) {
 }
 
 export function PackOddsModal({ visible, onClose, packTitle, odds }: Props) {
+  const { t } = useTranslation();
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} {...transparentModalIOSProps}>
       <View style={styles.overlay}>
         <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
         <View style={styles.sheet}>
-          <Text style={styles.kicker}>Pack Odds</Text>
+          <Text style={styles.kicker}>{t('packOdds.kicker')}</Text>
           <Text style={styles.title} numberOfLines={2}>
             {packTitle}
           </Text>
@@ -57,7 +59,7 @@ export function PackOddsModal({ visible, onClose, packTitle, odds }: Props) {
           <Text style={styles.note}>{odds.note}</Text>
 
           <Pressable style={styles.closeBtn} onPress={onClose}>
-            <Text style={styles.closeText}>Close</Text>
+            <Text style={styles.closeText}>{t('common.close')}</Text>
           </Pressable>
         </View>
       </View>

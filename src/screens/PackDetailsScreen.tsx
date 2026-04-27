@@ -74,7 +74,14 @@ export function PackDetailsScreen({ route }: Props) {
   if (!pack || !loc) {
     return (
       <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigationRef.goBack()} activeOpacity={0.85}>
+        <TouchableOpacity
+          style={styles.backBtn}
+          onPress={() => {
+            if (!navigationRef.isReady()) return;
+            if (navigationRef.canGoBack()) navigationRef.goBack();
+          }}
+          activeOpacity={0.85}
+        >
           <Ionicons name="chevron-back" size={20} color={colors.textPrimary} />
           <Text style={styles.backText}>{t('packDetails.back')}</Text>
         </TouchableOpacity>
@@ -92,7 +99,7 @@ export function PackDetailsScreen({ route }: Props) {
       return;
     }
     requireAuth(() => {
-      openPack(pack, { quantity: qty });
+      void openPack(pack, { quantity: qty });
     });
   };
 
@@ -115,7 +122,14 @@ export function PackDetailsScreen({ route }: Props) {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom }]}>
-      <TouchableOpacity style={styles.backBtn} onPress={() => navigationRef.goBack()} activeOpacity={0.85}>
+      <TouchableOpacity
+        style={styles.backBtn}
+        onPress={() => {
+          if (!navigationRef.isReady()) return;
+          if (navigationRef.canGoBack()) navigationRef.goBack();
+        }}
+        activeOpacity={0.85}
+      >
         <Ionicons name="chevron-back" size={20} color={colors.textPrimary} />
         <Text style={styles.backText}>{t('packDetails.back')}</Text>
       </TouchableOpacity>
@@ -152,35 +166,38 @@ export function PackDetailsScreen({ route }: Props) {
           </VaultFramedCard>
 
           <VaultFramedCard contentStyle={styles.cardInner}>
-            <Text style={styles.sectionTitle}>Pack details</Text>
+            <Text style={styles.sectionTitle}>{t('packDetails.specTitle')}</Text>
             <View style={styles.specRow}>
-              <Text style={styles.specLabel}>Price</Text>
+              <Text style={styles.specLabel}>{t('packDetails.priceTitle')}</Text>
               <Text style={styles.specValue}>
                 {pack.creditPrice.toLocaleString()} {t('packCard.credits')}
               </Text>
             </View>
             <View style={styles.specRow}>
-              <Text style={styles.specLabel}>Remaining</Text>
+              <Text style={styles.specLabel}>{t('packDetails.specRemainingLabel')}</Text>
               <Text style={styles.specValue}>
-                {pack.remainingInventory.toLocaleString()} / {pack.totalInventory.toLocaleString()}
+                {t('packDetails.remaining', {
+                  left: pack.remainingInventory.toLocaleString(),
+                  total: pack.totalInventory.toLocaleString(),
+                })}
               </Text>
             </View>
             <View style={styles.specRow}>
-              <Text style={styles.specLabel}>Tags</Text>
+              <Text style={styles.specLabel}>{t('packDetails.specTagsLabel')}</Text>
               <Text style={styles.specValue} numberOfLines={1}>
                 {(pack.tags ?? []).slice(0, 3).join(' · ') || '—'}
               </Text>
             </View>
 
             <TouchableOpacity style={styles.oddsBtn} onPress={() => setOddsOpen(true)} activeOpacity={0.86}>
-              <Text style={styles.oddsBtnText}>View odds</Text>
+              <Text style={styles.oddsBtnText}>{t('packDetails.viewOdds')}</Text>
               <Text style={styles.oddsBtnChevron}>›</Text>
             </TouchableOpacity>
           </VaultFramedCard>
 
           {topHit ? (
             <VaultFramedCard contentStyle={styles.cardInner}>
-              <Text style={styles.sectionTitle}>Top hit preview</Text>
+              <Text style={styles.sectionTitle}>{t('packDetails.topHitPreviewTitle')}</Text>
               <View style={styles.topHitRow}>
                 <Image source={{ uri: topHit.imageUrl }} style={styles.topHitImg} contentFit="cover" />
                 <View style={styles.topHitBody}>
@@ -192,12 +209,12 @@ export function PackDetailsScreen({ route }: Props) {
                   </Text>
                 </View>
               </View>
-              <Text style={styles.finePrint}>Preview only. Demo media and values may change before launch.</Text>
+              <Text style={styles.finePrint}>{t('packDetails.topHitPreviewFinePrint')}</Text>
             </VaultFramedCard>
           ) : null}
 
           <VaultFramedCard contentStyle={styles.cardInner}>
-            <Text style={styles.sectionTitle}>What you can pull</Text>
+            <Text style={styles.sectionTitle}>{t('packDetails.whatYouCanPullTitle')}</Text>
             <View style={styles.pullsGrid}>
               {odds.rows.slice(0, 4).map((r) => (
                 <View key={r.tier} style={styles.pullsCell}>

@@ -203,14 +203,23 @@ export function PackOpeningModal() {
 
   const openAnother = useCallback(() => {
     if (!selectedPack) return;
+    if (isGuest) {
+      if (!firstPackPromptHandled) {
+        showSignupPrompt();
+      } else {
+        Alert.alert(t('onboarding.guestClaimTitle'), t('onboarding.guestClaimBody'));
+      }
+      return;
+    }
     // This re-charges credits + increments session id like a real open.
     // In demo mode, we still use store openPack for a consistent “spent credits” story.
-    const ok = openPack(selectedPack, { keepPackModalOnInsufficient: true, quantity: 1 });
-    if (!ok) return;
-    setSkippedToEnd(false);
-    setEngineDone(false);
-    setSkipNonce(0);
-  }, [openPack, selectedPack]);
+    void openPack(selectedPack, { keepPackModalOnInsufficient: true, quantity: 1 }).then((ok) => {
+      if (!ok) return;
+      setSkippedToEnd(false);
+      setEngineDone(false);
+      setSkipNonce(0);
+    });
+  }, [firstPackPromptHandled, isGuest, openPack, selectedPack, showSignupPrompt, t]);
 
   const sharePullFromReveal = useCallback(() => {
     if (!pending || !revealCard) return;
@@ -480,12 +489,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   titleFifa: {
-    fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: '#F8FAFC',
-    marginBottom: 2,
-    letterSpacing: 2.2,
-    textTransform: 'uppercase',
+    fontSize: 22,
+    fontFamily: brandFont.extraBold,
+    color: 'rgba(248,250,252,0.92)',
+    marginBottom: 4,
+    letterSpacing: 1.2,
   },
   titleCompact: {
     fontSize: fontSize.sm,
@@ -496,9 +504,9 @@ const styles = StyleSheet.create({
   },
   subFifa: {
     fontSize: fontSize.xs,
-    color: 'rgba(226,232,240,0.42)',
+    color: 'rgba(148,163,184,0.78)',
     maxWidth: '80%',
-    letterSpacing: 0.5,
+    letterSpacing: 0.2,
   },
   skipBtn: {
     paddingVertical: 4,
@@ -517,8 +525,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: radius.full,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.09)',
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderColor: 'rgba(255,255,255,0.10)',
+    backgroundColor: 'rgba(2,6,23,0.35)',
   },
   liveDot: {
     fontSize: 9,
@@ -549,16 +557,16 @@ const styles = StyleSheet.create({
   openAnotherBtn: {
     borderRadius: radius.lg,
     overflow: 'hidden',
-    shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.42,
-    shadowRadius: 14,
-    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 18 },
+    shadowOpacity: 0.45,
+    shadowRadius: 26,
+    elevation: 14,
   },
   openAnotherGradient: {
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.35)',
+    borderColor: 'rgba(255,255,255,0.18)',
   },
   openAnotherRow: {
     flexDirection: 'row',
@@ -571,7 +579,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(2,6,23,0.12)',
+    backgroundColor: 'rgba(2,6,23,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
   },

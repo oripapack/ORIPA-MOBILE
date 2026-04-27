@@ -59,7 +59,7 @@ export function RevealResultCard({
           <Text style={styles.ovrNum} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.45}>
             {creditsWon.toLocaleString()}
           </Text>
-          <Text style={styles.ovrLbl}>CR</Text>
+          <Text style={styles.ovrLbl}>{t('credits.abbrev')}</Text>
         </View>
         <View style={styles.fifaCardMeta}>
           <Text style={[styles.fifaTierLbl, { color: tv.accent }]}>

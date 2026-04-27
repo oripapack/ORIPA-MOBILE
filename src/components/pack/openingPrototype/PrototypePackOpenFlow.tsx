@@ -38,8 +38,11 @@ export function PrototypePackOpenFlow({
       if (phase !== 'carousel') return;
       setSelectedLineupIndex(index);
       setPhase('selecting');
-      /** Slightly longer beat so the tap registers as intentional, not a machine tick. */
-      selectingTimer.current = setTimeout(goCentered, 420);
+      /**
+       * Short “commit” beat: long waits read as gating/latency.
+       * The carousel itself auto-centers the chosen pack during this step.
+       */
+      selectingTimer.current = setTimeout(goCentered, 80);
     },
     [phase, goCentered],
   );

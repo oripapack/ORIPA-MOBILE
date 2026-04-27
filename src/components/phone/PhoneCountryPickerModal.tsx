@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -27,6 +28,7 @@ type Props = {
 
 export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }: Props) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const [q, setQ] = useState('');
 
   const filtered = useMemo(() => {
@@ -51,8 +53,13 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable style={[styles.sheet, { paddingBottom: insets.bottom + spacing.md }]} onPress={(e) => e.stopPropagation()}>
           <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
-            <Text style={styles.headerTitle}>Country / region</Text>
-            <TouchableOpacity onPress={onClose} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close">
+            <Text style={styles.headerTitle}>{t('phonePicker.title')}</Text>
+            <TouchableOpacity
+              onPress={onClose}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel={t('phonePicker.close')}
+            >
               <Ionicons name="close" size={26} color={colors.textPrimary} />
             </TouchableOpacity>
           </View>
@@ -63,7 +70,7 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
               style={styles.searchInput}
               value={q}
               onChangeText={setQ}
-              placeholder="Search"
+              placeholder={t('phonePicker.searchPlaceholder')}
               placeholderTextColor={colors.textMuted}
               autoCapitalize="none"
               autoCorrect={false}
@@ -99,7 +106,7 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
               );
             }}
             ListEmptyComponent={
-              <Text style={styles.empty}>No matches</Text>
+              <Text style={styles.empty}>{t('phonePicker.empty')}</Text>
             }
           />
         </Pressable>

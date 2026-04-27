@@ -75,6 +75,8 @@ interface AppStore {
   _packOpenRewardApplied: boolean;
   /** Increments on every successful `openPack` so pack UI re-rolls even when `selectedPack` is the same reference. */
   packOpenSessionId: number;
+  /** Prevents rapid-tap double charges / double opens (async claim + state commit). */
+  packOpenInFlight: boolean;
   /** How many pulls this `packOpening` session represents (1 = animated reveal; 10/100 = summary flow). */
   packOpenQuantity: PackOpenQuantity;
   /**
@@ -98,7 +100,7 @@ interface AppStore {
   openPack: (
     pack: Pack,
     options?: { keepPackModalOnInsufficient?: boolean; quantity?: PackOpenQuantity },
-  ) => boolean;
+  ) => Promise<boolean>;
   /** Clears "resume open after credits" when user dismisses buy flow without purchasing. */
   clearResumePackOpen: () => void;
   applyPackOpenResult: (
@@ -209,6 +211,7 @@ export const useAppStore = create<AppStore>((set, get) => {
   pendingFulfillmentPullIds: [],
   _packOpenRewardApplied: false,
   packOpenSessionId: 0,
+  packOpenInFlight: false,
   packOpenQuantity: 1,
   resumePackOpenAfterCredits: false,
   resumePackOpenQuantity: 1,
@@ -417,88 +420,86 @@ export const useAppStore = create<AppStore>((set, get) => {
    * Opens one pack (free grant or credits) or a bulk session (10 / 100, credits only).
    * Credits deduct on commit; collector XP applies when pulls are recorded (`applyPackOpenResult` / bulk).
    */
-  openPack: (pack, options) => {
+  openPack: async (pack, options) => {
     const keepPack = options?.keepPackModalOnInsufficient ?? false;
     const quantity: PackOpenQuantity = options?.quantity ?? 1;
-    const { user, usedFirstTimePackIds } = get();
+    const { user, usedFirstTimePackIds, packOpenInFlight } = get();
 
-    if (pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id)) {
-      return false;
-    }
+    if (packOpenInFlight) return false;
+    set({ packOpenInFlight: true });
 
-    const firstTimeUpdate = pack.isFirstTimePack
-      ? { usedFirstTimePackIds: [...usedFirstTimePackIds, pack.id] }
-      : {};
+    try {
+      if (pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id)) {
+        return false;
+      }
 
-    if (pack.isFirstTimePack) {
-      void claimFirstTimePack(user.id, pack.id).then((result) => {
-        if (!result.allowed) {
-          set((state) => ({
-            usedFirstTimePackIds: state.usedFirstTimePackIds.includes(pack.id)
-              ? state.usedFirstTimePackIds
-              : [...state.usedFirstTimePackIds, pack.id],
-            modals: { ...state.modals, packOpening: false, wonPrizes: false },
-            pendingFulfillmentPullIds: state.pendingFulfillmentPullIds,
-          }));
-        }
-      });
-    }
+      if (pack.isFirstTimePack) {
+        const claim = await claimFirstTimePack(user.id, pack.id);
+        if (!claim.allowed) return false;
+      }
 
-    const grants = user.freePackGrants ?? 0;
-    const useFreeGrant = quantity === 1 && grants > 0;
-    if (useFreeGrant) {
+      const firstTimeUpdate = pack.isFirstTimePack
+        ? { usedFirstTimePackIds: [...usedFirstTimePackIds, pack.id] }
+        : {};
+
+      const grants = user.freePackGrants ?? 0;
+      const useFreeGrant = quantity === 1 && grants > 0;
+      if (useFreeGrant) {
+        set((state) => ({
+          selectedPack: pack,
+          resumePackOpenAfterCredits: false,
+          resumePackOpenQuantity: 1,
+          packOpenQuantity: 1,
+          modals: { ...state.modals, packOpening: true },
+          _packOpenRewardApplied: false,
+          packOpenSessionId: state.packOpenSessionId + 1,
+          user: {
+            ...state.user,
+            freePackGrants: grants - 1,
+          },
+          ...firstTimeUpdate,
+        }));
+        return true;
+      }
+
+      const totalCost = pack.creditPrice * quantity;
+      if (user.credits < totalCost) {
+        set((state) => ({
+          selectedPack: pack,
+          resumePackOpenAfterCredits: true,
+          resumePackOpenQuantity: quantity,
+          modals: {
+            ...state.modals,
+            insufficientCredits: true,
+            // From pack reveal "open another", keep this modal open so backing out of buy credits isn't a dead end.
+            packOpening: keepPack ? true : false,
+          },
+        }));
+        return false;
+      }
+
+      if (quantity > 1 && pack.remainingInventory < quantity) {
+        return false;
+      }
+
       set((state) => ({
         selectedPack: pack,
         resumePackOpenAfterCredits: false,
         resumePackOpenQuantity: 1,
-        packOpenQuantity: 1,
+        packOpenQuantity: quantity,
         modals: { ...state.modals, packOpening: true },
         _packOpenRewardApplied: false,
         packOpenSessionId: state.packOpenSessionId + 1,
         user: {
           ...state.user,
-          freePackGrants: grants - 1,
+          credits: state.user.credits - totalCost,
         },
         ...firstTimeUpdate,
       }));
       return true;
+    } finally {
+      set({ packOpenInFlight: false });
     }
-
-    const totalCost = pack.creditPrice * quantity;
-    if (user.credits < totalCost) {
-      set((state) => ({
-        selectedPack: pack,
-        resumePackOpenAfterCredits: true,
-        resumePackOpenQuantity: quantity,
-        modals: {
-          ...state.modals,
-          insufficientCredits: true,
-          // From pack reveal "open another", keep this modal open so backing out of buy credits isn't a dead end.
-          packOpening: keepPack ? true : false,
-        },
-      }));
-      return false;
-    }
-
-    if (quantity > 1 && pack.remainingInventory < quantity) {
-      return false;
-    }
-
-    set((state) => ({
-      selectedPack: pack,
-      resumePackOpenAfterCredits: false,
-      resumePackOpenQuantity: 1,
-      packOpenQuantity: quantity,
-      modals: { ...state.modals, packOpening: true },
-      _packOpenRewardApplied: false,
-      packOpenSessionId: state.packOpenSessionId + 1,
-      user: {
-        ...state.user,
-        credits: state.user.credits - totalCost,
-      },
-      ...firstTimeUpdate,
-    }));
-    return true;
   },
 
   /**

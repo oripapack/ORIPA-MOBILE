@@ -51,7 +51,7 @@ export function CompareStatsModal({ visible, onClose, me, friend }: Props) {
             <Text style={[styles.headName, styles.headYou]} numberOfLines={1}>
               {t('social.you')}
             </Text>
-            <Text style={styles.vs}>vs</Text>
+            <Text style={styles.vs}>{t('common.vs')}</Text>
             <Text style={[styles.headName, styles.headThem]} numberOfLines={1}>
               @{friend.username}
             </Text>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../tokens/colors';
 import { fontSize, brandFont } from '../../../tokens/typography';
 import type { PackRollResult, RevealRarity } from './types';
@@ -14,10 +15,11 @@ export function ResultLayer({
   revealRarity: RevealRarity;
   valueOpacity: Animated.Value;
 }) {
+  const { t } = useTranslation();
   const tv = REVEAL_RARITY_VISUAL[revealRarity];
   return (
     <View style={styles.wrap} pointerEvents="none">
-      <Text style={styles.label}>ESTIMATED VALUE</Text>
+      <Text style={styles.label}>{t('packOpeningEngine.estimatedValueLabel')}</Text>
       <Animated.Text style={[styles.value, { opacity: valueOpacity, color: tv.accent }]}>
         {roll.creditsWon.toLocaleString()} CR
       </Animated.Text>
