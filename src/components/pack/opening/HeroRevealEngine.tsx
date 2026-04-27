@@ -1,18 +1,12 @@
-import React from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { colors } from '../../../tokens/colors';
-import { brandFont } from '../../../tokens/typography';
+import React, { useCallback, useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import type { PackRollResult, RevealCard, RevealRarity } from './types';
-import { REVEAL_RARITY_VISUAL } from './rarityTokens';
-import { useHeroReveal } from './useHeroReveal';
-import { HeroCardView, HERO_CARD_WIDTH } from './HeroCardView';
-import { HeroPackFace } from './HeroPackFace';
-import { RevealAuraHalo } from './RevealAuraHalo';
-import { PremiumChaseParticles } from './PremiumChaseParticles';
-import { PachinkoChrome } from './PachinkoChrome';
-import { HERO_STAGE } from './heroVisualTokens';
-import { LinearGradient } from 'expo-linear-gradient';
+import { tierCelebrationFor } from './tierCelebration';
+import { SlabRevealHero } from '../openingPrototype/SlabRevealHero';
+import { RipOpenInteraction } from '../openingPrototype/RipOpenInteraction';
+
+const SLAB_SPRING = { mass: 1, damping: 20, stiffness: 140 } as const;
 
 export function HeroRevealEngine({
   roll,
@@ -39,255 +33,58 @@ export function HeroRevealEngine({
   introDelayMs?: number;
   onRevealDone: () => void;
 }) {
-  const { t } = useTranslation();
-  const h = useHeroReveal({
-    roll,
-    revealRarity,
-    replayKey,
-    skipNonce,
-    suppressInitialEnterHaptic,
-    introDelayMs,
-    onRevealDone,
-  });
+  void revealRarity;
+  void packFaceTitle;
+  void replayKey;
+  void skipNonce;
+  void suppressInitialEnterHaptic;
+  void introDelayMs;
 
-  /**
-   * Prevent "outcome spoilers":
-   * Do not let rarity colors leak before the reveal moment.
-   * We only switch to the real rarity visuals once the reveal/result phases start.
-   */
-  const effectiveRarity: RevealRarity =
-    h.phase === 'reveal' || h.phase === 'result' ? revealRarity : 'common';
-  const tv = REVEAL_RARITY_VISUAL[effectiveRarity];
+  const slabOpacity = useSharedValue(0);
+  const slabScale = useSharedValue(0.94);
+  const didCompleteRef = useRef(false);
+  const [packPassThrough, setPackPassThrough] = useState(false);
 
-  const dim = h.bgDim;
-  const pulse = h.glowPulse.interpolate({ inputRange: [0, 1], outputRange: [0.15, tv.glowStrength] });
-  const leak = h.leakOpacity.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
+  const fireRevealDone = useCallback(() => {
+    if (didCompleteRef.current) return;
+    didCompleteRef.current = true;
+    onRevealDone();
+  }, [onRevealDone]);
 
-  const flipDeg = h.flip.interpolate({ inputRange: [0, 1], outputRange: ['90deg', '0deg'] });
-  const valueText = `${roll.creditsWon.toLocaleString()} CR`;
+  const onRipComplete = useCallback(() => {
+    setPackPassThrough(true);
+    slabOpacity.value = withSpring(1, SLAB_SPRING);
+    slabScale.value = withSpring(1, SLAB_SPRING, (finished) => {
+      if (finished) {
+        runOnJS(fireRevealDone)();
+      }
+    });
+  }, [fireRevealDone, slabOpacity, slabScale]);
 
-  const flashColor =
-    revealRarity === 'chase'
-      ? 'rgba(251,191,36,1)'
-      : revealRarity === 'ultra_rare'
-        ? 'rgba(125,211,252,1)'
-        : revealRarity === 'rare'
-          ? 'rgba(56,189,248,1)'
-          : 'rgba(241,245,249,0.88)';
+  const slabStyle = useAnimatedStyle(() => ({
+    opacity: slabOpacity.value,
+    transform: [{ scale: slabScale.value }],
+  }));
 
-  const chromeAccent = h.phase === 'reveal' || h.phase === 'result' ? tv.accent : 'rgba(148, 163, 184, 0.85)';
+  const tv = tierCelebrationFor(roll.tier);
 
   return (
     <View style={styles.root}>
-      <Animated.View style={[styles.cameraStage, { transform: [{ scale: h.cameraPunch }] }]}>
-      {/* Background dim layer */}
-      <Animated.View style={[styles.dim, { opacity: dim }]} pointerEvents="none" />
-
-      <PachinkoChrome
-        railShimmer={h.railShimmer}
-        accent={tv.accent}
-        sparkLevel={
-          h.phase === 'primed' || h.phase === 'commit'
-            ? 2
-            : h.phase === 'arming' || h.phase === 'spinning'
-              ? 1
-              : 0
-        }
-      />
-
-      {/* Focus vignette (during reveal) */}
-      <Animated.View style={[styles.vignette, { opacity: h.vignetteOpacity }]} pointerEvents="none" />
-
-      {/* Ambient key (neutral); rarity reads on pack/card, not global purple wash */}
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          styles.leak,
-          {
-            opacity: leak,
-            shadowColor: 'rgba(148, 163, 184, 0.35)',
-          },
-        ]}
-      />
-
-      {/* Pack layer (center) */}
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          styles.packWrap,
-          {
-            opacity: h.packOpacity,
-            transform: [
-              { translateX: h.packShakeX },
-              { translateY: Animated.add(h.packBobY, h.packRevealLift) },
-              {
-                rotateZ: h.packTiltDeg.interpolate({
-                  inputRange: [-8, 8],
-                  outputRange: ['-8deg', '8deg'],
-                }),
-              },
-              { scale: h.packScale },
-            ],
-          },
-        ]}
-      >
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            styles.packHalo,
-            {
-              borderColor: tv.border,
-              shadowColor: tv.glow,
-              opacity: pulse,
-            },
-          ]}
-        />
-        {/* Sealed face (two SVG halves, no tear — open is scale + fade in hook). */}
-        <View style={styles.packSplitRow}>
-          <View style={[styles.packHalf, styles.packHalfLeft]}>
-            <HeroPackFace side="left" packAccent={packTint} packLine={packFaceTitle} />
-          </View>
-          <View style={[styles.packHalf, styles.packHalfRight]}>
-            <HeroPackFace side="right" packAccent={packTint} packLine={packFaceTitle} />
-          </View>
-        </View>
-      </Animated.View>
-
-      {/* Flash */}
-      <Animated.View
-        style={[styles.flash, { opacity: h.flashOpacity, backgroundColor: flashColor }]}
-        pointerEvents="none"
-      />
-      <Animated.View
-        style={[styles.afterglow, { opacity: h.afterglowOpacity, backgroundColor: flashColor }]}
-        pointerEvents="none"
-      />
-
-      <RevealAuraHalo accent={tv.accent} opacity={h.auraOpacity} />
-
-      {/* Chase-only particles (premium) */}
-      <PremiumChaseParticles
-        active={
-          (h.phase === 'reveal' || h.phase === 'result') && revealRarity === 'chase'
-        }
-        revealRarity={revealRarity}
-      />
-
-      {/* Hero card */}
-      <View style={styles.cardCenter} pointerEvents="none">
-        <Animated.View
-          collapsable={false}
-          style={{
-            opacity: h.cardOpacity,
-            width: HERO_CARD_WIDTH,
-            maxWidth: '92%',
-            alignItems: 'center',
-            transform: [
-              { translateY: h.cardY },
-              { translateY: h.floatY },
-              { scale: h.cardScale },
-              { perspective: 1200 },
-              { rotateY: flipDeg },
-            ],
-          }}
-        >
-          {/* Depth shadow (parallax lift illusion) */}
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              styles.cardShadow,
-              {
-                opacity: h.cardShadow.interpolate({ inputRange: [0, 1], outputRange: [0, 0.35] }),
-                transform: [
-                  { translateY: h.cardShadow.interpolate({ inputRange: [0, 1], outputRange: [12, 22] }) },
-                  { scale: h.cardShadow.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }) },
-                ],
-              },
-            ]}
+      <Animated.View style={[styles.slabLayer, slabStyle]} pointerEvents="box-none">
+        <View style={[styles.slabWrap, { borderColor: tv.border }]}>
+          <SlabRevealHero
+            revealCard={revealCard}
+            slabW={276}
+            slabH={392}
+            borderColor={tv.border}
+            accentColor={tv.accent}
           />
-
-          <HeroCardView card={revealCard} revealRarity={revealRarity} valueText={valueText} />
-
-          {revealRarity !== 'common' ? (
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                styles.foilWrap,
-                {
-                  opacity: h.foilOpacity,
-                  transform: [{ translateX: h.foilX }, { rotate: '-18deg' }],
-                },
-              ]}
-            >
-              <LinearGradient
-                colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.28)', 'rgba(255,255,255,0)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.foil}
-              />
-            </Animated.View>
-          ) : null}
-
-          <Animated.View style={[styles.badgeOverlay, { opacity: h.badgeOpacity, transform: [{ scale: h.badgeScale }] }]}>
-            <View style={[styles.badge, { backgroundColor: tv.ovrBg }]}>
-              <Text style={styles.badgeText}>{tv.label}</Text>
-            </View>
-          </Animated.View>
-          <Animated.View style={[styles.valueOverlay, { opacity: h.valueOpacity, transform: [{ translateY: h.valueY }] }]}>
-            <Text style={[styles.valueText, { color: 'rgba(226, 232, 240, 0.88)' }]}>
-              {t('packOpening.valueOverlay', { amount: roll.creditsWon.toLocaleString() })}
-            </Text>
-          </Animated.View>
-        </Animated.View>
-      </View>
-
-      {/* Tap-to-build HUD — arming has no title card (rails + pack motion carry it); reduces “slide deck” feel */}
-      {h.phase === 'spinning' ? (
-        <View style={styles.hud} pointerEvents="none">
-          <Text style={styles.hudTitle}>{t('packOpening.hudSpinningTitle')}</Text>
-          <View style={styles.hudBarTrack}>
-            <Animated.View
-              style={[
-                styles.hudBarFill,
-                {
-                  backgroundColor: tv.accent,
-                  transform: [{ scaleX: h.tapCharge }],
-                },
-              ]}
-            />
-          </View>
-          <Text style={styles.hudSub}>{t('packOpening.hudSpinningSub')}</Text>
         </View>
-      ) : null}
-      {h.phase === 'commit' ? (
-        <View style={styles.hud} pointerEvents="none">
-          <Text style={[styles.hudTitle, styles.hudCommitCue]}>{t('packOpening.hudCommitTitle')}</Text>
-          <View style={[styles.hudBarTrack, styles.hudBarCommit]}>
-            <Animated.View
-              style={[
-                styles.hudBarFill,
-                {
-                  backgroundColor: colors.gold,
-                  transform: [{ scaleX: h.tapCharge }],
-                },
-              ]}
-            />
-          </View>
-          <Text style={styles.hudSub}>{t('packOpening.hudCommitSub')}</Text>
-        </View>
-      ) : null}
-      {h.phase === 'primed' ? (
-        <View style={styles.hud} pointerEvents="none">
-          <Text style={[styles.hudTitle, styles.hudPrimed]}>{t('packOpening.hudPrimedTitle')}</Text>
-          <Text style={styles.hudSub}>{t('packOpening.hudPrimedSub')}</Text>
-        </View>
-      ) : null}
       </Animated.View>
 
-      {/* Must sit above cameraStage so scale wrapper never steals touches */}
-      <Pressable style={styles.tapLayer} onPress={h.onTapCharge}>
-        <View />
-      </Pressable>
+      <View style={styles.packLayer} pointerEvents={packPassThrough ? 'none' : 'box-none'}>
+        <RipOpenInteraction packTint={packTint} onRipComplete={onRipComplete} />
+      </View>
     </View>
   );
 }
@@ -298,172 +95,24 @@ const styles = StyleSheet.create({
     minHeight: 420,
     justifyContent: 'center',
   },
-  tapLayer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 100,
-  },
-  cameraStage: {
+  packLayer: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  dim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#000',
-    zIndex: 1,
-  },
-  vignette: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 3,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  leak: {
-    position: 'absolute',
-    left: '16%',
-    right: '16%',
-    top: '14%',
-    height: 260,
-    borderRadius: 200,
-    backgroundColor: HERO_STAGE.leakCore,
-    borderWidth: 1,
-    borderColor: HERO_STAGE.leakRim,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 32,
     zIndex: 2,
   },
-  packWrap: {
+  slabLayer: {
     ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 5,
+    alignItems: 'center',
+    zIndex: 1,
   },
-  packHalo: {
-    position: 'absolute',
-    width: 220,
-    height: 280,
+  slabWrap: {
+    width: 276,
+    height: 392,
     borderRadius: 18,
+    overflow: 'hidden',
     borderWidth: 2,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.85,
-    shadowRadius: 26,
-    elevation: 12,
-  },
-  packSplitRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 0,
-  },
-  packHalf: {
-    width: 105,
-    height: 270,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.14)',
-    overflow: 'hidden',
-    backgroundColor: '#06090c',
-  },
-  packHalfLeft: {
-    borderTopLeftRadius: 18,
-    borderBottomLeftRadius: 18,
-    borderRightWidth: 0,
-  },
-  packHalfRight: {
-    borderTopRightRadius: 18,
-    borderBottomRightRadius: 18,
-    borderLeftWidth: 0,
-  },
-  flash: { ...StyleSheet.absoluteFillObject, backgroundColor: '#fff', zIndex: 10 },
-  afterglow: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 9,
-    opacity: 0,
-  },
-  cardCenter: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', zIndex: 20 },
-  cardShadow: {
-    position: 'absolute',
-    left: '12%',
-    right: '12%',
-    bottom: -18,
-    height: 26,
-    borderRadius: 999,
-    backgroundColor: '#000',
-  },
-  foilWrap: {
-    position: 'absolute',
-    left: -40,
-    top: 36,
-    width: 420,
-    height: 120,
-    zIndex: 30,
-  },
-  foil: {
-    width: '100%',
-    height: '100%',
-  },
-  badgeOverlay: { position: 'absolute', top: -10, right: 12 },
-  badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.16)',
-  },
-  badgeText: { color: '#fff', fontSize: 10, fontFamily: brandFont.black, letterSpacing: 1.6 },
-  valueOverlay: { position: 'absolute', left: 0, right: 0, bottom: -26, alignItems: 'center' },
-  valueText: { fontSize: 12, fontFamily: brandFont.extraBold, letterSpacing: 0.3, opacity: 0.95 },
-  hud: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 22,
-    alignItems: 'center',
-    zIndex: 60,
-  },
-  hudTitle: {
-    color: 'rgba(248,250,252,0.9)',
-    fontSize: 12,
-    fontFamily: brandFont.extraBold,
-    letterSpacing: 1.8,
-    textTransform: 'uppercase',
-    marginBottom: 8,
-  },
-  hudBarTrack: {
-    width: 220,
-    height: 8,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
-  },
-  hudBarCommit: {
-    borderColor: colors.goldDark,
-    backgroundColor: 'rgba(255, 203, 5, 0.12)',
-  },
-  hudCommitCue: {
-    color: colors.gold,
-    textShadowColor: 'rgba(255, 203, 5, 0.35)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 12,
-  },
-  hudBarFill: {
-    height: '100%',
-    borderRadius: 999,
-    width: '100%',
-    transform: [{ scaleX: 0 }],
-  },
-  hudSub: {
-    marginTop: 8,
-    color: 'rgba(248,250,252,0.55)',
-    fontSize: 11,
-    fontFamily: brandFont.bold,
-    letterSpacing: 0.6,
-  },
-  hudPrimed: {
-    fontSize: 15,
-    letterSpacing: 3,
-    color: 'rgba(253, 224, 71, 0.95)',
+    backgroundColor: 'rgba(2,6,23,0.55)',
   },
 });
-

@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Svg, { Circle, Defs, LinearGradient, Polyline, Stop } from 'react-native-svg';
 import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import Animated, {
-  clamp,
-  Easing,
+  Extrapolate,
   interpolate,
   runOnJS,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
+  type SharedValue,
   withDelay,
   withSequence,
   withSpring,
@@ -18,20 +18,18 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
-import {
-  PROTOTYPE_PACK_RIP_GESTURE,
-  PROTOTYPE_RIP_GESTURE_GUARD_MS,
-} from '../../../config/packOpeningAnimation';
+import { PROTOTYPE_RIP_GESTURE_GUARD_MS } from '../../../config/packOpeningAnimation';
 import { HeroPackFace } from '../opening/HeroPackFace';
 import { CAROUSEL_PACK_DIMS } from './PackSelectionCarousel';
 
-const USE_TAP_TO_OPEN = PROTOTYPE_PACK_RIP_GESTURE === 'tap';
+const preserve3d = { transformStyle: 'preserve-3d' } as ViewStyle;
 
-const MIN_SLICE_PX = 40;
-const BASE_SHIFT = 36;
-const TRAIL_THROTTLE_MS = 10;
-const TRAIL_MAX_POINTS = 110;
-const DRAG_HAPTIC_STEP_PX = 72;
+const BURST_AT = 0.7;
+const SEAM_HIT_HALF = 22;
+const BACKFACE_RAD_THRESHOLD = Math.PI * 0.72;
+const SPRING_ROTATE = { mass: 1.15, damping: 19, stiffness: 118 } as const;
+const SPRING_PEEL = { mass: 1.05, damping: 20, stiffness: 132 } as const;
+const SPRING_BURST = { mass: 0.95, damping: 16, stiffness: 180 } as const;
 
 function hapticLight() {
   if (Platform.OS === 'web') return;
@@ -48,104 +46,61 @@ function hapticSuccess() {
   void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
 }
 
-type SparkGeom = { phi: number; reach: number; cx: number; cy: number };
-
-const SPARK_LOCAL = [
-  { u: -0.5, n: -0.35, s: 1 },
-  { u: -0.28, n: 0.42, s: 0.95 },
-  { u: 0, n: -0.5, s: 1 },
-  { u: 0.08, n: 0.38, s: 0.88 },
-  { u: 0.32, n: -0.22, s: 0.92 },
-  { u: 0.48, n: 0.28, s: 0.85 },
-  { u: -0.12, n: 0.55, s: 0.78 },
-  { u: 0.22, n: -0.48, s: 0.9 },
-  { u: -0.42, n: 0.12, s: 0.72 },
-  { u: 0.38, n: 0.45, s: 0.8 },
-];
-
 type Props = {
   packTint: string;
   onRipComplete: () => void;
+  /** Optional external progress (0..1) — driven by peel amount on the back. */
+  openProgressSV?: SharedValue<number>;
+  /** Optional external lock (1 = gestures ignored). */
+  gestureLockSV?: SharedValue<number>;
+  /** When false, burst / completion does not call `onRipComplete`. */
+  completeOnFinish?: boolean;
 };
 
 /**
- * Open the pack: either tap (peel matches vertical seam) or slash (decorative trail;
- * split is still the modeled left/right seam — true arbitrary cuts need a different renderer).
+ * Back-peel open: pan to rotate the pack to its back, then pull the center seam
+ * downward to peel the foil; at ~70% peel, a flare burst finishes the open.
  */
-export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
+export function RipOpenInteraction({
+  packTint,
+  onRipComplete,
+  openProgressSV,
+  gestureLockSV,
+  completeOnFinish = true,
+}: Props) {
   const { w, h } = CAROUSEL_PACK_DIMS;
   const faceW = Math.round(w * 1.08);
   const faceH = Math.round(h * 1.08);
   const halfW = faceW / 2;
   const cornerR = Math.max(8, Math.min(18, Math.round((18 * faceW) / 210)));
   const stage = Math.ceil(Math.hypot(faceW, faceH) + 36);
-  const lineCx = stage / 2;
-  const lineCy = stage / 2;
+  const stageMidX = stage / 2;
 
-  const tx = useSharedValue(0);
-  const ty = useSharedValue(0);
-  const tilt = useSharedValue(0);
-  const open = useSharedValue(0);
-  const separation = useSharedValue(BASE_SHIFT);
-  const lastHaptic = useSharedValue(0);
-  const done = useSharedValue(0);
-  const cutFlash = useSharedValue(0);
-  const sparkAlpha = useSharedValue(0);
+  const rotateY = useSharedValue(0);
+  const opening = openProgressSV ?? useSharedValue(0);
+  const bursting = useSharedValue(0);
+  const burstArmed = useSharedValue(0);
+  const flare = useSharedValue(0);
+  const packPop = useSharedValue(1);
+  const rootFade = useSharedValue(1);
+
+  const rotateStart = useSharedValue(0);
+  const peelStart = useSharedValue(0);
+  /** 0 = rotate, 1 = peel */
+  const activeMode = useSharedValue(0);
 
   const [gestureEnabled, setGestureEnabled] = useState(false);
-  const [trailPoints, setTrailPoints] = useState('');
-  const [trailVisible, setTrailVisible] = useState(true);
-  const [trailHead, setTrailHead] = useState<{ x: number; y: number } | null>(null);
-  const [sparkGeom, setSparkGeom] = useState<SparkGeom | null>(null);
-  const trailThrottle = useRef(0);
   const finishedRef = useRef(false);
+  const runBurstRef = useRef<() => void>(() => {});
 
   useEffect(() => {
-    finishedRef.current = false;
     const guard = Math.max(0, PROTOTYPE_RIP_GESTURE_GUARD_MS);
     if (guard === 0) {
       setGestureEnabled(true);
       return;
     }
     const id = setTimeout(() => setGestureEnabled(true), guard);
-    return () => {
-      clearTimeout(id);
-    };
-  }, []);
-
-  const clearTrail = useCallback(() => {
-    setTrailPoints('');
-    setTrailVisible(true);
-    setTrailHead(null);
-    setSparkGeom(null);
-    trailThrottle.current = 0;
-  }, []);
-
-  const appendTrailPoint = useCallback((x: number, y: number) => {
-    const now = Date.now();
-    if (now - trailThrottle.current < TRAIL_THROTTLE_MS) return;
-    trailThrottle.current = now;
-    const pt = `${x.toFixed(1)},${y.toFixed(1)}`;
-    setTrailHead({ x, y });
-    setTrailPoints((prev) => {
-      const next = prev ? `${prev} ${pt}` : pt;
-      const parts = next.split(' ');
-      if (parts.length > TRAIL_MAX_POINTS) return parts.slice(-TRAIL_MAX_POINTS).join(' ');
-      return next;
-    });
-  }, []);
-
-  const fadeTrailOut = useCallback(() => {
-    setTrailVisible(false);
-    setTimeout(() => {
-      setTrailPoints('');
-      setTrailHead(null);
-      setSparkGeom(null);
-    }, 260);
-  }, []);
-
-  const resetDone = useCallback(() => {
-    finishedRef.current = false;
+    return () => clearTimeout(id);
   }, []);
 
   const completeOnce = useCallback(() => {
@@ -153,257 +108,158 @@ export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
     finishedRef.current = true;
     setGestureEnabled(false);
     hapticSuccess();
-    onRipComplete();
-  }, [onRipComplete]);
+    if (completeOnFinish) {
+      onRipComplete();
+    }
+  }, [completeOnFinish, onRipComplete]);
 
-  const fireSlashVfx = useCallback((phi: number, reach: number) => {
-    setSparkGeom({ phi, reach, cx: lineCx, cy: lineCy });
-    sparkAlpha.value = 0;
-    sparkAlpha.value = withSequence(
-      withTiming(1, { duration: 70, easing: Easing.out(Easing.quad) }),
-      withTiming(0, { duration: 340, easing: Easing.in(Easing.cubic) }),
-    );
-    cutFlash.value = 0;
-    cutFlash.value = withSequence(
-      withTiming(1, { duration: 42 }),
-      withTiming(0, { duration: 220, easing: Easing.out(Easing.cubic) }),
-    );
+  const runBurst = useCallback(() => {
+    if (finishedRef.current) return;
+    bursting.value = 1;
     hapticMedium();
-  }, [cutFlash, lineCx, lineCy, sparkAlpha]);
+    opening.value = withSpring(1, SPRING_BURST);
+    packPop.value = withSequence(
+      withSpring(1.08, { mass: 0.85, damping: 14, stiffness: 220 }),
+      withSpring(0.92, { mass: 0.9, damping: 18, stiffness: 160 }),
+    );
+    flare.value = withSequence(
+      withSpring(1, { mass: 0.75, damping: 14, stiffness: 260 }),
+      withDelay(
+        120,
+        withTiming(0, { duration: 380 }, (done) => {
+          if (done) {
+            rootFade.value = withTiming(0, { duration: 220 }, (f2) => {
+              if (f2) {
+                runOnJS(completeOnce)();
+              }
+            });
+          }
+        }),
+      ),
+    );
+  }, [bursting, completeOnce, flare, opening, packPop, rootFade]);
 
-  const pan = useMemo(
+  runBurstRef.current = runBurst;
+
+  useAnimatedReaction(
+    () => opening.value,
+    (o, prev) => {
+      if (bursting.value === 1) return;
+      if (burstArmed.value === 1) return;
+      if (o < BURST_AT) return;
+      if (prev !== null && prev >= BURST_AT) return;
+      burstArmed.value = 1;
+      runOnJS(() => {
+        runBurstRef.current();
+      })();
+    },
+  );
+
+  const mainPan = useMemo(
     () =>
       Gesture.Pan()
-        .enabled(gestureEnabled && !USE_TAP_TO_OPEN)
-        .onStart(() => {
-          if (done.value === 1) return;
-          runOnJS(clearTrail)();
+        .enabled(gestureEnabled)
+        .onStart((e) => {
+          if (bursting.value === 1) return;
+          if (gestureLockSV?.value === 1) return;
+          const nearBack = rotateY.value > BACKFACE_RAD_THRESHOLD;
+          const inSeam = Math.abs(e.x - stageMidX) < SEAM_HIT_HALF;
+          activeMode.value = nearBack && inSeam ? 1 : 0;
+          rotateStart.value = rotateY.value;
+          peelStart.value = opening.value;
         })
         .onUpdate((e) => {
-          if (done.value === 1) return;
-          tx.value = e.translationX;
-          ty.value = e.translationY;
-          runOnJS(appendTrailPoint)(e.x, e.y);
-          const len = Math.sqrt(e.translationX * e.translationX + e.translationY * e.translationY);
-          const step = Math.floor(clamp(len / DRAG_HAPTIC_STEP_PX, 0, 4));
-          if (step > lastHaptic.value) {
-            lastHaptic.value = step;
-            runOnJS(hapticLight)();
-          }
-        })
-        .onEnd((e) => {
-          if (done.value === 1) return;
-          const dx = e.translationX;
-          const dy = e.translationY;
-          const len = Math.sqrt(dx * dx + dy * dy);
-          const vel = Math.hypot(e.velocityX, e.velocityY);
-          const okLen = len >= MIN_SLICE_PX;
-          const okFlick = len >= MIN_SLICE_PX * 0.5 && vel > 640;
-          if (!okLen && !okFlick) {
-            lastHaptic.value = 0;
-            tx.value = withSpring(0, { damping: 20, stiffness: 180 });
-            ty.value = withSpring(0, { damping: 20, stiffness: 180 });
-            runOnJS(clearTrail)();
-            runOnJS(resetDone)();
+          if (bursting.value === 1) return;
+          if (gestureLockSV?.value === 1) return;
+          if (activeMode.value === 1) {
+            const add = Math.max(0, e.translationY) / Math.max(180, faceH * 0.95);
+            const next = Math.min(1, peelStart.value + add);
+            opening.value = next;
             return;
           }
-          let phi = Math.atan2(dy, dx);
-          if (Math.abs(dx) > Math.abs(dy) * 1.25) {
-            phi = dx >= 0 ? 0 : Math.PI;
+          const sens = Math.PI / Math.max(faceW * 1.35, 200);
+          const nextRot = rotateStart.value + e.translationX * sens;
+          rotateY.value = Math.min(Math.PI, Math.max(0, nextRot));
+        })
+        .onEnd((e) => {
+          if (bursting.value === 1) return;
+          if (gestureLockSV?.value === 1) return;
+          if (activeMode.value === 1) {
+            const o = opening.value;
+            if (o >= BURST_AT) {
+              return;
+            }
+            const target = o > 0.38 ? Math.min(o, BURST_AT - 0.02) : 0;
+            opening.value = withSpring(target, SPRING_PEEL);
+            runOnJS(hapticLight)();
+            return;
           }
-          const reach = Math.min(Math.max(len * 0.85, 48), Math.hypot(faceW, faceH) * 0.58);
-          const targetTilt = phi - Math.PI / 2;
-          const sep = BASE_SHIFT * (1 + Math.min(vel / 1400, 0.62));
-          done.value = 1;
-          separation.value = sep;
-          tilt.value = withSpring(targetTilt, { damping: 19, stiffness: 132, mass: 0.92 });
-          runOnJS(fireSlashVfx)(phi, reach);
-          open.value = withDelay(
-            52,
-            withSequence(
-              withTiming(0.08, { duration: 55, easing: Easing.out(Easing.quad) }),
-              withTiming(1, { duration: 440, easing: Easing.out(Easing.cubic) }, (finished) => {
-                if (finished) {
-                  runOnJS(fadeTrailOut)();
-                  runOnJS(completeOnce)();
-                }
-              }),
-            ),
-          );
+          const v = e.velocityX;
+          const y = rotateY.value;
+          let target = y > Math.PI / 2 ? Math.PI : 0;
+          if (Math.abs(v) > 680) {
+            target = v > 0 ? Math.PI : 0;
+          }
+          rotateY.value = withSpring(target, SPRING_ROTATE);
+          runOnJS(hapticLight)();
         }),
     [
-      appendTrailPoint,
-      clearTrail,
-      completeOnce,
-      fadeTrailOut,
+      activeMode,
+      bursting,
       faceH,
       faceW,
-      fireSlashVfx,
       gestureEnabled,
-      lastHaptic,
-      open,
-      resetDone,
-      separation,
-      tilt,
-      tx,
-      ty,
+      gestureLockSV,
+      opening,
+      peelStart,
+      rotateStart,
+      rotateY,
+      stageMidX,
     ],
   );
 
-  const tapOpen = useMemo(
-    () =>
-      Gesture.Tap()
-        .enabled(gestureEnabled && USE_TAP_TO_OPEN)
-        .maxDuration(650)
-        .onEnd(() => {
-          if (done.value === 1) return;
-          const phi = 0;
-          const reach = Math.hypot(faceW, faceH) * 0.44;
-          const vel = 880;
-          const sep = BASE_SHIFT * (1 + Math.min(vel / 1400, 0.62));
-          done.value = 1;
-          separation.value = sep;
-          tilt.value = withSpring(0, { damping: 19, stiffness: 132, mass: 0.92 });
-          runOnJS(fireSlashVfx)(phi, reach);
-          open.value = withDelay(
-            52,
-            withSequence(
-              withTiming(0.08, { duration: 55, easing: Easing.out(Easing.quad) }),
-              withTiming(1, { duration: 440, easing: Easing.out(Easing.cubic) }, (finished) => {
-                if (finished) {
-                  runOnJS(fadeTrailOut)();
-                  runOnJS(completeOnce)();
-                }
-              }),
-            ),
-          );
-        }),
-    [completeOnce, fadeTrailOut, faceH, faceW, fireSlashVfx, gestureEnabled, open, separation, tilt],
-  );
-
-  const activeGesture = USE_TAP_TO_OPEN ? tapOpen : pan;
-
-  const stageStyle = useAnimatedStyle(() => ({
-    transform: [{ rotateZ: `${(tilt.value * 180) / Math.PI}deg` }],
+  const cubeStyle = useAnimatedStyle(() => ({
+    transform: [
+      { perspective: 1200 },
+      { rotateY: `${rotateY.value}rad` },
+      { scale: packPop.value },
+    ],
+    opacity: rootFade.value,
   }));
 
-  const leakStyle = useAnimatedStyle(() => {
-    const o = open.value;
-    return {
-      opacity: interpolate(o, [0, 0.12, 1], [0, 0.55, 0.2]),
-      transform: [{ scale: interpolate(o, [0, 1], [1.02, 1.08]) }],
-    };
-  });
+  const frontFaceStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(rotateY.value, [0, Math.PI * 0.45], [1, 0], Extrapolate.CLAMP),
+  }));
 
-  const leftStyle = useAnimatedStyle(() => {
-    const o = open.value;
-    const wO = o * o * (3 - 2 * o);
+  const backFaceStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(rotateY.value, [Math.PI * 0.38, Math.PI * 0.55], [0, 1], Extrapolate.CLAMP),
+  }));
+
+  const foilPeelStyle = useAnimatedStyle(() => {
+    const o = opening.value;
     return {
       transform: [
-        { translateX: -wO * separation.value * 1.08 },
-        { translateY: interpolate(o, [0, 0.35, 1], [0, -16, -11]) },
-        { rotateZ: `${interpolate(o, [0, 1], [0, -8])}deg` },
+        { scaleX: 1 + 0.42 * o },
+        { scaleY: 1 + 0.36 * o },
       ],
-      opacity: 1 - o * 0.14,
+      opacity: interpolate(o, [0, 0.25, 1], [1, 0.92, 0.35]),
     };
   });
 
-  const rightStyle = useAnimatedStyle(() => {
-    const o = open.value;
-    const wO = o * o * (3 - 2 * o);
-    return {
-      transform: [
-        { translateX: wO * separation.value * 1.02 },
-        { translateY: interpolate(o, [0, 0.35, 1], [0, 14, 10]) },
-        { rotateZ: `${interpolate(o, [0, 1], [0, 8])}deg` },
-      ],
-      opacity: 1 - o * 0.14,
-    };
-  });
-
-  const seamStyle = useAnimatedStyle(() => {
-    const o = open.value;
-    return {
-      opacity: interpolate(o, [0, 0.15, 1], [0.35, 1, 0.88]),
-      transform: [{ scaleX: interpolate(o, [0, 0.12, 0.45, 1], [1, 2.4, 1.85, 1.5]) }],
-    };
-  });
-
-  const cutFlashStyle = useAnimatedStyle(() => ({
-    opacity: cutFlash.value * 0.22,
+  const seamGlowStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(opening.value, [0, 0.2, 0.85], [0.45, 1, 0.75]),
+    transform: [{ scaleY: interpolate(opening.value, [0, 1], [1, 1.08]) }],
   }));
 
-  const sparkGroupStyle = useAnimatedStyle(() => ({
-    opacity: sparkAlpha.value,
+  const flareStyle = useAnimatedStyle(() => ({
+    opacity: flare.value * 0.92,
+    transform: [{ scale: interpolate(flare.value, [0, 1], [0.65, 1.45]) }],
   }));
-
-  const sliceLineStyle = useAnimatedStyle(() => {
-    if (USE_TAP_TO_OPEN) {
-      return { opacity: 0 };
-    }
-    if (done.value === 1) {
-      return { opacity: 0 };
-    }
-    const L = Math.sqrt(tx.value * tx.value + ty.value * ty.value);
-    if (L < 6) {
-      return { opacity: 0 };
-    }
-    const ux = tx.value / L;
-    const uy = ty.value / L;
-    const reach = Math.min(Math.max(L * 0.82, 28), Math.hypot(faceW, faceH) * 0.55);
-    const ang = Math.atan2(uy, ux);
-    const deg = (ang * 180) / Math.PI;
-    return {
-      position: 'absolute',
-      left: lineCx - reach / 2,
-      top: lineCy - 2,
-      width: reach,
-      height: 5,
-      borderRadius: 3,
-      backgroundColor: 'rgba(165,243,252,0.55)',
-      opacity: 0.45 + clamp(L / 100, 0, 0.45),
-      transform: [{ rotateZ: `${deg}deg` }],
-    };
-  });
-
-  const sparks = useMemo(() => {
-    if (!sparkGeom) return null;
-    const { phi, reach, cx, cy } = sparkGeom;
-    const cos = Math.cos(phi);
-    const sin = Math.sin(phi);
-    const nx = -sin;
-    const ny = cos;
-    return SPARK_LOCAL.map((p, i) => {
-      const px = cx + cos * p.u * reach + nx * p.n * 26;
-      const py = cy + sin * p.u * reach + ny * p.n * 26;
-      const size = 3 + (i % 3);
-      return (
-        <View
-          key={i}
-          style={[
-            styles.sparkDot,
-            {
-              left: px - size / 2,
-              top: py - size / 2,
-              width: size,
-              height: size,
-              borderRadius: size / 2,
-              opacity: p.s,
-            },
-          ]}
-        />
-      );
-    });
-  }, [sparkGeom]);
 
   return (
     <View style={styles.hit}>
-      <Text style={styles.instruction}>
-        {USE_TAP_TO_OPEN
-          ? 'Tap to open'
-          : 'Slash to open — a firm swipe cuts the seal'}
-      </Text>
-      <GestureDetector gesture={activeGesture}>
+      <Text style={styles.instruction}>Turn the pack, then pull the back seam down</Text>
+      <GestureDetector gesture={mainPan}>
         <Animated.View style={[styles.stage, { width: stage, height: stage }]}>
           <View pointerEvents="none" style={styles.backdrop}>
             <ExpoLinearGradient
@@ -414,119 +270,102 @@ export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
               style={StyleSheet.absoluteFill}
             />
           </View>
-          <Animated.View pointerEvents="none" style={[styles.leak, leakStyle]}>
-            <ExpoLinearGradient
-              colors={['rgba(248,250,252,0.0)', 'rgba(248,250,252,0.14)', 'rgba(253,230,138,0.08)', 'rgba(248,250,252,0.0)']}
-              locations={[0, 0.35, 0.62, 1]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
-          <Animated.View style={[styles.cutFlash, cutFlashStyle]} pointerEvents="none" />
-
-          {trailPoints.length > 0 && trailVisible ? (
-            <Svg
-              width={stage}
-              height={stage}
-              style={styles.trailSvg}
-              pointerEvents="none"
-            >
-              <Defs>
-                <LinearGradient id="trailOuter" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <Stop offset="0%" stopColor="#22d3ee" stopOpacity={0.5} />
-                  <Stop offset="45%" stopColor="#fde047" stopOpacity={0.65} />
-                  <Stop offset="100%" stopColor="#e0f2fe" stopOpacity={0.35} />
-                </LinearGradient>
-                <LinearGradient id="trailCore" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <Stop offset="0%" stopColor="#ffffff" stopOpacity={0.95} />
-                  <Stop offset="100%" stopColor="#a5f3fc" stopOpacity={0.85} />
-                </LinearGradient>
-              </Defs>
-              <Polyline
-                points={trailPoints}
-                fill="none"
-                stroke="url(#trailOuter)"
-                strokeWidth={18}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Polyline
-                points={trailPoints}
-                fill="none"
-                stroke="rgba(8,12,20,0.35)"
-                strokeWidth={20}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Polyline
-                points={trailPoints}
-                fill="none"
-                stroke="url(#trailCore)"
-                strokeWidth={4}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              {trailHead ? (
-                <>
-                  <Circle
-                    cx={trailHead.x}
-                    cy={trailHead.y}
-                    r={10}
-                    fill="rgba(34,211,238,0.28)"
-                  />
-                  <Circle cx={trailHead.x} cy={trailHead.y} r={4.5} fill="rgba(255,255,255,0.95)" />
-                </>
-              ) : null}
-            </Svg>
-          ) : null}
-
-          {sparkGeom ? (
-            <Animated.View style={[styles.sparkLayer, sparkGroupStyle]} pointerEvents="none">
-              {sparks}
-            </Animated.View>
-          ) : null}
 
           <View style={styles.stageCenter}>
-            <Animated.View style={stageStyle}>
-              <View style={[styles.faceRow, { width: faceW, height: faceH, borderRadius: cornerR }]}>
-                <Animated.View
-                  style={[
-                    styles.half,
-                    {
-                      width: halfW,
-                      height: faceH,
-                      borderTopLeftRadius: cornerR,
-                      borderBottomLeftRadius: cornerR,
-                    },
-                    leftStyle,
-                  ]}
-                >
-                  <View style={styles.faceFill}>
-                    <HeroPackFace side="left" packAccent={packTint} />
+            <Animated.View
+              style={[{ width: faceW, height: faceH }, preserve3d, cubeStyle]}
+            >
+              {/* Front */}
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.faceAbs,
+                  { borderRadius: cornerR, width: faceW, height: faceH },
+                  frontFaceStyle,
+                ]}
+              >
+                <View style={[styles.faceRow, { width: faceW, height: faceH, borderRadius: cornerR }]}>
+                  <View
+                    style={[
+                      styles.half,
+                      {
+                        width: halfW,
+                        height: faceH,
+                        borderTopLeftRadius: cornerR,
+                        borderBottomLeftRadius: cornerR,
+                      },
+                    ]}
+                  >
+                    <View style={styles.faceFill}>
+                      <HeroPackFace side="left" packAccent={packTint} />
+                    </View>
                   </View>
-                </Animated.View>
-                <Animated.View style={[styles.seam, seamStyle]} />
-                <Animated.View
-                  style={[
-                    styles.half,
-                    {
-                      width: halfW,
-                      height: faceH,
-                      borderTopRightRadius: cornerR,
-                      borderBottomRightRadius: cornerR,
-                    },
-                    rightStyle,
-                  ]}
-                >
-                  <View style={styles.faceFill}>
-                    <HeroPackFace side="right" packAccent={packTint} />
+                  <View style={styles.frontSpine} />
+                  <View
+                    style={[
+                      styles.half,
+                      {
+                        width: halfW,
+                        height: faceH,
+                        borderTopRightRadius: cornerR,
+                        borderBottomRightRadius: cornerR,
+                      },
+                    ]}
+                  >
+                    <View style={styles.faceFill}>
+                      <HeroPackFace side="right" packAccent={packTint} />
+                    </View>
                   </View>
-                </Animated.View>
-              </View>
+                </View>
+              </Animated.View>
+
+              {/* Back */}
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.faceAbs,
+                  styles.backRot,
+                  { borderRadius: cornerR, width: faceW, height: faceH },
+                  backFaceStyle,
+                ]}
+              >
+                <ExpoLinearGradient
+                  colors={['#0a0f18', '#111827', '#0c1220']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={[styles.backPlate, { borderRadius: cornerR }]}
+                >
+                  <View style={styles.backFoilUnder} />
+                  <Animated.View style={[styles.foilPeel, foilPeelStyle]} pointerEvents="none">
+                    <ExpoLinearGradient
+                      colors={[
+                        'rgba(148,163,184,0.22)',
+                        'rgba(226,232,240,0.38)',
+                        'rgba(253,230,138,0.28)',
+                        'rgba(148,163,184,0.2)',
+                      ]}
+                      locations={[0, 0.35, 0.62, 1]}
+                      start={{ x: 0.5, y: 0 }}
+                      end={{ x: 0.5, y: 1 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  </Animated.View>
+                  <Animated.View style={[styles.backSeam, seamGlowStyle]} />
+                  <View style={styles.backGlyph} pointerEvents="none">
+                    <View
+                      style={[
+                        styles.glyphLine,
+                        { width: Math.round(faceW * 0.35), backgroundColor: packTint, opacity: 0.35 },
+                      ]}
+                    />
+                    <View style={[styles.glyphDot, { borderColor: packTint }]} />
+                  </View>
+                </ExpoLinearGradient>
+              </Animated.View>
             </Animated.View>
           </View>
-          <Animated.View style={[styles.lineOverlay, sliceLineStyle]} pointerEvents="none" />
+
+          <Animated.View style={[styles.flare, flareStyle]} pointerEvents="none" />
         </Animated.View>
       </GestureDetector>
     </View>
@@ -556,47 +395,34 @@ const styles = StyleSheet.create({
     zIndex: 0,
     borderRadius: 999,
   },
-  leak: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 1,
-  },
-  cutFlash: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 3,
-    backgroundColor: '#ecfeff',
-  },
-  trailSvg: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 4,
-  },
-  sparkLayer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 5,
-  },
-  sparkDot: {
-    position: 'absolute',
-    backgroundColor: '#fef9c3',
-    shadowColor: '#22d3ee',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 6,
-  },
   stageCenter: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 2,
   },
-  lineOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 6,
+  faceAbs: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    backfaceVisibility: 'hidden',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
+  },
+  backRot: {
+    transform: [{ rotateY: '180deg' }],
   },
   faceRow: {
     flexDirection: 'row',
     overflow: 'hidden',
     backgroundColor: '#06090c',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+  },
+  frontSpine: {
+    width: 2,
+    marginHorizontal: -1,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    alignSelf: 'stretch',
   },
   half: {
     overflow: 'hidden',
@@ -607,10 +433,53 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  seam: {
-    width: 3,
-    marginHorizontal: -1,
-    backgroundColor: 'rgba(254,249,195,0.98)',
-    alignSelf: 'stretch',
+  backPlate: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+  backFoilUnder: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(15,23,42,0.55)',
+  },
+  foilPeel: {
+    ...StyleSheet.absoluteFillObject,
+    transformOrigin: 'center',
+  },
+  backSeam: {
+    position: 'absolute',
+    left: '50%',
+    marginLeft: -2,
+    top: '6%',
+    width: 4,
+    height: '88%',
+    borderRadius: 2,
+    backgroundColor: 'rgba(254,249,195,0.95)',
+    shadowColor: '#fde047',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.55,
+    shadowRadius: 8,
+  },
+  backGlyph: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    pointerEvents: 'none',
+  },
+  glyphLine: {
+    height: 2,
+    borderRadius: 1,
+    marginBottom: 10,
+  },
+  glyphDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    borderWidth: 1.5,
+  },
+  flare: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 8,
+    backgroundColor: '#f8fafc',
+    borderRadius: 999,
   },
 });

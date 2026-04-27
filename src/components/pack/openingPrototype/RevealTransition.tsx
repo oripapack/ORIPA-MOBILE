@@ -11,6 +11,8 @@ import {
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Reanimated, { clamp, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
@@ -149,6 +151,19 @@ export function RevealTransition({
   const winY = useRef(new Animated.Value(22)).current;
 
   const tertiaryOp = useRef(new Animated.Value(0)).current;
+
+  // “Peek” interaction: slight sideways slide to check border edge.
+  const peekX = useSharedValue(0);
+  const peekGesture = Gesture.Pan()
+    .onUpdate((e) => {
+      peekX.value = clamp(e.translationX, -15, 15);
+    })
+    .onEnd(() => {
+      peekX.value = withSpring(0, { damping: 18, stiffness: 220 });
+    });
+  const peekStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: peekX.value }],
+  }));
 
   useEffect(() => {
     Animated.parallel([
@@ -362,27 +377,31 @@ export function RevealTransition({
                   },
                 ]}
               />
-              <Animated.View
-                style={[
-                  styles.heroPlate,
-                  {
-                    width: slabW,
-                    height: slabH,
-                    borderRadius: 18,
-                    borderColor: tv.border,
-                    opacity: heroOp,
-                    transform: [{ translateY: heroY }, { scale: heroScale }],
-                  },
-                ]}
-              >
-                <SlabRevealHero
-                  revealCard={revealCard}
-                  slabW={slabW}
-                  slabH={slabH}
-                  borderColor={tv.border}
-                  accentColor={tv.accent}
-                />
-              </Animated.View>
+              <GestureDetector gesture={peekGesture}>
+                <Reanimated.View style={[styles.peekHit, peekStyle]}>
+                  <Animated.View
+                    style={[
+                      styles.heroPlate,
+                      {
+                        width: slabW,
+                        height: slabH,
+                        borderRadius: 18,
+                        borderColor: tv.border,
+                        opacity: heroOp,
+                        transform: [{ translateY: heroY }, { scale: heroScale }],
+                      },
+                    ]}
+                  >
+                    <SlabRevealHero
+                      revealCard={revealCard}
+                      slabW={slabW}
+                      slabH={slabH}
+                      borderColor={tv.border}
+                      accentColor={tv.accent}
+                    />
+                  </Animated.View>
+                </Reanimated.View>
+              </GestureDetector>
             </View>
             <Animated.Text
               style={[
@@ -513,6 +532,10 @@ const styles = StyleSheet.create({
   },
   heroPlate: {
     overflow: 'hidden',
+  },
+  peekHit: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   heroName: {
     marginTop: spacing.md,
