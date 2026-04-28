@@ -3,6 +3,7 @@ import {
   View,
   Text,
   ScrollView,
+  FlatList,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -18,6 +19,7 @@ import { AppHeader } from '../components/shared/AppHeader';
 import { HomeBackground } from '../components/shared/HomeBackground';
 import { ListingCard } from '../components/marketplace/ListingCard';
 import { WhyChoosePullHub } from '../components/marketplace/WhyChoosePullHub';
+import { CardMarketListingRow } from '../components/marketplace/CardMarketListingRow';
 import { colors } from '../tokens/colors';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
@@ -36,6 +38,26 @@ import { demoMarketplacePromoImage } from '../data/demoMedia';
 import { navigationRef } from '../navigation/navigationRef';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { ShopCoach } from '../components/coach/ShopCoach';
+import { useAppStore } from '../store/useAppStore';
+import { getAllCardMarketListings } from '../lib/friendVaultShop';
+import type { PullRarityTier } from '../data/mockUser';
+
+type MarketTab = 'packs' | 'cards';
+
+const CARD_SORT_OPTIONS = [
+  { key: 'price_low', label: 'Price ↑' },
+  { key: 'price_high', label: 'Price ↓' },
+  { key: 'rarity', label: 'Rarity' },
+] as const;
+type CardSortKey = (typeof CARD_SORT_OPTIONS)[number]['key'];
+
+const RARITY_RANK: Record<PullRarityTier, number> = {
+  common: 0,
+  rare: 1,
+  epic: 2,
+  legendary: 3,
+  mythic: 4,
+};
 
 const CATEGORY_KEYS: (ListingCategory | 'all')[] = [
   'all',
@@ -60,11 +82,44 @@ export function MarketplaceScreen() {
   const insets = useSafeAreaInsets();
   const { requireAuth } = useRequireAuth();
   const searchRef = useRef<TextInput>(null);
+  const [marketTab, setMarketTab] = useState<MarketTab>('packs');
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ListingCategory | 'all'>('all');
   const [sort, setSort] = useState<MarketplaceSortId>('recommended');
   const [regionFilter, setRegionFilter] = useState<MarketplaceRegionFilterId>('all');
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [cardSort, setCardSort] = useState<CardSortKey>('price_low');
+  const [cardQuery, setCardQuery] = useState('');
+
+  // Card marketplace data
+  const friendVaultShopByUser = useAppStore((s) => s.friendVaultShopByUser);
+  const currentUsername = useAppStore((s) => s.user.username);
+
+  const allCardListings = useMemo(
+    () => getAllCardMarketListings(friendVaultShopByUser),
+    [friendVaultShopByUser],
+  );
+
+  const filteredCardListings = useMemo(() => {
+    const q = cardQuery.trim().toLowerCase();
+    let list = q
+      ? allCardListings.filter((l) =>
+          `${l.result} ${l.packTitle} ${l.sellerUsername}`.toLowerCase().includes(q),
+        )
+      : allCardListings;
+
+    if (cardSort === 'price_low') {
+      list = [...list].sort((a, b) => a.listPriceUsd - b.listPriceUsd);
+    } else if (cardSort === 'price_high') {
+      list = [...list].sort((a, b) => b.listPriceUsd - a.listPriceUsd);
+    } else if (cardSort === 'rarity') {
+      list = [...list].sort(
+        (a, b) =>
+          (RARITY_RANK[b.tier ?? 'common'] ?? 0) - (RARITY_RANK[a.tier ?? 'common'] ?? 0),
+      );
+    }
+    return list;
+  }, [allCardListings, cardQuery, cardSort]);
 
   const activeFilterCount = useMemo(() => {
     let n = 0;
@@ -158,6 +213,109 @@ export function MarketplaceScreen() {
     <View style={styles.root}>
       <HomeBackground />
       <AppHeader onSearch={() => searchRef.current?.focus()} />
+
+      {/* Market tab switcher */}
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tabBtn, marketTab === 'packs' && styles.tabBtnActive]}
+          onPress={() => setMarketTab('packs')}
+          activeOpacity={0.85}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: marketTab === 'packs' }}
+        >
+          <Text style={[styles.tabBtnText, marketTab === 'packs' && styles.tabBtnTextActive]}>
+            🎴 Packs
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabBtn, marketTab === 'cards' && styles.tabBtnActive]}
+          onPress={() => setMarketTab('cards')}
+          activeOpacity={0.85}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: marketTab === 'cards' }}
+        >
+          <Text style={[styles.tabBtnText, marketTab === 'cards' && styles.tabBtnTextActive]}>
+            💎 Cards
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* ── Cards marketplace ─────────────────────────────────── */}
+      {marketTab === 'cards' ? (
+        <View style={styles.cardMarketRoot}>
+          {/* Header */}
+          <Text style={styles.cardMarketTitle}>Card Market</Text>
+          <Text style={styles.cardMarketLead}>
+            {filteredCardListings.length} listing{filteredCardListings.length !== 1 ? 's' : ''} · Peer-to-peer card trading
+          </Text>
+
+          {/* Search */}
+          <View style={styles.searchShell}>
+            <Ionicons name="search" size={18} color={colors.textMuted} style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search cards, packs, sellers…"
+              placeholderTextColor={colors.textMuted}
+              value={cardQuery}
+              onChangeText={setCardQuery}
+              returnKeyType="search"
+            />
+            {cardQuery.length > 0 ? (
+              <TouchableOpacity onPress={() => setCardQuery('')} hitSlop={12}>
+                <Ionicons name="close-circle" size={20} color={colors.textMuted} />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+
+          {/* Sort chips */}
+          <View style={styles.cardSortRow}>
+            {CARD_SORT_OPTIONS.map((opt) => {
+              const active = cardSort === opt.key;
+              return (
+                <TouchableOpacity
+                  key={opt.key}
+                  style={[styles.sortPill, active && styles.sortPillActive]}
+                  onPress={() => setCardSort(opt.key)}
+                  activeOpacity={0.85}
+                >
+                  <Text style={[styles.sortPillText, active && styles.sortPillTextActive]}>
+                    {opt.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Listings */}
+          <FlatList
+            data={filteredCardListings}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <CardMarketListingRow
+                listing={item}
+                isOwnListing={item.sellerUsername === currentUsername}
+              />
+            )}
+            contentContainerStyle={[
+              styles.cardListContent,
+              { paddingBottom: insets.bottom + 100 },
+            ]}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <View style={styles.cardEmptyWrap}>
+                <Text style={styles.cardEmptyEmoji}>🃏</Text>
+                <Text style={styles.cardEmptyTitle}>No cards found</Text>
+                <Text style={styles.cardEmptyBody}>
+                  List your vault cards for sale to get them here.
+                </Text>
+              </View>
+            }
+          />
+        </View>
+      ) : null}
+
+      {/* ── Pack store ────────────────────────────────────────── */}
+      {marketTab === 'packs' ? (
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 100 }]}
@@ -369,6 +527,7 @@ export function MarketplaceScreen() {
           </View>
         )}
       </ScrollView>
+      ) : null}
 
       <Modal
         visible={filtersOpen}
@@ -465,6 +624,111 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.homeGradientBottom,
   },
+  // ── Tab switcher ──
+  tabBar: {
+    flexDirection: 'row',
+    marginHorizontal: spacing.base,
+    marginTop: spacing.sm,
+    marginBottom: spacing.xs,
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radius.lg,
+    padding: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  tabBtn: {
+    flex: 1,
+    paddingVertical: 9,
+    borderRadius: radius.md,
+    alignItems: 'center',
+  },
+  tabBtnActive: {
+    backgroundColor: colors.nearBlack,
+    shadowColor: colors.gold,
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.goldBorderMuted,
+  },
+  tabBtnText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: colors.textMuted,
+  },
+  tabBtnTextActive: {
+    color: colors.textPrimary,
+    fontFamily: brandFont.bold,
+  },
+  // ── Card marketplace ──
+  cardMarketRoot: {
+    flex: 1,
+    paddingHorizontal: spacing.base,
+  },
+  cardMarketTitle: {
+    fontSize: fontSize.xl,
+    fontFamily: brandFont.black,
+    color: colors.textPrimary,
+    letterSpacing: -0.3,
+    marginTop: spacing.sm,
+    marginBottom: 4,
+  },
+  cardMarketLead: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    lineHeight: 18,
+    marginBottom: spacing.md,
+  },
+  cardSortRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  sortPill: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: 7,
+    borderRadius: radius.full,
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  sortPillActive: {
+    backgroundColor: colors.accentSoft,
+    borderColor: colors.accentBorder,
+  },
+  sortPillText: {
+    fontSize: 12,
+    fontFamily: brandFont.semibold,
+    color: colors.textMuted,
+  },
+  sortPillTextActive: {
+    color: colors.accentDark,
+  },
+  cardListContent: {
+    paddingTop: spacing.xs,
+  },
+  cardEmptyWrap: {
+    alignItems: 'center',
+    paddingVertical: spacing.xxxl,
+  },
+  cardEmptyEmoji: {
+    fontSize: 48,
+    marginBottom: spacing.md,
+  },
+  cardEmptyTitle: {
+    fontSize: fontSize.md,
+    fontFamily: brandFont.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  cardEmptyBody: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  // ── Pack store (existing) ──
   scroll: {
     flex: 1,
     backgroundColor: 'transparent',

@@ -21,6 +21,7 @@ import { AppHeader } from '../components/shared/AppHeader';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { VaultAssetSheet } from '../components/vault/VaultAssetSheet';
+import { PortfolioCard } from '../components/vault/PortfolioCard';
 import { useVaultPullsSorted } from '../lib/vaultPulls';
 import { formatVaultTimeLeft, vaultExpiryNoticeActive, vaultMillisRemaining } from '../lib/vaultTime';
 import { VAULT_HOLD_DAYS } from '../lib/vaultConstants';
@@ -50,9 +51,36 @@ const TIER_ACCENT: Record<PullRarityTier, string> = {
   mythic: '#FB7185',
 };
 
+const TIER_GLOW: Record<PullRarityTier, string> = {
+  common: 'rgba(148, 163, 184, 0.08)',
+  rare: 'rgba(96, 165, 250, 0.1)',
+  epic: 'rgba(168, 85, 247, 0.12)',
+  legendary: 'rgba(251, 191, 36, 0.14)',
+  mythic: 'rgba(251, 113, 133, 0.14)',
+};
+
 function tierAccent(tier: PullRarityTier | undefined): string {
   if (!tier) return colors.textMuted;
   return TIER_ACCENT[tier];
+}
+
+function tierGlow(tier: PullRarityTier | undefined): string {
+  if (!tier) return 'transparent';
+  return TIER_GLOW[tier];
+}
+
+function coinsToUsdText(coins: number): string {
+  const usd = coins / 100;
+  if (usd >= 1000) return `$${(usd / 1000).toFixed(1)}K`;
+  if (usd >= 1) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(usd);
+  }
+  return `$${usd.toFixed(2)}`;
 }
 
 export function VaultScreen() {
@@ -84,6 +112,10 @@ export function VaultScreen() {
     requireAuth(() => navigation.navigate('PullHistory'));
   }, [navigation, requireAuth]);
 
+  const goHome = useCallback(() => {
+    navigation.navigate('Home' as never);
+  }, [navigation]);
+
   const horizontalPad = spacing.base;
   const gap = spacing.sm;
   const tileWidth = useMemo(
@@ -109,22 +141,30 @@ export function VaultScreen() {
       <View style={styles.headerBlock}>
         <Text style={styles.pageEyebrow}>{t('vaultScreen.eyebrow')}</Text>
         <Text style={styles.pageTitle}>{t('vaultScreen.title')}</Text>
-        <Text style={styles.lead}>{t('vaultScreen.lead')}</Text>
-        <VaultFramedCard style={styles.benefitsCard} contentStyle={styles.benefitsInner}>
-          <Text style={styles.benefitsTitle}>{t('vaultScreen.benefitsTitle')}</Text>
-          <Text style={styles.benefitLine}>{t('vaultScreen.benefit1')}</Text>
-          <Text style={styles.benefitLine}>{t('vaultScreen.benefit2')}</Text>
-          <Text style={styles.benefitLine}>{t('vaultScreen.benefit3')}</Text>
-          <Text style={styles.benefitLine}>{t('vaultScreen.benefit4')}</Text>
-          <Text style={styles.benefitLine}>{t('vaultScreen.benefit5')}</Text>
-          <Text style={styles.benefitFine}>{t('vaultScreen.benefitFine', { days: VAULT_HOLD_DAYS })}</Text>
-        </VaultFramedCard>
-        <TouchableOpacity onPress={goPullHistory} accessibilityRole="button">
+
+        {/* Portfolio summary card */}
+        <PortfolioCard pulls={pulls} />
+
+        <TouchableOpacity onPress={goPullHistory} accessibilityRole="button" style={styles.historyLinkWrap}>
           <Text style={styles.historyLink}>{t('vaultScreen.pullHistoryLink')}</Text>
         </TouchableOpacity>
       </View>
     ),
-    [goPullHistory, t],
+    [goPullHistory, pulls, t],
+  );
+
+  const EmptyState = useMemo(
+    () => (
+      <View style={styles.emptyWrap}>
+        <Text style={styles.emptyEmoji}>📦</Text>
+        <Text style={styles.emptyTitle}>{t('vaultScreen.emptyTitle')}</Text>
+        <Text style={styles.emptyBody}>{t('vaultScreen.emptyBody')}</Text>
+        <TouchableOpacity style={styles.emptyCta} onPress={goHome} activeOpacity={0.88} accessibilityRole="button">
+          <Text style={styles.emptyCtaText}>Open a Pack →</Text>
+        </TouchableOpacity>
+      </View>
+    ),
+    [goHome, t],
   );
 
   const renderItem = useCallback(
@@ -192,12 +232,7 @@ export function VaultScreen() {
         numColumns={2}
         columnWrapperStyle={styles.row}
         ListHeaderComponent={ListHeader}
-        ListEmptyComponent={
-          <VaultFramedCard style={styles.emptyCard} contentStyle={styles.emptyInner}>
-            <Text style={styles.emptyTitle}>{t('vaultScreen.emptyTitle')}</Text>
-            <Text style={styles.emptyBody}>{t('vaultScreen.emptyBody')}</Text>
-          </VaultFramedCard>
-        }
+        ListEmptyComponent={EmptyState}
         renderItem={renderItem}
         contentContainerStyle={[
           styles.listContent,
@@ -232,6 +267,20 @@ function VaultTile({
 }) {
   const { t, i18n } = useTranslation();
   const accent = tierAccent(pull.tier);
+  const glow = tierGlow(pull.tier);
+
+  const isListed = (pull.vaultExchangeListUsd ?? 0) >= 1;
+  const isVaulted = pull.fulfillment === 'vaulted';
+  const urgent = isVaulted && vaultExpiryNoticeActive(pull);
+  const timerMs = isVaulted ? vaultMillisRemaining(pull) : null;
+  const timerLabel =
+    timerMs != null && timerMs > 0 ? formatVaultTimeLeft(timerMs, t) : null;
+
+  const pressable =
+    pull.fulfillment === 'pending' ||
+    pull.fulfillment === 'vaulted' ||
+    pull.fulfillment === 'shipped';
+
   const statusKey =
     pull.fulfillment === 'pending'
       ? 'vaultScreen.statusPending'
@@ -241,13 +290,7 @@ function VaultTile({
           ? 'vaultScreen.statusVaulted'
           : 'vaultScreen.statusKept';
 
-  const isVaulted = pull.fulfillment === 'vaulted';
-  const urgent = isVaulted && vaultExpiryNoticeActive(pull);
-  const timerMs = isVaulted ? vaultMillisRemaining(pull) : null;
-  const timerLabel =
-    timerMs != null && timerMs > 0 ? formatVaultTimeLeft(timerMs, t) : null;
-
-  const pressable = pull.fulfillment === 'pending' || pull.fulfillment === 'vaulted' || pull.fulfillment === 'shipped';
+  const valueText = coinsToUsdText(pull.creditsWon);
 
   return (
     <TouchableOpacity
@@ -259,31 +302,49 @@ function VaultTile({
       accessibilityLabel={`${pull.result}. ${t(statusKey)}`}
     >
       <VaultFramedCard
-        style={[styles.tileCard, isVaulted && styles.tileCardVault]}
+        style={[
+          styles.tileCard,
+          isVaulted && styles.tileCardVault,
+          { backgroundColor: glow },
+        ]}
         contentStyle={styles.tileInner}
       >
+        {/* Tier accent dot */}
         <View style={[styles.tierDot, { backgroundColor: accent }]} />
+
+        {/* Card name */}
         <Text style={styles.tileResult} numberOfLines={3}>
           {pull.result}
         </Text>
+
+        {/* Pack name */}
         <Text style={styles.tilePack} numberOfLines={2}>
           {getLocalizedPackTitle(pull.packId, pull.packTitle, t)}
         </Text>
+
+        {/* Date */}
         <Text style={styles.tileMeta}>
           {pull.timestamp.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
         </Text>
+
+        {/* Timer */}
         {timerLabel ? (
           <Text style={[styles.tileTimer, urgent && styles.tileTimerUrgent]} numberOfLines={1}>
             {urgent ? t('vaultScreen.notifyBeforeConvert') : timerLabel}
           </Text>
         ) : null}
-        {pull.vaultExchangeListUsd != null && pull.vaultExchangeListUsd >= 1 ? (
-          <View style={styles.tileListedPill}>
-            <Text style={styles.tileListedPillText}>
-              {t('vaultScreen.listedPill', { price: formatVaultExchangeUsd(pull.vaultExchangeListUsd) })}
-            </Text>
-          </View>
-        ) : null}
+
+        {/* Value + Listed badge row */}
+        <View style={styles.tileValueRow}>
+          <Text style={[styles.tileValue, { color: accent }]}>{valueText}</Text>
+          {isListed ? (
+            <View style={styles.tileListedBadge}>
+              <Text style={styles.tileListedBadgeText}>LISTED</Text>
+            </View>
+          ) : null}
+        </View>
+
+        {/* Status */}
         <Text
           style={[
             styles.tileStatus,
@@ -301,7 +362,7 @@ function VaultTile({
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.homeGradientBottom },
   listContent: { paddingTop: spacing.sm, flexGrow: 1 },
-  headerBlock: { marginBottom: spacing.lg },
+  headerBlock: { marginBottom: spacing.md },
   pageEyebrow: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
@@ -314,42 +375,15 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.black,
     color: colors.textPrimary,
     letterSpacing: -0.5,
-    marginBottom: spacing.xs,
+    marginBottom: spacing.md,
   },
-  lead: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
-    lineHeight: 22,
-    marginBottom: spacing.sm,
+  historyLinkWrap: {
+    marginTop: spacing.xs,
   },
   historyLink: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
     color: colors.accent,
-    marginTop: spacing.md,
-  },
-  benefitsCard: { marginTop: spacing.md, marginBottom: spacing.sm },
-  benefitsInner: { padding: spacing.lg },
-  benefitsTitle: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  benefitLine: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
-    lineHeight: 20,
-    marginBottom: 4,
-  },
-  benefitFine: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
-    marginTop: spacing.sm,
-    lineHeight: 18,
   },
   row: {
     justifyContent: 'space-between',
@@ -401,27 +435,36 @@ const styles = StyleSheet.create({
   tileTimerUrgent: {
     color: colors.gold,
   },
-  tileListedPill: {
-    alignSelf: 'flex-start',
-    marginTop: 6,
-    paddingVertical: 3,
-    paddingHorizontal: spacing.sm,
-    borderRadius: radius.full,
-    backgroundColor: colors.accentSoft,
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
+  tileValueRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginTop: spacing.sm,
   },
-  tileListedPillText: {
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.accentDark,
-    letterSpacing: 0.3,
+  tileValue: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.black,
+    letterSpacing: -0.2,
+  },
+  tileListedBadge: {
+    backgroundColor: colors.accentJadeSoft,
+    borderRadius: radius.sm,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderWidth: 1,
+    borderColor: colors.accentJade + '55',
+  },
+  tileListedBadgeText: {
+    fontSize: 8,
+    fontFamily: brandFont.black,
+    color: colors.accentJade,
+    letterSpacing: 0.5,
   },
   tileStatus: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
     color: colors.textSecondary,
-    marginTop: 4,
+    marginTop: 2,
   },
   tileStatusPending: {
     color: colors.gold,
@@ -429,8 +472,21 @@ const styles = StyleSheet.create({
   tileStatusUrgent: {
     color: colors.gold,
   },
-  emptyCard: { marginTop: spacing.md },
-  emptyInner: { padding: spacing.xl, alignItems: 'center' },
+  // Empty state
+  emptyWrap: {
+    marginTop: spacing.lg,
+    alignItems: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.xl,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  emptyEmoji: {
+    fontSize: 48,
+    marginBottom: spacing.md,
+  },
   emptyTitle: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
@@ -444,7 +500,21 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
+    marginBottom: spacing.lg,
   },
+  emptyCta: {
+    backgroundColor: colors.gold,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl,
+    borderRadius: radius.lg,
+  },
+  emptyCtaText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.bold,
+    color: colors.ink,
+    letterSpacing: 0.3,
+  },
+  // Guest gate
   guestCard: { marginTop: spacing.md },
   guestInner: { padding: spacing.xl },
   guestTitle: {
