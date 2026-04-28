@@ -7,7 +7,8 @@
       "Bash(sed -i '' \"s/prizeLine ?? 'pokemon'/prizeLine ?? 'onboarding'/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/pack/opening/usePackOpening.ts\")",
       "Bash(sed -i '' \"s/import type { Pack } from '..\\\\/..\\\\/data\\\\/mockPacks';/import { packImageSource, type Pack } from '..\\\\/..\\\\/data\\\\/mockPacks';/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/home/DropLobbyHero 2.tsx\")",
       "Bash(sed -i '' \"s/<Image source={{ uri: pack.imageUrl }}/<Image source={packImageSource\\(pack.imageUrl\\)}/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/home/DropLobbyHero 2.tsx\")",
-      "Bash(sed -i '' \"s/import type { ChipTagType, Pack } from '..\\\\/..\\\\/data\\\\/mockPacks';/import { packImageSource, type ChipTagType, type Pack } from '..\\\\/..\\\\/data\\\\/mockPacks';/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/home/LobbyPackTile 2.tsx\")"
+      "Bash(sed -i '' \"s/import type { ChipTagType, Pack } from '..\\\\/..\\\\/data\\\\/mockPacks';/import { packImageSource, type ChipTagType, type Pack } from '..\\\\/..\\\\/data\\\\/mockPacks';/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/home/LobbyPackTile 2.tsx\")",
+      "Read(//Users/yoshitake/Desktop/oripa\\\\ mobile/ORIPA-MOBILE/src/components/pack/opening/**)"
     ],
     "additionalDirectories": [
       "/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/assets/pack-images"

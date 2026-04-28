@@ -24,9 +24,10 @@ import { useGuestBrowseStore } from '../../store/guestBrowseStore';
 import { isClerkEnabled } from '../../config/clerk';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
-import { DEFAULT_PACK_OPENING_STYLE, USE_PROTOTYPE_LINEUP_PACK_OPEN } from '../../config/packOpeningAnimation';
+import { DEFAULT_PACK_OPENING_STYLE, USE_POKEPOKE_PACK_OPEN, USE_PROTOTYPE_LINEUP_PACK_OPEN } from '../../config/packOpeningAnimation';
 import { PackOpeningEngine } from './opening/PackOpeningEngine';
 import { PrototypePackOpenFlow } from './openingPrototype/PrototypePackOpenFlow';
+import { PokePokePackOpenFlow } from './opening/pokepoke/PokePokePackOpenFlow';
 import { StadiumGradient, Spotlight } from './opening/sharedStage';
 import { resolveRevealCardForTier } from './opening/mockRevealCards';
 import { generatePackOpenResult, bestRollFromResults } from './opening/generatePackRoll';
@@ -295,8 +296,24 @@ export function PackOpeningModal() {
           </View>
 
           <View style={styles.body}>
-            {pending && revealCard ? (
-              USE_PROTOTYPE_LINEUP_PACK_OPEN ? (
+            {pending && revealCard && selectedPack ? (
+              USE_POKEPOKE_PACK_OPEN ? (
+                <PokePokePackOpenFlow
+                  key={`pack-open-pokepoke-${packOpenSessionId}`}
+                  roll={pending}
+                  revealCard={revealCard}
+                  revealRarity={revealRarity}
+                  packTint={packTint}
+                  packFaceTitle={packFaceTitle}
+                  sessionSalt={packOpenSessionId}
+                  replayKey={0}
+                  skipNonce={skipNonce}
+                  onRevealDone={onRevealDone}
+                  onStoreInVault={goToWonPrizes}
+                  onSharePull={sharePullFromReveal}
+                  pack={selectedPack}
+                />
+              ) : USE_PROTOTYPE_LINEUP_PACK_OPEN ? (
                 <PrototypePackOpenFlow
                   key={`pack-open-proto-${packOpenSessionId}`}
                   roll={pending}

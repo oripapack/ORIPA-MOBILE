@@ -12,7 +12,13 @@ export const DEFAULT_PACK_OPENING_STYLE: PackOpeningStyle = 'hybrid';
  * When true, `PackOpeningModal` uses the internal lineup → rip prototype instead of `PackOpeningEngine`.
  * Set false to return to the classic reel + hero flow.
  */
-export const USE_PROTOTYPE_LINEUP_PACK_OPEN = true;
+export const USE_PROTOTYPE_LINEUP_PACK_OPEN = false;
+
+/**
+ * When true, `PackOpeningModal` uses the Pokémon TCG Pocket-style swipe-to-tear flow.
+ * Takes precedence over `USE_PROTOTYPE_LINEUP_PACK_OPEN`.
+ */
+export const USE_POKEPOKE_PACK_OPEN = true;
 
 /**
  * Prototype rip step: `'tap'` = single tap opens with a clean vertical peel (matches the seam).
