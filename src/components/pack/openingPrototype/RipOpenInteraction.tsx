@@ -3,8 +3,6 @@ import { Platform, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import Animated, {
-  Extrapolate,
-  interpolate,
   runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -24,11 +22,7 @@ import { CAROUSEL_PACK_DIMS } from './PackSelectionCarousel';
 
 const preserve3d = { transformStyle: 'preserve-3d' } as ViewStyle;
 
-const BURST_AT = 0.7;
-const SEAM_HIT_HALF = 22;
-const BACKFACE_RAD_THRESHOLD = Math.PI * 0.72;
-const SPRING_ROTATE = { mass: 1.15, damping: 19, stiffness: 118 } as const;
-const SPRING_PEEL = { mass: 1.05, damping: 20, stiffness: 132 } as const;
+const SPRING_FLIP = { mass: 1.1, damping: 19, stiffness: 124 } as const;
 const SPRING_BURST = { mass: 0.95, damping: 16, stiffness: 180 } as const;
 
 function hapticLight() {
@@ -49,17 +43,15 @@ function hapticSuccess() {
 type Props = {
   packTint: string;
   onRipComplete: () => void;
-  /** Optional external progress (0..1) — driven by peel amount on the back. */
+  /** Optional external progress (0..1) — tracks flip until burst. */
   openProgressSV?: SharedValue<number>;
-  /** Optional external lock (1 = gestures ignored). */
   gestureLockSV?: SharedValue<number>;
-  /** When false, burst / completion does not call `onRipComplete`. */
   completeOnFinish?: boolean;
 };
 
 /**
- * Back-peel open: pan to rotate the pack to its back, then pull the center seam
- * downward to peel the foil; at ~70% peel, a flare burst finishes the open.
+ * Flip-only open: horizontal pan drives `flip` 0 = front → 1 = back.
+ * Visual is a real Y-axis 3D rotation (perspective + back faces); settling on the back triggers burst.
  */
 export function RipOpenInteraction({
   packTint,
@@ -74,23 +66,20 @@ export function RipOpenInteraction({
   const halfW = faceW / 2;
   const cornerR = Math.max(8, Math.min(18, Math.round((18 * faceW) / 210)));
   const stage = Math.ceil(Math.hypot(faceW, faceH) + 36);
-  const stageMidX = stage / 2;
 
-  const rotateY = useSharedValue(0);
-  const opening = openProgressSV ?? useSharedValue(0);
+  const flip = useSharedValue(0);
+  const internalOpening = useSharedValue(0);
+  const opening = openProgressSV ?? internalOpening;
   const bursting = useSharedValue(0);
-  const burstArmed = useSharedValue(0);
   const flare = useSharedValue(0);
   const packPop = useSharedValue(1);
   const rootFade = useSharedValue(1);
 
-  const rotateStart = useSharedValue(0);
-  const peelStart = useSharedValue(0);
-  /** 0 = rotate, 1 = peel */
-  const activeMode = useSharedValue(0);
+  const flipStart = useSharedValue(0);
 
   const [gestureEnabled, setGestureEnabled] = useState(false);
   const finishedRef = useRef(false);
+  const burstRanRef = useRef(false);
   const runBurstRef = useRef<() => void>(() => {});
 
   useEffect(() => {
@@ -141,17 +130,18 @@ export function RipOpenInteraction({
 
   runBurstRef.current = runBurst;
 
+  const scheduleBurstIfBack = useCallback(() => {
+    if (finishedRef.current || burstRanRef.current) return;
+    burstRanRef.current = true;
+    runBurstRef.current();
+  }, []);
+
+  /** Keep `opening` identical to `flip` so we never run two competing springs (avoids jitter). */
   useAnimatedReaction(
-    () => opening.value,
-    (o, prev) => {
+    () => flip.value,
+    (v) => {
       if (bursting.value === 1) return;
-      if (burstArmed.value === 1) return;
-      if (o < BURST_AT) return;
-      if (prev !== null && prev >= BURST_AT) return;
-      burstArmed.value = 1;
-      runOnJS(() => {
-        runBurstRef.current();
-      })();
+      opening.value = v;
     },
   );
 
@@ -159,106 +149,67 @@ export function RipOpenInteraction({
     () =>
       Gesture.Pan()
         .enabled(gestureEnabled)
-        .onStart((e) => {
+        .onStart(() => {
           if (bursting.value === 1) return;
           if (gestureLockSV?.value === 1) return;
-          const nearBack = rotateY.value > BACKFACE_RAD_THRESHOLD;
-          const inSeam = Math.abs(e.x - stageMidX) < SEAM_HIT_HALF;
-          activeMode.value = nearBack && inSeam ? 1 : 0;
-          rotateStart.value = rotateY.value;
-          peelStart.value = opening.value;
+          flipStart.value = flip.value;
         })
         .onUpdate((e) => {
           if (bursting.value === 1) return;
           if (gestureLockSV?.value === 1) return;
-          if (activeMode.value === 1) {
-            const add = Math.max(0, e.translationY) / Math.max(180, faceH * 0.95);
-            const next = Math.min(1, peelStart.value + add);
-            opening.value = next;
-            return;
-          }
-          const sens = Math.PI / Math.max(faceW * 1.35, 200);
-          const nextRot = rotateStart.value + e.translationX * sens;
-          rotateY.value = Math.min(Math.PI, Math.max(0, nextRot));
+          const sens = 1 / Math.max(faceW * 0.52, 160);
+          const next = flipStart.value + e.translationX * sens;
+          flip.value = Math.min(1, Math.max(0, next));
         })
         .onEnd((e) => {
           if (bursting.value === 1) return;
           if (gestureLockSV?.value === 1) return;
-          if (activeMode.value === 1) {
-            const o = opening.value;
-            if (o >= BURST_AT) {
-              return;
-            }
-            const target = o > 0.38 ? Math.min(o, BURST_AT - 0.02) : 0;
-            opening.value = withSpring(target, SPRING_PEEL);
-            runOnJS(hapticLight)();
-            return;
-          }
           const v = e.velocityX;
-          const y = rotateY.value;
-          let target = y > Math.PI / 2 ? Math.PI : 0;
-          if (Math.abs(v) > 680) {
-            target = v > 0 ? Math.PI : 0;
+          let target = flip.value > 0.5 ? 1 : 0;
+          if (Math.abs(v) > 520) {
+            target = v > 0 ? 1 : 0;
           }
-          rotateY.value = withSpring(target, SPRING_ROTATE);
+          flip.value = withSpring(target, SPRING_FLIP, (finished) => {
+            if (!finished) return;
+            if (target === 1 && bursting.value === 0) {
+              runOnJS(scheduleBurstIfBack)();
+            }
+          });
           runOnJS(hapticLight)();
         }),
     [
-      activeMode,
       bursting,
-      faceH,
       faceW,
+      flip,
+      flipStart,
       gestureEnabled,
       gestureLockSV,
-      opening,
-      peelStart,
-      rotateStart,
-      rotateY,
-      stageMidX,
+      scheduleBurstIfBack,
     ],
   );
 
-  const cubeStyle = useAnimatedStyle(() => ({
-    transform: [
-      { perspective: 1200 },
-      { rotateY: `${rotateY.value}rad` },
-      { scale: packPop.value },
-    ],
+  const packMotionStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: packPop.value }],
     opacity: rootFade.value,
   }));
 
-  const frontFaceStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(rotateY.value, [0, Math.PI * 0.45], [1, 0], Extrapolate.CLAMP),
-  }));
-
-  const backFaceStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(rotateY.value, [Math.PI * 0.38, Math.PI * 0.55], [0, 1], Extrapolate.CLAMP),
-  }));
-
-  const foilPeelStyle = useAnimatedStyle(() => {
-    const o = opening.value;
-    return {
-      transform: [
-        { scaleX: 1 + 0.42 * o },
-        { scaleY: 1 + 0.36 * o },
-      ],
-      opacity: interpolate(o, [0, 0.25, 1], [1, 0.92, 0.35]),
-    };
-  });
-
-  const seamGlowStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(opening.value, [0, 0.2, 0.85], [0.45, 1, 0.75]),
-    transform: [{ scaleY: interpolate(opening.value, [0, 1], [1, 1.08]) }],
+  const flip3dStyle = useAnimatedStyle(() => ({
+    transform: [
+      { perspective: 1400 },
+      { rotateY: `${flip.value * Math.PI}rad` },
+    ],
   }));
 
   const flareStyle = useAnimatedStyle(() => ({
     opacity: flare.value * 0.92,
-    transform: [{ scale: interpolate(flare.value, [0, 1], [0.65, 1.45]) }],
+    transform: [{ scale: flare.value * 0.45 + 0.65 }],
   }));
 
   return (
     <View style={styles.hit}>
-      <Text style={styles.instruction}>Turn the pack, then pull the back seam down</Text>
+      <Text style={styles.instruction}>
+        Swipe left or right to flip the pack. When it settles on the back, it opens.
+      </Text>
       <GestureDetector gesture={mainPan}>
         <Animated.View style={[styles.stage, { width: stage, height: stage }]}>
           <View pointerEvents="none" style={styles.backdrop}>
@@ -272,95 +223,89 @@ export function RipOpenInteraction({
           </View>
 
           <View style={styles.stageCenter}>
-            <Animated.View
-              style={[{ width: faceW, height: faceH }, preserve3d, cubeStyle]}
-            >
-              {/* Front */}
+            <Animated.View style={[styles.cardStack, { width: faceW, height: faceH }, packMotionStyle]}>
               <Animated.View
-                pointerEvents="none"
+                collapsable={false}
                 style={[
-                  styles.faceAbs,
-                  { borderRadius: cornerR, width: faceW, height: faceH },
-                  frontFaceStyle,
+                  styles.flipRoot,
+                  { width: faceW, height: faceH, borderRadius: cornerR },
+                  preserve3d,
+                  flip3dStyle,
                 ]}
               >
-                <View style={[styles.faceRow, { width: faceW, height: faceH, borderRadius: cornerR }]}>
-                  <View
-                    style={[
-                      styles.half,
-                      {
-                        width: halfW,
-                        height: faceH,
-                        borderTopLeftRadius: cornerR,
-                        borderBottomLeftRadius: cornerR,
-                      },
-                    ]}
+                {/* Back: pre-rotated 180° so it faces camera when flip === 1 */}
+                <View
+                  pointerEvents="none"
+                  style={[
+                    styles.faceSide,
+                    styles.backSide,
+                    { borderRadius: cornerR, width: faceW, height: faceH },
+                  ]}
+                >
+                  <ExpoLinearGradient
+                    colors={['#1a2440', '#243352', '#1a2744']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[styles.backPlate, { borderRadius: cornerR }]}
                   >
-                    <View style={styles.faceFill}>
-                      <HeroPackFace side="left" packAccent={packTint} />
+                    <View style={styles.backFoilUnder} />
+                    <View style={styles.backCenterGlow} pointerEvents="none" />
+                    <View style={styles.backSeam} />
+                    <View style={styles.backGlyph} pointerEvents="none">
+                      <View
+                        style={[
+                          styles.glyphLine,
+                          {
+                            width: Math.round(faceW * 0.35),
+                            backgroundColor: packTint,
+                            opacity: 0.45,
+                          },
+                        ]}
+                      />
+                      <View style={[styles.glyphDot, { borderColor: packTint }]} />
                     </View>
-                  </View>
-                  <View style={styles.frontSpine} />
-                  <View
-                    style={[
-                      styles.half,
-                      {
-                        width: halfW,
-                        height: faceH,
-                        borderTopRightRadius: cornerR,
-                        borderBottomRightRadius: cornerR,
-                      },
-                    ]}
-                  >
-                    <View style={styles.faceFill}>
-                      <HeroPackFace side="right" packAccent={packTint} />
+                  </ExpoLinearGradient>
+                </View>
+
+                {/* Front */}
+                <View
+                  pointerEvents="none"
+                  style={[styles.faceSide, { borderRadius: cornerR, width: faceW, height: faceH }]}
+                >
+                  <View style={[styles.faceRow, { width: faceW, height: faceH, borderRadius: cornerR }]}>
+                    <View
+                      style={[
+                        styles.half,
+                        {
+                          width: halfW,
+                          height: faceH,
+                          borderTopLeftRadius: cornerR,
+                          borderBottomLeftRadius: cornerR,
+                        },
+                      ]}
+                    >
+                      <View style={styles.faceFill}>
+                        <HeroPackFace side="left" packAccent={packTint} />
+                      </View>
+                    </View>
+                    <View style={styles.frontSpine} />
+                    <View
+                      style={[
+                        styles.half,
+                        {
+                          width: halfW,
+                          height: faceH,
+                          borderTopRightRadius: cornerR,
+                          borderBottomRightRadius: cornerR,
+                        },
+                      ]}
+                    >
+                      <View style={styles.faceFill}>
+                        <HeroPackFace side="right" packAccent={packTint} />
+                      </View>
                     </View>
                   </View>
                 </View>
-              </Animated.View>
-
-              {/* Back */}
-              <Animated.View
-                pointerEvents="none"
-                style={[
-                  styles.faceAbs,
-                  styles.backRot,
-                  { borderRadius: cornerR, width: faceW, height: faceH },
-                  backFaceStyle,
-                ]}
-              >
-                <ExpoLinearGradient
-                  colors={['#0a0f18', '#111827', '#0c1220']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={[styles.backPlate, { borderRadius: cornerR }]}
-                >
-                  <View style={styles.backFoilUnder} />
-                  <Animated.View style={[styles.foilPeel, foilPeelStyle]} pointerEvents="none">
-                    <ExpoLinearGradient
-                      colors={[
-                        'rgba(148,163,184,0.22)',
-                        'rgba(226,232,240,0.38)',
-                        'rgba(253,230,138,0.28)',
-                        'rgba(148,163,184,0.2)',
-                      ]}
-                      locations={[0, 0.35, 0.62, 1]}
-                      start={{ x: 0.5, y: 0 }}
-                      end={{ x: 0.5, y: 1 }}
-                      style={StyleSheet.absoluteFill}
-                    />
-                  </Animated.View>
-                  <Animated.View style={[styles.backSeam, seamGlowStyle]} />
-                  <View style={styles.backGlyph} pointerEvents="none">
-                    <View
-                      style={[
-                        styles.glyphLine,
-                        { width: Math.round(faceW * 0.35), backgroundColor: packTint, opacity: 0.35 },
-                      ]}
-                    />
-                    <View style={[styles.glyphDot, { borderColor: packTint }]} />
-                  </View>
-                </ExpoLinearGradient>
               </Animated.View>
             </Animated.View>
           </View>
@@ -400,17 +345,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 2,
+    overflow: 'visible',
   },
-  faceAbs: {
+  cardStack: {
+    position: 'relative',
+    overflow: 'visible',
+  },
+  flipRoot: {
+    overflow: 'visible',
+  },
+  faceSide: {
     position: 'absolute',
     left: 0,
     top: 0,
     backfaceVisibility: 'hidden',
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: 'rgba(255,255,255,0.14)',
+    backgroundColor: '#06090c',
   },
-  backRot: {
+  backSide: {
     transform: [{ rotateY: '180deg' }],
   },
   faceRow: {
@@ -439,21 +393,28 @@ const styles = StyleSheet.create({
   },
   backFoilUnder: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(15,23,42,0.55)',
+    backgroundColor: 'rgba(51,65,85,0.4)',
   },
-  foilPeel: {
-    ...StyleSheet.absoluteFillObject,
-    transformOrigin: 'center',
+  backCenterGlow: {
+    position: 'absolute',
+    left: '14%',
+    right: '14%',
+    top: '10%',
+    bottom: '10%',
+    borderRadius: 16,
+    backgroundColor: 'rgba(248,250,252,0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
   },
   backSeam: {
     position: 'absolute',
     left: '50%',
-    marginLeft: -2,
-    top: '6%',
-    width: 4,
-    height: '88%',
-    borderRadius: 2,
-    backgroundColor: 'rgba(254,249,195,0.95)',
+    marginLeft: -3,
+    top: '5%',
+    width: 6,
+    height: '90%',
+    borderRadius: 3,
+    backgroundColor: 'rgba(254,249,195,0.98)',
     shadowColor: '#fde047',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.55,
