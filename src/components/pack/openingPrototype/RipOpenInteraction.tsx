@@ -7,7 +7,6 @@ import Animated, {
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
-  type SharedValue,
   withDelay,
   withSequence,
   withSpring,
@@ -22,8 +21,9 @@ import { CAROUSEL_PACK_DIMS } from './PackSelectionCarousel';
 
 const preserve3d = { transformStyle: 'preserve-3d' } as ViewStyle;
 
-const SPRING_FLIP = { mass: 1.1, damping: 19, stiffness: 124 } as const;
+const SPRING_FLIP = { mass: 1.05, damping: 20, stiffness: 150, overshootClamping: true } as const;
 const SPRING_BURST = { mass: 0.95, damping: 16, stiffness: 180 } as const;
+const BACK_HOLD_BEFORE_BURST_MS = 140;
 
 function hapticLight() {
   if (Platform.OS === 'web') return;
@@ -43,23 +43,13 @@ function hapticSuccess() {
 type Props = {
   packTint: string;
   onRipComplete: () => void;
-  /** Optional external progress (0..1) — tracks flip until burst. */
-  openProgressSV?: SharedValue<number>;
-  gestureLockSV?: SharedValue<number>;
-  completeOnFinish?: boolean;
 };
 
 /**
- * Flip-only open: horizontal pan drives `flip` 0 = front → 1 = back.
- * Visual is a real Y-axis 3D rotation (perspective + back faces); settling on the back triggers burst.
+ * Prototype open: flip the pack (real 3D rotateY), then burst into reveal.
+ * Used by `PrototypePackOpenFlow` after lineup selection.
  */
-export function RipOpenInteraction({
-  packTint,
-  onRipComplete,
-  openProgressSV,
-  gestureLockSV,
-  completeOnFinish = true,
-}: Props) {
+export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
   const { w, h } = CAROUSEL_PACK_DIMS;
   const faceW = Math.round(w * 1.08);
   const faceH = Math.round(h * 1.08);
@@ -67,9 +57,8 @@ export function RipOpenInteraction({
   const cornerR = Math.max(8, Math.min(18, Math.round((18 * faceW) / 210)));
   const stage = Math.ceil(Math.hypot(faceW, faceH) + 36);
 
-  const flip = useSharedValue(0);
-  const internalOpening = useSharedValue(0);
-  const opening = openProgressSV ?? internalOpening;
+  const flip = useSharedValue(0); // 0..1
+  const opening = useSharedValue(0); // mirrors flip until burst (kept for future orchestration)
   const bursting = useSharedValue(0);
   const flare = useSharedValue(0);
   const packPop = useSharedValue(1);
@@ -80,7 +69,7 @@ export function RipOpenInteraction({
   const [gestureEnabled, setGestureEnabled] = useState(false);
   const finishedRef = useRef(false);
   const burstRanRef = useRef(false);
-  const runBurstRef = useRef<() => void>(() => {});
+  const burstTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const guard = Math.max(0, PROTOTYPE_RIP_GESTURE_GUARD_MS);
@@ -89,7 +78,13 @@ export function RipOpenInteraction({
       return;
     }
     const id = setTimeout(() => setGestureEnabled(true), guard);
-    return () => clearTimeout(id);
+    return () => {
+      clearTimeout(id);
+      if (burstTimerRef.current) {
+        clearTimeout(burstTimerRef.current);
+        burstTimerRef.current = null;
+      }
+    };
   }, []);
 
   const completeOnce = useCallback(() => {
@@ -97,30 +92,26 @@ export function RipOpenInteraction({
     finishedRef.current = true;
     setGestureEnabled(false);
     hapticSuccess();
-    if (completeOnFinish) {
-      onRipComplete();
-    }
-  }, [completeOnFinish, onRipComplete]);
+    onRipComplete();
+  }, [onRipComplete]);
 
   const runBurst = useCallback(() => {
     if (finishedRef.current) return;
     bursting.value = 1;
     hapticMedium();
-    opening.value = withSpring(1, SPRING_BURST);
+    opening.value = withTiming(1, { duration: 260 });
     packPop.value = withSequence(
-      withSpring(1.08, { mass: 0.85, damping: 14, stiffness: 220 }),
-      withSpring(0.92, { mass: 0.9, damping: 18, stiffness: 160 }),
+      withTiming(1.03, { duration: 140 }),
+      withTiming(0.985, { duration: 210 }),
     );
     flare.value = withSequence(
-      withSpring(1, { mass: 0.75, damping: 14, stiffness: 260 }),
+      withTiming(1, { duration: 180 }),
       withDelay(
-        120,
-        withTiming(0, { duration: 380 }, (done) => {
+        80,
+        withTiming(0, { duration: 420 }, (done) => {
           if (done) {
-            rootFade.value = withTiming(0, { duration: 220 }, (f2) => {
-              if (f2) {
-                runOnJS(completeOnce)();
-              }
+            rootFade.value = withTiming(0, { duration: 280 }, (f2) => {
+              if (f2) runOnJS(completeOnce)();
             });
           }
         }),
@@ -128,15 +119,21 @@ export function RipOpenInteraction({
     );
   }, [bursting, completeOnce, flare, opening, packPop, rootFade]);
 
+  const runBurstRef = useRef(runBurst);
   runBurstRef.current = runBurst;
 
   const scheduleBurstIfBack = useCallback(() => {
     if (finishedRef.current || burstRanRef.current) return;
     burstRanRef.current = true;
-    runBurstRef.current();
+    if (burstTimerRef.current) {
+      clearTimeout(burstTimerRef.current);
+    }
+    burstTimerRef.current = setTimeout(() => {
+      burstTimerRef.current = null;
+      runBurstRef.current();
+    }, BACK_HOLD_BEFORE_BURST_MS);
   }, []);
 
-  /** Keep `opening` identical to `flip` so we never run two competing springs (avoids jitter). */
   useAnimatedReaction(
     () => flip.value,
     (v) => {
@@ -145,29 +142,35 @@ export function RipOpenInteraction({
     },
   );
 
-  const mainPan = useMemo(
+  const pan = useMemo(
     () =>
       Gesture.Pan()
         .enabled(gestureEnabled)
+        .activeOffsetX([-8, 8])
+        .failOffsetY([-26, 26])
         .onStart(() => {
           if (bursting.value === 1) return;
-          if (gestureLockSV?.value === 1) return;
           flipStart.value = flip.value;
         })
         .onUpdate((e) => {
           if (bursting.value === 1) return;
-          if (gestureLockSV?.value === 1) return;
+          // Stable "either direction flips":
+          // front side (start < 0.5): any horizontal swipe opens (0 -> 1)
+          // back side  (start >= 0.5): any horizontal swipe closes (1 -> 0)
+          const towardBack = flipStart.value < 0.5 ? 1 : -1;
+          const signed = Math.abs(e.translationX) * towardBack;
           const sens = 1 / Math.max(faceW * 0.52, 160);
-          const next = flipStart.value + e.translationX * sens;
+          const next = flipStart.value + signed * sens;
           flip.value = Math.min(1, Math.max(0, next));
         })
         .onEnd((e) => {
           if (bursting.value === 1) return;
-          if (gestureLockSV?.value === 1) return;
           const v = e.velocityX;
           let target = flip.value > 0.5 ? 1 : 0;
           if (Math.abs(v) > 520) {
-            target = v > 0 ? 1 : 0;
+            // Same rule: “either direction flips”. Interpret velocity magnitude as intent:
+            // if you're on the front, a fast swipe opens; if you're on the back, fast swipe closes.
+            target = flipStart.value < 0.5 ? 1 : 0;
           }
           flip.value = withSpring(target, SPRING_FLIP, (finished) => {
             if (!finished) return;
@@ -177,15 +180,7 @@ export function RipOpenInteraction({
           });
           runOnJS(hapticLight)();
         }),
-    [
-      bursting,
-      faceW,
-      flip,
-      flipStart,
-      gestureEnabled,
-      gestureLockSV,
-      scheduleBurstIfBack,
-    ],
+    [bursting, faceW, flip, flipStart, gestureEnabled, scheduleBurstIfBack],
   );
 
   const packMotionStyle = useAnimatedStyle(() => ({
@@ -194,10 +189,7 @@ export function RipOpenInteraction({
   }));
 
   const flip3dStyle = useAnimatedStyle(() => ({
-    transform: [
-      { perspective: 1400 },
-      { rotateY: `${flip.value * Math.PI}rad` },
-    ],
+    transform: [{ perspective: 1400 }, { rotateY: `${flip.value * Math.PI}rad` }],
   }));
 
   const flareStyle = useAnimatedStyle(() => ({
@@ -208,9 +200,9 @@ export function RipOpenInteraction({
   return (
     <View style={styles.hit}>
       <Text style={styles.instruction}>
-        Swipe left or right to flip the pack. When it settles on the back, it opens.
+        Swipe left or right to spin the pack. When it settles on the back, it opens.
       </Text>
-      <GestureDetector gesture={mainPan}>
+      <GestureDetector gesture={pan}>
         <Animated.View style={[styles.stage, { width: stage, height: stage }]}>
           <View pointerEvents="none" style={styles.backdrop}>
             <ExpoLinearGradient
@@ -233,7 +225,6 @@ export function RipOpenInteraction({
                   flip3dStyle,
                 ]}
               >
-                {/* Back: pre-rotated 180° so it faces camera when flip === 1 */}
                 <View
                   pointerEvents="none"
                   style={[
@@ -247,27 +238,9 @@ export function RipOpenInteraction({
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={[styles.backPlate, { borderRadius: cornerR }]}
-                  >
-                    <View style={styles.backFoilUnder} />
-                    <View style={styles.backCenterGlow} pointerEvents="none" />
-                    <View style={styles.backSeam} />
-                    <View style={styles.backGlyph} pointerEvents="none">
-                      <View
-                        style={[
-                          styles.glyphLine,
-                          {
-                            width: Math.round(faceW * 0.35),
-                            backgroundColor: packTint,
-                            opacity: 0.45,
-                          },
-                        ]}
-                      />
-                      <View style={[styles.glyphDot, { borderColor: packTint }]} />
-                    </View>
-                  </ExpoLinearGradient>
+                  />
                 </View>
 
-                {/* Front */}
                 <View
                   pointerEvents="none"
                   style={[styles.faceSide, { borderRadius: cornerR, width: faceW, height: faceH }]}
@@ -345,7 +318,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 2,
-    overflow: 'visible',
   },
   cardStack: {
     position: 'relative',
@@ -367,6 +339,10 @@ const styles = StyleSheet.create({
   backSide: {
     transform: [{ rotateY: '180deg' }],
   },
+  backPlate: {
+    flex: 1,
+    overflow: 'hidden',
+  },
   faceRow: {
     flexDirection: 'row',
     overflow: 'hidden',
@@ -386,56 +362,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-  },
-  backPlate: {
-    flex: 1,
-    overflow: 'hidden',
-  },
-  backFoilUnder: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(51,65,85,0.4)',
-  },
-  backCenterGlow: {
-    position: 'absolute',
-    left: '14%',
-    right: '14%',
-    top: '10%',
-    bottom: '10%',
-    borderRadius: 16,
-    backgroundColor: 'rgba(248,250,252,0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
-  },
-  backSeam: {
-    position: 'absolute',
-    left: '50%',
-    marginLeft: -3,
-    top: '5%',
-    width: 6,
-    height: '90%',
-    borderRadius: 3,
-    backgroundColor: 'rgba(254,249,195,0.98)',
-    shadowColor: '#fde047',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.55,
-    shadowRadius: 8,
-  },
-  backGlyph: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
-    pointerEvents: 'none',
-  },
-  glyphLine: {
-    height: 2,
-    borderRadius: 1,
-    marginBottom: 10,
-  },
-  glyphDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    borderWidth: 1.5,
   },
   flare: {
     ...StyleSheet.absoluteFillObject,
