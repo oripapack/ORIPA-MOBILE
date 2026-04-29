@@ -17,6 +17,7 @@ import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { navigationRef } from '../../navigation/navigationRef';
 import { useRequireAuth } from '../../hooks/useRequireAuth';
 import { PackOddsModal } from './PackOddsModal';
+import type { PackOpenQuantity } from '../../store/useAppStore';
 
 const WIN_W = Dimensions.get('window').width;
 const CARD_GUTTER = spacing.base * 2;
@@ -88,6 +89,16 @@ export function PackCard({ pack, onPress }: Props) {
   const ctaBlocked = isPackOpening || awaitingFulfillment || firstTimeUsed;
   const openLockedPack = () => {
     if (navigationRef.isReady()) navigationRef.navigate('Membership');
+  };
+
+  const openQty = (qty: PackOpenQuantity) => {
+    if (membershipLocked) {
+      openLockedPack();
+      return;
+    }
+    requireAuth(() => {
+      void openPack(pack, { quantity: qty });
+    });
   };
 
   const goDetails = () => {
@@ -233,21 +244,44 @@ export function PackCard({ pack, onPress }: Props) {
           {loc.guaranteeText}
         </Text>
 
-        <Pressable
-          style={[styles.primaryCta, ctaBlocked && styles.primaryCtaDisabled]}
-          onPress={() =>
-            membershipLocked
-              ? openLockedPack()
-              : requireAuth(() => {
-                  void openPack(pack);
-                })
-          }
-          disabled={ctaBlocked}
-        >
-          <Text style={styles.primaryCtaText}>
-            {membershipLocked ? t('packCard.unlockMembershipCta') : t('packCard.openPack')}
-          </Text>
-        </Pressable>
+        {membershipLocked ? (
+          <Pressable
+            style={[styles.primaryCta, ctaBlocked && styles.primaryCtaDisabled]}
+            onPress={openLockedPack}
+            disabled={ctaBlocked}
+          >
+            <Text style={styles.primaryCtaText}>{t('packCard.unlockMembershipCta')}</Text>
+          </Pressable>
+        ) : (
+          <View style={styles.openOptionsWrap}>
+            <Pressable
+              style={[styles.primaryCta, ctaBlocked && styles.primaryCtaDisabled]}
+              onPress={() => openQty(1)}
+              disabled={ctaBlocked}
+            >
+              <Text style={styles.primaryCtaText}>{t('packCard.openPack')}</Text>
+            </Pressable>
+
+            <View style={styles.quickRow}>
+              <Pressable
+                style={[styles.quickCta, (ctaBlocked || pack.remainingInventory < 10) && styles.quickCtaDisabled]}
+                onPress={() => openQty(10)}
+                disabled={ctaBlocked || pack.remainingInventory < 10}
+              >
+                <Text style={styles.quickCtaTitle}>Open 10</Text>
+                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 10).toLocaleString()} credits</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.quickCta, (ctaBlocked || pack.remainingInventory < 100) && styles.quickCtaDisabled]}
+                onPress={() => openQty(100)}
+                disabled={ctaBlocked || pack.remainingInventory < 100}
+              >
+                <Text style={styles.quickCtaTitle}>Open 100</Text>
+                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 100).toLocaleString()} credits</Text>
+              </Pressable>
+            </View>
+          </View>
+        )}
 
         <Pressable onPress={() => setOddsOpen(true)} hitSlop={8} style={styles.oddsLinkHit}>
           <Text style={styles.oddsLink}>{t('home.lobby.viewOdds')}</Text>
@@ -491,6 +525,39 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     fontFamily: brandFont.semibold,
     letterSpacing: 0.2,
+  },
+  openOptionsWrap: {
+    gap: spacing.sm,
+  },
+  quickRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  quickCta: {
+    flex: 1,
+    minHeight: 54,
+    borderRadius: radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  quickCtaDisabled: {
+    opacity: 0.45,
+  },
+  quickCtaTitle: {
+    color: colors.textPrimary,
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+  },
+  quickCtaSub: {
+    color: colors.textSecondary,
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.medium,
+    marginTop: 2,
   },
   oddsLinkHit: {
     alignSelf: 'center',

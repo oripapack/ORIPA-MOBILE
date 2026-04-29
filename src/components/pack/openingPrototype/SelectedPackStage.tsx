@@ -101,8 +101,6 @@ export function SelectedPackStage({ packTint, visible, onSettled }: Props) {
     };
   }, [visible, dim, glow, onSettled, packO, packS, packY]);
 
-  if (!visible) return null;
-
   const { w, h } = CAROUSEL_PACK_DIMS;
 
   return (

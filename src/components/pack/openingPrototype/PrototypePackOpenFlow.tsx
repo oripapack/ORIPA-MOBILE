@@ -5,6 +5,7 @@ import { PackSelectionCarousel, lineupPackTintAt } from './PackSelectionCarousel
 import { SelectedPackStage } from './SelectedPackStage';
 import { RipOpenInteraction } from './RipOpenInteraction';
 import { RevealTransition } from './RevealTransition';
+import { spacing } from '../../../tokens/spacing';
 
 /**
  * Lineup → focus → manual rip → reveal placeholder.
@@ -27,6 +28,7 @@ export function PrototypePackOpenFlow({
   const prevSkipRef = useRef(0);
   const selectingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const carouselDim = useRef(new Animated.Value(1)).current;
+  const ripEnter = useRef(new Animated.Value(0)).current;
 
   const goCentered = useCallback(() => {
     selectingTimer.current = null;
@@ -98,6 +100,19 @@ export function PrototypePackOpenFlow({
     }).start();
   }, [phase, carouselDim]);
 
+  useEffect(() => {
+    if (phase !== 'ripping') {
+      ripEnter.setValue(0);
+      return;
+    }
+    Animated.timing(ripEnter, {
+      toValue: 1,
+      duration: 170,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [phase, ripEnter]);
+
   const carouselInteractive = phase === 'carousel';
   /** Lineup only mounts for these phases so it never steals flex height from reveal / rip (was causing the huge black gap). */
   const showCarouselLayer = phase === 'carousel' || phase === 'selecting' || phase === 'centered';
@@ -127,9 +142,13 @@ export function PrototypePackOpenFlow({
           </Animated.View>
         ) : null}
 
-        {phase === 'centered' ? (
+        {(phase === 'centered' || phase === 'ripping') ? (
           <View style={styles.layerAbs} pointerEvents="none">
-            <SelectedPackStage packTint={shellTint} visible onSettled={onCenterSettled} />
+            <SelectedPackStage
+              packTint={shellTint}
+              visible={phase === 'centered'}
+              onSettled={onCenterSettled}
+            />
           </View>
         ) : null}
 
@@ -138,7 +157,30 @@ export function PrototypePackOpenFlow({
             {/* Lighter than the old 0.72 layer — matches the settled focus step so it does not
                 read like a cut to a different “mode” when the centered stage unmounts. */}
             <View style={styles.ripDim} pointerEvents="none" />
-            <RipOpenInteraction packTint={shellTint} onRipComplete={onRipComplete} />
+            <Animated.View
+              style={[
+                styles.ripPackWrap,
+                {
+                  opacity: ripEnter,
+                  transform: [
+                    {
+                      translateY: ripEnter.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [6, 0],
+                      }),
+                    },
+                    {
+                      scale: ripEnter.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.993, 1],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            >
+              <RipOpenInteraction packTint={shellTint} onRipComplete={onRipComplete} />
+            </Animated.View>
           </View>
         ) : null}
 
@@ -193,11 +235,16 @@ const styles = StyleSheet.create({
   ripLayer: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
-    paddingTop: 40,
+    alignItems: 'center',
+    paddingBottom: spacing.xl * 2,
     zIndex: 3,
+  },
+  ripPackWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   ripDim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(2,6,23,0.44)',
+    backgroundColor: 'rgba(2,6,23,0.28)',
   },
 });

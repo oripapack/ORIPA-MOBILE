@@ -206,12 +206,13 @@ export function RipOpenInteraction({ packTint, onRipComplete }: Props) {
         <Animated.View style={[styles.stage, { width: stage, height: stage }]}>
           <View pointerEvents="none" style={styles.backdrop}>
             <ExpoLinearGradient
-              colors={['rgba(2,6,23,0.0)', 'rgba(2,6,23,0.45)', 'rgba(0,0,0,0.78)']}
+              colors={['rgba(2,6,23,0.0)', 'rgba(59,130,246,0.12)', 'rgba(0,0,0,0.82)']}
               locations={[0, 0.45, 1]}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={StyleSheet.absoluteFill}
             />
+            <View style={styles.backdropSpot} />
           </View>
 
           <View style={styles.stageCenter}>
@@ -295,6 +296,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: spacing.lg,
+  },
+  backdropSpot: {
+    ...StyleSheet.absoluteFillObject,
+    left: '18%',
+    right: '18%',
+    top: '12%',
+    bottom: '12%',
+    borderRadius: 18,
+    backgroundColor: 'rgba(253,230,138,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
   },
   instruction: {
     color: 'rgba(226,232,240,0.72)',
