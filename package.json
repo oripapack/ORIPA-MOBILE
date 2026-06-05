@@ -10,6 +10,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "pack-opening:web": "npm run dev --prefix apps/pack-opening-web",
+    "landing:open": "open apps/landing/index.html",
     "generate:sfx": "node scripts/generate-pack-sfx.mjs",
     "validate:i18n": "node scripts/validate-i18n-locales.mjs",
     "sync:i18n": "node scripts/sync-i18n-missing-from-en.mjs",
