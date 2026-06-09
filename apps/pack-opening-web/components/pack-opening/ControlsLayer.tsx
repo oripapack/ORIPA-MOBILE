@@ -11,6 +11,13 @@ type Props = {
   canSkip: boolean;
 };
 
+const chipBase =
+  'rounded-ph-pill border border-ph-border bg-ph-bg/60 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-ph-text-sec backdrop-blur-sm ph-transition hover:border-ph-border-md hover:text-ph-text active:scale-[0.97]';
+
+/**
+ * Skip + Replay + dev speed toggle.
+ * Minimal, de-emphasised so it doesn't distract from the reveal.
+ */
 export function ControlsLayer({
   onSkip,
   onReplay,
@@ -20,33 +27,32 @@ export function ControlsLayer({
   canSkip,
 }: Props) {
   return (
-    <div className="absolute inset-x-0 top-4 z-[40] flex items-center justify-between px-4">
+    <div className="absolute inset-x-0 top-3 z-[40] flex items-center justify-between px-4">
       <button
         type="button"
         onClick={onSkip}
         disabled={!canSkip}
-        className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-200 backdrop-blur-sm transition enabled:active:scale-[0.98] disabled:opacity-30"
+        className={`${chipBase} disabled:opacity-25 disabled:pointer-events-none`}
       >
         Skip
       </button>
 
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onReplay}
-          className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-200 backdrop-blur-sm transition active:scale-[0.98]"
-        >
+        <button type="button" onClick={onReplay} className={chipBase}>
           Replay
         </button>
+
         {showDevControls ? (
-          <div className="flex rounded-full border border-white/10 bg-black/30 p-1">
+          <div className="flex rounded-ph-pill border border-ph-border bg-ph-bg/60 p-0.5 backdrop-blur-sm">
             {(['slow', 'normal', 'fast'] as const).map((s) => (
               <button
                 key={s}
                 type="button"
                 onClick={() => onSpeedChange(s)}
-                className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase ${
-                  speed === s ? 'bg-white/15 text-white' : 'text-slate-500'
+                className={`rounded-ph-pill px-3 py-1 text-[9px] font-bold uppercase ph-transition ${
+                  speed === s
+                    ? 'bg-ph-surface-raise text-ph-text'
+                    : 'text-ph-text-muted hover:text-ph-text-sec'
                 }`}
               >
                 {s}

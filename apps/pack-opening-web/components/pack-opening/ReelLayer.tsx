@@ -6,18 +6,26 @@ import type { RevealCard } from './types';
 const SLOT = 96;
 const CARD_W = 80;
 
+/** Rarity → subtle border tint on reel card */
+const RARITY_TINT: Record<string, string> = {
+  common: 'rgba(148,163,184,0.25)',
+  rare:   'rgba(56,189,248,0.30)',
+  ultra:  'rgba(167,139,250,0.32)',
+  chase:  'rgba(251,191,36,0.32)',
+};
+
 type Props = {
   cards: RevealCard[];
   translateX: MotionValue<number>;
   opacity: MotionValue<number>;
   slotWidth: number;
   cardWidth: number;
-  /** Optional: edge fade instead of CSS blur (perf) */
   edgeFade?: boolean;
 };
 
 /**
- * Horizontal strip — transform-driven scroll (no huge list re-renders).
+ * Horizontal card strip — transform-driven (no DOM churn during spin).
+ * Each slot is a dark card shape; emoji removed in favour of CSS styling.
  */
 export function ReelLayer({
   cards,
@@ -32,37 +40,51 @@ export function ReelLayer({
       className="absolute inset-x-0 top-[38%] z-10 h-[140px] -translate-y-1/2 overflow-hidden"
       style={{ opacity }}
     >
+      {/* Edge fade vignette */}
       {edgeFade ? (
         <>
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 bg-gradient-to-r from-[#0b0f14] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 bg-gradient-to-l from-[#0b0f14] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 bg-gradient-to-r from-ph-bg to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 bg-gradient-to-l from-ph-bg to-transparent" />
         </>
       ) : null}
 
+      {/* Center stop marker — very subtle */}
+      <div className="pointer-events-none absolute inset-y-0 left-1/2 z-20 w-px -translate-x-1/2 bg-ph-border-md" />
+
       <motion.div
         className="flex h-full flex-row items-center ph-will-animate"
-        style={{
-          x: translateX,
-          gap: slotWidth - cardWidth,
-        }}
+        style={{ x: translateX, gap: slotWidth - cardWidth }}
       >
-        {cards.map((c, i) => (
-          <div
-            key={`${c.id}-${i}`}
-            className="flex shrink-0 items-center justify-center rounded-xl border border-white/10 bg-slate-900/80 shadow-inner"
-            style={{
-              width: cardWidth,
-              height: 108,
-            }}
-          >
-            <div className="text-center">
-              <div className="text-3xl">{c.image}</div>
-              <div className="mt-1 line-clamp-1 max-w-[72px] text-[9px] font-semibold text-slate-400">
+        {cards.map((c, i) => {
+          const tint = RARITY_TINT[c.rarity] ?? RARITY_TINT.common;
+          return (
+            <div
+              key={`${c.id}-${i}`}
+              className="flex shrink-0 flex-col items-center justify-between overflow-hidden rounded-ph-lg bg-ph-surface-high"
+              style={{
+                width: cardWidth,
+                height: 108,
+                border: `1px solid ${tint}`,
+              }}
+            >
+              {/* Rarity top strip */}
+              <div className="h-1 w-full" style={{ background: tint }} />
+
+              {/* Card art placeholder */}
+              <div
+                className="my-1 flex-1 w-10 rounded-ph-sm opacity-60"
+                style={{
+                  background: `linear-gradient(155deg, ${tint}, var(--ph-surface))`,
+                }}
+              />
+
+              {/* Card name */}
+              <p className="line-clamp-1 px-1 pb-1.5 text-center text-[8px] font-semibold text-ph-text-muted">
                 {c.name}
-              </div>
+              </p>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </motion.div>
     </motion.div>
   );

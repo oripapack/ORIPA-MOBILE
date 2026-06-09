@@ -6,6 +6,7 @@ import { IntroLayer } from './IntroLayer';
 import { REEL_DEFAULT_LAYOUT, ReelLayer } from './ReelLayer';
 import { ResultLayer } from './ResultLayer';
 import { RevealLayer } from './RevealLayer';
+import { CardBackLayer } from './CardBackLayer';
 import { RarityEffects } from './RarityEffects';
 import { StopLayer } from './StopLayer';
 import { usePackOpening } from './usePackOpening';
@@ -18,16 +19,14 @@ export function PackOpeningEngine({
   onComplete,
 }: PackOpeningEngineProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [w, setW] = useState(0);
-  const [speed, setSpeed] = useState<PackOpeningSpeed>('normal');
+  const [w, setW]           = useState(0);
+  const [speed, setSpeed]   = useState<PackOpeningSpeed>('normal');
   const [replayKey, setReplayKey] = useState(0);
 
   useLayoutEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(() => {
-      setW(el.clientWidth);
-    });
+    const ro = new ResizeObserver(() => setW(el.clientWidth));
     ro.observe(el);
     setW(el.clientWidth);
     return () => ro.disconnect();
@@ -36,14 +35,11 @@ export function PackOpeningEngine({
   const slotWidth = REEL_DEFAULT_LAYOUT.slotWidth;
   const cardWidth = REEL_DEFAULT_LAYOUT.cardWidth;
 
-  const onSound = useCallback(
-    (key: string) => {
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('pack-opening:sfx', { detail: { key } }));
-      }
-    },
-    [],
-  );
+  const onSound = useCallback((key: string) => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('pack-opening:sfx', { detail: { key } }));
+    }
+  }, []);
 
   const packTint = useMemo(() => winningCard.color, [winningCard.color]);
 
@@ -60,12 +56,10 @@ export function PackOpeningEngine({
 
   const { phase } = engine;
 
-  const onReplay = useCallback(() => {
-    setReplayKey((k) => k + 1);
-  }, []);
+  const onReplay = useCallback(() => setReplayKey((k) => k + 1), []);
 
-  const showReveal = phase === 'reveal' || phase === 'result';
-  const showResultFooter = phase === 'reveal' || phase === 'result';
+  const showReveal = phase === 'metadata' || phase === 'reveal' || phase === 'result';
+  const showResult = phase === 'result';
 
   const lastPhase = useRef(phase);
   useEffect(() => {
@@ -78,12 +72,15 @@ export function PackOpeningEngine({
   return (
     <div
       ref={wrapRef}
-      className="relative mx-auto aspect-[9/16] w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#0b0f14] shadow-2xl"
+      className="relative mx-auto aspect-[9/16] w-full max-w-md overflow-hidden rounded-3xl border border-ph-border bg-ph-bg shadow-ph-sheet"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 to-[#0b0f14]" />
+      {/* Base gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-ph-surface-high/40 to-ph-bg" />
 
+      {/* Rarity ambient effects (reveal + result phases) */}
       <RarityEffects rarity={winningCard.rarity} phase={phase} />
 
+      {/* Reel strip */}
       <ReelLayer
         cards={engine.cards}
         translateX={engine.translateX}
@@ -92,11 +89,13 @@ export function PackOpeningEngine({
         cardWidth={cardWidth}
       />
 
+      {/* Stop marker overlay */}
       <StopLayer
         active={phase === 'spinning' || phase === 'slowing' || phase === 'landing'}
         phase={phase}
       />
 
+      {/* Intro pack scale-in */}
       <IntroLayer
         packTint={packTint}
         scale={engine.introPackScale}
@@ -105,9 +104,18 @@ export function PackOpeningEngine({
         opacity={engine.introOpacity}
       />
 
+      {/* Stage 3: card back (hidden) + stage 4: metadata */}
+      <CardBackLayer
+        rarity={winningCard.rarity}
+        phase={phase}
+        onTap={engine.triggerReveal}
+      />
+
+      {/* Stage 4: metadata → stage 4: 3D flip reveal */}
       {showReveal ? (
         <RevealLayer
           card={winningCard}
+          phase={phase}
           dim={engine.dimOpacity}
           flash={engine.revealFlash}
           flipRotateX={engine.flipRotateX}
@@ -116,10 +124,22 @@ export function PackOpeningEngine({
         />
       ) : null}
 
-      {showResultFooter ? (
-        <ResultLayer card={winningCard} valueOpacity={engine.valueOpacity} visible />
+      {/* Stage 5: result + CTAs */}
+      {showResult ? (
+        <ResultLayer
+          card={winningCard}
+          valueOpacity={engine.valueOpacity}
+          visible
+          onVault={() => {
+            /* In production: vault the card via store action */
+          }}
+          onConvert={() => {
+            /* In production: convert to credits via store action */
+          }}
+        />
       ) : null}
 
+      {/* Controls (skip / replay / dev speed) */}
       <ControlsLayer
         onSkip={engine.skip}
         onReplay={onReplay}
