@@ -2,18 +2,102 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Pull Hub — Design Tokens
+   Source of truth for all UI colors, surfaces, borders, and effects.
+   Reference: docs/design-spec.md + docs/references/phygitals/notes.md
+
+   Naming convention: --ph-<category>[-variant]
+   All Tailwind utilities that reference these vars live in tailwind.config.ts.
+───────────────────────────────────────────────────────────────────────── */
 :root {
-  --ph-bg: #0b0f14;
-  --ph-surface: #121821;
-  --ph-border: rgba(148, 163, 184, 0.12);
+  /* ── Backgrounds ──────────────────────────────────────────────────────── */
+  /* Page background — near-black with a very slight warm-neutral tint */
+  --ph-bg:             #0B0B0E;
+  /* Primary card / panel surface — one step above background */
+  --ph-surface:        #111117;
+  /* Elevated card — hover states, active sheets, secondary panels */
+  --ph-surface-high:   #18181F;
+  /* Raised element — selected tier, focused input shells */
+  --ph-surface-raise:  #1E1E27;
+
+  /* ── Borders ──────────────────────────────────────────────────────────── */
+  /* Hairline — list separators, subtle outlines */
+  --ph-border:         rgba(255, 255, 255, 0.07);
+  /* Standard — most card borders, input rings */
+  --ph-border-md:      rgba(255, 255, 255, 0.11);
+  /* Prominent — selected state, active card outline */
+  --ph-border-high:    rgba(255, 255, 255, 0.18);
+
+  /* ── Text hierarchy ───────────────────────────────────────────────────── */
+  --ph-text:           #FFFFFF;
+  --ph-text-sec:       #9CA3AF;   /* secondary labels, descriptions */
+  --ph-text-muted:     #6B7280;   /* metadata, timestamps, hints */
+
+  /* ── Primary action — green ───────────────────────────────────────────── */
+  /* Use ONLY for: Open Pack CTA, buyback, positive outcomes, success states */
+  --ph-green:          #22C55E;
+  --ph-green-hover:    #16A34A;
+  --ph-green-soft:     rgba(34, 197, 94, 0.10);
+  --ph-green-border:   rgba(34, 197, 94, 0.25);
+  --ph-green-ink:      #052e16;   /* text ON a green button */
+
+  /* ── Warning / rare pull — red ────────────────────────────────────────── */
+  /* Use ONLY for: warnings, low-stock alerts, error states */
+  --ph-red:            #EF4444;
+  --ph-red-soft:       rgba(239, 68, 68, 0.10);
+  --ph-red-border:     rgba(239, 68, 68, 0.22);
+
+  /* ── Accent — amber (badges, "Best Value", warnings-adjacent) ─────────── */
+  --ph-amber:          #F59E0B;
+  --ph-amber-ink:      #451a03;   /* text ON an amber badge */
+
+  /* ── Rarity tier colors ───────────────────────────────────────────────── */
+  --ph-rarity-common:    #9CA3AF;
+  --ph-rarity-rare:      #60A5FA;
+  --ph-rarity-epic:      #A855F7;
+  --ph-rarity-legendary: #F59E0B;
+  --ph-rarity-mythic:    #EC4899;
+
+  /* Soft fills for rarity-tinted card backgrounds */
+  --ph-rarity-common-bg:    rgba(156, 163, 175, 0.09);
+  --ph-rarity-rare-bg:      rgba(96,  165, 250, 0.09);
+  --ph-rarity-epic-bg:      rgba(168,  85, 247, 0.11);
+  --ph-rarity-legendary-bg: rgba(245, 158,  11, 0.11);
+  --ph-rarity-mythic-bg:    rgba(236,  72, 153, 0.13);
+
+  /* Rarity border accents */
+  --ph-rarity-common-border:    rgba(156, 163, 175, 0.18);
+  --ph-rarity-rare-border:      rgba(96,  165, 250, 0.20);
+  --ph-rarity-epic-border:      rgba(168,  85, 247, 0.24);
+  --ph-rarity-legendary-border: rgba(245, 158,  11, 0.26);
+  --ph-rarity-mythic-border:    rgba(236,  72, 153, 0.28);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Base styles
+───────────────────────────────────────────────────────────────────────── */
 body {
-  background: var(--ph-bg);
-  color: #e2e8f0;
+  background-color: var(--ph-bg);
+  color: var(--ph-text);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Performance helpers
+───────────────────────────────────────────────────────────────────────── */
 /* Hint GPU for animated layers */
 .ph-will-animate {
   will-change: transform, opacity;
+}
+
+/* Smooth transitions for interactive surfaces — attach via className */
+.ph-transition {
+  transition-property: background-color, border-color, box-shadow, transform, opacity;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+}
+.ph-transition-colors {
+  transition-property: background-color, border-color, color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
 }
