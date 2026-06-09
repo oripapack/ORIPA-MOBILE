@@ -25,22 +25,27 @@ interface RarityBadgeProps {
   rarity: Rarity;
   /** Show the coloured dot indicator */
   showDot?: boolean;
+  /** Compact size — smaller padding and font */
+  small?: boolean;
   className?: string;
 }
 
-export function RarityBadge({ rarity, showDot = true, className }: RarityBadgeProps) {
+export function RarityBadge({ rarity, showDot = true, small = false, className }: RarityBadgeProps) {
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1.5",
-        "rounded-ph-pill border px-2.5 py-0.5",
-        "text-[10px] font-bold uppercase tracking-wide whitespace-nowrap",
+        "rounded-ph-pill border whitespace-nowrap",
+        "font-bold uppercase tracking-wide",
+        small
+          ? "px-2 py-px text-[9px]"
+          : "px-2.5 py-0.5 text-[10px]",
         RARITY_CLASSES[rarity],
         className,
       )}
     >
       {showDot && (
-        <span className="h-1.5 w-1.5 rounded-full bg-current flex-shrink-0" />
+        <span className={cn("rounded-full bg-current flex-shrink-0", small ? "h-1 w-1" : "h-1.5 w-1.5")} />
       )}
       {RARITY_LABEL[rarity]}
     </span>
