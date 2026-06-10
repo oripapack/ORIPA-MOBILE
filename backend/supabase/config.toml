@@ -339,11 +339,12 @@ enabled = false
 # user_pool_id = "my-user-pool-id"
 # user_pool_region = "us-east-1"
 
-# Use Clerk as a third-party provider alongside Supabase Auth.
+# Native Clerk third-party auth (no custom JWT template exchange).
+# Enable when wiring Clerk: set CLERK_DOMAIN in backend/.env (see .env.example), then enabled = true.
+# Dashboard: https://clerk.com/setup/supabase — session tokens need claim "role": "authenticated"
 [auth.third_party.clerk]
 enabled = false
-# Obtain from https://clerk.com/setup/supabase
-# domain = "example.clerk.accounts.dev"
+# domain = "env(CLERK_DOMAIN)"
 
 # OAuth server configuration
 [auth.oauth_server]
@@ -353,6 +354,12 @@ enabled = false
 authorization_url_path = "/oauth/consent"
 # Allow dynamic client registration
 allow_dynamic_registration = false
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.mint-retry]
+verify_jwt = false
 
 [edge_runtime]
 enabled = true

@@ -2,10 +2,11 @@
   "name": "pull-hub-backend",
   "private": true,
   "scripts": {
-    "start": "supabase start",
-    "stop": "supabase stop",
-    "status": "supabase status",
-    "db:reset": "supabase db reset",
-    "link": "supabase link"
+    "start": "npx supabase start",
+    "stop": "npx supabase stop",
+    "status": "npx supabase status",
+    "db:reset": "npx supabase db reset",
+    "db:push": "npx supabase db push",
+    "link": "npx supabase link"
   }
 }
