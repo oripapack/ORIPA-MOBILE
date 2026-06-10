@@ -149,6 +149,7 @@ export function HomeScreen() {
       <AppHeader onSearch={() => setSearchOpen(true)} />
       {homeViewMode === 'browse' ? (
         <FlatList<Pack>
+          key="home-browse-grid"
           data={filteredPacks}
           keyExtractor={(item) => item.id}
           numColumns={2}
@@ -166,6 +167,7 @@ export function HomeScreen() {
         />
       ) : (
         <FlatList<Pack>
+          key="home-discover"
           data={[]}
           renderItem={() => null}
           ListHeaderComponent={ListHeader}
