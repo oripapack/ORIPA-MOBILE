@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useTransform, type MotionValue } from 'framer-motion';
+
 type Props = {
   packTint: string;
   packLabel?: string;
@@ -11,7 +12,8 @@ type Props = {
 };
 
 /**
- * FIFA-inspired: pack center, glow build, scale — flash hands off to reel.
+ * Stage 2 intro — pack scales in, glows, then flashes to the reel.
+ * Premium dark aesthetic; no casino strobing.
  */
 export function IntroLayer({
   packTint,
@@ -21,8 +23,8 @@ export function IntroLayer({
   flash,
   opacity,
 }: Props) {
-  const glowOpacity = useTransform(glow, [0, 1], [0.35, 1]);
-  const flashOpacity = useTransform(flash, [0, 1], [0, 0.95]);
+  const glowOpacity  = useTransform(glow,  [0, 1], [0.2, 0.9]);
+  const flashOpacity = useTransform(flash, [0, 1], [0, 0.85]);
 
   return (
     <motion.div
@@ -30,23 +32,44 @@ export function IntroLayer({
       style={{ opacity }}
     >
       <motion.div
-        className="relative flex h-44 w-32 items-center justify-center rounded-2xl border border-white/10 shadow-card-soft ph-will-animate"
+        className="relative flex h-48 w-36 flex-col items-center justify-center gap-3 overflow-hidden rounded-[20px] border border-ph-border-md ph-will-animate"
         style={{
           scale,
-          background: `linear-gradient(145deg, ${packTint}33, rgba(15,23,42,0.92))`,
+          background: `linear-gradient(145deg, ${packTint}2a, var(--ph-bg))`,
+          boxShadow: `0 0 48px ${packTint}22, 0 24px 64px rgba(0,0,0,0.6)`,
         }}
       >
+        {/* Sheen */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.06] to-transparent" />
+
+        {/* Rarity-tinted glow overlay */}
         <motion.div
-          className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/10 to-transparent"
-          style={{ opacity: glowOpacity }}
+          className="absolute inset-0 rounded-[20px]"
+          style={{
+            opacity: glowOpacity,
+            background: `linear-gradient(to bottom, ${packTint}18, transparent)`,
+          }}
         />
+
+        {/* Flash */}
         <motion.div
-          className="pointer-events-none absolute inset-0 rounded-2xl bg-white"
+          className="pointer-events-none absolute inset-0 bg-white"
           style={{ opacity: flashOpacity }}
         />
-        <div className="relative px-3 text-center">
-          <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300/90">PullHub</div>
-          <div className="mt-2 text-lg font-black text-white">{packLabel}</div>
+
+        {/* Pack content */}
+        <div className="relative flex flex-col items-center gap-2 px-3 text-center">
+          {/* Decorative card shape placeholder */}
+          <div
+            className="h-16 w-12 rounded-ph-lg border border-ph-border-md opacity-70"
+            style={{
+              background: `linear-gradient(155deg, ${packTint}33, var(--ph-surface-raise))`,
+            }}
+          />
+          <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-ph-text-muted">
+            Pull Hub
+          </p>
+          <p className="text-sm font-black text-ph-text">{packLabel}</p>
         </div>
       </motion.div>
     </motion.div>

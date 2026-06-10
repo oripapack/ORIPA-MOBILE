@@ -8,6 +8,8 @@ export type PackOpeningPhase =
   | 'spinning'
   | 'slowing'
   | 'landing'
+  | 'hidden'    // card face-down; user taps triggerReveal() to advance
+  | 'metadata'  // card name/rarity shown briefly before flip (auto-advances)
   | 'reveal'
   | 'result';
 

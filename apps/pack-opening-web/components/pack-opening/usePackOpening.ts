@@ -85,6 +85,8 @@ export function usePackOpening({
 
   const cancelledRef = useRef(false);
   const skipRef = useRef(false);
+  /** Resolves to advance from 'hidden' → 'metadata' when user taps or skip fires. */
+  const revealResolver = useRef<(() => void) | null>(null);
 
   const resetValues = useCallback(() => {
     translateX.set(startX);
@@ -116,8 +118,20 @@ export function usePackOpening({
     startX,
   ]);
 
+  /** Call to advance from the 'hidden' card-back phase to reveal. */
+  const triggerReveal = useCallback(() => {
+    const resolve = revealResolver.current;
+    if (resolve) {
+      revealResolver.current = null;
+      resolve();
+    }
+  }, []);
+
   const skip = useCallback(() => {
     skipRef.current = true;
+    // Unblock 'hidden' phase Promise so run() can exit cleanly.
+    const resolve = revealResolver.current;
+    if (resolve) { revealResolver.current = null; resolve(); }
     translateX.set(endX);
     reelOpacity.set(1);
     introOpacity.set(0);
@@ -213,7 +227,18 @@ export function usePackOpening({
         });
         if (cancelledRef.current || skipRef.current) return;
 
-        await new Promise((r) => setTimeout(r, suspenseMs));
+        // ── Stage 3: hidden card ──────────────────────────────────────────
+        // Show card face-down. Waits for triggerReveal() or skip().
+        setPhase('hidden');
+        await new Promise<void>((resolve) => {
+          revealResolver.current = resolve;
+        });
+        if (cancelledRef.current || skipRef.current) return;
+
+        // ── Stage 4: metadata ─────────────────────────────────────────────
+        // Brief flash of card name/rarity before the 3D flip.
+        setPhase('metadata');
+        await new Promise<void>((r) => setTimeout(r, suspenseMs + 120));
         if (cancelledRef.current || skipRef.current) return;
 
         setPhase('reveal');
@@ -255,6 +280,9 @@ export function usePackOpening({
 
     return () => {
       cancelledRef.current = true;
+      // Unblock hidden phase Promise on unmount so run() exits cleanly.
+      const resolve = revealResolver.current;
+      if (resolve) { revealResolver.current = null; resolve(); }
     };
   }, [
     replayKey,
@@ -297,6 +325,7 @@ export function usePackOpening({
     valueOpacity,
     badgeScale,
     skip,
+    triggerReveal,
     profile,
   };
 }
