@@ -1,5 +1,5 @@
 import type { RarityTier } from '../../../audio/packOpeningFeedback';
-import type { HomeNicheCategory, PackCategory } from '../../../data/mockPacks';
+import type { PackCategory } from '../../../data/mockPacks';
 import type { RevealCard, RevealRarity } from './types';
 import { revealRarityFromTier } from './types';
 
@@ -57,8 +57,7 @@ const POOLS: Record<PackCategory, RevealCard[]> = {
 
 const DEFAULT_LINE: PackCategory = 'onboarding';
 
-function poolFor(line: HomeNicheCategory): RevealCard[] {
-  if (line === 'all') return POOLS[DEFAULT_LINE];
+function poolFor(line: PackCategory): RevealCard[] {
   return POOLS[line] ?? POOLS[DEFAULT_LINE];
 }
 
@@ -82,7 +81,7 @@ function pickWeightedRarity(rng: () => number): RevealRarity {
   return 'chase';
 }
 
-function pickCardForRarity(rarity: RevealRarity, rng: () => number, line: HomeNicheCategory): RevealCard {
+function pickCardForRarity(rarity: RevealRarity, rng: () => number, line: PackCategory): RevealCard {
   const pool = poolFor(line).filter((c) => c.rarity === rarity);
   if (pool.length === 0) return poolFor(line)[0]!;
   return pool[Math.floor(rng() * pool.length)]!;
@@ -95,7 +94,7 @@ function pickCardForRarity(rarity: RevealRarity, rng: () => number, line: HomeNi
 export function resolveRevealCardForTier(
   tier: RarityTier,
   sessionSalt: number,
-  prizeLine: HomeNicheCategory,
+  prizeLine: PackCategory,
 ): RevealCard {
   const rng = mulberry32(sessionSalt * 9973 + 1337);
   const targetRarity = revealRarityFromTier(tier);
@@ -106,7 +105,7 @@ export function resolveRevealCardForTier(
   return { ...pickCardForRarity(pickWeightedRarity(rng), rng, prizeLine) };
 }
 
-export function randomFillerCard(seed: number, prizeLine: HomeNicheCategory): RevealCard {
+export function randomFillerCard(seed: number, prizeLine: PackCategory): RevealCard {
   const rng = mulberry32(seed);
   const rarity = pickWeightedRarity(rng);
   const base = pickCardForRarity(rarity, rng, prizeLine);

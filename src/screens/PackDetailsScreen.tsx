@@ -5,6 +5,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors } from '../tokens/colors';
+import { ph } from '../tokens/phTheme';
+import { PackVisual } from '../components/ph/PackVisual';
+import { BuybackBadge, StatusBadge } from '../components/ph/PhBadge';
+import { PhProgressBar } from '../components/ph/PhProgressBar';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { navigationRef } from '../navigation/navigationRef';
@@ -14,7 +18,6 @@ import { useMembershipSimulationStore } from '../store/membershipSimulationStore
 import { membershipMeetsRequired } from '../data/membershipPlans';
 import { mockPacks, type Pack } from '../data/mockPacks';
 import { getLocalizedPackFields } from '../i18n/packCopy';
-import { demoPackHeroImage } from '../data/demoMedia';
 import { PackOddsModal } from '../components/pack/PackOddsModal';
 import { PackOpenQuantitySelector } from '../components/pack/PackOpenQuantitySelector';
 import { PackMultiOpenSummary } from '../components/pack/PackMultiOpenSummary';
@@ -140,11 +143,26 @@ export function PackDetailsScreen({ route }: Props) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.hero}>
-          <Image source={{ uri: demoPackHeroImage(String(pack.id)) }} style={styles.heroImg} contentFit="cover" />
-          <View style={styles.heroOverlay} />
+          <View style={styles.heroVisualWrap}>
+            <PackVisual
+              name={pack.title}
+              category={pack.tcgCategory ?? 'TCG'}
+              rarityTier={pack.rarityTier ?? 'epic'}
+              size="hero"
+            />
+          </View>
+          <View style={styles.heroBadges}>
+            {pack.isFeatured ? <StatusBadge variant="featured">Featured</StatusBadge> : null}
+            {pack.buybackRate != null ? <BuybackBadge rate={pack.buybackRate} /> : null}
+          </View>
           <View style={styles.heroText}>
             <Text style={styles.heroTitle}>{loc.title}</Text>
-            <Text style={styles.heroValue}>{loc.valueDescription}</Text>
+            <Text style={styles.heroValue}>{pack.tagline ?? loc.valueDescription}</Text>
+            {pack.remainingFraction != null ? (
+              <View style={styles.heroProgress}>
+                <PhProgressBar fraction={pack.remainingFraction} />
+              </View>
+            ) : null}
           </View>
         </View>
 
@@ -302,7 +320,7 @@ export function PackDetailsScreen({ route }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: ph.bg,
   },
   backBtn: {
     flexDirection: 'row',
@@ -336,39 +354,28 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceElevated,
+    borderColor: ph.border,
+    backgroundColor: ph.surface,
+    padding: spacing.lg,
+    alignItems: 'center',
   },
-  heroImg: {
-    width: '100%',
-    height: 220,
-    backgroundColor: colors.border,
-  },
-  heroOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.28)',
-  },
-  heroText: {
-    position: 'absolute',
-    left: spacing.base,
-    right: spacing.base,
-    bottom: spacing.base,
-  },
+  heroVisualWrap: { marginBottom: spacing.md },
+  heroBadges: { flexDirection: 'row', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: spacing.sm },
+  heroText: { width: '100%' },
   heroTitle: {
     fontSize: fontSize.xl,
     fontFamily: brandFont.black,
-    color: colors.white,
+    color: ph.text,
     marginBottom: 6,
+    textAlign: 'center',
   },
   heroValue: {
     fontSize: fontSize.sm,
-    color: 'rgba(255,255,255,0.92)',
+    color: ph.textSec,
     lineHeight: 20,
+    textAlign: 'center',
   },
+  heroProgress: { marginTop: spacing.md },
   body: {
     paddingHorizontal: spacing.base,
     paddingTop: spacing.lg,
@@ -435,7 +442,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.gold,
+    backgroundColor: ph.green,
   },
   ctaDisabled: {
     opacity: 0.55,

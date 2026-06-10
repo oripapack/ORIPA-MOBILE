@@ -9,10 +9,16 @@ import type { PackOpeningStyle } from '../components/pack/opening/types';
 export const DEFAULT_PACK_OPENING_STYLE: PackOpeningStyle = 'hybrid';
 
 /**
+ * Phygitals-style slab reveal (production opening flow from the UI redesign).
+ * Takes precedence over prototype and reel engines.
+ */
+export const USE_PHYGITALS_OPEN = true;
+
+/**
  * When true, `PackOpeningModal` uses the internal lineup → rip prototype instead of `PackOpeningEngine`.
  * Set false to return to the classic reel + hero flow.
  */
-export const USE_PROTOTYPE_LINEUP_PACK_OPEN = true;
+export const USE_PROTOTYPE_LINEUP_PACK_OPEN = false;
 
 /**
  * When true, `PackOpeningModal` uses the Pokémon TCG Pocket-style swipe-to-tear flow.

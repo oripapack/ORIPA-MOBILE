@@ -45,7 +45,11 @@ const TOP_HIT_TABLE: Record<PackCategory, PackTopHit> = {
  * Featured "top hit" for pack detail / pack card.
  */
 export function getMockPackTopHit(pack: Pack): PackTopHit {
-  return TOP_HIT_TABLE[pack.category] ?? TOP_HIT_TABLE.onboarding;
+  const base = TOP_HIT_TABLE[pack.category] ?? TOP_HIT_TABLE.onboarding;
+  if (pack.topCard) {
+    return { ...base, name: pack.topCard, isChase: pack.rarityTier === 'legendary' || pack.rarityTier === 'mythic' };
+  }
+  return base;
 }
 
 /** @deprecated Prefer `getMockPackTopHit(pack)`. */

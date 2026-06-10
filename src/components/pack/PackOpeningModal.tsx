@@ -24,7 +24,14 @@ import { useGuestBrowseStore } from '../../store/guestBrowseStore';
 import { isClerkEnabled } from '../../config/clerk';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
-import { DEFAULT_PACK_OPENING_STYLE, USE_POKEPOKE_PACK_OPEN, USE_PROTOTYPE_LINEUP_PACK_OPEN } from '../../config/packOpeningAnimation';
+import {
+  DEFAULT_PACK_OPENING_STYLE,
+  USE_PHYGITALS_OPEN,
+  USE_POKEPOKE_PACK_OPEN,
+  USE_PROTOTYPE_LINEUP_PACK_OPEN,
+} from '../../config/packOpeningAnimation';
+import { PhygitalsOpenFlow } from '../ph/PhygitalsOpenFlow';
+import { ph } from '../../tokens/phTheme';
 import { PackOpeningEngine } from './opening/PackOpeningEngine';
 import { PrototypePackOpenFlow } from './openingPrototype/PrototypePackOpenFlow';
 import { PokePokePackOpenFlow } from './opening/pokepoke/PokePokePackOpenFlow';
@@ -247,8 +254,8 @@ export function PackOpeningModal() {
       <View style={styles.rootPress}>
         {/* Background press-catcher (prevents tap-to-dismiss) */}
         <Pressable style={StyleSheet.absoluteFill} onPress={() => {}} />
-        <StadiumGradient />
-        <Spotlight pulse={spotlightPulse} />
+        {!USE_PHYGITALS_OPEN ? <StadiumGradient /> : null}
+        {!USE_PHYGITALS_OPEN ? <Spotlight pulse={spotlightPulse} /> : null}
 
         <Animated.View
           style={[
@@ -296,8 +303,16 @@ export function PackOpeningModal() {
           </View>
 
           <View style={styles.body}>
-            {pending && revealCard && selectedPack ? (
-              USE_POKEPOKE_PACK_OPEN ? (
+            {pending && selectedPack && !isBulkOpen ? (
+              USE_PHYGITALS_OPEN ? (
+                <PhygitalsOpenFlow
+                  key={`pack-open-phyg-${packOpenSessionId}`}
+                  pack={selectedPack}
+                  skipNonce={skipNonce}
+                  onRevealDone={onRevealDone}
+                  onStoreInVault={goToWonPrizes}
+                />
+              ) : USE_POKEPOKE_PACK_OPEN && revealCard ? (
                 <PokePokePackOpenFlow
                   key={`pack-open-pokepoke-${packOpenSessionId}`}
                   roll={pending}
@@ -313,7 +328,7 @@ export function PackOpeningModal() {
                   onSharePull={sharePullFromReveal}
                   pack={selectedPack}
                 />
-              ) : USE_PROTOTYPE_LINEUP_PACK_OPEN ? (
+              ) : USE_PROTOTYPE_LINEUP_PACK_OPEN && revealCard ? (
                 <PrototypePackOpenFlow
                   key={`pack-open-proto-${packOpenSessionId}`}
                   roll={pending}
@@ -328,7 +343,7 @@ export function PackOpeningModal() {
                   onStoreInVault={goToWonPrizes}
                   onSharePull={sharePullFromReveal}
                 />
-              ) : (
+              ) : revealCard ? (
                 <PackOpeningEngine
                   key={`pack-open-${packOpenSessionId}`}
                   style={DEFAULT_PACK_OPENING_STYLE}
@@ -342,7 +357,7 @@ export function PackOpeningModal() {
                   skipNonce={skipNonce}
                   onRevealDone={onRevealDone}
                 />
-              )
+              ) : null
             ) : null}
 
             {isBulkOpen && bulkRolls && bulkBest ? (

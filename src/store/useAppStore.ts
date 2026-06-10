@@ -198,7 +198,7 @@ export const useAppStore = create<AppStore>((set, get) => {
   friends: [],
   incomingFriendRequests: initialIncomingFriendRequests(),
   homeViewMode: 'discover',
-  homeNiche: 'onboarding',
+  homeNiche: 'all',
   packSubfilter: 'all',
   sortOrder: 'recommended',
   modals: {

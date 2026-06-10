@@ -1,4 +1,4 @@
-import type { HomeNicheCategory } from '../../../data/mockPacks';
+import type { PackCategory } from '../../../data/mockPacks';
 import type { RevealCard } from './types';
 import { randomFillerCard } from './mockRevealCards';
 
@@ -13,7 +13,7 @@ export type CsgoStrip = {
 export function buildCsgoStrip(
   winning: RevealCard,
   sessionSalt: number,
-  prizeLine: HomeNicheCategory = 'onboarding',
+  prizeLine: PackCategory = 'onboarding',
 ): CsgoStrip {
   const len = 44 + (sessionSalt % 13);
   const winIndex = 26 + (sessionSalt % 11);

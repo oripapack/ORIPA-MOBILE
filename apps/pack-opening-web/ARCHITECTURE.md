@@ -60,4 +60,8 @@ PackOpeningEngine
 
 ## Repo note
 
-The main PullHub app is **Expo / React Native**. This **Next.js** app lives under `apps/pack-opening-web` for Framer Motion + Tailwind iteration; port layers to Reanimated when wiring mobile.
+The main PullHub app is **Expo / React Native** (`src/`). This **Next.js** app is a **UI lab** for fast iteration.
+
+**Shared catalog & tokens:** `shared/mock/catalog.ts`, `shared/tokens/ph.ts` — imported by both apps. Edit mock data there; Expo `mockPacks` is generated via `src/lib/catalogAdapter.ts`.
+
+Production UI lives in `src/components/ph/` and `src/screens/`. Port new web screens to Expo when they stabilize.

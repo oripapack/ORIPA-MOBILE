@@ -3,7 +3,7 @@ import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { hapticPackReveal, hapticPackResult, type RarityTier } from '../../../audio/packOpeningFeedback';
 import { fontSize, brandFont } from '../../../tokens/typography';
 import { radius, spacing } from '../../../tokens/spacing';
-import type { HomeNicheCategory } from '../../../data/mockPacks';
+import type { PackCategory } from '../../../data/mockPacks';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import { buildCsgoStrip } from './stripGenerator';
 import { STAGE } from './sharedStage';
@@ -40,7 +40,7 @@ function StripCard({ card, dimmed }: { card: RevealCard; dimmed: boolean }) {
 type Props = {
   winningCard: RevealCard;
   sessionSalt: number;
-  prizeLine?: HomeNicheCategory;
+  prizeLine?: PackCategory;
   replayKey: number;
   skipNonce: number;
   audioTier: RarityTier;

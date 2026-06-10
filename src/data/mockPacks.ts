@@ -1,4 +1,5 @@
-import { demoPackHeroImage } from './demoMedia';
+import type { CatalogPack, RarityTier, TcgCategory, PriceRange } from '../../shared/types/pack';
+import { catalogPacksToMobile } from '../lib/catalogAdapter';
 import type { MembershipTierId } from './membershipPlans';
 
 // ---------------------------------------------------------------------------
@@ -30,10 +31,17 @@ export type ChipTagType =
  */
 export type PackGroup = 'first_time' | 'low_cost' | 'high_value';
 
-/** Home niche tabs — each MVP pack belongs to exactly one tier.
- *  'all' is a virtual tab that shows every pack grouped by PackGroup.
+/**
+ * Home / catalog filter tabs — TCG categories from the shared catalog.
+ * 'all' shows every pack; others filter by `Pack.tcgCategory`.
  */
-export type HomeNicheCategory = 'all' | 'onboarding' | 'micro' | 'premium';
+export type HomeNicheCategory =
+  | 'all'
+  | 'pokemon'
+  | 'one_piece'
+  | 'yugioh'
+  | 'sports'
+  | 'multi';
 
 export type PackCategory = 'onboarding' | 'micro' | 'premium';
 
@@ -98,6 +106,21 @@ export interface Pack {
    * Derived from category but stored explicitly for fast filtering.
    */
   packGroup: PackGroup;
+
+  // --- Shared catalog fields (Phygitals redesign) ---
+  tcgCategory?: TcgCategory;
+  buybackRate?: number;
+  tagline?: string;
+  catalogDescription?: string;
+  topCard?: string;
+  pullCount?: number;
+  remainingFraction?: number;
+  rarityTier?: RarityTier;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  isLimitedTime?: boolean;
+  priceRange?: PriceRange;
+  demoReveal?: CatalogPack['demoReveal'];
 }
 
 // ---------------------------------------------------------------------------
@@ -107,10 +130,20 @@ export interface Pack {
 /** All tab options including the virtual "all" tab. */
 export const HOME_NICHE_CATEGORIES: HomeNicheCategory[] = [
   'all',
-  'onboarding',
-  'micro',
-  'premium',
+  'pokemon',
+  'one_piece',
+  'yugioh',
+  'sports',
+  'multi',
 ];
+
+const NICHE_TO_TCG: Record<Exclude<HomeNicheCategory, 'all'>, TcgCategory> = {
+  pokemon: 'Pokémon TCG',
+  one_piece: 'One Piece TCG',
+  yugioh: 'Yu-Gi-Oh!',
+  sports: 'Sports Cards',
+  multi: 'Multi TCG',
+};
 
 /** The three display groups used in the "All packs" grouped view. */
 export const PACK_GROUPS: PackGroup[] = ['first_time', 'low_cost', 'high_value'];
@@ -142,64 +175,12 @@ export const HOME_SUBFILTER_KEYS: PackSubfilter[] = [
 
 export function packBelongsToHomeNiche(pack: Pack, niche: HomeNicheCategory): boolean {
   if (niche === 'all') return true;
-  return pack.category === niche;
+  return pack.tcgCategory === NICHE_TO_TCG[niche];
 }
 
 export function packMatchesSubfilter(pack: Pack, sub: PackSubfilter): boolean {
   if (sub === 'all') return true;
   return pack.tags.includes(sub);
-}
-
-// ---------------------------------------------------------------------------
-// Internal builder
-// ---------------------------------------------------------------------------
-
-const CATEGORY_TO_GROUP: Record<PackCategory, PackGroup> = {
-  onboarding: 'first_time',
-  micro: 'low_cost',
-  premium: 'high_value',
-};
-
-function p(
-  id: string,
-  title: string,
-  category: PackCategory,
-  args: {
-    creditPrice: number;
-    tags: ChipTagType[];
-    imageColor: string;
-    valueDescription: string;
-    guaranteeText: string;
-    maxPerUser: number | null;
-    totalInventory?: number;
-    remainingInventory?: number;
-    requiredMembershipTier?: MembershipTierId;
-    isFirstTimePack?: boolean;
-    prizeTypes?: PrizeType[];
-    highlightPrize?: string;
-    imageUrl?: string | number;
-  },
-): Pack {
-  return {
-    id,
-    title,
-    category,
-    packTier: category,
-    packGroup: CATEGORY_TO_GROUP[category],
-    tags: args.tags,
-    imageColor: args.imageColor,
-    imageUrl: args.imageUrl ?? demoPackHeroImage(id),
-    creditPrice: args.creditPrice,
-    totalInventory: args.totalInventory ?? 50000,
-    remainingInventory: args.remainingInventory ?? 49000,
-    valueDescription: args.valueDescription,
-    guaranteeText: args.guaranteeText,
-    maxPerUser: args.maxPerUser,
-    requiredMembershipTier: args.requiredMembershipTier,
-    isFirstTimePack: args.isFirstTimePack,
-    prizeTypes: args.prizeTypes,
-    highlightPrize: args.highlightPrize,
-  };
 }
 
 /**
@@ -216,60 +197,10 @@ export function packImageSource(
 }
 
 // ---------------------------------------------------------------------------
-// MVP Pack catalog — exactly 3 packs, ordered: Welcome → Lucky Mini → Ultra Chase
+// Pack catalog — sourced from shared/mock/catalog.ts (12 TCG packs)
 // ---------------------------------------------------------------------------
 
-/**
- * The only packs visible to users in the MVP.
- * Display order: welcome_pack → lucky_mini → ultra_chase.
- */
-export const mockPacks: Pack[] = [
-  // ——— 1. Onboarding ———————————————————————————————————————————————————————
-  p('welcome_pack', 'Welcome Pack', 'onboarding', {
-    creditPrice: 500,
-    tags: ['first_time', 'best_value', 'new_user'],
-    imageColor: '#0F1A2E',
-    imageUrl: require('../../assets/pack-images/welcome_pack.png'),
-    valueDescription: 'First-time pack — high return, low risk. Perfect intro to Pull Hub.',
-    guaranteeText: 'Guaranteed value ≥ 100 % of pack price · 1 per account · no tricks',
-    maxPerUser: 1,
-    totalInventory: 99999,
-    remainingInventory: 98500,
-    isFirstTimePack: true,
-    prizeTypes: ['card', 'points'],
-    highlightPrize: 'Up to 3× bonus coins',
-  }),
-
-  // ——— 2. Micro / High-frequency ———————————————————————————————————————————
-  p('lucky_mini', 'Lucky Mini', 'micro', {
-    creditPrice: 10,
-    tags: ['low_cost', 'hot_drop', 'chase_boost'],
-    imageColor: '#1A2E5A',
-    valueDescription: 'Tiny price, massive upside — Nintendo Switch / PS5 / iPhone in the pool.',
-    guaranteeText: 'Card every pull · big prize in rotation (1-in-50 demo odds)',
-    maxPerUser: null,
-    totalInventory: 500000,
-    remainingInventory: 495000,
-    isFirstTimePack: false,
-    prizeTypes: ['card', 'console', 'smartphone', 'coupon'],
-    highlightPrize: 'Nintendo Switch · PS5 · iPhone 16',
-  }),
-
-  // ——— 3. Premium / Whale ——————————————————————————————————————————————————
-  p('ultra_chase', 'Ultra Chase', 'premium', {
-    creditPrice: 10000,
-    tags: ['premium_pack', 'high_return', 'chase_boost', 'graded'],
-    imageColor: '#1B0A3A',
-    valueDescription: 'High-stakes vault pull — trophy slabs and ultra-rare hits.',
-    guaranteeText: 'Chase-tier hit every open · 120 %+ return rate (demo)',
-    maxPerUser: null,
-    totalInventory: 10000,
-    remainingInventory: 9800,
-    isFirstTimePack: false,
-    prizeTypes: ['card'],
-    highlightPrize: 'PSA 10 Trophy Card · 1/1 holy grail chase',
-  }),
-];
+export const mockPacks: Pack[] = catalogPacksToMobile();
 
 // ---------------------------------------------------------------------------
 // Deprecated category list — kept for scripts / docs parity only

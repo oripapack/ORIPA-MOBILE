@@ -67,6 +67,7 @@
     "@expo/ngrok": "^4.1.0",
     "@types/react": "~19.1.10",
     "@vitalets/google-translate-api": "^9.2.1",
+    "supabase": "^2.105.0",
     "typescript": "~5.9.2"
   },
   "private": true

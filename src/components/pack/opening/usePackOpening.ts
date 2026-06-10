@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing } from 'react-native';
 import { hapticPackEnter, hapticPackReveal, hapticPackResult } from '../../../audio/packOpeningFeedback';
-import type { HomeNicheCategory } from '../../../data/mockPacks';
+import type { PackCategory } from '../../../data/mockPacks';
 import { buildCsgoStrip } from './stripGenerator';
 import { STAGE } from './sharedStage';
 import type { PackOpeningPhase, PackOpeningStyle, PackRollResult, RevealCard, RevealRarity } from './types';
@@ -34,7 +34,7 @@ export function usePackOpening({
   revealRarity: RevealRarity;
   sessionSalt: number;
   /** Matches pack product line — filler strip stays on-theme. */
-  prizeLine?: HomeNicheCategory;
+  prizeLine?: PackCategory;
   replayKey: number;
   skipNonce: number;
   onRevealDone: () => void;
