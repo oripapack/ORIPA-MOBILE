@@ -12,14 +12,14 @@
 ───────────────────────────────────────────────────────────────────────── */
 :root {
   /* ── Backgrounds ──────────────────────────────────────────────────────── */
-  /* Page background — near-black with a very slight warm-neutral tint */
-  --ph-bg:             #0B0B0E;
-  /* Primary card / panel surface — one step above background */
-  --ph-surface:        #111117;
-  /* Elevated card — hover states, active sheets, secondary panels */
-  --ph-surface-high:   #18181F;
-  /* Raised element — selected tier, focused input shells */
-  --ph-surface-raise:  #1E1E27;
+  /* Page background — near-pure black (Phygitals reference) */
+  --ph-bg:             #050507;
+  /* Primary card / panel surface */
+  --ph-surface:        #0e0e12;
+  /* Elevated card */
+  --ph-surface-high:   #141419;
+  /* Raised element — selected state */
+  --ph-surface-raise:  #1a1a22;
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
   /* Hairline — list separators, subtle outlines */
