@@ -3,101 +3,116 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Pull Hub — Design Tokens
-   Source of truth for all UI colors, surfaces, borders, and effects.
-   Reference: docs/design-spec.md + docs/references/phygitals/notes.md
+   Pull Hub — Design Tokens  (A+B direction)
+   A = Phygitals premium showroom dark
+   B = StockX / Fanatics / Arena Club US marketplace transparency
 
-   Naming convention: --ph-<category>[-variant]
-   All Tailwind utilities that reference these vars live in tailwind.config.ts.
+   Color philosophy:
+   - Background:     near-pure graphite black — physical product stage, not SaaS
+   - Surfaces:       layered charcoal — depth without purple tint
+   - Green:          premium emerald — action, value, buyback (not arcade bright)
+   - Gold:           muted champagne — top-tier/exclusive accent only
+   - Crimson:        restrained red — rare pull moment / low stock only
+   - NO:             rainbow, neon, vivid purple, loud blue, coin gold, confetti
 ───────────────────────────────────────────────────────────────────────── */
 :root {
   /* ── Backgrounds ──────────────────────────────────────────────────────── */
-  /* Page background — near-pure black (Phygitals reference) */
-  --ph-bg:             #050507;
-  /* Primary card / panel surface */
-  --ph-surface:        #0e0e12;
-  /* Elevated card */
-  --ph-surface-high:   #141419;
-  /* Raised element — selected state */
-  --ph-surface-raise:  #1a1a22;
+  --ph-bg:             #080809;       /* graphite black — product stage floor  */
+  --ph-surface:        #0d0d10;       /* primary charcoal card surface          */
+  --ph-surface-high:   #131318;       /* elevated — hover, panel, drawer        */
+  --ph-surface-raise:  #19191f;       /* raised — selected, active state        */
 
   /* ── Borders ──────────────────────────────────────────────────────────── */
-  /* Hairline — list separators, subtle outlines */
-  --ph-border:         rgba(255, 255, 255, 0.07);
-  /* Standard — most card borders, input rings */
-  --ph-border-md:      rgba(255, 255, 255, 0.11);
-  /* Prominent — selected state, active card outline */
-  --ph-border-high:    rgba(255, 255, 255, 0.18);
+  --ph-border:         rgba(255, 255, 255, 0.06);
+  --ph-border-md:      rgba(255, 255, 255, 0.10);
+  --ph-border-high:    rgba(255, 255, 255, 0.17);
 
   /* ── Text hierarchy ───────────────────────────────────────────────────── */
-  --ph-text:           #FFFFFF;
-  --ph-text-sec:       #9CA3AF;   /* secondary labels, descriptions */
-  --ph-text-muted:     #6B7280;   /* metadata, timestamps, hints */
+  --ph-text:           #F5F5F5;       /* off-white — softer than pure white     */
+  --ph-text-sec:       #A0A0AA;       /* cool gray secondary                    */
+  --ph-text-muted:     #606068;       /* muted metadata                         */
 
-  /* ── Primary action — green ───────────────────────────────────────────── */
-  /* Use ONLY for: Open Pack CTA, buyback, positive outcomes, success states */
-  --ph-green:          #22C55E;
-  --ph-green-hover:    #16A34A;
-  --ph-green-soft:     rgba(34, 197, 94, 0.10);
-  --ph-green-border:   rgba(34, 197, 94, 0.25);
-  --ph-green-ink:      #052e16;   /* text ON a green button */
+  /* ── Primary action — premium emerald green ───────────────────────────── */
+  /* Deeper, more premium than arcade green. Think StockX / Arena Club.       */
+  --ph-green:          #10b981;       /* emerald — action, value, buyback, CTA  */
+  --ph-green-hover:    #059669;       /* darker on hover                        */
+  --ph-green-soft:     rgba(16, 185, 129, 0.10);
+  --ph-green-border:   rgba(16, 185, 129, 0.24);
+  --ph-green-ink:      #022c22;       /* text ON green button                   */
 
-  /* ── Warning / rare pull — red ────────────────────────────────────────── */
-  /* Use ONLY for: warnings, low-stock alerts, error states */
-  --ph-red:            #EF4444;
-  --ph-red-soft:       rgba(239, 68, 68, 0.10);
-  --ph-red-border:     rgba(239, 68, 68, 0.22);
+  /* ── Top-tier accent — muted champagne gold ───────────────────────────── */
+  /* Use ONLY for: top-tier pack badge, chase/grail pull, PSA 10 grade.       */
+  /* Must remain muted — not casino gold, not neon yellow.                    */
+  --ph-gold:           #c9a96e;       /* warm champagne                         */
+  --ph-gold-soft:      rgba(201, 169, 110, 0.10);
+  --ph-gold-border:    rgba(201, 169, 110, 0.24);
+  --ph-gold-ink:       #1a1206;
 
-  /* ── Accent — amber (badges, "Best Value", warnings-adjacent) ─────────── */
-  --ph-amber:          #F59E0B;
-  --ph-amber-ink:      #451a03;   /* text ON an amber badge */
+  /* ── Rare pull / low stock — restrained crimson ──────────────────────── */
+  /* Use ONLY for: rare pull moment, low stock warning, error state.          */
+  --ph-red:            #dc2626;
+  --ph-red-soft:       rgba(220, 38, 38, 0.09);
+  --ph-red-border:     rgba(220, 38, 38, 0.22);
 
-  /* ── Rarity tier colors ───────────────────────────────────────────────── */
-  --ph-rarity-common:    #9CA3AF;
-  --ph-rarity-rare:      #60A5FA;
-  --ph-rarity-epic:      #A855F7;
-  --ph-rarity-legendary: #F59E0B;
-  --ph-rarity-mythic:    #EC4899;
+  /* ── Rarity tier palette — physical, not neon ────────────────────────── */
+  /* These read as real product tiers, not video-game colors.                 */
+  --ph-rarity-common:    #9ca3af;
+  --ph-rarity-rare:      #60a5fa;
+  --ph-rarity-epic:      #a78bfa;     /* softer purple — not neon violet       */
+  --ph-rarity-legendary: #c9a96e;     /* champagne = top tier                  */
+  --ph-rarity-mythic:    #f472b6;
 
-  /* Soft fills for rarity-tinted card backgrounds */
-  --ph-rarity-common-bg:    rgba(156, 163, 175, 0.09);
-  --ph-rarity-rare-bg:      rgba(96,  165, 250, 0.09);
-  --ph-rarity-epic-bg:      rgba(168,  85, 247, 0.11);
-  --ph-rarity-legendary-bg: rgba(245, 158,  11, 0.11);
-  --ph-rarity-mythic-bg:    rgba(236,  72, 153, 0.13);
+  /* Rarity backgrounds — very subtle, barely there */
+  --ph-rarity-common-bg:    rgba(156, 163, 175, 0.07);
+  --ph-rarity-rare-bg:      rgba(96,  165, 250, 0.07);
+  --ph-rarity-epic-bg:      rgba(167, 139, 250, 0.08);
+  --ph-rarity-legendary-bg: rgba(201, 169, 110, 0.09);
+  --ph-rarity-mythic-bg:    rgba(244, 114, 182, 0.08);
 
-  /* Rarity border accents */
-  --ph-rarity-common-border:    rgba(156, 163, 175, 0.18);
-  --ph-rarity-rare-border:      rgba(96,  165, 250, 0.20);
-  --ph-rarity-epic-border:      rgba(168,  85, 247, 0.24);
-  --ph-rarity-legendary-border: rgba(245, 158,  11, 0.26);
-  --ph-rarity-mythic-border:    rgba(236,  72, 153, 0.28);
+  /* Rarity borders */
+  --ph-rarity-common-border:    rgba(156, 163, 175, 0.16);
+  --ph-rarity-rare-border:      rgba(96,  165, 250, 0.18);
+  --ph-rarity-epic-border:      rgba(167, 139, 250, 0.22);
+  --ph-rarity-legendary-border: rgba(201, 169, 110, 0.28);
+  --ph-rarity-mythic-border:    rgba(244, 114, 182, 0.24);
+
+  /* ── Product staging ─────────────────────────────────────────────────── */
+  /* Variables for the showroom spotlight behind pack/card visuals.           */
+  --ph-spot-neutral:   rgba(255, 255, 255, 0.032);
+  --ph-spot-warm:      rgba(220, 190, 140, 0.040);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Base styles
+   Base
 ───────────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-font-smoothing: antialiased; }
+
 body {
   background-color: var(--ph-bg);
   color: var(--ph-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  margin: 0;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Performance helpers
+   Utility classes (used across multiple components)
 ───────────────────────────────────────────────────────────────────────── */
-/* Hint GPU for animated layers */
-.ph-will-animate {
-  will-change: transform, opacity;
-}
+.ph-will-animate  { will-change: transform, opacity; }
 
-/* Smooth transitions for interactive surfaces — attach via className */
 .ph-transition {
   transition-property: background-color, border-color, box-shadow, transform, opacity;
-  transition-duration: 150ms;
+  transition-duration: 160ms;
   transition-timing-function: ease-out;
 }
 .ph-transition-colors {
   transition-property: background-color, border-color, color;
-  transition-duration: 150ms;
+  transition-duration: 160ms;
   transition-timing-function: ease-out;
 }
+
+/* Scrollbar — minimal, dark */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 2px; }
