@@ -1,126 +1,117 @@
 /**
- * Jewel vault — dark premium shell with multi-tone accents (not flat monochrome).
- * Gold = value / CTAs on gold; amethyst = primary digital energy; sapphire, jade, coral = variety.
- * Red stays for urgency; ink = legible type on gold surfaces.
+ * App-wide color tokens — aligned with Phygitals black + green (`shared/tokens/ph.ts`).
+ * Legacy key names (gold, accent, etc.) are kept so existing screens pick up the new look.
  */
+import { ph } from '../../shared/tokens/ph';
+
 export const colors = {
-  background: '#07050F',
-  surfaceElevated: '#14102A',
-  surfaceMuted: '#1C1733',
-  white: '#FFFFFF',
-  black: '#020108',
-  /** Velvet slabs, media bars — sits above background with subtle violet depth */
-  nearBlack: '#241B3D',
-  /** High-contrast type on gold / champagne fills */
-  ink: '#0A0614',
+  background: ph.bg,
+  surfaceElevated: ph.surfaceHigh,
+  surfaceMuted: ph.surface,
+  white: ph.text,
+  black: '#020204',
+  nearBlack: ph.surfaceRaise,
+  ink: ph.greenInk,
 
-  textPrimary: '#F4F0FF',
-  textSecondary: '#B4ABCC',
-  textMuted: '#8B82A8',
-  textOnDark: '#FAF7FF',
+  textPrimary: ph.text,
+  textSecondary: ph.textSec,
+  textMuted: ph.textMuted,
+  textOnDark: ph.text,
 
-  border: 'rgba(196, 181, 255, 0.14)',
-  borderLight: 'rgba(196, 181, 255, 0.07)',
+  border: ph.border,
+  borderLight: 'rgba(255,255,255,0.04)',
 
-  red: '#F43F5E',
-  redDark: '#E11D48',
-  redGlow: 'rgba(244, 63, 94, 0.2)',
+  red: ph.red,
+  redDark: '#DC2626',
+  redGlow: ph.redSoft,
 
-  /** Vault / loot — bright antique gold */
-  gold: '#E8C547',
-  goldDark: '#C9A227',
-  goldSoft: 'rgba(232, 197, 71, 0.16)',
-  goldTintSubtle: 'rgba(232, 197, 71, 0.07)',
-  goldWash: 'rgba(232, 197, 71, 0.1)',
-  goldWash2: 'rgba(232, 197, 71, 0.08)',
-  goldWashMedium: 'rgba(232, 197, 71, 0.12)',
-  goldWashStrong: 'rgba(232, 197, 71, 0.16)',
-  goldBorderHairline: 'rgba(232, 197, 71, 0.28)',
-  goldBorderMuted: 'rgba(232, 197, 71, 0.34)',
-  goldBorder: 'rgba(232, 197, 71, 0.42)',
-  goldBorderStrong: 'rgba(232, 197, 71, 0.52)',
-  goldBorderHeavy: 'rgba(232, 197, 71, 0.6)',
-  goldPillBg: 'rgba(232, 197, 71, 0.18)',
-  goldPillBorder: 'rgba(232, 197, 71, 0.55)',
+  /** Primary CTA — green (legacy `gold` key used across the app). */
+  gold: ph.green,
+  goldDark: ph.greenHover,
+  goldSoft: ph.greenSoft,
+  goldTintSubtle: 'rgba(34,197,94,0.06)',
+  goldWash: 'rgba(34,197,94,0.08)',
+  goldWash2: 'rgba(34,197,94,0.06)',
+  goldWashMedium: 'rgba(34,197,94,0.10)',
+  goldWashStrong: ph.greenSoft,
+  goldBorderHairline: ph.greenBorder,
+  goldBorderMuted: 'rgba(34,197,94,0.30)',
+  goldBorder: 'rgba(34,197,94,0.38)',
+  goldBorderStrong: 'rgba(34,197,94,0.48)',
+  goldBorderHeavy: 'rgba(34,197,94,0.55)',
+  goldPillBg: ph.greenSoft,
+  goldPillBorder: ph.greenBorder,
 
-  green: '#34D399',
+  green: ph.green,
 
-  /** Primary accent — amethyst (highlights, links) */
-  accent: '#C084FC',
-  accentDark: '#7E22CE',
-  accentSoft: 'rgba(192, 132, 252, 0.14)',
-  accentBorder: 'rgba(192, 132, 252, 0.38)',
-  accentGlow: 'rgba(192, 132, 252, 0.25)',
+  /** Secondary accent — epic purple for highlights / links. */
+  accent: ph.rarity.epic,
+  accentDark: '#7C3AED',
+  accentSoft: ph.rarityBg.epic,
+  accentBorder: ph.rarityBorder.epic,
+  accentGlow: 'rgba(168,85,247,0.20)',
 
-  /** Sapphire — cool jewel contrast */
-  accentSapphire: '#38BDF8',
-  accentSapphireSoft: 'rgba(56, 189, 248, 0.14)',
+  accentSapphire: ph.rarity.rare,
+  accentSapphireSoft: ph.rarityBg.rare,
 
-  /** Coral / copper — warm tertiary (rings, variety) */
-  accentCopper: '#FB923C',
-  accentCopperSoft: 'rgba(251, 146, 60, 0.14)',
+  accentCopper: ph.amber,
+  accentCopperSoft: 'rgba(245,158,11,0.12)',
 
-  /** Jade — mint jewel for special highlights */
-  accentJade: '#2DD4BF',
-  accentJadeSoft: 'rgba(45, 212, 191, 0.12)',
+  accentJade: ph.green,
+  accentJadeSoft: ph.greenSoft,
 
-  /** Hype / chase — orchid pink */
-  magenta: '#F472B6',
-  magentaDark: '#EC4899',
-  magentaSoft: 'rgba(244, 114, 182, 0.14)',
-  magentaBorder: 'rgba(244, 114, 182, 0.38)',
+  magenta: ph.rarity.mythic,
+  magentaDark: '#DB2777',
+  magentaSoft: ph.rarityBg.mythic,
+  magentaBorder: ph.rarityBorder.mythic,
 
-  /** Home wash — vertical jewel drift (plum → sapphire → ink) */
-  homeGradientTop: '#1A1035',
-  homeGradientMid: '#0F1730',
-  homeGradientBottom: '#07050F',
-  headerHairline: 'rgba(232, 197, 71, 0.18)',
+  homeGradientTop: ph.surfaceHigh,
+  homeGradientMid: ph.surface,
+  homeGradientBottom: ph.bg,
+  headerHairline: ph.borderMd,
 
-  headerBarBg: 'rgba(10, 8, 18, 0.92)',
-  tabBarBg: 'rgba(10, 8, 18, 0.96)',
+  headerBarBg: 'rgba(5,5,7,0.94)',
+  tabBarBg: 'rgba(5,5,7,0.97)',
 
-  chipNew: 'rgba(192, 132, 252, 0.16)',
-  chipNewText: '#E9D5FF',
-  chipNewBorder: 'rgba(192, 132, 252, 0.35)',
+  chipNew: ph.rarityBg.rare,
+  chipNewText: ph.rarity.rare,
+  chipNewBorder: ph.rarityBorder.rare,
 
-  chipBestValue: 'rgba(45, 212, 191, 0.14)',
-  chipBestValueText: '#5EEAD4',
-  chipBestValueBorder: 'rgba(45, 212, 191, 0.3)',
+  chipBestValue: ph.greenSoft,
+  chipBestValueText: ph.green,
+  chipBestValueBorder: ph.greenBorder,
 
-  chipHotDrop: 'rgba(244, 114, 182, 0.16)',
-  chipHotDropText: '#FBCFE8',
-  chipHotDropBorder: 'rgba(244, 114, 182, 0.35)',
+  chipHotDrop: ph.rarityBg.mythic,
+  chipHotDropText: ph.rarity.mythic,
+  chipHotDropBorder: ph.rarityBorder.mythic,
 
-  chipGraded: 'rgba(56, 189, 248, 0.14)',
-  chipGradedText: '#7DD3FC',
-  chipGradedBorder: 'rgba(56, 189, 248, 0.32)',
+  chipGraded: ph.rarityBg.legendary,
+  chipGradedText: ph.rarity.legendary,
+  chipGradedBorder: ph.rarityBorder.legendary,
 
-  chipNewUser: 'rgba(251, 146, 60, 0.14)',
-  chipNewUserText: '#FDBA74',
-  chipNewUserBorder: 'rgba(251, 146, 60, 0.32)',
+  chipNewUser: ph.rarityBg.epic,
+  chipNewUserText: ph.rarity.epic,
+  chipNewUserBorder: ph.rarityBorder.epic,
 
-  creditsPillBg: 'rgba(28, 23, 51, 0.92)',
+  creditsPillBg: ph.surfaceHigh,
 
-  promoBannerBg: 'rgba(244, 114, 182, 0.1)',
-  promoBannerBorder: 'rgba(192, 132, 252, 0.3)',
-  verifiedPillBg: 'rgba(52, 211, 153, 0.12)',
-  verifiedPillText: '#6EE7B7',
-  demoNoteBg: 'rgba(192, 132, 252, 0.1)',
-  demoNoteBorder: 'rgba(192, 132, 252, 0.32)',
-  demoNoteText: '#E9D5FF',
-  warningBannerBg: 'rgba(251, 146, 60, 0.12)',
-  warningBannerBorder: '#FB923C',
-  warningBannerText: '#FDBA74',
+  promoBannerBg: ph.rarityBg.epic,
+  promoBannerBorder: ph.rarityBorder.epic,
+  verifiedPillBg: ph.greenSoft,
+  verifiedPillText: ph.green,
+  demoNoteBg: ph.greenSoft,
+  demoNoteBorder: ph.greenBorder,
+  demoNoteText: ph.green,
+  warningBannerBg: ph.redSoft,
+  warningBannerBorder: ph.red,
+  warningBannerText: ph.red,
 
-  shadow: 'rgba(0, 0, 0, 0.5)',
-  shadowStrong: 'rgba(0, 0, 0, 0.65)',
-  shadowCard: 'rgba(126, 34, 206, 0.18)',
+  shadow: 'rgba(0,0,0,0.55)',
+  shadowStrong: 'rgba(0,0,0,0.72)',
+  shadowCard: 'rgba(0,0,0,0.35)',
 
-  /**
-   * Premium panels — deep felt with gold trim (legacy names preserved for imports).
-   */
-  casinoFelt: '#1E1836',
-  casinoGold: '#E8C547',
-  casinoGoldDark: '#C9A227',
-  casinoFeltBorder: 'rgba(232, 197, 71, 0.22)',
+  casinoFelt: ph.surface,
+  casinoGold: ph.green,
+  casinoGoldDark: ph.greenHover,
+  casinoFeltBorder: ph.borderMd,
 } as const;

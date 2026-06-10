@@ -87,7 +87,7 @@ function PremiumTabBarBackground() {
 
       {/* Base slab — matches app surfaces, darker toward bottom (receding plane) */}
       <LinearGradient
-        colors={[colors.surfaceMuted, '#16122A', colors.background]}
+        colors={[colors.surfaceMuted, colors.surfaceElevated, colors.background]}
         locations={[0, 0.5, 1]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
@@ -106,7 +106,7 @@ function PremiumTabBarBackground() {
 
       {/* Gold → amethyst hairline rim (premium edge) */}
       <LinearGradient
-        colors={['rgba(232,197,71,0.5)', 'rgba(192,132,252,0.25)', 'rgba(56,189,248,0.15)']}
+        colors={['rgba(34,197,94,0.45)', 'rgba(34,197,94,0.15)', 'rgba(255,255,255,0.06)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={tabBarDockStyles.topRim}

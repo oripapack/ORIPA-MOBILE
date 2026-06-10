@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     marginRight: spacing.xs,
   },
   addBtn: {
-    backgroundColor: colors.accentDark,
+    backgroundColor: colors.goldDark,
     width: 34,
     height: 34,
     borderRadius: radius.full,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.14)',
   },
   addText: {
-    color: colors.white,
+    color: colors.ink,
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
     lineHeight: 20,

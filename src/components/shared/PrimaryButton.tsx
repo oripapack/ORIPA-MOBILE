@@ -28,7 +28,7 @@ export function PrimaryButton({ label, onPress, variant = 'black', disabled, loa
         <View style={[styles.fill, { backgroundColor: colors.red }]} />
       ) : (
         <LinearGradient
-          colors={[colors.accentDark, colors.accent]}
+          colors={[colors.goldDark, colors.gold]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.fill}
@@ -38,7 +38,7 @@ export function PrimaryButton({ label, onPress, variant = 'black', disabled, loa
         {loading ? (
           <ActivityIndicator color={colors.white} size="small" />
         ) : (
-          <Text style={styles.label}>{label}</Text>
+          <Text style={[styles.label, !isRed && styles.labelOnGreen]}>{label}</Text>
         )}
       </View>
     </TouchableOpacity>
@@ -67,6 +67,9 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     fontFamily: brandFont.bold,
     letterSpacing: 0.3,
+  },
+  labelOnGreen: {
+    color: colors.ink,
   },
   disabled: {
     opacity: 0.4,

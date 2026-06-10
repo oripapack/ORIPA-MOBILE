@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppHeader } from '../components/shared/AppHeader';
+import { HomeBackground } from '../components/shared/HomeBackground';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 import { HomeCoach } from '../components/coach/HomeCoach';
 import { PhHomeHero } from '../components/ph/PhHomeHero';
@@ -101,7 +102,7 @@ export function HomeScreen() {
             <Text style={styles.sectionTitle}>Open packs</Text>
             <Text style={styles.sectionSub}>Tap any pack to open or view details</Text>
           </View>
-          <View style={styles.grid}>
+          <View style={styles.stack}>
             {gridPacks.map((pack) => (
               <PhPackCard key={pack.id} pack={pack} />
             ))}
@@ -146,14 +147,13 @@ export function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <HomeBackground />
       <AppHeader onSearch={() => setSearchOpen(true)} />
       {homeViewMode === 'browse' ? (
         <FlatList<Pack>
-          key="home-browse-grid"
+          key="home-browse-list"
           data={filteredPacks}
           keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.gridRow}
           renderItem={({ item }) => <PhPackCard pack={item} />}
           ListHeaderComponent={ListHeader}
           ListEmptyComponent={
@@ -215,7 +215,7 @@ function ModeSwitchBar({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: ph.bg },
-  list: { paddingBottom: 100, flexGrow: 1 },
+  list: { paddingBottom: 100, paddingTop: 4, flexGrow: 1 },
   modeSwitchWrap: { paddingHorizontal: spacing.base, paddingTop: spacing.base },
   modeSwitch: {
     flexDirection: 'row',
@@ -232,13 +232,11 @@ const styles = StyleSheet.create({
   sectionHeader: { paddingHorizontal: spacing.base, marginTop: spacing.lg, marginBottom: spacing.md },
   sectionTitle: { fontSize: fontSize.xl, fontFamily: brandFont.black, color: ph.text },
   sectionSub: { fontSize: fontSize.sm, color: ph.textSec, marginTop: 4 },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  stack: {
     paddingHorizontal: spacing.base,
-    justifyContent: 'space-between',
+    paddingTop: 4,
+    gap: 4,
   },
-  gridRow: { paddingHorizontal: spacing.base, justifyContent: 'space-between' },
   browseIntro: { paddingHorizontal: spacing.base, paddingTop: spacing.md, paddingBottom: spacing.sm },
   browseTitle: { fontSize: fontSize.xl, fontFamily: brandFont.black, color: ph.text },
   browseSub: { fontSize: fontSize.sm, color: ph.textSec, marginTop: 2 },

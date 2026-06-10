@@ -40,7 +40,7 @@ export function AppHeader({ onSearch }: Props) {
       <View style={styles.scrim} pointerEvents="none" />
       <LinearGradient
         pointerEvents="none"
-        colors={['rgba(232,197,71,0.06)', 'transparent', 'rgba(192,132,252,0.05)']}
+        colors={['rgba(34,197,94,0.06)', 'transparent', 'rgba(255,255,255,0.02)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -53,7 +53,7 @@ export function AppHeader({ onSearch }: Props) {
           accessibilityLabel={APP_DISPLAY_NAME}
         >
           <LinearGradient
-            colors={[colors.accentSapphire, colors.accent, colors.goldDark]}
+            colors={[colors.goldDark, colors.gold, '#4ADE80']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.monogramRing}

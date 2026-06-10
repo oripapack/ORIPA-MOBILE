@@ -6,7 +6,7 @@ import { getCategoryFoil } from '../../../shared/utils/foil';
 import { ph } from '../../tokens/phTheme';
 import { brandFont, fontSize } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
-import { BuybackBadge, StatusBadge } from './PhBadge';
+import { StatusBadge } from './PhBadge';
 import { PhProgressBar } from './PhProgressBar';
 import { navigationRef } from '../../navigation/navigationRef';
 
@@ -25,10 +25,7 @@ export function PhFeaturedBanner({ pack }: { pack: Pack }) {
     >
       <LinearGradient colors={[foil.top, ph.surface]} style={styles.gradient}>
         <View style={styles.content}>
-          <View style={styles.badges}>
-            <StatusBadge variant="featured">Featured</StatusBadge>
-            {pack.buybackRate != null ? <BuybackBadge rate={pack.buybackRate} /> : null}
-          </View>
+          <StatusBadge variant="featured">Featured</StatusBadge>
           <Text style={styles.name}>{pack.title}</Text>
           <Text style={styles.tagline}>{pack.tagline}</Text>
           <PhProgressBar fraction={fraction} />
@@ -47,20 +44,19 @@ export function PhFeaturedBanner({ pack }: { pack: Pack }) {
 const styles = StyleSheet.create({
   wrap: {
     marginHorizontal: spacing.base,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
     borderRadius: ph.radius.xl,
     borderWidth: 1,
     borderColor: ph.borderMd,
     overflow: 'hidden',
   },
   urgent: { borderColor: ph.redBorder },
-  gradient: { padding: spacing.lg },
-  content: { gap: 8 },
-  badges: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
-  name: { fontSize: fontSize.xl, fontFamily: brandFont.black, color: ph.text },
-  tagline: { fontSize: fontSize.sm, color: ph.textSec, lineHeight: 20 },
-  footer: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
-  price: { fontSize: 22, fontFamily: brandFont.black, color: ph.text },
-  openPill: { marginLeft: 'auto', backgroundColor: ph.green, paddingHorizontal: 16, paddingVertical: 8, borderRadius: ph.radius.pill },
+  gradient: { padding: spacing.md },
+  content: { gap: 6 },
+  name: { fontSize: fontSize.lg, fontFamily: brandFont.black, color: ph.text, marginTop: 4 },
+  tagline: { fontSize: 12, color: ph.textSec, lineHeight: 17 },
+  footer: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
+  price: { fontSize: 18, fontFamily: brandFont.black, color: ph.text },
+  openPill: { marginLeft: 'auto', backgroundColor: ph.green, paddingHorizontal: 12, paddingVertical: 6, borderRadius: ph.radius.pill },
   openText: { fontSize: 12, fontFamily: brandFont.bold, color: ph.greenInk },
 });
