@@ -156,7 +156,6 @@ export function VaultScreen() {
   const EmptyState = useMemo(
     () => (
       <View style={styles.emptyWrap}>
-        <Text style={styles.emptyEmoji}>📦</Text>
         <Text style={styles.emptyTitle}>{t('vaultScreen.emptyTitle')}</Text>
         <Text style={styles.emptyBody}>{t('vaultScreen.emptyBody')}</Text>
         <TouchableOpacity style={styles.emptyCta} onPress={goHome} activeOpacity={0.88} accessibilityRole="button">
@@ -482,10 +481,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: colors.border,
-  },
-  emptyEmoji: {
-    fontSize: 48,
-    marginBottom: spacing.md,
   },
   emptyTitle: {
     fontSize: fontSize.md,

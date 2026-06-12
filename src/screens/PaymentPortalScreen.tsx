@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceElevated,
   },
   tabActive: {
-    borderColor: colors.red,
+    borderColor: colors.gold,
     backgroundColor: colors.surfaceMuted,
   },
   tabText: {

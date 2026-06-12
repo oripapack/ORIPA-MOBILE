@@ -16,15 +16,20 @@ export const ph = {
   textSec: '#9CA3AF',
   textMuted: '#6B7280',
 
-  green: '#22C55E',
-  greenHover: '#16A34A',
-  greenSoft: 'rgba(34,197,94,0.10)',
-  greenBorder: 'rgba(34,197,94,0.25)',
-  greenInk: '#052e16',
+  green: '#10b981',
+  greenHover: '#059669',
+  greenSoft: 'rgba(16,185,129,0.10)',
+  greenBorder: 'rgba(16,185,129,0.24)',
+  greenInk: '#022c22',
 
-  red: '#EF4444',
-  redSoft: 'rgba(239,68,68,0.10)',
-  redBorder: 'rgba(239,68,68,0.22)',
+  gold: '#c9a96e',
+  goldSoft: 'rgba(201,169,110,0.10)',
+  goldBorder: 'rgba(201,169,110,0.24)',
+  goldInk: '#1a1206',
+
+  red: '#dc2626',
+  redSoft: 'rgba(220,38,38,0.09)',
+  redBorder: 'rgba(220,38,38,0.22)',
 
   amber: '#F59E0B',
   amberInk: '#451a03',
@@ -32,8 +37,8 @@ export const ph = {
   rarity: {
     common: '#9CA3AF',
     rare: '#60A5FA',
-    epic: '#A855F7',
-    legendary: '#F59E0B',
+    epic: '#a78bfa',
+    legendary: '#c9a96e',
     mythic: '#EC4899',
   },
 

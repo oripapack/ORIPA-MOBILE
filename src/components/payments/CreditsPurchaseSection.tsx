@@ -98,28 +98,19 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
                   </View>
                 ) : null}
                 <View style={[styles.bundleRow, !promo && styles.bundleRowNoBadge]}>
-                  <MaterialCommunityIcons name="sack" size={40} color="#CA8A04" />
+                  <MaterialCommunityIcons name="sack" size={36} color={colors.gold} />
                   <View style={styles.bundleCenter}>
                     <Text style={styles.pointsLine}>
                       {t('buyCredits.pointsLine', {
                         count: bundle.credits.toLocaleString(),
                       })}
                     </Text>
-                    <Text style={styles.approxLine}>
-                      {t('buyCredits.approx')}{' '}
+                    <View style={styles.priceRow}>
                       <Text style={promo ? styles.priceNow : styles.priceList}>{bundle.priceUsd}</Text>
-                    </Text>
-                    {promo && bundle.priceUsdWas ? (
-                      <Text style={styles.priceWas}>{bundle.priceUsdWas}</Text>
-                    ) : null}
-                    {promo ? (
-                      <View style={styles.jpyRow}>
-                        <Text style={styles.jpyWas}>{bundle.jpyWas}</Text>
-                        <Text style={styles.jpyNow}> {bundle.jpyNow}</Text>
-                      </View>
-                    ) : (
-                      <Text style={styles.jpyList}>{bundle.jpyNow}</Text>
-                    )}
+                      {promo && bundle.priceUsdWas ? (
+                        <Text style={styles.priceWas}>{bundle.priceUsdWas}</Text>
+                      ) : null}
+                    </View>
                     {bundle.bonus ? <Text style={styles.bundleBonus}>{bundle.bonus}</Text> : null}
                   </View>
                   <TouchableOpacity
@@ -233,20 +224,20 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     marginBottom: 2,
   },
-  approxLine: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
-    marginTop: 2,
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 8,
+    marginTop: 4,
   },
   priceNow: {
-    fontSize: fontSize.base,
-    fontFamily: brandFont.bold,
-    color: colors.red,
+    fontSize: fontSize.md,
+    fontFamily: brandFont.black,
+    color: colors.gold,
   },
   priceList: {
-    fontSize: fontSize.base,
-    fontFamily: brandFont.bold,
+    fontSize: fontSize.md,
+    fontFamily: brandFont.black,
     color: colors.textPrimary,
   },
   priceWas: {
@@ -254,30 +245,6 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.regular,
     color: colors.textMuted,
     textDecorationLine: 'line-through',
-    marginTop: 2,
-  },
-  jpyRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  jpyWas: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textMuted,
-    textDecorationLine: 'line-through',
-  },
-  jpyNow: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: colors.red,
-  },
-  jpyList: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
-    marginTop: 4,
   },
   bundleBonus: {
     fontSize: fontSize.xs,
@@ -286,16 +253,19 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   buyBtn: {
-    backgroundColor: colors.nearBlack,
+    backgroundColor: colors.gold,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 2,
     borderRadius: radius.md,
     justifyContent: 'center',
+    minWidth: 72,
+    alignItems: 'center',
   },
   buyBtnText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.white,
+    fontFamily: brandFont.black,
+    color: colors.ink,
+    letterSpacing: 0.3,
   },
   disclaimer: {
     fontSize: 10,
