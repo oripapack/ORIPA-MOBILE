@@ -186,11 +186,12 @@ function Floor() {
 // Pack ring
 // ─────────────────────────────────────────────────────────────────
 interface PackRingProps {
-  ringAngleRef: React.MutableRefObject<number>;
-  zoomT: React.MutableRefObject<number>;
+  ringAngleRef:    React.MutableRefObject<number>;
+  zoomT:           React.MutableRefObject<number>;
+  selectedPackIdx: React.MutableRefObject<number>;
 }
 
-function PackRing({ ringAngleRef, zoomT }: PackRingProps) {
+function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
   const groups   = useRef<THREE.Group[]>([]);
   const bodyMats = useRef<THREE.MeshStandardMaterial[]>([]);
   const brdMats  = useRef<THREE.MeshStandardMaterial[]>([]);
@@ -245,9 +246,13 @@ function PackRing({ ringAngleRef, zoomT }: PackRingProps) {
       // Scale by ring depth
       g.scale.setScalar(S.minDepthScale + df * (1 - S.minDepthScale));
 
-      // Opacity: ring depth-based → front-only when zoomed
-      const ringOp = S.minDepthOpacity + df * (1 - S.minDepthOpacity);
-      const zoomOp = isFront ? 1.0 : 0.0;
+      // Opacity: ring depth-based → selected-only when zoomed
+      // Use selectedPackIdx (frozen at tap time) so the chosen pack stays
+      // visible throughout the entire zoom transition, regardless of any
+      // tiny ringAngle drift that might change frontIdx mid-tween.
+      const ringOp   = S.minDepthOpacity + df * (1 - S.minDepthOpacity);
+      const isSelected = i === selectedPackIdx.current;
+      const zoomOp   = isSelected ? 1.0 : 0.0;
       const op = THREE.MathUtils.lerp(ringOp, zoomOp, t);
 
       const bm = bodyMats.current[i];
@@ -366,11 +371,12 @@ function ZoomController({ zoomT, floorGroupRef, particleGroupRef }: ZoomControll
 // Scene
 // ─────────────────────────────────────────────────────────────────
 interface SceneProps {
-  ringAngleRef: React.MutableRefObject<number>;
-  zoomT:        React.MutableRefObject<number>;
+  ringAngleRef:    React.MutableRefObject<number>;
+  zoomT:           React.MutableRefObject<number>;
+  selectedPackIdx: React.MutableRefObject<number>;
 }
 
-function Scene({ ringAngleRef, zoomT }: SceneProps) {
+function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
   const floorGroupRef    = useRef<THREE.Group>(null);
   const particleGroupRef = useRef<THREE.Group>(null);
 
@@ -402,7 +408,7 @@ function Scene({ ringAngleRef, zoomT }: SceneProps) {
       </group>
 
       {/* Pack ring */}
-      <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} />
+      <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} />
 
       {/* Camera + element fade (reads zoomT every frame) */}
       <ZoomController
@@ -419,18 +425,29 @@ function Scene({ ringAngleRef, zoomT }: SceneProps) {
 // ─────────────────────────────────────────────────────────────────
 export default function PackRingScene() {
   const [mode, setMode] = useState<'ring' | 'zoomed'>('ring');
-  const modeRef   = useRef<'ring' | 'zoomed'>('ring');
-  const ringAngle = useRef<number>(0);
-  const velocity  = useRef<number>(0);
-  const dragging  = useRef<boolean>(false);
-  const lastX     = useRef<number>(0);
-  const dragDist  = useRef<number>(0);
-  const rafId     = useRef<number>(0);
-  const zoomT     = useRef<number>(0);
+  const modeRef        = useRef<'ring' | 'zoomed'>('ring');
+  const ringAngle      = useRef<number>(0);
+  const velocity       = useRef<number>(0);
+  const dragging       = useRef<boolean>(false);
+  const lastX          = useRef<number>(0);
+  const dragDist       = useRef<number>(0);
+  const rafId          = useRef<number>(0);
+  const zoomT          = useRef<number>(0);
+  // Index of the pack chosen at tap time; frozen so it doesn't drift
+  // during the zoom tween even if ringAngle changes slightly.
+  const selectedPackIdx = useRef<number>(0);
 
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
   const zoom = useCallback(() => {
+    // Freeze the front-most pack index at the exact moment of tap.
+    let best = 0, bestDf = -Infinity;
+    for (let i = 0; i < S.packCount; i++) {
+      const df = depthFactor(packAngle(i, ringAngle.current));
+      if (df > bestDf) { bestDf = df; best = i; }
+    }
+    selectedPackIdx.current = best;
+
     setMode('zoomed');
     modeRef.current = 'zoomed';
     velocity.current = 0;
@@ -442,7 +459,14 @@ export default function PackRingScene() {
     setMode('ring');
     modeRef.current = 'ring';
     gsap.killTweensOf(zoomT);
-    gsap.to(zoomT, { current: 0, duration: S.unzoomDur, ease: 'power2.inOut' });
+    gsap.to(zoomT, {
+      current: 0,
+      duration: S.unzoomDur,
+      ease: 'power2.inOut',
+      // Hard-set to exactly 0 on completion so floating-point drift
+      // never leaves non-front packs faintly invisible.
+      onComplete: () => { zoomT.current = 0; },
+    });
   }, []);
 
   // Inertia loop outside R3F — only runs when in ring mode
@@ -521,7 +545,7 @@ export default function PackRingScene() {
         dpr={[1, 1.5]}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       >
-        <Scene ringAngleRef={ringAngle} zoomT={zoomT} />
+        <Scene ringAngleRef={ringAngle} zoomT={zoomT} selectedPackIdx={selectedPackIdx} />
       </Canvas>
 
       {/* Back button — zoomed only */}
