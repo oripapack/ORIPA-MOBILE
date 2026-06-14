@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { MeshReflectorMaterial, Environment } from '@react-three/drei';
+import { MeshReflectorMaterial } from '@react-three/drei';
 import { useRef, useEffect, useMemo, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
@@ -405,8 +405,11 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
       {/* Rim light — cool blue from behind-left, outlines the packs */}
       <pointLight position={[-3.5, 2, -1.5]} intensity={S.rimInt} color={S.rimColor} distance={10} decay={2} />
 
-      {/* [TEST] Environment disabled to isolate context loss */}
-      {/* <Environment preset="city" environmentIntensity={S.envInt} /> */}
+      {/* Metalness highlight lights — replaces Environment preset (no network load) */}
+      {/* Overhead cool-white: simulates skylight bounce on gold border */}
+      <pointLight position={[0, 8, 0]} intensity={1.2} color="#E8F0FF" distance={18} decay={2} />
+      {/* Low front-right: catches the border edge at camera angle */}
+      <pointLight position={[2.5, 0.5, 5]} intensity={0.9} color="#FFF8F0" distance={14} decay={2} />
 
       {/* Floor */}
       <group ref={floorGroupRef}>
