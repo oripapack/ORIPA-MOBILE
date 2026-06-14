@@ -126,14 +126,10 @@ function Particles() {
     return arr;
   }, []);
 
-  const geoRef = useRef<THREE.BufferGeometry>(null);
-
-  useEffect(() => {
-    geoRef.current?.setAttribute('position', new THREE.BufferAttribute(posArr.slice(), 3));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const pointsRef = useRef<THREE.Points>(null);
 
   useFrame(() => {
-    const attr = geoRef.current?.getAttribute('position') as THREE.BufferAttribute | undefined;
+    const attr = pointsRef.current?.geometry.getAttribute('position') as THREE.BufferAttribute | undefined;
     if (!attr) return;
     const a = attr.array as Float32Array;
     for (let i = 0; i < S.particleCount; i++) {
@@ -144,8 +140,13 @@ function Particles() {
   });
 
   return (
-    <points>
-      <bufferGeometry ref={geoRef} />
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[posArr, 3]}
+        />
+      </bufferGeometry>
       <pointsMaterial
         color={S.particleColor}
         size={S.particleSize}
