@@ -581,7 +581,9 @@ export default function PackRingScene() {
   const zoomT          = useRef<number>(0);
   // Index of the pack chosen at tap time; frozen so it doesn't drift
   // during the zoom tween even if ringAngle changes slightly.
-  const selectedPackIdx = useRef<number>(0);
+  const selectedPackIdx  = useRef<number>(0);
+  // Ring angle at the moment of tap, restored on Back
+  const savedRingAngle   = useRef<number>(0);
 
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
@@ -594,17 +596,34 @@ export default function PackRingScene() {
     }
     selectedPackIdx.current = best;
 
+    // Calculate the ring angle that places the selected pack exactly at front (angle 0).
+    // packAngle(best, ringAngle) = (2π*best/packCount) + ringAngle → must equal 0
+    // → targetRingAngle = -(2π*best/packCount)
+    // Take shortest path to avoid spinning a full rotation.
+    const baseAngle  = (Math.PI * 2 * best) / S.packCount;
+    const rawTarget  = -baseAngle;
+    const cur        = ringAngle.current;
+    let   diff       = (rawTarget - cur) % (Math.PI * 2);
+    if (diff >  Math.PI) diff -= Math.PI * 2;
+    if (diff < -Math.PI) diff += Math.PI * 2;
+    const targetRingAngle = cur + diff;
+
+    savedRingAngle.current = cur;  // save for Back restoration
+
     setMode('zoomed');
     modeRef.current = 'zoomed';
     velocity.current = 0;
     gsap.killTweensOf(zoomT);
-    gsap.to(zoomT, { current: 1, duration: S.zoomDur, ease: 'power2.out' });
+    gsap.killTweensOf(ringAngle);
+    gsap.to(zoomT,     { current: 1,               duration: S.zoomDur, ease: 'power2.out' });
+    gsap.to(ringAngle, { current: targetRingAngle,  duration: 0.6,       ease: 'power2.out' });
   }, []);
 
   const unzoom = useCallback(() => {
     setMode('ring');
     modeRef.current = 'ring';
     gsap.killTweensOf(zoomT);
+    gsap.killTweensOf(ringAngle);
     gsap.to(zoomT, {
       current: 0,
       duration: S.unzoomDur,
@@ -612,6 +631,12 @@ export default function PackRingScene() {
       // Hard-set to exactly 0 on completion so floating-point drift
       // never leaves non-front packs faintly invisible.
       onComplete: () => { zoomT.current = 0; },
+    });
+    // Restore ring to its original angle before the tap
+    gsap.to(ringAngle, {
+      current: savedRingAngle.current,
+      duration: S.unzoomDur,
+      ease: 'power2.inOut',
     });
   }, []);
 
