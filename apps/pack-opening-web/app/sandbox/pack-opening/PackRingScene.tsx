@@ -80,6 +80,13 @@ const S = {
   inertiaDamp:  0.91,
   tapThreshold: 8,     // px — max cumulative drag for a tap to register
 
+  // Camera — result mode (card pulled toward camera for full view)
+  camYR:    0.72,   // same height as zoomed camera
+  camZR:    7.5,    // pulled back so full card fits in frame
+  camFovR:  44,     // slightly wider
+  camLAYR:  0.56,   // look at card center
+  camLAZR:  4.2,    // where the card will be
+
   // Lighting — low ambient keeps background black; key dominates center
   ambientInt:  0.06,
   keyColor:    '#FFF8F0',
@@ -190,9 +197,10 @@ interface PackRingProps {
   ringAngleRef:    React.MutableRefObject<number>;
   zoomT:           React.MutableRefObject<number>;
   selectedPackIdx: React.MutableRefObject<number>;
+  resultT:         React.MutableRefObject<number>;
 }
 
-function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
+function PackRing({ ringAngleRef, zoomT, selectedPackIdx, resultT }: PackRingProps) {
   const groups    = useRef<THREE.Group[]>([]);
   const bodyMats  = useRef<THREE.MeshStandardMaterial[]>([]);
   const brdMats   = useRef<THREE.MeshStandardMaterial[]>([]);
@@ -255,9 +263,13 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
       // Use selectedPackIdx (frozen at tap time) so the chosen pack stays
       // visible throughout the entire zoom transition, regardless of any
       // tiny ringAngle drift that might change frontIdx mid-tween.
-      const ringOp   = S.minDepthOpacity + df * (1 - S.minDepthOpacity);
-      const zoomOp   = isSelected ? 1.0 : 0.0;
-      const op = THREE.MathUtils.lerp(ringOp, zoomOp, t);
+      const ringOp    = S.minDepthOpacity + df * (1 - S.minDepthOpacity);
+      const zoomOp    = isSelected ? 1.0 : 0.0;
+      const zoomedOp  = THREE.MathUtils.lerp(ringOp, zoomOp, t);
+      // In result mode, fade selected pack to 0 so only the card is visible
+      const op = isSelected
+        ? THREE.MathUtils.lerp(zoomedOp, 0, resultT.current)
+        : zoomedOp;
 
       const bm = bodyMats.current[i];
       const bd = brdMats.current[i];
@@ -336,33 +348,39 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
 // ─────────────────────────────────────────────────────────────────
 interface ZoomControllerProps {
   zoomT:             React.MutableRefObject<number>;
+  resultT:           React.MutableRefObject<number>;
   floorGroupRef:     React.RefObject<THREE.Group | null>;
   particleGroupRef:  React.RefObject<THREE.Group | null>;
 }
 
-function ZoomController({ zoomT, floorGroupRef, particleGroupRef }: ZoomControllerProps) {
+function ZoomController({ zoomT, resultT, floorGroupRef, particleGroupRef }: ZoomControllerProps) {
   const { camera } = useThree();
 
   useFrame(() => {
-    const t = zoomT.current;
+    const t  = zoomT.current;
+    const rt = resultT.current;
 
-    // Camera position
+    // Ring → zoomed lerp
+    const zY   = THREE.MathUtils.lerp(S.camY,   S.camYZ,   t);
+    const zZ   = THREE.MathUtils.lerp(S.camZ,   S.camZZ,   t);
+    const zFov = THREE.MathUtils.lerp(S.camFov, S.camFovZ, t);
+    const zLAY = THREE.MathUtils.lerp(S.camLAY, S.camLAYZ, t);
+    const zLAZ = THREE.MathUtils.lerp(S.camLAZ, S.camLAZZ, t);
+
+    // Zoomed → result lerp (camera pulls back for full card view)
     camera.position.set(
       0,
-      THREE.MathUtils.lerp(S.camY,   S.camYZ,   t),
-      THREE.MathUtils.lerp(S.camZ,   S.camZZ,   t),
+      THREE.MathUtils.lerp(zY,   S.camYR,   rt),
+      THREE.MathUtils.lerp(zZ,   S.camZR,   rt),
     );
-
-    // Camera lookAt
     camera.lookAt(
       0,
-      THREE.MathUtils.lerp(S.camLAY, S.camLAYZ, t),
-      THREE.MathUtils.lerp(S.camLAZ, S.camLAZZ, t),
+      THREE.MathUtils.lerp(zLAY, S.camLAYR, rt),
+      THREE.MathUtils.lerp(zLAZ, S.camLAZR, rt),
     );
 
-    // Fov
     const cam = camera as THREE.PerspectiveCamera;
-    cam.fov = THREE.MathUtils.lerp(S.camFov, S.camFovZ, t);
+    cam.fov = THREE.MathUtils.lerp(zFov, S.camFovR, rt);
     cam.updateProjectionMatrix();
 
     // Floor: slide below scene when zoomed
@@ -390,8 +408,10 @@ const OPEN = {
   tearY:  S.packY + S.packH * 0.5 - S.packH * 0.15,
   flapH:  S.packH * 0.15,
   // charizard.jpg is 800×1350 px (height/width = 1.6875) — test asset, replace before launch
-  cardW:  0.58,
-  cardH:  0.58 * (1350 / 800),  // ≈ 0.979 — matches image aspect ratio, no distortion
+  cardW:   1.1,
+  cardH:   1.1 * (1350 / 800),  // ≈ 1.856 — matches image aspect ratio, no distortion
+  resultY: 0.56,                  // card Y in result mode (camera lookAt height)
+  resultZ: 4.2,                   // card Z in result mode (pulled toward camera)
 } as const;
 
 // Test asset — swap for production image before launch
@@ -413,9 +433,10 @@ function CardMeshInner({ matRef }: { matRef: React.MutableRefObject<THREE.MeshSt
 interface OpeningSequenceProps {
   active:     boolean;
   onComplete: () => void;
+  isResult:   boolean;
 }
 
-function OpeningSequence({ active, onComplete }: OpeningSequenceProps) {
+function OpeningSequence({ active, onComplete, isResult }: OpeningSequenceProps) {
   const lineRef    = useRef<THREE.Mesh>(null);
   const flapRef    = useRef<THREE.Mesh>(null);
   const cardRef    = useRef<THREE.Group>(null);
@@ -426,12 +447,26 @@ function OpeningSequence({ active, onComplete }: OpeningSequenceProps) {
   const cardStartY  = OPEN.packY - 0.3;
   const cardEndY    = OPEN.packY + 0.55;
 
+  // When result mode activates, glide card to camera-facing viewing position
+  useEffect(() => {
+    if (!isResult || !cardRef.current) return;
+    gsap.to(cardRef.current.position, {
+      y: OPEN.resultY,
+      z: OPEN.resultZ,
+      duration: 0.5,
+      ease: 'power2.inOut',
+    });
+  }, [isResult]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!active) {
-      // Reset all elements to hidden
+      // Reset all elements to hidden (including Z so it's ready for next open)
       if (lineRef.current)  { lineRef.current.scale.x = 0; lineRef.current.visible = false; }
       if (flapRef.current)    flapRef.current.visible = false;
-      if (cardRef.current)  { cardRef.current.position.y = cardStartY; cardRef.current.visible = false; }
+      if (cardRef.current)  {
+        cardRef.current.position.set(OPEN.packX, cardStartY, OPEN.packZ + 0.03);
+        cardRef.current.visible = false;
+      }
       if (cardMatRef.current) cardMatRef.current.opacity = 0;
       return;
     }
@@ -531,12 +566,13 @@ function OpeningSequence({ active, onComplete }: OpeningSequenceProps) {
 interface SceneProps {
   ringAngleRef:    React.MutableRefObject<number>;
   zoomT:           React.MutableRefObject<number>;
+  resultT:         React.MutableRefObject<number>;
   selectedPackIdx: React.MutableRefObject<number>;
   mode:            'ring' | 'zoomed' | 'opening' | 'result';
   onOpenComplete:  () => void;
 }
 
-function Scene({ ringAngleRef, zoomT, selectedPackIdx, mode, onOpenComplete }: SceneProps) {
+function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, onOpenComplete }: SceneProps) {
   const floorGroupRef    = useRef<THREE.Group>(null);
   const particleGroupRef = useRef<THREE.Group>(null);
 
@@ -569,17 +605,19 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx, mode, onOpenComplete }: S
       </group>
 
       {/* Pack ring */}
-      <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} />
+      <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} resultT={resultT} />
 
       {/* Opening sequence — tear line → flap → card */}
       <OpeningSequence
         active={mode === 'opening' || mode === 'result'}
         onComplete={onOpenComplete}
+        isResult={mode === 'result'}
       />
 
       {/* Camera + element fade (reads zoomT every frame) */}
       <ZoomController
         zoomT={zoomT}
+        resultT={resultT}
         floorGroupRef={floorGroupRef}
         particleGroupRef={particleGroupRef}
       />
@@ -605,6 +643,8 @@ export default function PackRingScene() {
   const selectedPackIdx  = useRef<number>(0);
   // Ring angle at the moment of tap, restored on Back
   const savedRingAngle   = useRef<number>(0);
+  // Drives camera pull-back + pack fade when card is revealed (0 = zoomed, 1 = result)
+  const resultT          = useRef<number>(0);
 
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
@@ -645,6 +685,8 @@ export default function PackRingScene() {
     modeRef.current = 'ring';
     gsap.killTweensOf(zoomT);
     gsap.killTweensOf(ringAngle);
+    gsap.killTweensOf(resultT);
+    resultT.current = 0;  // instant reset — going back to ring, no need to ease
     gsap.to(zoomT, {
       current: 0,
       duration: S.unzoomDur,
@@ -669,6 +711,7 @@ export default function PackRingScene() {
   const setResultMode = useCallback(() => {
     setMode('result');
     modeRef.current = 'result';
+    gsap.to(resultT, { current: 1, duration: 0.6, ease: 'power2.inOut' });
   }, []);
 
   // Inertia loop outside R3F — only runs when in ring mode
@@ -760,7 +803,7 @@ export default function PackRingScene() {
         }}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       >
-        <Scene ringAngleRef={ringAngle} zoomT={zoomT} selectedPackIdx={selectedPackIdx} mode={mode} onOpenComplete={setResultMode} />
+        <Scene ringAngleRef={ringAngle} zoomT={zoomT} resultT={resultT} selectedPackIdx={selectedPackIdx} mode={mode} onOpenComplete={setResultMode} />
       </Canvas>
 
       {/* Back button — zoomed / opening / result */}
