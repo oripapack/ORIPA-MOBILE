@@ -406,10 +406,10 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
       {/*   <Floor /> */}
       {/* </group> */}
 
-      {/* [TEST] Particles disabled to isolate context loss */}
-      {/* <group ref={particleGroupRef}> */}
-      {/*   <Particles /> */}
-      {/* </group> */}
+      {/* Particles */}
+      <group ref={particleGroupRef}>
+        <Particles />
+      </group>
 
       {/* Pack ring */}
       <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} />
