@@ -166,11 +166,18 @@ function Floor() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]}>
       <planeGeometry args={[S.floorSize, S.floorSize]} />
-      {/* MeshReflectorMaterial temporarily replaced to isolate WebGL context loss */}
-      <meshStandardMaterial
+      <MeshReflectorMaterial
+        blur={S.floorBlur}
+        resolution={512}
+        mixBlur={0.9}
+        mixStrength={S.floorMixStrength}
+        roughness={0.85}
+        depthScale={S.floorDepthScale}
+        minDepthThreshold={0.2}
+        maxDepthThreshold={1.2}
         color={S.floorColor}
-        metalness={0.4}
-        roughness={0.6}
+        metalness={0.65}
+        mirror={S.floorMirror as 0}
       />
     </mesh>
   );
@@ -401,10 +408,10 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
       {/* [TEST] Environment disabled to isolate context loss */}
       {/* <Environment preset="city" environmentIntensity={S.envInt} /> */}
 
-      {/* [TEST] Floor disabled to isolate context loss */}
-      {/* <group ref={floorGroupRef}> */}
-      {/*   <Floor /> */}
-      {/* </group> */}
+      {/* Floor */}
+      <group ref={floorGroupRef}>
+        <Floor />
+      </group>
 
       {/* Particles */}
       <group ref={particleGroupRef}>
