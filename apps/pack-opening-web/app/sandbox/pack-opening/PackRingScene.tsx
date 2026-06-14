@@ -387,29 +387,29 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
   return (
     <>
       {/* Lights */}
-      <ambientLight intensity={S.ambientInt} />
+      <ambientLight intensity={0.4} />
 
       {/* Key light — warm white, from above-front, illuminates the front pack */}
       <pointLight position={[0, 5, 4.5]} intensity={S.keyInt} color={S.keyColor} distance={16} decay={2} />
 
-      {/* Fill light — soft blue from right side */}
-      <pointLight position={[3, 3, 2]} intensity={S.fillInt} color={S.fillColor} distance={12} decay={2} />
+      {/* [TEST] Fill light disabled to isolate context loss */}
+      {/* <pointLight position={[3, 3, 2]} intensity={S.fillInt} color={S.fillColor} distance={12} decay={2} /> */}
 
-      {/* Rim light — cool blue from behind-left, outlines the packs */}
-      <pointLight position={[-3.5, 2, -1.5]} intensity={S.rimInt} color={S.rimColor} distance={10} decay={2} />
+      {/* [TEST] Rim light disabled to isolate context loss */}
+      {/* <pointLight position={[-3.5, 2, -1.5]} intensity={S.rimInt} color={S.rimColor} distance={10} decay={2} /> */}
 
-      {/* Environment — drives metalness/roughness reflections on PBR materials */}
-      <Environment preset="city" environmentIntensity={S.envInt} />
+      {/* [TEST] Environment disabled to isolate context loss */}
+      {/* <Environment preset="city" environmentIntensity={S.envInt} /> */}
 
-      {/* Floor */}
-      <group ref={floorGroupRef}>
-        <Floor />
-      </group>
+      {/* [TEST] Floor disabled to isolate context loss */}
+      {/* <group ref={floorGroupRef}> */}
+      {/*   <Floor /> */}
+      {/* </group> */}
 
-      {/* Particles */}
-      <group ref={particleGroupRef}>
-        <Particles />
-      </group>
+      {/* [TEST] Particles disabled to isolate context loss */}
+      {/* <group ref={particleGroupRef}> */}
+      {/*   <Particles /> */}
+      {/* </group> */}
 
       {/* Pack ring */}
       <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} />
@@ -594,7 +594,7 @@ export default function PackRingScene() {
           transition: 'color 0.35s ease',
         }}
       >
-        {mode === 'zoomed' ? 'TAP TO OPEN' : 'SWIPE TO BROWSE'}
+        {mode === 'zoomed' ? 'TAP TO OPEN' : 'SWIPE TEST 123'}
       </p>
     </div>
   );
