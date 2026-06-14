@@ -387,16 +387,16 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
   return (
     <>
       {/* Lights */}
-      <ambientLight intensity={0.4} />
+      <ambientLight intensity={S.ambientInt} />
 
       {/* Key light — warm white, from above-front, illuminates the front pack */}
       <pointLight position={[0, 5, 4.5]} intensity={S.keyInt} color={S.keyColor} distance={16} decay={2} />
 
-      {/* [TEST] Fill light disabled to isolate context loss */}
-      {/* <pointLight position={[3, 3, 2]} intensity={S.fillInt} color={S.fillColor} distance={12} decay={2} /> */}
+      {/* Fill light — soft blue from right side */}
+      <pointLight position={[3, 3, 2]} intensity={S.fillInt} color={S.fillColor} distance={12} decay={2} />
 
-      {/* [TEST] Rim light disabled to isolate context loss */}
-      {/* <pointLight position={[-3.5, 2, -1.5]} intensity={S.rimInt} color={S.rimColor} distance={10} decay={2} /> */}
+      {/* Rim light — cool blue from behind-left, outlines the packs */}
+      <pointLight position={[-3.5, 2, -1.5]} intensity={S.rimInt} color={S.rimColor} distance={10} decay={2} />
 
       {/* [TEST] Environment disabled to isolate context loss */}
       {/* <Environment preset="city" environmentIntensity={S.envInt} /> */}
