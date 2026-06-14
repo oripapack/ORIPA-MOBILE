@@ -10,17 +10,17 @@ import gsap from 'gsap';
 // Scene constants — all tunable values live here
 // ─────────────────────────────────────────────────────────────────
 const S = {
-  // CSS backgrounds
-  bgGrad:   'linear-gradient(to bottom, #1A1A1E 0%, #0A0A0C 100%)',
-  bgZoomed: '#111116',   // solid charcoal when zoomed
+  // CSS backgrounds — near-pure black, phygitals style
+  bgGrad:   'linear-gradient(to bottom, #060606 0%, #000000 100%)',
+  bgZoomed: '#000000',
 
-  // Floor
+  // Floor — sharper reflection, darker base
   floorSize:        40,
-  floorColor:       '#0C0C10',
-  floorBlur:        [200, 60] as [number, number],
-  floorMixStrength: 12,
-  floorMirror:      0.70,
-  floorDepthScale:  0.80,
+  floorColor:       '#050508',
+  floorBlur:        [80, 30] as [number, number],  // less blur = crisper reflection
+  floorMixStrength: 20,
+  floorMirror:      0.88,
+  floorDepthScale:  0.90,
 
   // Particles
   particleColor:  '#C9A96E',
@@ -80,14 +80,14 @@ const S = {
   inertiaDamp:  0.91,
   tapThreshold: 8,     // px — max cumulative drag for a tap to register
 
-  // Lighting — key: warm white from above-front; fill: soft blue from side; rim: blue-cool from behind
-  ambientInt:  0.25,
-  keyColor:    '#FFF5E0',
-  keyInt:      3.8,
+  // Lighting — low ambient keeps background black; key dominates center
+  ambientInt:  0.06,
+  keyColor:    '#FFF8F0',
+  keyInt:      4.5,
   fillColor:   '#A0C0E8',
-  fillInt:     0.65,
+  fillInt:     0.18,
   rimColor:    '#6888B0',
-  rimInt:      0.70,
+  rimInt:      0.28,
 
   // Environment map intensity
   envInt: 0.45,
@@ -532,11 +532,9 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx, mode, onOpenComplete }: S
       {/* Rim light — cool blue from behind-left, outlines the packs */}
       <pointLight position={[-3.5, 2, -1.5]} intensity={S.rimInt} color={S.rimColor} distance={10} decay={2} />
 
-      {/* Metalness highlight lights — replaces Environment preset (no network load) */}
-      {/* Overhead cool-white: simulates skylight bounce on gold border */}
-      <pointLight position={[0, 8, 0]} intensity={1.2} color="#E8F0FF" distance={18} decay={2} />
-      {/* Low front-right: catches the border edge at camera angle */}
-      <pointLight position={[2.5, 0.5, 5]} intensity={0.9} color="#FFF8F0" distance={14} decay={2} />
+      {/* Metalness highlight lights — tight radius so only the pack glints, not the background */}
+      <pointLight position={[0, 6, 3.5]} intensity={1.8} color="#E8F0FF" distance={8} decay={2.5} />
+      <pointLight position={[1.8, 0.8, 4.5]} intensity={1.0} color="#FFF8F0" distance={6} decay={2.5} />
 
       {/* Floor */}
       <group ref={floorGroupRef}>
@@ -717,6 +715,15 @@ export default function PackRingScene() {
           background: S.bgZoomed,
           opacity: mode !== 'ring' ? 1 : 0,
           transition: 'opacity 0.5s ease',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Center glow — subtle elliptical halo behind subject, always visible */}
+      <div
+        style={{
+          position: 'absolute', inset: 0,
+          background: 'radial-gradient(ellipse 58% 42% at 50% 44%, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.01) 55%, transparent 100%)',
           pointerEvents: 'none',
         }}
       />
