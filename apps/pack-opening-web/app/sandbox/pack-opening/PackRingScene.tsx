@@ -242,9 +242,11 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
       g.position.x = S.ringRadius * Math.sin(angle);
       g.position.z = S.ringRadius * Math.cos(angle);
 
-      // Rotation + idle sway (front pack only)
-      const idle = isFront ? Math.sin(idleTime.current * S.idleSpeed) * S.idleAmp : 0;
-      g.rotation.y = angle + idle;
+      // Rotation + idle sway: ring mode only, fades to 0 on selected pack as zoom increases
+      const isSelected = i === selectedPackIdx.current;
+      const idleScale  = isSelected ? (1 - t) : (isFront ? 1 : 0);
+      const idle       = Math.sin(idleTime.current * S.idleSpeed) * S.idleAmp * idleScale;
+      g.rotation.y     = angle + idle;
 
       // Scale by ring depth
       g.scale.setScalar(S.minDepthScale + df * (1 - S.minDepthScale));
@@ -254,7 +256,6 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
       // visible throughout the entire zoom transition, regardless of any
       // tiny ringAngle drift that might change frontIdx mid-tween.
       const ringOp   = S.minDepthOpacity + df * (1 - S.minDepthOpacity);
-      const isSelected = i === selectedPackIdx.current;
       const zoomOp   = isSelected ? 1.0 : 0.0;
       const op = THREE.MathUtils.lerp(ringOp, zoomOp, t);
 
