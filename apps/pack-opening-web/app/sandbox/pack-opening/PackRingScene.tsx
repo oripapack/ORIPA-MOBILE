@@ -192,11 +192,13 @@ interface PackRingProps {
 }
 
 function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
-  const groups   = useRef<THREE.Group[]>([]);
-  const bodyMats = useRef<THREE.MeshStandardMaterial[]>([]);
-  const brdMats  = useRef<THREE.MeshStandardMaterial[]>([]);
-  const idleTime = useRef(0);
-  const frontIdx = useRef(0);
+  const groups    = useRef<THREE.Group[]>([]);
+  const bodyMats  = useRef<THREE.MeshStandardMaterial[]>([]);
+  const brdMats   = useRef<THREE.MeshStandardMaterial[]>([]);
+  const artMats   = useRef<THREE.MeshStandardMaterial[]>([]);
+  const stripeMats = useRef<THREE.MeshStandardMaterial[]>([]);
+  const idleTime  = useRef(0);
+  const frontIdx  = useRef(0);
 
   // Entry animation — GSAP animates Y, useFrame owns XZ
   useEffect(() => {
@@ -257,8 +259,12 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
 
       const bm = bodyMats.current[i];
       const bd = brdMats.current[i];
+      const am = artMats.current[i];
+      const sm = stripeMats.current[i];
       if (bm) bm.opacity = op;
       if (bd) bd.opacity = op;
+      if (am) am.opacity = op * 0.94;
+      if (sm) sm.opacity = op * 0.55;
     });
   });
 
@@ -299,13 +305,17 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx }: PackRingProps) {
           {/* Art area placeholder */}
           <mesh position={[0, 0.06, S.packDepth * 0.9]}>
             <planeGeometry args={[S.packW * 0.80, S.packH * 0.52]} />
-            <meshStandardMaterial color="#242432" roughness={0.88} transparent opacity={0.94} />
+            <meshStandardMaterial
+              ref={(el) => { if (el) artMats.current[i] = el as THREE.MeshStandardMaterial; }}
+              color="#242432" roughness={0.88} transparent opacity={0.94}
+            />
           </mesh>
 
           {/* Header stripe */}
           <mesh position={[0, S.packH * 0.40, S.packDepth * 0.9]}>
             <planeGeometry args={[S.packW * 0.80, S.packH * 0.075]} />
             <meshStandardMaterial
+              ref={(el) => { if (el) stripeMats.current[i] = el as THREE.MeshStandardMaterial; }}
               color={S.packBorder}
               metalness={0.75}
               roughness={0.22}
