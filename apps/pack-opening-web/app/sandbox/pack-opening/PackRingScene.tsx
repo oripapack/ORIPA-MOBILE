@@ -166,18 +166,11 @@ function Floor() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]}>
       <planeGeometry args={[S.floorSize, S.floorSize]} />
-      <MeshReflectorMaterial
-        blur={S.floorBlur}
-        resolution={512}
-        mixBlur={0.9}
-        mixStrength={S.floorMixStrength}
-        roughness={0.85}
-        depthScale={S.floorDepthScale}
-        minDepthThreshold={0.2}
-        maxDepthThreshold={1.2}
+      {/* MeshReflectorMaterial temporarily replaced to isolate WebGL context loss */}
+      <meshStandardMaterial
         color={S.floorColor}
-        metalness={0.65}
-        mirror={S.floorMirror as 0}
+        metalness={0.4}
+        roughness={0.6}
       />
     </mesh>
   );
