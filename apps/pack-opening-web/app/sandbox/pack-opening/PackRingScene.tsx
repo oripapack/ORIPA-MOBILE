@@ -415,59 +415,130 @@ const OPEN = {
 } as const;
 
 // Test asset — swap for production image before launch
-function CardMeshInner({ matRef }: { matRef: React.MutableRefObject<THREE.MeshStandardMaterial | null> }) {
+function CardMeshInner({
+  matRef,
+  backMatRef,
+  glowMatRef,
+}: {
+  matRef:     React.MutableRefObject<THREE.MeshStandardMaterial | null>;
+  backMatRef:  React.MutableRefObject<THREE.MeshStandardMaterial | null>;
+  glowMatRef:  React.MutableRefObject<THREE.MeshStandardMaterial | null>;
+}) {
   const texture = useTexture('/assets/charizard.jpg');
   return (
-    <mesh>
-      <planeGeometry args={[OPEN.cardW, OPEN.cardH]} />
-      <meshStandardMaterial
-        ref={(el) => { matRef.current = el; }}
-        map={texture}
-        transparent
-        opacity={0}
-      />
-    </mesh>
+    <>
+      {/* Front face: charizard (faces +Z toward camera) */}
+      <mesh position={[0, 0, 0.003]}>
+        <planeGeometry args={[OPEN.cardW, OPEN.cardH]} />
+        <meshStandardMaterial
+          ref={(el) => { matRef.current = el; }}
+          map={texture}
+          transparent
+          opacity={0}
+        />
+      </mesh>
+
+      {/* Back face: dark placeholder rotated 180° — visible when group.rotation.y = π */}
+      <mesh position={[0, 0, -0.003]} rotation={[0, Math.PI, 0]}>
+        <planeGeometry args={[OPEN.cardW, OPEN.cardH]} />
+        <meshStandardMaterial
+          ref={(el) => { backMatRef.current = el; }}
+          color="#18182A"
+          roughness={0.5}
+          metalness={0.15}
+          transparent
+          opacity={0}
+        />
+      </mesh>
+
+      {/* Gold glow border — slightly oversized plane behind back face */}
+      <mesh position={[0, 0, -0.007]} rotation={[0, Math.PI, 0]}>
+        <planeGeometry args={[OPEN.cardW + 0.06, OPEN.cardH + 0.06]} />
+        <meshStandardMaterial
+          ref={(el) => { glowMatRef.current = el; }}
+          color="#C9A96E"
+          emissive="#C9A96E"
+          emissiveIntensity={2.5}
+          transparent
+          opacity={0}
+          depthWrite={false}
+        />
+      </mesh>
+    </>
   );
 }
 
 interface OpeningSequenceProps {
-  active:     boolean;
-  onComplete: () => void;
-  isResult:   boolean;
+  active:         boolean;
+  onComplete:     () => void;
+  isRevealing:    boolean;   // card moves to viewing position + gold glow
+  isFlipping:     boolean;   // triggers Y-axis flip back→front
+  onFlipComplete: () => void;
 }
 
-function OpeningSequence({ active, onComplete, isResult }: OpeningSequenceProps) {
-  const lineRef    = useRef<THREE.Mesh>(null);
-  const flapRef    = useRef<THREE.Mesh>(null);
-  const cardRef    = useRef<THREE.Group>(null);
-  const flapMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const cardMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
+function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipComplete }: OpeningSequenceProps) {
+  const lineRef        = useRef<THREE.Mesh>(null);
+  const flapRef        = useRef<THREE.Mesh>(null);
+  const cardRef        = useRef<THREE.Group>(null);
+  const flapMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
+  const cardMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
+  const cardBackMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
+  const cardGlowMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
 
   const flapCenterY = OPEN.tearY + OPEN.flapH * 0.5;
   const cardStartY  = OPEN.packY - 0.3;
   const cardEndY    = OPEN.packY + 0.55;
 
-  // When result mode activates, glide card to camera-facing viewing position
+  // Glide card to camera-facing viewing position + fade in gold glow
   useEffect(() => {
-    if (!isResult || !cardRef.current) return;
+    if (!isRevealing || !cardRef.current) return;
     gsap.to(cardRef.current.position, {
       y: OPEN.resultY,
       z: OPEN.resultZ,
       duration: 0.5,
       ease: 'power2.inOut',
     });
-  }, [isResult]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (cardGlowMatRef.current) {
+      gsap.to(cardGlowMatRef.current, { opacity: 1, duration: 0.4, ease: 'power2.out', delay: 0.3 });
+    }
+  }, [isRevealing]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Y-axis 180° flip: back face → front face (rotation.y π → 2π)
+  useEffect(() => {
+    if (!isFlipping || !cardRef.current) return;
+    // Kill glow at flip start
+    if (cardGlowMatRef.current) {
+      gsap.to(cardGlowMatRef.current, { opacity: 0, duration: 0.15, ease: 'power2.in' });
+    }
+    // Crossfade materials at flip midpoint: back fades out first, front fades in after
+    if (cardBackMatRef.current) {
+      gsap.to(cardBackMatRef.current, { opacity: 0, duration: 0.25, ease: 'power2.in' });
+    }
+    if (cardMatRef.current) {
+      gsap.to(cardMatRef.current, { opacity: 1, duration: 0.30, ease: 'power2.out', delay: 0.28 });
+    }
+    gsap.to(cardRef.current.rotation, {
+      y: Math.PI * 2,
+      duration: 0.6,
+      ease: 'power2.inOut',
+      onComplete: onFlipComplete,
+    });
+  }, [isFlipping]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!active) {
-      // Reset all elements to hidden (including Z so it's ready for next open)
+      // Reset all elements to hidden (including Z + rotation so next open is clean)
+      if (cardRef.current) gsap.killTweensOf(cardRef.current.rotation);
       if (lineRef.current)  { lineRef.current.scale.x = 0; lineRef.current.visible = false; }
       if (flapRef.current)    flapRef.current.visible = false;
       if (cardRef.current)  {
         cardRef.current.position.set(OPEN.packX, cardStartY, OPEN.packZ + 0.03);
+        cardRef.current.rotation.y = Math.PI;  // back face toward camera for next open
         cardRef.current.visible = false;
       }
-      if (cardMatRef.current) cardMatRef.current.opacity = 0;
+      if (cardMatRef.current)     cardMatRef.current.opacity = 0;
+      if (cardBackMatRef.current) cardBackMatRef.current.opacity = 0;
+      if (cardGlowMatRef.current) cardGlowMatRef.current.opacity = 0;
       return;
     }
 
@@ -481,9 +552,12 @@ function OpeningSequence({ active, onComplete, isResult }: OpeningSequenceProps)
     if (flapMatRef.current) flapMatRef.current.opacity = 1;
     if (cardRef.current)  {
       cardRef.current.position.set(OPEN.packX, cardStartY, OPEN.packZ + 0.03);
+      cardRef.current.rotation.y = Math.PI;  // back face toward camera
       cardRef.current.visible = false;
     }
-    if (cardMatRef.current) cardMatRef.current.opacity = 0;
+    if (cardMatRef.current)     cardMatRef.current.opacity = 0;
+    if (cardBackMatRef.current) cardBackMatRef.current.opacity = 0;
+    if (cardGlowMatRef.current) cardGlowMatRef.current.opacity = 0;
 
     const tl = gsap.timeline({ onComplete });
 
@@ -505,18 +579,16 @@ function OpeningSequence({ active, onComplete, isResult }: OpeningSequenceProps)
       tl.to(flapMatRef.current, { opacity: 0, duration: 0.35, ease: 'power2.in' }, 0.95);
     }
 
-    // Phase 3: card slides up from pack (1.3–2.0 s)
+    // Phase 3: card slides up from pack showing its back face (1.3–2.0 s)
     tl.call(() => {
       if (cardRef.current) cardRef.current.visible = true;
     }, [], 1.3);
     if (cardRef.current) {
       tl.to(cardRef.current.position, { y: cardEndY, duration: 0.7, ease: 'power2.out' }, 1.3);
     }
-    if (cardMatRef.current) {
-      tl.to(cardMatRef.current, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 1.3);
+    if (cardBackMatRef.current) {
+      tl.to(cardBackMatRef.current, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 1.3);
     }
-
-    // Phase 4: onComplete fires at 2.0 s (implicit — timeline total = 1.3+0.7)
 
     return () => { tl.kill(); };
   }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -540,14 +612,14 @@ function OpeningSequence({ active, onComplete, isResult }: OpeningSequenceProps)
         />
       </mesh>
 
-      {/* Phase 3+: card with texture */}
-      <group ref={cardRef} position={[OPEN.packX, cardStartY, OPEN.packZ + 0.03]} visible={false}>
+      {/* Phase 3+: card — starts back-facing (rotation.y = π), flips to front on tap */}
+      <group ref={cardRef} position={[OPEN.packX, cardStartY, OPEN.packZ + 0.03]} rotation={[0, Math.PI, 0]} visible={false}>
         <Suspense fallback={null}>
-          <CardMeshInner matRef={cardMatRef} />
+          <CardMeshInner matRef={cardMatRef} backMatRef={cardBackMatRef} glowMatRef={cardGlowMatRef} />
         </Suspense>
       </group>
 
-      {/* Card-reveal spotlight — tightly focused on card position, active during sequence */}
+      {/* Card-reveal spotlight — tightly focused on card position */}
       <pointLight
         visible={active}
         position={[0, OPEN.packY + 1.4, OPEN.packZ + 2.8]}
@@ -568,11 +640,12 @@ interface SceneProps {
   zoomT:           React.MutableRefObject<number>;
   resultT:         React.MutableRefObject<number>;
   selectedPackIdx: React.MutableRefObject<number>;
-  mode:            'ring' | 'zoomed' | 'opening' | 'result';
+  mode:            'ring' | 'zoomed' | 'opening' | 'revealing' | 'flipping' | 'result';
   onOpenComplete:  () => void;
+  onFlipComplete:  () => void;
 }
 
-function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, onOpenComplete }: SceneProps) {
+function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, onOpenComplete, onFlipComplete }: SceneProps) {
   const floorGroupRef    = useRef<THREE.Group>(null);
   const particleGroupRef = useRef<THREE.Group>(null);
 
@@ -607,11 +680,13 @@ function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, onOpenComp
       {/* Pack ring */}
       <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} resultT={resultT} />
 
-      {/* Opening sequence — tear line → flap → card */}
+      {/* Opening sequence — tear line → flap → card → reveal → flip */}
       <OpeningSequence
-        active={mode === 'opening' || mode === 'result'}
+        active={mode === 'opening' || mode === 'revealing' || mode === 'flipping' || mode === 'result'}
         onComplete={onOpenComplete}
-        isResult={mode === 'result'}
+        isRevealing={mode === 'revealing' || mode === 'flipping' || mode === 'result'}
+        isFlipping={mode === 'flipping'}
+        onFlipComplete={onFlipComplete}
       />
 
       {/* Camera + element fade (reads zoomT every frame) */}
@@ -629,8 +704,8 @@ function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, onOpenComp
 // Root — event handling + Canvas + HTML overlay
 // ─────────────────────────────────────────────────────────────────
 export default function PackRingScene() {
-  const [mode, setMode] = useState<'ring' | 'zoomed' | 'opening' | 'result'>('ring');
-  const modeRef        = useRef<'ring' | 'zoomed' | 'opening' | 'result'>('ring');
+  const [mode, setMode] = useState<'ring' | 'zoomed' | 'opening' | 'revealing' | 'flipping' | 'result'>('ring');
+  const modeRef        = useRef<'ring' | 'zoomed' | 'opening' | 'revealing' | 'flipping' | 'result'>('ring');
   const ringAngle      = useRef<number>(0);
   const velocity       = useRef<number>(0);
   const dragging       = useRef<boolean>(false);
@@ -708,10 +783,23 @@ export default function PackRingScene() {
     modeRef.current = 'opening';
   }, []);
 
+  // Opening animation done → enter revealing (camera pulls back, glow activates)
+  const setRevealingMode = useCallback(() => {
+    setMode('revealing');
+    modeRef.current = 'revealing';
+    gsap.to(resultT, { current: 1, duration: 0.6, ease: 'power2.inOut' });
+  }, []);
+
+  // User taps in revealing → flip begins
+  const setFlippingMode = useCallback(() => {
+    setMode('flipping');
+    modeRef.current = 'flipping';
+  }, []);
+
+  // Flip complete → result (resultT already 1)
   const setResultMode = useCallback(() => {
     setMode('result');
     modeRef.current = 'result';
-    gsap.to(resultT, { current: 1, duration: 0.6, ease: 'power2.inOut' });
   }, []);
 
   // Inertia loop outside R3F — only runs when in ring mode
@@ -729,7 +817,7 @@ export default function PackRingScene() {
   }, [inertiaLoop]);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
-    if (modeRef.current === 'opening') return;  // no interaction during animation
+    if (modeRef.current === 'opening' || modeRef.current === 'flipping') return;
     dragging.current = true;
     lastX.current    = e.clientX;
     velocity.current = 0;
@@ -750,11 +838,12 @@ export default function PackRingScene() {
     if (!dragging.current) return;
     dragging.current = false;
     if (dragDist.current < S.tapThreshold) {
-      if      (modeRef.current === 'ring')   zoom();
-      else if (modeRef.current === 'zoomed') startOpening();
-      else if (modeRef.current === 'result') unzoom();
+      if      (modeRef.current === 'ring')      zoom();
+      else if (modeRef.current === 'zoomed')    startOpening();
+      else if (modeRef.current === 'revealing') setFlippingMode();
+      else if (modeRef.current === 'result')    unzoom();
     }
-  }, [zoom, startOpening, unzoom]);
+  }, [zoom, startOpening, setFlippingMode, unzoom]);
 
   return (
     <div
@@ -793,6 +882,37 @@ export default function PackRingScene() {
         }}
       />
 
+      {/* "MYTHIC PULL" rarity banner — placed before Canvas so the 3D card naturally appears in front of it */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: 0,
+          width: '100%',
+          height: 52,
+          background: 'linear-gradient(90deg, transparent 0%, rgba(201,169,110,0.96) 12%, rgba(230,200,110,1) 50%, rgba(201,169,110,0.96) 88%, transparent 100%)',
+          transform: 'translateY(-50%) rotate(-12deg)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          opacity: mode === 'revealing' ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+        }}
+      >
+        <span
+          style={{
+            color: '#1A1200',
+            fontWeight: 900,
+            fontSize: 14,
+            letterSpacing: '0.35em',
+            fontFamily: '-apple-system, system-ui, sans-serif',
+          }}
+        >
+          MYTHIC PULL
+        </span>
+      </div>
+
       {/* 3D Canvas — transparent background */}
       <Canvas
         camera={{ position: [0, S.camY, S.camZ], fov: S.camFov, near: 0.1, far: 60 }}
@@ -803,7 +923,7 @@ export default function PackRingScene() {
         }}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       >
-        <Scene ringAngleRef={ringAngle} zoomT={zoomT} resultT={resultT} selectedPackIdx={selectedPackIdx} mode={mode} onOpenComplete={setResultMode} />
+        <Scene ringAngleRef={ringAngle} zoomT={zoomT} resultT={resultT} selectedPackIdx={selectedPackIdx} mode={mode} onOpenComplete={setRevealingMode} onFlipComplete={setResultMode} />
       </Canvas>
 
       {/* Back button — zoomed / opening / result */}
@@ -836,7 +956,7 @@ export default function PackRingScene() {
           bottom: 44, margin: 0,
           width: '100%',
           textAlign: 'center',
-          color: (mode === 'zoomed' || mode === 'result') ? 'rgba(201,169,110,0.72)' : 'rgba(255,255,255,0.26)',
+          color: (mode === 'zoomed' || mode === 'revealing' || mode === 'result') ? 'rgba(201,169,110,0.72)' : 'rgba(255,255,255,0.26)',
           fontSize: 12,
           letterSpacing: '0.20em',
           fontFamily: '-apple-system, system-ui, sans-serif',
@@ -845,7 +965,15 @@ export default function PackRingScene() {
           transition: 'color 0.35s ease',
         }}
       >
-        {mode === 'zoomed' ? 'TAP TO OPEN' : mode === 'result' ? 'TAP TO CONTINUE' : mode === 'opening' ? '' : 'SWIPE TEST 123'}
+        {mode === 'zoomed'
+          ? 'TAP TO OPEN'
+          : mode === 'revealing'
+          ? 'TAP TO REVEAL'
+          : mode === 'flipping' || mode === 'opening'
+          ? ''
+          : mode === 'result'
+          ? 'TAP TO CONTINUE'
+          : 'SWIPE TEST 123'}
       </p>
     </div>
   );
