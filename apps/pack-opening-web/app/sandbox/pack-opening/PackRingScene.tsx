@@ -17,8 +17,8 @@ const S = {
   // Floor
   floorSize:        40,
   floorColor:       '#0C0C10',
-  floorBlur:        [400, 100] as [number, number],
-  floorMixStrength: 50,
+  floorBlur:        [200, 60] as [number, number],
+  floorMixStrength: 12,
   floorMirror:      0.70,
   floorDepthScale:  0.80,
 
@@ -552,8 +552,11 @@ export default function PackRingScene() {
       {/* 3D Canvas — transparent background */}
       <Canvas
         camera={{ position: [0, S.camY, S.camZ], fov: S.camFov, near: 0.1, far: 60 }}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        dpr={[1, 1.5]}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance', failIfMajorPerformanceCaveat: false }}
+        dpr={[1, 1.25]}
+        onCreated={({ gl }) => {
+          gl.domElement.addEventListener('webglcontextlost', (e) => { e.preventDefault(); }, false);
+        }}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       >
         <Scene ringAngleRef={ringAngle} zoomT={zoomT} selectedPackIdx={selectedPackIdx} />
