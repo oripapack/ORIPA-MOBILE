@@ -1,8 +1,8 @@
 'use client';
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { MeshReflectorMaterial } from '@react-three/drei';
-import { useRef, useEffect, useMemo, useCallback, useState } from 'react';
+import { MeshReflectorMaterial, useTexture } from '@react-three/drei';
+import { useRef, useEffect, useMemo, useCallback, useState, Suspense } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
 
@@ -389,9 +389,26 @@ const OPEN = {
   // tear line sits 15% from top of pack
   tearY:  S.packY + S.packH * 0.5 - S.packH * 0.15,
   flapH:  S.packH * 0.15,
-  cardW:  S.packW * 0.82,
-  cardH:  S.packH * 0.88,
+  // charizard.jpg is 800×1350 px (height/width = 1.6875) — test asset, replace before launch
+  cardW:  0.58,
+  cardH:  0.58 * (1350 / 800),  // ≈ 0.979 — matches image aspect ratio, no distortion
 } as const;
+
+// Test asset — swap for production image before launch
+function CardMeshInner({ matRef }: { matRef: React.MutableRefObject<THREE.MeshStandardMaterial | null> }) {
+  const texture = useTexture('/assets/charizard.jpg');
+  return (
+    <mesh>
+      <planeGeometry args={[OPEN.cardW, OPEN.cardH]} />
+      <meshStandardMaterial
+        ref={(el) => { matRef.current = el; }}
+        map={texture}
+        transparent
+        opacity={0}
+      />
+    </mesh>
+  );
+}
 
 interface OpeningSequenceProps {
   active:     boolean;
@@ -401,7 +418,7 @@ interface OpeningSequenceProps {
 function OpeningSequence({ active, onComplete }: OpeningSequenceProps) {
   const lineRef    = useRef<THREE.Mesh>(null);
   const flapRef    = useRef<THREE.Mesh>(null);
-  const cardRef    = useRef<THREE.Mesh>(null);
+  const cardRef    = useRef<THREE.Group>(null);
   const flapMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
   const cardMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
 
@@ -488,17 +505,22 @@ function OpeningSequence({ active, onComplete }: OpeningSequenceProps) {
         />
       </mesh>
 
-      {/* Phase 3+: card placeholder */}
-      <mesh ref={cardRef} position={[OPEN.packX, cardStartY, OPEN.packZ + 0.03]} visible={false}>
-        <planeGeometry args={[OPEN.cardW, OPEN.cardH]} />
-        <meshStandardMaterial
-          ref={(el) => { cardMatRef.current = el; }}
-          color="#2A2A40"
-          roughness={0.7}
-          transparent
-          opacity={0}
-        />
-      </mesh>
+      {/* Phase 3+: card with texture */}
+      <group ref={cardRef} position={[OPEN.packX, cardStartY, OPEN.packZ + 0.03]} visible={false}>
+        <Suspense fallback={null}>
+          <CardMeshInner matRef={cardMatRef} />
+        </Suspense>
+      </group>
+
+      {/* Card-reveal spotlight — tightly focused on card position, active during sequence */}
+      <pointLight
+        visible={active}
+        position={[0, OPEN.packY + 1.4, OPEN.packZ + 2.8]}
+        intensity={6.0}
+        color="#FFF8F0"
+        distance={5.5}
+        decay={2}
+      />
     </>
   );
 }
