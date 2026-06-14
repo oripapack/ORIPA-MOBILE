@@ -379,15 +379,141 @@ function ZoomController({ zoomT, floorGroupRef, particleGroupRef }: ZoomControll
 }
 
 // ─────────────────────────────────────────────────────────────────
+// Opening sequence — tear line → flap → card reveal
+// ─────────────────────────────────────────────────────────────────
+const OPEN = {
+  packX:  0,
+  packY:  S.packY,
+  packZ:  S.ringRadius,
+  // tear line sits 15% from top of pack
+  tearY:  S.packY + S.packH * 0.5 - S.packH * 0.15,
+  flapH:  S.packH * 0.15,
+  cardW:  S.packW * 0.82,
+  cardH:  S.packH * 0.88,
+} as const;
+
+interface OpeningSequenceProps {
+  active:     boolean;
+  onComplete: () => void;
+}
+
+function OpeningSequence({ active, onComplete }: OpeningSequenceProps) {
+  const lineRef    = useRef<THREE.Mesh>(null);
+  const flapRef    = useRef<THREE.Mesh>(null);
+  const cardRef    = useRef<THREE.Mesh>(null);
+  const flapMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
+  const cardMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
+
+  const flapCenterY = OPEN.tearY + OPEN.flapH * 0.5;
+  const cardStartY  = OPEN.packY - 0.3;
+  const cardEndY    = OPEN.packY + 0.55;
+
+  useEffect(() => {
+    if (!active) {
+      // Reset all elements to hidden
+      if (lineRef.current)  { lineRef.current.scale.x = 0; lineRef.current.visible = false; }
+      if (flapRef.current)    flapRef.current.visible = false;
+      if (cardRef.current)  { cardRef.current.position.y = cardStartY; cardRef.current.visible = false; }
+      if (cardMatRef.current) cardMatRef.current.opacity = 0;
+      return;
+    }
+
+    // Set start state before animating
+    if (lineRef.current)  { lineRef.current.scale.x = 0; lineRef.current.visible = true; }
+    if (flapRef.current)  {
+      flapRef.current.position.set(OPEN.packX, flapCenterY, OPEN.packZ + 0.02);
+      flapRef.current.rotation.set(0, 0, 0);
+      flapRef.current.visible = false;
+    }
+    if (flapMatRef.current) flapMatRef.current.opacity = 1;
+    if (cardRef.current)  {
+      cardRef.current.position.set(OPEN.packX, cardStartY, OPEN.packZ + 0.03);
+      cardRef.current.visible = false;
+    }
+    if (cardMatRef.current) cardMatRef.current.opacity = 0;
+
+    const tl = gsap.timeline({ onComplete });
+
+    // Phase 1: tear line sweeps left→right (0–0.8 s)
+    if (lineRef.current) {
+      tl.to(lineRef.current.scale, { x: 1, duration: 0.8, ease: 'power2.inOut' }, 0);
+    }
+
+    // Phase 2: top flap flies off upper-right (0.8–1.3 s)
+    tl.call(() => {
+      if (flapRef.current) flapRef.current.visible = true;
+      if (lineRef.current) lineRef.current.visible = false;
+    }, [], 0.8);
+    if (flapRef.current) {
+      tl.to(flapRef.current.position, { x: OPEN.packX + 0.9, y: flapCenterY + 1.1, duration: 0.5, ease: 'power2.out' }, 0.8);
+      tl.to(flapRef.current.rotation, { z: -0.7, duration: 0.5, ease: 'power2.out' }, 0.8);
+    }
+    if (flapMatRef.current) {
+      tl.to(flapMatRef.current, { opacity: 0, duration: 0.35, ease: 'power2.in' }, 0.95);
+    }
+
+    // Phase 3: card slides up from pack (1.3–2.0 s)
+    tl.call(() => {
+      if (cardRef.current) cardRef.current.visible = true;
+    }, [], 1.3);
+    if (cardRef.current) {
+      tl.to(cardRef.current.position, { y: cardEndY, duration: 0.7, ease: 'power2.out' }, 1.3);
+    }
+    if (cardMatRef.current) {
+      tl.to(cardMatRef.current, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 1.3);
+    }
+
+    // Phase 4: onComplete fires at 2.0 s (implicit — timeline total = 1.3+0.7)
+
+    return () => { tl.kill(); };
+  }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <>
+      {/* Phase 1: tear line */}
+      <mesh ref={lineRef} position={[OPEN.packX, OPEN.tearY, OPEN.packZ + 0.02]} scale={[0, 1, 1]} visible={false}>
+        <planeGeometry args={[S.packW, 0.012]} />
+        <meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={2.0} transparent opacity={0.9} depthWrite={false} />
+      </mesh>
+
+      {/* Phase 2: top flap */}
+      <mesh ref={flapRef} position={[OPEN.packX, flapCenterY, OPEN.packZ + 0.02]} visible={false}>
+        <planeGeometry args={[S.packW, OPEN.flapH]} />
+        <meshStandardMaterial
+          ref={(el) => { flapMatRef.current = el; }}
+          color={S.packBody}
+          transparent
+          opacity={1}
+        />
+      </mesh>
+
+      {/* Phase 3+: card placeholder */}
+      <mesh ref={cardRef} position={[OPEN.packX, cardStartY, OPEN.packZ + 0.03]} visible={false}>
+        <planeGeometry args={[OPEN.cardW, OPEN.cardH]} />
+        <meshStandardMaterial
+          ref={(el) => { cardMatRef.current = el; }}
+          color="#2A2A40"
+          roughness={0.7}
+          transparent
+          opacity={0}
+        />
+      </mesh>
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
 // Scene
 // ─────────────────────────────────────────────────────────────────
 interface SceneProps {
   ringAngleRef:    React.MutableRefObject<number>;
   zoomT:           React.MutableRefObject<number>;
   selectedPackIdx: React.MutableRefObject<number>;
+  mode:            'ring' | 'zoomed' | 'opening' | 'result';
+  onOpenComplete:  () => void;
 }
 
-function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
+function Scene({ ringAngleRef, zoomT, selectedPackIdx, mode, onOpenComplete }: SceneProps) {
   const floorGroupRef    = useRef<THREE.Group>(null);
   const particleGroupRef = useRef<THREE.Group>(null);
 
@@ -424,6 +550,12 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
       {/* Pack ring */}
       <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} />
 
+      {/* Opening sequence — tear line → flap → card */}
+      <OpeningSequence
+        active={mode === 'opening' || mode === 'result'}
+        onComplete={onOpenComplete}
+      />
+
       {/* Camera + element fade (reads zoomT every frame) */}
       <ZoomController
         zoomT={zoomT}
@@ -438,8 +570,8 @@ function Scene({ ringAngleRef, zoomT, selectedPackIdx }: SceneProps) {
 // Root — event handling + Canvas + HTML overlay
 // ─────────────────────────────────────────────────────────────────
 export default function PackRingScene() {
-  const [mode, setMode] = useState<'ring' | 'zoomed'>('ring');
-  const modeRef        = useRef<'ring' | 'zoomed'>('ring');
+  const [mode, setMode] = useState<'ring' | 'zoomed' | 'opening' | 'result'>('ring');
+  const modeRef        = useRef<'ring' | 'zoomed' | 'opening' | 'result'>('ring');
   const ringAngle      = useRef<number>(0);
   const velocity       = useRef<number>(0);
   const dragging       = useRef<boolean>(false);
@@ -483,6 +615,16 @@ export default function PackRingScene() {
     });
   }, []);
 
+  const startOpening = useCallback(() => {
+    setMode('opening');
+    modeRef.current = 'opening';
+  }, []);
+
+  const setResultMode = useCallback(() => {
+    setMode('result');
+    modeRef.current = 'result';
+  }, []);
+
   // Inertia loop outside R3F — only runs when in ring mode
   const inertiaLoop = useCallback(() => {
     if (!dragging.current && modeRef.current === 'ring') {
@@ -498,7 +640,7 @@ export default function PackRingScene() {
   }, [inertiaLoop]);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
-    if (modeRef.current === 'zoomed') return;
+    if (modeRef.current === 'opening') return;  // no interaction during animation
     dragging.current = true;
     lastX.current    = e.clientX;
     velocity.current = 0;
@@ -507,7 +649,7 @@ export default function PackRingScene() {
   }, []);
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragging.current || modeRef.current === 'zoomed') return;
+    if (!dragging.current || modeRef.current !== 'ring') return;
     const dx = e.clientX - lastX.current;
     dragDist.current  += Math.abs(dx);
     velocity.current   = dx * S.swipeSens;
@@ -518,11 +660,12 @@ export default function PackRingScene() {
   const onPointerUp = useCallback(() => {
     if (!dragging.current) return;
     dragging.current = false;
-    // Small drag = tap → zoom in
-    if (dragDist.current < S.tapThreshold && modeRef.current === 'ring') {
-      zoom();
+    if (dragDist.current < S.tapThreshold) {
+      if      (modeRef.current === 'ring')   zoom();
+      else if (modeRef.current === 'zoomed') startOpening();
+      else if (modeRef.current === 'result') unzoom();
     }
-  }, [zoom]);
+  }, [zoom, startOpening, unzoom]);
 
   return (
     <div
@@ -546,7 +689,7 @@ export default function PackRingScene() {
         style={{
           position: 'absolute', inset: 0,
           background: S.bgZoomed,
-          opacity: mode === 'zoomed' ? 1 : 0,
+          opacity: mode !== 'ring' ? 1 : 0,
           transition: 'opacity 0.5s ease',
           pointerEvents: 'none',
         }}
@@ -562,11 +705,11 @@ export default function PackRingScene() {
         }}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       >
-        <Scene ringAngleRef={ringAngle} zoomT={zoomT} selectedPackIdx={selectedPackIdx} />
+        <Scene ringAngleRef={ringAngle} zoomT={zoomT} selectedPackIdx={selectedPackIdx} mode={mode} onOpenComplete={setResultMode} />
       </Canvas>
 
-      {/* Back button — zoomed only */}
-      {mode === 'zoomed' && (
+      {/* Back button — zoomed / opening / result */}
+      {mode !== 'ring' && (
         <button
           onClick={unzoom}
           style={{
@@ -595,7 +738,7 @@ export default function PackRingScene() {
           bottom: 44, margin: 0,
           width: '100%',
           textAlign: 'center',
-          color: mode === 'zoomed' ? 'rgba(201,169,110,0.72)' : 'rgba(255,255,255,0.26)',
+          color: (mode === 'zoomed' || mode === 'result') ? 'rgba(201,169,110,0.72)' : 'rgba(255,255,255,0.26)',
           fontSize: 12,
           letterSpacing: '0.20em',
           fontFamily: '-apple-system, system-ui, sans-serif',
@@ -604,7 +747,7 @@ export default function PackRingScene() {
           transition: 'color 0.35s ease',
         }}
       >
-        {mode === 'zoomed' ? 'TAP TO OPEN' : 'SWIPE TEST 123'}
+        {mode === 'zoomed' ? 'TAP TO OPEN' : mode === 'result' ? 'TAP TO CONTINUE' : mode === 'opening' ? '' : 'SWIPE TEST 123'}
       </p>
     </div>
   );
