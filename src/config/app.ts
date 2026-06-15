@@ -54,6 +54,9 @@ export const PUBLIC_WEB_ORIGIN = 'https://pullhub.com';
 /** If true, Buy Credits is clearly labeled as mock (no real charges). */
 export const CREDITS_ARE_MOCK = false;
 
+/** Extra local credits in dev so catalog packs can be opened for animation/UI work. */
+export const DEV_STARTER_CREDITS = __DEV__ ? 50_000 : 0;
+
 /**
  * When true, seeds one sample incoming friend request so the Friends tab badge + requests UI
  * can be exercised without a backend. Turn off for production (or when `CREDITS_ARE_MOCK` is false).

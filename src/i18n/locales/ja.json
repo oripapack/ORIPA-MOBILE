@@ -813,7 +813,7 @@
     "title": "プロフィールを設定",
     "subtitle": "公開ユーザー名と表示名を選びます。サーバー連携後にあとから変更できます。",
     "usernameLabel": "ユーザー名",
-    "usernamePlaceholder": "your_handle",
+    "usernamePlaceholder": "ユーザー名を入力",
     "displayNameLabel": "表示名（任意）",
     "displayNamePlaceholder": "空欄ならユーザー名と同じ",
     "profileHint": "ユーザー名は一意で、フレンドがあなたを見つけるために使います。",

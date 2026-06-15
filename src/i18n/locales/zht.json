@@ -813,7 +813,7 @@
     "title": "設定個人檔",
     "subtitle": "選擇公開使用者名稱與顯示名稱。帳戶與伺服器串接後可再修改。",
     "usernameLabel": "使用者名稱",
-    "usernamePlaceholder": "your_handle",
+    "usernamePlaceholder": "選擇用戶名",
     "displayNameLabel": "顯示名稱（選填）",
     "displayNamePlaceholder": "留空則與使用者名稱相同",
     "profileHint": "使用者名稱唯一，好友藉此找到你。",

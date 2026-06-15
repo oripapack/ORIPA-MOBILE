@@ -986,7 +986,7 @@
     "title": "Set up your profile",
     "subtitle": "Choose a public username and how you’d like to appear. You can change this later when account settings are wired to the server.",
     "usernameLabel": "Username",
-    "usernamePlaceholder": "your_handle",
+    "usernamePlaceholder": "Choose a username",
     "displayNameLabel": "Display name (optional)",
     "displayNamePlaceholder": "Same as username if empty",
     "profileHint": "Your username is unique and is what friends use to find you.",

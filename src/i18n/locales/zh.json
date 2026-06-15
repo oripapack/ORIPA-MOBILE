@@ -813,7 +813,7 @@
     "title": "设置资料",
     "subtitle": "选择公开用户名与展示名。账户与服务器连通后可再次修改。",
     "usernameLabel": "用户名",
-    "usernamePlaceholder": "your_handle",
+    "usernamePlaceholder": "选择用户名",
     "displayNameLabel": "展示名（选填）",
     "displayNamePlaceholder": "留空则与用户名相同",
     "profileHint": "用户名唯一，好友通过它找到你。",

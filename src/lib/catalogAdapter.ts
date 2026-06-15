@@ -7,7 +7,7 @@ import type {
   PackCategory,
   PackGroup,
 } from '../data/mockPacks';
-import { LIVE_DEMO_PACK_VERSION_ID } from './executePull';
+import { packVersionIdForCatalogPackId } from '../../shared/api/catalogLive';
 
 const TOTAL_INVENTORY_BASE = 50_000;
 
@@ -70,8 +70,7 @@ export function catalogToPack(catalog: CatalogPack): Pack {
     guaranteeText: `${catalog.buybackRate}% instant buyback · transparent odds`,
     maxPerUser: catalog.id === 'welcome-pack' ? 1 : null,
     isFirstTimePack: catalog.id === 'welcome-pack',
-    packVersionId:
-      catalog.id === 'welcome-pack' ? LIVE_DEMO_PACK_VERSION_ID : undefined,
+    packVersionId: packVersionIdForCatalogPackId(catalog.id),
     highlightPrize: catalog.topCard,
     prizeTypes: ['card'],
     tcgCategory: catalog.category,

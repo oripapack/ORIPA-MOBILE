@@ -16,7 +16,7 @@ import {
   type PublicVaultListing,
 } from '../lib/friendVaultShop';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
-import { SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
+import { CREDITS_ARE_MOCK, DEV_STARTER_CREDITS, SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
 import type { PackRollResult } from '../components/pack/opening/types';
 import {
   executePullLive,
@@ -28,7 +28,6 @@ import { fetchUserCreditBalance } from '../lib/userCredits';
 import { loadShippingAddress } from '../lib/shippingAddress';
 import { requestShipmentLive } from '../lib/requestShipment';
 import { loadClaimedFirstTimePacks, canClaimFirstTimePack, commitFirstTimePackClaim } from '../lib/firstTimePack';
-import { CREDITS_ARE_MOCK } from '../config/app';
 import { showUserMessage } from '../utils/showUserMessage';
 import { userWithSyncedProgression, tierXpBonusForPull } from '../lib/collectorProgression';
 import {
@@ -200,7 +199,10 @@ function initialIncomingFriendRequests(): IncomingFriendRequest[] {
   return [buildDemoIncomingFriendRequest()];
 }
 
-const seededUser = userWithSyncedProgression({ ...mockUser }, mockUser.xp);
+const seededUser = userWithSyncedProgression(
+  { ...mockUser, credits: Math.max(mockUser.credits, DEV_STARTER_CREDITS) },
+  mockUser.xp,
+);
 
 export const useAppStore = create<AppStore>((set, get) => {
   const persistCollector = () => {
@@ -540,16 +542,16 @@ export const useAppStore = create<AppStore>((set, get) => {
         return true;
       }
 
-      if (quantity > 1) {
+      const useLiveEngine =
+        !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
+
+      if (quantity > 1 && useLiveEngine) {
         showUserMessage(
           'Bulk opens',
           'Live bulk opens (10/100) are not available yet. Open one pack at a time.',
         );
         return false;
       }
-
-      const useLiveEngine =
-        !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
 
       if (useLiveEngine && pack.packVersionId) {
         const totalCost = pack.creditPrice;
@@ -631,14 +633,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         return true;
       }
 
-      if (!CREDITS_ARE_MOCK && isSupabaseConfigured && !pack.packVersionId) {
-        showUserMessage(
-          'Pack unavailable',
-          'This pack is not linked to the live server yet.',
-        );
-        return false;
-      }
-
+      // No live `packVersionId` — local demo open (animation / catalog dev). Deducts device credits.
       const totalCost = pack.creditPrice * quantity;
       if (user.credits < totalCost) {
         set((state) => ({

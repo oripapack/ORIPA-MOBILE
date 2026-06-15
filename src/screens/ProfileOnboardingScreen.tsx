@@ -19,6 +19,8 @@ import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import { AppUserUnsafeMetadata, isValidAppUsername, normalizeDisplayName } from '../lib/clerkProfile';
+import { HomeBackground } from '../components/shared/HomeBackground';
+import { PrimaryButton } from '../components/shared/PrimaryButton';
 
 function mergeUnsafeMetadata(
   user: { unsafeMetadata?: unknown },
@@ -88,19 +90,22 @@ export function ProfileOnboardingScreen() {
   if (!isLoaded || !user) {
     return (
       <View style={[styles.centered, { paddingTop: insets.top }]}>
-        <ActivityIndicator size="large" color={colors.red} />
+        <HomeBackground />
+        <ActivityIndicator size="large" color={colors.gold} />
       </View>
     );
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 48 : 0}
-    >
+    <View style={styles.screenRoot}>
+      <HomeBackground />
+      <KeyboardAvoidingView
+        style={styles.flexOverBg}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 48 : 0}
+      >
       <ScrollView
-        style={styles.flex}
+        style={styles.flexOverBg}
         contentContainerStyle={[
           styles.scrollContent,
           { paddingTop: insets.top + spacing.lg, paddingBottom: insets.bottom + spacing.xl },
@@ -142,19 +147,13 @@ export function ProfileOnboardingScreen() {
 
         <Text style={styles.hintInline}>{t('profileOnboarding.profileHint')}</Text>
 
-        <TouchableOpacity
-          style={[styles.primaryBtn, busy && styles.btnDisabled]}
+        <PrimaryButton
+          label={t('profileOnboarding.continue')}
           onPress={() => void onSubmit()}
           disabled={busy}
-          activeOpacity={0.88}
-          accessibilityRole="button"
-        >
-          {busy ? (
-            <ActivityIndicator color={colors.white} />
-          ) : (
-            <Text style={styles.primaryBtnText}>{t('profileOnboarding.continue')}</Text>
-          )}
-        </TouchableOpacity>
+          loading={busy}
+          style={styles.primaryBtnWrap}
+        />
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -163,16 +162,24 @@ export function ProfileOnboardingScreen() {
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.surfaceElevated },
+  screenRoot: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  flexOverBg: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: colors.background,
   },
   scrollContent: {
     paddingHorizontal: spacing.xl,
@@ -193,7 +200,7 @@ const styles = StyleSheet.create({
   logoSecondary: {
     fontSize: fontSize.hero,
     fontFamily: brandFont.black,
-    color: colors.red,
+    color: colors.gold,
     letterSpacing: -0.5,
   },
   title: {
@@ -218,8 +225,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   input: {
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
+    backgroundColor: colors.nearBlack,
     borderRadius: radius.md,
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
@@ -235,28 +243,14 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginBottom: spacing.lg,
   },
-  primaryBtn: {
-    backgroundColor: colors.red,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-    minHeight: 52,
-    justifyContent: 'center',
+  primaryBtnWrap: {
     marginTop: spacing.xs,
-  },
-  primaryBtnText: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.white,
-  },
-  btnDisabled: {
-    opacity: 0.65,
   },
   error: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
     fontFamily: brandFont.medium,
-    color: colors.redDark,
+    color: colors.red,
     lineHeight: 20,
   },
   linkMuted: {
