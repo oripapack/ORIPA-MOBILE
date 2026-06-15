@@ -1,11 +1,12 @@
 import React from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useClerk } from '@clerk/clerk-expo';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
+import { confirmUserAction } from '../../utils/showUserMessage';
 
 /**
  * Single sign-out control for the Player tab — centered at the bottom for reach.
@@ -28,14 +29,14 @@ function AccountSignOutFooterInner({ visible }: { visible: boolean }) {
   }
 
   const onPress = () => {
-    Alert.alert(t('auth.signOutTitle'), t('auth.signOutMessage'), [
-      { text: t('auth.cancel'), style: 'cancel' },
-      {
-        text: t('auth.signOutConfirm'),
-        style: 'destructive',
-        onPress: () => void signOut(),
-      },
-    ]);
+    confirmUserAction({
+      title: t('auth.signOutTitle'),
+      message: t('auth.signOutMessage'),
+      cancelLabel: t('auth.cancel'),
+      confirmLabel: t('auth.signOutConfirm'),
+      destructive: true,
+      onConfirm: () => void signOut(),
+    });
   };
 
   return (

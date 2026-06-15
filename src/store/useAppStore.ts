@@ -17,7 +17,6 @@ import {
 } from '../lib/friendVaultShop';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
 import { SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
-import { Alert } from 'react-native';
 import type { PackRollResult } from '../components/pack/opening/types';
 import {
   executePullLive,
@@ -908,7 +907,7 @@ export const useAppStore = create<AppStore>((set, get) => {
     if (useLiveShipment) {
       const shippingAddress = await loadShippingAddress();
       if (!shippingAddress) {
-        Alert.alert(
+        showUserMessage(
           'Shipping address required',
           'Add a shipping address in Settings before requesting shipment.',
         );
@@ -921,7 +920,7 @@ export const useAppStore = create<AppStore>((set, get) => {
           result.code === 'NETWORK_ERROR'
             ? 'Connection problem'
             : 'Shipment request failed';
-        Alert.alert(label, result.message);
+        showUserMessage(label, result.message);
         return false;
       }
     }

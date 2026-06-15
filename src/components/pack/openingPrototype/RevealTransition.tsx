@@ -5,7 +5,6 @@ import {
   Easing,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   View,
@@ -19,6 +18,7 @@ import { spacing } from '../../../tokens/spacing';
 import type { PackRollResult, RevealCard, RevealRarity } from '../opening/types';
 import { tierCelebrationFor } from '../opening/tierCelebration';
 import { SlabRevealHero } from './SlabRevealHero';
+import { shareUserContent } from '../../../utils/shareUserContent';
 
 const easeOut = Easing.bezier(0.33, 0.86, 0.2, 1);
 const easeDrift = Easing.bezier(0.22, 1, 0.36, 1);
@@ -316,7 +316,7 @@ export function RevealTransition({
       tier: tierLabel,
       credits: roll.creditsWon.toLocaleString(),
     });
-    void Share.share({ message: msg });
+    void shareUserContent(msg);
   };
 
   return (

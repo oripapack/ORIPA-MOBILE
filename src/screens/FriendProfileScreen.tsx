@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -29,6 +28,7 @@ import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
 import { FriendVaultShowcaseSection } from '../components/friends/FriendVaultShowcaseSection';
+import { showUserMessage } from '../utils/showUserMessage';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendProfile'>;
 type Rt = RouteProp<RootStackParamList, 'FriendProfile'>;
@@ -185,7 +185,7 @@ export function FriendProfileScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnGhost}
-              onPress={() => Alert.alert(t('social.giftTitle'), t('social.giftBody'))}
+              onPress={() => showUserMessage(t('social.giftTitle'), t('social.giftBody'))}
               activeOpacity={0.88}
             >
               <Text style={styles.btnGhostText}>{t('social.sendDemoPack')}</Text>

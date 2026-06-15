@@ -150,6 +150,7 @@ function TabNavigatorInner() {
       initialRouteName="Home"
       screenOptions={({ route }) => ({
         headerShown: false,
+        sceneContainerStyle: Platform.OS === 'web' ? { flex: 1, minHeight: 0 } : undefined,
         tabBarShowLabel: true,
         tabBarActiveTintColor: colors.gold,
         tabBarInactiveTintColor: colors.textMuted,
@@ -218,7 +219,12 @@ function RootStack() {
   return (
     <>
       {isClerkEnabled ? <ClerkProfileSync /> : null}
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          cardStyle: { flex: 1, backgroundColor: colors.background },
+        }}
+      >
         <Stack.Screen name="MainTabs" component={TabNavigatorInner} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen
@@ -523,6 +529,7 @@ const styles = StyleSheet.create({
   gateRoot: {
     flex: 1,
     backgroundColor: colors.background,
+    ...(Platform.OS === 'web' ? { minHeight: 0, height: '100%' } : null),
   },
   tabBar: {
     backgroundColor: 'transparent',

@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Linking, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { SOCIAL_URLS } from '../../config/social';
+import { openExternalUrl } from '../../utils/openExternalUrl';
 
 type SocialId = keyof typeof SOCIAL_URLS;
 
@@ -27,14 +28,7 @@ type Props = {
 
 export function SocialFollowRow({ compact = false }: Props) {
   const open = async (id: SocialId) => {
-    const url = SOCIAL_URLS[id];
-    try {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) await Linking.openURL(url);
-      else Alert.alert('Unable to open link', 'Update the URL in `src/config/social.ts`.');
-    } catch {
-      Alert.alert('Error', 'Could not open link.');
-    }
+    await openExternalUrl(SOCIAL_URLS[id], SOCIAL_CONFIG.find((item) => item.id === id)?.label);
   };
 
   if (compact) {

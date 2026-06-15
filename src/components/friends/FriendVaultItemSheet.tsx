@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +19,7 @@ import type { VaultExchangeBuyerRules } from '../../lib/vaultExchange';
 import { formatVaultExchangeUsd } from '../../lib/vaultExchange';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
+import { showUserMessage } from '../../utils/showUserMessage';
 
 type Props = {
   visible: boolean;
@@ -47,7 +47,7 @@ export function FriendVaultItemSheet({
   const stubInterest = (key: 'request' | 'offer' | 'ask') => {
     const title = t(`vaultExchange.stub.${key}Title`);
     const body = t(`vaultExchange.stub.${key}Body`, { handle: sellerDisplayHandle });
-    Alert.alert(title, body);
+    showUserMessage(title, body);
   };
 
   if (!pull || !rules) return null;

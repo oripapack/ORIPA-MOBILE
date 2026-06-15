@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Alert,
   Platform,
   Dimensions,
   type LayoutChangeEvent,
@@ -46,6 +45,7 @@ import {
 } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { PUBLIC_WEB_ORIGIN } from '../config/app';
+import { showUserMessage } from '../utils/showUserMessage';
 
 const RING_PALETTE = [
   colors.red,
@@ -202,7 +202,7 @@ export function FriendsScreen() {
   const copyInviteLink = useCallback(async () => {
     const handle = user.username.trim();
     if (!handle) {
-      Alert.alert(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
+      showUserMessage(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
       return;
     }
     const link = `${PUBLIC_WEB_ORIGIN}?r=${encodeURIComponent(handle)}`;
@@ -210,7 +210,7 @@ export function FriendsScreen() {
     if (Platform.OS !== 'web') {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
-    Alert.alert(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'));
+    showUserMessage(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'));
   }, [user.username, t]);
 
   const onHubSelect = useCallback(
@@ -220,7 +220,7 @@ export function FriendsScreen() {
         else if (action === 'scanQr') setFriendScannerOpen(true);
         else if (action === 'showQr') {
           if (!user.username.trim()) {
-            Alert.alert(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
+            showUserMessage(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
             return;
           }
           setQrOpen(true);
@@ -433,7 +433,7 @@ export function FriendsScreen() {
         qrValue={qrPayload}
         username={user.username}
         displayName={user.displayName}
-        onCopied={() => Alert.alert(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'))}
+        onCopied={() => showUserMessage(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'))}
         onScanSomeoneElse={() => {
           setQrOpen(false);
           setFriendScannerOpen(true);

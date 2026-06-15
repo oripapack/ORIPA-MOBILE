@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PAYMENT_ROUTING } from '../../payments/physicalGoodsPolicy';
+import { showUserMessage } from '../../utils/showUserMessage';
 
 interface Props {
   listingTitle: string;
@@ -19,7 +20,7 @@ export function MarketplaceCheckoutSection({ listingTitle, listingPrice }: Props
   const { t } = useTranslation();
 
   const onContinue = () => {
-    Alert.alert(
+    showUserMessage(
       t('paymentPortal.physicalStubTitle'),
       t('paymentPortal.physicalStubBody'),
     );

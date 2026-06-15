@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
 import { fontSize, brandFont } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
+import { screenRoot, screenScroll, screenHeader } from '../tokens/layout';
 import { ListRow } from '../components/shared/ListRow';
 import { LegalDocumentModal } from '../components/legal/LegalDocumentModal';
 import {
@@ -28,6 +29,7 @@ import { AccountSignOutFooter } from '../components/account/AccountSignOutFooter
 import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { resetLocalOnboardingStateAndReload } from '../lib/resetLocalOnboardingState';
+import { confirmUserAction } from '../utils/showUserMessage';
 
 type LegalSheet = 'terms' | 'privacy' | 'promo' | 'payment' | null;
 
@@ -89,7 +91,7 @@ export function SettingsScreen() {
   };
 
   return (
-    <>
+    <View style={styles.screenRoot}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} style={styles.backBtn}>
           <Text style={styles.backChevron}>‹</Text>
@@ -100,8 +102,9 @@ export function SettingsScreen() {
 
       <ScrollView
         style={styles.container}
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl + 24 }]}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <ClerkAccountSection />
 
@@ -175,18 +178,14 @@ export function SettingsScreen() {
                 label={t('settings.devResetLocalOnboarding')}
                 icon={<Ionicons name="refresh-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
                 onPress={() => {
-                  Alert.alert(
-                    t('settings.devResetAlertTitle'),
-                    t('settings.devResetAlertBody'),
-                    [
-                      { text: t('common.cancel'), style: 'cancel' },
-                      {
-                        text: t('settings.devResetConfirm'),
-                        style: 'destructive',
-                        onPress: () => void resetLocalOnboardingStateAndReload(),
-                      },
-                    ],
-                  );
+                  confirmUserAction({
+                    title: t('settings.devResetAlertTitle'),
+                    message: t('settings.devResetAlertBody'),
+                    cancelLabel: t('common.cancel'),
+                    confirmLabel: t('settings.devResetConfirm'),
+                    destructive: true,
+                    onConfirm: () => void resetLocalOnboardingStateAndReload(),
+                  });
                 }}
               />
             </VaultFramedCard>
@@ -213,12 +212,17 @@ export function SettingsScreen() {
         region={region}
         onApply={(l, r) => void saveLocale(l, r)}
       />
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screenRoot: {
+    ...screenRoot,
+    backgroundColor: colors.background,
+  },
   header: {
+    ...screenHeader,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.base,
@@ -249,7 +253,7 @@ const styles = StyleSheet.create({
     width: 40,
   },
   container: {
-    flex: 1,
+    ...screenScroll,
     backgroundColor: colors.background,
   },
   content: {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import { useAppStore } from './src/store/useAppStore';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, StyleSheet } from 'react-native';
@@ -56,6 +56,24 @@ export default function App() {
 
   useEffect(() => {
     void WebBrowser.maybeCompleteAuthSession();
+  }, []);
+
+  /** RN Web: constrain document height so inner ScrollViews scroll instead of the page. */
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlHeight = html.style.height;
+    const prevBodyHeight = body.style.height;
+    const prevBodyOverflow = body.style.overflow;
+    html.style.height = '100%';
+    body.style.height = '100%';
+    body.style.overflow = 'hidden';
+    return () => {
+      html.style.height = prevHtmlHeight;
+      body.style.height = prevBodyHeight;
+      body.style.overflow = prevBodyOverflow;
+    };
   }, []);
 
   useEffect(() => {

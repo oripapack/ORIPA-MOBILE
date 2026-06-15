@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../store/useAppStore';
 import { lookupFriendDisplayName } from '../data/friends';
 import { parseFriendInviteFromQr } from '../lib/friendQr';
+import { confirmUserAction, showUserMessage } from '../utils/showUserMessage';
 
 type Options = {
   /** Called after user confirms add and it succeeds (e.g. close modal). */
@@ -20,27 +20,27 @@ export function useFriendInviteResolver(options?: Options) {
 
   const promptAddFriend = useCallback(
     (username: string, displayName: string) => {
-      Alert.alert(t('friendsAlerts.addTitle'), `${displayName}\n@${username}`, [
-        { text: t('friendsAlerts.cancel'), style: 'cancel' },
-        {
-          text: t('friendsAlerts.add'),
-          onPress: () => {
-            const res = addFriend(username, displayName);
-            if (res.ok) {
-              Alert.alert(t('friendsAlerts.addedTitle'), t('friendsAlerts.addedBody', { name: displayName }));
-              onAdded?.();
-            } else if (res.reason === 'self') {
-              Alert.alert(t('friendsAlerts.selfTitle'), t('friendsAlerts.selfBody'));
-            } else if (res.reason === 'duplicate') {
-              Alert.alert(t('friendsAlerts.duplicateTitle'), t('friendsAlerts.duplicateBody'));
-            } else if (res.reason === 'invalid') {
-              Alert.alert(t('friendsAlerts.invalidIdTitle'), t('friendsAlerts.invalidIdBody'));
-            } else {
-              Alert.alert(t('friendsAlerts.errorTitle'), t('friendsAlerts.errorBody'));
-            }
-          },
+      confirmUserAction({
+        title: t('friendsAlerts.addTitle'),
+        message: `${displayName}\n@${username}`,
+        cancelLabel: t('friendsAlerts.cancel'),
+        confirmLabel: t('friendsAlerts.add'),
+        onConfirm: () => {
+          const res = addFriend(username, displayName);
+          if (res.ok) {
+            showUserMessage(t('friendsAlerts.addedTitle'), t('friendsAlerts.addedBody', { name: displayName }));
+            onAdded?.();
+          } else if (res.reason === 'self') {
+            showUserMessage(t('friendsAlerts.selfTitle'), t('friendsAlerts.selfBody'));
+          } else if (res.reason === 'duplicate') {
+            showUserMessage(t('friendsAlerts.duplicateTitle'), t('friendsAlerts.duplicateBody'));
+          } else if (res.reason === 'invalid') {
+            showUserMessage(t('friendsAlerts.invalidIdTitle'), t('friendsAlerts.invalidIdBody'));
+          } else {
+            showUserMessage(t('friendsAlerts.errorTitle'), t('friendsAlerts.errorBody'));
+          }
         },
-      ]);
+      });
     },
     [addFriend, onAdded, t],
   );
@@ -50,12 +50,12 @@ export function useFriendInviteResolver(options?: Options) {
     (raw: string) => {
       const username = parseFriendInviteFromQr(raw);
       if (!username) {
-        Alert.alert(t('friendsAlerts.invalidIdTitle'), t('friendsAlerts.invalidIdBody'));
+        showUserMessage(t('friendsAlerts.invalidIdTitle'), t('friendsAlerts.invalidIdBody'));
         return;
       }
       const name = lookupFriendDisplayName(username);
       if (!name) {
-        Alert.alert(t('friendsAlerts.notFoundTitle'), t('friendsAlerts.notFoundBody'));
+        showUserMessage(t('friendsAlerts.notFoundTitle'), t('friendsAlerts.notFoundBody'));
         return;
       }
       promptAddFriend(username, name);
@@ -68,7 +68,7 @@ export function useFriendInviteResolver(options?: Options) {
     (username: string) => {
       const name = lookupFriendDisplayName(username);
       if (!name) {
-        Alert.alert(t('friendsAlerts.notFoundTitle'), t('friendsAlerts.notFoundBody'));
+        showUserMessage(t('friendsAlerts.notFoundTitle'), t('friendsAlerts.notFoundBody'));
         return;
       }
       promptAddFriend(username, name);

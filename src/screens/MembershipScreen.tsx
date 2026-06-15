@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -19,6 +18,7 @@ import { colors } from '../tokens/colors';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { RootStackParamList } from '../navigation/types';
+import { confirmUserAction, showUserMessage } from '../utils/showUserMessage';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Membership'>;
 
@@ -54,7 +54,7 @@ export function MembershipScreen() {
     if (!plan) return;
     setSimulatedTier(plan.id);
     addCredits(plan.monthlyCoins);
-    Alert.alert(
+    showUserMessage(
       t('membership.simActivatedTitle'),
       t('membership.simActivatedBody', {
         tier: t(`membership.tierName_${plan.id}`),
@@ -64,14 +64,14 @@ export function MembershipScreen() {
   }, [addCredits, selectedId, setSimulatedTier, t]);
 
   const onClearSimulation = useCallback(() => {
-    Alert.alert(t('membership.simClearTitle'), t('membership.simClearBody'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('membership.simClearConfirm'),
-        style: 'destructive',
-        onPress: () => setSimulatedTier(null),
-      },
-    ]);
+    confirmUserAction({
+      title: t('membership.simClearTitle'),
+      message: t('membership.simClearBody'),
+      cancelLabel: t('common.cancel'),
+      confirmLabel: t('membership.simClearConfirm'),
+      destructive: true,
+      onConfirm: () => setSimulatedTier(null),
+    });
   }, [setSimulatedTier, t]);
 
   return (

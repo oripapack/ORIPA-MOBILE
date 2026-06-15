@@ -1,8 +1,9 @@
 import React from 'react';
-import { Alert, Text } from 'react-native';
+import { Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useClerk } from '@clerk/clerk-expo';
 import { ListRow } from '../shared/ListRow';
+import { confirmUserAction } from '../../utils/showUserMessage';
 
 /**
  * Must only render under `ClerkProvider` when the user is signed in.
@@ -19,14 +20,14 @@ export function ClerkLogoutRow() {
       destructive
       showChevron={false}
       onPress={() =>
-        Alert.alert(t('auth.signOutTitle'), t('auth.signOutMessage'), [
-          { text: t('auth.cancel'), style: 'cancel' },
-          {
-            text: t('auth.signOutConfirm'),
-            style: 'destructive',
-            onPress: () => void signOut(),
-          },
-        ])
+        confirmUserAction({
+          title: t('auth.signOutTitle'),
+          message: t('auth.signOutMessage'),
+          cancelLabel: t('auth.cancel'),
+          confirmLabel: t('auth.signOutConfirm'),
+          destructive: true,
+          onConfirm: () => void signOut(),
+        })
       }
     />
   );

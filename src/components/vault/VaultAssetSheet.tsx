@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +22,7 @@ import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
 import { ListForSaleModal } from './ListForSaleModal';
 import { useAppStore } from '../../store/useAppStore';
 import { formatVaultExchangeUsd } from '../../lib/vaultExchange';
+import { confirmUserAction, showUserMessage } from '../../utils/showUserMessage';
 
 type Props = {
   visible: boolean;
@@ -63,59 +63,50 @@ export function VaultAssetSheet({
   if (!pull) return null;
 
   const confirmShip = () => {
-    Alert.alert(
-      t('vaultAsset.requestShipTitle'),
-      t('vaultAsset.requestShipBody'),
-      [
-        { text: t('vaultAsset.cancel'), style: 'cancel' },
-        {
-          text: t('vaultAsset.requestShipConfirm'),
-          style: 'default',
-          onPress: () => {
-            void (async () => {
-              const ok = await onRequestShipment(pull.id);
-              if (ok) onClose();
-            })();
-          },
-        },
-      ],
-    );
+    confirmUserAction({
+      title: t('vaultAsset.requestShipTitle'),
+      message: t('vaultAsset.requestShipBody'),
+      cancelLabel: t('vaultAsset.cancel'),
+      confirmLabel: t('vaultAsset.requestShipConfirm'),
+      onConfirm: () => {
+        void (async () => {
+          const ok = await onRequestShipment(pull.id);
+          if (ok) onClose();
+        })();
+      },
+    });
   };
 
   const confirmConvert = () => {
-    Alert.alert(
-      t('vaultAsset.convertTitle'),
-      t('vaultAsset.convertBody', { coins: coinValue.toLocaleString() }),
-      [
-        { text: t('vaultAsset.cancel'), style: 'cancel' },
-        {
-          text: t('vaultAsset.convertConfirm'),
-          style: 'destructive',
-          onPress: () => {
-            onConvertToCoins(pull.id);
-            onClose();
-          },
-        },
-      ],
-    );
+    confirmUserAction({
+      title: t('vaultAsset.convertTitle'),
+      message: t('vaultAsset.convertBody', { coins: coinValue.toLocaleString() }),
+      cancelLabel: t('vaultAsset.cancel'),
+      confirmLabel: t('vaultAsset.convertConfirm'),
+      destructive: true,
+      onConfirm: () => {
+        onConvertToCoins(pull.id);
+        onClose();
+      },
+    });
   };
 
   const onTrade = () => {
-    Alert.alert(t('vaultAsset.soonTitle'), t('vaultAsset.tradeSoonBody'));
+    showUserMessage(t('vaultAsset.soonTitle'), t('vaultAsset.tradeSoonBody'));
   };
 
   const confirmUnlist = () => {
-    Alert.alert(t('vaultAsset.ctaUnlist'), t('vaultAsset.unlistBody'), [
-      { text: t('vaultAsset.cancel'), style: 'cancel' },
-      {
-        text: t('vaultAsset.ctaUnlist'),
-        style: 'destructive',
-        onPress: () => {
-          unlistVaultPullForSale(pull.id);
-          onClose();
-        },
+    confirmUserAction({
+      title: t('vaultAsset.ctaUnlist'),
+      message: t('vaultAsset.unlistBody'),
+      cancelLabel: t('vaultAsset.cancel'),
+      confirmLabel: t('vaultAsset.ctaUnlist'),
+      destructive: true,
+      onConfirm: () => {
+        unlistVaultPullForSale(pull.id);
+        onClose();
       },
-    ]);
+    });
   };
 
   const onConfirmListPrice = (price: number) => {

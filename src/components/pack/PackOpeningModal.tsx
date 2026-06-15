@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   Animated,
   Easing,
   Modal,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -40,6 +38,8 @@ import { resolveRevealCardForTier } from './opening/mockRevealCards';
 import { generatePackOpenResult, bestRollFromResults } from './opening/generatePackRoll';
 import { revealRarityFromTier, type PackRollResult } from './opening/types';
 import { RevealCtaFade } from './opening/RevealResultCard';
+import { showUserMessage } from '../../utils/showUserMessage';
+import { shareUserContent } from '../../utils/shareUserContent';
 
 export function PackOpeningModal() {
   const { t } = useTranslation();
@@ -219,7 +219,7 @@ export function PackOpeningModal() {
       if (!firstPackPromptHandled) {
         showSignupPrompt();
       } else {
-        Alert.alert(t('onboarding.guestClaimTitle'), t('onboarding.guestClaimBody'));
+        showUserMessage(t('onboarding.guestClaimTitle'), t('onboarding.guestClaimBody'));
       }
       return;
     }
@@ -232,7 +232,7 @@ export function PackOpeningModal() {
       if (!firstPackPromptHandled) {
         showSignupPrompt();
       } else {
-        Alert.alert(t('onboarding.guestClaimTitle'), t('onboarding.guestClaimBody'));
+        showUserMessage(t('onboarding.guestClaimTitle'), t('onboarding.guestClaimBody'));
       }
       return;
     }
@@ -254,7 +254,7 @@ export function PackOpeningModal() {
       tier: tierLabel,
       credits: pending.creditsWon.toLocaleString(),
     });
-    void Share.share({ message: msg });
+    void shareUserContent(msg);
   }, [pending, revealCard, t]);
 
   const showSkip = !!pending && !engineDone && !isBulkOpen;

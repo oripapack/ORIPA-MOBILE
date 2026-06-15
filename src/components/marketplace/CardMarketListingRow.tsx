@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { PublicVaultListing } from '../../lib/friendVaultShop';
 import type { PullRarityTier } from '../../data/mockUser';
+import { confirmUserAction, showUserMessage } from '../../utils/showUserMessage';
 
 const TIER_COLOR: Record<PullRarityTier, string> = {
   common: colors.textMuted,
@@ -43,22 +44,20 @@ export function CardMarketListingRow({ listing, isOwnListing }: Props) {
 
   const onBuyNow = () => {
     if (isOwnListing) {
-      Alert.alert('Your Listing', 'This is your own listing. Visit your Vault to manage it.');
+      showUserMessage('Your Listing', 'This is your own listing. Visit your Vault to manage it.');
       return;
     }
-    Alert.alert(
-      'Buy Now',
-      `Purchase "${listing.result}" for $${listing.listPriceUsd}?\n\nStripe checkout coming soon.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: `Buy for $${listing.listPriceUsd}`,
-          style: 'default',
-          onPress: () =>
-            Alert.alert('Order Placed!', 'Your purchase will be processed via Stripe. The seller will be notified.'),
-        },
-      ],
-    );
+    confirmUserAction({
+      title: 'Buy Now',
+      message: `Purchase "${listing.result}" for $${listing.listPriceUsd}?\n\nStripe checkout coming soon.`,
+      cancelLabel: 'Cancel',
+      confirmLabel: `Buy for $${listing.listPriceUsd}`,
+      onConfirm: () =>
+        showUserMessage(
+          'Order Placed!',
+          'Your purchase will be processed via Stripe. The seller will be notified.',
+        ),
+    });
   };
 
   return (

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
-  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../tokens/colors';
@@ -22,6 +21,7 @@ import { vaultExchangeBuyerRules, formatVaultExchangeUsd } from '../../lib/vault
 import { FriendVaultItemSheet } from './FriendVaultItemSheet';
 import { VaultExchangeCheckoutStubModal } from '../vault/VaultExchangeCheckoutStubModal';
 import type { FriendEntry } from '../../data/friends';
+import { showUserMessage } from '../../utils/showUserMessage';
 
 type Props = {
   sellerUsername: string;
@@ -70,11 +70,11 @@ export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry
     const res = purchase(key, checkout.listingId);
     setCheckout(null);
     if (res === 'ok') {
-      Alert.alert(t('vaultExchange.purchaseOkTitle'), t('vaultExchange.purchaseOkBody'));
+      showUserMessage(t('vaultExchange.purchaseOkTitle'), t('vaultExchange.purchaseOkBody'));
     } else if (res === 'own_listing') {
-      Alert.alert(t('friendVaultShop.ownTitle'), t('friendVaultShop.ownBody'));
+      showUserMessage(t('friendVaultShop.ownTitle'), t('friendVaultShop.ownBody'));
     } else {
-      Alert.alert(t('vaultExchange.purchaseFailTitle'), t('vaultExchange.purchaseFailBody'));
+      showUserMessage(t('vaultExchange.purchaseFailTitle'), t('vaultExchange.purchaseFailBody'));
     }
   }, [checkout, purchase, key, t]);
 

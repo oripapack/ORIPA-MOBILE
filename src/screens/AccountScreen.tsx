@@ -9,6 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { colors } from '../tokens/colors';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
+import { screenRoot, screenScroll } from '../tokens/layout';
 import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
@@ -318,11 +319,11 @@ export function AccountScreen() {
 
 const styles = StyleSheet.create({
   screenRoot: {
-    flex: 1,
+    ...screenRoot,
     backgroundColor: colors.homeGradientBottom,
   },
   container: {
-    flex: 1,
+    ...screenScroll,
     backgroundColor: 'transparent',
   },
   content: {

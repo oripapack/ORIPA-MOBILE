@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
@@ -11,6 +11,7 @@ import { BuybackBadge, StatusBadge } from '../components/ph/PhBadge';
 import { PhProgressBar } from '../components/ph/PhProgressBar';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
+import { screenRoot, screenScroll, screenFooter } from '../tokens/layout';
 import { navigationRef } from '../navigation/navigationRef';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useAppStore, type PackOpenQuantity } from '../store/useAppStore';
@@ -26,6 +27,7 @@ import { packOpenTotalCredits } from '../lib/packMultiOpen';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { EMPTY_PACK_ODDS, getMockPackOdds } from '../data/mockPackOdds';
 import { getMockPackTopHit } from '../data/mockTopHits';
+import { showUserMessage } from '../utils/showUserMessage';
 
 type Props = {
   route: { params: { packId: string } };
@@ -98,7 +100,7 @@ export function PackDetailsScreen({ route }: Props) {
 
   const commitOpen = (qty: PackOpenQuantity) => {
     if (qty > 1 && pack.remainingInventory < qty) {
-      Alert.alert(t('packDetails.bulkStockTitle'), t('packDetails.bulkStockBody', { count: qty }));
+      showUserMessage(t('packDetails.bulkStockTitle'), t('packDetails.bulkStockBody', { count: qty }));
       return;
     }
     requireAuth(() => {
@@ -113,7 +115,7 @@ export function PackDetailsScreen({ route }: Props) {
     }
     if (openBlocked) return;
     if (openQuantity > 1 && pack.remainingInventory < openQuantity) {
-      Alert.alert(t('packDetails.bulkStockTitle'), t('packDetails.bulkStockBody', { count: openQuantity }));
+      showUserMessage(t('packDetails.bulkStockTitle'), t('packDetails.bulkStockBody', { count: openQuantity }));
       return;
     }
     if (openQuantity === 100) {
@@ -124,7 +126,7 @@ export function PackDetailsScreen({ route }: Props) {
   };
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom }]}>
+    <View style={[styles.root, { paddingTop: insets.top + spacing.sm }]}>
       <TouchableOpacity
         style={styles.backBtn}
         onPress={() => {
@@ -138,9 +140,10 @@ export function PackDetailsScreen({ route }: Props) {
       </TouchableOpacity>
 
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 300 }}
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.hero}>
           <View style={styles.heroVisualWrap}>
@@ -249,7 +252,6 @@ export function PackDetailsScreen({ route }: Props) {
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, spacing.base) }]}>
-        <View style={styles.footerGlass} pointerEvents="none" />
         <View style={styles.footerStack}>
           {!membershipLocked ? (
             <>
@@ -319,8 +321,12 @@ export function PackDetailsScreen({ route }: Props) {
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
+    ...screenRoot,
     backgroundColor: ph.bg,
+  },
+  scroll: screenScroll,
+  scrollContent: {
+    paddingBottom: spacing.lg,
   },
   backBtn: {
     flexDirection: 'row',
@@ -416,26 +422,15 @@ const styles = StyleSheet.create({
     color: colors.gold,
   },
   footer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
+    ...screenFooter,
     paddingHorizontal: spacing.base,
     paddingTop: spacing.sm,
-    backgroundColor: 'rgba(0,0,0,0.0)',
+    backgroundColor: 'rgba(7,5,15,0.95)',
+    borderTopWidth: 1,
+    borderTopColor: colors.headerHairline,
   },
   footerStack: {
     gap: spacing.md,
-  },
-  footerGlass: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: -36,
-    backgroundColor: 'rgba(7,5,15,0.88)',
-    borderTopWidth: 1,
-    borderTopColor: colors.headerHairline,
   },
   cta: {
     height: 52,

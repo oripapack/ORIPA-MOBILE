@@ -8,7 +8,6 @@ import {
   ScrollView,
   StyleSheet,
   Platform,
-  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +19,7 @@ import { SecondaryButton } from '../shared/SecondaryButton';
 import { useFriendInviteResolver } from '../../hooks/useFriendInviteResolver';
 import { useAppStore } from '../../store/useAppStore';
 import { DEMO_DISCOVERABLE_USERS } from '../../data/socialMock';
+import { showUserMessage } from '../../utils/showUserMessage';
 
 interface Props {
   visible: boolean;
@@ -124,13 +124,13 @@ export function AddFriendModal({ visible, onClose, onRequestScanner }: Props) {
                     onPress={() => {
                       const res = addFriend(d.username, d.displayName);
                       if (res.ok) {
-                        Alert.alert(
+                        showUserMessage(
                           t('social.demoAddedTitle'),
                           t('social.demoAddedBody', { name: d.displayName }),
                         );
                         onClose();
                       } else if (res.reason === 'duplicate') {
-                        Alert.alert(t('social.demoAddedTitle'), t('social.demoAlreadyFriend'));
+                        showUserMessage(t('social.demoAddedTitle'), t('social.demoAlreadyFriend'));
                       }
                     }}
                     activeOpacity={0.88}

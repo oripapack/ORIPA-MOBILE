@@ -10,3 +10,45 @@ export function showUserMessage(title: string, message?: string): void {
   }
   Alert.alert(title, message);
 }
+
+type ConfirmOptions = {
+  title: string;
+  message?: string;
+  confirmLabel: string;
+  cancelLabel: string;
+  destructive?: boolean;
+  onConfirm: () => void;
+  onCancel?: () => void;
+};
+
+/** Cross-platform confirm — `Alert.alert` multi-button prompts fail on React Native Web. */
+export function confirmUserAction({
+  title,
+  message,
+  confirmLabel,
+  cancelLabel,
+  destructive,
+  onConfirm,
+  onCancel,
+}: ConfirmOptions): void {
+  if (Platform.OS === 'web') {
+    if (typeof window !== 'undefined') {
+      const body = message ? `${title}\n\n${message}` : title;
+      if (window.confirm(body)) {
+        onConfirm();
+      } else {
+        onCancel?.();
+      }
+    }
+    return;
+  }
+
+  Alert.alert(title, message, [
+    { text: cancelLabel, style: 'cancel', onPress: onCancel },
+    {
+      text: confirmLabel,
+      style: destructive ? 'destructive' : 'default',
+      onPress: onConfirm,
+    },
+  ]);
+}

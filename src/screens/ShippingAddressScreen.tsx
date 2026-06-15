@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +17,7 @@ import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { SHIPPING_ADDRESS_STORAGE_KEY } from '../lib/shippingAddress';
+import { showUserMessage } from '../utils/showUserMessage';
 
 const STORAGE_KEY = SHIPPING_ADDRESS_STORAGE_KEY;
 
@@ -79,14 +79,14 @@ export function ShippingAddressScreen() {
 
   const onSave = useCallback(async () => {
     if (!form.fullName.trim() || !form.line1.trim() || !form.city.trim() || !form.country.trim()) {
-      Alert.alert(t('shippingAddress.missingTitle'), t('shippingAddress.missingBody'));
+      showUserMessage(t('shippingAddress.missingTitle'), t('shippingAddress.missingBody'));
       return;
     }
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(form));
-      Alert.alert(t('shippingAddress.savedTitle'), t('shippingAddress.savedBody'));
+      showUserMessage(t('shippingAddress.savedTitle'), t('shippingAddress.savedBody'));
     } catch {
-      Alert.alert(t('common.error'), t('shippingAddress.saveFailed'));
+      showUserMessage(t('common.error'), t('shippingAddress.saveFailed'));
     }
   }, [form, t]);
 
