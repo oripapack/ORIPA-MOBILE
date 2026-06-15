@@ -12,14 +12,14 @@
  *   6. EmptyState       zero-results fallback
  *   7. TrustStrip       credibility row
  *
- * Design reference:
- *   Phygitals          → large product visuals, clean grid, dark premium
- *   Nihon Toreca Center → category tabs, filter chips, remaining qty, sort
+ * Data: shared CATALOG_PACKS (same source as mobile Expo app)
  */
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AppHeader } from "../../components/layout/AppHeader";
+import { BottomNav } from "../../components/layout/BottomNav";
 import { Button } from "../../components/ui/Button";
 import { SurfaceCard } from "../../components/ui/SurfaceCard";
 import { SectionHeader } from "../../components/ui/SectionHeader";
@@ -27,255 +27,37 @@ import { BuybackBadge, StatusBadge, TrustBadge } from "../../components/ui/Badge
 import { ProgressBar } from "../../components/ui/ProgressBar";
 import { PackCard } from "../../components/pack/PackCard";
 import { cn } from "../../components/utils/cn";
-import type { PackCardData } from "../../components/pack/PackCard";
+import {
+  CATALOG_PACKS,
+  CATALOG_CATEGORIES,
+  getFeaturedPack,
+} from "@/data/catalog";
+import type { CatalogPack, CatalogCategoryFilter } from "@/data/catalog";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Extended type — page-local only; shared PackCard still uses PackCardData
+// Adapter — CatalogPack → shape expected by PackCard + FeaturedBanner
+// Parses "CardName — $value" topCard string into separate topHit / topHitValue.
 // ─────────────────────────────────────────────────────────────────────────────
 
-interface PacksPageData extends PackCardData {
-  description: string;
-  topCard: string;
-  pullCount: number;
-  isNew?: boolean;
-  isLimitedTime?: boolean;
-  priceRange: "budget" | "mid" | "premium";
+type AdaptedPack = CatalogPack & { topHit?: string; topHitValue?: number };
+
+function adaptPack(c: CatalogPack): AdaptedPack {
+  const m = c.topCard.match(/^(.+?) — \$(\d[\d,]*)$/);
+  return {
+    ...c,
+    topHit:      m ? m[1].trim() : undefined,
+    topHitValue: m ? Number(m[2].replace(/,/g, "")) : undefined,
+  };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Mock catalog — 12 packs across all categories
-// ─────────────────────────────────────────────────────────────────────────────
-
-const ALL_PACKS: PacksPageData[] = [
-  {
-    id: "welcome-pack",
-    name: "Welcome Pack",
-    category: "Multi TCG",
-    price: 5,
-    buybackRate: 90,
-    isFeatured: true,
-    isNew: true,
-    remainingFraction: 0.99,
-    returnRate: 107,
-    floorValue: 5,
-    topHit: "Random Holo Rare",
-    topHitValue: 28,
-    tagline: "Perfect first pull · 90% buyback guaranteed",
-    description: "Designed for first-time collectors. Guaranteed value above pack price with 90% instant buyback. No tricks, no pressure.",
-    topCard: "Random Holo Rare",
-    pullCount: 8_241,
-    priceRange: "budget",
-  },
-  {
-    id: "platinum-legacy",
-    name: "Platinum Legacy",
-    category: "Pokémon TCG",
-    price: 30,
-    buybackRate: 80,
-    isFeatured: true,
-    remainingFraction: 0.80,
-    returnRate: 84,
-    floorValue: 5,
-    topHit: "Charizard ex SAR",
-    topHitValue: 649,
-    tagline: "Graded slabs · alt-arts · trophy promos",
-    description: "Sourced from verified distributors. Graded slabs, Japanese alt-arts, and trophy promos. PSA-authenticated from the moment you pull.",
-    topCard: "Charizard ex SAR — $649",
-    pullCount: 24_183,
-    priceRange: "mid",
-  },
-  {
-    id: "obsidian-flames",
-    name: "Obsidian Flames Chase",
-    category: "Pokémon TCG",
-    price: 60,
-    buybackRate: 80,
-    remainingFraction: 0.43,
-    returnRate: 91,
-    floorValue: 8,
-    topHit: "Charizard ex SAR",
-    topHitValue: 649,
-    tagline: "Charizard ex SAR in the prize pool",
-    description: "High-stakes pulls from Obsidian Flames. Charizard ex SAR, Tyranitar ex SAR, and Iron Hands ex alt-art all in pool.",
-    topCard: "Charizard ex SAR — $649",
-    pullCount: 31_560,
-    priceRange: "mid",
-  },
-  {
-    id: "crown-zenith",
-    name: "Crown Zenith Galarian",
-    category: "Pokémon TCG",
-    price: 15,
-    buybackRate: 75,
-    remainingFraction: 0.87,
-    returnRate: 76,
-    floorValue: 3,
-    topHit: "Arceus VSTAR Gold",
-    topHitValue: 75,
-    tagline: "Galarian Gallery · VSTAR Universe",
-    description: "Gallery rares, VSTAR Universe promos, and trainer gallery hits across the Crown Zenith set.",
-    topCard: "Arceus VSTAR Gold — $75",
-    pullCount: 12_047,
-    priceRange: "budget",
-  },
-  {
-    id: "evolving-skies",
-    name: "Evolving Skies Premium",
-    category: "Pokémon TCG",
-    price: 50,
-    buybackRate: 80,
-    remainingFraction: 0.29,
-    returnRate: 96,
-    floorValue: 6,
-    topHit: "Umbreon VMAX Alt Art",
-    topHitValue: 380,
-    isLimitedTime: true,
-    tagline: "Umbreon VMAX Alt Art chase · Low stock",
-    description: "The highest-demand Evolving Skies pulls available. Umbreon VMAX Alt Art, Rayquaza VMAX Alt Art, and more. 29% remaining.",
-    topCard: "Umbreon VMAX Alt Art — $380",
-    pullCount: 42_781,
-    priceRange: "mid",
-  },
-  {
-    id: "paldea-evolved",
-    name: "Paldea Evolved Chase",
-    category: "Pokémon TCG",
-    price: 40,
-    buybackRate: 80,
-    remainingFraction: 0.52,
-    returnRate: 82,
-    floorValue: 5,
-    topHit: "Mew ex Full Art",
-    topHitValue: 55,
-    tagline: "Iono Full Art · Mew ex Full Art",
-    description: "Full-art trainers including Iono, Miriam, and Arven. Mew ex Full Art as the chase slot.",
-    topCard: "Mew ex Full Art — $55",
-    pullCount: 18_325,
-    priceRange: "mid",
-  },
-  {
-    id: "one-piece-op09",
-    name: "OP-09 Mythic Seal",
-    category: "One Piece TCG",
-    price: 25,
-    buybackRate: 75,
-    remainingFraction: 0.91,
-    returnRate: 78,
-    floorValue: 4,
-    topHit: "Monkey D. Luffy SR",
-    topHitValue: 120,
-    isNew: true,
-    tagline: "Luffy & Zoro secret rares · New set",
-    description: "Latest One Piece TCG set with Leaders and Secret Rares from the Nine Pirates arc. Newly added to Pull Hub.",
-    topCard: "Monkey D. Luffy SR — $120",
-    pullCount: 3_210,
-    priceRange: "budget",
-  },
-  {
-    id: "one-piece-op07",
-    name: "OP-07 500-Year Future",
-    category: "One Piece TCG",
-    price: 35,
-    buybackRate: 75,
-    remainingFraction: 0.74,
-    returnRate: 79,
-    floorValue: 4,
-    topHit: "Rob Lucci P-SAR",
-    topHitValue: 95,
-    tagline: "Egghead arc · Vegapunk leaders",
-    description: "Top-tier leaders from the Egghead arc. Vegapunk-era leaders, Stussy Secret Rares, and Zoro parallel foils.",
-    topCard: "Rob Lucci P-SAR — $95",
-    pullCount: 9_412,
-    priceRange: "mid",
-  },
-  {
-    id: "yugioh-25th",
-    name: "25th Anniversary Vault",
-    category: "Yu-Gi-Oh!",
-    price: 20,
-    buybackRate: 70,
-    remainingFraction: 0.66,
-    returnRate: 72,
-    floorValue: 3,
-    topHit: "Blue-Eyes QC Secret Rare",
-    topHitValue: 85,
-    tagline: "Quarter century secret rares",
-    description: "Exclusive 25th Anniversary reprints with quarter-century secret rare treatment. Blue-Eyes, Dark Magician, and Exodia sets.",
-    topCard: "Blue-Eyes QCSR — $85",
-    pullCount: 7_834,
-    priceRange: "budget",
-  },
-  {
-    id: "yugioh-duelist-nexus",
-    name: "Duelist Nexus Ultra",
-    category: "Yu-Gi-Oh!",
-    price: 55,
-    buybackRate: 70,
-    isFeatured: false,
-    remainingFraction: 0.95,
-    returnRate: 68,
-    floorValue: 4,
-    topHit: "Purrely Delicious Memory",
-    topHitValue: 140,
-    isNew: true,
-    tagline: "Prismatic Secret Rares · Ultra Rares",
-    description: "Duelist Nexus complete set pulls. Ghost Rare and Prismatic Secret Rare slots. New stock — plentiful supply.",
-    topCard: "Purrely Delicious Memory — $140",
-    pullCount: 1_203,
-    priceRange: "mid",
-  },
-  {
-    id: "prizm-basketball",
-    name: "Prizm Basketball Elite",
-    category: "Sports Cards",
-    price: 45,
-    buybackRate: 80,
-    isFeatured: true,
-    remainingFraction: 0.55,
-    returnRate: 88,
-    floorValue: 5,
-    topHit: "Wembanyama Prizm Auto RC",
-    topHitValue: 450,
-    tagline: "Prizm auto rookies · PSA graded",
-    description: "Panini Prizm Basketball with rookie auto Prizms and PSA-graded veteran stars. Wembanyama and Spida Mitchell in pool.",
-    topCard: "Wembanyama Prizm Auto RC — $450",
-    pullCount: 15_629,
-    priceRange: "mid",
-  },
-  {
-    id: "prizm-football",
-    name: "2023 Prizm Football",
-    category: "Sports Cards",
-    price: 30,
-    buybackRate: 80,
-    remainingFraction: 0.38,
-    returnRate: 83,
-    floorValue: 4,
-    topHit: "CJ Stroud Prizm Auto RC",
-    topHitValue: 200,
-    tagline: "CJ Stroud · Bryce Young rookies",
-    description: "2023 class rookie auto Prizms and veteran superstars. Silver Prizms, RPA autos, and graded Patrick Mahomes in pool.",
-    topCard: "CJ Stroud Prizm Auto RC — $200",
-    pullCount: 22_910,
-    priceRange: "mid",
-  },
-];
+const ADAPTED_PACKS: AdaptedPack[] = CATALOG_PACKS.map(adaptPack);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Filter / sort configuration
 // ─────────────────────────────────────────────────────────────────────────────
 
-type Category = "All" | "Pokémon TCG" | "One Piece TCG" | "Yu-Gi-Oh!" | "Sports Cards";
-type SortKey  = "featured" | "price_asc" | "price_desc" | "low_stock";
-type PriceRange = "all" | "budget" | "mid" | "premium";
-
-const CATEGORIES: { key: Category; label: string }[] = [
-  { key: "All",         label: "All Packs" },
-  { key: "Pokémon TCG", label: "Pokémon"   },
-  { key: "One Piece TCG",label: "One Piece" },
-  { key: "Yu-Gi-Oh!",  label: "Yu-Gi-Oh!" },
-  { key: "Sports Cards",label: "Sports"    },
-];
+type SortKey    = "featured" | "price_asc" | "price_desc" | "low_stock";
+type PriceFilter = "all" | "budget" | "mid" | "premium";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "featured",   label: "Featured"  },
@@ -284,7 +66,7 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "low_stock",  label: "Low Stock" },
 ];
 
-const PRICE_RANGES: { key: PriceRange; label: string }[] = [
+const PRICE_RANGES: { key: PriceFilter; label: string }[] = [
   { key: "all",     label: "Any price" },
   { key: "budget",  label: "Under $25" },
   { key: "mid",     label: "$25 – $75" },
@@ -307,8 +89,8 @@ function categoryGradient(cat: string): string {
 // FeaturedBanner — wide horizontal card for the top featured pack
 // ─────────────────────────────────────────────────────────────────────────────
 
-function FeaturedBanner({ pack, onOpen }: { pack: PacksPageData; onOpen: () => void }) {
-  const urgency = pack.remainingFraction !== undefined && pack.remainingFraction < 0.35;
+function FeaturedBanner({ pack }: { pack: AdaptedPack }) {
+  const urgency = pack.remainingFraction < 0.35;
 
   return (
     <div
@@ -349,9 +131,7 @@ function FeaturedBanner({ pack, onOpen }: { pack: PacksPageData; onOpen: () => v
               <span className="text-[10px] font-bold uppercase tracking-widest text-ph-text-muted">
                 {pack.category}
               </span>
-              {pack.buybackRate !== undefined && (
-                <BuybackBadge rate={pack.buybackRate} />
-              )}
+              <BuybackBadge rate={pack.buybackRate} />
             </div>
 
             <h2 className="text-xl font-black tracking-tight text-ph-text sm:text-2xl">
@@ -372,14 +152,12 @@ function FeaturedBanner({ pack, onOpen }: { pack: PacksPageData; onOpen: () => v
 
           <div className="flex flex-col gap-3">
             {/* Remaining */}
-            {pack.remainingFraction !== undefined && (
-              <ProgressBar
-                value={pack.remainingFraction}
-                label="Remaining inventory"
-                sublabel={`${Math.round(pack.remainingFraction * 100)}% left · ${pack.pullCount.toLocaleString("en-US")} pulled`}
-                color={urgency ? "red" : "green"}
-              />
-            )}
+            <ProgressBar
+              value={pack.remainingFraction}
+              label="Remaining inventory"
+              sublabel={`${Math.round(pack.remainingFraction * 100)}% left · ${pack.pullCount.toLocaleString("en-US")} pulled`}
+              color={urgency ? "red" : "green"}
+            />
 
             {/* Price + CTA row */}
             <div className="flex items-center gap-3">
@@ -391,17 +169,18 @@ function FeaturedBanner({ pack, onOpen }: { pack: PacksPageData; onOpen: () => v
                   ${pack.price}
                 </p>
               </div>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={onOpen}
-                className="flex-1 sm:flex-none"
+              <Link
+                href={`/opening?packId=${pack.id}`}
+                className="flex flex-1 items-center justify-center rounded-ph-md bg-ph-green px-5 py-3 text-sm font-bold text-ph-green-ink shadow-ph-cta transition-all duration-[150ms] ease-out hover:bg-ph-green-hover sm:flex-none"
               >
                 Open Pack
-              </Button>
-              <Button variant="secondary" size="md" onClick={onOpen}>
+              </Link>
+              <Link
+                href={`/pack-detail?packId=${pack.id}`}
+                className="flex items-center justify-center rounded-ph-md border border-ph-border-md bg-ph-surface-high px-5 py-3 text-sm font-semibold text-ph-text-sec transition-colors duration-[150ms] ease-out hover:border-ph-border-high hover:text-ph-text"
+              >
                 Details
-              </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -482,34 +261,36 @@ const TRUST_ITEMS = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function PacksPage() {
-  const [category,   setCategory]   = useState<Category>("All");
-  const [sortKey,    setSortKey]    = useState<SortKey>("featured");
-  const [priceRange, setPriceRange] = useState<PriceRange>("all");
+  const router = useRouter();
+
+  const [category,    setCategory]    = useState<CatalogCategoryFilter>("All");
+  const [sortKey,     setSortKey]     = useState<SortKey>("featured");
+  const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
 
   // ── Filter + sort ──────────────────────────────────────────────────────────
-  const filteredPacks = useMemo<PacksPageData[]>(() => {
-    let packs = ALL_PACKS.filter((p) => {
+  const filteredPacks = useMemo<AdaptedPack[]>(() => {
+    let packs = ADAPTED_PACKS.filter((p) => {
       if (category !== "All" && p.category !== category) return false;
-      if (priceRange !== "all" && p.priceRange !== priceRange) return false;
+      if (priceFilter !== "all" && p.priceRange !== priceFilter) return false;
       return true;
     });
 
     switch (sortKey) {
       case "price_asc":  packs = [...packs].sort((a, b) => a.price - b.price); break;
       case "price_desc": packs = [...packs].sort((a, b) => b.price - a.price); break;
-      case "low_stock":  packs = [...packs].sort((a, b) => (a.remainingFraction ?? 1) - (b.remainingFraction ?? 1)); break;
+      case "low_stock":  packs = [...packs].sort((a, b) => a.remainingFraction - b.remainingFraction); break;
       default:           packs = [...packs].sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0)); break;
     }
 
     return packs;
-  }, [category, sortKey, priceRange]);
+  }, [category, sortKey, priceFilter]);
 
-  const featuredPack = useMemo<PacksPageData | undefined>(
-    () => (category === "All" ? ALL_PACKS.find((p) => p.isFeatured && p.id === "platinum-legacy") : undefined),
+  const featuredPack = useMemo<AdaptedPack | undefined>(
+    () => category === "All" ? adaptPack(getFeaturedPack()) : undefined,
     [category],
   );
 
-  const gridPacks = useMemo<PacksPageData[]>(
+  const gridPacks = useMemo<AdaptedPack[]>(
     () => filteredPacks.filter((p) => !(category === "All" && p.id === featuredPack?.id)),
     [filteredPacks, featuredPack, category],
   );
@@ -517,11 +298,7 @@ export default function PacksPage() {
   const resetFilters = () => {
     setCategory("All");
     setSortKey("featured");
-    setPriceRange("all");
-  };
-
-  const openPack = () => {
-    window.location.href = "/pack-detail";
+    setPriceFilter("all");
   };
 
   return (
@@ -564,8 +341,8 @@ export default function PacksPage() {
 
           {/* Row 1: categories + sort */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-            {/* Category chips */}
-            {CATEGORIES.map(({ key, label }) => (
+            {/* Category chips — sourced from shared CATALOG_CATEGORIES */}
+            {CATALOG_CATEGORIES.map(({ key, label }) => (
               <FilterChip
                 key={key}
                 active={category === key}
@@ -598,16 +375,16 @@ export default function PacksPage() {
             {PRICE_RANGES.map(({ key, label }) => (
               <FilterChip
                 key={key}
-                active={priceRange === key}
-                onClick={() => setPriceRange(key)}
+                active={priceFilter === key}
+                onClick={() => setPriceFilter(key)}
                 accent
               >
                 {label}
               </FilterChip>
             ))}
 
-            {/* Active filter count badge */}
-            {(category !== "All" || sortKey !== "featured" || priceRange !== "all") && (
+            {/* Active filter clear */}
+            {(category !== "All" || sortKey !== "featured" || priceFilter !== "all") && (
               <button
                 type="button"
                 onClick={resetFilters}
@@ -621,12 +398,12 @@ export default function PacksPage() {
       </div>
 
       {/* ── Page body ── */}
-      <main className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-screen-xl px-4 py-8 pb-28 sm:px-6">
 
         {/* ── Featured banner (All tab only) ── */}
         {featuredPack && (
           <section className="mb-8" aria-label="Featured pack">
-            <FeaturedBanner pack={featuredPack} onOpen={openPack} />
+            <FeaturedBanner pack={featuredPack} />
           </section>
         )}
 
@@ -657,7 +434,7 @@ export default function PacksPage() {
                 <PackCard
                   key={pack.id}
                   pack={pack}
-                  onClick={openPack}
+                  onClick={() => router.push(`/pack-detail?packId=${pack.id}`)}
                 />
               ))}
             </div>
@@ -689,6 +466,8 @@ export default function PacksPage() {
           </p>
         </div>
       </main>
+
+      <BottomNav />
     </div>
   );
 }

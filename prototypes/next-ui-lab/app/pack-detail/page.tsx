@@ -1,30 +1,30 @@
 "use client";
 
 /**
- * Pack Detail Screen — Production implementation
+ * Pack Detail Screen  (/pack-detail?packId=xxx)
  *
- * Visual source of truth: docs/prototypes/pack-detail-prototype.tsx (approved)
- *
- * Changes from prototype → production:
- *   - Inline styles → Tailwind ph-* design tokens
- *   - Custom nav → AppHeader shared component
- *   - Self-made sub-components → shared Button, SurfaceCard, RarityBadge,
- *     BuybackBadge, TrustBadge, ProgressBar, SectionHeader, PriceTierSelector
- *   - Embedded <style> block → Tailwind responsive classes
- *   - Emoji removed per CLAUDE.md design rules
- *   - Mock data, interactions, and section order identical to prototype
+ * Changes from previous version:
+ *   - Reads packId from URL search param (useSearchParams)
+ *   - Pack data from shared CATALOG_PACKS (same source as mobile app)
+ *   - PriceTierSelector replaced with 1/10/100 quantity chip selector
+ *     (mirrors mobile PackOpenQuantity component)
+ *   - CTA navigates to /opening?packId=xxx
+ *   - BottomNav added
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, Suspense } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AppHeader } from "../../components/layout/AppHeader";
+import { BottomNav } from "../../components/layout/BottomNav";
 import { Button } from "../../components/ui/Button";
 import { SurfaceCard } from "../../components/ui/SurfaceCard";
 import { SectionHeader } from "../../components/ui/SectionHeader";
 import { RarityBadge, BuybackBadge, StatusBadge, TrustBadge } from "../../components/ui/Badge";
 import { ProgressBar } from "../../components/ui/ProgressBar";
-import { PriceTierSelector } from "../../components/pack/PriceTierSelector";
-import type { PriceTier } from "../../components/pack/PriceTierSelector";
 import { cn } from "../../components/utils/cn";
+import { CATALOG_PACKS, getFeaturedPack } from "@/data/catalog";
+import type { CatalogPack } from "@/data/catalog";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -32,6 +32,7 @@ import { cn } from "../../components/utils/cn";
 
 type Rarity = "common" | "rare" | "epic" | "legendary" | "mythic";
 type DemoPhase = "closed" | "confirming" | "opening" | "result";
+type OpenQty = 1 | 10 | 100;
 
 interface PrizeItem {
   id: string; name: string; set: string;
@@ -42,7 +43,7 @@ interface OddsEntry {
   rarity: Rarity; label: string;
   chance: string; valueRange: string; example: string;
 }
-interface RecentPull {
+interface RecentPullItem {
   id: string; username: string; card: string;
   rarity: Rarity; value: string; timeAgo: string;
 }
@@ -52,29 +53,8 @@ interface DemoCard {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Mock data — identical to approved prototype
+// Static mock data — prize pool, odds, recent pulls, demo
 // ─────────────────────────────────────────────────────────────────────────────
-
-const PACK = {
-  name: "Platinum Legacy",
-  category: "Pokémon TCG",
-  type: "Mystery Pack",
-  buybackRate: 80,
-  description:
-    "Sourced exclusively from verified distributors. Every pull is drawn from sealed, authenticated inventory — Japanese and English sets, trophy promos, and PSA-graded slabs.",
-  remaining: 196_304,
-  total: 1_000_000,
-  recentCount: 47,
-};
-
-const TIERS: PriceTier[] = [
-  { id: "starter",   label: "Starter",   credits: 500,    usd: 5   },
-  { id: "classic",   label: "Classic",   credits: 1_200,  usd: 12  },
-  { id: "pro",       label: "Pro",       credits: 3_000,  usd: 30,  badge: "Popular"    },
-  { id: "elite",     label: "Elite",     credits: 6_000,  usd: 60  },
-  { id: "ultra",     label: "Ultra",     credits: 10_000, usd: 100 },
-  { id: "legendary", label: "Legendary", credits: 25_000, usd: 250, badge: "Best Value" },
-];
 
 const PRIZES: PrizeItem[] = [
   { id:"p1", name:"Charizard ex SAR",         set:"Obsidian Flames", rarity:"mythic",    estimatedValue:"$649",   totalQty:2,   remaining:1   },
@@ -94,7 +74,7 @@ const ODDS: OddsEntry[] = [
   { rarity:"common",    label:"Common",    chance:"74.0%", valueRange:"$1 – $8",     example:"Sealed Booster Pack"   },
 ];
 
-const RECENT_PULLS: RecentPull[] = [
+const RECENT_PULLS_MOCK: RecentPullItem[] = [
   { id:"r1", username:"trainer_alex",   card:"Charizard ex SAR",      rarity:"mythic",    value:"$649", timeAgo:"2m ago"  },
   { id:"r2", username:"casey_m",        card:"Umbreon VMAX Alt Art",  rarity:"legendary", value:"$380", timeAgo:"5m ago"  },
   { id:"r3", username:"ryu_tcg",        card:"Iono Full Art Trainer", rarity:"rare",      value:"$22",  timeAgo:"8m ago"  },
@@ -151,7 +131,7 @@ const RARITY_AURA: Record<Rarity, string> = {
 // Pack visual — large hero card with decorative art placeholder
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PackVisual({ bumped }: { bumped: boolean }) {
+function PackVisual({ pack, bumped }: { pack: CatalogPack; bumped: boolean }) {
   return (
     <div className="relative flex flex-col items-center">
       {/* Ambient glow */}
@@ -214,7 +194,7 @@ function PackVisual({ bumped }: { bumped: boolean }) {
             <div className="h-20 w-14 rounded-ph-md border border-ph-border bg-ph-surface-raise opacity-70" />
             <div className="rounded-ph-sm border border-ph-epic-border bg-ph-epic-bg px-2.5 py-1">
               <span className="text-[9px] font-bold uppercase tracking-wider text-ph-epic">
-                Pokémon TCG
+                {pack.category}
               </span>
             </div>
           </div>
@@ -226,7 +206,7 @@ function PackVisual({ bumped }: { bumped: boolean }) {
             Pull Hub
           </p>
           <p className="text-base font-extrabold tracking-tight text-ph-text">
-            Platinum Legacy
+            {pack.name}
           </p>
         </div>
       </div>
@@ -243,33 +223,53 @@ function PackVisual({ bumped }: { bumped: boolean }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Quantity selector — local (not in shared lib yet)
+// Quantity picker — 1 / 10 / 100 chips (mirrors mobile PackOpenQuantity)
 // ─────────────────────────────────────────────────────────────────────────────
 
-function QuantitySelector({
-  qty,
-  onMinus,
-  onPlus,
-}: {
-  qty: number;
-  onMinus: () => void;
-  onPlus: () => void;
-}) {
-  const btnClass =
-    "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-ph-md border border-ph-border bg-ph-surface-high text-lg font-medium text-ph-text hover:bg-ph-surface-raise ph-transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ph-green";
+const QTY_OPTIONS: { qty: OpenQty; label: string; badge?: string }[] = [
+  { qty: 1,   label: "Open Pack"      },
+  { qty: 10,  label: "Fast Open ×10", badge: "Popular" },
+  { qty: 100, label: "Rush ×100"      },
+];
 
+function PackOpenQuantity({
+  selected,
+  onSelect,
+}: {
+  selected: OpenQty;
+  onSelect: (q: OpenQty) => void;
+}) {
   return (
-    <div className="flex items-center gap-3 rounded-ph-lg border border-ph-border bg-ph-surface px-3 py-1.5">
-      <span className="flex-1 text-xs font-semibold uppercase tracking-wide text-ph-text-muted">
-        Quantity
-      </span>
-      <button type="button" onClick={onMinus} className={btnClass} aria-label="Decrease quantity">
-        −
-      </button>
-      <span className="w-7 text-center text-base font-black text-ph-text">{qty}</span>
-      <button type="button" onClick={onPlus} className={btnClass} aria-label="Increase quantity">
-        +
-      </button>
+    <div className="flex gap-2">
+      {QTY_OPTIONS.map(({ qty, label, badge }) => {
+        const active = selected === qty;
+        return (
+          <button
+            key={qty}
+            type="button"
+            onClick={() => onSelect(qty)}
+            aria-pressed={active}
+            className={cn(
+              "relative flex flex-1 flex-col items-center rounded-ph-xl border px-3 py-3 outline-none",
+              "transition-colors duration-[150ms] ease-out",
+              "focus-visible:ring-2 focus-visible:ring-ph-green",
+              active
+                ? "border-ph-green bg-ph-green-soft text-ph-text"
+                : "border-ph-border bg-ph-surface text-ph-text-muted hover:border-ph-border-md hover:text-ph-text-sec",
+            )}
+          >
+            {badge && (
+              <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-ph-pill border border-ph-green-border bg-ph-green-soft px-2 py-0.5 text-[8px] font-bold uppercase tracking-wide text-ph-green">
+                {badge}
+              </span>
+            )}
+            <span className="text-2xl font-black tabular-nums text-ph-text">{qty}</span>
+            <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-wide">
+              pack{qty > 1 ? "s" : ""}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -322,7 +322,6 @@ function PrizeCard({ item }: { item: PrizeItem }) {
 function OddsTable({ open, onToggle }: { open: boolean; onToggle: () => void }) {
   return (
     <SurfaceCard padding="none" className="overflow-hidden">
-      {/* Toggle header */}
       <button
         type="button"
         onClick={onToggle}
@@ -353,13 +352,9 @@ function OddsTable({ open, onToggle }: { open: boolean; onToggle: () => void }) 
         <>
           <div className="h-px bg-ph-border" />
 
-          {/* Column headers */}
           <div className="grid grid-cols-[1.2fr_0.7fr_1.1fr_1.6fr] gap-2 px-5 py-2.5">
             {["Tier", "Odds", "Est. Value", "Example"].map((h) => (
-              <p
-                key={h}
-                className="text-[9px] font-bold uppercase tracking-widest text-ph-text-muted"
-              >
+              <p key={h} className="text-[9px] font-bold uppercase tracking-widest text-ph-text-muted">
                 {h}
               </p>
             ))}
@@ -400,7 +395,6 @@ function BuybackSection({ rate }: { rate: number }) {
 
   return (
     <div className="flex gap-5 rounded-ph-xl border border-ph-green-border bg-ph-green-soft p-5">
-      {/* Icon */}
       <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-ph-lg border border-ph-green-border bg-ph-green-soft">
         <span className="text-xl font-black text-ph-green">$</span>
       </div>
@@ -435,7 +429,7 @@ function BuybackSection({ rate }: { rate: number }) {
 // Recent pulls row
 // ─────────────────────────────────────────────────────────────────────────────
 
-function RecentPullsRow({ pulls }: { pulls: RecentPull[] }) {
+function RecentPullsRow({ pulls }: { pulls: RecentPullItem[] }) {
   return (
     <div>
       <SectionHeader
@@ -450,10 +444,7 @@ function RecentPullsRow({ pulls }: { pulls: RecentPull[] }) {
         className="mb-4"
       />
 
-      <div
-        className="flex gap-3 overflow-x-auto pb-2"
-        style={{ scrollbarWidth: "none" }}
-      >
+      <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
         {pulls.map((p) => (
           <div
             key={p.id}
@@ -523,7 +514,6 @@ function DemoModal({
               </p>
             </div>
 
-            {/* Stats row */}
             <div className="mb-6 flex justify-center gap-8 border-y border-ph-border py-4">
               {[
                 { label: "Credits spent",  val: "0"  },
@@ -563,7 +553,6 @@ function DemoModal({
                 Demo Result · Simulation Only
               </p>
 
-              {/* Card frame */}
               <div
                 className={cn(
                   "mx-auto mb-5 flex flex-col items-center justify-center gap-2.5 rounded-ph-xl border-2",
@@ -580,7 +569,6 @@ function DemoModal({
               <p className="mb-1 text-lg font-black tracking-tight text-ph-text">{card.name}</p>
               <p className="mb-4 text-xs text-ph-text-muted">{card.set}</p>
 
-              {/* Value row */}
               <div className="mx-auto inline-flex gap-6 rounded-ph-lg border border-ph-border bg-ph-surface px-6 py-3">
                 {[
                   { label: "Est. Value", val: card.value },
@@ -627,26 +615,38 @@ const TRUST_ITEMS = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Page
+// Inner page — reads searchParams, needs Suspense wrapper
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function PackDetailPage() {
-  const [selectedTier, setSelectedTier] = useState("pro");
-  const [quantity,     setQuantity]     = useState(1);
-  const [oddsOpen,     setOddsOpen]     = useState(false);
-  const [demoPhase,    setDemoPhase]    = useState<DemoPhase>("closed");
-  const [demoCard,     setDemoCard]     = useState<DemoCard | null>(null);
-  const [packBumped,   setPackBumped]   = useState(false);
+function PackDetailInner() {
+  const router       = useRouter();
+  const searchParams = useSearchParams();
+  const packId       = searchParams.get("packId");
+  const pack: CatalogPack = packId
+    ? (CATALOG_PACKS.find((p) => p.id === packId) ?? getFeaturedPack())
+    : getFeaturedPack();
 
-  const currentTier = TIERS.find((t) => t.id === selectedTier) ?? TIERS[2]!;
-  const totalPrice  = (currentTier.usd * quantity).toFixed(0);
+  const [qty,        setQty]        = useState<OpenQty>(1);
+  const [oddsOpen,   setOddsOpen]   = useState(false);
+  const [demoPhase,  setDemoPhase]  = useState<DemoPhase>("closed");
+  const [demoCard,   setDemoCard]   = useState<DemoCard | null>(null);
+  const [packBumped, setPackBumped] = useState(false);
+
+  const totalPrice  = pack.price * qty;
+  const remaining   = Math.round(pack.remainingFraction * 1_000_000);
+  const recentCount = 47;
+
+  const openingHref = `/opening?packId=${pack.id}`;
 
   const handleOpenPack = useCallback(() => {
     setPackBumped(true);
-    setTimeout(() => setPackBumped(false), 700);
-  }, []);
+    setTimeout(() => {
+      setPackBumped(false);
+      router.push(openingHref);
+    }, 300);
+  }, [openingHref, router]);
 
-  const handleStartDemo = useCallback(() => setDemoPhase("confirming"), []);
+  const handleStartDemo  = useCallback(() => setDemoPhase("confirming"), []);
 
   const handleConfirmDemo = useCallback(() => {
     setDemoPhase("opening");
@@ -667,13 +667,13 @@ export default function PackDetailPage() {
       {/* ── Sticky header ── */}
       <AppHeader
         crumbs={[
-          { label: "Packs",           href: "/packs"    },
-          { label: "Platinum Legacy"                    },
+          { label: "Packs",     href: "/packs" },
+          { label: pack.name                    },
         ]}
         credits={12_500}
       />
 
-      <div className="mx-auto max-w-screen-xl px-4 py-10 sm:px-6">
+      <div className="mx-auto max-w-screen-xl px-4 py-10 pb-28 sm:px-6">
 
         {/* ══ HERO — two-column on desktop ══════════════════════════════════ */}
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
@@ -684,11 +684,11 @@ export default function PackDetailPage() {
             <div className="mb-4 inline-flex items-center gap-2 rounded-ph-pill border border-ph-red-border bg-ph-red-soft px-3.5 py-1.5">
               <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-ph-red" />
               <span className="text-xs font-semibold" style={{ color: "rgba(252,165,165,0.9)" }}>
-                {PACK.recentCount} people opened this in the last hour
+                {recentCount} people opened this in the last hour
               </span>
             </div>
 
-            <PackVisual bumped={packBumped} />
+            <PackVisual pack={pack} bumped={packBumped} />
 
             <div className="mt-7">
               <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.13em] text-ph-text-muted">
@@ -696,8 +696,7 @@ export default function PackDetailPage() {
               </p>
               <p className="text-sm leading-relaxed text-ph-text-sec">
                 Up to{" "}
-                <strong className="font-bold text-ph-text">$649 per pull</strong> · See prize
-                pool below
+                <strong className="font-bold text-ph-text">{pack.topCard}</strong>
               </p>
             </div>
           </div>
@@ -706,70 +705,76 @@ export default function PackDetailPage() {
           <div className="flex flex-col gap-6">
             {/* Badges */}
             <div className="flex flex-wrap gap-2">
-              <StatusBadge variant="featured">✦ Featured Pack</StatusBadge>
-              <BuybackBadge rate={PACK.buybackRate} />
-              <StatusBadge variant="neutral">{PACK.type}</StatusBadge>
+              {pack.isFeatured    && <StatusBadge variant="featured">Featured Pack</StatusBadge>}
+              {pack.isNew         && <StatusBadge variant="success">New</StatusBadge>}
+              {pack.isLimitedTime && <StatusBadge variant="warning">Limited Time</StatusBadge>}
+              <BuybackBadge rate={pack.buybackRate} />
+              <StatusBadge variant="neutral">Mystery Pack</StatusBadge>
             </div>
 
             {/* Title + description */}
             <div>
               <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-ph-text-muted">
-                {PACK.category}
+                {pack.category}
               </p>
               <h1 className="mb-2.5 text-4xl font-black leading-tight tracking-tight text-ph-text sm:text-5xl">
-                {PACK.name}
+                {pack.name}
               </h1>
-              <p className="text-sm leading-relaxed text-ph-text-sec">{PACK.description}</p>
+              <p className="text-sm leading-relaxed text-ph-text-sec">{pack.description}</p>
             </div>
 
             <div className="h-px bg-ph-border" />
 
-            {/* Tier selector */}
+            {/* Quantity picker — 1 / 10 / 100 */}
             <div>
               <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.15em] text-ph-text-muted">
-                Select Tier
+                How Many Packs?
               </p>
-              <PriceTierSelector
-                tiers={TIERS}
-                selected={selectedTier}
-                onSelect={setSelectedTier}
-              />
+              <PackOpenQuantity selected={qty} onSelect={setQty} />
             </div>
 
             <div className="h-px bg-ph-border" />
 
             {/* Remaining inventory */}
             <ProgressBar
-              value={PACK.remaining / PACK.total}
+              value={pack.remainingFraction}
               label="Remaining pulls"
-              sublabel={`${PACK.remaining.toLocaleString("en-US")} / ${PACK.total.toLocaleString("en-US")}`}
+              sublabel={`${remaining.toLocaleString("en-US")} pulls remaining · ${pack.pullCount.toLocaleString("en-US")} pulled`}
+              color={pack.remainingFraction < 0.35 ? "red" : "green"}
             />
 
             <div className="h-px bg-ph-border" />
 
-            {/* Quantity */}
-            <div>
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.15em] text-ph-text-muted">
-                How many?
-              </p>
-              <QuantitySelector
-                qty={quantity}
-                onMinus={() => setQuantity((q) => Math.max(1, q - 1))}
-                onPlus={() => setQuantity((q) => Math.min(100, q + 1))}
-              />
+            {/* Price summary */}
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wide text-ph-text-muted">
+                  {qty > 1 ? `${qty} Packs` : "Per Pack"}
+                </p>
+                <p className="text-3xl font-black tracking-tight text-ph-text">
+                  ${totalPrice.toLocaleString("en-US")}
+                </p>
+              </div>
+              {qty > 1 && (
+                <p className="text-sm text-ph-text-muted">
+                  ${pack.price} / pack
+                </p>
+              )}
             </div>
 
             {/* Primary CTA */}
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
-              onClick={handleOpenPack}
-              className="justify-between"
+            <Link
+              href={openingHref}
+              onClick={() => { setPackBumped(true); setTimeout(() => setPackBumped(false), 300); }}
+              className="flex w-full items-center justify-between rounded-ph-xl bg-ph-green px-6 py-4 text-base font-bold text-ph-green-ink shadow-ph-cta transition-all duration-[150ms] ease-out hover:bg-ph-green-hover hover:shadow-ph-cta-hover"
             >
-              <span>Open {quantity > 1 ? `${quantity} Packs` : "Pack"}</span>
-              <span className="opacity-85 text-sm font-black">${totalPrice}</span>
-            </Button>
+              <span>
+                {qty === 1 ? "Open Pack" : qty === 10 ? "Fast Open ×10" : "Rush ×100"}
+              </span>
+              <span className="text-sm font-black opacity-85">
+                ${totalPrice.toLocaleString("en-US")}
+              </span>
+            </Link>
 
             {/* Secondary CTA — demo pull */}
             <Button variant="secondary" size="lg" fullWidth onClick={handleStartDemo}>
@@ -794,7 +799,7 @@ export default function PackDetailPage() {
         </div>
 
         {/* ══ PRIZE POOL ═════════════════════════════════════════════════════ */}
-        <div className="mt-18 pt-18" style={{ marginTop: "4.5rem" }}>
+        <div style={{ marginTop: "4.5rem" }}>
           <SectionHeader
             eyebrow="Prize Pool"
             title="Top Hits"
@@ -815,28 +820,27 @@ export default function PackDetailPage() {
 
         {/* ══ BUYBACK ════════════════════════════════════════════════════════ */}
         <div className="mt-4">
-          <BuybackSection rate={PACK.buybackRate} />
+          <BuybackSection rate={pack.buybackRate} />
         </div>
 
         {/* ══ RECENT PULLS ═══════════════════════════════════════════════════ */}
         <div className="mt-16">
-          <RecentPullsRow pulls={RECENT_PULLS} />
+          <RecentPullsRow pulls={RECENT_PULLS_MOCK} />
         </div>
 
         {/* ══ BOTTOM REPEAT CTA ══════════════════════════════════════════════ */}
         <SurfaceCard padding="lg" className="mt-16 flex flex-col items-center gap-4 text-center">
           <p className="text-xl font-black tracking-tight text-ph-text">Ready to pull?</p>
           <p className="max-w-sm text-sm text-ph-text-sec">
-            {PACK.remaining.toLocaleString("en-US")} packs remaining. Every pull is sourced from
+            {remaining.toLocaleString("en-US")} packs remaining. Every pull is sourced from
             verified, authenticated inventory.
           </p>
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={handleOpenPack}
+          <Link
+            href={openingHref}
+            className="rounded-ph-xl bg-ph-green px-8 py-4 text-base font-bold text-ph-green-ink shadow-ph-cta transition-all duration-[150ms] ease-out hover:bg-ph-green-hover"
           >
-            Open {quantity > 1 ? `${quantity} Packs` : "Pack"} · ${totalPrice}
-          </Button>
+            {qty === 1 ? "Open Pack" : qty === 10 ? "Fast Open ×10" : "Rush ×100"} · ${totalPrice.toLocaleString("en-US")}
+          </Link>
           <Button variant="ghost" onClick={handleStartDemo}>
             Try a Demo Pull (Free)
           </Button>
@@ -850,6 +854,31 @@ export default function PackDetailPage() {
         onConfirm={handleConfirmDemo}
         onClose={handleCloseDemo}
       />
+
+      <BottomNav />
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Page export — wraps inner in Suspense (required for useSearchParams)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function LoadingSkeleton() {
+  return (
+    <div className="min-h-dvh bg-ph-bg">
+      <div className="mx-auto max-w-screen-xl animate-pulse px-4 py-10">
+        <div className="h-8 w-48 rounded-ph-md bg-ph-surface-high" />
+        <div className="mt-8 h-64 rounded-ph-2xl bg-ph-surface-high" />
+      </div>
+    </div>
+  );
+}
+
+export default function PackDetailPage() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <PackDetailInner />
+    </Suspense>
   );
 }

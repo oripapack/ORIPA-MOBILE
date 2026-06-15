@@ -10,9 +10,13 @@ export {
 
 export { RECENT_PULLS } from '../../../shared/mock/recentPulls';
 
+export { CATALOG_CATEGORIES } from '../../../shared/types/pack';
+
 export type {
   CatalogPack,
   RecentPull,
   RarityTier,
   TcgCategory,
+  CatalogCategoryFilter,
+  PriceRange,
 } from '../../../shared/types/pack';

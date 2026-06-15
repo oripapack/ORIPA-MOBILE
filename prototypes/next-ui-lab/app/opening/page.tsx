@@ -1170,11 +1170,11 @@ function ResultStage({
           maxWidth: 280,
         }}
       >
-        {/* Primary CTA */}
-        <button
-          type="button"
-          onClick={onContinue}
+        {/* Primary CTA — View Vault */}
+        <Link
+          href="/vault"
           style={{
+            display: "block",
             width: "100%",
             background: "var(--ph-green)",
             border: "none",
@@ -1186,56 +1186,32 @@ function ResultStage({
             cursor: "pointer",
             letterSpacing: "0.03em",
             boxShadow: "0 0 40px rgba(34,197,94,0.20)",
+            textAlign: "center",
+            textDecoration: "none",
           }}
         >
-          Continue
-        </button>
+          View Vault
+        </Link>
 
-        {/* Secondary actions */}
-        <div
+        {/* Secondary action */}
+        <button
+          type="button"
+          onClick={onOpenAnother}
           style={{
-            display: "flex",
-            gap: 12,
             width: "100%",
+            background: "none",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: 999,
+            padding: "11px 0",
+            fontSize: 12,
+            fontWeight: 700,
+            color: "rgba(255,255,255,0.55)",
+            cursor: "pointer",
+            letterSpacing: "0.02em",
           }}
         >
-          <button
-            type="button"
-            onClick={onContinue}
-            style={{
-              flex: 1,
-              background: "none",
-              border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: 999,
-              padding: "11px 0",
-              fontSize: 12,
-              fontWeight: 700,
-              color: "rgba(255,255,255,0.55)",
-              cursor: "pointer",
-              letterSpacing: "0.02em",
-            }}
-          >
-            Add to Vault
-          </button>
-          <button
-            type="button"
-            onClick={onOpenAnother}
-            style={{
-              flex: 1,
-              background: "none",
-              border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: 999,
-              padding: "11px 0",
-              fontSize: 12,
-              fontWeight: 700,
-              color: "rgba(255,255,255,0.55)",
-              cursor: "pointer",
-              letterSpacing: "0.02em",
-            }}
-          >
-            Open Another
-          </button>
-        </div>
+          Open Another
+        </button>
       </motion.div>
     </FullScreen>
   );
