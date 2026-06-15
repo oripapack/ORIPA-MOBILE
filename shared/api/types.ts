@@ -48,3 +48,20 @@ export type ExecutePullResponse = {
   mint_status: string;
   idempotency_key: string;
 };
+
+export type ShippingAddressPayload = {
+  fullName: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  region?: string;
+  postal?: string;
+  country: string;
+};
+
+export type RequestShipmentResponse = {
+  pull_id: string;
+  status: string;
+  fulfillment_status?: string;
+  mint_status: string;
+};

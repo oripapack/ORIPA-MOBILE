@@ -8,7 +8,7 @@
     "db:reset": "npx supabase db reset",
     "db:push": "npx supabase db push",
     "link": "npx supabase link",
-    "functions:deploy": "npx supabase functions deploy execute-pull && npx supabase functions deploy stripe-webhook && npx supabase functions deploy mint-retry",
+    "functions:deploy": "npx supabase functions deploy execute-pull && npx supabase functions deploy request-shipment && npx supabase functions deploy stripe-webhook && npx supabase functions deploy mint-retry",
     "secrets:setup": "echo 'Execute manual script to populate production secrets for Stripe, Thirdweb, and Cron'"
   }
 }

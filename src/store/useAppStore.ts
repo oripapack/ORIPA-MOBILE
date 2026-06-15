@@ -26,6 +26,8 @@ import {
 } from '../lib/executePull';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { fetchUserCreditBalance } from '../lib/userCredits';
+import { loadShippingAddress } from '../lib/shippingAddress';
+import { requestShipmentLive } from '../lib/requestShipment';
 import { claimFirstTimePack, loadClaimedFirstTimePacks } from '../lib/firstTimePack';
 import { CREDITS_ARE_MOCK } from '../config/app';
 import { userWithSyncedProgression, tierXpBonusForPull } from '../lib/collectorProgression';
@@ -133,8 +135,8 @@ interface AppStore {
    * items in `vaultIds` become `vaulted` with a hold timer (shipping from Vault later).
    */
   finalizePendingFulfillment: (opts: { vaultIds: string[]; convertIds: string[] }) => void;
-  /** User requests physical shipment from Vault (demo: state only). */
-  requestVaultShipment: (pullId: string) => void;
+  /** User requests physical shipment from Vault (live API when configured). */
+  requestVaultShipment: (pullId: string) => Promise<boolean>;
   /** Instant coin conversion for a vaulted item. */
   convertVaultPullToCoins: (pullId: string) => void;
   /** Auto-convert vaulted items past `vaultExpiresAt` (call on interval / resume). */
@@ -856,7 +858,31 @@ export const useAppStore = create<AppStore>((set, get) => {
     if (didUpdate) persistCollector();
   },
 
-  requestVaultShipment: (pullId) => {
+  requestVaultShipment: async (pullId) => {
+    const useLiveShipment =
+      !CREDITS_ARE_MOCK && isSupabaseConfigured;
+
+    if (useLiveShipment) {
+      const shippingAddress = await loadShippingAddress();
+      if (!shippingAddress) {
+        Alert.alert(
+          'Shipping address required',
+          'Add a shipping address in Settings before requesting shipment.',
+        );
+        return false;
+      }
+
+      const result = await requestShipmentLive({ pullId, shippingAddress });
+      if (!result.ok) {
+        const label =
+          result.code === 'NETWORK_ERROR'
+            ? 'Connection problem'
+            : 'Shipment request failed';
+        Alert.alert(label, result.message);
+        return false;
+      }
+    }
+
     set((state) => {
       const u = normalizeFriendUsername(state.user.username);
       const shop = removeListingsForPullId(state.friendVaultShopByUser, u, pullId);
@@ -878,6 +904,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         },
       };
     });
+    return true;
   },
 
   convertVaultPullToCoins: (pullId) => {

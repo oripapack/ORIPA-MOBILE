@@ -28,7 +28,7 @@ type Props = {
   visible: boolean;
   pull: Pull | null;
   onClose: () => void;
-  onRequestShipment: (pullId: string) => void;
+  onRequestShipment: (pullId: string) => void | Promise<boolean>;
   onConvertToCoins: (pullId: string) => void;
 };
 
@@ -72,8 +72,10 @@ export function VaultAssetSheet({
           text: t('vaultAsset.requestShipConfirm'),
           style: 'default',
           onPress: () => {
-            onRequestShipment(pull.id);
-            onClose();
+            void (async () => {
+              const ok = await onRequestShipment(pull.id);
+              if (ok) onClose();
+            })();
           },
         },
       ],
