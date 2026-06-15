@@ -414,6 +414,28 @@ const OPEN = {
   resultZ: 4.2,                   // card Z in result mode (pulled toward camera)
 } as const;
 
+// ─────────────────────────────────────────────────────────────────
+// Rarity system — 5 tiers
+// In production, rarity is determined server-side before the pack is opened.
+// Client only receives and displays the result.
+// ─────────────────────────────────────────────────────────────────
+type RarityKey = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+
+const RARITY: Record<RarityKey, { color: string; label: string }> = {
+  common:    { color: '#9CA3AF', label: 'COMMON'          },
+  rare:      { color: '#3B82F6', label: 'RARE'            },
+  epic:      { color: '#A855F7', label: 'EPIC PULL'       },
+  legendary: { color: '#F59E0B', label: 'LEGENDARY PULL'  },
+  mythic:    { color: '#EF4444', label: 'MYTHIC PULL'     },
+};
+
+const RARITY_KEYS: RarityKey[] = ['common', 'rare', 'epic', 'legendary', 'mythic'];
+
+// Placeholder until server-side rarity assignment is in place
+function pickRandomRarity(): RarityKey {
+  return RARITY_KEYS[Math.floor(Math.random() * RARITY_KEYS.length)];
+}
+
 // Test asset — swap for production image before launch
 function CardMeshInner({
   matRef,
@@ -471,12 +493,13 @@ function CardMeshInner({
 interface OpeningSequenceProps {
   active:         boolean;
   onComplete:     () => void;
-  isRevealing:    boolean;   // card moves to viewing position + gold glow
+  isRevealing:    boolean;   // card moves to viewing position + rarity glow
   isFlipping:     boolean;   // triggers Y-axis flip back→front
   onFlipComplete: () => void;
+  rarity:         RarityKey;
 }
 
-function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipComplete }: OpeningSequenceProps) {
+function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipComplete, rarity }: OpeningSequenceProps) {
   const lineRef        = useRef<THREE.Mesh>(null);
   const flapRef        = useRef<THREE.Mesh>(null);
   const cardRef        = useRef<THREE.Group>(null);
@@ -489,7 +512,7 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
   const cardStartY  = OPEN.packY - 0.3;
   const cardEndY    = OPEN.packY + 0.55;
 
-  // Glide card to camera-facing viewing position + fade in gold glow
+  // Glide card to viewing position + fade in rarity-colored glow
   useEffect(() => {
     if (!isRevealing || !cardRef.current) return;
     gsap.to(cardRef.current.position, {
@@ -499,6 +522,8 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
       ease: 'power2.inOut',
     });
     if (cardGlowMatRef.current) {
+      cardGlowMatRef.current.color.set(RARITY[rarity].color);
+      cardGlowMatRef.current.emissive.set(RARITY[rarity].color);
       gsap.to(cardGlowMatRef.current, { opacity: 1, duration: 0.4, ease: 'power2.out', delay: 0.3 });
     }
   }, [isRevealing]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -641,11 +666,12 @@ interface SceneProps {
   resultT:         React.MutableRefObject<number>;
   selectedPackIdx: React.MutableRefObject<number>;
   mode:            'ring' | 'zoomed' | 'opening' | 'revealing' | 'flipping' | 'result';
+  rarity:          RarityKey;
   onOpenComplete:  () => void;
   onFlipComplete:  () => void;
 }
 
-function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, onOpenComplete, onFlipComplete }: SceneProps) {
+function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, rarity, onOpenComplete, onFlipComplete }: SceneProps) {
   const floorGroupRef    = useRef<THREE.Group>(null);
   const particleGroupRef = useRef<THREE.Group>(null);
 
@@ -687,6 +713,7 @@ function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, onOpenComp
         isRevealing={mode === 'revealing' || mode === 'flipping' || mode === 'result'}
         isFlipping={mode === 'flipping'}
         onFlipComplete={onFlipComplete}
+        rarity={rarity}
       />
 
       {/* Camera + element fade (reads zoomT every frame) */}
@@ -706,6 +733,7 @@ function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, onOpenComp
 export default function PackRingScene() {
   const [mode, setMode] = useState<'ring' | 'zoomed' | 'opening' | 'revealing' | 'flipping' | 'result'>('ring');
   const modeRef        = useRef<'ring' | 'zoomed' | 'opening' | 'revealing' | 'flipping' | 'result'>('ring');
+  const [rarity, setRarity] = useState<RarityKey>('common');
   const ringAngle      = useRef<number>(0);
   const velocity       = useRef<number>(0);
   const dragging       = useRef<boolean>(false);
@@ -779,9 +807,11 @@ export default function PackRingScene() {
   }, []);
 
   const startOpening = useCallback(() => {
+    // In production, rarity is determined server-side; here we pick randomly for testing
+    setRarity(pickRandomRarity());
     setMode('opening');
     modeRef.current = 'opening';
-  }, []);
+  }, [setRarity]);
 
   // Opening animation done → enter revealing (camera pulls back, glow activates)
   const setRevealingMode = useCallback(() => {
@@ -882,7 +912,7 @@ export default function PackRingScene() {
         }}
       />
 
-      {/* "MYTHIC PULL" rarity banner — placed before Canvas so the 3D card naturally appears in front of it */}
+      {/* Rarity banner — placed before Canvas so the 3D card naturally renders in front */}
       <div
         style={{
           position: 'absolute',
@@ -890,7 +920,7 @@ export default function PackRingScene() {
           left: 0,
           width: '100%',
           height: 52,
-          background: 'linear-gradient(90deg, transparent 0%, rgba(201,169,110,0.96) 12%, rgba(230,200,110,1) 50%, rgba(201,169,110,0.96) 88%, transparent 100%)',
+          background: `linear-gradient(90deg, transparent 0%, ${RARITY[rarity].color}F0 12%, ${RARITY[rarity].color} 50%, ${RARITY[rarity].color}F0 88%, transparent 100%)`,
           transform: 'translateY(-50%) rotate(-12deg)',
           display: 'flex',
           alignItems: 'center',
@@ -902,14 +932,15 @@ export default function PackRingScene() {
       >
         <span
           style={{
-            color: '#1A1200',
+            color: '#ffffff',
             fontWeight: 900,
             fontSize: 14,
             letterSpacing: '0.35em',
             fontFamily: '-apple-system, system-ui, sans-serif',
+            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
           }}
         >
-          MYTHIC PULL
+          {RARITY[rarity].label}
         </span>
       </div>
 
@@ -923,8 +954,35 @@ export default function PackRingScene() {
         }}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
       >
-        <Scene ringAngleRef={ringAngle} zoomT={zoomT} resultT={resultT} selectedPackIdx={selectedPackIdx} mode={mode} onOpenComplete={setRevealingMode} onFlipComplete={setResultMode} />
+        <Scene ringAngleRef={ringAngle} zoomT={zoomT} resultT={resultT} selectedPackIdx={selectedPackIdx} mode={mode} rarity={rarity} onOpenComplete={setRevealingMode} onFlipComplete={setResultMode} />
       </Canvas>
+
+      {/* Rarity badge — fades in under card after flip completes */}
+      {mode !== 'ring' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '67%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: RARITY[rarity].color,
+            color: '#ffffff',
+            fontWeight: 700,
+            fontSize: 11,
+            letterSpacing: '0.22em',
+            padding: '5px 18px',
+            borderRadius: 999,
+            fontFamily: '-apple-system, system-ui, sans-serif',
+            pointerEvents: 'none',
+            zIndex: 12,
+            opacity: mode === 'result' ? 1 : 0,
+            transition: 'opacity 0.5s ease 0.3s',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {RARITY[rarity].label}
+        </div>
+      )}
 
       {/* Back button — zoomed / opening / result */}
       {mode !== 'ring' && (
