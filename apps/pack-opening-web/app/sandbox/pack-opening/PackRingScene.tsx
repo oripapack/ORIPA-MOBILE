@@ -464,28 +464,30 @@ function CardMeshInner({
         />
       </mesh>
 
-      {/* Back face: near-black, matte — no metalness to avoid lavender sheen from scene lights */}
+      {/* Back face: black diffuse + dark emissive so no light (incl. spotlight intensity 6) can wash it out */}
       <mesh position={[0, 0, -0.003]} rotation={[0, Math.PI, 0]}>
         <planeGeometry args={[OPEN.cardW, OPEN.cardH]} />
         <meshStandardMaterial
           ref={(el) => { backMatRef.current = el; }}
-          color="#080810"
-          roughness={0.95}
+          color="#000000"
+          emissive="#0D0D1A"
+          emissiveIntensity={1}
+          roughness={1}
           metalness={0}
           transparent
           opacity={0}
         />
       </mesh>
 
-      {/* Rarity diamond mark — small placeholder in center of back face */}
+      {/* Rarity diamond mark — black diffuse + rarity emissive so color stays clean under intense lights */}
       <mesh position={[0, 0, -0.005]} rotation={[0, Math.PI, Math.PI / 4]}>
         <planeGeometry args={[0.14, 0.14]} />
         <meshStandardMaterial
           ref={(el) => { diamondMatRef.current = el; }}
-          color={rarityColor}
+          color="#000000"
           emissive={rarityColor}
-          emissiveIntensity={1.2}
-          roughness={0.3}
+          emissiveIntensity={0.9}
+          roughness={1}
           transparent
           opacity={0}
           depthWrite={false}
