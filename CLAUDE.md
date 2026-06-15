@@ -9,7 +9,7 @@
 
 ## Commands
 
-- `npm start` — mobile
+- `npm start` / `npm run dev` — mobile
 - `npm run web` — Expo web (production web target)
 - `npm run prototype:web` — Next.js lab in `prototypes/next-ui-lab/`
 

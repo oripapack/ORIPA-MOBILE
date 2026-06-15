@@ -25,6 +25,7 @@ npm install
 cp .env.example .env          # add Clerk + Supabase keys
 
 npm start                     # mobile (Expo Go / simulator)
+npm run dev                   # same as npm start
 npm run web                   # web (same UI as mobile)
 npm run web:export            # static web build → dist/
 ```

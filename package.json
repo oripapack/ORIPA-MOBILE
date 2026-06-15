@@ -5,6 +5,7 @@
   "scripts": {
     "build": "npx expo export -p web",
     "start": "expo start",
+    "dev": "expo start",
     "start:tunnel": "expo start --tunnel",
     "android": "expo run:android",
     "ios": "expo run:ios",
