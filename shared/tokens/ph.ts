@@ -1,6 +1,6 @@
 /**
  * Pull Hub design tokens (Phygitals-inspired).
- * Source of truth — mirrored in apps/pack-opening-web/app/globals.css.
+ * Source of truth — web tokens may mirror this in prototypes/next-ui-lab/app/globals.css.
  */
 export const ph = {
   bg: '#050507',

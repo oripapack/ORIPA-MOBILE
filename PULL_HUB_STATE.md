@@ -19,7 +19,8 @@ This file reflects **what exists in this repository today** (code + SQL). Items 
 | Area | What is present |
 |------|-----------------|
 | Mobile app | **Expo ~54**, **React Native 0.81**, **React 19** (`package.json`) |
-| Web (secondary) | **Next.js 15** app under `apps/pack-opening-web/` |
+| Web (production) | **Expo web** — same `src/` as mobile (`npm run web`) |
+| Web (prototype) | Next.js lab in `prototypes/next-ui-lab/` (reference only) |
 | Navigation / UI | **React Navigation**, **NativeWind** / Tailwind, **Zustand** |
 | Auth (client) | **Clerk** (`@clerk/clerk-expo`) when `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` is set |
 | Backend host | **Supabase** project under `backend/` — **Postgres** migrations, **Edge Functions** (Deno 2 per `backend/supabase/config.toml`) |

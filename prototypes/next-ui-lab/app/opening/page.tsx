@@ -19,8 +19,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth, SignInButton } from "@clerk/nextjs";
 import type { RevealRarity } from "../../components/pack-opening/types";
 import { formatUsd } from "../../components/pack-opening/formatUsd";
+import { usePullStore } from "@/store/usePullStore";
+import { pullTierToRevealRarity } from "@/lib/pullTier";
+
+const CLERK_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -528,11 +534,17 @@ function SelectStage({
   onSelect,
   onOpen,
   onShuffle,
+  isOpening,
+  clerkEnabled,
+  isSignedIn,
 }: {
   selectedIdx: number;
   onSelect: (i: number) => void;
   onOpen: () => void;
   onShuffle: () => void;
+  isOpening: boolean;
+  clerkEnabled: boolean;
+  isSignedIn: boolean;
 }) {
   const pack = PACKS[selectedIdx]!;
   const leftIdx  = (selectedIdx - 1 + PACKS.length) % PACKS.length;
@@ -710,6 +722,7 @@ function SelectStage({
         <button
           type="button"
           onClick={onOpen}
+          disabled={isOpening}
           style={{
             background: "var(--ph-green)",
             border: "none",
@@ -718,7 +731,8 @@ function SelectStage({
             fontSize: 15,
             fontWeight: 800,
             color: "var(--ph-green-ink)",
-            cursor: "pointer",
+            cursor: isOpening ? "wait" : "pointer",
+            opacity: isOpening ? 0.7 : 1,
             letterSpacing: "0.02em",
             boxShadow: "0 0 40px rgba(34,197,94,0.22)",
             display: "flex",
@@ -726,7 +740,7 @@ function SelectStage({
             gap: 12,
           }}
         >
-          Open Pack
+          {isOpening ? "Opening…" : clerkEnabled && !isSignedIn ? "Sign in to open" : "Open Pack"}
           <span
             style={{
               background: "rgba(0,0,0,0.18)",
@@ -739,6 +753,26 @@ function SelectStage({
             ${pack.price}
           </span>
         </button>
+
+        {clerkEnabled && !isSignedIn ? (
+          <SignInButton mode="modal">
+            <button
+              type="button"
+              style={{
+                background: "none",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 999,
+                padding: "8px 24px",
+                fontSize: 11,
+                fontWeight: 700,
+                color: "rgba(255,255,255,0.55)",
+                cursor: "pointer",
+              }}
+            >
+              Sign in
+            </button>
+          </SignInButton>
+        ) : null}
 
         {/* Shuffle */}
         <button
@@ -1212,14 +1246,78 @@ function ResultStage({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function OpeningPage() {
+  if (!CLERK_PUBLISHABLE_KEY) {
+    return <OpeningPageContent clerkEnabled={false} isLoaded isSignedIn={false} />;
+  }
+  return <OpeningPageAuthed />;
+}
+
+function OpeningPageAuthed() {
+  const { isLoaded, isSignedIn } = useAuth();
+  return (
+    <OpeningPageContent
+      clerkEnabled
+      isLoaded={isLoaded}
+      isSignedIn={!!isSignedIn}
+    />
+  );
+}
+
+function OpeningPageContent({
+  clerkEnabled,
+  isLoaded,
+  isSignedIn,
+}: {
+  clerkEnabled: boolean;
+  isLoaded: boolean;
+  isSignedIn: boolean;
+}) {
+  const router = useRouter();
+  const openPack = usePullStore((s) => s.openPack);
+  const isOpening = usePullStore((s) => s.isOpening);
+  const openError = usePullStore((s) => s.openError);
+  const clearOpenError = usePullStore((s) => s.clearOpenError);
+
   const [stage,       setStage]       = useState<Stage>("select");
-  const [selectedIdx, setSelectedIdx] = useState(1); // Platinum Legacy default
+  const [selectedIdx, setSelectedIdx] = useState(0); // Welcome Pack default (live)
   const [chosenPack,  setChosenPack]  = useState<Pack | null>(null);
 
-  const handleOpen = useCallback(() => {
-    setChosenPack(PACKS[selectedIdx]!);
+  const handleOpen = useCallback(async () => {
+    clearOpenError();
+    const pack = PACKS[selectedIdx]!;
+
+    if (clerkEnabled) {
+      if (!isLoaded) return;
+      if (!isSignedIn) {
+        router.push("/sign-in");
+        return;
+      }
+    }
+
+    const result = await openPack({
+      packId: pack.id,
+      creditPrice: pack.price * 100,
+    });
+
+    if (!result.ok) return;
+
+    const revealRarity = pullTierToRevealRarity(result.roll.tier);
+    setChosenPack({
+      ...pack,
+      cardName: result.roll.result,
+      rarity: revealRarity,
+      value: Math.max(pack.value, result.roll.creditsWon / 100),
+    });
     setStage("hidden");
-  }, [selectedIdx]);
+  }, [
+    selectedIdx,
+    clerkEnabled,
+    isLoaded,
+    isSignedIn,
+    router,
+    openPack,
+    clearOpenError,
+  ]);
 
   const handleShuffle = useCallback(() => {
     setSelectedIdx((i) => (i + 1) % PACKS.length);
@@ -1245,12 +1343,38 @@ export default function OpeningPage() {
 
   return (
     <AnimatePresence mode="wait">
+      {openError ? (
+        <div
+          style={{
+            position: "fixed",
+            top: 16,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 200,
+            maxWidth: 420,
+            width: "90%",
+            padding: "12px 16px",
+            background: "rgba(220,38,38,0.12)",
+            border: "1px solid rgba(220,38,38,0.35)",
+            borderRadius: 10,
+            color: "#fca5a5",
+            fontSize: 13,
+            textAlign: "center",
+          }}
+        >
+          {openError}
+        </div>
+      ) : null}
+
       {stage === "select" && (
         <SelectStage
           selectedIdx={selectedIdx}
           onSelect={setSelectedIdx}
           onOpen={handleOpen}
           onShuffle={handleShuffle}
+          isOpening={isOpening}
+          clerkEnabled={clerkEnabled}
+          isSignedIn={isSignedIn}
         />
       )}
 

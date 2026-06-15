@@ -1,5 +1,5 @@
 /**
- * Re-exports shared catalog for the Next.js UI lab.
+ * Re-exports shared catalog for the Next.js web app.
  * Coworker edits shared/mock/catalog.ts — both apps stay in sync.
  */
 export {

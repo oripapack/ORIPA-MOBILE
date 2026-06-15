@@ -18,6 +18,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { WebCreditsPill } from "@/components/WebCreditsPill";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tokens (mirrors globals.css — keeping inline avoids Tailwind scan complexity)
@@ -670,21 +671,7 @@ export default function HomePage() {
 
         <div style={{ flex: 1 }} />
 
-        {/* Credits pill */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: 6,
-          padding: "6px 14px",
-          background: C.surfaceHigh,
-          border: `1px solid ${C.border}`,
-          borderRadius: 999,
-        }}>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <circle cx="6" cy="6" r="5" stroke={C.green} strokeWidth="1.2"/>
-            <path d="M6 3.5v5M4 5.5l2-2 2 2" stroke={C.green} strokeWidth="1.2" strokeLinecap="round"/>
-          </svg>
-          <span style={{ fontSize: 12, fontWeight: 700, color: C.text }}>12,500</span>
-          <span style={{ fontSize: 10, color: C.textMuted, fontWeight: 500 }}>cr</span>
-        </div>
+        <WebCreditsPill />
 
         <Link href="/opening" style={{
           textDecoration: "none",

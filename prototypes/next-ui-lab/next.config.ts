@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   /** Monorepo: trace from repo root when multiple lockfiles exist */
-  outputFileTracingRoot: path.join(__dirname, '../..'),
+  outputFileTracingRoot: path.join(__dirname, '../../..'),
 };
 
 export default nextConfig;

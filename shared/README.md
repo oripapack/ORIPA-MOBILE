@@ -1,29 +1,28 @@
 # Shared contracts (Pull Hub)
 
-Single source of truth for data and design tokens used by:
+Single source of truth consumed by **`src/`** (Expo app).  
+The Next.js lab in `prototypes/next-ui-lab/` may import from here for experiments.
 
-- **Expo app** (`src/`) — shipped product
-- **Next.js UI lab** (`apps/pack-opening-web/`) — fast visual iteration
-
-## Edit here
+## Layout
 
 | Path | Purpose |
 |------|---------|
 | `types/pack.ts` | Pack catalog types, rarity, TCG categories |
-| `tokens/ph.ts` | Phygitals design tokens (`ph-*` colors) |
+| `tokens/ph.ts` | Phygitals design tokens |
 | `mock/catalog.ts` | 12-pack mock catalog |
 | `mock/recentPulls.ts` | Live activity feed mock |
+| `api/env.ts` | Supabase / Clerk env helpers |
+| `api/executePull.ts` | `execute-pull` client |
+| `api/userCredits.ts` | Credit balance fetch |
+| `api/catalogLive.ts` | Pack id → live `pack_version_id` |
 
 ## Import paths
 
 ```ts
-// Expo
+// From src/
 import { CATALOG_PACKS } from '../../shared/mock/catalog';
 import { ph } from '../../shared/tokens/ph';
-
-// Next.js lab
-import { CATALOG_PACKS } from '../../../shared/mock/catalog';
-// or via apps/pack-opening-web/data/catalog.ts
+import { executePullLive } from '../../shared/api/executePull'; // via src/lib re-exports
 ```
 
-When the backend is ready, add `shared/api/` clients — UI components should not change.
+When the backend grows, add under `shared/api/` — keep UI in `src/`.

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { DM_Sans } from 'next/font/google';
+import { Providers } from '@/components/Providers';
 import './globals.css';
 
 const dmSans = DM_Sans({
@@ -9,14 +10,16 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'PullHub — Pack opening (demo)',
-  description: 'Modular pack opening animation engine',
+  title: 'Pull Hub',
+  description: 'Rip packs. Pull graded cards.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={dmSans.variable}>
-      <body className="min-h-dvh antialiased font-sans">{children}</body>
+      <body className="min-h-dvh antialiased font-sans">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

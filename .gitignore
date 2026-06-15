@@ -9,9 +9,10 @@ dist/
 web-build/
 expo-env.d.ts
 
-# Next.js (generated)
-apps/pack-opening-web/.next/
-apps/pack-opening-web/out/
+# Next.js prototype (generated)
+prototypes/next-ui-lab/.next/
+prototypes/next-ui-lab/out/
+prototypes/next-ui-lab/node_modules/
 
 # Native
 .kotlin/
