@@ -441,10 +441,14 @@ function CardMeshInner({
   matRef,
   backMatRef,
   glowMatRef,
+  diamondMatRef,
+  rarityColor,
 }: {
-  matRef:     React.MutableRefObject<THREE.MeshStandardMaterial | null>;
-  backMatRef:  React.MutableRefObject<THREE.MeshStandardMaterial | null>;
-  glowMatRef:  React.MutableRefObject<THREE.MeshStandardMaterial | null>;
+  matRef:        React.MutableRefObject<THREE.MeshStandardMaterial | null>;
+  backMatRef:    React.MutableRefObject<THREE.MeshStandardMaterial | null>;
+  glowMatRef:    React.MutableRefObject<THREE.MeshStandardMaterial | null>;
+  diamondMatRef: React.MutableRefObject<THREE.MeshStandardMaterial | null>;
+  rarityColor:   string;
 }) {
   const texture = useTexture('/assets/charizard.jpg');
   return (
@@ -460,20 +464,35 @@ function CardMeshInner({
         />
       </mesh>
 
-      {/* Back face: dark placeholder rotated 180° — visible when group.rotation.y = π */}
+      {/* Back face: near-black, matte — no metalness to avoid lavender sheen from scene lights */}
       <mesh position={[0, 0, -0.003]} rotation={[0, Math.PI, 0]}>
         <planeGeometry args={[OPEN.cardW, OPEN.cardH]} />
         <meshStandardMaterial
           ref={(el) => { backMatRef.current = el; }}
-          color="#18182A"
-          roughness={0.5}
-          metalness={0.15}
+          color="#080810"
+          roughness={0.95}
+          metalness={0}
           transparent
           opacity={0}
         />
       </mesh>
 
-      {/* Gold glow border — slightly oversized plane behind back face */}
+      {/* Rarity diamond mark — small placeholder in center of back face */}
+      <mesh position={[0, 0, -0.005]} rotation={[0, Math.PI, Math.PI / 4]}>
+        <planeGeometry args={[0.14, 0.14]} />
+        <meshStandardMaterial
+          ref={(el) => { diamondMatRef.current = el; }}
+          color={rarityColor}
+          emissive={rarityColor}
+          emissiveIntensity={1.2}
+          roughness={0.3}
+          transparent
+          opacity={0}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Rarity glow border — slightly oversized plane behind back face */}
       <mesh position={[0, 0, -0.007]} rotation={[0, Math.PI, 0]}>
         <planeGeometry args={[OPEN.cardW + 0.06, OPEN.cardH + 0.06]} />
         <meshStandardMaterial
@@ -505,8 +524,9 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
   const cardRef        = useRef<THREE.Group>(null);
   const flapMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
   const cardMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
-  const cardBackMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
-  const cardGlowMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
+  const cardBackMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
+  const cardGlowMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
+  const cardDiamondMatRef  = useRef<THREE.MeshStandardMaterial | null>(null);
 
   const flapCenterY = OPEN.tearY + OPEN.flapH * 0.5;
   const cardStartY  = OPEN.packY - 0.3;
@@ -539,6 +559,9 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
     if (cardBackMatRef.current) {
       gsap.to(cardBackMatRef.current, { opacity: 0, duration: 0.25, ease: 'power2.in' });
     }
+    if (cardDiamondMatRef.current) {
+      gsap.to(cardDiamondMatRef.current, { opacity: 0, duration: 0.25, ease: 'power2.in' });
+    }
     if (cardMatRef.current) {
       gsap.to(cardMatRef.current, { opacity: 1, duration: 0.30, ease: 'power2.out', delay: 0.28 });
     }
@@ -561,9 +584,10 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
         cardRef.current.rotation.y = Math.PI;  // back face toward camera for next open
         cardRef.current.visible = false;
       }
-      if (cardMatRef.current)     cardMatRef.current.opacity = 0;
-      if (cardBackMatRef.current) cardBackMatRef.current.opacity = 0;
-      if (cardGlowMatRef.current) cardGlowMatRef.current.opacity = 0;
+      if (cardMatRef.current)        cardMatRef.current.opacity = 0;
+      if (cardBackMatRef.current)    cardBackMatRef.current.opacity = 0;
+      if (cardGlowMatRef.current)    cardGlowMatRef.current.opacity = 0;
+      if (cardDiamondMatRef.current) cardDiamondMatRef.current.opacity = 0;
       return;
     }
 
@@ -580,9 +604,10 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
       cardRef.current.rotation.y = Math.PI;  // back face toward camera
       cardRef.current.visible = false;
     }
-    if (cardMatRef.current)     cardMatRef.current.opacity = 0;
-    if (cardBackMatRef.current) cardBackMatRef.current.opacity = 0;
-    if (cardGlowMatRef.current) cardGlowMatRef.current.opacity = 0;
+    if (cardMatRef.current)        cardMatRef.current.opacity = 0;
+    if (cardBackMatRef.current)    cardBackMatRef.current.opacity = 0;
+    if (cardGlowMatRef.current)    cardGlowMatRef.current.opacity = 0;
+    if (cardDiamondMatRef.current) cardDiamondMatRef.current.opacity = 0;
 
     const tl = gsap.timeline({ onComplete });
 
@@ -614,6 +639,9 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
     if (cardBackMatRef.current) {
       tl.to(cardBackMatRef.current, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 1.3);
     }
+    if (cardDiamondMatRef.current) {
+      tl.to(cardDiamondMatRef.current, { opacity: 0.9, duration: 0.4, ease: 'power2.out' }, 1.3);
+    }
 
     return () => { tl.kill(); };
   }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -640,7 +668,13 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
       {/* Phase 3+: card — starts back-facing (rotation.y = π), flips to front on tap */}
       <group ref={cardRef} position={[OPEN.packX, cardStartY, OPEN.packZ + 0.03]} rotation={[0, Math.PI, 0]} visible={false}>
         <Suspense fallback={null}>
-          <CardMeshInner matRef={cardMatRef} backMatRef={cardBackMatRef} glowMatRef={cardGlowMatRef} />
+          <CardMeshInner
+            matRef={cardMatRef}
+            backMatRef={cardBackMatRef}
+            glowMatRef={cardGlowMatRef}
+            diamondMatRef={cardDiamondMatRef}
+            rarityColor={RARITY[rarity].color}
+          />
         </Suspense>
       </group>
 
@@ -912,38 +946,6 @@ export default function PackRingScene() {
         }}
       />
 
-      {/* Rarity banner — placed before Canvas so the 3D card naturally renders in front */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: 0,
-          width: '100%',
-          height: 52,
-          background: `linear-gradient(90deg, transparent 0%, ${RARITY[rarity].color}F0 12%, ${RARITY[rarity].color} 50%, ${RARITY[rarity].color}F0 88%, transparent 100%)`,
-          transform: 'translateY(-50%) rotate(-12deg)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          pointerEvents: 'none',
-          opacity: mode === 'revealing' ? 1 : 0,
-          transition: 'opacity 0.3s ease',
-        }}
-      >
-        <span
-          style={{
-            color: '#ffffff',
-            fontWeight: 900,
-            fontSize: 14,
-            letterSpacing: '0.35em',
-            fontFamily: '-apple-system, system-ui, sans-serif',
-            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
-          }}
-        >
-          {RARITY[rarity].label}
-        </span>
-      </div>
-
       {/* 3D Canvas — transparent background */}
       <Canvas
         camera={{ position: [0, S.camY, S.camZ], fov: S.camFov, near: 0.1, far: 60 }}
@@ -956,6 +958,39 @@ export default function PackRingScene() {
       >
         <Scene ringAngleRef={ringAngle} zoomT={zoomT} resultT={resultT} selectedPackIdx={selectedPackIdx} mode={mode} rarity={rarity} onOpenComplete={setRevealingMode} onFlipComplete={setResultMode} />
       </Canvas>
+
+      {/* Rarity banner — above Canvas so text is always visible over the card back */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: 0,
+          width: '100%',
+          height: 52,
+          background: `linear-gradient(90deg, transparent 0%, ${RARITY[rarity].color}E8 12%, ${RARITY[rarity].color} 50%, ${RARITY[rarity].color}E8 88%, transparent 100%)`,
+          transform: 'translateY(-50%) rotate(-12deg)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          opacity: mode === 'revealing' ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+          zIndex: 6,
+        }}
+      >
+        <span
+          style={{
+            color: '#ffffff',
+            fontWeight: 900,
+            fontSize: 15,
+            letterSpacing: '0.32em',
+            fontFamily: '-apple-system, system-ui, sans-serif',
+            textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+          }}
+        >
+          {RARITY[rarity].label}
+        </span>
+      </div>
 
       {/* Rarity badge — fades in under card after flip completes */}
       {mode !== 'ring' && (
