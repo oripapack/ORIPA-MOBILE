@@ -17,8 +17,9 @@ import { colors } from '../tokens/colors';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import { SHIPPING_ADDRESS_STORAGE_KEY } from '../lib/shippingAddress';
 
-const STORAGE_KEY = '@pullhub_shipping_address_v1';
+const STORAGE_KEY = SHIPPING_ADDRESS_STORAGE_KEY;
 
 type Nav = StackNavigationProp<RootStackParamList, 'ShippingAddress'>;
 

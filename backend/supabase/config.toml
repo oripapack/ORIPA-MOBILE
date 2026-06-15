@@ -361,6 +361,9 @@ verify_jwt = false
 [functions.mint-retry]
 verify_jwt = false
 
+[functions.request-shipment]
+verify_jwt = true
+
 [edge_runtime]
 enabled = true
 # Supported request policies: `oneshot`, `per_worker`.

@@ -2,7 +2,6 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { bytesToHex, sha256HexUtf8 } from "../_shared/crypto.ts";
-import { processMintForPullId } from "../_shared/processMint.ts";
 import {
   type PoolItemRow,
   rollWeightedPool,
@@ -41,22 +40,6 @@ function randomServerSeedHex(): string {
   const buf = new Uint8Array(32);
   crypto.getRandomValues(buf);
   return bytesToHex(buf);
-}
-
-function scheduleMint(pullId: string) {
-  const job = processMintForPullId(pullId).catch((err) =>
-    console.error("mint background job failed", pullId, err)
-  );
-  const rt = (
-    globalThis as unknown as {
-      EdgeRuntime?: { waitUntil: (p: Promise<unknown>) => void };
-    }
-  ).EdgeRuntime;
-  if (rt?.waitUntil) {
-    rt.waitUntil(job);
-  } else {
-    job.then(() => undefined);
-  }
 }
 
 function mapRpcError(error: { message?: string; details?: string }): {
@@ -316,10 +299,6 @@ Deno.serve(async (req: Request) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       },
     );
-  }
-
-  if (mintStatus === "mint_pending") {
-    scheduleMint(pullId);
   }
 
   return new Response(

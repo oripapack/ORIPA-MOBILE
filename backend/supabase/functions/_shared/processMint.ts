@@ -9,6 +9,7 @@ export type ProcessMintResult =
   | { status: "completed" }
   | { status: "skipped_no_wallet" }
   | { status: "skipped_low_tier" }
+  | { status: "skipped_deferred" }
   | { status: "pending"; error: string };
 
 /** Exported for mint-retry queue queries (must stay in sync). */
@@ -74,6 +75,10 @@ export async function processMintForPullId(
 
   if (pull.mint_status === "mint_skipped_no_wallet") {
     return { status: "skipped_no_wallet" };
+  }
+
+  if (pull.mint_status === "mint_deferred") {
+    return { status: "skipped_deferred" };
   }
 
   if (pull.mint_status !== "mint_pending") {
