@@ -31,5 +31,5 @@ export const SIGNUP_PROMO_BONUS_CREDITS = SIGNUP_PROMO_BONUS_USD * SIGNUP_PROMO_
  */
 export const MOCK_SIGNUP_PROMOTION: SignupPromotionConfig = {
   enabled: true,
-  grant: { points: SIGNUP_PROMO_BONUS_CREDITS },
+  grant: { freePacks: 1 },
 };

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@clerk/clerk-expo';
 import { useGuestBrowseStore } from '../../store/guestBrowseStore';
@@ -26,14 +26,20 @@ export function OnboardingGate() {
 
   const confirmDismiss = useCallback(
     ({ confirm, cancel }: { confirm: () => void; cancel: () => void }) => {
-      Alert.alert(
-        t('onboarding.dismissConfirmTitle'),
-        t('onboarding.dismissConfirmMessage', { usd: SIGNUP_PROMO_BONUS_USD }),
-        [
-          { text: t('onboarding.dismissConfirmStay'), style: 'cancel', onPress: cancel },
-          { text: t('onboarding.dismissConfirmLeave'), style: 'destructive', onPress: confirm },
-        ],
-      );
+      const title = t('onboarding.dismissConfirmTitle');
+      const message = t('onboarding.dismissConfirmMessage', { usd: SIGNUP_PROMO_BONUS_USD });
+      if (Platform.OS === 'web') {
+        if (typeof window !== 'undefined' && window.confirm(`${title}\n\n${message}`)) {
+          confirm();
+        } else {
+          cancel();
+        }
+        return;
+      }
+      Alert.alert(title, message, [
+        { text: t('onboarding.dismissConfirmStay'), style: 'cancel', onPress: cancel },
+        { text: t('onboarding.dismissConfirmLeave'), style: 'destructive', onPress: confirm },
+      ]);
     },
     [t],
   );
@@ -56,7 +62,7 @@ export function OnboardingGate() {
       <AuthScreen
         presentation="sheet"
         welcomeMode
-        onWelcomeSkip={() => authSheetRef.current?.requestCloseWithConfirmation()}
+        onWelcomeSkip={() => void finishPreview()}
         onRequestClose={() => authSheetRef.current?.requestCloseWithConfirmation()}
       />
     </AuthBottomSheet>

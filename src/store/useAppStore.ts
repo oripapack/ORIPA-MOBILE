@@ -28,8 +28,9 @@ import { isSupabaseConfigured } from '../lib/supabase';
 import { fetchUserCreditBalance } from '../lib/userCredits';
 import { loadShippingAddress } from '../lib/shippingAddress';
 import { requestShipmentLive } from '../lib/requestShipment';
-import { claimFirstTimePack, loadClaimedFirstTimePacks } from '../lib/firstTimePack';
+import { loadClaimedFirstTimePacks, canClaimFirstTimePack, commitFirstTimePackClaim } from '../lib/firstTimePack';
 import { CREDITS_ARE_MOCK } from '../config/app';
+import { showUserMessage } from '../utils/showUserMessage';
 import { userWithSyncedProgression, tierXpBonusForPull } from '../lib/collectorProgression';
 import {
   loadCollectorGame,
@@ -412,7 +413,11 @@ export const useAppStore = create<AppStore>((set, get) => {
     const balance = await fetchUserCreditBalance(userId);
     if (balance == null) return;
     set((state) => ({
-      user: { ...state.user, credits: balance },
+      user: {
+        ...state.user,
+        // Keep local signup promo credits if server row is still 0
+        credits: Math.max(state.user.credits, balance),
+      },
     }));
   },
 
@@ -462,23 +467,59 @@ export const useAppStore = create<AppStore>((set, get) => {
     if (packOpenInFlight) return false;
     set({ packOpenInFlight: true });
 
+    const commitFirstTimeIfNeeded = async () => {
+      if (!pack.isFirstTimePack) return true;
+      const committed = await commitFirstTimePackClaim(user.id, pack.id);
+      if (!committed.allowed) return false;
+      set((state) => ({
+        usedFirstTimePackIds: state.usedFirstTimePackIds.includes(pack.id)
+          ? state.usedFirstTimePackIds
+          : [...state.usedFirstTimePackIds, pack.id],
+      }));
+      return true;
+    };
+
     try {
       if (pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id)) {
+        showUserMessage(
+          'Welcome pack used',
+          'You already opened your welcome pack on this account.',
+        );
         return false;
       }
 
-      if (pack.isFirstTimePack) {
-        const claim = await claimFirstTimePack(
-          user.id,
-          pack.id,
-          pack.packVersionId,
-        );
-        if (!claim.allowed) return false;
-      }
+      if (pack.isFirstTimePack && quantity === 1) {
+        const eligible = await canClaimFirstTimePack(user.id, pack.id);
+        if (!eligible.allowed) {
+          showUserMessage(
+            'Welcome pack used',
+            'You already opened your welcome pack on this account.',
+          );
+          return false;
+        }
 
-      const firstTimeUpdate = pack.isFirstTimePack
-        ? { usedFirstTimePackIds: [...usedFirstTimePackIds, pack.id] }
-        : {};
+        if (!(await commitFirstTimeIfNeeded())) {
+          showUserMessage(
+            'Welcome pack used',
+            'You already opened your welcome pack on this account.',
+          );
+          return false;
+        }
+
+        // Onboarding pack: local reveal (no server credits). New accounts start at 0 on Supabase.
+        const nextSessionId = get().packOpenSessionId + 1;
+        set((state) => ({
+          selectedPack: pack,
+          resumePackOpenAfterCredits: false,
+          resumePackOpenQuantity: 1,
+          packOpenQuantity: 1,
+          modals: { ...state.modals, packOpening: true },
+          _packOpenRewardApplied: false,
+          pendingServerPull: null,
+          packOpenSessionId: nextSessionId,
+        }));
+        return true;
+      }
 
       const grants = user.freePackGrants ?? 0;
       const useFreeGrant = quantity === 1 && grants > 0;
@@ -496,13 +537,12 @@ export const useAppStore = create<AppStore>((set, get) => {
             ...state.user,
             freePackGrants: grants - 1,
           },
-          ...firstTimeUpdate,
         }));
         return true;
       }
 
       if (quantity > 1) {
-        Alert.alert(
+        showUserMessage(
           'Bulk opens',
           'Live bulk opens (10/100) are not available yet. Open one pack at a time.',
         );
@@ -553,11 +593,16 @@ export const useAppStore = create<AppStore>((set, get) => {
             return false;
           }
 
+          if (pullResult.code === 'UNAUTHORIZED') {
+            showUserMessage('Sign in required', 'Please sign in to open packs.');
+            return false;
+          }
+
           const label =
             pullResult.code === 'NETWORK_ERROR'
               ? 'Connection problem'
               : 'Pack open failed';
-          Alert.alert(label, pullResult.message);
+          showUserMessage(label, pullResult.message);
           return false;
         }
 
@@ -583,13 +628,12 @@ export const useAppStore = create<AppStore>((set, get) => {
             ...state.user,
             credits: balanceAfter,
           },
-          ...firstTimeUpdate,
         }));
         return true;
       }
 
       if (!CREDITS_ARE_MOCK && isSupabaseConfigured && !pack.packVersionId) {
-        Alert.alert(
+        showUserMessage(
           'Pack unavailable',
           'This pack is not linked to the live server yet.',
         );
@@ -628,7 +672,6 @@ export const useAppStore = create<AppStore>((set, get) => {
           ...state.user,
           credits: state.user.credits - totalCost,
         },
-        ...firstTimeUpdate,
       }));
       return true;
     } finally {

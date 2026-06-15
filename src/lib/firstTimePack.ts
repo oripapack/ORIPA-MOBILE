@@ -104,29 +104,59 @@ export async function loadClaimedFirstTimePacks(userId: string): Promise<string[
   return [...localClaims];
 }
 
-export async function claimFirstTimePack(
+export async function canClaimFirstTimePack(
   userId: string,
   packId: string,
-  packVersionId?: string,
 ): Promise<{ allowed: boolean; reason?: 'already_claimed' }> {
-  if (!userId) {
-    return { allowed: true };
-  }
+  if (!userId) return { allowed: true };
 
   const localClaims = await readLocalClaims(userId);
   if (localClaims.has(packId)) {
     return { allowed: false, reason: 'already_claimed' };
   }
 
+  if (isSupabaseConfigured) {
+    const serverClaims = await readSupabaseClaims(userId);
+    if (serverClaims.has(packId)) {
+      return { allowed: false, reason: 'already_claimed' };
+    }
+  }
+
+  return { allowed: true };
+}
+
+/** @deprecated Use canClaimFirstTimePack + commitFirstTimePackClaim */
+export async function claimFirstTimePack(
+  userId: string,
+  packId: string,
+  packVersionId?: string,
+): Promise<{ allowed: boolean; reason?: 'already_claimed' }> {
+  const check = await canClaimFirstTimePack(userId, packId);
+  if (!check.allowed) return check;
+  return commitFirstTimePackClaim(userId, packId, packVersionId);
+}
+
+export async function commitFirstTimePackClaim(
+  userId: string,
+  packId: string,
+  packVersionId?: string,
+): Promise<{ allowed: boolean; reason?: 'already_claimed' }> {
+  if (!userId) return { allowed: true };
+
+  const check = await canClaimFirstTimePack(userId, packId);
+  if (!check.allowed) return check;
+
   if (packVersionId) {
     const serverAllowed = await insertSupabaseClaim(userId, packVersionId);
     if (!serverAllowed) {
+      const localClaims = await readLocalClaims(userId);
       localClaims.add(packId);
       await writeLocalClaims(userId, localClaims);
       return { allowed: false, reason: 'already_claimed' };
     }
   }
 
+  const localClaims = await readLocalClaims(userId);
   localClaims.add(packId);
   await writeLocalClaims(userId, localClaims);
 
