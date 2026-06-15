@@ -19,7 +19,13 @@ comment on function public.auth_user_id() is
 
 -- ---------------------------------------------------------------------------
 -- Profiles: primary key = Clerk sub (text), decoupled from auth.users
+-- Drop RLS policies first — Postgres blocks ALTER TYPE on columns referenced by policies.
 -- ---------------------------------------------------------------------------
+drop policy if exists "profiles_select_own" on public.profiles;
+drop policy if exists "profiles_update_own" on public.profiles;
+drop policy if exists "pull_results_select_own" on public.pull_results;
+drop policy if exists "digital_twins_select_own" on public.digital_twins;
+
 alter table public.profiles drop constraint if exists profiles_id_fkey;
 
 drop trigger if exists on_auth_user_created on auth.users;
@@ -38,9 +44,6 @@ alter table public.profiles
 
 alter table public.profiles
   add constraint profiles_pkey primary key (id);
-
-drop policy if exists "profiles_select_own" on public.profiles;
-drop policy if exists "profiles_update_own" on public.profiles;
 
 create policy "profiles_select_own"
   on public.profiles
@@ -64,9 +67,6 @@ create policy "profiles_insert_own"
 -- ---------------------------------------------------------------------------
 -- Pull results / digital twins RLS (Clerk sub)
 -- ---------------------------------------------------------------------------
-drop policy if exists "pull_results_select_own" on public.pull_results;
-drop policy if exists "digital_twins_select_own" on public.digital_twins;
-
 create policy "pull_results_select_own"
   on public.pull_results
   for select

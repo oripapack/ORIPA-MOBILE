@@ -121,6 +121,9 @@ export interface Pack {
   isLimitedTime?: boolean;
   priceRange?: PriceRange;
   demoReveal?: CatalogPack['demoReveal'];
+
+  /** Supabase `pack_versions.id` when this pack is backed by the live engine. */
+  packVersionId?: string;
 }
 
 // ---------------------------------------------------------------------------

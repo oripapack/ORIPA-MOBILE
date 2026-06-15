@@ -17,7 +17,17 @@ import {
 } from '../lib/friendVaultShop';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
 import { SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
+import { Alert } from 'react-native';
+import type { PackRollResult } from '../components/pack/opening/types';
+import {
+  executePullLive,
+  newClientSeed,
+  newIdempotencyKey,
+} from '../lib/executePull';
+import { isSupabaseConfigured } from '../lib/supabase';
+import { fetchUserCreditBalance } from '../lib/userCredits';
 import { claimFirstTimePack, loadClaimedFirstTimePacks } from '../lib/firstTimePack';
+import { CREDITS_ARE_MOCK } from '../config/app';
 import { userWithSyncedProgression, tierXpBonusForPull } from '../lib/collectorProgression';
 import {
   loadCollectorGame,
@@ -86,6 +96,13 @@ interface AppStore {
   resumePackOpenAfterCredits: boolean;
   /** Quantity the user was trying to open when `resumePackOpenAfterCredits` was set. */
   resumePackOpenQuantity: PackOpenQuantity;
+  /** Server-backed pull awaiting reveal animation (from `execute-pull`). */
+  pendingServerPull: {
+    pullId: string;
+    mintStatus: string;
+    roll: PackRollResult;
+    sessionId: number;
+  } | null;
 
   // Actions
   addCredits: (amount: number) => void;
@@ -132,6 +149,9 @@ interface AppStore {
    * Call once on app startup / after sign-in (see GuestHydration in RootNavigator).
    */
   hydrateFirstTimePacks: () => Promise<void>;
+  /** Sync wallet credits from `user_credits` (live backend). */
+  hydrateUserCredits: (userId: string) => Promise<void>;
+  clearPendingServerPull: () => void;
   /** Adds a friend by unique username + display name (caller resolves name from lookup). */
   addFriend: (username: string, displayName: string) => AddFriendResult;
   acceptIncomingFriendRequest: (username: string) => void;
@@ -215,6 +235,7 @@ export const useAppStore = create<AppStore>((set, get) => {
   packOpenQuantity: 1,
   resumePackOpenAfterCredits: false,
   resumePackOpenQuantity: 1,
+  pendingServerPull: null,
   usedFirstTimePackIds: [],
   friendVaultShopByUser: createInitialFriendVaultShop(),
   collectorStreakDays: 0,
@@ -384,6 +405,17 @@ export const useAppStore = create<AppStore>((set, get) => {
     }));
   },
 
+  hydrateUserCredits: async (userId) => {
+    if (!userId || CREDITS_ARE_MOCK || !isSupabaseConfigured) return;
+    const balance = await fetchUserCreditBalance(userId);
+    if (balance == null) return;
+    set((state) => ({
+      user: { ...state.user, credits: balance },
+    }));
+  },
+
+  clearPendingServerPull: () => set({ pendingServerPull: null }),
+
   addCredits: (amount) =>
     set((state) => ({
       user: { ...state.user, credits: state.user.credits + amount },
@@ -434,7 +466,11 @@ export const useAppStore = create<AppStore>((set, get) => {
       }
 
       if (pack.isFirstTimePack) {
-        const claim = await claimFirstTimePack(user.id, pack.id);
+        const claim = await claimFirstTimePack(
+          user.id,
+          pack.id,
+          pack.packVersionId,
+        );
         if (!claim.allowed) return false;
       }
 
@@ -452,6 +488,7 @@ export const useAppStore = create<AppStore>((set, get) => {
           packOpenQuantity: 1,
           modals: { ...state.modals, packOpening: true },
           _packOpenRewardApplied: false,
+          pendingServerPull: null,
           packOpenSessionId: state.packOpenSessionId + 1,
           user: {
             ...state.user,
@@ -460,6 +497,101 @@ export const useAppStore = create<AppStore>((set, get) => {
           ...firstTimeUpdate,
         }));
         return true;
+      }
+
+      if (quantity > 1) {
+        Alert.alert(
+          'Bulk opens',
+          'Live bulk opens (10/100) are not available yet. Open one pack at a time.',
+        );
+        return false;
+      }
+
+      const useLiveEngine =
+        !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
+
+      if (useLiveEngine && pack.packVersionId) {
+        const totalCost = pack.creditPrice;
+        if (user.credits < totalCost) {
+          set((state) => ({
+            selectedPack: pack,
+            resumePackOpenAfterCredits: true,
+            resumePackOpenQuantity: quantity,
+            modals: {
+              ...state.modals,
+              insufficientCredits: true,
+              packOpening: keepPack ? true : false,
+            },
+          }));
+          return false;
+        }
+
+        const pullResult = await executePullLive({
+          clientSeed: newClientSeed(),
+          packVersionId: pack.packVersionId,
+          idempotencyKey: newIdempotencyKey(),
+          packCreditPrice: pack.creditPrice,
+        });
+
+        if (!pullResult.ok) {
+          if (
+            pullResult.code === 'INSUFFICIENT_CREDITS' ||
+            pullResult.status === 402
+          ) {
+            set((state) => ({
+              selectedPack: pack,
+              resumePackOpenAfterCredits: true,
+              resumePackOpenQuantity: quantity,
+              modals: {
+                ...state.modals,
+                insufficientCredits: true,
+                packOpening: keepPack ? true : false,
+              },
+            }));
+            return false;
+          }
+
+          const label =
+            pullResult.code === 'NETWORK_ERROR'
+              ? 'Connection problem'
+              : 'Pack open failed';
+          Alert.alert(label, pullResult.message);
+          return false;
+        }
+
+        const nextSessionId = get().packOpenSessionId + 1;
+        const balanceAfter =
+          pullResult.response.balance_after ?? user.credits - totalCost;
+
+        set((state) => ({
+          selectedPack: pack,
+          resumePackOpenAfterCredits: false,
+          resumePackOpenQuantity: 1,
+          packOpenQuantity: 1,
+          modals: { ...state.modals, packOpening: true },
+          _packOpenRewardApplied: false,
+          packOpenSessionId: nextSessionId,
+          pendingServerPull: {
+            pullId: pullResult.response.pull_id,
+            mintStatus: pullResult.response.mint_status,
+            roll: pullResult.roll,
+            sessionId: nextSessionId,
+          },
+          user: {
+            ...state.user,
+            credits: balanceAfter,
+          },
+          ...firstTimeUpdate,
+        }));
+        return true;
+      }
+
+      if (!CREDITS_ARE_MOCK && isSupabaseConfigured && !pack.packVersionId) {
+        Alert.alert(
+          'Pack unavailable',
+          'This pack is not linked to the live server yet.',
+        );
+        return false;
       }
 
       const totalCost = pack.creditPrice * quantity;
@@ -471,7 +603,6 @@ export const useAppStore = create<AppStore>((set, get) => {
           modals: {
             ...state.modals,
             insufficientCredits: true,
-            // From pack reveal "open another", keep this modal open so backing out of buy credits isn't a dead end.
             packOpening: keepPack ? true : false,
           },
         }));
@@ -489,6 +620,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         packOpenQuantity: quantity,
         modals: { ...state.modals, packOpening: true },
         _packOpenRewardApplied: false,
+        pendingServerPull: null,
         packOpenSessionId: state.packOpenSessionId + 1,
         user: {
           ...state.user,
@@ -507,21 +639,23 @@ export const useAppStore = create<AppStore>((set, get) => {
    * User must complete post-open fulfillment (Vault vs convert) before credits apply.
    */
   applyPackOpenResult: (result, options) => {
-    const { selectedPack, _packOpenRewardApplied } = get();
+    const { selectedPack, _packOpenRewardApplied, pendingServerPull } = get();
     if (!selectedPack || _packOpenRewardApplied) return;
 
     const persistToVault = options?.persistToVault !== false;
 
     set((state) => {
       if (!persistToVault) {
-        return { _packOpenRewardApplied: true };
+        return { _packOpenRewardApplied: true, pendingServerPull: null };
       }
 
       /** Must match on-screen `creditsWon` from the opening reveal (full roll, not capped to pack price). */
       const convertCreditValue = result.creditsWon;
 
       const pull: Pull = {
-        id: `pull_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        id:
+          pendingServerPull?.pullId ??
+          `pull_${Date.now()}_${Math.random().toString(16).slice(2)}`,
         packId: selectedPack.id,
         packTitle: selectedPack.title,
         result: result.result,
@@ -538,6 +672,7 @@ export const useAppStore = create<AppStore>((set, get) => {
 
       return {
         _packOpenRewardApplied: true,
+        pendingServerPull: null,
         pendingFulfillmentPullIds: [pull.id, ...state.pendingFulfillmentPullIds],
         collectorQuestProgress: qp,
         user: {

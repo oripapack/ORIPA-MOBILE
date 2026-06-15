@@ -58,6 +58,8 @@ export function PackOpeningModal() {
   const applyBulkPackOpenResults = useAppStore((s) => s.applyBulkPackOpenResults);
   const openPack = useAppStore((s) => s.openPack);
   const packOpenQuantity = useAppStore((s) => s.packOpenQuantity);
+  const pendingServerPull = useAppStore((s) => s.pendingServerPull);
+  const clearPendingServerPull = useAppStore((s) => s.clearPendingServerPull);
 
   const [pending, setPending] = useState<PackRollResult | null>(null);
   const [bulkRolls, setBulkRolls] = useState<PackRollResult[] | null>(null);
@@ -81,7 +83,8 @@ export function PackOpeningModal() {
     setSkippedToEnd(false);
     setSkipNonce(0);
     setEngineDone(false);
-  }, [visible]);
+    clearPendingServerPull();
+  }, [visible, clearPendingServerPull]);
 
   useEffect(() => {
     if (!visible || !selectedPack) return;
@@ -106,7 +109,12 @@ export function PackOpeningModal() {
       setSkippedToEnd(true);
     } else {
       setBulkRolls(null);
-      const roll = generatePackOpenResult(selectedPack, t, loc.title);
+      const serverRoll =
+        pendingServerPull && pendingServerPull.sessionId === packOpenSessionId
+          ? pendingServerPull.roll
+          : null;
+      const roll =
+        serverRoll ?? generatePackOpenResult(selectedPack, t, loc.title);
       rollRef.current = roll;
       setPending(roll);
       setEngineDone(false);
@@ -140,7 +148,16 @@ export function PackOpeningModal() {
     return () => {
       spotLoop.stop();
     };
-  }, [visible, selectedPack, packOpenSessionId, packOpenQuantity, t, modalOpacity, spotlightPulse]);
+  }, [
+    visible,
+    selectedPack,
+    packOpenSessionId,
+    packOpenQuantity,
+    pendingServerPull,
+    t,
+    modalOpacity,
+    spotlightPulse,
+  ]);
 
   const onRevealDone = useCallback(() => {
     setEngineDone(true);
