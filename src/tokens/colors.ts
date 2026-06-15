@@ -25,24 +25,29 @@ export const colors = {
   redDark: '#DC2626',
   redGlow: ph.redSoft,
 
-  /** Primary CTA — green (legacy `gold` key used across the app). */
+  /** Primary CTA — premium emerald green. Legacy `gold` key kept so existing screens compile. */
   gold: ph.green,
   goldDark: ph.greenHover,
   goldSoft: ph.greenSoft,
-  goldTintSubtle: 'rgba(34,197,94,0.06)',
-  goldWash: 'rgba(34,197,94,0.08)',
-  goldWash2: 'rgba(34,197,94,0.06)',
-  goldWashMedium: 'rgba(34,197,94,0.10)',
+  goldTintSubtle: 'rgba(16,185,129,0.06)',
+  goldWash: 'rgba(16,185,129,0.08)',
+  goldWash2: 'rgba(16,185,129,0.06)',
+  goldWashMedium: 'rgba(16,185,129,0.10)',
   goldWashStrong: ph.greenSoft,
   goldBorderHairline: ph.greenBorder,
-  goldBorderMuted: 'rgba(34,197,94,0.30)',
-  goldBorder: 'rgba(34,197,94,0.38)',
-  goldBorderStrong: 'rgba(34,197,94,0.48)',
-  goldBorderHeavy: 'rgba(34,197,94,0.55)',
+  goldBorderMuted: 'rgba(16,185,129,0.30)',
+  goldBorder: 'rgba(16,185,129,0.38)',
+  goldBorderStrong: 'rgba(16,185,129,0.48)',
+  goldBorderHeavy: 'rgba(16,185,129,0.55)',
   goldPillBg: ph.greenSoft,
   goldPillBorder: ph.greenBorder,
 
   green: ph.green,
+
+  /** Muted champagne gold — use ONLY for top-tier/grail accents, not CTAs. */
+  champagneGold: ph.gold,
+  champagneGoldSoft: ph.goldSoft,
+  champagneGoldBorder: ph.goldBorder,
 
   /** Secondary accent — epic purple for highlights / links. */
   accent: ph.rarity.epic,

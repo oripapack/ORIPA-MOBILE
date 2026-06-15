@@ -59,11 +59,36 @@ export function PhPackCard({
       <View style={styles.info}>
         <Text style={styles.title} numberOfLines={2}>{pack.title}</Text>
         {pack.tagline ? <Text style={styles.tagline} numberOfLines={2}>{pack.tagline}</Text> : null}
+
+        {/* Transparency stats row */}
+        <View style={styles.statsRow}>
+          {pack.buybackRate != null ? (
+            <View style={styles.statPill}>
+              <Text style={styles.statLabel}>Avg Return</Text>
+              <Text style={[styles.statValue, { color: pack.buybackRate >= 90 ? ph.green : pack.buybackRate >= 75 ? '#a3e635' : ph.textSec }]}>
+                {pack.buybackRate}%
+              </Text>
+            </View>
+          ) : null}
+          <View style={styles.statPill}>
+            <Text style={styles.statLabel}>Remaining</Text>
+            <Text style={[styles.statValue, pack.remainingInventory < 50 ? styles.statLow : null]}>
+              {pack.remainingInventory.toLocaleString()}
+            </Text>
+          </View>
+          {pack.topCard ? (
+            <View style={[styles.statPill, styles.statPillFlex]}>
+              <Text style={styles.statLabel}>Top Hit</Text>
+              <Text style={styles.statTopCard} numberOfLines={1}>{pack.topCard}</Text>
+            </View>
+          ) : null}
+        </View>
+
         <PhProgressBar fraction={fraction} />
         <View style={styles.footer}>
           <Text style={styles.price}>${priceUsd}</Text>
           <Pressable onPress={onOpen} style={styles.openBtn} hitSlop={8}>
-            <Text style={styles.openLabel}>Open</Text>
+            <Text style={styles.openLabel}>Open Pack</Text>
           </Pressable>
         </View>
       </View>
@@ -121,14 +146,51 @@ const styles = StyleSheet.create({
   info: { paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 8 },
   title: { fontSize: fontSize.sm, fontFamily: brandFont.black, color: ph.text, lineHeight: 18 },
   tagline: { fontSize: 11, color: ph.textMuted, lineHeight: 15 },
-  footer: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  price: { fontSize: 18, fontFamily: brandFont.black, color: ph.text },
+  statsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 2,
+  },
+  statPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: ph.radius.pill,
+    backgroundColor: ph.surfaceRaise,
+    borderWidth: 1,
+    borderColor: ph.border,
+  },
+  statPillFlex: { flex: 1, minWidth: 0 },
+  statLabel: {
+    fontSize: 10,
+    fontFamily: brandFont.semibold,
+    color: ph.textMuted,
+    letterSpacing: 0.3,
+  },
+  statValue: {
+    fontSize: 10,
+    fontFamily: brandFont.black,
+    color: ph.text,
+  },
+  statLow: { color: '#dc2626' },
+  statTopCard: {
+    fontSize: 10,
+    fontFamily: brandFont.bold,
+    color: ph.text,
+    flex: 1,
+    minWidth: 0,
+  },
+  footer: { flexDirection: 'row', alignItems: 'center', marginTop: 2 },
+  price: { fontSize: 20, fontFamily: brandFont.black, color: ph.text },
   openBtn: {
     marginLeft: 'auto',
     backgroundColor: ph.green,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 9,
     borderRadius: ph.radius.pill,
   },
-  openLabel: { fontSize: 12, fontFamily: brandFont.bold, color: ph.greenInk },
+  openLabel: { fontSize: 12, fontFamily: brandFont.black, color: ph.greenInk },
 });

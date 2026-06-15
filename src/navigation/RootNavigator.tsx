@@ -104,9 +104,9 @@ function PremiumTabBarBackground() {
         pointerEvents="none"
       />
 
-      {/* Gold → amethyst hairline rim (premium edge) */}
+      {/* Emerald hairline rim (premium edge) */}
       <LinearGradient
-        colors={['rgba(34,197,94,0.45)', 'rgba(34,197,94,0.15)', 'rgba(255,255,255,0.06)']}
+        colors={['rgba(16,185,129,0.40)', 'rgba(16,185,129,0.14)', 'rgba(255,255,255,0.06)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={tabBarDockStyles.topRim}
