@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
-import { SecondaryButton } from '../shared/SecondaryButton';
 import { useFriendInviteResolver } from '../../hooks/useFriendInviteResolver';
 import { useAppStore } from '../../store/useAppStore';
 import { DEMO_DISCOVERABLE_USERS } from '../../data/socialMock';
@@ -24,14 +24,30 @@ import { showUserMessage } from '../../utils/showUserMessage';
 interface Props {
   visible: boolean;
   onClose: () => void;
-  /** Open the camera scanner (must be a root-level modal — not nested inside this sheet). */
   onRequestScanner: () => void;
+  onShowMyQr: () => void;
+  onCopyInviteLink: () => void;
 }
 
-export function AddFriendModal({ visible, onClose, onRequestScanner }: Props) {
+type MethodRow = {
+  key: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+};
+
+export function AddFriendModal({
+  visible,
+  onClose,
+  onRequestScanner,
+  onShowMyQr,
+  onCopyInviteLink,
+}: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { resolveFromRaw } = useFriendInviteResolver({ onAdded: onClose });
+  const { resolveFromRaw } = useFriendInviteResolver({
+    onAdded: () => setLookupInput(''),
+  });
   const friends = useAppStore((s) => s.friends);
   const addFriend = useAppStore((s) => s.addFriend);
 
@@ -43,37 +59,44 @@ export function AddFriendModal({ visible, onClose, onRequestScanner }: Props) {
   );
 
   useEffect(() => {
-    if (!visible) {
-      setLookupInput('');
-    }
+    if (!visible) setLookupInput('');
   }, [visible]);
 
-  const onLookupPress = () => {
-    resolveFromRaw(lookupInput);
-  };
+  const methodRows: MethodRow[] = [
+    {
+      key: 'scan',
+      icon: 'scan-outline',
+      label: t('friends.addMethodScan'),
+      onPress: onRequestScanner,
+    },
+    {
+      key: 'showQr',
+      icon: 'qr-code-outline',
+      label: t('friends.addMethodShowQr'),
+      onPress: onShowMyQr,
+    },
+    {
+      key: 'copyLink',
+      icon: 'link-outline',
+      label: t('friends.addMethodCopyLink'),
+      onPress: onCopyInviteLink,
+    },
+  ];
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View
-        style={[
-          styles.root,
-          {
-            paddingTop: insets.top + spacing.sm,
-            paddingBottom: insets.bottom + spacing.base,
-          },
-        ]}
-      >
-        <View style={styles.header}>
-          <View style={styles.headerAccent} />
-          <View style={styles.headerInner}>
-            <Text style={styles.badge}>{t('friends.heroEyebrow')}</Text>
-            <View style={styles.headerRow}>
-              <Text style={styles.title}>{t('friends.addModalTitle')}</Text>
-              <TouchableOpacity onPress={onClose} hitSlop={12}>
-                <Text style={styles.cancel}>{t('locale.cancel')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+      <View style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+        <View style={styles.topBar}>
+          <Text style={styles.title}>{t('friends.addModalTitle')}</Text>
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={12}
+            style={styles.closeBtn}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.close')}
+          >
+            <Ionicons name="close" size={24} color={colors.textSecondary} />
+          </TouchableOpacity>
         </View>
 
         <ScrollView
@@ -81,7 +104,9 @@ export function AddFriendModal({ visible, onClose, onRequestScanner }: Props) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.inputLabel}>{t('friends.enterFriendUsername')}</Text>
+          <Text style={styles.subtitle}>{t('friends.addModalSubtitle')}</Text>
+
+          <Text style={styles.fieldLabel}>{t('friends.enterFriendUsername')}</Text>
           <TextInput
             style={styles.input}
             placeholder={t('friends.placeholderUsername')}
@@ -91,32 +116,50 @@ export function AddFriendModal({ visible, onClose, onRequestScanner }: Props) {
             value={lookupInput}
             onChangeText={setLookupInput}
             returnKeyType="done"
-            onSubmitEditing={onLookupPress}
+            onSubmitEditing={() => resolveFromRaw(lookupInput)}
           />
-          <PrimaryButton label={t('friends.lookup')} onPress={onLookupPress} variant="red" />
-          <View style={styles.scanGap} />
-          <SecondaryButton
-            label={t('friends.scanQr')}
-            onPress={() => {
-              onRequestScanner();
-            }}
+          <PrimaryButton
+            label={t('friends.addFriendBtn')}
+            onPress={() => resolveFromRaw(lookupInput)}
+            style={styles.addBtn}
           />
-          <Text style={styles.demoHint}>{t('friends.demoHint')}</Text>
+
+          <View style={styles.dividerRow}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>{t('friends.addDividerOr')}</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <View style={styles.methodList}>
+            {methodRows.map((row) => (
+              <TouchableOpacity
+                key={row.key}
+                style={styles.methodRow}
+                onPress={row.onPress}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={row.label}
+              >
+                <View style={styles.methodIcon}>
+                  <Ionicons name={row.icon} size={20} color={colors.gold} />
+                </View>
+                <Text style={styles.methodLabel}>{row.label}</Text>
+                <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+              </TouchableOpacity>
+            ))}
+          </View>
 
           {demoList.length > 0 ? (
-            <View style={styles.demoSection}>
-              <Text style={styles.demoBrowseTitle}>{t('social.demoBrowseTitle')}</Text>
+            <View style={styles.demoBlock}>
+              <Text style={styles.demoTitle}>{t('friends.demoTryTitle')}</Text>
               {demoList.map((d) => (
                 <View key={d.username} style={styles.demoRow}>
-                  <View style={styles.demoRowText}>
+                  <View style={styles.demoText}>
                     <Text style={styles.demoName} numberOfLines={1}>
                       {d.displayName}
                     </Text>
-                    <Text style={styles.demoUn} numberOfLines={1}>
+                    <Text style={styles.demoHandle} numberOfLines={1}>
                       @{d.username}
-                    </Text>
-                    <Text style={styles.demoBlurb} numberOfLines={2}>
-                      {d.blurb}
                     </Text>
                   </View>
                   <TouchableOpacity
@@ -128,14 +171,13 @@ export function AddFriendModal({ visible, onClose, onRequestScanner }: Props) {
                           t('social.demoAddedTitle'),
                           t('social.demoAddedBody', { name: d.displayName }),
                         );
-                        onClose();
                       } else if (res.reason === 'duplicate') {
                         showUserMessage(t('social.demoAddedTitle'), t('social.demoAlreadyFriend'));
                       }
                     }}
                     activeOpacity={0.88}
                   >
-                    <Text style={styles.demoAddBtnText}>{t('friends.add')}</Text>
+                    <Text style={styles.demoAddText}>{t('friends.add')}</Text>
                   </TouchableOpacity>
                 </View>
               ))}
@@ -150,144 +192,150 @@ export function AddFriendModal({ visible, onClose, onRequestScanner }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.homeGradientBottom,
+    backgroundColor: colors.background,
   },
-  header: {
-    flexDirection: 'row',
-    backgroundColor: colors.surfaceElevated,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    shadowColor: colors.shadowStrong,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  headerAccent: {
-    width: 5,
-    backgroundColor: colors.accent,
-  },
-  headerInner: {
-    flex: 1,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.md,
-  },
-  badge: {
-    fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.textMuted,
-    letterSpacing: 2,
-    marginBottom: spacing.xs,
-  },
-  headerRow: {
+  topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: spacing.md,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
   },
   title: {
     flex: 1,
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+    fontFamily: brandFont.bold,
     color: colors.textPrimary,
-    letterSpacing: -0.3,
   },
-  cancel: {
-    fontSize: fontSize.base,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+  closeBtn: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scroll: {
     padding: spacing.base,
-    paddingBottom: spacing.xl,
+    paddingBottom: spacing.xxl,
   },
-  inputLabel: {
+  subtitle: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.regular,
+    color: colors.textSecondary,
+    lineHeight: 20,
+    marginBottom: spacing.lg,
+  },
+  fieldLabel: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: brandFont.semibold,
     color: colors.textMuted,
-    letterSpacing: 0.3,
-    textTransform: 'uppercase',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
   },
   input: {
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.accent,
+    borderRadius: radius.md,
     paddingHorizontal: spacing.base,
-    paddingVertical: Platform.OS === 'ios' ? 14 : 12,
+    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontFamily: brandFont.regular,
     color: colors.textPrimary,
-    marginBottom: spacing.lg,
-    backgroundColor: colors.surfaceElevated,
-  },
-  scanGap: {
-    height: spacing.sm,
-  },
-  demoHint: {
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    marginTop: spacing.lg,
-    lineHeight: 18,
-  },
-  demoSection: {
-    marginTop: spacing.xl,
-    paddingTop: spacing.lg,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.border,
-  },
-  demoBrowseTitle: {
-    fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.textMuted,
-    letterSpacing: 1.2,
-    textTransform: 'uppercase',
+    backgroundColor: colors.nearBlack,
     marginBottom: spacing.md,
+  },
+  addBtn: {
+    marginBottom: spacing.lg,
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.lg,
+  },
+  dividerLine: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.border,
+  },
+  dividerText: {
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.medium,
+    color: colors.textMuted,
+  },
+  methodList: {
+    borderRadius: radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    overflow: 'hidden',
+    backgroundColor: colors.nearBlack,
+  },
+  methodRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderLight,
+  },
+  methodIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: colors.goldSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  methodLabel: {
+    flex: 1,
+    fontSize: fontSize.md,
+    fontFamily: brandFont.semibold,
+    color: colors.textPrimary,
+  },
+  demoBlock: {
+    marginTop: spacing.xl,
+  },
+  demoTitle: {
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.semibold,
+    color: colors.textMuted,
+    marginBottom: spacing.sm,
   },
   demoRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
+    paddingVertical: spacing.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderLight,
   },
-  demoRowText: {
+  demoText: {
     flex: 1,
     minWidth: 0,
   },
   demoName: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
     color: colors.textPrimary,
   },
-  demoUn: {
+  demoHandle: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontFamily: brandFont.regular,
     color: colors.textMuted,
     marginTop: 2,
   },
-  demoBlurb: {
-    fontSize: fontSize.xs,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-    lineHeight: 18,
-  },
   demoAddBtn: {
-    backgroundColor: colors.nearBlack,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
+    backgroundColor: colors.goldSoft,
+    borderWidth: 1,
+    borderColor: colors.goldBorder,
   },
-  demoAddBtnText: {
+  demoAddText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.black,
-    color: colors.white,
-    letterSpacing: 0.3,
+    fontFamily: brandFont.bold,
+    color: colors.gold,
   },
 });

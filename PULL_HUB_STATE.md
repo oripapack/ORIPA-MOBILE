@@ -25,8 +25,8 @@ This file reflects **what exists in this repository today** (code + SQL). Items 
 | Auth (client) | **Clerk** (`@clerk/clerk-expo`) when `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` is set |
 | Backend host | **Supabase** project under `backend/` — **Postgres** migrations, **Edge Functions** (Deno 2 per `backend/supabase/config.toml`) |
 | Supabase client (app) | **`@supabase/supabase-js`** when `EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` are set (`src/lib/supabase.ts`) |
-| Edge runtime deps | **`npm:@supabase/supabase-js@2`** inside functions |
-| Blockchain vendor | **Thirdweb Engine–style HTTP** mint (`backend/supabase/functions/_shared/minting.ts`) — **not** the `@thirdweb/sdk` npm package in this repo |
+| Edge runtime deps | **`npm:@supabase/supabase-js@2`** and **`npm:viem`** inside functions |
+| Blockchain vendor | **Native Base transactions via `viem`** (`backend/supabase/functions/_shared/blockchain.ts`); no Thirdweb Engine HTTP path |
 | Queue / Bull | **Not in codebase** — mint retry is a second Edge Function + DB status, not Redis/Bull |
 
 ---
@@ -80,12 +80,12 @@ This file reflects **what exists in this repository today** (code + SQL). Items 
 
 | Topic | Status |
 |-------|--------|
-| **Chain** | **Base** implied by default `chain_id = 8453` on `digital_twins` and `BASE_CHAIN_ID` env (default 8453) in minting helper. |
-| **Mint path** | After `pull_results` insert, **`execute-pull`** schedules **`processMintForPullId`** via **`EdgeRuntime.waitUntil`** when available; otherwise fire-and-forget promise (`execute-pull/index.ts`). |
-| **Mint API** | **`mintViaThirdwebEngine`**: `POST` to `{THIRDWEB_ENGINE_URL}/contract/{chain}/{DIGITAL_TWIN_CONTRACT_ADDRESS}/erc721/mint-to` with **`Authorization: Bearer`** `THIRDWEB_ENGINE_ACCESS_TOKEN`. |
+| **Chain** | **Base** (`chain_id = 8453`) through `viem/chains`. |
+| **Mint path** | High-value pulls are created as **`mint_deferred`**. **`request-shipment`** moves them to **`mint_pending`** and schedules **`processMintForPullId`** only after a physical shipping request. |
+| **Mint API** | **`mintCardNFT`** simulates and submits `mintTo(address,string)` directly from the backend minter wallet using `viem`. |
 | **Retry worker** | **`mint-retry`** Edge Function: requires **`MINT_CRON_SECRET`** header/bearer; processes pending pulls with bounded **`mint_attempts`** (shared constant in `processMint.ts`). |
-| **Tiered minting** | **`pack_pool_items.should_mint`**. Low tier → **`mint_skipped_low_tier`** (no Thirdweb). High tier + wallet → **`mint_pending`** + async mint. |
-| **Receipt / block time enrichment** | **`block_number` / `block_timestamp`** columns exist; population from chain receipt is **not implemented** in the scanned mint path (metadata uses wall-clock `provenance_at` for timestamp attribute). |
+| **Tiered minting** | **`pack_pool_items.should_mint`**. Low tier → **`mint_skipped_low_tier`**. High tier → **`mint_deferred`** until shipment request, then native Base mint. |
+| **Receipt / block time enrichment** | `block_number` is populated from the Base receipt. `token_id` is parsed from the ERC-721 `Transfer` event when available, with the transaction hash as a duplicate-mint-safe fallback. |
 
 ---
 
@@ -103,7 +103,7 @@ This file reflects **what exists in this repository today** (code + SQL). Items 
 - **Clerk vs Supabase Auth:** Migrations and Edge Function auth assume **Supabase JWT** (`userClient.auth.getUser()`). The app primarily documents **Clerk**; a **single sign-on bridge** from Clerk → Supabase session for Edge calls is **not present** in scanned `src/` — treat as **integration gap** until implemented or auth strategy is unified.
 - **`seed_pairs` / pre-commit reveal** — **Planned** (column stub only).
 - **Vault / credits / pack open** — still largely **local Zustand** per `docs/APP_OVERVIEW.md`; not replaced by `execute-pull` in the mobile UI.
-- **Thirdweb / contract / Engine** — **off-repo** (dashboard deploy + secrets); code is **integration-ready**, not self-contained.
+- **Contract deploy / minter funding** — off-repo. The backend expects a deployed Base ERC-721 contract with `mintTo(address,string)` and a funded admin minter wallet.
 
 ---
 
@@ -118,8 +118,8 @@ This file reflects **what exists in this repository today** (code + SQL). Items 
 | Name | Used by |
 |------|---------|
 | `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | `execute-pull`, `mint-retry`, `processMint` |
-| `THIRDWEB_ENGINE_URL`, `THIRDWEB_ENGINE_ACCESS_TOKEN`, `DIGITAL_TWIN_CONTRACT_ADDRESS` | `mintViaThirdwebEngine` |
-| `BASE_CHAIN_ID` (optional, defaults **8453**) | `minting.ts` |
+| `PRIVATE_MINTER_KEY`, `DIGITAL_TWIN_CONTRACT_ADDRESS` | `mintCardNFT` native Base mints |
+| `BASE_RPC_URL` (optional) | Dedicated Base RPC transport for `viem`; defaults to chain transport |
 | `DEFAULT_PACK_VERSION_ID` (optional dev convenience) | `execute-pull` |
 | `MINT_CRON_SECRET` | `mint-retry` |
 

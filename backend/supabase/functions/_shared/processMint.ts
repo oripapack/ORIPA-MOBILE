@@ -1,9 +1,12 @@
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js@2";
 import {
+  buildTokenMetadataURI,
   buildTwinMetadata,
-  mintViaThirdwebEngine,
-} from "./minting.ts";
-import type { TwinMetadata } from "./minting.ts";
+  getDigitalTwinContractAddress,
+  getMintReceiptDetails,
+  mintCardNFT,
+} from "./blockchain.ts";
+import type { TwinMetadata } from "./blockchain.ts";
 
 export type ProcessMintResult =
   | { status: "completed" }
@@ -27,8 +30,8 @@ function serviceClient(): SupabaseClient {
 }
 
 /**
- * Gasless mint for high-tier pulls only (`mint_pending`).
- * Low-tier pulls use `mint_skipped_low_tier` and never hit Thirdweb.
+ * Native Base mint for high-tier pulls only after shipment is requested.
+ * Low-tier pulls use `mint_skipped_low_tier` and never hit the chain.
  */
 export async function processMintForPullId(
   pullId: string,
@@ -134,27 +137,36 @@ export async function processMintForPullId(
     provenanceTimestamp: provenanceIso,
   });
 
-  const mint = await mintViaThirdwebEngine({
-    receiver: wallet,
-    metadata,
-  });
+  const tokenMetadataURI = buildTokenMetadataURI(metadata);
+  let txHash: string;
+  let receipt: Awaited<ReturnType<typeof getMintReceiptDetails>>;
 
-  if ("error" in mint) {
-    await bumpFailure(supabase, pullId, attempts, mint.error);
-    return { status: "pending", error: mint.error };
+  try {
+    txHash = await mintCardNFT({
+      userWalletAddress: wallet,
+      tokenMetadataURI,
+    });
+    receipt = await getMintReceiptDetails({
+      txHash,
+      ownerWallet: wallet,
+    });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    await bumpFailure(supabase, pullId, attempts, message);
+    return { status: "pending", error: message };
   }
 
   const { error: insertErr } = await supabase.from("digital_twins").insert({
     pull_id: pullId,
-    chain_id: mint.chainId,
-    contract_address: mint.contractAddress,
-    token_id: mint.tokenId,
-    tx_hash: mint.txHash,
-    owner_wallet: mint.ownerWallet,
-    block_number: mint.blockNumber != null ? Number(mint.blockNumber) : null,
-    block_timestamp: mint.blockTimestamp ?? null,
+    chain_id: 8453,
+    contract_address: getDigitalTwinContractAddress(),
+    token_id: receipt.tokenId ?? txHash,
+    tx_hash: txHash,
+    owner_wallet: wallet,
+    block_number: receipt.blockNumber != null ? Number(receipt.blockNumber) : null,
+    block_timestamp: null,
     metadata_snapshot: metadata as unknown as Record<string, unknown>,
-    mint_provider: mint.provider,
+    mint_provider: "viem_native_base",
   });
 
   if (insertErr) {

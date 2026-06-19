@@ -15,7 +15,7 @@ import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
-type Action = 'addUsername' | 'scanQr' | 'showQr' | 'shareInvite' | 'promo';
+type Action = 'showQr' | 'shareInvite' | 'promo';
 
 type Props = {
   visible: boolean;
@@ -24,8 +24,6 @@ type Props = {
 };
 
 const ROWS: { action: Action; icon: keyof typeof Ionicons.glyphMap }[] = [
-  { action: 'addUsername', icon: 'person-add-outline' },
-  { action: 'scanQr', icon: 'scan-outline' },
   { action: 'showQr', icon: 'qr-code-outline' },
   { action: 'shareInvite', icon: 'share-outline' },
   { action: 'promo', icon: 'gift-outline' },
@@ -48,7 +46,7 @@ export function FriendsHubMenu({ visible, onClose, onSelect }: Props) {
           onPress={(e) => e.stopPropagation()}
         >
           <View style={styles.grab} />
-          <Text style={styles.sheetTitle}>{t('friends.hubMenuTitle')}</Text>
+          <Text style={styles.sheetTitle}>{t('friends.moreMenuTitle')}</Text>
           {ROWS.map((row) => (
             <TouchableOpacity
               key={row.action}

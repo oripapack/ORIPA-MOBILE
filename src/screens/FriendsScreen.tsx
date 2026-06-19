@@ -33,7 +33,6 @@ import { useFriendInviteResolver } from '../hooks/useFriendInviteResolver';
 import { QrScannerModal } from '../components/friends/QrScannerModal';
 import { navigationRef } from '../navigation/navigationRef';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
-import { FriendsHubMenu } from '../components/friends/FriendsHubMenu';
 import { FriendsActivityCard } from '../components/friends/FriendsActivityCard';
 import {
   buildFriendsRecentActivity,
@@ -82,12 +81,13 @@ export function FriendsScreen() {
   const acceptIncomingFriendRequest = useAppStore((s) => s.acceptIncomingFriendRequest);
   const declineIncomingFriendRequest = useAppStore((s) => s.declineIncomingFriendRequest);
 
-  const [menuOpen, setMenuOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [friendScannerOpen, setFriendScannerOpen] = useState(false);
+  /** Re-open Add friends sheet after QR / scanner sub-modals (pageSheet blocks stacked modals). */
+  const reopenAddSheetRef = useRef(false);
 
-  const { resolveFromUsername } = useFriendInviteResolver({ onAdded: () => setAddOpen(false) });
+  const { resolveFromUsername } = useFriendInviteResolver();
 
   const qrPayload = useMemo(
     () => (user.username.trim() ? buildFriendQrPayload(user.username) : ''),
@@ -181,14 +181,6 @@ export function FriendsScreen() {
     [requireAuth],
   );
 
-  const openPromotions = useCallback(
-    () =>
-      requireAuth(() => {
-        if (navigationRef.isReady()) navigationRef.navigate('Promotions');
-      }),
-    [requireAuth],
-  );
-
   const openFriendProfile = useCallback(
     (username: string) =>
       requireAuth(() => {
@@ -213,23 +205,40 @@ export function FriendsScreen() {
     showUserMessage(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'));
   }, [user.username, t]);
 
-  const onHubSelect = useCallback(
-    (action: 'addUsername' | 'scanQr' | 'showQr' | 'shareInvite' | 'promo') => {
-      requireAuth(() => {
-        if (action === 'addUsername') setAddOpen(true);
-        else if (action === 'scanQr') setFriendScannerOpen(true);
-        else if (action === 'showQr') {
-          if (!user.username.trim()) {
-            showUserMessage(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
-            return;
-          }
-          setQrOpen(true);
-        } else if (action === 'shareInvite') void copyInviteLink();
-        else if (action === 'promo') openPromotions();
-      });
-    },
-    [requireAuth, copyInviteLink, openPromotions, user.username, t],
-  );
+  const reopenAddSheetIfNeeded = useCallback(() => {
+    if (!reopenAddSheetRef.current) return;
+    reopenAddSheetRef.current = false;
+    setAddOpen(true);
+  }, []);
+
+  /** Dismiss add sheet first — otherwise scanner / my-QR modals render behind the pageSheet. */
+  const openSubModalFromAdd = useCallback((open: () => void) => {
+    reopenAddSheetRef.current = true;
+    setAddOpen(false);
+    setTimeout(open, Platform.OS === 'web' ? 0 : 320);
+  }, []);
+
+  const openScannerFromAdd = useCallback(() => {
+    openSubModalFromAdd(() => setFriendScannerOpen(true));
+  }, [openSubModalFromAdd]);
+
+  const openMyQrFromAdd = useCallback(() => {
+    if (!user.username.trim()) {
+      showUserMessage(t('friendsAlerts.noUsernameTitle'), t('friendsAlerts.noUsernameBody'));
+      return;
+    }
+    openSubModalFromAdd(() => setQrOpen(true));
+  }, [openSubModalFromAdd, user.username, t]);
+
+  const closeScanner = useCallback(() => {
+    setFriendScannerOpen(false);
+    reopenAddSheetIfNeeded();
+  }, [reopenAddSheetIfNeeded]);
+
+  const closeMyQr = useCallback(() => {
+    setQrOpen(false);
+    reopenAddSheetIfNeeded();
+  }, [reopenAddSheetIfNeeded]);
 
   return (
     <View style={styles.root}>
@@ -248,18 +257,18 @@ export function FriendsScreen() {
             </VaultFramedCard>
           ) : null}
 
-          {/* Header — content-first; utilities live in the menu */}
+          {/* Header */}
           <View style={styles.headerRow}>
             <Text style={styles.pageTitle}>{t('friends.title')}</Text>
             {!isGuest ? (
               <TouchableOpacity
-                style={styles.headerBtn}
-                onPress={() => setMenuOpen(true)}
+                style={[styles.headerBtn, styles.headerBtnAdd]}
+                onPress={openAdd}
                 hitSlop={12}
                 accessibilityRole="button"
-                accessibilityLabel={t('friends.hubMenuTitle')}
+                accessibilityLabel={t('friends.addFriendA11y')}
               >
-                <Ionicons name="ellipsis-horizontal" size={26} color={colors.textPrimary} />
+                <Ionicons name="add" size={28} color={colors.ink} />
               </TouchableOpacity>
             ) : (
               <View style={styles.headerBtnPlaceholder} />
@@ -425,35 +434,35 @@ export function FriendsScreen() {
         </ScrollView>
       </View>
 
-      <FriendsHubMenu visible={menuOpen} onClose={() => setMenuOpen(false)} onSelect={onHubSelect} />
-
       <MyQrModal
         visible={qrOpen}
-        onClose={() => setQrOpen(false)}
+        onClose={closeMyQr}
         qrValue={qrPayload}
         username={user.username}
         displayName={user.displayName}
         onCopied={() => showUserMessage(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'))}
         onScanSomeoneElse={() => {
           setQrOpen(false);
-          setFriendScannerOpen(true);
+          reopenAddSheetRef.current = true;
+          setTimeout(() => setFriendScannerOpen(true), Platform.OS === 'web' ? 0 : 320);
         }}
       />
 
       <AddFriendModal
         visible={addOpen}
         onClose={() => setAddOpen(false)}
-        onRequestScanner={() => {
-          setAddOpen(false);
-          setFriendScannerOpen(true);
-        }}
+        onRequestScanner={openScannerFromAdd}
+        onShowMyQr={openMyQrFromAdd}
+        onCopyInviteLink={() => void copyInviteLink()}
       />
 
       <QrScannerModal
         visible={friendScannerOpen}
-        onClose={() => setFriendScannerOpen(false)}
+        onClose={closeScanner}
         onUsernameScanned={(username) => {
+          setFriendScannerOpen(false);
           resolveFromUsername(username);
+          reopenAddSheetIfNeeded();
         }}
       />
     </View>
@@ -510,6 +519,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceElevated,
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  headerBtnAdd: {
+    backgroundColor: colors.gold,
+    borderColor: colors.goldBorder,
   },
   headerBtnPlaceholder: {
     width: 44,

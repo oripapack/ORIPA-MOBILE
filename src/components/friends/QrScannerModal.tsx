@@ -3,6 +3,7 @@ import {
   Modal,
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   StyleSheet,
   Platform,
@@ -12,10 +13,10 @@ import { CameraView, useCameraPermissions, type BarcodeScanningResult } from 'ex
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { parseFriendInviteFromQr } from '../../lib/friendQr';
+import { showUserMessage } from '../../utils/showUserMessage';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
-import { transparentModalIOSProps } from '../../constants/modalPresentation';
 
 interface Props {
   visible: boolean;
@@ -29,44 +30,56 @@ export function QrScannerModal({ visible, onClose, onUsernameScanned }: Props) {
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
   const scannedRef = useRef(false);
+  const [pasteInput, setPasteInput] = useState('');
 
   useEffect(() => {
     if (visible) {
       scannedRef.current = false;
+      setPasteInput('');
       if (!permission?.granted) {
         void requestPermission();
       }
     }
   }, [visible, permission?.granted, requestPermission]);
 
-  const handleBarcode = useCallback(
-    (scanningResult: BarcodeScanningResult) => {
+  const finishScan = useCallback(
+    (username: string) => {
       if (scannedRef.current) return;
-      const username = parseFriendInviteFromQr(scanningResult.data);
-      if (!username) return;
       scannedRef.current = true;
       onUsernameScanned(username);
       onClose();
     },
-    [onUsernameScanned, onClose],
+    [onClose, onUsernameScanned],
   );
 
-  if (Platform.OS === 'web') {
-    return (
-      <Modal visible={visible} animationType="fade" transparent {...transparentModalIOSProps}>
-        <View style={[styles.webWrap, { paddingTop: insets.top + spacing.lg }]}>
-          <Text style={styles.webTitle}>{t('qrScanner.webTitle')}</Text>
-          <Text style={styles.webBody}>{t('qrScanner.webBody')}</Text>
-          <TouchableOpacity style={styles.closeWeb} onPress={onClose}>
-            <Text style={styles.closeWebText}>{t('qrScanner.close')}</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    );
-  }
+  const handleBarcode = useCallback(
+    (scanningResult: BarcodeScanningResult) => {
+      const username = parseFriendInviteFromQr(scanningResult.data);
+      if (!username) return;
+      finishScan(username);
+    },
+    [finishScan],
+  );
+
+  const onPasteSubmit = () => {
+    const username = parseFriendInviteFromQr(pasteInput);
+    if (!username) {
+      showUserMessage(t('friendsAlerts.invalidIdTitle'), t('friendsAlerts.invalidIdBody'));
+      return;
+    }
+    finishScan(username);
+  };
+
+  const showCamera = permission?.granted === true;
+  const showWebPaste = Platform.OS === 'web' && !showCamera;
 
   return (
-    <Modal visible={visible} animationType="slide">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="fullScreen"
+      onRequestClose={onClose}
+    >
       <View style={[styles.root, { paddingTop: insets.top }]}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={onClose} hitSlop={12} accessibilityRole="button">
@@ -76,17 +89,39 @@ export function QrScannerModal({ visible, onClose, onUsernameScanned }: Props) {
           <View style={{ width: 56 }} />
         </View>
 
-        {!permission?.granted ? (
+        {!permission && (
+          <View style={styles.permBody}>
+            <ActivityIndicator color={colors.gold} />
+          </View>
+        )}
+
+        {permission && !showCamera ? (
           <View style={styles.permBody}>
             <Text style={styles.permText}>{t('qrScanner.permText')}</Text>
-            <TouchableOpacity style={styles.permBtn} onPress={() => requestPermission()}>
+            <TouchableOpacity style={styles.permBtn} onPress={() => void requestPermission()}>
               <Text style={styles.permBtnText}>{t('qrScanner.allowCamera')}</Text>
             </TouchableOpacity>
-            {!permission && (
-              <ActivityIndicator color={colors.red} style={{ marginTop: spacing.lg }} />
-            )}
+            {showWebPaste ? (
+              <View style={styles.webPasteBlock}>
+                <Text style={styles.webPasteLabel}>{t('qrScanner.webPasteLabel')}</Text>
+                <TextInput
+                  style={styles.webPasteInput}
+                  value={pasteInput}
+                  onChangeText={setPasteInput}
+                  placeholder={t('qrScanner.webPastePlaceholder')}
+                  placeholderTextColor={colors.textMuted}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                <TouchableOpacity style={styles.permBtn} onPress={onPasteSubmit}>
+                  <Text style={styles.permBtnText}>{t('qrScanner.webPasteSubmit')}</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
-        ) : (
+        ) : null}
+
+        {showCamera ? (
           <View style={styles.cameraContainer}>
             <CameraView
               style={StyleSheet.absoluteFill}
@@ -99,7 +134,7 @@ export function QrScannerModal({ visible, onClose, onUsernameScanned }: Props) {
             </View>
             <Text style={styles.hint}>{t('qrScanner.hint')}</Text>
           </View>
-        )}
+        ) : null}
       </View>
     </Modal>
   );
@@ -142,15 +177,36 @@ const styles = StyleSheet.create({
   },
   permBtn: {
     alignSelf: 'center',
-    backgroundColor: colors.red,
+    backgroundColor: colors.gold,
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
     borderRadius: radius.lg,
   },
   permBtnText: {
-    color: colors.white,
+    color: colors.ink,
     fontFamily: brandFont.bold,
     fontSize: fontSize.base,
+  },
+  webPasteBlock: {
+    marginTop: spacing.xxl,
+    gap: spacing.sm,
+  },
+  webPasteLabel: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.medium,
+    color: 'rgba(255,255,255,0.7)',
+    textAlign: 'center',
+  },
+  webPasteInput: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
+    fontSize: fontSize.md,
+    fontFamily: brandFont.regular,
+    color: colors.white,
+    backgroundColor: 'rgba(255,255,255,0.06)',
   },
   cameraContainer: {
     flex: 1,
@@ -178,34 +234,5 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.85)',
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-  },
-  webWrap: {
-    flex: 1,
-    backgroundColor: colors.surfaceElevated,
-    paddingHorizontal: spacing.xl,
-    justifyContent: 'center',
-  },
-  webTitle: {
-    fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  webBody: {
-    fontSize: fontSize.base,
-    color: colors.textSecondary,
-    lineHeight: 22,
-    marginBottom: spacing.xl,
-  },
-  closeWeb: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.nearBlack,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: radius.lg,
-  },
-  closeWebText: {
-    color: colors.white,
-    fontFamily: brandFont.bold,
   },
 });

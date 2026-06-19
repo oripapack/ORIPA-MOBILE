@@ -687,7 +687,14 @@
     "lead": "Link up with people you play with — share your handle, scan QR, or send your invite link.",
     "add": "Add",
     "emptyCta": "Add friends",
-    "addModalTitle": "Add a friend",
+    "addModalTitle": "Add friends",
+    "addModalSubtitle": "Search by username or use a QR code.",
+    "addFriendBtn": "Add friend",
+    "addDividerOr": "or",
+    "addMethodScan": "Scan someone's QR code",
+    "addMethodShowQr": "Show my QR code",
+    "addMethodCopyLink": "Copy invite link",
+    "demoTryTitle": "Try adding",
     "qrShort": "QR",
     "qrActionSub": "Your code",
     "addActionSub": "Find people",
@@ -714,6 +721,8 @@
     "followFooterTitle": "Follow Pull Hub",
     "followFooterSub": "Drops, events, and community updates.",
     "hubMenuTitle": "Friends",
+    "moreMenuTitle": "More options",
+    "addFriendA11y": "Add friend",
     "hubMenu": {
       "addUsername": "Add friend by username",
       "scanQr": "Scan QR code",
@@ -1021,7 +1030,8 @@
     "copy": "Copy",
     "scanAnother": "Scan someone else's code",
     "scanAnotherSub": "Use the camera to add them from their QR",
-    "done": "Done"
+    "done": "Done",
+    "missingUsername": "Set up your username in profile settings to show a QR code."
   },
   "qrScanner": {
     "title": "Scan friend QR",
@@ -1029,6 +1039,9 @@
     "permText": "We need camera access to scan friend QR codes.",
     "allowCamera": "Allow camera",
     "hint": "Align the QR code within the frame",
+    "webPasteLabel": "Or paste a username or invite link",
+    "webPastePlaceholder": "e.g. jordan",
+    "webPasteSubmit": "Look up",
     "webTitle": "Scan not available on web",
     "webBody": "Open the app on your phone to scan a friend's QR code, or enter their username below.",
     "close": "Close"

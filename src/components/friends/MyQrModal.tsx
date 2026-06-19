@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Platform } from 'react-native';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
@@ -37,7 +37,14 @@ export function MyQrModal({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent {...transparentModalIOSProps}>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent
+      {...transparentModalIOSProps}
+      presentationStyle={Platform.OS === 'ios' ? undefined : 'overFullScreen'}
+      onRequestClose={onClose}
+    >
       <View style={styles.backdrop}>
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.backdropTap} />
@@ -51,7 +58,11 @@ export function MyQrModal({
           </View>
 
           <View style={styles.qrWrap}>
-            <QRCode value={qrValue} size={216} backgroundColor={colors.white} color={colors.black} />
+            {qrValue ? (
+              <QRCode value={qrValue} size={216} backgroundColor={colors.white} color={colors.black} />
+            ) : (
+              <Text style={styles.subtitle}>{t('myQr.missingUsername')}</Text>
+            )}
           </View>
 
           <Text style={styles.nameLabel}>{t('myQr.you')}</Text>
