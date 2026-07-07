@@ -42,8 +42,9 @@ const LEGAL_BODY: Record<'terms' | 'privacy' | 'promo' | 'payment', string> = {
 
 const ROW_ICON_SIZE = 22;
 
-const accountRowKeys = ['shipping', 'payout', 'identity', 'linked'] as const;
+const accountRowKeys = ['wallet', 'shipping', 'payout', 'identity', 'linked'] as const;
 const accountIcons: Record<(typeof accountRowKeys)[number], keyof typeof Ionicons.glyphMap> = {
+  wallet: 'diamond-outline',
   shipping: 'cube-outline',
   payout: 'wallet-outline',
   identity: 'person-circle-outline',
@@ -75,6 +76,7 @@ export function SettingsScreen() {
 
   const onAccountRow = (key: (typeof accountRowKeys)[number]) => {
     requireAuth(() => {
+      if (key === 'wallet') navigation.navigate('WalletLinking');
       if (key === 'shipping') navigation.navigate('ShippingAddress');
       if (key === 'payout') navigation.navigate('PayoutMethod');
       if (key === 'identity') navigation.navigate('IdentityVerification');

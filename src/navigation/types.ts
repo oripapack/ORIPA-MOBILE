@@ -30,6 +30,7 @@ export type RootStackParamList = {
   FriendProfile: { username: string };
   FriendsLeaderboard: undefined;
   LinkedAccounts: undefined;
+  WalletLinking: undefined;
   IdentityVerification: undefined;
   PayoutMethod: undefined;
   /** Promo codes + referral link (Profile → rewards). */

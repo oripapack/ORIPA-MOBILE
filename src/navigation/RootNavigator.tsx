@@ -27,6 +27,7 @@ import { PullHistoryScreen } from '../screens/PullHistoryScreen';
 import { LinkedAccountsScreen } from '../screens/LinkedAccountsScreen';
 import { IdentityVerificationScreen } from '../screens/IdentityVerificationScreen';
 import { PayoutMethodScreen } from '../screens/PayoutMethodScreen';
+import { WalletLinkingScreen } from '../screens/WalletLinkingScreen';
 import { PromotionsScreen } from '../screens/PromotionsScreen';
 import { MembershipScreen } from '../screens/MembershipScreen';
 import { CollectorQuestsScreen } from '../screens/CollectorQuestsScreen';
@@ -365,6 +366,17 @@ function RootStack() {
         <Stack.Screen
           name="LinkedAccounts"
           component={LinkedAccountsScreen}
+          options={{
+            headerShown: true,
+            headerTintColor: colors.textPrimary,
+            headerTitleStyle: styles.stackHeaderTitle,
+            headerShadowVisible: false,
+            headerStyle: { backgroundColor: colors.surfaceElevated },
+          }}
+        />
+        <Stack.Screen
+          name="WalletLinking"
+          component={WalletLinkingScreen}
           options={{
             headerShown: true,
             headerTintColor: colors.textPrimary,

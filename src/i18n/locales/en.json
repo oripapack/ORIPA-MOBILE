@@ -883,10 +883,27 @@
     "promos": "Promos"
   },
   "accountRows": {
+    "wallet": "Wallet Address",
     "shipping": "Shipping Address",
     "payout": "Payout Method",
     "identity": "Identity Verification",
     "linked": "Linked Accounts"
+  },
+  "walletLinking": {
+    "navTitle": "Wallet address",
+    "lead": "Link your Base wallet to receive Digital Twin NFTs when you ship high-tier pulls from your vault.",
+    "fieldLabel": "EVM wallet address",
+    "placeholder": "0x…",
+    "hint": "Must start with 0x and be 42 characters (Base / Ethereum format).",
+    "save": "Save wallet address",
+    "savedTitle": "Saved",
+    "savedBody": "Your wallet address was saved. NFTs will mint to this address when you request shipping.",
+    "saveFailed": "Could not save. Try again.",
+    "invalidTitle": "Invalid address",
+    "invalidBody": "Enter a valid EVM address (0x followed by 40 hex characters).",
+    "notSignedIn": "Sign in to save your wallet address.",
+    "notConfigured": "Supabase is not configured in this build.",
+    "authFailed": "Could not authenticate with Supabase. Try signing out and back in."
   },
   "supportRows": {
     "help": "Help Center",
