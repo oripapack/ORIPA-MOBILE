@@ -107,6 +107,8 @@ interface AppStore {
 
   // Actions
   addCredits: (amount: number) => void;
+  /** Admin / dev tools: set the wallet balance directly (e.g. grant "infinite" credits). */
+  setCredits: (amount: number) => void;
   addFreePackGrants: (count: number) => void;
   setHomeViewMode: (mode: 'discover' | 'browse') => void;
   setHomeNiche: (niche: HomeNicheCategory) => void;
@@ -427,6 +429,11 @@ export const useAppStore = create<AppStore>((set, get) => {
   addCredits: (amount) =>
     set((state) => ({
       user: { ...state.user, credits: state.user.credits + amount },
+    })),
+
+  setCredits: (amount) =>
+    set((state) => ({
+      user: { ...state.user, credits: Math.max(0, Math.floor(amount)) },
     })),
 
   addFreePackGrants: (count) =>

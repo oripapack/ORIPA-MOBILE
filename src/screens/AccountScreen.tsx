@@ -14,9 +14,8 @@ import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
-import { isClerkEnabled } from '../config/clerk';
-import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { useRequireAuth } from '../hooks/useRequireAuth';
+import { AccountAuthCard } from '../components/account/AccountAuthCard';
 import { deriveSocialProfileFromUser } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
@@ -46,12 +45,9 @@ export function AccountScreen() {
   const streak = useAppStore((s) => s.collectorStreakDays);
   const streakBest = useAppStore((s) => s.collectorStreakBest);
   const { refreshControl } = usePullToRefresh();
-  const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
-  const forceAuthWall = useGuestBrowseStore((s) => s.forceAuthWall);
   const { requireAuth } = useRequireAuth();
   const simulatedMemberTier = useMembershipSimulationStore((s) => s.simulatedTier);
 
-  const showGuestSignInCard = isClerkEnabled && !clerkSignedIn;
   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
   const prog = progressionFromTotalXp(user.xp);
   const tierColors: Record<string, string> = {
@@ -104,10 +100,6 @@ export function AccountScreen() {
     navigation.navigate('Settings');
   }, [navigation]);
 
-  const onGuestSignIn = useCallback(() => {
-    forceAuthWall();
-  }, [forceAuthWall]);
-
   const recentPulls = useMemo(
     () => socialProfile.recentPulls.slice(0, PREVIEW_PULLS),
     [socialProfile.recentPulls],
@@ -124,22 +116,7 @@ export function AccountScreen() {
       >
       <Text style={styles.pageTitle}>{t('account.title')}</Text>
 
-      {showGuestSignInCard ? (
-        <VaultFramedCard style={styles.guestSignInCard}>
-          <Text style={styles.guestSignInEyebrow}>{t('account.guestSignInEyebrow')}</Text>
-          <Text style={styles.guestSignInTitle}>{t('account.guestSignInTitle')}</Text>
-          <Text style={styles.guestSignInBody}>{t('account.guestSignInBody')}</Text>
-          <TouchableOpacity
-            style={styles.guestSignInBtn}
-            onPress={onGuestSignIn}
-            activeOpacity={0.88}
-            accessibilityRole="button"
-            accessibilityLabel={t('account.guestSignInCta')}
-          >
-            <Text style={styles.guestSignInBtnText}>{t('account.guestSignInCta')}</Text>
-          </TouchableOpacity>
-        </VaultFramedCard>
-      ) : null}
+      <AccountAuthCard />
 
       {/* 1 · Hero profile */}
       <VaultFramedCard style={styles.heroCard}>

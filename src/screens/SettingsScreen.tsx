@@ -27,6 +27,7 @@ import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { isClerkEnabled } from '../config/clerk';
 import { AccountSignOutFooter } from '../components/account/AccountSignOutFooter';
 import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
+import { AdminToolsSection } from '../components/account/AdminToolsSection';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { resetLocalOnboardingStateAndReload } from '../lib/resetLocalOnboardingState';
 import { confirmUserAction } from '../utils/showUserMessage';
@@ -171,6 +172,8 @@ export function SettingsScreen() {
             onPress={() => setLocaleOpen(true)}
           />
         </VaultFramedCard>
+
+        <AdminToolsSection />
 
         {__DEV__ ? (
           <>

@@ -1,0 +1,271 @@
+diff --git a/src/components/coach/CoachSpotlight.tsx b/src/components/coach/CoachSpotlight.tsx
+index 3537bab..3745121 100644
+--- a/src/components/coach/CoachSpotlight.tsx
++++ b/src/components/coach/CoachSpotlight.tsx
+@@ -72,16 +72,20 @@ export function CoachSpotlight({
+           pointerEvents="box-none"
+         >
+           <LinearGradient
+-            colors={['rgba(62, 92, 118, 0.22)', 'rgba(232, 228, 220, 0.55)']}
++            colors={['rgba(16,185,129,0.45)', 'rgba(16,185,129,0.04)']}
+             start={{ x: 0, y: 0 }}
+-            end={{ x: 1, y: 1 }}
++            end={{ x: 0.9, y: 1 }}
+             style={styles.cardRing}
+           >
+             <View style={styles.cardInner}>
++              <View style={styles.handle} />
+               {eyebrow ? (
+-                <Text style={styles.eyebrow} accessibilityRole="text">
+-                  {eyebrow}
+-                </Text>
++                <View style={styles.eyebrowPill}>
++                  <View style={styles.eyebrowDot} />
++                  <Text style={styles.eyebrow} accessibilityRole="text">
++                    {eyebrow}
++                  </Text>
++                </View>
+               ) : null}
+               <Text style={styles.title}>{title}</Text>
+               {comparison ? (
+@@ -145,8 +149,8 @@ const styles = StyleSheet.create({
+   },
+   dim: {
+     ...StyleSheet.absoluteFillObject,
+-    /** Scrim — warm neutral so the sheet reads as studio, not casino pit. */
+-    backgroundColor: 'rgba(28, 36, 48, 0.45)',
++    /** Scrim — deep near-black to match the app background and feel immersive. */
++    backgroundColor: 'rgba(5, 7, 10, 0.74)',
+   },
+   cardWrap: {
+     paddingHorizontal: spacing.base,
+@@ -157,28 +161,57 @@ const styles = StyleSheet.create({
+     padding: 1.5,
+     ...Platform.select({
+       ios: {
+-        shadowColor: '#000',
+-        shadowOffset: { width: 0, height: -6 },
+-        shadowOpacity: 0.35,
+-        shadowRadius: 20,
++        shadowColor: colors.green,
++        shadowOffset: { width: 0, height: -4 },
++        shadowOpacity: 0.28,
++        shadowRadius: 24,
+       },
+-      android: { elevation: 12 },
++      android: { elevation: 14 },
+     }),
+   },
+   cardInner: {
+     borderRadius: radius.xl - 1,
+     backgroundColor: colors.surfaceElevated,
+-    padding: spacing.lg,
++    paddingHorizontal: spacing.lg,
++    paddingTop: spacing.sm,
++    paddingBottom: spacing.lg,
+     borderWidth: StyleSheet.hairlineWidth,
+     borderColor: colors.border,
++    overflow: 'hidden',
++  },
++  handle: {
++    alignSelf: 'center',
++    width: 40,
++    height: 4,
++    borderRadius: radius.full,
++    backgroundColor: colors.borderLight,
++    marginBottom: spacing.md,
++  },
++  eyebrowPill: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    alignSelf: 'flex-start',
++    gap: 6,
++    paddingHorizontal: spacing.sm + 2,
++    paddingVertical: 5,
++    borderRadius: radius.full,
++    backgroundColor: colors.goldSoft,
++    borderWidth: StyleSheet.hairlineWidth,
++    borderColor: colors.goldBorderHairline,
++    marginBottom: spacing.md,
++  },
++  eyebrowDot: {
++    width: 6,
++    height: 6,
++    borderRadius: radius.full,
++    backgroundColor: colors.green,
+   },
+   eyebrow: {
+     fontSize: fontSize.xs,
+     fontFamily: brandFont.bold,
+-    color: colors.accent,
+-    letterSpacing: 1.2,
++    color: colors.green,
++    letterSpacing: 1.1,
+     textTransform: 'uppercase',
+-    marginBottom: spacing.sm,
+   },
+   title: {
+     fontSize: fontSize.xxl,
+@@ -201,17 +234,17 @@ const styles = StyleSheet.create({
+   },
+   comparePrimaryBlock: {
+     borderLeftWidth: 3,
+-    borderLeftColor: colors.accent,
++    borderLeftColor: colors.green,
+     paddingLeft: spacing.md,
+     paddingVertical: spacing.md,
+     marginLeft: 1,
+-    backgroundColor: colors.accentSoft,
++    backgroundColor: colors.goldSoft,
+     borderRadius: radius.md,
+   },
+   comparePrimaryHeading: {
+     fontSize: fontSize.md,
+     fontFamily: brandFont.black,
+-    color: colors.accentDark,
++    color: colors.green,
+     letterSpacing: -0.3,
+     marginBottom: spacing.sm,
+   },
+@@ -257,24 +290,24 @@ const styles = StyleSheet.create({
+     justifyContent: 'center',
+     gap: 6,
+     marginTop: spacing.md,
+-    paddingVertical: spacing.sm,
++    paddingVertical: spacing.sm + 2,
+     paddingHorizontal: spacing.sm,
+     borderRadius: radius.md,
+-    backgroundColor: colors.surfaceMuted,
++    backgroundColor: colors.goldWash,
+     borderWidth: StyleSheet.hairlineWidth,
+-    borderColor: colors.border,
++    borderColor: colors.goldBorderHairline,
+   },
+   flowStep: {
+     fontSize: fontSize.xs,
+-    fontFamily: brandFont.semibold,
+-    color: colors.textMuted,
+-    letterSpacing: 0.3,
++    fontFamily: brandFont.bold,
++    color: colors.textSecondary,
++    letterSpacing: 0.4,
+     textTransform: 'uppercase',
+   },
+   flowArrow: {
+     fontSize: fontSize.xs,
+-    color: colors.textMuted,
+-    fontFamily: brandFont.medium,
++    color: colors.green,
++    fontFamily: brandFont.bold,
+   },
+   actions: {
+     marginTop: spacing.md + 4,
+diff --git a/src/screens/AccountScreen.tsx b/src/screens/AccountScreen.tsx
+index f227b95..0f9a92d 100644
+--- a/src/screens/AccountScreen.tsx
++++ b/src/screens/AccountScreen.tsx
+@@ -14,9 +14,8 @@ import { useAppStore } from '../store/useAppStore';
+ import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
+ import { usePullToRefresh } from '../hooks/usePullToRefresh';
+ import { RootStackParamList, RootTabParamList } from '../navigation/types';
+-import { isClerkEnabled } from '../config/clerk';
+-import { useGuestBrowseStore } from '../store/guestBrowseStore';
+ import { useRequireAuth } from '../hooks/useRequireAuth';
++import { AccountAuthCard } from '../components/account/AccountAuthCard';
+ import { deriveSocialProfileFromUser } from '../data/socialMock';
+ import { formatUsd } from '../lib/socialFormat';
+ import { SocialPullRow } from '../components/social/SocialPullRow';
+@@ -46,12 +45,9 @@ export function AccountScreen() {
+   const streak = useAppStore((s) => s.collectorStreakDays);
+   const streakBest = useAppStore((s) => s.collectorStreakBest);
+   const { refreshControl } = usePullToRefresh();
+-  const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
+-  const forceAuthWall = useGuestBrowseStore((s) => s.forceAuthWall);
+   const { requireAuth } = useRequireAuth();
+   const simulatedMemberTier = useMembershipSimulationStore((s) => s.simulatedTier);
+ 
+-  const showGuestSignInCard = isClerkEnabled && !clerkSignedIn;
+   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
+   const prog = progressionFromTotalXp(user.xp);
+   const tierColors: Record<string, string> = {
+@@ -104,10 +100,6 @@ export function AccountScreen() {
+     navigation.navigate('Settings');
+   }, [navigation]);
+ 
+-  const onGuestSignIn = useCallback(() => {
+-    forceAuthWall();
+-  }, [forceAuthWall]);
+-
+   const recentPulls = useMemo(
+     () => socialProfile.recentPulls.slice(0, PREVIEW_PULLS),
+     [socialProfile.recentPulls],
+@@ -124,22 +116,7 @@ export function AccountScreen() {
+       >
+       <Text style={styles.pageTitle}>{t('account.title')}</Text>
+ 
+-      {showGuestSignInCard ? (
+-        <VaultFramedCard style={styles.guestSignInCard}>
+-          <Text style={styles.guestSignInEyebrow}>{t('account.guestSignInEyebrow')}</Text>
+-          <Text style={styles.guestSignInTitle}>{t('account.guestSignInTitle')}</Text>
+-          <Text style={styles.guestSignInBody}>{t('account.guestSignInBody')}</Text>
+-          <TouchableOpacity
+-            style={styles.guestSignInBtn}
+-            onPress={onGuestSignIn}
+-            activeOpacity={0.88}
+-            accessibilityRole="button"
+-            accessibilityLabel={t('account.guestSignInCta')}
+-          >
+-            <Text style={styles.guestSignInBtnText}>{t('account.guestSignInCta')}</Text>
+-          </TouchableOpacity>
+-        </VaultFramedCard>
+-      ) : null}
++      <AccountAuthCard />
+ 
+       {/* 1 · Hero profile */}
+       <VaultFramedCard style={styles.heroCard}>
+diff --git a/src/screens/SettingsScreen.tsx b/src/screens/SettingsScreen.tsx
+index 70693e6..483c5a6 100644
+--- a/src/screens/SettingsScreen.tsx
++++ b/src/screens/SettingsScreen.tsx
+@@ -27,6 +27,7 @@ import { useGuestBrowseStore } from '../store/guestBrowseStore';
+ import { isClerkEnabled } from '../config/clerk';
+ import { AccountSignOutFooter } from '../components/account/AccountSignOutFooter';
+ import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
++import { AdminToolsSection } from '../components/account/AdminToolsSection';
+ import { VaultFramedCard } from '../components/shared/VaultFramedCard';
+ import { resetLocalOnboardingStateAndReload } from '../lib/resetLocalOnboardingState';
+ import { confirmUserAction } from '../utils/showUserMessage';
+@@ -172,6 +173,8 @@ export function SettingsScreen() {
+           />
+         </VaultFramedCard>
+ 
++        <AdminToolsSection />
++
+         {__DEV__ ? (
+           <>
+             <Text style={styles.sectionHeader}>{t('settings.devSection')}</Text>
+diff --git a/src/store/useAppStore.ts b/src/store/useAppStore.ts
+index 03c4015..6ac0ff6 100644
+--- a/src/store/useAppStore.ts
++++ b/src/store/useAppStore.ts
+@@ -107,6 +107,8 @@ interface AppStore {
+ 
+   // Actions
+   addCredits: (amount: number) => void;
++  /** Admin / dev tools: set the wallet balance directly (e.g. grant "infinite" credits). */
++  setCredits: (amount: number) => void;
+   addFreePackGrants: (count: number) => void;
+   setHomeViewMode: (mode: 'discover' | 'browse') => void;
+   setHomeNiche: (niche: HomeNicheCategory) => void;
+@@ -429,6 +431,11 @@ export const useAppStore = create<AppStore>((set, get) => {
+       user: { ...state.user, credits: state.user.credits + amount },
+     })),
+ 
++  setCredits: (amount) =>
++    set((state) => ({
++      user: { ...state.user, credits: Math.max(0, Math.floor(amount)) },
++    })),
++
+   addFreePackGrants: (count) =>
+     set((state) => ({
+       user: {
