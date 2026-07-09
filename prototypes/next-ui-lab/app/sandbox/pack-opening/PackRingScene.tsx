@@ -14,11 +14,12 @@ const S = {
   bgGrad:   'linear-gradient(to bottom, #060606 0%, #000000 100%)',
   bgZoomed: '#000000',
 
-  // Floor — sharper reflection, darker base
+  // Floor — sharper reflection, darker base. mixStrength kept moderate so the
+  // reflection reads as a pool under the pack, not a bright grazing horizon band.
   floorSize:        40,
   floorColor:       '#050508',
   floorBlur:        [80, 30] as [number, number],  // less blur = crisper reflection
-  floorMixStrength: 20,
+  floorMixStrength: 13,
   floorMirror:      0.88,
   floorDepthScale:  0.90,
 
@@ -44,21 +45,41 @@ const S = {
 
   // Ring layout
   packCount:    8,
-  ringRadius:   3.1,
+  ringRadius:   3.1,   // desktop ring radius + canonical opening STAGE z
+  ringRadiusM:  1.2,   // mobile portrait ring radius (tight, for telephoto peek)
   packY:        0.56,
   entryFromY:  -4.2,
   entryStagger: 0.10,
 
-  // Depth illusion (ring mode)
+  // Depth illusion (ring mode) — desktop
   minDepthScale:   0.52,
   minDepthOpacity: 0.25,
+  // Mobile portrait: neighbors sit closer + shouldn't over-shrink or vanish,
+  // so keep them near full scale and let opacity fall off faster for back packs.
+  minDepthScaleM:   0.85,
+  minDepthOpacityM: 0.05,
 
-  // Camera — ring mode
+  // Camera — ring mode (desktop / landscape)
   camY:   1.20,
   camZ:   6.60,
   camFov: 42,
   camLAY: 0.0,   // lookAt Y
   camLAZ: 0.0,   // lookAt Z
+
+  // Camera — ring mode, MOBILE PORTRAIT override (telephoto for Pokémon-Pocket
+  // style peek). Far camera + narrow FOV + small ring radius compresses depth so
+  // the two neighbors peek ~11% from each edge while the center pack fills ~45%
+  // of width, vertically centered at ~45% from top. Derived from projection math
+  // for a 440×956 viewport. On tap, the selected pack glides from this tight
+  // ring to the canonical stage (z = ringRadius) so opening/zoom stay untouched.
+  camYM:   0.56,
+  camZM:   9.00,
+  camFovM: 24,
+  camLAYM: 0.40,
+  camLAZM: 1.20,   // = ringRadiusM (look at the front pack)
+  // Aspect blend: mobileT=1 at/below portraitLo, 0 at/above portraitHi
+  portraitLo: 0.55,
+  portraitHi: 0.90,
 
   // Camera — zoomed mode
   camYZ:   0.72,
@@ -87,7 +108,8 @@ const S = {
   camLAYR:  0.56,   // look at card center
   camLAZR:  4.2,    // where the card will be
 
-  // Lighting — low ambient keeps background black; key dominates center
+  // Lighting — low ambient keeps background black; key dominates center.
+  // These are the ZOOMED / OPENING values (dark "spotlight in the void").
   ambientInt:  0.06,
   keyColor:    '#FFF8F0',
   keyInt:      4.5,
@@ -95,6 +117,14 @@ const S = {
   fillInt:     0.18,
   rimColor:    '#6888B0',
   rimInt:      0.28,
+
+  // RING selection screen — lit as a dark premium showroom: a directional key
+  // (with distance falloff) picks out the pack, while flat ambient stays LOW so
+  // the reflective floor fades to black in the distance instead of showing a
+  // lit horizon band behind the pack. Lerped down to the zoomed/opening values
+  // as zoomT rises, preserving the "darkness → light" world for the opening.
+  ringAmbient: 0.20,
+  ringKey:     7.5,
 
   // Environment map intensity
   envInt: 0.45,
@@ -109,6 +139,13 @@ function packAngle(index: number, offset: number): number {
 
 function depthFactor(angle: number): number {
   return (Math.cos(angle) + 1) / 2;
+}
+
+// Aspect → mobile blend factor. 1 = full portrait telephoto, 0 = desktop.
+function mobileBlend(aspect: number): number {
+  return THREE.MathUtils.clamp(
+    (S.portraitHi - aspect) / (S.portraitHi - S.portraitLo), 0, 1,
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -201,6 +238,30 @@ interface PackRingProps {
 }
 
 function PackRing({ ringAngleRef, zoomT, selectedPackIdx, resultT }: PackRingProps) {
+  const { camera } = useThree();
+  // Test pack art (same asset as the card). useTexture caches by URL and the
+  // card front uses this file too, so clone before setting a crop — mutating
+  // the shared instance would distort the card texture.
+  const artTexBase = useTexture('/assets/charizard.jpg');
+  const artTex = useMemo(() => {
+    const t = artTexBase.clone();
+    t.colorSpace = THREE.SRGBColorSpace;
+    // Cover-fit center crop into the art window (geometry stays untouched)
+    const winAspect = (S.packW * 0.80) / (S.packH * 0.52);
+    const img = t.image as { width: number; height: number };
+    const imgAspect = img.width / img.height;
+    if (imgAspect > winAspect) {
+      const rx = winAspect / imgAspect;
+      t.repeat.set(rx, 1);
+      t.offset.set((1 - rx) / 2, 0);
+    } else {
+      const ry = imgAspect / winAspect;
+      t.repeat.set(1, ry);
+      t.offset.set(0, (1 - ry) / 2);
+    }
+    t.needsUpdate = true;
+    return t;
+  }, [artTexBase]);
   const groups    = useRef<THREE.Group[]>([]);
   const bodyMats  = useRef<THREE.MeshStandardMaterial[]>([]);
   const brdMats   = useRef<THREE.MeshStandardMaterial[]>([]);
@@ -232,6 +293,12 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx, resultT }: PackRingPro
     const t = zoomT.current;
     idleTime.current += delta;
 
+    // Responsive ring geometry: tight radius + less depth shrink on portrait.
+    const mobileT = mobileBlend((camera as THREE.PerspectiveCamera).aspect);
+    const R        = THREE.MathUtils.lerp(S.ringRadius,      S.ringRadiusM,      mobileT);
+    const minScale = THREE.MathUtils.lerp(S.minDepthScale,   S.minDepthScaleM,   mobileT);
+    const minOp    = THREE.MathUtils.lerp(S.minDepthOpacity, S.minDepthOpacityM, mobileT);
+
     // Find front pack (closest cos angle to 0)
     let best = 0, bestDf = -Infinity;
     for (let i = 0; i < S.packCount; i++) {
@@ -245,25 +312,35 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx, resultT }: PackRingPro
       const angle   = packAngle(i, ringAngleRef.current);
       const df      = depthFactor(angle);
       const isFront = i === frontIdx.current;
+      const isSelected = i === selectedPackIdx.current;
 
-      // XZ only — GSAP owns Y
-      g.position.x = S.ringRadius * Math.sin(angle);
-      g.position.z = S.ringRadius * Math.cos(angle);
+      // XZ from the responsive ring radius (GSAP owns Y). The selected pack
+      // glides from the tight mobile ring to the canonical stage (0, z=ringRadius)
+      // as zoom rises, so opening/zoom geometry is device-independent. On desktop
+      // R === ringRadius, so this lerp is a no-op and framing is unchanged.
+      const ringX = R * Math.sin(angle);
+      const ringZ = R * Math.cos(angle);
+      if (isSelected) {
+        g.position.x = THREE.MathUtils.lerp(ringX, 0,             t);
+        g.position.z = THREE.MathUtils.lerp(ringZ, S.ringRadius,  t);
+      } else {
+        g.position.x = ringX;
+        g.position.z = ringZ;
+      }
 
       // Rotation + idle sway: ring mode only, fades to 0 on selected pack as zoom increases
-      const isSelected = i === selectedPackIdx.current;
       const idleScale  = isSelected ? (1 - t) : (isFront ? 1 : 0);
       const idle       = Math.sin(idleTime.current * S.idleSpeed) * S.idleAmp * idleScale;
       g.rotation.y     = angle + idle;
 
-      // Scale by ring depth
-      g.scale.setScalar(S.minDepthScale + df * (1 - S.minDepthScale));
+      // Scale by ring depth (responsive floor)
+      g.scale.setScalar(minScale + df * (1 - minScale));
 
       // Opacity: ring depth-based → selected-only when zoomed
       // Use selectedPackIdx (frozen at tap time) so the chosen pack stays
       // visible throughout the entire zoom transition, regardless of any
       // tiny ringAngle drift that might change frontIdx mid-tween.
-      const ringOp    = S.minDepthOpacity + df * (1 - S.minDepthOpacity);
+      const ringOp    = minOp + df * (1 - minOp);
       const zoomOp    = isSelected ? 1.0 : 0.0;
       const zoomedOp  = THREE.MathUtils.lerp(ringOp, zoomOp, t);
       // In result mode, fade selected pack to 0 so only the card is visible
@@ -316,12 +393,13 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx, resultT }: PackRingPro
             />
           </mesh>
 
-          {/* Art area placeholder */}
+          {/* Art area — test pack art, foil-like finish (glossy under the ring
+              key light, kept below mirror-level so it doesn't read as chrome) */}
           <mesh position={[0, 0.06, S.packDepth * 0.9]}>
             <planeGeometry args={[S.packW * 0.80, S.packH * 0.52]} />
             <meshStandardMaterial
               ref={(el) => { if (el) artMats.current[i] = el as THREE.MeshStandardMaterial; }}
-              color="#242432" roughness={0.88} transparent opacity={0.94}
+              map={artTex} metalness={0.30} roughness={0.32} transparent opacity={0.94}
             />
           </mesh>
 
@@ -360,12 +438,24 @@ function ZoomController({ zoomT, resultT, floorGroupRef, particleGroupRef }: Zoo
     const t  = zoomT.current;
     const rt = resultT.current;
 
+    // Responsive ring framing: on portrait, pull the camera in + widen the FOV
+    // so the front pack fills ~64% of height (Option A). Desktop is unchanged
+    // (mobileT = 0 at aspect ≥ portraitHi). Only the ring-mode endpoints are
+    // responsive; zoomed/result framing is identical across devices.
+    const cam = camera as THREE.PerspectiveCamera;
+    const mobileT = mobileBlend(cam.aspect);
+    const ringY   = THREE.MathUtils.lerp(S.camY,   S.camYM,   mobileT);
+    const ringZ   = THREE.MathUtils.lerp(S.camZ,   S.camZM,   mobileT);
+    const ringFov = THREE.MathUtils.lerp(S.camFov, S.camFovM, mobileT);
+    const ringLAY = THREE.MathUtils.lerp(S.camLAY, S.camLAYM, mobileT);
+    const ringLAZ = THREE.MathUtils.lerp(S.camLAZ, S.camLAZM, mobileT);
+
     // Ring → zoomed lerp
-    const zY   = THREE.MathUtils.lerp(S.camY,   S.camYZ,   t);
-    const zZ   = THREE.MathUtils.lerp(S.camZ,   S.camZZ,   t);
-    const zFov = THREE.MathUtils.lerp(S.camFov, S.camFovZ, t);
-    const zLAY = THREE.MathUtils.lerp(S.camLAY, S.camLAYZ, t);
-    const zLAZ = THREE.MathUtils.lerp(S.camLAZ, S.camLAZZ, t);
+    const zY   = THREE.MathUtils.lerp(ringY,   S.camYZ,   t);
+    const zZ   = THREE.MathUtils.lerp(ringZ,   S.camZZ,   t);
+    const zFov = THREE.MathUtils.lerp(ringFov, S.camFovZ, t);
+    const zLAY = THREE.MathUtils.lerp(ringLAY, S.camLAYZ, t);
+    const zLAZ = THREE.MathUtils.lerp(ringLAZ, S.camLAZZ, t);
 
     // Zoomed → result lerp (camera pulls back for full card view)
     camera.position.set(
@@ -379,7 +469,6 @@ function ZoomController({ zoomT, resultT, floorGroupRef, particleGroupRef }: Zoo
       THREE.MathUtils.lerp(zLAZ, S.camLAZR, rt),
     );
 
-    const cam = camera as THREE.PerspectiveCamera;
     cam.fov = THREE.MathUtils.lerp(zFov, S.camFovR, rt);
     cam.updateProjectionMatrix();
 
@@ -407,11 +496,31 @@ const OPEN = {
   // tear line sits 15% from top of pack
   tearY:  S.packY + S.packH * 0.5 - S.packH * 0.15,
   flapH:  S.packH * 0.15,
+  // Phase A — interior light that leaks from the tear (peak intensity)
+  interiorPeak: 2.6,
   // charizard.jpg is 800×1350 px (height/width = 1.6875) — test asset, replace before launch
   cardW:   1.1,
   cardH:   1.1 * (1350 / 800),  // ≈ 1.856 — matches image aspect ratio, no distortion
   resultY: 0.56,                  // card Y in result mode (camera lookAt height)
   resultZ: 4.2,                   // card Z in result mode (pulled toward camera)
+} as const;
+
+// ─────────────────────────────────────────────────────────────────
+// Phase B — tear light palette
+// Warm-white showroom tungsten, NOT casino orange. Deliberately warm to
+// counteract the scene's blue fill/rim lights (which made the earlier
+// pure-white tear + interior light read as cool blue-white).
+// ─────────────────────────────────────────────────────────────────
+const TEAR = {
+  gapH:          0.16,        // height the emissive gap opens to
+  coreColor:     '#FFF4E6',   // bright warm-white core of the crack
+  glowColor:     '#FFE6C2',   // warm halo/bloom + interior light color
+  gapColor:      '#FFEACB',   // gap emissive base (warm), tinted toward rarity
+  rarityTint:    0.30,        // 0=pure warm, 1=pure rarity color (Phase E may push higher)
+  coreEmissive:  2.2,
+  haloEmissive:  1.3,
+  bloomEmissive: 0.7,
+  gapEmissive:   1.8,
 } as const;
 
 // ─────────────────────────────────────────────────────────────────
@@ -521,7 +630,13 @@ interface OpeningSequenceProps {
 }
 
 function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipComplete, rarity }: OpeningSequenceProps) {
-  const lineRef        = useRef<THREE.Mesh>(null);
+  // Phase B — 3-layer tear line (core/halo/bloom) + emissive gap
+  const tearLineGroupRef = useRef<THREE.Group>(null);
+  const lineCoreMatRef   = useRef<THREE.MeshStandardMaterial | null>(null);
+  const lineHaloMatRef   = useRef<THREE.MeshStandardMaterial | null>(null);
+  const lineBloomMatRef  = useRef<THREE.MeshStandardMaterial | null>(null);
+  const gapRef           = useRef<THREE.Mesh>(null);
+  const gapMatRef        = useRef<THREE.MeshStandardMaterial | null>(null);
   const flapRef        = useRef<THREE.Mesh>(null);
   const cardRef        = useRef<THREE.Group>(null);
   const flapMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
@@ -529,10 +644,19 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
   const cardBackMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
   const cardGlowMatRef     = useRef<THREE.MeshStandardMaterial | null>(null);
   const cardDiamondMatRef  = useRef<THREE.MeshStandardMaterial | null>(null);
+  // Phase A — pack lower half (pedestal) + interior light
+  const bottomRef          = useRef<THREE.Mesh>(null);
+  const bottomMatRef       = useRef<THREE.MeshStandardMaterial | null>(null);
+  const interiorLightRef   = useRef<THREE.PointLight>(null);
 
   const flapCenterY = OPEN.tearY + OPEN.flapH * 0.5;
   const cardStartY  = OPEN.packY - 0.3;
   const cardEndY    = OPEN.packY + 0.55;
+
+  // Pack lower half spans from the bottom edge up to the tear line
+  const packBottomY   = OPEN.packY - S.packH * 0.5;
+  const bottomH       = OPEN.tearY - packBottomY;
+  const bottomCenterY = (packBottomY + OPEN.tearY) / 2;
 
   // Glide card to viewing position + fade in rarity-colored glow
   useEffect(() => {
@@ -579,8 +703,12 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
     if (!active) {
       // Reset all elements to hidden (including Z + rotation so next open is clean)
       if (cardRef.current) gsap.killTweensOf(cardRef.current.rotation);
-      if (lineRef.current)  { lineRef.current.scale.x = 0; lineRef.current.visible = false; }
+      if (tearLineGroupRef.current) { tearLineGroupRef.current.scale.x = 0; tearLineGroupRef.current.visible = false; }
+      if (gapRef.current)   { gapRef.current.scale.y = 0; gapRef.current.visible = false; }
       if (flapRef.current)    flapRef.current.visible = false;
+      if (bottomRef.current)  bottomRef.current.visible = false;
+      if (bottomMatRef.current) bottomMatRef.current.opacity = 0;
+      if (interiorLightRef.current) { gsap.killTweensOf(interiorLightRef.current); interiorLightRef.current.intensity = 0; }
       if (cardRef.current)  {
         cardRef.current.position.set(OPEN.packX, cardStartY, OPEN.packZ + 0.03);
         cardRef.current.rotation.y = Math.PI;  // back face toward camera for next open
@@ -594,13 +722,29 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
     }
 
     // Set start state before animating
-    if (lineRef.current)  { lineRef.current.scale.x = 0; lineRef.current.visible = true; }
+    if (tearLineGroupRef.current) { tearLineGroupRef.current.scale.x = 0; tearLineGroupRef.current.visible = true; }
+    if (lineCoreMatRef.current)  lineCoreMatRef.current.opacity  = 0.95;
+    if (lineHaloMatRef.current)  lineHaloMatRef.current.opacity  = 0.40;
+    if (lineBloomMatRef.current) lineBloomMatRef.current.opacity = 0.18;
+    if (gapRef.current)   { gapRef.current.scale.y = 0; gapRef.current.visible = false; }
+    // Gap emissive: warm base tinted toward this pull's rarity color (Phase B
+    // prep for the Phase E full rarity treatment). Black diffuse → only the
+    // emissive shows, so the tint reads clean under any lighting.
+    if (gapMatRef.current) {
+      const tinted = new THREE.Color(TEAR.gapColor).lerp(new THREE.Color(RARITY[rarity].color), TEAR.rarityTint);
+      gapMatRef.current.color.set('#000000');
+      gapMatRef.current.emissive.copy(tinted);
+      gapMatRef.current.opacity = 0.85;
+    }
     if (flapRef.current)  {
       flapRef.current.position.set(OPEN.packX, flapCenterY, OPEN.packZ + 0.02);
       flapRef.current.rotation.set(0, 0, 0);
       flapRef.current.visible = false;
     }
     if (flapMatRef.current) flapMatRef.current.opacity = 1;
+    if (bottomRef.current)  bottomRef.current.visible = true;
+    if (bottomMatRef.current) bottomMatRef.current.opacity = 0;
+    if (interiorLightRef.current) interiorLightRef.current.intensity = 0;
     if (cardRef.current)  {
       cardRef.current.position.set(OPEN.packX, cardStartY, OPEN.packZ + 0.03);
       cardRef.current.rotation.y = Math.PI;  // back face toward camera
@@ -613,22 +757,42 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
 
     const tl = gsap.timeline({ onComplete });
 
-    // Phase 1: tear line sweeps left→right (0–0.8 s)
-    if (lineRef.current) {
-      tl.to(lineRef.current.scale, { x: 1, duration: 0.8, ease: 'power2.inOut' }, 0);
+    // Phase 1: tear line (core/halo/bloom) sweeps left→right as the crack forms (0–0.8 s)
+    if (tearLineGroupRef.current) {
+      tl.to(tearLineGroupRef.current.scale, { x: 1, duration: 0.8, ease: 'power2.inOut' }, 0);
     }
 
-    // Phase 2: top flap flies off upper-right (0.8–1.3 s)
+    // Phase 2: top flap flies off upper-right; the gap opens and light pours (0.8–1.3 s)
     tl.call(() => {
       if (flapRef.current) flapRef.current.visible = true;
-      if (lineRef.current) lineRef.current.visible = false;
+      if (gapRef.current)  gapRef.current.visible  = true;
     }, [], 0.8);
+    if (gapRef.current) {
+      tl.to(gapRef.current.scale, { y: 1, duration: 0.4, ease: 'power2.out' }, 0.8);
+    }
+    // Top flap flicks off-screen with momentum and fades to nothing mid-flight,
+    // like a torn scrap flung out of view. Far target + fast start (power2.out)
+    // clears the frame within ~0.45 s; opacity is gone by ~1.18 s so it never
+    // lingers at the top edge.
     if (flapRef.current) {
-      tl.to(flapRef.current.position, { x: OPEN.packX + 0.9, y: flapCenterY + 1.1, duration: 0.5, ease: 'power2.out' }, 0.8);
-      tl.to(flapRef.current.rotation, { z: -0.7, duration: 0.5, ease: 'power2.out' }, 0.8);
+      tl.to(flapRef.current.position, { x: OPEN.packX + 2.6, y: flapCenterY + 3.4, duration: 0.45, ease: 'power2.out' }, 0.8);
+      tl.to(flapRef.current.rotation, { z: -1.6, duration: 0.45, ease: 'power2.out' }, 0.8);
     }
     if (flapMatRef.current) {
-      tl.to(flapMatRef.current, { opacity: 0, duration: 0.35, ease: 'power2.in' }, 0.95);
+      tl.to(flapMatRef.current, { opacity: 0, duration: 0.28, ease: 'power1.in' }, 0.9);
+    }
+
+    // Tear line + gap fade out as the rising card covers the opening (1.3 s onward)
+    const tearMats = [lineCoreMatRef.current, lineHaloMatRef.current, lineBloomMatRef.current, gapMatRef.current].filter(Boolean) as THREE.MeshStandardMaterial[];
+    if (tearMats.length) {
+      tl.to(tearMats, { opacity: 0, duration: 0.5, ease: 'power2.in' }, 1.3);
+    }
+
+    // Phase A: interior light blooms as the flap separates (0.8 s), then
+    // recedes as the card rises through the tear (1.3 s onward).
+    if (interiorLightRef.current) {
+      tl.to(interiorLightRef.current, { intensity: OPEN.interiorPeak, duration: 0.4, ease: 'power2.out' }, 0.8);
+      tl.to(interiorLightRef.current, { intensity: 0,                 duration: 0.6, ease: 'power2.in'  }, 1.3);
     }
 
     // Phase 3: card slides up from pack showing its back face (1.3–2.0 s)
@@ -650,11 +814,70 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
 
   return (
     <>
-      {/* Phase 1: tear line */}
-      <mesh ref={lineRef} position={[OPEN.packX, OPEN.tearY, OPEN.packZ + 0.02]} scale={[0, 1, 1]} visible={false}>
-        <planeGeometry args={[S.packW, 0.012]} />
-        <meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={2.0} transparent opacity={0.9} depthWrite={false} />
+      {/* Phase A: pack lower half — remains as a pedestal after the top flap
+          flies off. Hidden (opacity 0) until Phase D fades the real pack and
+          hands off to this remnant; wired here so later phases can drive it. */}
+      <mesh ref={bottomRef} position={[OPEN.packX, bottomCenterY, OPEN.packZ + 0.015]} visible={false}>
+        <planeGeometry args={[S.packW, bottomH]} />
+        <meshStandardMaterial
+          ref={(el) => { bottomMatRef.current = el; }}
+          color={S.packBody}
+          metalness={S.packMetalness}
+          roughness={S.packRoughness}
+          transparent
+          opacity={0}
+        />
       </mesh>
+
+      {/* Phase B: emissive gap — the opening behind the tear where light pours.
+          Grows in height (scale.y 0→1) as the flap separates. Warm base tinted
+          toward the pull's rarity. Sits just behind the tear line, in front of
+          the pack face + pedestal, behind the rising card. */}
+      <mesh ref={gapRef} position={[OPEN.packX, OPEN.tearY, OPEN.packZ + 0.018]} scale={[1, 0, 1]} visible={false}>
+        <planeGeometry args={[S.packW * 0.92, TEAR.gapH]} />
+        <meshStandardMaterial
+          ref={(el) => { gapMatRef.current = el; }}
+          color="#000000"
+          emissive={TEAR.gapColor}
+          emissiveIntensity={TEAR.gapEmissive}
+          transparent
+          opacity={0}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Phase B: 3-layer tear line — core (bright warm-white crack), halo, and
+          bloom stacked so the crack reads as light bleeding through, not a flat
+          bar. Group scales in X to sweep the crack open (0–0.8 s). */}
+      <group ref={tearLineGroupRef} position={[OPEN.packX, OPEN.tearY, OPEN.packZ + 0.021]} scale={[0, 1, 1]} visible={false}>
+        {/* bloom — widest, faintest */}
+        <mesh position={[0, 0, 0]}>
+          <planeGeometry args={[S.packW, 0.14]} />
+          <meshStandardMaterial
+            ref={(el) => { lineBloomMatRef.current = el; }}
+            color="#000000" emissive={TEAR.glowColor} emissiveIntensity={TEAR.bloomEmissive}
+            transparent opacity={0.18} depthWrite={false}
+          />
+        </mesh>
+        {/* halo — mid */}
+        <mesh position={[0, 0, 0.001]}>
+          <planeGeometry args={[S.packW, 0.05]} />
+          <meshStandardMaterial
+            ref={(el) => { lineHaloMatRef.current = el; }}
+            color="#000000" emissive={TEAR.glowColor} emissiveIntensity={TEAR.haloEmissive}
+            transparent opacity={0.40} depthWrite={false}
+          />
+        </mesh>
+        {/* core — thin bright crack */}
+        <mesh position={[0, 0, 0.002]}>
+          <planeGeometry args={[S.packW, 0.012]} />
+          <meshStandardMaterial
+            ref={(el) => { lineCoreMatRef.current = el; }}
+            color="#000000" emissive={TEAR.coreColor} emissiveIntensity={TEAR.coreEmissive}
+            transparent opacity={0.95} depthWrite={false}
+          />
+        </mesh>
+      </group>
 
       {/* Phase 2: top flap */}
       <mesh ref={flapRef} position={[OPEN.packX, flapCenterY, OPEN.packZ + 0.02]} visible={false}>
@@ -689,6 +912,19 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
         distance={5.5}
         decay={2}
       />
+
+      {/* Phase A: interior light — sits at the tear and leaks warm light as the
+          flap separates. Single added light, no shadows (context-loss safety).
+          Local falloff (small distance + decay 2) keeps the background black. */}
+      <pointLight
+        ref={interiorLightRef}
+        visible={active}
+        position={[OPEN.packX, OPEN.tearY, OPEN.packZ + 0.05]}
+        intensity={0}
+        color={TEAR.glowColor}
+        distance={2.2}
+        decay={2}
+      />
     </>
   );
 }
@@ -707,17 +943,39 @@ interface SceneProps {
   onFlipComplete:  () => void;
 }
 
+// Ring selection is lit brighter (product visible); as zoomT rises the lighting
+// drops to the dark zoomed/opening values, keeping the "darkness → light" world
+// for the opening sequence. No lights added (context-loss safety) — existing
+// ambient + key are modulated in place.
+function LightModulator({ zoomT, ambientRef, keyRef }: {
+  zoomT:      React.MutableRefObject<number>;
+  ambientRef: React.RefObject<THREE.AmbientLight | null>;
+  keyRef:     React.RefObject<THREE.PointLight | null>;
+}) {
+  useFrame(() => {
+    const t = zoomT.current;
+    if (ambientRef.current) ambientRef.current.intensity = THREE.MathUtils.lerp(S.ringAmbient, S.ambientInt, t);
+    if (keyRef.current)     keyRef.current.intensity     = THREE.MathUtils.lerp(S.ringKey,     S.keyInt,     t);
+  });
+  return null;
+}
+
 function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, rarity, onOpenComplete, onFlipComplete }: SceneProps) {
   const floorGroupRef    = useRef<THREE.Group>(null);
   const particleGroupRef = useRef<THREE.Group>(null);
+  const ambientRef       = useRef<THREE.AmbientLight>(null);
+  const keyRef           = useRef<THREE.PointLight>(null);
 
   return (
     <>
       {/* Lights */}
-      <ambientLight intensity={S.ambientInt} />
+      <ambientLight ref={ambientRef} intensity={S.ringAmbient} />
 
       {/* Key light — warm white, from above-front, illuminates the front pack */}
-      <pointLight position={[0, 5, 4.5]} intensity={S.keyInt} color={S.keyColor} distance={16} decay={2} />
+      <pointLight ref={keyRef} position={[0, 5, 4.5]} intensity={S.ringKey} color={S.keyColor} distance={16} decay={2} />
+
+      {/* Ring↔zoom brightness modulation */}
+      <LightModulator zoomT={zoomT} ambientRef={ambientRef} keyRef={keyRef} />
 
       {/* Fill light — soft blue from right side */}
       <pointLight position={[3, 3, 2]} intensity={S.fillInt} color={S.fillColor} distance={12} decay={2} />
@@ -740,7 +998,10 @@ function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, rarity, on
       </group>
 
       {/* Pack ring */}
-      <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} resultT={resultT} />
+      {/* Suspense: PackRing now loads the art texture via useTexture */}
+      <Suspense fallback={null}>
+        <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} resultT={resultT} />
+      </Suspense>
 
       {/* Opening sequence — tear line → flap → card → reveal → flip */}
       <OpeningSequence
@@ -770,6 +1031,8 @@ export default function PackRingScene() {
   const [mode, setMode] = useState<'ring' | 'zoomed' | 'opening' | 'revealing' | 'flipping' | 'result'>('ring');
   const modeRef        = useRef<'ring' | 'zoomed' | 'opening' | 'revealing' | 'flipping' | 'result'>('ring');
   const [rarity, setRarity] = useState<RarityKey>('common');
+  // Live front-pack index for the position dots (ring mode "more packs" hint)
+  const [frontIdx, setFrontIdx] = useState<number>(0);
   const ringAngle      = useRef<number>(0);
   const velocity       = useRef<number>(0);
   const dragging       = useRef<boolean>(false);
@@ -874,6 +1137,11 @@ export default function PackRingScene() {
       velocity.current *= S.inertiaDamp;
       ringAngle.current += velocity.current;
     }
+    // Track which pack is centered so the dots can highlight it. Functional
+    // update returns prev when unchanged → React bails out, no wasted renders.
+    const step = (Math.PI * 2) / S.packCount;
+    const idx  = ((Math.round(-ringAngle.current / step) % S.packCount) + S.packCount) % S.packCount;
+    setFrontIdx((prev) => (prev === idx ? prev : idx));
     rafId.current = requestAnimationFrame(inertiaLoop);
   }, []);
 
@@ -1042,6 +1310,32 @@ export default function PackRingScene() {
         >
           ← Back
         </button>
+      )}
+
+      {/* Position dots — "more packs" hint (ring mode only). Neighbor packs
+          can't peek on portrait; these show which of the packs is centered. */}
+      {mode === 'ring' && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 76, left: 0, width: '100%',
+            display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6,
+            zIndex: 10, pointerEvents: 'none',
+          }}
+        >
+          {Array.from({ length: S.packCount }).map((_, i) => (
+            <span
+              key={i}
+              style={{
+                width: i === frontIdx ? 18 : 6,
+                height: 6,
+                borderRadius: 999,
+                background: i === frontIdx ? 'rgba(201,169,110,0.9)' : 'rgba(255,255,255,0.20)',
+                transition: 'width 0.2s ease, background 0.2s ease',
+              }}
+            />
+          ))}
+        </div>
       )}
 
       {/* Bottom label */}

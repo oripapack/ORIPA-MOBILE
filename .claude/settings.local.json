@@ -10,7 +10,17 @@
       "Bash(sed -i '' \"s/import type { ChipTagType, Pack } from '..\\\\/..\\\\/data\\\\/mockPacks';/import { packImageSource, type ChipTagType, type Pack } from '..\\\\/..\\\\/data\\\\/mockPacks';/\" \"/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/src/components/home/LobbyPackTile 2.tsx\")",
       "Read(//Users/yoshitake/Desktop/oripa\\\\ mobile/ORIPA-MOBILE/src/components/pack/opening/**)",
       "Bash(git commit -m ' *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --max-time 15 http://localhost:3001/sandbox/pack-opening)",
+      "Bash(curl -s -o /dev/null -w \"route: %{http_code}\\\\n\" --max-time 30 http://localhost:3001/sandbox/pack-opening)",
+      "Read(//var/folders/xy/040j_fsj7bvgrkrmkvc_mb4m0000gn/T/TemporaryItems/NSIRD_screencaptureui_AAyvdw/**)",
+      "Bash(ffprobe -v quiet -show_entries format=duration -of csv=p=0 '/var/folders/xy/040j_fsj7bvgrkrmkvc_mb4m0000gn/T/TemporaryItems/NSIRD_screencaptureui_AAyvdw/画面収録 2026-07-08 18.26.53.mov')",
+      "Bash(cp '/var/folders/xy/040j_fsj7bvgrkrmkvc_mb4m0000gn/T/TemporaryItems/NSIRD_screencaptureui_AAyvdw/画面収録 2026-07-08 18.26.53.mov' /private/tmp/claude-501/-Users-yoshitake-Desktop-oripa-mobile-ORIPA-MOBILE/0b345919-f085-47c6-b040-d3a3177fc488/scratchpad/recording.mov)",
+      "Bash(swift /private/tmp/claude-501/-Users-yoshitake-Desktop-oripa-mobile-ORIPA-MOBILE/0b345919-f085-47c6-b040-d3a3177fc488/scratchpad/extract.swift /private/tmp/claude-501/-Users-yoshitake-Desktop-oripa-mobile-ORIPA-MOBILE/0b345919-f085-47c6-b040-d3a3177fc488/scratchpad/recording.mov /private/tmp/claude-501/-Users-yoshitake-Desktop-oripa-mobile-ORIPA-MOBILE/0b345919-f085-47c6-b040-d3a3177fc488/scratchpad/frames)",
+      "Bash(SCRATCH=\"/private/tmp/claude-501/-Users-yoshitake-Desktop-oripa-mobile-ORIPA-MOBILE/0b345919-f085-47c6-b040-d3a3177fc488/scratchpad\"; cp \"/var/folders/xy/040j_fsj7bvgrkrmkvc_mb4m0000gn/T/TemporaryItems/NSIRD_screencaptureui_AAyvdw/画面収録 2026-07-08 18.26.53.mov\" \"$SCRATCH/recording.mov\" && swift \"$SCRATCH/extract.swift\" \"$SCRATCH/recording.mov\" \"$SCRATCH/frames\" && ls \"$SCRATCH/frames\")",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "Bash(ps -p 73587 -o pid,command=)",
+      "Bash(ps -p 1329 -o pid,command=)"
     ],
     "additionalDirectories": [
       "/Users/yoshitake/Desktop/oripa mobile/ORIPA-MOBILE/assets/pack-images"
