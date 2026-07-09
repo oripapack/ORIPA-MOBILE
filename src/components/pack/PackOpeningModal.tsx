@@ -25,6 +25,7 @@ import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import {
   DEFAULT_PACK_OPENING_STYLE,
   USE_PHYGITALS_OPEN,
+  USE_RING_PACK_OPEN,
   USE_POKEPOKE_PACK_OPEN,
   USE_PROTOTYPE_LINEUP_PACK_OPEN,
 } from '../../config/packOpeningAnimation';
@@ -33,6 +34,7 @@ import { ph } from '../../tokens/phTheme';
 import { PackOpeningEngine } from './opening/PackOpeningEngine';
 import { PrototypePackOpenFlow } from './openingPrototype/PrototypePackOpenFlow';
 import { PokePokePackOpenFlow } from './opening/pokepoke/PokePokePackOpenFlow';
+import { RingPackOpenFlow } from './opening/ring/RingPackOpenFlow';
 import { StadiumGradient, Spotlight } from './opening/sharedStage';
 import { resolveRevealCardForTier } from './opening/mockRevealCards';
 import { generatePackOpenResult, bestRollFromResults } from './opening/generatePackRoll';
@@ -259,6 +261,7 @@ export function PackOpeningModal() {
 
   const showSkip = !!pending && !engineDone && !isBulkOpen;
   const compactPackHeader = !!(pending && engineDone && !isBulkOpen);
+  const immersiveOpen = USE_RING_PACK_OPEN || USE_PHYGITALS_OPEN;
 
   return (
     <Modal
@@ -271,8 +274,8 @@ export function PackOpeningModal() {
       <View style={styles.rootPress}>
         {/* Background press-catcher (prevents tap-to-dismiss) */}
         <Pressable style={StyleSheet.absoluteFill} onPress={() => {}} />
-        {!USE_PHYGITALS_OPEN ? <StadiumGradient /> : null}
-        {!USE_PHYGITALS_OPEN ? <Spotlight pulse={spotlightPulse} /> : null}
+        {!immersiveOpen ? <StadiumGradient /> : null}
+        {!immersiveOpen ? <Spotlight pulse={spotlightPulse} /> : null}
 
         <Animated.View
           style={[
@@ -321,7 +324,17 @@ export function PackOpeningModal() {
 
           <View style={styles.body}>
             {pending && selectedPack && !isBulkOpen ? (
-              USE_PHYGITALS_OPEN ? (
+              USE_RING_PACK_OPEN && revealCard ? (
+                <RingPackOpenFlow
+                  key={`pack-open-ring-${packOpenSessionId}`}
+                  pack={selectedPack}
+                  roll={pending}
+                  revealCard={revealCard}
+                  skipNonce={skipNonce}
+                  onRevealDone={onRevealDone}
+                  onStoreInVault={goToWonPrizes}
+                />
+              ) : USE_PHYGITALS_OPEN ? (
                 <PhygitalsOpenFlow
                   key={`pack-open-phyg-${packOpenSessionId}`}
                   pack={selectedPack}

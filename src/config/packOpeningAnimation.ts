@@ -9,8 +9,15 @@ import type { PackOpeningStyle } from '../components/pack/opening/types';
 export const DEFAULT_PACK_OPENING_STYLE: PackOpeningStyle = 'hybrid';
 
 /**
+ * Coworker's 3D pack ring + tear reveal (React Three Fiber).
+ * Enabled via `USE_RING_PACK_OPEN` in `packOpeningAnimation.ts`.
+ * Web runs in-process; native uses WebView + prototype URL or Phygitals fallback.
+ */
+export const USE_RING_PACK_OPEN = true;
+
+/**
  * Phygitals-style slab reveal (production opening flow from the UI redesign).
- * Takes precedence over prototype and reel engines.
+ * Takes precedence over prototype and reel engines when ring open is off.
  */
 export const USE_PHYGITALS_OPEN = true;
 
