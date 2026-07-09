@@ -245,29 +245,6 @@ interface PackRingProps {
 
 function PackRing({ ringAngleRef, zoomT, selectedPackIdx, resultT }: PackRingProps) {
   const { camera } = useThree();
-  // Test pack art (same asset as the card). useTexture caches by URL and the
-  // card front uses this file too, so clone before setting a crop — mutating
-  // the shared instance would distort the card texture.
-  const artTexBase = useTexture('/assets/charizard.jpg');
-  const artTex = useMemo(() => {
-    const t = artTexBase.clone();
-    t.colorSpace = THREE.SRGBColorSpace;
-    // Cover-fit center crop into the art window (geometry stays untouched)
-    const winAspect = (S.packW * 0.80) / (S.packH * 0.52);
-    const img = t.image as { width: number; height: number };
-    const imgAspect = img.width / img.height;
-    if (imgAspect > winAspect) {
-      const rx = winAspect / imgAspect;
-      t.repeat.set(rx, 1);
-      t.offset.set((1 - rx) / 2, 0);
-    } else {
-      const ry = imgAspect / winAspect;
-      t.repeat.set(1, ry);
-      t.offset.set(0, (1 - ry) / 2);
-    }
-    t.needsUpdate = true;
-    return t;
-  }, [artTexBase]);
   const groups    = useRef<THREE.Group[]>([]);
   const bodyMats  = useRef<THREE.MeshStandardMaterial[]>([]);
   const brdMats   = useRef<THREE.MeshStandardMaterial[]>([]);
@@ -399,13 +376,13 @@ function PackRing({ ringAngleRef, zoomT, selectedPackIdx, resultT }: PackRingPro
             />
           </mesh>
 
-          {/* Art area — test pack art, foil-like finish (glossy under the ring
-              key light, kept below mirror-level so it doesn't read as chrome) */}
+          {/* Art area placeholder — deliberately blank: the pack cover must not
+              reveal the pull result (the card art only appears after opening) */}
           <mesh position={[0, 0.06, S.packDepth * 0.9]}>
             <planeGeometry args={[S.packW * 0.80, S.packH * 0.52]} />
             <meshStandardMaterial
               ref={(el) => { if (el) artMats.current[i] = el as THREE.MeshStandardMaterial; }}
-              map={artTex} metalness={0.30} roughness={0.32} transparent opacity={0.94}
+              color="#242432" roughness={0.88} transparent opacity={0.94}
             />
           </mesh>
 
@@ -1006,10 +983,7 @@ function Scene({ ringAngleRef, zoomT, resultT, selectedPackIdx, mode, rarity, on
       </group>
 
       {/* Pack ring */}
-      {/* Suspense: PackRing now loads the art texture via useTexture */}
-      <Suspense fallback={null}>
-        <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} resultT={resultT} />
-      </Suspense>
+      <PackRing ringAngleRef={ringAngleRef} zoomT={zoomT} selectedPackIdx={selectedPackIdx} resultT={resultT} />
 
       {/* Opening sequence — tear line → flap → card → reveal → flip */}
       <OpeningSequence
