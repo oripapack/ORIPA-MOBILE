@@ -84,6 +84,12 @@ const S = {
   // Camera — zoomed mode
   camYZ:   0.72,
   camZZ:   4.85,
+  // Portrait override: at aspect 0.46 the desktop zoom distance can only show
+  // ~0.52 world units of width — narrower than the pack (0.68) and far narrower
+  // than the rising card (1.1), which caused the zoom overflow + giant card
+  // back on mobile. Pulled back so the frustum width at the stage (z=3.1) is
+  // ~1.25: card back fills ~88% of screen width, pack ~58%. Desktop unchanged.
+  camZZM:  7.30,
   camFovZ: 36,
   camLAYZ: 0.56,   // packY
   camLAZZ: 3.10,   // ringRadius
@@ -450,9 +456,11 @@ function ZoomController({ zoomT, resultT, floorGroupRef, particleGroupRef }: Zoo
     const ringLAY = THREE.MathUtils.lerp(S.camLAY, S.camLAYM, mobileT);
     const ringLAZ = THREE.MathUtils.lerp(S.camLAZ, S.camLAZM, mobileT);
 
-    // Ring → zoomed lerp
+    // Ring → zoomed lerp. The zoomed Z endpoint is also responsive: portrait
+    // pulls back (camZZM) so the pack and the rising card fit the narrow frustum.
+    const zoomedZ = THREE.MathUtils.lerp(S.camZZ, S.camZZM, mobileT);
     const zY   = THREE.MathUtils.lerp(ringY,   S.camYZ,   t);
-    const zZ   = THREE.MathUtils.lerp(ringZ,   S.camZZ,   t);
+    const zZ   = THREE.MathUtils.lerp(ringZ,   zoomedZ,   t);
     const zFov = THREE.MathUtils.lerp(ringFov, S.camFovZ, t);
     const zLAY = THREE.MathUtils.lerp(ringLAY, S.camLAYZ, t);
     const zLAZ = THREE.MathUtils.lerp(ringLAZ, S.camLAZZ, t);
