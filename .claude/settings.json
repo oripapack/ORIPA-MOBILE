@@ -4,7 +4,10 @@
       "Bash(npm run *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(curl -s -o /dev/null -w \"route:%{http_code}\\\\n\" http://localhost:3001/sandbox/pack-opening)",
+      "Bash(grep -niA2 \"next\\\\|cache\\\\|port\\\\|npm\\\\|prototype\\\\|url\\\\|localhost\")",
+      "Bash(git stash *)"
     ]
   }
 }
