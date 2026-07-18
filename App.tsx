@@ -16,6 +16,13 @@ import {
   Outfit_800ExtraBold,
   Outfit_900Black,
 } from '@expo-google-fonts/outfit';
+import { Fraunces_500Medium, Fraunces_600SemiBold } from '@expo-google-fonts/fraunces';
+import {
+  SchibstedGrotesk_400Regular,
+  SchibstedGrotesk_500Medium,
+  SchibstedGrotesk_700Bold,
+} from '@expo-google-fonts/schibsted-grotesk';
+import { SplineSansMono_500Medium, SplineSansMono_600SemiBold } from '@expo-google-fonts/spline-sans-mono';
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { hydrateLocaleFromStorage } from './src/i18n';
@@ -48,6 +55,14 @@ export default function App() {
     Outfit_700Bold,
     Outfit_800ExtraBold,
     Outfit_900Black,
+    // "Stage & Gallery" faces (docs/design-spec.md)
+    Fraunces_500Medium,
+    Fraunces_600SemiBold,
+    SchibstedGrotesk_400Regular,
+    SchibstedGrotesk_500Medium,
+    SchibstedGrotesk_700Bold,
+    SplineSansMono_500Medium,
+    SplineSansMono_600SemiBold,
   });
 
   useEffect(() => {

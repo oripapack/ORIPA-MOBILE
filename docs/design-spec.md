@@ -54,51 +54,60 @@ Live mock: `prototypes/next-ui-lab/app/redesign/page.tsx` (route `/redesign`).
 | **Showroom** | 商品展示 (charcoal) | home, pack detail |
 | **Gallery** | 取引・所有 (bright neutral) | result card view, collection, shipping, charge, odds/verify |
 
-### Color tokens
+### Color tokens — palette revision "Urushi Archive" (2026-07-14)
 
 | Token | Value | Notes |
 |---|---|---|
-| stage/bg | `#0B0B0E` | UI frame around the 3D scene (scene owns its own black) |
-| showroom/bg | `#141518` | |
-| showroom/surface | `#1B1C21` | |
-| showroom/raised | `#222329` | |
-| showroom/line | `#2E2F36` | hairlines, borders |
-| text/on-dark | `#F2F0EB` | warm white |
-| text/on-dark-muted | `#A7A49C` | |
-| gallery/bg | `#F5F3EF` | |
-| gallery/surface | `#FFFFFF` | |
-| gallery/line | `#E4E0D8` | |
-| gallery/ink | `#1A1918` | |
-| gallery/ink-muted | `#6E6A62` | |
-| shu 朱 | `#C73E3A` | accent — max ONE element per screen (CTA or Japan signal) |
-| shu/pressed | `#A93330` | |
-| gold | `#C9A96E` | champagne — same value as 3D scene `packBorder` |
-| gold/deep | `#8F7442` | metal gradient: 160deg `#E3C98F → #C9A96E → #8F7442` |
-| jade | `#3D8B6E` | financial-positive ONLY (trade-in, listed value). On dark: `#5FB08F` |
+| sumi/0 (Stage) | `#090A0A` | UI frame around the 3D scene (scene owns its own black) |
+| sumi/1 (Showroom bg) | `#111313` | 2–4% lightness steps across the sumi layers |
+| sumi/2 (surface) | `#171918` | satin cards |
+| sumi/3 (raised) | `#1D201F` | |
+| text/on-dark | `#E8E5DE` | pure white `#FFF` is banned as a rule |
+| text/on-dark-muted | `#9A968D` | derived (not on the approved sheet) |
+| washi/bg (Gallery) | `#F2EFE8` | |
+| washi/surface | `#F8F6F1` | |
+| ink | `#201F1C` | |
+| ink-muted | `#6E6960` | derived |
+| shu 朱 | `#A63B32` | CTA ONLY, one per screen; NEVER flat — semi-gloss (top 7% white gradient + inset top highlight + dark shadow) |
+| shu/hover | `#AF4036` | |
+| brass 真鍮 | `#A88B58` | replaces gold. NEVER on buttons — rarity, decorative lines, details only |
+| jade | `#33705C` | demoted from buttons: text/status only (trade-in complete, value confirmed). On dark: `#4E8F76` (derived) |
 
-### Typography (3 voices)
+### Typography (3 voices, role-restricted)
 
-| Role | Face | Usage |
+| Role | Face | Usage limits |
 |---|---|---|
-| Display | Fraunces 500/600 | headlines, pack names |
-| Body | Schibsted Grotesk 400/500/700 | UI text |
-| Data | Spline Sans Mono 500/600 | ALL numbers: prices, odds, slots, values |
+| Display | Fraunces 500/600 | brand statements, pack names, revealed card names ONLY. Nav / section headings / CTA use the body face |
+| Body | Schibsted Grotesk 400/500/700 | UI text, nav, section headings, CTA labels, product names, dates |
+| Data | Spline Sans Mono 500/600 | prices, odds, stock, coin amounts, hashes ONLY — never product names or dates |
 
-### Spacing / radius / elevation
+### Material & lighting (Urushi Archive)
 
+- Showroom background: ONE warm spotlight from top-center (`radial-gradient`, `rgba(255,250,238,0.085)`-class) + vertical darkening toward the bottom. All components obey this single light; self-illumination is prohibited (LIVE indicators are the sanctioned exception).
+- Material differentiation: background matte / UI cards satin (top-edge inset highlight ONLY — full 1px borders on every element are prohibited) / product card imagery gloss (layered shadows + ONE fixed diagonal reflection, never animated) / CTA semi-gloss.
+- ~1.8% monochrome noise (soft-light) across all dark surfaces.
+- Radius roles: control 8px / card 12px / panel 16px / image 7px. Pill shapes for status chips only.
 - Spacing: 8pt system — 4 / 8 / 16 / 24 / 32 / 48 / 64
-- Radius: chip 999 · button 12 · card 16 · slab 6
-- Shadows: real shadows in Gallery only (`0 8px 24px rgba(26,25,24,0.08)`); dark layers use surface-value steps + hairlines, no shadows
+- Shadows: real shadows in Gallery only (`0 8px 24px rgba(32,31,28,0.08)`).
+
+### Trust information architecture
+
+- Pack detail order: pack name → set/year → price → key cards → slots remaining → odds → draw method → trade-in policy → ships from Tokyo.
+- Odds: a one-line summary (e.g. "Top hit odds: 1.2%") is ALWAYS visible; only the detail table collapses (fully hiding odds is a legal no-go).
+- Slots remaining: hairline bar + monospaced numbers, neutral color. No red, no blinking.
+- Fairness record block (4 rows): Server commitment (hash prefix) / Client seed / Opening # / Verify →.
 
 ### Execution rules
 
-- 朱 (shu): max one element per screen. Home = the CTA only.
-- Japanese motif: max one per screen, environmental only (behind product, never on CTA/product). Ukiyo-e line-art style original SVG, low saturation, stroke-based. Home = wave only.
+- 朱 (shu): max one element per screen, CTA only, always semi-gloss (never flat).
+- brass: rarity display, decorative lines, details. Never buttons.
+- jade: text/status only (trade-in complete, value confirmed). Not a button color.
+- **Japanese motifs (wave / torii / sakura): PARKED — flagged off, not deleted (`sg.flags.japaneseMotifs`). "Japan-origin + premium" must stand without motifs first; they return one at a time for comparison. Sakura particle spec preserved for Phase E: none ≤ Rare / Legendary 3–7 petals · low saturation · 1.4s / Mythic full celebration (low saturation, depth rules).**
 - **Kanji stamp expression: REJECTED (2026-07-14). No kanji co-labels (OPEN 開 etc.), no seal stamps on UI.**
-- **Glow rule (revised 2026-07-14): neon-tube / neon-grid urban expressions prohibited. Glow is allowed ONLY for (a) Stage-layer opening effects and (b) LIVE indicators (e.g. gold pulsing dot on Just Pulled). `prefers-reduced-motion` disables the pulse.**
+- **Glow rule: neon-tube / neon-grid urban expressions prohibited. Glow ONLY for (a) Stage-layer opening effects and (b) LIVE indicators (brass pulsing dot). `prefers-reduced-motion` disables the pulse.**
 - Numbers always in Spline Sans Mono with a unit label (Coins / listed value / % / slots).
-- Legal copy rails: no "100% return rate" / "cash back" / "money back" / "risk free"; coin amounts always labeled "listed value"; no expiry-pressure UI; odds prominent; 18+ and non-affiliation disclaimer in footer.
+- Legal copy rails: no "100% return rate" / "cash back" / "money back" / "risk free"; coin amounts always labeled "listed value"; no expiry-pressure UI; odds summary always visible; 18+ and non-affiliation disclaimer in footer.
 
 ### Signature element
 
-The vermillion CTA against charcoal, framed by champagne metal and one environmental motif — restraint as identity.
+The semi-gloss vermillion CTA under a single warm spotlight on lacquer black, brass only in the details — restraint as identity.

@@ -16,6 +16,7 @@ import { AccountScreen } from '../screens/AccountScreen';
 import { MarketplaceScreen } from '../screens/MarketplaceScreen';
 import { VaultScreen } from '../screens/VaultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { DevUiGalleryScreen } from '../screens/DevUiGalleryScreen';
 import { PaymentPortalScreen } from '../screens/PaymentPortalScreen';
 import { HelpCenterScreen } from '../screens/HelpCenterScreen';
 import { ShippingAddressScreen } from '../screens/ShippingAddressScreen';
@@ -221,12 +222,16 @@ function RootStack() {
     <>
       {isClerkEnabled ? <ClerkProfileSync /> : null}
       <Stack.Navigator
+        // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery boots straight into the
+        // component gallery (docs/design-spec.md). No effect in normal runs.
+        initialRouteName={process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery' ? 'DevUiGallery' : 'MainTabs'}
         screenOptions={{
           headerShown: false,
           cardStyle: { flex: 1, backgroundColor: colors.background },
         }}
       >
         <Stack.Screen name="MainTabs" component={TabNavigatorInner} />
+        <Stack.Screen name="DevUiGallery" component={DevUiGalleryScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen
           name="PackDetails"

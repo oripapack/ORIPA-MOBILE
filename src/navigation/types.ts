@@ -11,6 +11,8 @@ export type RootTabParamList = {
 export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<RootTabParamList> | undefined;
   Settings: undefined;
+  /** Dev-only component gallery (EXPO_PUBLIC_DEV_SCREEN=UiGallery). */
+  DevUiGallery: undefined;
   PackDetails: { packId: string };
   /** Unified checkout: in-app credits (digital) vs marketplace physical goods (Stripe server flow). */
   PaymentPortal:
