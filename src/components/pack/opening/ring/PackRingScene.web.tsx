@@ -551,6 +551,11 @@ const RARITY: Record<RarityKey, { color: string; label: string }> = {
   mythic:    { color: '#EF4444', label: 'MYTHIC PULL'     },
 };
 
+function prefersReducedMotion(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 // Test asset — swap for production image before launch
 function CardMeshInner({
   matRef,
@@ -1086,6 +1091,8 @@ export default function PackRingScene({
   const resultT          = useRef<number>(0);
   // Phase D — selected PackRing opacity handoff during rip
   const packFadeT        = useRef<number>(0);
+  // Phase C — DOM flash overlay (no extra WebGL lights)
+  const flashRef         = useRef<HTMLDivElement>(null);
 
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
@@ -1117,6 +1124,23 @@ export default function PackRingScene({
     return () => window.clearTimeout(t);
   }, [embed, mode, onRevealDone]);
 
+  // Phase C — central warm flash on flap separation (~0.8s into opening).
+  // HTML overlay only (no new lights). Skipped for prefers-reduced-motion.
+  useEffect(() => {
+    if (mode !== 'opening') return;
+    const el = flashRef.current;
+    if (!el) return;
+    gsap.killTweensOf(el);
+    gsap.set(el, { opacity: 0 });
+    if (prefersReducedMotion()) return;
+    const tl = gsap.timeline();
+    tl.to(el, { opacity: 0.72, duration: 0.07, ease: 'power2.out' }, 0.8);
+    tl.to(el, { opacity: 0, duration: 0.42, ease: 'power2.in' }, 0.87);
+    return () => {
+      tl.kill();
+      gsap.set(el, { opacity: 0 });
+    };
+  }, [mode]);
 
   const zoom = useCallback(() => {
     // Freeze the front-most pack index at the exact moment of tap.
@@ -1313,6 +1337,20 @@ export default function PackRingScene({
         />
       </Canvas>
 
+      {/* Phase C — central converging flash at flap separation (DOM, not a light) */}
+      <div
+        ref={flashRef}
+        aria-hidden
+        style={{
+          position: 'absolute',
+          inset: 0,
+          opacity: 0,
+          pointerEvents: 'none',
+          zIndex: 5,
+          background:
+            'radial-gradient(ellipse 48% 38% at 50% 42%, rgba(255,244,230,0.92) 0%, rgba(255,230,194,0.40) 38%, rgba(255,230,194,0.08) 58%, transparent 72%)',
+        }}
+      />
 
       {/* Rarity banner — above Canvas so text is always visible over the card back */}
       <div
