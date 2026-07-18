@@ -519,7 +519,6 @@ const TEAR = {
   coreColor:     '#FFF4E6',   // bright warm-white core of the crack
   glowColor:     '#FFE6C2',   // warm halo/bloom + interior light color
   gapColor:      '#FFEACB',   // gap emissive base (warm), tinted toward rarity
-  rarityTint:    0.30,        // 0=pure warm, 1=pure rarity color (Phase E may push higher)
   coreEmissive:  2.2,
   haloEmissive:  1.3,
   bloomEmissive: 0.7,
@@ -549,6 +548,15 @@ const RARITY: Record<RarityKey, { color: string; label: string }> = {
   epic:      { color: '#A855F7', label: 'EPIC PULL'       },
   legendary: { color: '#F59E0B', label: 'LEGENDARY PULL'  },
   mythic:    { color: '#EF4444', label: 'MYTHIC PULL'     },
+};
+
+/** Phase E — warm→rarity bleed strength by tier (0 = pure warm, 1 = pure rarity). */
+const RARITY_TINT: Record<RarityKey, number> = {
+  common:    0.15,
+  rare:      0.30,
+  epic:      0.48,
+  legendary: 0.62,
+  mythic:    0.78,
 };
 
 function prefersReducedMotion(): boolean {
@@ -744,21 +752,47 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
       return;
     }
 
+    const tintAmt = RARITY_TINT[rarity];
+    const rarityCol = new THREE.Color(RARITY[rarity].color);
+    const warmGap = new THREE.Color(TEAR.gapColor);
+    const warmGlow = new THREE.Color(TEAR.glowColor);
+    const warmCore = new THREE.Color(TEAR.coreColor);
+    const tintProxy = { t: 0 };
+
+    const applyRarityBleed = () => {
+      const k = tintProxy.t * tintAmt;
+      if (gapMatRef.current) {
+        gapMatRef.current.emissive.copy(warmGap).lerp(rarityCol, k);
+      }
+      if (lineCoreMatRef.current) {
+        lineCoreMatRef.current.emissive.copy(warmCore).lerp(rarityCol, k * 0.55);
+      }
+      if (lineHaloMatRef.current) {
+        lineHaloMatRef.current.emissive.copy(warmGlow).lerp(rarityCol, k * 0.75);
+      }
+      if (lineBloomMatRef.current) {
+        lineBloomMatRef.current.emissive.copy(warmGlow).lerp(rarityCol, k * 0.85);
+      }
+      if (interiorLightRef.current) {
+        interiorLightRef.current.color.copy(warmGlow).lerp(rarityCol, k);
+      }
+    };
+
     // Set start state before animating
     if (tearLineGroupRef.current) { tearLineGroupRef.current.scale.x = 0; tearLineGroupRef.current.visible = true; }
     if (lineCoreMatRef.current)  lineCoreMatRef.current.opacity  = 0.95;
     if (lineHaloMatRef.current)  lineHaloMatRef.current.opacity  = 0.40;
     if (lineBloomMatRef.current) lineBloomMatRef.current.opacity = 0.18;
     if (gapRef.current)   { gapRef.current.scale.y = 0; gapRef.current.visible = false; }
-    // Gap emissive: warm base tinted toward this pull's rarity color (Phase B
-    // prep for the Phase E full rarity treatment). Black diffuse → only the
-    // emissive shows, so the tint reads clean under any lighting.
     if (gapMatRef.current) {
-      const tinted = new THREE.Color(TEAR.gapColor).lerp(new THREE.Color(RARITY[rarity].color), TEAR.rarityTint);
       gapMatRef.current.color.set('#000000');
-      gapMatRef.current.emissive.copy(tinted);
+      gapMatRef.current.emissive.copy(warmGap);
+      gapMatRef.current.emissiveIntensity = TEAR.gapEmissive * (1 + tintAmt * 0.35);
       gapMatRef.current.opacity = 0.85;
     }
+    if (lineCoreMatRef.current)  lineCoreMatRef.current.emissive.copy(warmCore);
+    if (lineHaloMatRef.current)  lineHaloMatRef.current.emissive.copy(warmGlow);
+    if (lineBloomMatRef.current) lineBloomMatRef.current.emissive.copy(warmGlow);
     if (flapRef.current)  {
       flapRef.current.position.set(OPEN.packX, flapCenterY, OPEN.packZ + 0.02);
       flapRef.current.rotation.set(0, 0, 0);
@@ -767,7 +801,10 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
     if (flapMatRef.current) flapMatRef.current.opacity = 1;
     if (bottomRef.current)  bottomRef.current.visible = true;
     if (bottomMatRef.current) bottomMatRef.current.opacity = 0;
-    if (interiorLightRef.current) interiorLightRef.current.intensity = 0;
+    if (interiorLightRef.current) {
+      interiorLightRef.current.intensity = 0;
+      interiorLightRef.current.color.copy(warmGlow);
+    }
     packFadeT.current = 0;
     if (cardRef.current)  {
       cardRef.current.position.set(OPEN.packX, cardStartY, OPEN.packZ + 0.03);
@@ -785,6 +822,8 @@ function OpeningSequence({ active, onComplete, isRevealing, isFlipping, onFlipCo
     if (tearLineGroupRef.current) {
       tl.to(tearLineGroupRef.current.scale, { x: 1, duration: 0.8, ease: 'power2.inOut' }, 0);
     }
+    // Phase E: warm tungsten → rarity color bleed across the tear window
+    tl.to(tintProxy, { t: 1, duration: 0.9, ease: 'power1.in', onUpdate: applyRarityBleed }, 0);
 
     // Phase 2: top flap flies off upper-right; the gap opens and light pours (0.8–1.3 s)
     tl.call(() => {
