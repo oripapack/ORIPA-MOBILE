@@ -1,36 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Animated, AccessibilityInfo } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { sg } from '../../../tokens/sg';
 
 /**
- * Home banner strip (~90px, radius: card). Crossfades every 3s, pauses while
- * touched, and never auto-advances under reduced motion (dots become the
- * manual control). Slide text is a real UI overlay — NEVER baked into the
- * background image. Backgrounds are placeholders until the AI art lands in
- * assets/home/banners/ (banner-01..04) — swap the `bg` gradients for
- * <Image> sources in the follow-up task.
+ * Home banner strip (144px ≈ 1/3 of screen width, radius: card). Crossfades
+ * every 3s, pauses while touched, and never auto-advances under reduced
+ * motion (dots become the manual control).
+ *
+ * Slide text is a real UI overlay — NEVER baked into the artwork. A thin
+ * dark gradient sits behind the text zone only (rgba black ≤25%); the
+ * artwork itself is not dimmed. Sources are WebP (originals kept as PNG in
+ * assets/home/banners/).
  */
 const SLIDES = [
   {
     key: 'exclusives',
-    title: 'Japanese Exclusives',
-    sub: 'Direct from Tokyo',
-    bg: ['#1D201F', '#141615'] as const,
+    title: 'JAPANESE EXCLUSIVES',
+    sub: 'Direct from Tokyo.',
+    image: require('../../../../assets/home/banners/banner-01.webp'),
+  },
+  {
+    key: 'tradein',
+    title: '100% back in Coins.',
+    sub: 'Zero fees. Instantly.',
+    footnote: '*of listed value',
+    image: require('../../../../assets/home/banners/banner-02.webp'),
   },
   {
     key: 'fair',
-    title: 'Provably Fair',
-    sub: 'Verify every pull',
-    bg: ['#191C1B', '#101211'] as const,
+    title: 'Provably fair.',
+    sub: 'Verify every pull.',
+    image: require('../../../../assets/home/banners/banner-03.webp'),
   },
-  {
-    key: 'shipping',
-    title: 'Free shipping over $100',
-    sub: 'Bundle & ship together',
-    bg: ['#1B1D1C', '#121413'] as const,
-  },
-];
+] as const;
 
 const INTERVAL_MS = 3000;
 const FADE_MS = 450;
@@ -78,11 +82,28 @@ export function SgBannerCarousel() {
       accessibilityRole="none"
     >
       <Animated.View style={[styles.slide, { opacity: fade }]}>
-        <LinearGradient colors={[...slide.bg]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+        <Image
+          source={slide.image}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          transition={0}
+        />
+        {/* Legibility gradient — behind the text zone only, artwork stays bright */}
+        <LinearGradient
+          colors={['rgba(0,0,0,0.25)', 'rgba(0,0,0,0.10)', 'rgba(0,0,0,0)']}
+          locations={[0, 0.55, 1]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={styles.textScrim}
+          pointerEvents="none"
+        />
         {/* Overlay text — real UI, not baked into the artwork */}
         <View style={styles.textWrap}>
           <Text style={styles.title}>{slide.title}</Text>
           <Text style={styles.sub}>{slide.sub}</Text>
+          {'footnote' in slide && slide.footnote ? (
+            <Text style={styles.footnote}>{slide.footnote}</Text>
+          ) : null}
         </View>
       </Animated.View>
       <View style={styles.dots}>
@@ -104,7 +125,7 @@ export function SgBannerCarousel() {
 
 const styles = StyleSheet.create({
   wrap: {
-    height: 90,
+    height: 144,
     marginHorizontal: sg.space.md,
     marginTop: sg.space.md,
     borderRadius: sg.radius.card,
@@ -112,9 +133,17 @@ const styles = StyleSheet.create({
     backgroundColor: sg.showroom.surface,
   },
   slide: { ...StyleSheet.absoluteFillObject },
-  textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md },
-  title: { fontFamily: sg.font.bodyBold, fontSize: 16, color: sg.showroom.text },
-  sub: { fontFamily: sg.font.body, fontSize: 12, color: sg.showroom.textMuted, marginTop: 2 },
+  textScrim: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: '70%',
+  },
+  textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md, maxWidth: '78%' },
+  title: { fontFamily: sg.font.bodyBold, fontSize: 17, color: sg.showroom.text, letterSpacing: 0.3 },
+  sub: { fontFamily: sg.font.body, fontSize: 13, color: sg.showroom.text, marginTop: 3, opacity: 0.9 },
+  footnote: { fontFamily: sg.font.body, fontSize: 9, color: sg.showroom.text, opacity: 0.7, marginTop: 4 },
   dots: {
     position: 'absolute',
     right: sg.space.md,
@@ -126,7 +155,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 3,
-    backgroundColor: 'rgba(232,229,222,0.25)',
+    backgroundColor: 'rgba(232,229,222,0.35)',
   },
   dotActive: { backgroundColor: sg.brass },
 });
