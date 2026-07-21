@@ -27,12 +27,19 @@ const SLIDES = [
     sub: 'Zero fees. Instantly.',
     footnote: '*of listed value',
     image: require('../../../../assets/home/banners/banner-02.webp'),
+    // Portrait art shows only sky at center-crop; bias to the lower half so
+    // the torii lands in frame. Minimal tuning — this art is slated for a
+    // Shibuya-nightscape replacement.
+    contentPosition: 'bottom center' as const,
   },
   {
     key: 'fair',
     title: 'Provably fair.',
     sub: 'Verify every pull.',
     image: require('../../../../assets/home/banners/banner-03.webp'),
+    // Bright sakura sky needs the extra text-block scrim on top of the
+    // shared horizontal gradient.
+    extraScrim: true,
   },
 ] as const;
 
@@ -86,19 +93,32 @@ export function SgBannerCarousel() {
           source={slide.image}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
+          contentPosition={'contentPosition' in slide ? slide.contentPosition : 'center'}
           transition={0}
         />
-        {/* Legibility gradient — behind the text zone only, artwork stays bright */}
+        {/* Shared legibility gradient — 0.45 at the left edge fading out by
+            60%; sits behind the text zone, the right side of the art stays
+            fully bright */}
         <LinearGradient
-          colors={['rgba(0,0,0,0.25)', 'rgba(0,0,0,0.10)', 'rgba(0,0,0,0)']}
-          locations={[0, 0.55, 1]}
+          colors={['rgba(0,0,0,0.45)', 'rgba(0,0,0,0)']}
+          locations={[0, 0.6]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
-          style={styles.textScrim}
+          style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
         {/* Overlay text — real UI, not baked into the artwork */}
         <View style={styles.textWrap}>
+          {'extraScrim' in slide && slide.extraScrim ? (
+            /* Bright-art fallback: height-limited vertical scrim behind the
+               text block only */
+            <LinearGradient
+              colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.35)', 'rgba(0,0,0,0)']}
+              locations={[0, 0.5, 1]}
+              style={styles.extraScrim}
+              pointerEvents="none"
+            />
+          ) : null}
           <Text style={styles.title}>{slide.title}</Text>
           <Text style={styles.sub}>{slide.sub}</Text>
           {'footnote' in slide && slide.footnote ? (
@@ -133,17 +153,43 @@ const styles = StyleSheet.create({
     backgroundColor: sg.showroom.surface,
   },
   slide: { ...StyleSheet.absoluteFillObject },
-  textScrim: {
+  textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md, maxWidth: '78%' },
+  extraScrim: {
     position: 'absolute',
     left: 0,
-    top: 0,
-    bottom: 0,
-    width: '70%',
+    right: -40,
+    top: '12%',
+    bottom: '12%',
   },
-  textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md, maxWidth: '78%' },
-  title: { fontFamily: sg.font.bodyBold, fontSize: 17, color: sg.showroom.text, letterSpacing: 0.3 },
-  sub: { fontFamily: sg.font.body, fontSize: 13, color: sg.showroom.text, marginTop: 3, opacity: 0.9 },
-  footnote: { fontFamily: sg.font.body, fontSize: 9, color: sg.showroom.text, opacity: 0.7, marginTop: 4 },
+  title: {
+    fontFamily: sg.font.bodyBold,
+    fontSize: 17,
+    color: sg.showroom.text,
+    letterSpacing: 0.3,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 8,
+  },
+  sub: {
+    fontFamily: sg.font.body,
+    fontSize: 13,
+    color: sg.showroom.text,
+    marginTop: 3,
+    opacity: 0.9,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 8,
+  },
+  footnote: {
+    fontFamily: sg.font.body,
+    fontSize: 9,
+    color: sg.showroom.text,
+    opacity: 0.7,
+    marginTop: 4,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 8,
+  },
   dots: {
     position: 'absolute',
     right: sg.space.md,
