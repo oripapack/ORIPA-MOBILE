@@ -6,144 +6,98 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Pressable,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppHeader } from '../components/shared/AppHeader';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 import { HomeCoach } from '../components/coach/HomeCoach';
 import { SgShowroomBackground } from '../components/home/sg/SgShowroomBackground';
-import { SgHomeHero } from '../components/home/sg/SgHomeHero';
-import { SgHomePackCard } from '../components/home/sg/SgHomePackCard';
+import { SgBannerCarousel } from '../components/home/sg/SgBannerCarousel';
+import { SgFeaturedPackCard } from '../components/home/sg/SgFeaturedPackCard';
+import { SgShelfPackTile } from '../components/home/sg/SgShelfPackTile';
 import { SgRecentPulls } from '../components/home/sg/SgRecentPulls';
 import { SgTrustStrip } from '../components/home/sg/SgTrustStrip';
-import { SgSectionHeader } from '../components/ui';
 import { sg } from '../tokens/sg';
-import { navigationRef } from '../navigation/navigationRef';
-import {
-  mockPacks,
-  packBelongsToHomeNiche,
-  HOME_NICHE_CATEGORIES,
-  type Pack,
-  type HomeNicheCategory,
-} from '../data/mockPacks';
+import { mockPacks, type Pack } from '../data/mockPacks';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useAppStore } from '../store/useAppStore';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 
-type SortKey = 'featured' | 'price_asc' | 'price_desc' | 'low_stock';
+/**
+ * Shelf-first home: banner → filter chips → featured pack (fully visible
+ * without scrolling at 440×956) → 2-column shelf → Just Pulled → trust strip.
+ * The old Discover/Browse mode switch and niche/sort chips are removed;
+ * "All" covers full-catalog browsing (niche chips return with real category
+ * growth). Scarcity rules: real numbers only, brass promotion below 10%,
+ * no red / blinking / countdowns.
+ */
 
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+type FilterKey = 'featured' | 'new' | 'low' | 'all';
+
+const FILTERS: { key: FilterKey; label: string }[] = [
   { key: 'featured', label: 'Featured' },
-  { key: 'price_asc', label: 'Price ↑' },
-  { key: 'price_desc', label: 'Price ↓' },
-  { key: 'low_stock', label: 'Low Stock' },
+  { key: 'new', label: 'New' },
+  { key: 'low', label: 'Low stock' },
+  { key: 'all', label: 'All' },
 ];
 
-const NICHE_LABELS: Record<HomeNicheCategory, string> = {
-  all: 'All Packs',
-  pokemon: 'Pokémon',
-  one_piece: 'One Piece',
-  yugioh: 'Yu-Gi-Oh!',
-  sports: 'Sports',
-  multi: 'Multi TCG',
-};
+/** Filter threshold — broader than the 10% brass promotion so the chip is useful. */
+const LOW_STOCK_FILTER_FRACTION = 0.25;
+
+function packFraction(p: Pack): number {
+  return p.remainingFraction ?? p.remainingInventory / Math.max(p.totalInventory, 1);
+}
 
 export function HomeScreen() {
   const { t } = useTranslation();
   const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
-  const homeViewMode = useAppStore((s) => s.homeViewMode);
-  const setHomeViewMode = useAppStore((s) => s.setHomeViewMode);
-  const homeNiche = useAppStore((s) => s.homeNiche);
-  const setHomeNiche = useAppStore((s) => s.setHomeNiche);
   const openPack = useAppStore((s) => s.openPack);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [sortKey, setSortKey] = useState<SortKey>('featured');
+  const [filter, setFilter] = useState<FilterKey>('all');
 
   const featuredPack = useMemo(
     () => mockPacks.find((p) => p.isFeatured && p.id === 'platinum-legacy') ?? mockPacks.find((p) => p.isFeatured) ?? mockPacks[0]!,
     [],
   );
 
-  const filteredPacks = useMemo(() => {
-    let arr = mockPacks.filter((p) => packBelongsToHomeNiche(p, homeNiche));
-    switch (sortKey) {
-      case 'price_asc': arr = [...arr].sort((a, b) => a.creditPrice - b.creditPrice); break;
-      case 'price_desc': arr = [...arr].sort((a, b) => b.creditPrice - a.creditPrice); break;
-      case 'low_stock': arr = [...arr].sort((a, b) => (a.remainingFraction ?? 1) - (b.remainingFraction ?? 1)); break;
-      default: arr = [...arr].sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured)); break;
+  const shelfPacks = useMemo(() => {
+    const pool = mockPacks.filter((p) => p.id !== featuredPack.id);
+    switch (filter) {
+      case 'featured': return pool.filter((p) => p.isFeatured);
+      case 'new': return pool.filter((p) => p.isNew);
+      case 'low': return pool.filter((p) => packFraction(p) < LOW_STOCK_FILTER_FRACTION);
+      default: return pool;
     }
-    return arr;
-  }, [homeNiche, sortKey]);
-
-  const gridPacks = useMemo(() => mockPacks.slice(0, 6), []);
+  }, [filter, featuredPack.id]);
 
   const onOpenFeatured = () => {
-    if (!featuredPack) return;
     requireAuth(() => { void openPack(featuredPack); });
   };
 
   const ListHeader = (
     <>
-      <ModeSwitchBar
-        mode={homeViewMode}
-        onDiscover={() => setHomeViewMode('discover')}
-        onBrowse={() => setHomeViewMode('browse')}
-      />
+      <SgBannerCarousel />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+        {FILTERS.map((f) => (
+          <TouchableOpacity
+            key={f.key}
+            style={[styles.chip, filter === f.key && styles.chipActive]}
+            onPress={() => setFilter(f.key)}
+          >
+            <Text style={[styles.chipText, filter === f.key && styles.chipTextActive]}>{f.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      <SgFeaturedPackCard pack={featuredPack} onOpen={onOpenFeatured} />
+      <View style={styles.shelfSpacer} />
+    </>
+  );
 
-      {homeViewMode === 'discover' ? (
-        <>
-          <SgHomeHero
-            pack={featuredPack}
-            onOpen={onOpenFeatured}
-            onBrowse={() => setHomeViewMode('browse')}
-          />
-          <SgTrustStrip />
-          <SgRecentPulls />
-          <View style={styles.sectionHeader}>
-            <SgSectionHeader title="All Packs" />
-            <Text style={styles.sectionSub}>Tap any pack to open or view details</Text>
-          </View>
-          <View style={styles.stack}>
-            {gridPacks.map((pack) => (
-              <SgHomePackCard key={pack.id} pack={pack} />
-            ))}
-          </View>
-        </>
-      ) : (
-        <>
-          <View style={styles.browseIntro}>
-            <SgSectionHeader title="All Packs" />
-            <Text style={styles.sectionSub}>{filteredPacks.length} packs available</Text>
-          </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-            {HOME_NICHE_CATEGORIES.map((key) => (
-              <TouchableOpacity
-                key={key}
-                style={[styles.chip, homeNiche === key && styles.chipActive]}
-                onPress={() => setHomeNiche(key)}
-              >
-                <Text style={[styles.chipText, homeNiche === key && styles.chipTextActive]}>
-                  {NICHE_LABELS[key]}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-            {SORT_OPTIONS.map((opt) => (
-              <TouchableOpacity
-                key={opt.key}
-                style={[styles.chip, sortKey === opt.key && styles.chipActive]}
-                onPress={() => setSortKey(opt.key)}
-              >
-                <Text style={[styles.chipText, sortKey === opt.key && styles.chipTextActive]}>{opt.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          {homeNiche === 'all' && featuredPack ? <SgFeaturedRow pack={featuredPack} /> : null}
-        </>
-      )}
+  const ListFooter = (
+    <>
+      <SgRecentPulls />
+      <SgTrustStrip />
     </>
   );
 
@@ -151,108 +105,34 @@ export function HomeScreen() {
     <View style={styles.container}>
       <SgShowroomBackground />
       <AppHeader onSearch={() => setSearchOpen(true)} />
-      {homeViewMode === 'browse' ? (
-        <FlatList<Pack>
-          key="home-browse-list"
-          data={filteredPacks}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <SgHomePackCard pack={item} />}
-          ListHeaderComponent={ListHeader}
-          ListEmptyComponent={
-            <View style={styles.empty}>
-              <Text style={styles.emptyText}>{t('home.emptyCategory')}</Text>
-            </View>
-          }
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          refreshControl={refreshControl}
-        />
-      ) : (
-        <FlatList<Pack>
-          key="home-discover"
-          data={[]}
-          renderItem={() => null}
-          ListHeaderComponent={ListHeader}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          refreshControl={refreshControl}
-        />
-      )}
+      <FlatList<Pack>
+        key="home-shelf"
+        data={shelfPacks}
+        numColumns={2}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <SgShelfPackTile pack={item} />}
+        columnWrapperStyle={styles.shelfRow}
+        ListHeaderComponent={ListHeader}
+        ListFooterComponent={ListFooter}
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Text style={styles.emptyText}>{t('home.emptyCategory')}</Text>
+          </View>
+        }
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+        refreshControl={refreshControl}
+      />
       <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
       <HomeCoach />
     </View>
   );
 }
 
-/** Featured banner (browse mode) — same navigation behavior as the old PhFeaturedBanner. */
-function SgFeaturedRow({ pack }: { pack: Pack }) {
-  const goDetail = () => {
-    if (navigationRef.isReady()) navigationRef.navigate('PackDetails', { packId: pack.id });
-  };
-  return (
-    <Pressable onPress={goDetail} style={({ pressed }) => [styles.featuredRow, pressed && styles.featuredRowPressed]}>
-      <View style={styles.featuredSatinTop} pointerEvents="none" />
-      <View style={styles.featuredBody}>
-        <Text style={styles.featuredEyebrow}>FEATURED</Text>
-        <Text style={styles.featuredTitle} numberOfLines={1}>{pack.title}</Text>
-      </View>
-      <Text style={styles.featuredCta}>VIEW ›</Text>
-    </Pressable>
-  );
-}
-
-function ModeSwitchBar({
-  mode,
-  onDiscover,
-  onBrowse,
-}: {
-  mode: 'discover' | 'browse';
-  onDiscover: () => void;
-  onBrowse: () => void;
-}) {
-  return (
-    <View style={styles.modeSwitchWrap}>
-      <View style={styles.modeSwitch}>
-        <TouchableOpacity
-          style={[styles.modeBtn, mode === 'discover' && styles.modeBtnActive]}
-          onPress={onDiscover}
-          activeOpacity={0.85}
-        >
-          <Text style={[styles.modeBtnText, mode === 'discover' && styles.modeBtnTextActive]}>Discover</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.modeBtn, mode === 'browse' && styles.modeBtnActive]}
-          onPress={onBrowse}
-          activeOpacity={0.85}
-        >
-          <Text style={[styles.modeBtnText, mode === 'browse' && styles.modeBtnTextActive]}>Browse</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.showroom.bg },
-  list: { paddingBottom: 100, paddingTop: 4, flexGrow: 1 },
-  // Segmented mode switch — control role (radius 8), satin surface
-  modeSwitchWrap: { paddingHorizontal: sg.space.md, paddingTop: sg.space.md },
-  modeSwitch: {
-    flexDirection: 'row',
-    borderRadius: sg.radius.control + 2,
-    padding: 3,
-    backgroundColor: sg.showroom.surface,
-  },
-  modeBtn: { flex: 1, alignItems: 'center', paddingVertical: 9, borderRadius: sg.radius.control },
-  modeBtnActive: { backgroundColor: sg.showroom.raised },
-  modeBtnText: { fontFamily: sg.font.bodyMedium, fontSize: 13, color: sg.showroom.textMuted },
-  modeBtnTextActive: { color: sg.showroom.text, fontFamily: sg.font.bodyBold },
-  sectionHeader: { paddingHorizontal: sg.space.md, marginTop: sg.space.lg, marginBottom: sg.space.md },
-  sectionSub: { fontFamily: sg.font.body, fontSize: 12, color: sg.showroom.textMuted, marginTop: 4 },
-  stack: { paddingHorizontal: sg.space.md, paddingTop: 4, gap: 4 },
-  browseIntro: { paddingHorizontal: sg.space.md, paddingTop: sg.space.md, paddingBottom: sg.space.sm },
+  list: { paddingBottom: 100, flexGrow: 1 },
   chipRow: { paddingHorizontal: sg.space.md, paddingVertical: sg.space.sm, gap: 8 },
-  // Filter chips — control role (these are filters, not status chips → no pill)
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -262,28 +142,8 @@ const styles = StyleSheet.create({
   chipActive: { backgroundColor: sg.showroom.raised },
   chipText: { fontFamily: sg.font.bodyMedium, fontSize: 13, color: sg.showroom.textMuted },
   chipTextActive: { color: sg.showroom.text, fontFamily: sg.font.bodyBold },
-  featuredRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: sg.space.md,
-    marginTop: sg.space.sm,
-    marginBottom: sg.space.md,
-    padding: sg.space.md,
-    borderRadius: sg.radius.card,
-    backgroundColor: sg.showroom.surface,
-    overflow: 'hidden',
-  },
-  featuredRowPressed: { opacity: 0.92 },
-  featuredSatinTop: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: 1,
-    backgroundColor: sg.satinTopHighlight,
-  },
-  featuredBody: { flex: 1 },
-  featuredEyebrow: { fontFamily: sg.font.bodyMedium, fontSize: 9, letterSpacing: 1.2, color: sg.brass },
-  featuredTitle: { fontFamily: sg.font.bodyBold, fontSize: 14, color: sg.showroom.text, marginTop: 3 },
-  featuredCta: { fontFamily: sg.font.bodyMedium, fontSize: 11, letterSpacing: 1, color: sg.showroom.textMuted },
+  shelfSpacer: { height: sg.space.md },
+  shelfRow: { paddingHorizontal: sg.space.md, gap: sg.space.sm, marginBottom: sg.space.sm },
   empty: { padding: sg.space.xl, alignItems: 'center' },
   emptyText: { fontFamily: sg.font.body, fontSize: 13, color: sg.showroom.textMuted },
 });

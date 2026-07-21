@@ -647,7 +647,8 @@
       "railHotSub": "Chase-forward drops with boosted energy — windows stay tight.",
       "railGradedTitle": "Graded vault",
       "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
-    }
+    },
+    "guaranteeTradeIn": "Instant 100% trade-in (listed value)"
   },
   "packs": {
     "browseTitle": "Pack floor",
