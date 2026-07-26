@@ -38,6 +38,7 @@ import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
 import { navigationRef } from './navigationRef';
 import { colors } from '../tokens/colors';
+import { sg } from '../tokens/sg';
 import { useAppStore } from '../store/useAppStore';
 import { fontSize, brandFont } from '../tokens/typography';
 import { RootStackParamList } from './types';
@@ -67,18 +68,12 @@ const tabBarDockStyles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
   },
-  topRim: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 2,
-  },
 });
 
 /**
- * Dock-style bar: stable jewel tones (no muddy blur tint) + beveled top for 3D depth.
- * iOS gets a very light blur under the gradients; Android uses gradients only.
+ * Dock-style bar — Urushi Archive material grammar: translucent obsidian slab
+ * (blur under a sumi gradient), satin top-edge highlight instead of a colored
+ * rim, darker toward the bottom per the single-light rule.
  */
 function PremiumTabBarBackground() {
   return (
@@ -87,31 +82,22 @@ function PremiumTabBarBackground() {
         <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
       ) : null}
 
-      {/* Base slab — matches app surfaces, darker toward bottom (receding plane) */}
+      {/* Base slab — sumi steps, receding darker toward the bottom */}
       <LinearGradient
-        colors={[colors.surfaceMuted, colors.surfaceElevated, colors.background]}
+        colors={['rgba(29,32,31,0.92)', 'rgba(17,19,19,0.96)', 'rgba(9,10,10,0.98)']}
         locations={[0, 0.5, 1]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Top “lit face” — subtle 3D bevel */}
+      {/* Satin top-edge highlight (material grammar — replaces colored rims) */}
       <LinearGradient
-        colors={['rgba(255,255,255,0.11)', 'rgba(255,255,255,0.02)', 'transparent']}
+        colors={['rgba(255,255,255,0.09)', 'rgba(255,255,255,0.02)', 'transparent']}
         locations={[0, 0.18, 1]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
-
-      {/* Emerald hairline rim (premium edge) */}
-      <LinearGradient
-        colors={['rgba(16,185,129,0.40)', 'rgba(16,185,129,0.14)', 'rgba(255,255,255,0.06)']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={tabBarDockStyles.topRim}
         pointerEvents="none"
       />
 
@@ -154,8 +140,8 @@ function TabNavigatorInner() {
         headerShown: false,
         sceneContainerStyle: Platform.OS === 'web' ? { flex: 1, minHeight: 0 } : undefined,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: colors.gold,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarActiveTintColor: sg.showroom.text,
+        tabBarInactiveTintColor: sg.showroom.textMuted,
         tabBarStyle: styles.tabBar,
         tabBarBackground: PremiumTabBarBackground,
         tabBarLabelStyle: styles.tabLabel,
