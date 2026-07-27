@@ -1,5 +1,5 @@
 /**
- * "Stage & Gallery" shared UI (docs/design-spec.md, approved 2026-07-14).
+ * N2 "Neon Torii" shared UI (docs/design-system-n2.md).
  * New-generation primitives — screens migrate here one at a time.
  */
 export { SgButton } from './SgButton';

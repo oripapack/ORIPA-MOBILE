@@ -1,44 +1,32 @@
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sg } from '../tokens/sg';
 import { SgButton, SgCard, SgData, SgSectionHeader } from '../components/ui';
 
 /**
- * Dev-only gallery for the "Stage & Gallery" shared components (Urushi Archive).
+ * Dev-only gallery for the N2 "Neon Torii" shared components.
  * Reachable via EXPO_PUBLIC_DEV_SCREEN=UiGallery (never linked in product nav).
- *
- * Lighting note: the warm top-center radial spot is implemented per-screen on
- * web (CSS). Here we approximate the vertical falloff only — components must
- * never self-illuminate, so this bench stays honest about elevation reading.
  */
 export function DevUiGalleryScreen() {
   const insets = useSafeAreaInsets();
   return (
     <View style={styles.root}>
-      {/* Single-light rule: vertical darkening toward the bottom */}
-      <LinearGradient
-        colors={['rgba(255,250,238,0.05)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0.30)']}
-        locations={[0, 0.3, 1]}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
       <ScrollView
         contentContainerStyle={{ paddingTop: insets.top + sg.space.lg, paddingBottom: sg.space.xxl }}
       >
-        <Text style={styles.pageTitle}>Sg components — Urushi Archive</Text>
+        <Text style={styles.pageTitle}>Sg components — N2 Neon Torii</Text>
 
         <View style={styles.block}>
           <SgSectionHeader title="Just Pulled" actionLabel="LIVE ›" live onAction={() => {}} />
         </View>
 
         <View style={styles.block}>
-          <SgButton label="Open Pack" onPress={() => {}} />
+          <SgButton label="Open a pack — $25.00" onPress={() => {}} />
           <View style={styles.gap} />
           <SgButton label="Back to packs" variant="line" onPress={() => {}} />
           <View style={styles.gap} />
-          <SgButton label="Open Pack" onPress={() => {}} disabled />
+          <SgButton label="Open a pack — $25.00" onPress={() => {}} disabled />
         </View>
 
         <View style={styles.block}>
@@ -46,7 +34,7 @@ export function DevUiGalleryScreen() {
             {/* Pack name — the one Fraunces use on this bench */}
             <Text style={styles.packName}>Kanto Origins</Text>
             <View style={styles.cardRow}>
-              <SgData value="2,500" unit="Coins" size="lg" />
+              <SgData value="2,500" unit="Coins" size="lg" tone="gold" />
               <SgData value="214 / 500" unit="left" size="sm" />
             </View>
             {/* Slots: hairline bar + neutral mono numbers (no red, no blink) */}
@@ -56,15 +44,15 @@ export function DevUiGalleryScreen() {
           </SgCard>
           <View style={styles.gap} />
           <SgCard raised>
-            {/* brass = rarity/decor detail, jade = financial status TEXT */}
-            <SgData value="MYTHIC · 1 of 4" unit="rarity" tone="brass" size="sm" />
+            {/* gold = Hit rank / value; success = verification & stock status */}
+            <SgData value="CHASE · 1 of 4" unit="rarity" tone="gold" size="sm" />
             <View style={styles.gapSm} />
-            <SgData value="+14,483" unit="Coins · trade-in complete" tone="jade" size="md" />
+            <SgData value="+14,483" unit="Coins · trade-in complete" tone="success" size="md" />
           </SgCard>
         </View>
 
         <View style={styles.block}>
-          <SgCard kind="panel">
+          <SgCard>
             <SgSectionHeader title="Fairness record" actionLabel="VERIFY ›" onAction={() => {}} />
             <View style={styles.fairRow}>
               <Text style={styles.fairLabel}>Server commitment</Text>
@@ -81,13 +69,13 @@ export function DevUiGalleryScreen() {
           </SgCard>
         </View>
 
-        <Text style={styles.pageTitle}>Gallery layer (washi)</Text>
-        <View style={styles.galleryZone}>
-          <SgCard layer="gallery">
-            <SgSectionHeader title="Your pull is in the vault" layer="gallery" />
+        <Text style={styles.pageTitle}>Raised panel</Text>
+        <View style={styles.block}>
+          <SgCard raised>
+            <SgSectionHeader title="Your pull is in the vault" />
             <View style={styles.cardRow}>
-              <SgData value="14,483" unit="Coins" tone="jade" layer="gallery" size="lg" />
-              <SgData value="$0" unit="shipping" layer="gallery" size="lg" />
+              <SgData value="14,483" unit="Coins" tone="gold" size="lg" />
+              <SgData value="$0" unit="shipping" size="lg" />
             </View>
           </SgCard>
         </View>
@@ -97,18 +85,18 @@ export function DevUiGalleryScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: sg.showroom.bg },
+  root: { flex: 1, backgroundColor: sg.bg },
   pageTitle: {
     fontFamily: sg.font.bodyBold,
     fontSize: 20,
-    color: sg.showroom.text,
+    color: sg.text,
     paddingHorizontal: sg.space.lg,
     marginTop: sg.space.lg,
   },
   packName: {
     fontFamily: sg.font.display,
     fontSize: 22,
-    color: sg.showroom.text,
+    color: sg.text,
   },
   block: { paddingHorizontal: sg.space.lg, marginTop: sg.space.lg },
   gap: { height: sg.space.sm },
@@ -122,14 +110,14 @@ const styles = StyleSheet.create({
   slotsBar: {
     height: 2,
     borderRadius: 1,
-    backgroundColor: 'rgba(232,229,222,0.14)',
+    backgroundColor: sg.line,
     marginTop: sg.space.md,
   },
   slotsFill: {
     width: '43%',
     height: 2,
     borderRadius: 1,
-    backgroundColor: 'rgba(232,229,222,0.55)',
+    backgroundColor: sg.muted,
   },
   fairRow: {
     flexDirection: 'row',
@@ -140,13 +128,6 @@ const styles = StyleSheet.create({
   fairLabel: {
     fontFamily: sg.font.body,
     fontSize: 13,
-    color: sg.showroom.textMuted,
-  },
-  galleryZone: {
-    backgroundColor: sg.gallery.bg,
-    padding: sg.space.lg,
-    marginTop: sg.space.lg,
-    borderRadius: sg.radius.panel,
-    marginHorizontal: sg.space.lg,
+    color: sg.muted,
   },
 });

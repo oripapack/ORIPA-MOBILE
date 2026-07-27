@@ -1,44 +1,51 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextStyle } from 'react-native';
-import { sg, SgLayer } from '../../tokens/sg';
+import { sg } from '../../tokens/sg';
 
 interface Props {
-  /** The numeral string, e.g. "2,500" / "214 / 500" / "80.0%" / a seed hash. */
+  /** The numeral string, e.g. "2,500" / "214 / 500" / "80.0%" / a cert hash. */
   value: string;
   /** Unit label — REQUIRED by design rule for money-like numbers ("Coins", "listed value"). */
   unit?: string;
   size?: 'sm' | 'md' | 'lg';
   /**
-   * brass — rarity / decorative data accents (never buttons).
-   * jade  — financial confirmation status only (trade-in complete, value confirmed).
+   * gold    — value semantics: prices, balances, Hit rank (§4).
+   * success — verification / stock / success only. Never decoration.
    */
-  tone?: 'default' | 'brass' | 'jade';
-  layer?: SgLayer;
+  tone?: 'default' | 'gold' | 'success';
   style?: TextStyle;
 }
 
 const SIZES = { sm: 12, md: 15, lg: 20 } as const;
 
 /**
- * The only entry point for numerals. Mono is restricted to prices, odds,
- * stock, coins and hashes — product names and dates use the body face.
+ * The only entry point for numerals: Spline Sans Mono + tabular-nums (§4).
+ * Mono is restricted to prices, odds, stock, cert numbers, countdowns and
+ * balances — product names and dates use the body face.
  */
-export function SgData({ value, unit, size = 'md', tone = 'default', layer = 'showroom', style }: Props) {
-  const base = layer === 'showroom' ? sg.showroom.text : sg.gallery.ink;
-  const muted = layer === 'showroom' ? sg.showroom.textMuted : sg.gallery.inkMuted;
-  const valueColor =
-    tone === 'brass' ? sg.brass : tone === 'jade' ? (layer === 'showroom' ? sg.jadeOnDark : sg.jade) : base;
+export function SgData({ value, unit, size = 'md', tone = 'default', style }: Props) {
+  const valueColor = tone === 'gold' ? sg.gold : tone === 'success' ? sg.success : sg.text;
 
   return (
     <View style={styles.row}>
       <Text style={[styles.value, { fontSize: SIZES[size], color: valueColor }, style]}>{value}</Text>
-      {unit ? <Text style={[styles.unit, { color: muted }]}>{unit}</Text> : null}
+      {unit ? <Text style={styles.unit}>{unit}</Text> : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
-  value: { fontFamily: sg.font.dataBold, letterSpacing: 0.2 },
-  unit: { fontFamily: sg.font.data, fontSize: 11, letterSpacing: 0.6, textTransform: 'uppercase' },
+  value: {
+    fontFamily: sg.font.dataBold,
+    letterSpacing: 0.2,
+    fontVariant: [...sg.numeric],
+  },
+  unit: {
+    fontFamily: sg.font.data,
+    fontSize: 11,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    color: sg.muted,
+  },
 });

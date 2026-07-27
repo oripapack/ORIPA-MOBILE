@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { sg } from '../tokens/sg';
 import { SgCard, SgData, SgSectionHeader } from '../components/ui';
 import { SgFairnessRecord } from '../components/pack/sg/SgFairnessRecord';
@@ -89,7 +88,7 @@ export function PackDetailsScreen({ route }: Props) {
           }}
           activeOpacity={0.85}
         >
-          <Ionicons name="chevron-back" size={20} color={sg.showroom.text} />
+          <Ionicons name="chevron-back" size={20} color={sg.text} />
           <Text style={styles.backText}>{t('packDetails.back')}</Text>
         </TouchableOpacity>
         <View style={styles.missing}>
@@ -137,7 +136,7 @@ export function PackDetailsScreen({ route }: Props) {
         }}
         activeOpacity={0.85}
       >
-        <Ionicons name="chevron-back" size={20} color={sg.showroom.text} />
+        <Ionicons name="chevron-back" size={20} color={sg.text} />
         <Text style={styles.backText}>{t('packDetails.back')}</Text>
       </TouchableOpacity>
 
@@ -147,7 +146,7 @@ export function PackDetailsScreen({ route }: Props) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* ── 1. Pack name / set — hero under the single warm light ── */}
+        {/* ── 1. Pack name / set ── */}
         <View style={styles.hero}>
           <View style={styles.heroVisualWrap}>
             <PackVisual
@@ -156,7 +155,6 @@ export function PackDetailsScreen({ route }: Props) {
               rarityTier={pack.rarityTier ?? 'epic'}
               size="hero"
             />
-            <View style={styles.heroShadow} />
           </View>
           <View style={styles.heroBadges}>
             {pack.isFeatured ? (
@@ -165,7 +163,7 @@ export function PackDetailsScreen({ route }: Props) {
               </View>
             ) : null}
             {pack.buybackRate != null ? (
-              <SgData value={`${pack.buybackRate}%`} unit="trade-in" size="sm" tone="jade" />
+              <SgData value={`${pack.buybackRate}%`} unit="trade-in" size="sm" tone="gold" />
             ) : null}
           </View>
           <Text style={styles.heroTitle}>{loc.title}</Text>
@@ -189,7 +187,7 @@ export function PackDetailsScreen({ route }: Props) {
             <SgSectionHeader title={t('packDetails.specTitle')} />
             <View style={styles.specRow}>
               <Text style={styles.specLabel}>{t('packDetails.priceTitle')}</Text>
-              <SgData value={pack.creditPrice.toLocaleString()} unit={t('packCard.credits')} size="lg" />
+              <SgData value={pack.creditPrice.toLocaleString()} unit={t('packCard.credits')} size="lg" tone="gold" />
             </View>
             <View style={styles.specRow}>
               <Text style={styles.specLabel}>{t('packDetails.specRemainingLabel')}</Text>
@@ -231,21 +229,13 @@ export function PackDetailsScreen({ route }: Props) {
               <View style={styles.topHitRow}>
                 <View style={styles.topHitImgFrame}>
                   <Image source={{ uri: topHit.imageUrl }} style={styles.topHitImg} contentFit="cover" />
-                  <LinearGradient
-                    colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.12)', 'rgba(255,255,255,0)']}
-                    locations={[0.4, 0.5, 0.6]}
-                    start={{ x: 0, y: 1 }}
-                    end={{ x: 1, y: 0 }}
-                    style={StyleSheet.absoluteFill}
-                    pointerEvents="none"
-                  />
                 </View>
                 <View style={styles.topHitBody}>
                   <Text style={styles.topHitName} numberOfLines={2}>
                     {topHit.name}
                   </Text>
-                  <SgData value={topHit.estValue} unit="listed" size="sm" tone="jade" />
-                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone="brass" />
+                  <SgData value={topHit.estValue} unit="listed" size="sm" tone="gold" />
+                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone="gold" />
                 </View>
               </View>
               <Text style={styles.finePrint}>{t('packDetails.topHitPreviewFinePrint')}</Text>
@@ -258,7 +248,7 @@ export function PackDetailsScreen({ route }: Props) {
             <View style={styles.pullsGrid}>
               {odds.rows.slice(0, 4).map((r) => (
                 <View key={r.tier} style={styles.pullsCell}>
-                  <SgData value={r.tier.toUpperCase()} size="sm" tone="brass" />
+                  <SgData value={r.tier.toUpperCase()} size="sm" tone="gold" />
                   <SgData value={r.chance} size="md" />
                   <Text style={styles.pullsExamples} numberOfLines={2}>
                     {r.examples.join(' / ')}
@@ -306,20 +296,14 @@ export function PackDetailsScreen({ route }: Props) {
             </>
           ) : null}
 
-          {/* Primary CTA — the single shu element on this screen (semi-gloss) */}
+          {/* Primary CTA — the single gold CTA on this screen (§4: gold = value,
+              black label; neon never fills a CTA) */}
           <TouchableOpacity
             style={[styles.cta, openBlocked && !membershipLocked ? styles.ctaDisabled : null]}
             activeOpacity={0.9}
             disabled={membershipLocked ? isPackOpening || awaitingFulfillment : openBlocked}
             onPress={onPressPrimaryCta}
           >
-            <LinearGradient
-              colors={['rgba(255,255,255,0.07)', 'rgba(255,255,255,0)']}
-              locations={[0, 0.55]}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
-            <View style={styles.ctaTopEdge} pointerEvents="none" />
             <View style={styles.ctaInner}>
               <View style={styles.ctaTextWrap}>
                 <Text style={styles.ctaText}>
@@ -370,7 +354,7 @@ export function PackDetailsScreen({ route }: Props) {
 const styles = StyleSheet.create({
   root: {
     ...screenRoot,
-    backgroundColor: sg.showroom.bg,
+    backgroundColor: sg.bg,
   },
   backBtn: {
     flexDirection: 'row',
@@ -380,13 +364,13 @@ const styles = StyleSheet.create({
     paddingVertical: sg.space.sm,
     alignSelf: 'flex-start',
   },
-  backText: { fontFamily: sg.font.bodyMedium, fontSize: 14, color: sg.showroom.text },
+  backText: { fontFamily: sg.font.bodyMedium, fontSize: 14, color: sg.text },
   missing: { padding: sg.space.lg, alignItems: 'center', gap: sg.space.sm },
-  missingTitle: { fontFamily: sg.font.bodyBold, fontSize: 16, color: sg.showroom.text },
+  missingTitle: { fontFamily: sg.font.bodyBold, fontSize: 16, color: sg.text },
   missingBody: {
     fontFamily: sg.font.body,
     fontSize: 13,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     textAlign: 'center',
     lineHeight: 19,
   },
@@ -394,15 +378,6 @@ const styles = StyleSheet.create({
   scrollContent: { paddingBottom: sg.space.xl },
   hero: { alignItems: 'center', paddingTop: sg.space.sm, paddingHorizontal: sg.space.md },
   heroVisualWrap: { alignItems: 'center' },
-  heroShadow: {
-    width: 200,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    marginTop: -8,
-    transform: [{ scaleY: 0.55 }],
-    opacity: 0.75,
-  },
   heroBadges: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -412,27 +387,29 @@ const styles = StyleSheet.create({
   featuredChip: {
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: sg.radius.pill, // status chip — pill allowed
-    backgroundColor: sg.showroom.surface,
+    borderRadius: sg.radius.tag,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
   },
   featuredChipText: {
     fontFamily: sg.font.bodyMedium,
     fontSize: 9,
     letterSpacing: 1.2,
-    color: sg.brass,
+    color: sg.text,
   },
   heroTitle: {
     fontFamily: sg.font.display,
     fontSize: 28,
     lineHeight: 34,
-    color: sg.showroom.text,
+    color: sg.text,
     textAlign: 'center',
     marginTop: sg.space.sm,
   },
   heroSet: {
     fontFamily: sg.font.body,
     fontSize: 12,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     textAlign: 'center',
     marginTop: 6,
   },
@@ -441,7 +418,7 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.body,
     fontSize: 13,
     lineHeight: 19,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     marginTop: sg.space.sm,
   },
   specRow: {
@@ -450,21 +427,21 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     marginTop: sg.space.md,
   },
-  specLabel: { fontFamily: sg.font.body, fontSize: 13, color: sg.showroom.textMuted },
+  specLabel: { fontFamily: sg.font.body, fontSize: 13, color: sg.muted },
   specValue: {
     fontFamily: sg.font.bodyMedium,
     fontSize: 13,
-    color: sg.showroom.text,
+    color: sg.text,
     maxWidth: '60%',
     textAlign: 'right',
   },
   slotsBar: {
     height: 2,
     borderRadius: 1,
-    backgroundColor: 'rgba(232,229,222,0.14)',
+    backgroundColor: sg.line,
     marginTop: sg.space.sm,
   },
-  slotsFill: { height: 2, borderRadius: 1, backgroundColor: 'rgba(232,229,222,0.55)' },
+  slotsFill: { height: 2, borderRadius: 1, backgroundColor: sg.muted },
   oddsSummary: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -472,34 +449,38 @@ const styles = StyleSheet.create({
     marginTop: sg.space.md,
     paddingTop: sg.space.md,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(232,229,222,0.08)',
+    borderTopColor: sg.line,
   },
-  oddsSummaryLabel: { fontFamily: sg.font.body, fontSize: 13, color: sg.showroom.textMuted },
-  oddsSummaryValue: { fontFamily: sg.font.dataBold, fontSize: 14, color: sg.showroom.text },
+  oddsSummaryLabel: { fontFamily: sg.font.body, fontSize: 13, color: sg.muted },
+  oddsSummaryValue: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 14,
+    color: sg.text,
+    fontVariant: [...sg.numeric],
+  },
   oddsBtn: { padding: 4 },
   oddsBtnText: {
     fontFamily: sg.font.bodyBold,
     fontSize: 12,
     letterSpacing: 0.6,
-    color: sg.showroom.text,
+    color: sg.text,
   },
   topHitRow: { flexDirection: 'row', gap: sg.space.md, marginTop: sg.space.md },
-  // Product imagery — gloss role: image radius + one fixed diagonal reflection
   topHitImgFrame: {
     width: 84,
     height: 116,
-    borderRadius: sg.radius.image,
+    borderRadius: sg.radius.tag,
     overflow: 'hidden',
-    backgroundColor: sg.showroom.raised,
+    backgroundColor: sg.surface2,
   },
   topHitImg: { width: '100%', height: '100%' },
   topHitBody: { flex: 1, gap: 6, justifyContent: 'center' },
-  topHitName: { fontFamily: sg.font.bodyBold, fontSize: 14, lineHeight: 19, color: sg.showroom.text },
+  topHitName: { fontFamily: sg.font.bodyBold, fontSize: 14, lineHeight: 19, color: sg.text },
   finePrint: {
     fontFamily: sg.font.body,
     fontSize: 10,
     lineHeight: 15,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     marginTop: sg.space.md,
   },
   pullsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: sg.space.md, marginTop: sg.space.md },
@@ -508,34 +489,26 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.body,
     fontSize: 11,
     lineHeight: 15,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
   },
   shipRow: { flexDirection: 'row', alignItems: 'center' },
   shipBody: { flex: 1 },
-  shipTitle: { fontFamily: sg.font.bodyBold, fontSize: 15, color: sg.showroom.text },
+  shipTitle: { fontFamily: sg.font.bodyBold, fontSize: 15, color: sg.text },
   footer: {
     ...screenFooter,
     paddingHorizontal: sg.space.md,
     paddingTop: sg.space.sm,
-    backgroundColor: sg.showroom.raised,
+    backgroundColor: sg.surface,
+    borderTopWidth: 1,
+    borderTopColor: sg.line,
   },
   footerStack: { gap: sg.space.sm },
   cta: {
-    borderRadius: sg.radius.control,
-    backgroundColor: sg.shu,
+    borderRadius: sg.radius.btn,
+    backgroundColor: sg.gold,
     overflow: 'hidden',
-    ...sg.ctaShadow,
   },
   ctaDisabled: { opacity: 0.4 },
-  ctaTopEdge: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    zIndex: 2,
-  },
   ctaInner: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -543,7 +516,7 @@ const styles = StyleSheet.create({
     paddingVertical: sg.space.md - 2,
   },
   ctaTextWrap: { flex: 1 },
-  ctaText: { fontFamily: sg.font.bodyBold, fontSize: 16, color: sg.onShu, letterSpacing: 0.2 },
-  ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: 'rgba(245,239,233,0.75)', marginTop: 2 },
-  ctaArrow: { fontFamily: sg.font.bodyBold, fontSize: 20, color: sg.onShu, marginLeft: sg.space.sm },
+  ctaText: { fontFamily: sg.font.bodyBold, fontSize: 16, color: sg.onGold, letterSpacing: 0.2 },
+  ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: 'rgba(0,0,0,0.7)', marginTop: 2 },
+  ctaArrow: { fontFamily: sg.font.bodyBold, fontSize: 20, color: sg.onGold, marginLeft: sg.space.sm },
 });

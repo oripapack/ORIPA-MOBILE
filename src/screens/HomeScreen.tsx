@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppHeader } from '../components/shared/AppHeader';
@@ -17,8 +18,16 @@ import { SgFeaturedPackCard } from '../components/home/sg/SgFeaturedPackCard';
 import { SgShelfPackTile } from '../components/home/sg/SgShelfPackTile';
 import { SgRecentPulls } from '../components/home/sg/SgRecentPulls';
 import { SgTrustStrip } from '../components/home/sg/SgTrustStrip';
+import { SgSectionHeader } from '../components/ui';
 import { sg } from '../tokens/sg';
-import { mockPacks, type Pack } from '../data/mockPacks';
+import { navigationRef } from '../navigation/navigationRef';
+import {
+  mockPacks,
+  packBelongsToHomeNiche,
+  HOME_NICHE_CATEGORIES,
+  type Pack,
+  type HomeNicheCategory,
+} from '../data/mockPacks';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useAppStore } from '../store/useAppStore';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -28,8 +37,8 @@ import { useRequireAuth } from '../hooks/useRequireAuth';
  * without scrolling at 440×956) → 2-column shelf → Just Pulled → trust strip.
  * The old Discover/Browse mode switch and niche/sort chips are removed;
  * "All" covers full-catalog browsing (niche chips return with real category
- * growth). Scarcity rules: real numbers only, brass promotion below 10%,
- * no red / blinking / countdowns.
+ * growth). Scarcity rules: real numbers only, low stock reads as `success`
+ * stock semantics, no red / blinking / countdowns.
  */
 
 type FilterKey = 'featured' | 'new' | 'low' | 'all';
@@ -41,7 +50,7 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: 'all', label: 'All' },
 ];
 
-/** Filter threshold — broader than the 10% brass promotion so the chip is useful. */
+/** Filter threshold — broader than the 10% stock promotion so the chip is useful. */
 const LOW_STOCK_FILTER_FRACTION = 0.25;
 
 function packFraction(p: Pack): number {
@@ -129,21 +138,58 @@ export function HomeScreen() {
   );
 }
 
+/** Featured banner (browse filters) — same navigation behavior as before. */
+function SgFeaturedRow({ pack }: { pack: Pack }) {
+  const goDetail = () => {
+    if (navigationRef.isReady()) navigationRef.navigate('PackDetails', { packId: pack.id });
+  };
+  return (
+    <Pressable onPress={goDetail} style={({ pressed }) => [styles.featuredRow, pressed && styles.featuredRowPressed]}>
+      <View style={styles.featuredBody}>
+        <Text style={styles.featuredEyebrow}>FEATURED</Text>
+        <Text style={styles.featuredTitle} numberOfLines={1}>{pack.title}</Text>
+      </View>
+      <Text style={styles.featuredCta}>VIEW ›</Text>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.showroom.bg },
+  container: { flex: 1, backgroundColor: sg.bg },
   list: { paddingBottom: 100, flexGrow: 1 },
   chipRow: { paddingHorizontal: sg.space.md, paddingVertical: sg.space.sm, gap: 8 },
+  // Filter chips — btn radius (these are controls, not status tags)
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: sg.radius.control,
-    backgroundColor: sg.showroom.surface,
+    borderRadius: sg.radius.btn,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
   },
-  chipActive: { backgroundColor: sg.showroom.raised },
-  chipText: { fontFamily: sg.font.bodyMedium, fontSize: 13, color: sg.showroom.textMuted },
-  chipTextActive: { color: sg.showroom.text, fontFamily: sg.font.bodyBold },
+  chipActive: { backgroundColor: sg.surface2 },
+  chipText: { fontFamily: sg.font.bodyMedium, fontSize: 13, color: sg.muted },
+  chipTextActive: { color: sg.text, fontFamily: sg.font.bodyBold },
   shelfSpacer: { height: sg.space.md },
   shelfRow: { paddingHorizontal: sg.space.md, gap: sg.space.sm, marginBottom: sg.space.sm },
+  featuredRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: sg.space.md,
+    marginTop: sg.space.sm,
+    marginBottom: sg.space.md,
+    padding: sg.space.md,
+    borderRadius: sg.radius.panel,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
+    overflow: 'hidden',
+  },
+  featuredRowPressed: { opacity: 0.92 },
+  featuredBody: { flex: 1 },
+  featuredEyebrow: { fontFamily: sg.font.bodyMedium, fontSize: 9, letterSpacing: 1.2, color: sg.muted },
+  featuredTitle: { fontFamily: sg.font.bodyBold, fontSize: 14, color: sg.text, marginTop: 3 },
+  featuredCta: { fontFamily: sg.font.bodyMedium, fontSize: 11, letterSpacing: 1, color: sg.muted },
   empty: { padding: sg.space.xl, alignItems: 'center' },
-  emptyText: { fontFamily: sg.font.body, fontSize: 13, color: sg.showroom.textMuted },
+  emptyText: { fontFamily: sg.font.body, fontSize: 13, color: sg.muted },
 });

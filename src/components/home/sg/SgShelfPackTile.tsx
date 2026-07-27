@@ -8,9 +8,10 @@ import { SgData } from '../../ui';
 import { navigationRef } from '../../../navigation/navigationRef';
 
 /**
- * 2-column shelf tile. Tap → PackDetails. NEW is a quiet brass status pill
- * (real `isNew` data). Remaining count is always the real number; it is
- * promoted to brass below 10% — never red, never blinking.
+ * 2-column shelf tile (N2). Tap → PackDetails. NEW is a quiet tag chip
+ * (real `isNew` data). Remaining count is always the real number; low stock
+ * flips to `success` semantics (§4: stock lives in success green) — never
+ * red, never blinking.
  */
 export function SgShelfPackTile({ pack }: { pack: Pack }) {
   const foil = getCategoryFoil(pack.tcgCategory ?? 'Multi TCG');
@@ -24,18 +25,9 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
 
   return (
     <Pressable onPress={goDetail} style={({ pressed }) => [styles.tile, pressed && styles.pressed]}>
-      <View style={styles.satinTop} pointerEvents="none" />
       <View style={styles.visualClip}>
         <LinearGradient colors={[foil.top, foil.mid, foil.bot]} style={styles.visual}>
           <View style={[styles.packShape, { borderColor: foil.accent }]} />
-          <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.08)', 'rgba(255,255,255,0)']}
-            locations={[0.38, 0.47, 0.56]}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
         </LinearGradient>
         {pack.isNew ? (
           <View style={styles.newChip}>
@@ -45,12 +37,12 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
       </View>
       <Text style={styles.name} numberOfLines={2}>{pack.title}</Text>
       <View style={styles.metaRow}>
-        <SgData value={`$${priceUsd}`} size="md" />
+        <SgData value={`$${priceUsd}`} size="md" tone="gold" />
         <SgData
           value={pack.remainingInventory.toLocaleString()}
           unit="left"
           size="sm"
-          tone={lowStock ? 'brass' : 'default'}
+          tone={lowStock ? 'success' : 'default'}
         />
       </View>
     </Pressable>
@@ -60,20 +52,15 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
 const styles = StyleSheet.create({
   tile: {
     flex: 1,
-    backgroundColor: sg.showroom.surface,
-    borderRadius: sg.radius.card,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: sg.radius.panel,
     padding: sg.space.sm,
     overflow: 'hidden',
   },
   pressed: { opacity: 0.92 },
-  satinTop: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: 1,
-    backgroundColor: sg.satinTopHighlight,
-    zIndex: 2,
-  },
-  visualClip: { borderRadius: sg.radius.image, overflow: 'hidden' },
+  visualClip: { borderRadius: sg.radius.tag, overflow: 'hidden' },
   visual: {
     height: 110,
     alignItems: 'center',
@@ -82,7 +69,7 @@ const styles = StyleSheet.create({
   packShape: {
     width: 52,
     height: 74,
-    borderRadius: 7,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
     backgroundColor: 'rgba(0,0,0,0.25)',
   },
@@ -91,20 +78,20 @@ const styles = StyleSheet.create({
     top: 6, right: 6,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: sg.radius.pill, // status chip — pill allowed
-    backgroundColor: 'rgba(9,10,10,0.72)',
+    borderRadius: sg.radius.tag,
+    backgroundColor: 'rgba(0,0,0,0.72)',
   },
   newChipText: {
     fontFamily: sg.font.bodyMedium,
     fontSize: 8.5,
     letterSpacing: 1.1,
-    color: sg.brass,
+    color: sg.text,
   },
   name: {
     fontFamily: sg.font.bodyBold,
     fontSize: 13,
     lineHeight: 17,
-    color: sg.showroom.text,
+    color: sg.text,
     marginTop: sg.space.sm,
     minHeight: 34,
   },

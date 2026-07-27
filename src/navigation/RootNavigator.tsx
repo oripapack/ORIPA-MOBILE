@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
@@ -68,12 +67,24 @@ const tabBarDockStyles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
   },
+  slab: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.72)',
+  },
+  topLine: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: sg.line,
+  },
 });
 
 /**
- * Dock-style bar — Urushi Archive material grammar: translucent obsidian slab
- * (blur under a sumi gradient), satin top-edge highlight instead of a colored
- * rim, darker toward the bottom per the single-light rule.
+ * Dock-style bar — N2 functional chrome (§9): translucent night slab
+ * (rgba(0,0,0,.72) over blur), separated from content by a 1px `line`
+ * border — dividers are lines, not shadows or highlights (§3).
  */
 function PremiumTabBarBackground() {
   return (
@@ -82,32 +93,11 @@ function PremiumTabBarBackground() {
         <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
       ) : null}
 
-      {/* Base slab — sumi steps, receding darker toward the bottom */}
-      <LinearGradient
-        colors={['rgba(29,32,31,0.92)', 'rgba(17,19,19,0.96)', 'rgba(9,10,10,0.98)']}
-        locations={[0, 0.5, 1]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      {/* Night slab — §9 functional-chrome translucency */}
+      <View style={tabBarDockStyles.slab} />
 
-      {/* Satin top-edge highlight (material grammar — replaces colored rims) */}
-      <LinearGradient
-        colors={['rgba(255,255,255,0.09)', 'rgba(255,255,255,0.02)', 'transparent']}
-        locations={[0, 0.18, 1]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
-
-      {/* Bottom weight — grounds the dock */}
-      <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.22)']}
-        locations={[0.55, 1]}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
+      {/* Top divider line */}
+      <View style={tabBarDockStyles.topLine} pointerEvents="none" />
     </View>
   );
 }
@@ -140,8 +130,8 @@ function TabNavigatorInner() {
         headerShown: false,
         sceneContainerStyle: Platform.OS === 'web' ? { flex: 1, minHeight: 0 } : undefined,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: sg.showroom.text,
-        tabBarInactiveTintColor: sg.showroom.textMuted,
+        tabBarActiveTintColor: sg.text,
+        tabBarInactiveTintColor: sg.muted,
         tabBarStyle: styles.tabBar,
         tabBarBackground: PremiumTabBarBackground,
         tabBarLabelStyle: styles.tabLabel,
@@ -194,7 +184,7 @@ function TabNavigatorInner() {
               : undefined,
           tabBarBadgeStyle:
             friendTabBadgeCount > 0
-              ? { backgroundColor: colors.red, color: colors.white, fontSize: 11 }
+              ? { backgroundColor: sg.error, color: sg.text, fontSize: 11 }
               : undefined,
         }}
       />
@@ -209,7 +199,7 @@ function RootStack() {
       {isClerkEnabled ? <ClerkProfileSync /> : null}
       <Stack.Navigator
         // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery boots straight into the
-        // component gallery (docs/design-spec.md). No effect in normal runs.
+        // component gallery (docs/design-system-n2.md). No effect in normal runs.
         initialRouteName={process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery' ? 'DevUiGallery' : 'MainTabs'}
         screenOptions={{
           headerShown: false,
@@ -540,11 +530,6 @@ const styles = StyleSheet.create({
     height: 82,
     paddingBottom: 16,
     paddingTop: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -10 },
-    shadowOpacity: 0.45,
-    shadowRadius: 28,
-    elevation: 20,
   },
   tabLabel: {
     fontSize: fontSize.xs,

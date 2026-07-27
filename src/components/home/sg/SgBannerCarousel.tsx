@@ -5,14 +5,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { sg } from '../../../tokens/sg';
 
 /**
- * Home banner strip (144px ≈ 1/3 of screen width, radius: card). Crossfades
- * every 3s, pauses while touched, and never auto-advances under reduced
- * motion (dots become the manual control).
+ * Home banner strip (144px, panel radius). Crossfades every 3s, pauses while
+ * touched, and never auto-advances under reduced motion (dots become the
+ * manual control).
  *
  * Slide text is a real UI overlay — NEVER baked into the artwork. A thin
- * dark gradient sits behind the text zone only (rgba black ≤25%); the
- * artwork itself is not dimmed. Sources are WebP (originals kept as PNG in
- * assets/home/banners/).
+ * dark gradient sits behind the text zone only; the artwork itself is not
+ * dimmed. Sources are WebP (originals kept as PNG in assets/home/banners/).
+ *
+ * KNOWN ISSUE: the torii / Fuji artwork violates N2 §5-8 (no traditional
+ * Japan symbols). Kept until replacement art lands — see KNOWN_ISSUES.md.
  */
 const SLIDES = [
   {
@@ -28,8 +30,7 @@ const SLIDES = [
     footnote: '*of listed value',
     image: require('../../../../assets/home/banners/banner-02.webp'),
     // Portrait art: y=75% (between center and bottom) keeps the torii gate
-    // shape in frame — full-bottom showed only water and pillar bases.
-    // Minimal tuning — art is slated for a Shibuya-nightscape replacement.
+    // shape in frame. Art is slated for a Shibuya-nightscape replacement.
     contentPosition: { left: '50%', top: '75%' } as const,
   },
   {
@@ -37,8 +38,7 @@ const SLIDES = [
     title: 'Provably fair.',
     sub: 'Verify every pull.',
     image: require('../../../../assets/home/banners/banner-03.webp'),
-    // Bright sakura sky: stronger horizontal scrim (no vertical text-block
-    // scrim — its hard edge and haze killed the art).
+    // Bright sakura sky: stronger horizontal scrim.
     scrim: { alpha: 0.55, stop: 0.55 } as const,
   },
 ] as const;
@@ -144,16 +144,16 @@ const styles = StyleSheet.create({
     height: 144,
     marginHorizontal: sg.space.md,
     marginTop: sg.space.md,
-    borderRadius: sg.radius.card,
+    borderRadius: sg.radius.panel,
     overflow: 'hidden',
-    backgroundColor: sg.showroom.surface,
+    backgroundColor: sg.surface,
   },
   slide: { ...StyleSheet.absoluteFillObject },
   textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md, maxWidth: '78%' },
   title: {
     fontFamily: sg.font.bodyBold,
     fontSize: 17,
-    color: sg.showroom.text,
+    color: sg.text,
     letterSpacing: 0.3,
     textShadowColor: 'rgba(0,0,0,0.5)',
     textShadowOffset: { width: 0, height: 1 },
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   sub: {
     fontFamily: sg.font.body,
     fontSize: 13,
-    color: sg.showroom.text,
+    color: sg.text,
     marginTop: 3,
     opacity: 0.9,
     textShadowColor: 'rgba(0,0,0,0.5)',
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   footnote: {
     fontFamily: sg.font.body,
     fontSize: 9,
-    color: sg.showroom.text,
+    color: sg.text,
     opacity: 0.7,
     marginTop: 4,
     textShadowColor: 'rgba(0,0,0,0.5)',
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 3,
-    backgroundColor: 'rgba(232,229,222,0.35)',
+    backgroundColor: 'rgba(240,238,232,0.35)',
   },
-  dotActive: { backgroundColor: sg.brass },
+  dotActive: { backgroundColor: sg.text },
 });

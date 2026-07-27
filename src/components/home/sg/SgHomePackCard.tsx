@@ -12,10 +12,11 @@ import { useRequireAuth } from '../../../hooks/useRequireAuth';
 const H_PAD = sg.space.md;
 
 /**
- * Urushi pack card. Behavior is ported 1:1 from PhPackCard: tap → PackDetails,
- * "Open" → requireAuth → openPack. Presentation: satin card (no full border),
- * existing foil visual (radius: image role), neutral stock (no red), quiet
- * line-variant open action — shu belongs to the hero CTA only.
+ * Legacy single-column pack card (superseded by SgShelfPackTile in the
+ * shelf-first layout — kept for reference, not rendered anywhere).
+ * Behavior port from PhPackCard: tap → PackDetails, "Open" → requireAuth →
+ * openPack. Tokens migrated to N2; the quiet line-variant open action stays —
+ * the gold CTA belongs to the featured card only.
  */
 export function SgHomePackCard({
   pack,
@@ -47,22 +48,12 @@ export function SgHomePackCard({
       onPress={goDetail}
       style={({ pressed }) => [styles.card, { width: cardWidth }, pressed && styles.pressed]}
     >
-      <View style={styles.satinTop} pointerEvents="none" />
-      {/* Product visual — gloss role: existing foil gradient + fixed diagonal sheen */}
       <View style={styles.visualClip}>
         <LinearGradient colors={[foil.top, foil.mid, foil.bot]} style={styles.visual}>
           <View style={[styles.packShape, { borderColor: foil.accent }]}>
             <View style={styles.packArt} />
           </View>
           <Text style={styles.catLabel}>{(pack.tcgCategory ?? '').toUpperCase()}</Text>
-          <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.10)', 'rgba(255,255,255,0)']}
-            locations={[0.38, 0.47, 0.56]}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
         </LinearGradient>
         {pack.isFeatured ? (
           <View style={styles.featuredChip}>
@@ -79,7 +70,7 @@ export function SgHomePackCard({
           {pack.buybackRate != null ? (
             <View style={styles.stat}>
               <Text style={styles.statLabel}>Avg return</Text>
-              <SgData value={`${pack.buybackRate}%`} size="sm" tone="jade" />
+              <SgData value={`${pack.buybackRate}%`} size="sm" tone="gold" />
             </View>
           ) : null}
           <View style={styles.stat}>
@@ -100,7 +91,7 @@ export function SgHomePackCard({
         </View>
 
         <View style={styles.footer}>
-          <SgData value={`$${priceUsd}`} size="lg" />
+          <SgData value={`$${priceUsd}`} size="lg" tone="gold" />
           <Pressable
             onPress={onOpen}
             style={({ pressed }) => [styles.openBtn, pressed && styles.openBtnPressed]}
@@ -116,23 +107,18 @@ export function SgHomePackCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: sg.showroom.surface,
-    borderRadius: sg.radius.card,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: sg.radius.panel,
     overflow: 'hidden',
     marginBottom: sg.space.lg - 4,
     alignSelf: 'center',
   },
   pressed: { opacity: 0.92 },
-  satinTop: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: 1,
-    backgroundColor: sg.satinTopHighlight,
-    zIndex: 2,
-  },
   visualClip: {
     margin: sg.space.sm,
-    borderRadius: sg.radius.image,
+    borderRadius: sg.radius.tag,
     overflow: 'hidden',
   },
   visual: {
@@ -147,19 +133,19 @@ const styles = StyleSheet.create({
     top: 8, right: 8,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: sg.radius.pill, // status chip — pill allowed
-    backgroundColor: 'rgba(9,10,10,0.72)',
+    borderRadius: sg.radius.tag,
+    backgroundColor: 'rgba(0,0,0,0.72)',
   },
   featuredChipText: {
     fontFamily: sg.font.bodyMedium,
     fontSize: 9,
     letterSpacing: 1.2,
-    color: sg.brass,
+    color: sg.text,
   },
   packShape: {
     width: 78,
     height: 108,
-    borderRadius: 10,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     overflow: 'hidden',
     alignItems: 'center',
@@ -170,18 +156,18 @@ const styles = StyleSheet.create({
     width: '78%',
     height: 54,
     backgroundColor: 'rgba(0,0,0,0.38)',
-    borderRadius: 4,
+    borderRadius: sg.radius.tag,
   },
   catLabel: {
     marginTop: 12,
     fontFamily: sg.font.bodyMedium,
     fontSize: 9,
-    color: 'rgba(232,229,222,0.4)',
+    color: 'rgba(240,238,232,0.4)',
     letterSpacing: 1.2,
   },
   info: { paddingHorizontal: sg.space.md, paddingTop: 6, paddingBottom: sg.space.md, gap: sg.space.sm },
-  title: { fontFamily: sg.font.bodyBold, fontSize: 15, color: sg.showroom.text, lineHeight: 20 },
-  tagline: { fontFamily: sg.font.body, fontSize: 11, color: sg.showroom.textMuted, lineHeight: 15 },
+  title: { fontFamily: sg.font.bodyBold, fontSize: 15, color: sg.text, lineHeight: 20 },
+  tagline: { fontFamily: sg.font.body, fontSize: 11, color: sg.muted, lineHeight: 15 },
   statsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: sg.space.md, marginTop: 2 },
   stat: { gap: 2 },
   statFlex: { flex: 1, minWidth: 0 },
@@ -189,25 +175,25 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.bodyMedium,
     fontSize: 10,
     letterSpacing: 0.4,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
   },
-  statTopCard: { fontFamily: sg.font.bodyBold, fontSize: 12, color: sg.showroom.text },
+  statTopCard: { fontFamily: sg.font.bodyBold, fontSize: 12, color: sg.text },
   slotsBar: {
     height: 2,
     borderRadius: 1,
-    backgroundColor: 'rgba(232,229,222,0.14)',
+    backgroundColor: sg.line,
     marginTop: 2,
   },
-  slotsFill: { height: 2, borderRadius: 1, backgroundColor: 'rgba(232,229,222,0.55)' },
+  slotsFill: { height: 2, borderRadius: 1, backgroundColor: sg.muted },
   footer: { flexDirection: 'row', alignItems: 'center', marginTop: 2 },
   openBtn: {
     marginLeft: 'auto',
     paddingHorizontal: 18,
     paddingVertical: 9,
-    borderRadius: sg.radius.control,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
-    borderColor: 'rgba(232,229,222,0.16)',
+    borderColor: sg.line,
   },
-  openBtnPressed: { backgroundColor: sg.showroom.raised },
-  openLabel: { fontFamily: sg.font.bodyBold, fontSize: 12, color: sg.showroom.text },
+  openBtnPressed: { backgroundColor: sg.surface2 },
+  openLabel: { fontFamily: sg.font.bodyBold, fontSize: 12, color: sg.text },
 });

@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Svg, { Defs, RadialGradient, Stop, Rect } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import type { Pack } from '../../../data/mockPacks';
 import { PackVisual } from '../../ph/PackVisual';
@@ -11,11 +10,11 @@ import { getLocalizedPackFields } from '../../../i18n/packCopy';
 import { navigationRef } from '../../../navigation/navigationRef';
 
 /**
- * Shelf-first featured pack card — sized to be fully visible without
- * scrolling at 440×956. Product halo (商品後光方式) is the sanctioned
- * per-product warm glow; the pack itself is the existing PackVisual asset.
- * Scarcity rules: real numbers always visible; the count is promoted to
- * brass below 10% remaining. No red, no blinking, no fake timers.
+ * Shelf-first featured pack card — the ONE hero element on Home, so it is
+ * the screen's single `shadowHero` carrier (§3). The pack itself is the
+ * existing PackVisual asset. Scarcity rules: real numbers always visible;
+ * stock counts use `success` semantics when low (§4). No red, no blinking,
+ * no fake timers.
  */
 export function SgFeaturedPackCard({
   pack,
@@ -39,24 +38,13 @@ export function SgFeaturedPackCard({
     : loc.guaranteeText;
 
   const goVerify = () => {
-    // Fairness record lives on the pack page (Step 4) — VERIFY deep-links there.
+    // Fairness record lives on the pack page — VERIFY deep-links there.
     if (navigationRef.isReady()) navigationRef.navigate('PackDetails', { packId: pack.id });
   };
 
   return (
     <View style={styles.card}>
-      <View style={styles.satinTop} pointerEvents="none" />
       <View style={styles.visualZone}>
-        {/* 後光 — warm halo behind the product only */}
-        <Svg width={300} height={240} style={styles.halo} pointerEvents="none">
-          <Defs>
-            <RadialGradient id="packHalo" cx="50%" cy="50%" rx="50%" ry="50%">
-              <Stop offset="0%" stopColor="#FFFAEE" stopOpacity={0.12} />
-              <Stop offset="70%" stopColor="#FFFAEE" stopOpacity={0} />
-            </RadialGradient>
-          </Defs>
-          <Rect x="0" y="0" width="100%" height="100%" fill="url(#packHalo)" />
-        </Svg>
         <PackVisual
           name={pack.title}
           category={pack.tcgCategory ?? 'TCG'}
@@ -68,12 +56,12 @@ export function SgFeaturedPackCard({
       <Text style={styles.title}>{loc.title}</Text>
 
       <View style={styles.metaRow}>
-        <SgData value={`$${priceUsd}`} size="lg" />
+        <SgData value={`$${priceUsd}`} size="lg" tone="gold" />
         <SgData
           value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
           unit="left"
           size="sm"
-          tone={lowStock ? 'brass' : 'default'}
+          tone={lowStock ? 'success' : 'default'}
         />
       </View>
       <View style={styles.slotsBar}>
@@ -105,26 +93,21 @@ const styles = StyleSheet.create({
     marginHorizontal: sg.space.md,
     marginTop: sg.space.md,
     borderRadius: sg.radius.panel,
-    backgroundColor: sg.showroom.surface,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
     paddingHorizontal: sg.space.md,
     paddingBottom: sg.space.md,
-    overflow: 'hidden',
     alignItems: 'center',
-  },
-  satinTop: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: 1,
-    backgroundColor: sg.satinTopHighlight,
-    zIndex: 2,
+    // The single hero shadow on this screen (§3)
+    ...sg.shadowHero,
   },
   visualZone: { alignItems: 'center', justifyContent: 'center', marginTop: sg.space.sm },
-  halo: { position: 'absolute' },
   title: {
     fontFamily: sg.font.display,
     fontSize: 22,
     lineHeight: 27,
-    color: sg.showroom.text,
+    color: sg.text,
     textAlign: 'center',
     marginTop: sg.space.sm,
   },
@@ -138,17 +121,22 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     height: 2,
     borderRadius: 1,
-    backgroundColor: 'rgba(232,229,222,0.14)',
+    backgroundColor: sg.line,
     marginTop: sg.space.sm,
   },
-  slotsFill: { height: 2, borderRadius: 1, backgroundColor: 'rgba(232,229,222,0.55)' },
+  slotsFill: { height: 2, borderRadius: 1, backgroundColor: sg.muted },
   oddsLine: {
     fontFamily: sg.font.body,
     fontSize: 11,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     marginTop: sg.space.sm,
   },
-  oddsValue: { fontFamily: sg.font.dataBold, fontSize: 12, color: sg.showroom.text },
+  oddsValue: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 12,
+    color: sg.text,
+    fontVariant: [...sg.numeric],
+  },
   cta: { alignSelf: 'stretch', marginTop: sg.space.sm + 2 },
   trustRow: {
     alignSelf: 'stretch',
@@ -162,12 +150,12 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: sg.font.body,
     fontSize: 11,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
   },
   verify: {
     fontFamily: sg.font.bodyBold,
     fontSize: 11,
     letterSpacing: 0.8,
-    color: sg.showroom.text,
+    color: sg.text,
   },
 });

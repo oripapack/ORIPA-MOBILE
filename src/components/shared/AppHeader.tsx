@@ -15,9 +15,9 @@ interface Props {
 }
 
 /**
- * App chrome header — Urushi Archive: obsidian (sumi) translucent slab with a
- * satin top-edge grammar; brass only in the details (monogram ring, wordmark
- * accent). Logic (auth gate, PaymentPortal navigation) is unchanged.
+ * App chrome header — N2 "Neon Torii": translucent night slab (functional
+ * chrome per §9), gold only as the logo accent (§4). Logic (auth gate,
+ * PaymentPortal navigation) is unchanged.
  */
 export function AppHeader({ onSearch }: Props) {
   const insets = useSafeAreaInsets();
@@ -48,7 +48,7 @@ export function AppHeader({ onSearch }: Props) {
           accessibilityRole="header"
           accessibilityLabel={APP_DISPLAY_NAME}
         >
-          {/* Brass monogram ring — obsidian core */}
+          {/* Gold monogram ring (logo accent, §4) — night core */}
           <View style={styles.monogramRing}>
             <View style={styles.monogramInner}>
               <Text style={styles.monogramText} numberOfLines={1}>
@@ -73,7 +73,7 @@ export function AppHeader({ onSearch }: Props) {
         <View style={styles.right}>
           <CreditsPill onAdd={goCredits} />
           <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75}>
-            <Ionicons name="search" size={20} color={sg.showroom.text} />
+            <Ionicons name="search" size={20} color={sg.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -86,14 +86,14 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(232,229,222,0.08)',
+    borderBottomColor: sg.line,
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.md,
     zIndex: 2,
   },
   scrim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(17,19,19,0.55)', // sumi1 tint over the blur
+    backgroundColor: 'rgba(0,0,0,0.72)', // §9 functional-chrome translucency
   },
   row: {
     flexDirection: 'row',
@@ -109,21 +109,21 @@ const styles = StyleSheet.create({
   monogramRing: {
     borderRadius: 12,
     padding: 1.5,
-    backgroundColor: sg.brass,
+    backgroundColor: sg.gold,
   },
   monogramInner: {
     minWidth: 36,
     height: 36,
     paddingHorizontal: 6,
     borderRadius: 10,
-    backgroundColor: sg.sumi.s2,
+    backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
   monogramText: {
     fontSize: 13,
     fontFamily: sg.font.bodyBold,
-    color: sg.showroom.text,
+    color: sg.text,
     letterSpacing: 0.5,
   },
   wordmarkCol: {
@@ -135,17 +135,17 @@ const styles = StyleSheet.create({
     letterSpacing: -0.2,
   },
   wordmarkLead: {
-    color: sg.showroom.text,
+    color: sg.text,
     fontFamily: sg.font.bodyBold,
   },
   wordmarkAccent: {
-    color: sg.brass,
+    color: sg.gold,
     fontFamily: sg.font.bodyBold,
   },
   wordmarkSingle: {
     fontSize: 17,
     fontFamily: sg.font.bodyBold,
-    color: sg.showroom.text,
+    color: sg.text,
     letterSpacing: -0.2,
   },
   right: {
@@ -159,6 +159,6 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: sg.sumi.s2,
+    backgroundColor: sg.surface,
   },
 });

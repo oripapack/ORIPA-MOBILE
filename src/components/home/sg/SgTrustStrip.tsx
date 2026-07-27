@@ -8,7 +8,7 @@ const ITEMS = [
   { title: 'Free shipping', sub: 'on orders $100+' },
 ] as const;
 
-/** Trust strip — neutral hairline separators (allowed as decorative rules). */
+/** Trust strip — dividers are 1px `line` borders (N2 §3). */
 export function SgTrustStrip() {
   return (
     <View style={styles.row}>
@@ -29,15 +29,15 @@ const styles = StyleSheet.create({
     marginTop: sg.space.sm,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: 'rgba(232,229,222,0.08)',
+    borderColor: sg.line,
   },
   cell: { flex: 1, paddingVertical: 14, paddingHorizontal: 6, alignItems: 'center' },
-  cellDivider: { borderLeftWidth: 1, borderLeftColor: 'rgba(232,229,222,0.08)' },
-  title: { fontFamily: sg.font.bodyBold, fontSize: 12, color: sg.showroom.text },
+  cellDivider: { borderLeftWidth: 1, borderLeftColor: sg.line },
+  title: { fontFamily: sg.font.bodyBold, fontSize: 12, color: sg.text },
   sub: {
     fontFamily: sg.font.body,
     fontSize: 10,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     marginTop: 3,
     textAlign: 'center',
   },

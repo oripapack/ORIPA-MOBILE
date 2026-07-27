@@ -4,9 +4,10 @@ import { sg } from '../../../tokens/sg';
 import { SgCard, SgData, SgSectionHeader } from '../../ui';
 
 /**
- * Fairness record block (design-spec "Trust information architecture"):
+ * Fairness record block (docs/design-system-n2.md — odds ledger / audit
+ * exposure is part of the trust chassis, §10/§12):
  * Server commitment (hash prefix) / Client seed / Opening # / Verify →,
- * plus the draw-method statement.
+ * plus the draw-method statement. Hashes are data-face numerals (§4).
  *
  * Values are MOCK placeholders until the provably-fair backend lands
  * (shared/api commit–reveal flow) — the UI frame ships first so the trust
@@ -14,7 +15,7 @@ import { SgCard, SgData, SgSectionHeader } from '../../ui';
  */
 export function SgFairnessRecord({ onVerify }: { onVerify?: () => void }) {
   return (
-    <SgCard kind="panel">
+    <SgCard>
       <SgSectionHeader title="Fairness record" />
       <Text style={styles.method}>
         Draw method: provably-fair commit–reveal. The server commits to a hash
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.body,
     fontSize: 12,
     lineHeight: 17,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     marginTop: sg.space.sm,
     marginBottom: sg.space.xs,
   },
@@ -54,12 +55,12 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     marginTop: sg.space.sm + 2,
   },
-  label: { fontFamily: sg.font.body, fontSize: 13, color: sg.showroom.textMuted },
+  label: { fontFamily: sg.font.body, fontSize: 13, color: sg.muted },
   verify: { alignSelf: 'flex-end', marginTop: sg.space.md, padding: 4 },
   verifyText: {
     fontFamily: sg.font.bodyBold,
     fontSize: 12,
     letterSpacing: 1,
-    color: sg.showroom.text,
+    color: sg.text,
   },
 });

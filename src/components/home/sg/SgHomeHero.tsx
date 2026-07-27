@@ -7,9 +7,9 @@ import { SgData } from '../../ui';
 import { sg } from '../../../tokens/sg';
 
 /**
- * Urushi hero. The pack itself is the EXISTING PackVisual asset (no new 3D) —
- * only the presentation is new: it sits under the screen's single warm
- * spotlight with a grounded elliptical shadow.
+ * Legacy full-height home hero (superseded by SgFeaturedPackCard in the
+ * shelf-first layout — kept for reference, not rendered anywhere).
+ * Tokens migrated to N2; the pack is the existing PackVisual asset.
  */
 export function SgHomeHero({
   pack,
@@ -34,15 +34,14 @@ export function SgHomeHero({
           rarityTier={pack.rarityTier ?? 'epic'}
           size="hero"
         />
-        <View style={styles.packShadow} />
       </View>
 
-      {/* Pack name — Fraunces (allowed role) */}
+      {/* Pack name — Fraunces (heading role) */}
       <Text style={styles.title}>{pack.title}</Text>
       {pack.tagline ? <Text style={styles.setLine}>{pack.tagline}</Text> : null}
 
       <View style={styles.metaRow}>
-        <SgData value={`$${priceUsd}`} size="lg" />
+        <SgData value={`$${priceUsd}`} size="lg" tone="gold" />
         <SgData
           value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
           unit="left"
@@ -77,33 +76,23 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontFamily: sg.font.bodyMedium,
     fontSize: 10,
-    color: sg.brass,
+    color: sg.muted,
     letterSpacing: 2.2,
     marginBottom: sg.space.lg,
   },
   packZone: { alignItems: 'center', justifyContent: 'center', marginBottom: sg.space.md },
-  packShadow: {
-    width: 190,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    marginTop: -8,
-    transform: [{ scaleY: 0.55 }],
-    // soft edge: rely on low-opacity fill (RN has no radial blur primitive)
-    opacity: 0.75,
-  },
   title: {
     fontFamily: sg.font.display,
     fontSize: 30,
     lineHeight: 36,
-    color: sg.showroom.text,
+    color: sg.text,
     textAlign: 'center',
     marginTop: sg.space.sm,
   },
   setLine: {
     fontFamily: sg.font.body,
     fontSize: 12,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     marginTop: 6,
     textAlign: 'center',
   },
@@ -117,21 +106,21 @@ const styles = StyleSheet.create({
     width: 200,
     height: 2,
     borderRadius: 1,
-    backgroundColor: 'rgba(232,229,222,0.14)',
+    backgroundColor: sg.line,
     marginTop: sg.space.sm + 2,
   },
   slotsFill: {
     height: 2,
     borderRadius: 1,
-    backgroundColor: 'rgba(232,229,222,0.55)',
+    backgroundColor: sg.muted,
   },
   oddsLine: {
     fontFamily: sg.font.body,
     fontSize: 12,
-    color: sg.showroom.textMuted,
+    color: sg.muted,
     marginTop: sg.space.sm + 2,
     textAlign: 'center',
   },
-  oddsStrong: { fontFamily: sg.font.bodyBold, color: sg.showroom.text },
+  oddsStrong: { fontFamily: sg.font.bodyBold, color: sg.text },
   ctas: { width: '100%', marginTop: sg.space.lg, gap: sg.space.sm },
 });

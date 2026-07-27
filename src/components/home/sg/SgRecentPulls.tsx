@@ -5,10 +5,10 @@ import { SgSectionHeader, SgData } from '../../ui';
 import { sg } from '../../../tokens/sg';
 
 /**
- * "Just Pulled" social-proof strip (Urushi). Same data source as PhRecentPulls
- * (shared/mock/recentPulls). Rarity reads as a brass data line; values are
- * jade (financial confirmation text). Card names use the body face — Fraunces
- * is reserved for revealed card names on the RESULT screen, not feed items.
+ * "Just Pulled" social-proof strip (N2). Same data source as PhRecentPulls
+ * (shared/mock/recentPulls). Rank reads as gold data (Hit rank is a gold
+ * role, §4/§6); pulled values are gold (value semantics). Card names use
+ * the body face — Fraunces is heading-tier only.
  */
 export function SgRecentPulls() {
   return (
@@ -19,12 +19,11 @@ export function SgRecentPulls() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {RECENT_PULLS.map((pull) => (
           <View key={pull.id} style={styles.card}>
-            <View style={styles.satinTop} pointerEvents="none" />
-            <SgData value={pull.rarity.toUpperCase()} size="sm" tone="brass" />
+            <SgData value={pull.rarity.toUpperCase()} size="sm" tone="gold" />
             <Text style={styles.cardName} numberOfLines={2}>{pull.card}</Text>
             <Text style={styles.user}>@{pull.username}</Text>
             <View style={styles.meta}>
-              <SgData value={pull.value} unit="listed" size="sm" tone="jade" />
+              <SgData value={pull.value} unit="listed" size="sm" tone="gold" />
               <Text style={styles.time}>{pull.timeAgo}</Text>
             </View>
           </View>
@@ -40,31 +39,27 @@ const styles = StyleSheet.create({
   scroll: { paddingHorizontal: sg.space.md, gap: 12 },
   card: {
     width: 160,
-    backgroundColor: sg.showroom.surface,
-    borderRadius: sg.radius.card,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: sg.radius.panel,
     padding: 14,
     gap: 6,
     overflow: 'hidden',
   },
-  satinTop: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    height: 1,
-    backgroundColor: sg.satinTopHighlight,
-  },
   cardName: {
     fontFamily: sg.font.bodyBold,
     fontSize: 13,
-    color: sg.showroom.text,
+    color: sg.text,
     lineHeight: 17,
     marginTop: 2,
   },
-  user: { fontFamily: sg.font.body, fontSize: 11, color: sg.showroom.textMuted },
+  user: { fontFamily: sg.font.body, fontSize: 11, color: sg.muted },
   meta: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'baseline',
     marginTop: 4,
   },
-  time: { fontFamily: sg.font.body, fontSize: 10, color: sg.showroom.textMuted },
+  time: { fontFamily: sg.font.body, fontSize: 10, color: sg.muted },
 });
