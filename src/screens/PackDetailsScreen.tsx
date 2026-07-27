@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -24,7 +24,7 @@ import { PackRushConfirmModal } from '../components/pack/PackRushConfirmModal';
 import { packOpenTotalCredits } from '../lib/packMultiOpen';
 import { EMPTY_PACK_ODDS, getMockPackOdds } from '../data/mockPackOdds';
 import { getMockPackTopHit } from '../data/mockTopHits';
-import { rankFromOddsIndex, rankFromRarityLabel } from '../lib/n2Rarity';
+import { rankFromOddsTier } from '../lib/n2Rarity';
 import { showUserMessage } from '../utils/showUserMessage';
 
 type Props = {
@@ -236,7 +236,8 @@ export function PackDetailsScreen({ route }: Props) {
                     {topHit.name}
                   </Text>
                   <SgData value={topHit.estValue} unit="listed" size="sm" tone="gold" />
-                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone={rankFromRarityLabel(topHit.rarity)} />
+                  {/* isChase is the only existing card→odds-tier link (true → 'Top hit'); non-chase membership is undefined → provisional BASE */}
+                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone={topHit.isChase ? rankFromOddsTier('Top hit') : 'base'} />
                 </View>
               </View>
               <Text style={styles.finePrint}>{t('packDetails.topHitPreviewFinePrint')}</Text>
@@ -247,9 +248,9 @@ export function PackDetailsScreen({ route }: Props) {
           <SgCard>
             <SgSectionHeader title={t('packDetails.whatYouCanPullTitle')} />
             <View style={styles.pullsGrid}>
-              {odds.rows.slice(0, 4).map((r, i) => (
+              {odds.rows.slice(0, 4).map((r) => (
                 <View key={r.tier} style={styles.pullsCell}>
-                  <SgData value={r.tier.toUpperCase()} size="sm" tone={rankFromOddsIndex(i)} />
+                  <SgData value={r.tier.toUpperCase()} size="sm" tone={rankFromOddsTier(r.tier)} />
                   <SgData value={r.chance} size="md" />
                   <Text style={styles.pullsExamples} numberOfLines={2}>
                     {r.examples.join(' / ')}
@@ -271,7 +272,8 @@ export function PackDetailsScreen({ route }: Props) {
               <View style={styles.shipBody}>
                 <Text style={styles.shipTitle}>Ships from Tokyo</Text>
                 <Text style={styles.sectionBody}>
-                  Japanese exclusives, packed and shipped direct. Free shipping on orders $100+.
+                  Japanese exclusives, packed and shipped direct. Free shipping on orders{' '}
+                  <Text style={styles.inlineNum}>$100+</Text>.
                 </Text>
               </View>
             </View>
@@ -321,13 +323,19 @@ export function PackDetailsScreen({ route }: Props) {
                           : t('packDetails.multiOpen.ctaRush')}
                 </Text>
                 <Text style={styles.ctaSub}>
-                  {membershipLocked
-                    ? t('packDetails.ctaUnlockMembershipSub')
-                    : openBlocked
-                      ? t('packDetails.ctaDisabled')
-                      : t('packDetails.multiOpen.ctaSubInventory', {
-                          left: pack.remainingInventory.toLocaleString(),
-                        })}
+                  {membershipLocked ? (
+                    t('packDetails.ctaUnlockMembershipSub')
+                  ) : openBlocked ? (
+                    t('packDetails.ctaDisabled')
+                  ) : (
+                    /* §4: inline stock count renders as its own mono Text via
+                       <num> markup in the locale string — copy unchanged */
+                    <Trans
+                      i18nKey="packDetails.multiOpen.ctaSubInventory"
+                      values={{ left: pack.remainingInventory.toLocaleString() }}
+                      components={{ num: <Text style={styles.ctaSubNum} /> }}
+                    />
+                  )}
                 </Text>
               </View>
               <Text style={styles.ctaArrow}>›</Text>
@@ -519,5 +527,17 @@ const styles = StyleSheet.create({
   ctaTextWrap: { flex: 1 },
   ctaText: { fontFamily: sg.font.bodyBold, fontSize: 16, color: sg.onGold, letterSpacing: 0.2 },
   ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: 'rgba(0,0,0,0.7)', marginTop: 2 },
+  ctaSubNum: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 11,
+    color: 'rgba(0,0,0,0.7)',
+    fontVariant: ['tabular-nums'],
+  },
+  inlineNum: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 13,
+    color: sg.muted,
+    fontVariant: ['tabular-nums'],
+  },
   ctaArrow: { fontFamily: sg.font.bodyBold, fontSize: 20, color: sg.onGold, marginLeft: sg.space.sm },
 });

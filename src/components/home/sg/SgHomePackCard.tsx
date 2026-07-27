@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { Pack } from '../../../data/mockPacks';
-import { getCategoryFoil } from '../../../../shared/utils/foil';
+import { getCategoryFoil } from '../../../lib/packFoil';
 import { sg } from '../../../tokens/sg';
 import { SgData } from '../../ui';
 import { navigationRef } from '../../../navigation/navigationRef';

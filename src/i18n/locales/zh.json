@@ -889,7 +889,7 @@
       "ctaOpenPack": "开包",
       "ctaFastOpen": "开始快速开包",
       "ctaRush": "开始冲刺",
-      "ctaSubInventory": "该通道剩余 {{left}}",
+      "ctaSubInventory": "该通道剩余 <num>{{left}}</num>",
       "rushModalKicker": "高级会话",
       "rushModalTitle": "准备好冲刺了吗？",
       "rushModalBody": "用 {{total}} 积分打开 {{count}} 包？",

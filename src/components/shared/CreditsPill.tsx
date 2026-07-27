@@ -10,16 +10,17 @@ interface Props {
 }
 
 /**
- * Coin balance chip — N2: balances are a GOLD value role (§4) in the data
- * face with tabular-nums. Surface fill + 1px line border (dividers are
- * lines, not shadows); tag radius. Gold never fills the add button.
+ * Coin balance chip — N2: the balance NUMBER is the gold value signal (§4);
+ * the coin glyph stays muted so header gold stays scarce (wordmark accent +
+ * balance only). Surface fill + 1px line border; tag radius. Gold never
+ * fills the add button.
  */
 export function CreditsPill({ onAdd }: Props) {
   const credits = useAppStore((s) => s.user.credits);
 
   return (
     <View style={styles.pill}>
-      <FontAwesome5 name="coins" size={13} color={sg.gold} style={styles.coin} solid />
+      <FontAwesome5 name="coins" size={13} color={sg.muted} style={styles.coin} solid />
       <Text style={styles.amount}>{credits.toLocaleString()}</Text>
       <TouchableOpacity style={styles.addBtn} onPress={onAdd} activeOpacity={0.8}>
         <Text style={styles.addText}>+</Text>

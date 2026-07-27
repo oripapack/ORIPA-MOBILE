@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { Pack } from '../../data/mockPacks';
-import { getCategoryFoil } from '../../../shared/utils/foil';
+import { getCategoryFoil } from '../../lib/packFoil';
 import { ph } from '../../tokens/phTheme';
 import { brandFont, fontSize } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';

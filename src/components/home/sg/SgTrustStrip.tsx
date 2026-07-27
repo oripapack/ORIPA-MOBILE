@@ -5,7 +5,7 @@ import { sg } from '../../../tokens/sg';
 const ITEMS = [
   { title: 'Zero-fee', sub: 'trade-in, always' },
   { title: '100% listed value', sub: 'back in Coins' },
-  { title: 'Free shipping', sub: 'on orders $100+' },
+  { title: 'Free shipping', sub: 'on orders ', subNum: '$100+' },
 ] as const;
 
 /** Trust strip — dividers are 1px `line` borders (N2 §3). */
@@ -15,7 +15,10 @@ export function SgTrustStrip() {
       {ITEMS.map((item, i) => (
         <View key={item.title} style={[styles.cell, i > 0 && styles.cellDivider]}>
           <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.sub}>{item.sub}</Text>
+          <Text style={styles.sub}>
+            {item.sub}
+            {'subNum' in item && item.subNum ? <Text style={styles.subNum}>{item.subNum}</Text> : null}
+          </Text>
         </View>
       ))}
     </View>
@@ -40,5 +43,11 @@ const styles = StyleSheet.create({
     color: sg.muted,
     marginTop: 3,
     textAlign: 'center',
+  },
+  subNum: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 10,
+    color: sg.muted,
+    fontVariant: ['tabular-nums'],
   },
 });

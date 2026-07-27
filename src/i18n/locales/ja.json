@@ -890,7 +890,7 @@
       "ctaOpenPack": "パックを開く",
       "ctaFastOpen": "高速オープンを開始",
       "ctaRush": "ラッシュ開始",
-      "ctaSubInventory": "このレーンの残り {{left}}",
+      "ctaSubInventory": "このレーンの残り <num>{{left}}</num>",
       "rushModalKicker": "プレミアムセッション",
       "rushModalTitle": "ラッシュの準備はOK？",
       "rushModalBody": "{{total}} クレジットで {{count}} パックを開きますか？",

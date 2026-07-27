@@ -2,24 +2,19 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { RarityTier } from '../../../shared/types/pack';
-import { getCategoryFoil } from '../../../shared/utils/foil';
+import { getCategoryFoil } from '../../lib/packFoil';
 import { ph } from '../../tokens/phTheme';
 import { brandFont } from '../../tokens/typography';
-import { sg } from '../../tokens/sg';
-import { rankFromRarityLabel } from '../../lib/n2Rarity';
-
 /**
  * N2 §5-2/§6: the colored rarity foils (incl. purple) are removed. The ground
  * is a single achromatic surface2/surface gradient (placeholder until real
- * pack art); rarity now differs ONLY by the 1px border in the §6 rank colors
- * — CHASE neon / HIT gold / BASE muted@50%. The gradient plumbing stays so a
- * §8 foil sweep can ride on it later.
+ * pack art). Rank coloring follows the SINGLE mapping path (card → odds tier
+ * → N2 rank, see src/lib/n2Rarity.ts); pack-level `rarityTier` has NO defined
+ * odds-tier membership, so every pack border renders as provisional BASE
+ * (muted @50%) until that mapping exists — never gold. The gradient plumbing
+ * stays so a §8 foil sweep can ride on it later.
  */
-const RANK_BORDER: Record<'chase' | 'hit' | 'base', string> = {
-  chase: sg.neon,
-  hit: sg.gold,
-  base: 'rgba(142,140,133,0.5)', // muted @50%
-};
+const BASE_BORDER = 'rgba(142,140,133,0.5)'; // §6 BASE — muted @50%
 
 type Size = 'sm' | 'md' | 'lg' | 'hero';
 
@@ -33,16 +28,17 @@ const DIMS: Record<Size, { w: number; h: number; artH: number; fs1: number; fs2:
 export function PackVisual({
   name,
   category,
-  rarityTier = 'epic',
+  rarityTier: _rarityTier = 'epic',
   size = 'md',
 }: {
   name: string;
   category: string;
+  /** Kept for API compatibility — has no defined odds-tier membership yet, so it no longer drives color. */
   rarityTier?: RarityTier;
   size?: Size;
 }) {
   const catFoil = getCategoryFoil(category);
-  const border = RANK_BORDER[rankFromRarityLabel(rarityTier)];
+  const border = BASE_BORDER;
   const d = DIMS[size];
 
   return (

@@ -16,8 +16,9 @@ interface Props {
 
 /**
  * App chrome header — N2 "Neon Torii": translucent night slab (functional
- * chrome per §9), gold only as the logo accent (§4). Logic (auth gate,
- * PaymentPortal navigation) is unchanged.
+ * chrome per §9). Gold budget is deliberately scarce here: wordmark accent +
+ * balance number only (§4 — gold stops signalling value when it multiplies).
+ * Logic (auth gate, PaymentPortal navigation) is unchanged.
  */
 export function AppHeader({ onSearch }: Props) {
   const insets = useSafeAreaInsets();
@@ -48,7 +49,7 @@ export function AppHeader({ onSearch }: Props) {
           accessibilityRole="header"
           accessibilityLabel={APP_DISPLAY_NAME}
         >
-          {/* Gold monogram ring (logo accent, §4) — night core */}
+          {/* Monogram ring — line, not gold: the header gold budget is the wordmark accent + balance */}
           <View style={styles.monogramRing}>
             <View style={styles.monogramInner}>
               <Text style={styles.monogramText} numberOfLines={1}>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   monogramRing: {
     borderRadius: 12,
     padding: 1.5,
-    backgroundColor: sg.gold,
+    backgroundColor: sg.line, // gold budget: wordmark accent + balance only
   },
   monogramInner: {
     minWidth: 36,

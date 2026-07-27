@@ -276,7 +276,7 @@
       "ctaOpenPack": "Open Pack",
       "ctaFastOpen": "Start Fast Open",
       "ctaRush": "Begin Rush",
-      "ctaSubInventory": "{{left}} left in this lane",
+      "ctaSubInventory": "<num>{{left}}</num> left in this lane",
       "rushModalKicker": "Premium session",
       "rushModalTitle": "Ready for the Rush?",
       "rushModalBody": "Open {{count}} packs for {{total}} credits?",
