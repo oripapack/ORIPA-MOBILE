@@ -24,6 +24,7 @@ import { PackRushConfirmModal } from '../components/pack/PackRushConfirmModal';
 import { packOpenTotalCredits } from '../lib/packMultiOpen';
 import { EMPTY_PACK_ODDS, getMockPackOdds } from '../data/mockPackOdds';
 import { getMockPackTopHit } from '../data/mockTopHits';
+import { rankFromOddsIndex, rankFromRarityLabel } from '../lib/n2Rarity';
 import { showUserMessage } from '../utils/showUserMessage';
 
 type Props = {
@@ -235,7 +236,7 @@ export function PackDetailsScreen({ route }: Props) {
                     {topHit.name}
                   </Text>
                   <SgData value={topHit.estValue} unit="listed" size="sm" tone="gold" />
-                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone="gold" />
+                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone={rankFromRarityLabel(topHit.rarity)} />
                 </View>
               </View>
               <Text style={styles.finePrint}>{t('packDetails.topHitPreviewFinePrint')}</Text>
@@ -246,9 +247,9 @@ export function PackDetailsScreen({ route }: Props) {
           <SgCard>
             <SgSectionHeader title={t('packDetails.whatYouCanPullTitle')} />
             <View style={styles.pullsGrid}>
-              {odds.rows.slice(0, 4).map((r) => (
+              {odds.rows.slice(0, 4).map((r, i) => (
                 <View key={r.tier} style={styles.pullsCell}>
-                  <SgData value={r.tier.toUpperCase()} size="sm" tone="gold" />
+                  <SgData value={r.tier.toUpperCase()} size="sm" tone={rankFromOddsIndex(i)} />
                   <SgData value={r.chance} size="md" />
                   <Text style={styles.pullsExamples} numberOfLines={2}>
                     {r.examples.join(' / ')}

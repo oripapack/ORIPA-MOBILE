@@ -44,8 +44,10 @@ export function DevUiGalleryScreen() {
           </SgCard>
           <View style={styles.gap} />
           <SgCard raised>
-            {/* gold = Hit rank / value; success = verification & stock status */}
-            <SgData value="CHASE · 1 of 4" unit="rarity" tone="gold" size="sm" />
+            {/* §6 ranks: chase = neon+glow / hit = gold / base = muted@50% */}
+            <SgData value="CHASE · 1 of 4" unit="rarity" tone="chase" size="sm" />
+            <SgData value="HIT" unit="rarity" tone="hit" size="sm" />
+            <SgData value="BASE" unit="rarity" tone="base" size="sm" />
             <View style={styles.gapSm} />
             <SgData value="+14,483" unit="Coins · trade-in complete" tone="success" size="md" />
           </SgCard>

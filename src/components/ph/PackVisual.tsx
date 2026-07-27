@@ -5,13 +5,20 @@ import type { RarityTier } from '../../../shared/types/pack';
 import { getCategoryFoil } from '../../../shared/utils/foil';
 import { ph } from '../../tokens/phTheme';
 import { brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { rankFromRarityLabel } from '../../lib/n2Rarity';
 
-const RARITY_FOIL: Record<RarityTier, { top: string; mid: string; bot: string; border: string }> = {
-  common: { top: '#1e293b', mid: '#334155', bot: '#1e293b', border: 'rgba(148,163,184,0.22)' },
-  rare: { top: '#0f2040', mid: '#1e4080', bot: '#0f2040', border: 'rgba(96,165,250,0.32)' },
-  epic: { top: '#1a0f30', mid: '#3d1e6e', bot: '#1a0f30', border: 'rgba(168,85,247,0.36)' },
-  legendary: { top: '#281400', mid: '#5c3000', bot: '#1a0d00', border: 'rgba(245,158,11,0.40)' },
-  mythic: { top: '#200d18', mid: '#5c1a38', bot: '#200d18', border: 'rgba(236,72,153,0.38)' },
+/**
+ * N2 §5-2/§6: the colored rarity foils (incl. purple) are removed. The ground
+ * is a single achromatic surface2/surface gradient (placeholder until real
+ * pack art); rarity now differs ONLY by the 1px border in the §6 rank colors
+ * — CHASE neon / HIT gold / BASE muted@50%. The gradient plumbing stays so a
+ * §8 foil sweep can ride on it later.
+ */
+const RANK_BORDER: Record<'chase' | 'hit' | 'base', string> = {
+  chase: sg.neon,
+  hit: sg.gold,
+  base: 'rgba(142,140,133,0.5)', // muted @50%
 };
 
 type Size = 'sm' | 'md' | 'lg' | 'hero';
@@ -35,19 +42,19 @@ export function PackVisual({
   size?: Size;
 }) {
   const catFoil = getCategoryFoil(category);
-  const f = RARITY_FOIL[rarityTier] ?? catFoil;
+  const border = RANK_BORDER[rankFromRarityLabel(rarityTier)];
   const d = DIMS[size];
 
   return (
-    <View style={[styles.wrap, { width: d.w, height: d.h, borderColor: f.border }]}>
+    <View style={[styles.wrap, { width: d.w, height: d.h, borderColor: border }]}>
       <LinearGradient
-        colors={[f.top, f.mid, f.bot]}
+        colors={[catFoil.top, catFoil.mid, catFoil.bot]}
         start={{ x: 0.2, y: 0 }}
         end={{ x: 0.8, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
       <View style={[styles.seal, { width: '100%' }]} />
-      <View style={[styles.art, { height: d.artH, borderColor: `${f.border}` }]} />
+      <View style={[styles.art, { height: d.artH, borderColor: border }]} />
       <View style={styles.labelBlock}>
         <Text style={[styles.category, { fontSize: d.fs2 }]}>{category.toUpperCase()}</Text>
         <Text style={[styles.name, { fontSize: d.fs1 }]} numberOfLines={2}>{name}</Text>
@@ -59,7 +66,7 @@ export function PackVisual({
 const styles = StyleSheet.create({
   wrap: {
     borderRadius: ph.radius.lg,
-    borderWidth: 1.5,
+    borderWidth: 1, // 1px line rule (§3)
     overflow: 'hidden',
     padding: 12,
     justifyContent: 'space-between',

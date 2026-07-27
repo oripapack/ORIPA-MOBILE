@@ -2,13 +2,15 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { RECENT_PULLS } from '../../../../shared/mock/recentPulls';
 import { SgSectionHeader, SgData } from '../../ui';
+import { rankFromRarityLabel } from '../../../lib/n2Rarity';
 import { sg } from '../../../tokens/sg';
 
 /**
  * "Just Pulled" social-proof strip (N2). Same data source as PhRecentPulls
- * (shared/mock/recentPulls). Rank reads as gold data (Hit rank is a gold
- * role, §4/§6); pulled values are gold (value semantics). Card names use
- * the body face — Fraunces is heading-tier only.
+ * (shared/mock/recentPulls). Rarity renders as the §6 three ranks
+ * (CHASE neon+glow / HIT gold / BASE muted@50%) via rankFromRarityLabel;
+ * pulled values are gold (value semantics). Card names use the body face —
+ * Fraunces is heading-tier only.
  */
 export function SgRecentPulls() {
   return (
@@ -19,7 +21,7 @@ export function SgRecentPulls() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {RECENT_PULLS.map((pull) => (
           <View key={pull.id} style={styles.card}>
-            <SgData value={pull.rarity.toUpperCase()} size="sm" tone="gold" />
+            <SgData value={pull.rarity.toUpperCase()} size="sm" tone={rankFromRarityLabel(pull.rarity)} />
             <Text style={styles.cardName} numberOfLines={2}>{pull.card}</Text>
             <Text style={styles.user}>@{pull.username}</Text>
             <View style={styles.meta}>

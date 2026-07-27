@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   iconBtn: {
     width: 38,
     height: 38,
-    borderRadius: 19,
+    borderRadius: sg.radius.btn,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: sg.surface,
