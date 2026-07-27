@@ -44,10 +44,12 @@ export function DevUiGalleryScreen() {
           </SgCard>
           <View style={styles.gap} />
           <SgCard raised>
-            {/* §6 ranks: chase = neon+glow / hit = gold / base = muted@50% */}
+            {/* §6 ranks: chase = neon+glow / hit = gold / base = muted@50%.
+                UNKNOWN (no odds-tier data) renders with no rank chrome at all */}
             <SgData value="CHASE · 1 of 4" unit="rarity" tone="chase" size="sm" />
             <SgData value="HIT" unit="rarity" tone="hit" size="sm" />
             <SgData value="BASE" unit="rarity" tone="base" size="sm" />
+            <SgData value="UNKNOWN" unit="no tier data" tone="default" size="sm" />
             <View style={styles.gapSm} />
             <SgData value="+14,483" unit="Coins · trade-in complete" tone="success" size="md" />
           </SgCard>

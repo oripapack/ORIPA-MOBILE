@@ -10,11 +10,11 @@ import { brandFont } from '../../tokens/typography';
  * is a single achromatic surface2/surface gradient (placeholder until real
  * pack art). Rank coloring follows the SINGLE mapping path (card → odds tier
  * → N2 rank, see src/lib/n2Rarity.ts); pack-level `rarityTier` has NO defined
- * odds-tier membership, so every pack border renders as provisional BASE
- * (muted @50%) until that mapping exists — never gold. The gradient plumbing
- * stays so a §8 foil sweep can ride on it later.
+ * odds-tier membership, so its rank state is UNKNOWN — the frame shows NO
+ * rank chrome, just the standard 1px `line` border (BASE would falsely claim
+ * "judged low"). The gradient plumbing stays so a §8 foil sweep can ride on
+ * it later.
  */
-const BASE_BORDER = 'rgba(142,140,133,0.5)'; // §6 BASE — muted @50%
 
 type Size = 'sm' | 'md' | 'lg' | 'hero';
 
@@ -38,7 +38,7 @@ export function PackVisual({
   size?: Size;
 }) {
   const catFoil = getCategoryFoil(category);
-  const border = BASE_BORDER;
+  const border = catFoil.accent; // UNKNOWN rank — neutral line, no rank chrome
   const d = DIMS[size];
 
   return (

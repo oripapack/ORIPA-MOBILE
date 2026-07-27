@@ -17,6 +17,14 @@ import type { OddsTier } from '../data/mockPackOdds';
 
 export type N2Rank = 'chase' | 'hit' | 'base';
 
+/**
+ * BASE means "judged, and it is a lower tier" — it must never absorb
+ * "cannot judge, no tier data". Cards without a defined odds-tier membership
+ * are UNKNOWN and render with NO rank chrome at all (no color, no badge;
+ * the label itself shows in the default text color).
+ */
+export type N2RankState = N2Rank | 'unknown';
+
 /** The one public mapping: odds tier → N2 rank (top → CHASE, second → HIT, rest → BASE). */
 export function rankFromOddsTier(tier: OddsTier): N2Rank {
   switch (tier) {

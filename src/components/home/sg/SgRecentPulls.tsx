@@ -8,9 +8,10 @@ import { sg } from '../../../tokens/sg';
  * "Just Pulled" social-proof strip (N2). Same data source as PhRecentPulls
  * (shared/mock/recentPulls). Rank coloring follows the SINGLE mapping path
  * (card → odds tier → N2 rank): feed pulls carry no odds-tier membership
- * data, so their rarity labels render as provisional BASE until the pool
- * mapping exists — never gold. Pulled values are gold (value semantics).
- * Card names use the body face — Fraunces is heading-tier only.
+ * data, so their rank state is UNKNOWN — the label renders with NO rank
+ * chrome (default text color), which is different from BASE ("judged low").
+ * Pulled values are gold (value semantics). Card names use the body face —
+ * Fraunces is heading-tier only.
  */
 export function SgRecentPulls() {
   return (
@@ -21,7 +22,7 @@ export function SgRecentPulls() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {RECENT_PULLS.map((pull) => (
           <View key={pull.id} style={styles.card}>
-            <SgData value={pull.rarity.toUpperCase()} size="sm" tone="base" />
+            <SgData value={pull.rarity.toUpperCase()} size="sm" tone="default" />
             <Text style={styles.cardName} numberOfLines={2}>{pull.card}</Text>
             <Text style={styles.user}>@{pull.username}</Text>
             <View style={styles.meta}>

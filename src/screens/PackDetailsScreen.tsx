@@ -236,8 +236,8 @@ export function PackDetailsScreen({ route }: Props) {
                     {topHit.name}
                   </Text>
                   <SgData value={topHit.estValue} unit="listed" size="sm" tone="gold" />
-                  {/* isChase is the only existing card→odds-tier link (true → 'Top hit'); non-chase membership is undefined → provisional BASE */}
-                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone={topHit.isChase ? rankFromOddsTier('Top hit') : 'base'} />
+                  {/* isChase is the only card→odds-tier link (true → 'Top hit'). isChase:false leaves the tier UNDEFINED → UNKNOWN, no rank chrome (BASE would falsely claim "judged low") */}
+                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone={topHit.isChase ? rankFromOddsTier('Top hit') : 'default'} />
                 </View>
               </View>
               <Text style={styles.finePrint}>{t('packDetails.topHitPreviewFinePrint')}</Text>
