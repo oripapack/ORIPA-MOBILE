@@ -1,3 +1,7 @@
+> **このドキュメントは廃止されました。**
+> 唯一の正は docs/design-system-n2.md です。
+> このファイルは履歴のために残しているだけで、参照してはいけません。
+
 # Pull Hub Design Specification
 
 ## Reference Direction
