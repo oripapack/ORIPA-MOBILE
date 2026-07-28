@@ -651,53 +651,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Booster de boas-vindas",
-      "value": "Mais de 100% de valor chase",
-      "guarantee": "Bônus garantido a cada 2 aberturas"
-    },
-    "2": {
-      "title": "Pack Pokémon Scarlet & Violet Hit",
-      "value": "90% de chance de 200+ créditos",
-      "guarantee": "Holofoil garantida em cada booster"
-    },
-    "3": {
-      "title": "Pack cofre gradado One Piece",
-      "value": "Cartas graded PSA 9–10",
-      "guarantee": "Cada booster contém uma carta graded"
-    },
-    "4": {
-      "title": "Pack flash de cards esportivos",
-      "value": "Rookies das melhores escolhas de 2024",
-      "guarantee": "Auto ou relic a cada 5 aberturas"
-    },
-    "5": {
-      "title": "Pack Pokémon vintage gradado",
-      "value": "Hits graded da era Base Set",
-      "guarantee": "PSA 8+ garantido"
-    },
-    "6": {
-      "title": "Pack mistério Hot Drop",
-      "value": "Mix surpresa de todas as categorias",
-      "guarantee": "Booster bônus após cada 3 aberturas"
-    },
-    "7": {
-      "title": "Pack One Piece Paramount War",
-      "value": "Líderes SR com foils chase",
-      "guarantee": "1 em 10 chance de Alt Art"
-    },
-    "8": {
-      "title": "Pack degustação novidades",
-      "value": "Hits dos sets mais novos",
-      "guarantee": "Pelo menos 3 cartas por abertura"
-    },
-    "9": {
-      "title": "Pack Yu-Gi-Oh! Battles of Legend",
-      "value": "Secret Rares e slots starlight",
-      "guarantee": "Ultra Rare ou superior em cada booster"
-    }
-  },
   "packOpening": {
     "title": "Abrindo booster",
     "opening": "Abrindo…",

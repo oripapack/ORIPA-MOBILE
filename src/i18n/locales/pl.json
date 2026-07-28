@@ -651,53 +651,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Pakiet powitalny nowego użytkownika",
-      "value": "Ponad 100% wartości pościgu",
-      "guarantee": "Gwarantowany bonus co 2 otwarcia"
-    },
-    "2": {
-      "title": "Pakiet Hitów Pokémon Scarlet i Violet",
-      "value": "90% szans na wartość ponad 200 kredytów",
-      "guarantee": "Holofolia gwarantowana w każdym opakowaniu"
-    },
-    "3": {
-      "title": "Jednoczęściowy stopniowany pakiet Vault",
-      "value": "Wewnątrz karty z oceną PSA 9–10",
-      "guarantee": "Każde opakowanie zawiera kartę z oceną"
-    },
-    "4": {
-      "title": "Pakiet Flash kart sportowych",
-      "value": "Karty nowicjuszy z najlepszych typów na rok 2024",
-      "guarantee": "Karta automatyczna lub reliktowa co 5 otwarć"
-    },
-    "5": {
-      "title": "Pakiet klasyfikacyjny Pokémon Vintage",
-      "value": "Trafienia stopniowane w epoce zestawu podstawowego",
-      "guarantee": "Gwarantowany stan PSA 8+"
-    },
-    "6": {
-      "title": "Tajemniczy pakiet Hot Drop",
-      "value": "Mieszanka niespodzianek ze wszystkich kategorii",
-      "guarantee": "Pakiet bonusowy po każdych 3 otwarciach"
-    },
-    "7": {
-      "title": "Jednoczęściowy pakiet wojenny Paramount",
-      "value": "Karty Leader SR z foliami Chase",
-      "guarantee": "Szansa 1 na 10 w Alt Art"
-    },
-    "8": {
-      "title": "Nowości Pakiet próbek",
-      "value": "Przykładowe hity z najnowszych setów",
-      "guarantee": "Co najmniej 3 karty na otwarcie"
-    },
-    "9": {
-      "title": "Yu-Gi-Oh! Pakiet Bitew Legend",
-      "value": "Automaty do gier Secret Rares i Starlight Chase",
-      "guarantee": "Ultra Rare lub wyższy w każdym opakowaniu"
-    }
-  },
   "packOpening": {
     "title": "Otwarcie paczki",
     "opening": "Otwór…",

@@ -109,7 +109,6 @@ export interface Pack {
 
   // --- Shared catalog fields (Phygitals redesign) ---
   tcgCategory?: TcgCategory;
-  buybackRate?: number;
   tagline?: string;
   catalogDescription?: string;
   topCard?: string;

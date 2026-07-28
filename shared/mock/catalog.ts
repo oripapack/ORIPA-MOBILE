@@ -1,13 +1,18 @@
 import type { CatalogPack } from '../types/pack';
 
-/** Single source of truth for pack catalog — web lab + Expo app. */
+/**
+ * Single source of truth for pack catalog — web lab + Expo app.
+ *
+ * このカタログの説明文(tagline / description / topCard)は仮。実在するパックの
+ * 中身を反映していない。実データ接続まで外部に見せないこと。実データ接続時に
+ * 全パックの説明文を実際の中身に基づいて書き直す必要がある(KNOWN_ISSUES 参照)。
+ */
 export const CATALOG_PACKS: CatalogPack[] = [
   {
     id: 'welcome-pack',
     name: 'Welcome Pack',
     category: 'Multi TCG',
     price: 5,
-    buybackRate: 90,
     isFeatured: true,
     isNew: true,
     remainingFraction: 0.99,
@@ -24,7 +29,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'Platinum Legacy',
     category: 'Pokémon TCG',
     price: 30,
-    buybackRate: 80,
     isFeatured: true,
     remainingFraction: 0.8,
     tagline: 'Graded slabs · alt-arts · trophy promos',
@@ -40,7 +44,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'Obsidian Flames Chase',
     category: 'Pokémon TCG',
     price: 60,
-    buybackRate: 80,
     remainingFraction: 0.43,
     tagline: 'Charizard ex SAR in the prize pool',
     description: 'High-stakes pulls from Obsidian Flames. Charizard ex SAR and Iron Hands ex alt-art in pool.',
@@ -55,7 +58,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'Crown Zenith Galarian',
     category: 'Pokémon TCG',
     price: 15,
-    buybackRate: 75,
     remainingFraction: 0.87,
     tagline: 'Galarian Gallery · VSTAR Universe',
     description: 'Gallery rares, VSTAR Universe promos, and trainer gallery hits across Crown Zenith.',
@@ -69,7 +71,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'Evolving Skies Premium',
     category: 'Pokémon TCG',
     price: 50,
-    buybackRate: 80,
     remainingFraction: 0.29,
     isLimitedTime: true,
     tagline: 'Umbreon VMAX Alt Art chase · Low stock',
@@ -84,7 +85,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'Paldea Evolved Chase',
     category: 'Pokémon TCG',
     price: 40,
-    buybackRate: 80,
     remainingFraction: 0.52,
     tagline: 'Iono Full Art · Mew ex Full Art',
     description: 'Full-art trainers including Iono, Miriam, and Arven. Mew ex Full Art as the chase slot.',
@@ -98,7 +98,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'OP-09 Mythic Seal',
     category: 'One Piece TCG',
     price: 25,
-    buybackRate: 75,
     remainingFraction: 0.91,
     isNew: true,
     tagline: 'Luffy & Zoro secret rares · New set',
@@ -113,7 +112,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'OP-07 500-Year Future',
     category: 'One Piece TCG',
     price: 35,
-    buybackRate: 75,
     remainingFraction: 0.74,
     tagline: 'Egghead arc · Vegapunk leaders',
     description: 'Top-tier leaders from the Egghead arc. Vegapunk-era leaders and Zoro parallel foils.',
@@ -127,7 +125,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: '25th Anniversary Vault',
     category: 'Yu-Gi-Oh!',
     price: 20,
-    buybackRate: 70,
     remainingFraction: 0.66,
     tagline: 'Quarter century secret rares',
     description: 'Exclusive 25th Anniversary reprints with quarter-century secret rare treatment.',
@@ -141,7 +138,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'Duelist Nexus Ultra',
     category: 'Yu-Gi-Oh!',
     price: 55,
-    buybackRate: 70,
     remainingFraction: 0.95,
     isNew: true,
     tagline: 'Prismatic Secret Rares · Ultra Rares',
@@ -156,7 +152,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: 'Prizm Basketball Elite',
     category: 'Sports Cards',
     price: 45,
-    buybackRate: 80,
     isFeatured: true,
     remainingFraction: 0.55,
     tagline: 'Prizm auto rookies · PSA graded',
@@ -171,7 +166,6 @@ export const CATALOG_PACKS: CatalogPack[] = [
     name: '2023 Prizm Football',
     category: 'Sports Cards',
     price: 30,
-    buybackRate: 80,
     remainingFraction: 0.38,
     tagline: 'CJ Stroud · Bryce Young rookies',
     description: '2023 class rookie auto Prizms and veteran superstars. Silver Prizms and RPA autos.',

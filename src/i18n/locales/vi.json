@@ -651,53 +651,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Gói chào mừng người dùng mới",
-      "value": "Giá trị theo đuổi trên 100%",
-      "guarantee": "Đảm bảo tiền thưởng cứ sau 2 lần mở"
-    },
-    "2": {
-      "title": "Gói hit Pokémon Scarlet & Violet",
-      "value": "90% cơ hội giá trị trên 200 credit",
-      "guarantee": "Holofoil đảm bảo trong mỗi gói"
-    },
-    "3": {
-      "title": "Gói Vault được phân loại One Piece",
-      "value": "Bên trong thẻ phân loại PSA 9–10",
-      "guarantee": "Mỗi gói chứa một thẻ xếp loại"
-    },
-    "4": {
-      "title": "Gói Flash Thẻ Thể thao",
-      "value": "Thẻ tân binh từ các lượt chọn hàng đầu năm 2024",
-      "guarantee": "Thẻ tự động hoặc thẻ di tích cứ sau 5 lần mở"
-    },
-    "5": {
-      "title": "Gói phân loại Pokémon Vintage",
-      "value": "Lượt truy cập được xếp loại theo thời đại Bộ cơ sở",
-      "guarantee": "Đảm bảo điều kiện PSA 8+"
-    },
-    "6": {
-      "title": "Gói bí ẩn thả nóng",
-      "value": "Sự kết hợp bất ngờ từ tất cả các danh mục",
-      "guarantee": "Gói thưởng sau mỗi 3 lần mở"
-    },
-    "7": {
-      "title": "Gói chiến tranh tối cao One Piece",
-      "value": "Thẻ SR dẫn đầu có lá đuổi theo",
-      "guarantee": "Cơ hội 1/10 tại Alt Art"
-    },
-    "8": {
-      "title": "Gói lấy mẫu mới đến",
-      "value": "Các bản hit mẫu từ các bộ mới nhất",
-      "guarantee": "Ít nhất 3 thẻ mỗi lần mở"
-    },
-    "9": {
-      "title": "Yu-Gi-Oh! Gói trận chiến huyền thoại",
-      "value": "Các khe rượt đuổi bí mật và ánh sáng sao",
-      "guarantee": "Ultra Rare hoặc cao hơn mỗi gói"
-    }
-  },
   "packOpening": {
     "title": "Mở gói",
     "opening": "Đang mở…",

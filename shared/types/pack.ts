@@ -22,7 +22,6 @@ export interface CatalogPack {
   category: TcgCategory;
   /** USD display price (maps to credits × 100 in mobile). */
   price: number;
-  buybackRate: number;
   remainingFraction: number;
   tagline: string;
   description: string;

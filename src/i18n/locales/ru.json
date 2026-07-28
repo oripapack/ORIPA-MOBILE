@@ -651,53 +651,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Приветственный пакет для нового пользователя",
-      "value": "Более 100% ценности погони",
-      "guarantee": "Гарантированный бонус каждые 2 открытия"
-    },
-    "2": {
-      "title": "Хит-пакет Pokémon Scarlet & Violet",
-      "value": "Шанс 90% при сумме 200+ кредитов",
-      "guarantee": "Холофойл гарантирован в каждой упаковке."
-    },
-    "3": {
-      "title": "Пак One Piece — сейф с грейдами",
-      "value": "Карты PSA 9–10 внутри",
-      "guarantee": "В каждом бустере — грейдированная карта"
-    },
-    "4": {
-      "title": "Флэш-пакет спортивных карточек",
-      "value": "Карты новичков из лучших выборов 2024 года",
-      "guarantee": "Авто или реликтовая карта открывается каждые 5"
-    },
-    "5": {
-      "title": "Винтажный набор Pokémon",
-      "value": "Хиты эпохи базового набора",
-      "guarantee": "Гарантированное состояние PSA 8+"
-    },
-    "6": {
-      "title": "Пак Hot Drop Mystery",
-      "value": "Случайный микс из всех категорий",
-      "guarantee": "Бонусный бустер после каждых 3 открытий"
-    },
-    "7": {
-      "title": "Пак One Piece Paramount War",
-      "value": "Leader SR и chase-фойлы",
-      "guarantee": "1 из 10 шанс на Alt Art"
-    },
-    "8": {
-      "title": "Новые поступления пробников",
-      "value": "Примеры хитов из новейших выпусков",
-      "guarantee": "Минимум 3 карты за одно открытие"
-    },
-    "9": {
-      "title": "Пак Yu-Gi-Oh! Battles of Legend",
-      "value": "Secret Rare и слоты Starlight",
-      "guarantee": "Ultra Rare или выше в каждом бустере"
-    }
-  },
   "packOpening": {
     "title": "Открытие бустера",
     "opening": "Открываем…",

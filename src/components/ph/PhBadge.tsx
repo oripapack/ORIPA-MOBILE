@@ -23,14 +23,6 @@ export function RarityBadge({ rarity, small }: { rarity: RarityTier; small?: boo
   );
 }
 
-export function BuybackBadge({ rate }: { rate: number }) {
-  return (
-    <View style={[styles.badge, styles.buyback]}>
-      <Text style={styles.buybackText}>{rate}% Back</Text>
-    </View>
-  );
-}
-
 export function StatusBadge({
   children,
   variant = 'neutral',
@@ -69,8 +61,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   textSmall: { fontSize: 9 },
-  buyback: { backgroundColor: ph.greenSoft, borderColor: ph.greenBorder },
-  buybackText: { fontSize: 9, fontFamily: brandFont.bold, color: ph.green, letterSpacing: 0.6 },
   statusText: { fontSize: 10, fontFamily: brandFont.bold, color: ph.textSec, textTransform: 'uppercase' },
   success: { backgroundColor: ph.greenSoft, borderColor: ph.greenBorder },
   warning: { backgroundColor: ph.redSoft, borderColor: ph.redBorder },

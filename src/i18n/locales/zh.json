@@ -425,53 +425,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "新用户欢迎卡包",
-      "value": "超过 100% 追卡价值",
-      "guarantee": "每开 2 包必得奖励"
-    },
-    "2": {
-      "title": "宝可梦 朱／紫 热门卡包",
-      "value": "90% 概率获得 200+ 积分价值",
-      "guarantee": "每包必有闪卡"
-    },
-    "3": {
-      "title": "航海王 评级保管卡包",
-      "value": "内含 PSA 9–10 评级卡",
-      "guarantee": "每包含一张评级卡"
-    },
-    "4": {
-      "title": "体育卡闪电卡包",
-      "value": "2024 热门新秀",
-      "guarantee": "每开 5 包可得签字或实物卡"
-    },
-    "5": {
-      "title": "宝可梦复古评级卡包",
-      "value": "初版时代评级好卡",
-      "guarantee": "保证 PSA 8+ 品相"
-    },
-    "6": {
-      "title": "热门掉落神秘卡包",
-      "value": "全品类惊喜混搭",
-      "guarantee": "每开 3 包送赠包"
-    },
-    "7": {
-      "title": "航海王 顶上战争卡包",
-      "value": "领袖 SR 与追闪",
-      "guarantee": "十分之一概率异画"
-    },
-    "8": {
-      "title": "新品试玩采样卡包",
-      "value": "最新系列试抽",
-      "guarantee": "每次至少 3 张卡"
-    },
-    "9": {
-      "title": "游戏王 传说之战卡包",
-      "value": "Secret Rare 与星光位",
-      "guarantee": "每包必有超罕或以上"
-    }
-  },
   "packOpening": {
     "title": "开包中",
     "opening": "正在开启…",

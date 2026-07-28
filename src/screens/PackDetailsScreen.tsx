@@ -163,11 +163,9 @@ export function PackDetailsScreen({ route }: Props) {
                 <Text style={styles.featuredChipText}>FEATURED</Text>
               </View>
             ) : null}
-            {pack.buybackRate != null ? (
-              /* Trade-in is always 100% of listed value (coin economy) — the
-                 legacy per-pack buybackRate must not render as a rate. */
-              <SgData value="100%" unit="trade-in · listed value" size="sm" tone="gold" />
-            ) : null}
+            {/* Trade-in is structurally 100% of listed value (coin economy) —
+                there is no per-pack rate, so this is fixed copy, not data. */}
+            <SgData value="100%" unit="trade-in · listed value" size="sm" tone="gold" />
           </View>
           <Text style={styles.heroTitle}>{loc.title}</Text>
           <Text style={styles.heroSet}>{pack.tagline ?? loc.valueDescription}</Text>

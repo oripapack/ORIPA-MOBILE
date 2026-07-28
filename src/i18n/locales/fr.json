@@ -651,53 +651,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Booster de bienvenue",
-      "value": "Plus de 100 % de valeur chase",
-      "guarantee": "Bonus garanti toutes les 2 ouvertures"
-    },
-    "2": {
-      "title": "Pokémon Écarlate & Violet — Hit Pack",
-      "value": "90 % de chance de 200+ crédits",
-      "guarantee": "Holofoil garantie dans chaque booster"
-    },
-    "3": {
-      "title": "One Piece — Graded Vault Pack",
-      "value": "Cartes gradées PSA 9–10",
-      "guarantee": "Chaque booster contient une carte gradée"
-    },
-    "4": {
-      "title": "Pack cartes sport Flash",
-      "value": "Rookies des meilleurs choix 2024",
-      "guarantee": "Auto ou relic toutes les 5 ouvertures"
-    },
-    "5": {
-      "title": "Pack Pokémon vintage gradé",
-      "value": "Hits gradés Base Set",
-      "guarantee": "PSA 8+ garanti"
-    },
-    "6": {
-      "title": "Pack mystère Hot Drop",
-      "value": "Mélange surprise toutes catégories",
-      "guarantee": "Booster bonus après 3 ouvertures"
-    },
-    "7": {
-      "title": "Pack One Piece Paramount War",
-      "value": "Leader SR et chases foil",
-      "guarantee": "1 chance sur 10 d’Alt Art"
-    },
-    "8": {
-      "title": "Pack découverte nouveautés",
-      "value": "Hits issus des derniers sets",
-      "guarantee": "Au moins 3 cartes par ouverture"
-    },
-    "9": {
-      "title": "Pack Yu-Gi-Oh! Battles of Legend",
-      "value": "Secret Rares et emplacements starlight",
-      "guarantee": "Ultra Rare ou mieux à chaque booster"
-    }
-  },
   "packOpening": {
     "title": "Ouverture",
     "opening": "Ouverture…",

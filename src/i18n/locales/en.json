@@ -1113,53 +1113,6 @@
       "chase_boost": "CHASE"
     }
   },
-  "packCatalog": {
-    "1": {
-      "title": "Paldea Beginner Commons",
-      "value": "PAL-era commons & uncommons — great for new binders",
-      "guarantee": "3+ playable cards every open"
-    },
-    "2": {
-      "title": "Scarlet & Violet Booster Hits",
-      "value": "SV-era holos & illustration rare chase slots",
-      "guarantee": "Reverse holo or better in every pack"
-    },
-    "3": {
-      "title": "Paldea Evolved Chase",
-      "value": "ex & double rare hits from Paldea Evolved",
-      "guarantee": "Rare slot or higher guaranteed"
-    },
-    "4": {
-      "title": "Obsidian Flames Premium",
-      "value": "Charizard ex & type-shift chase pool",
-      "guarantee": "Holo rare or better every rip"
-    },
-    "5": {
-      "title": "151 Kanto Collection",
-      "value": "Classic Kanto ex & art rare focus",
-      "guarantee": "Illustration rare in 1-of-8 opens (demo)"
-    },
-    "6": {
-      "title": "Crown Zenith Galarian Gallery",
-      "value": "GG full arts & trainer gallery chases",
-      "guarantee": "Gallery or VSTAR-class hit every 2 packs"
-    },
-    "7": {
-      "title": "Prismatic Evolutions Elite",
-      "value": "Eevee evolutions & ACE SPEC chase lane",
-      "guarantee": "Double rare slot minimum"
-    },
-    "8": {
-      "title": "Charizard ex Special Collection",
-      "value": "Promo Charizard ex & bundled chase cards",
-      "guarantee": "Promo + booster-equivalent value floor"
-    },
-    "9": {
-      "title": "Base Set Era Graded Vault",
-      "value": "WOTC holos & shadowless chase slabs",
-      "guarantee": "PSA 8+ vintage holo in every pack"
-    }
-  },
   "packOpening": {
     "stageEyebrow": "Certified reveal",
     "manageWinnings": "Manage winnings",

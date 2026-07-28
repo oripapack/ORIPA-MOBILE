@@ -651,53 +651,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Willkommens-Booster",
-      "value": "Über 100 % Chase-Wert",
-      "guarantee": "Bonus garantiert alle 2 Öffnungen"
-    },
-    "2": {
-      "title": "Pokémon Karmesin & Purpur Hit-Booster",
-      "value": "90 % Chance auf 200+ Credits Wert",
-      "guarantee": "Holofoil in jedem Booster"
-    },
-    "3": {
-      "title": "One Piece Graded Vault Booster",
-      "value": "PSA 9–10 graded Karten innerhalb",
-      "guarantee": "Jeder Booster enthält eine graded Karte"
-    },
-    "4": {
-      "title": "Sports Cards Flash Booster",
-      "value": "Rookies der Top-Picks 2024",
-      "guarantee": "Auto oder Relic alle 5 Öffnungen"
-    },
-    "5": {
-      "title": "Pokémon Vintage Graded Booster",
-      "value": "Base-Set-Ära graded Hits",
-      "guarantee": "PSA 8+ garantiert"
-    },
-    "6": {
-      "title": "Hot Drop Mystery Booster",
-      "value": "Überraschungsmix aller Kategorien",
-      "guarantee": "Bonus-Booster nach je 3 Öffnungen"
-    },
-    "7": {
-      "title": "One Piece Paramount War Booster",
-      "value": "Leader-SR mit Chase-Foils",
-      "guarantee": "1:10 Chance auf Alt Art"
-    },
-    "8": {
-      "title": "New Arrivals Sampler Booster",
-      "value": "Hits aus neuesten Sets",
-      "guarantee": "Mind. 3 Karten pro Öffnung"
-    },
-    "9": {
-      "title": "Yu-Gi-Oh! Battles of Legend Booster",
-      "value": "Secret Rares und Starlight-Slots",
-      "guarantee": "Ultra Rare oder höher pro Booster"
-    }
-  },
   "packOpening": {
     "title": "Booster öffnen",
     "opening": "Öffnen…",
