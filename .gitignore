@@ -46,3 +46,9 @@ backend/.env
 # generated native folders
 /ios
 /android
+
+# Claude Code — per-machine settings (.claude/settings.json is shared and stays tracked)
+.claude/settings.local.json
+
+# Banner source PNGs — only optimized WebPs are committed; keep the PNGs outside the repo (KNOWN_ISSUES.md #3)
+assets/home/banners/*.png

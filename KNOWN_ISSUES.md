@@ -23,7 +23,7 @@
   - `assets/home/banners/banner-01.webp`(横長鳥居)
   - `assets/home/banners/banner-02.webp`(夕闇の鳥居 — 渋谷夜景系に差し替え予定)
   - `assets/home/banners/banner-03.webp`(桜と富士)
-  - 同フォルダの元 PNG `banner-01〜03.png`(git 未追跡)
+  - 同フォルダの元 PNG `banner-01〜03.png`(.gitignore 対象。**WebP から再生成できないため、元 PNG は必ずリポジトリ外で保管すること**)
 - **参照箇所**: `src/components/home/sg/SgBannerCarousel.tsx` の `SLIDES`(3件の `require(...)`)のみ。差し替えはこの1ファイルの画像参照交換で完結する。
 - **担当**: 新アート支給待ち(デザイン)。
 
