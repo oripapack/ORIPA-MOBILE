@@ -44,20 +44,24 @@ export function DevUiGalleryScreen() {
           </SgCard>
           <View style={styles.gap} />
           <SgCard raised>
-            {/* §6 v2.2 — all 7 states: 6 tiers (3 colors split by form) + UNKNOWN.
-                mythic = neon filled + glow / legendary = gold filled, black label /
-                epic = gold outline / rare = muted outline / uncommon = muted text /
-                common = muted text @50% / unknown = the tag renders NOTHING */}
+            {/* §6 v2.3 — 4 tiers × 2 contexts. disclosure (odds table): all four
+                equally readable, BASE = plain full-opacity text. badge (cards):
+                BASE and UNKNOWN render NOTHING */}
+            <Text style={styles.tierCtx}>disclosure — all 4 steps equally readable</Text>
             <View style={styles.tierList}>
-              <SgTierTag tier="mythic" />
-              <SgTierTag tier="legendary" />
-              <SgTierTag tier="epic" />
-              <SgTierTag tier="rare" />
-              <SgTierTag tier="uncommon" />
-              <SgTierTag tier="common" />
-              <SgTierTag tier="unknown" />
+              <SgTierTag tier="mythic" context="disclosure" />
+              <SgTierTag tier="legendary" context="disclosure" />
+              <SgTierTag tier="epic" context="disclosure" />
+              <SgTierTag tier="base" context="disclosure" />
             </View>
-            <SgData value="UNKNOWN" unit="no tier data — tag above renders nothing" size="sm" />
+            <Text style={styles.tierCtx}>badge — base / unknown render nothing</Text>
+            <View style={styles.tierList}>
+              <SgTierTag tier="mythic" context="badge" />
+              <SgTierTag tier="legendary" context="badge" />
+              <SgTierTag tier="epic" context="badge" />
+              <SgTierTag tier="base" context="badge" />
+              <SgTierTag tier="unknown" context="badge" />
+            </View>
             <View style={styles.gapSm} />
             <SgData value="+14,483" unit="Coins · trade-in complete" tone="success" size="md" />
           </SgCard>
@@ -112,6 +116,12 @@ const styles = StyleSheet.create({
   },
   block: { paddingHorizontal: sg.space.lg, marginTop: sg.space.lg },
   tierList: { gap: sg.space.sm, alignItems: 'flex-start', marginBottom: sg.space.sm },
+  tierCtx: {
+    fontFamily: sg.font.body,
+    fontSize: 11,
+    color: sg.muted,
+    marginBottom: sg.space.xs,
+  },
   gap: { height: sg.space.sm },
   gapSm: { height: sg.space.xs },
   cardRow: {

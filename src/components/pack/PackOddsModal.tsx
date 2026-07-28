@@ -30,8 +30,8 @@ export function PackOddsModal({ visible, onClose, packTitle, odds }: Props) {
           <View style={styles.table}>
             {odds.rows.map((row) => (
               <View key={row.tier} style={styles.row}>
-                {/* §6: odds rows ARE tiers — the tag carries the 3-color / 6-form treatment */}
-                <SgTierTag tier={row.tier} />
+                {/* §6: odds rows ARE tiers — disclosure context: all steps equally readable */}
+                <SgTierTag tier={row.tier} context="disclosure" />
                 <Text style={styles.chance}>{row.chance}</Text>
                 <Text style={styles.examples} numberOfLines={2}>
                   {row.examples.join(' / ')}

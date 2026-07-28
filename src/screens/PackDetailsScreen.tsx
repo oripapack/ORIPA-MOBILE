@@ -239,7 +239,7 @@ export function PackDetailsScreen({ route }: Props) {
                   {/* Printed card rarity — a separate field from tier (§6): never merged into the tier slot */}
                   <SgData value={topHit.rarity.toUpperCase()} size="sm" />
                   {/* isChase (boolean) is the only card→tier link: true → MYTHIC, false → UNKNOWN (tag renders nothing) */}
-                  <SgTierTag tier={tierFromIsChase(topHit.isChase)} />
+                  <SgTierTag tier={tierFromIsChase(topHit.isChase)} context="badge" />
                 </View>
               </View>
               <Text style={styles.finePrint}>{t('packDetails.topHitPreviewFinePrint')}</Text>
@@ -252,7 +252,7 @@ export function PackDetailsScreen({ route }: Props) {
             <View style={styles.pullsGrid}>
               {odds.rows.map((r) => (
                 <View key={r.tier} style={styles.pullsCell}>
-                  <SgTierTag tier={r.tier} />
+                  <SgTierTag tier={r.tier} context="disclosure" />
                   <SgData value={r.chance} size="md" />
                   <Text style={styles.pullsExamples} numberOfLines={2}>
                     {r.examples.join(' / ')}

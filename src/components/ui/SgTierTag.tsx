@@ -4,43 +4,44 @@ import { sg } from '../../tokens/sg';
 import type { N2TierState } from '../../lib/n2Rarity';
 
 /**
- * §6 (v2.2) tier tag — six steps, THREE colors, distinguished by FORM:
+ * §6 (v2.3) tier tag — four steps, THREE colors, distinguished by FORM:
  *   mythic    — neon filled tag + glow (sg.glowNeon box shadow, the RN
  *               translation of --ph-glow-neon: a text shadow cannot render
  *               against the solid neon fill)
  *   legendary — gold filled tag, on-gold (black) label
  *   epic      — gold outline only
- *   rare      — muted outline only
- *   uncommon  — muted text only
- *   common    — muted text only @50%
- * 'unknown' renders NOTHING — absence of tier data must never look like a
- * judged low tier. No new colors beyond neon / gold / muted (§6).
+ *   base      — context-dependent, see below
+ * 'unknown' renders NOTHING in every context — absence of tier data must
+ * never look like a judged low tier. No new colors: neon / gold / muted.
+ *
+ * Context (§6 文脈規定):
+ *   disclosure — odds table: all four steps equally readable. BASE is plain
+ *                text in `sg.text` at full opacity (no dimming — disclosure
+ *                must never de-emphasize a step).
+ *   badge      — on cards: BASE renders nothing ("not a hit" is not worth
+ *                announcing); only the top three tiers show.
  */
-export function SgTierTag({ tier }: { tier: N2TierState }) {
+export function SgTierTag({ tier, context }: { tier: N2TierState; context: 'disclosure' | 'badge' }) {
   if (tier === 'unknown') return null;
+  if (tier === 'base' && context === 'badge') return null;
+  const text = tier === 'base' ? styles.baseDisclosure : textStyles[tier];
   return (
-    <View style={[styles.tag, boxStyles[tier]]}>
-      <Text style={[styles.label, textStyles[tier]]}>{tier.toUpperCase()}</Text>
+    <View style={[styles.tag, tier === 'base' ? null : boxStyles[tier]]}>
+      <Text style={[styles.label, text]}>{tier.toUpperCase()}</Text>
     </View>
   );
 }
 
-const boxStyles: Record<Exclude<N2TierState, 'unknown'>, ViewStyle> = {
+const boxStyles: Record<'mythic' | 'legendary' | 'epic', ViewStyle> = {
   mythic: { backgroundColor: sg.neon, ...sg.glowNeon },
   legendary: { backgroundColor: sg.gold },
   epic: { borderColor: sg.gold },
-  rare: { borderColor: sg.muted },
-  uncommon: {},
-  common: { opacity: 0.5 },
 };
 
-const textStyles: Record<Exclude<N2TierState, 'unknown'>, TextStyle> = {
+const textStyles: Record<'mythic' | 'legendary' | 'epic', TextStyle> = {
   mythic: { color: sg.onGold },
   legendary: { color: sg.onGold },
   epic: { color: sg.gold },
-  rare: { color: sg.muted },
-  uncommon: { color: sg.muted },
-  common: { color: sg.muted },
 };
 
 const styles = StyleSheet.create({
@@ -59,4 +60,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     letterSpacing: 1,
   },
+  // §6 disclosure: plain text, full-opacity `text` color — never dimmed.
+  baseDisclosure: { color: sg.text },
 });

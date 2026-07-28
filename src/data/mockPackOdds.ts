@@ -7,8 +7,8 @@ import { N2_TIERS, type N2Tier } from '../lib/n2Rarity';
  * card↔tier assignment does not exist yet (KNOWN_ISSUES #4). Do not share
  * screenshots of this table outside the team.
  *
- * §6: the odds table uses the same six steps and names as the tier system,
- * and every tier shown on screen must have a disclosed probability.
+ * §6 (v2.3): the odds table uses the same four steps and names as the tier
+ * system, and every tier shown on screen must have a disclosed probability.
  */
 
 export type OddsTier = N2Tier;
@@ -34,36 +34,32 @@ const MOCK_TIER_CHANCES: Record<N2Tier, string> = {
   mythic: '0.5%',
   legendary: '2%',
   epic: '5.5%',
-  rare: '12%',
-  uncommon: '30%',
-  common: '50%',
+  base: '92%',
 };
 
-/** Existing demo reward copy redistributed across the six tiers (no new claims invented). */
+/**
+ * Existing demo reward copy restructured to four tiers. BASE copy must stay
+ * factual (§5: no hype for the 92% outcome — "high-value standard" was an
+ * exaggeration and is gone). No new sales claims invented.
+ */
 const MOCK_TIER_EXAMPLES: Record<PackCategory, Record<N2Tier, string[]>> = {
   onboarding: {
     mythic: ['3× coin bonus'],
     legendary: ['Welcome surprise card'],
     epic: ['2× coin bonus'],
-    rare: ['Holographic promo'],
-    uncommon: ['Rare card', '1.5× coin return'],
-    common: ['Standard card', '1× coin return'],
+    base: ['Standard card', '1× coin return'],
   },
   micro: {
     mythic: ['Nintendo Switch', 'PS5', 'iPhone 16'],
     legendary: ['Gift coupon (¥5,000)'],
     epic: ['Ultra rare card'],
-    rare: ['Rare card'],
-    uncommon: ['Coin bonus ×2'],
-    common: ['Standard card', 'Small coin return'],
+    base: ['Standard card', 'Small coin return'],
   },
   premium: {
     mythic: ['PSA 10 Trophy Card', '1/1 holy grail'],
-    legendary: ['Chase-grade slab'],
+    legendary: ['Graded slab'],
     epic: ['PSA 9+ vintage holo'],
-    rare: ['Graded card hit'],
-    uncommon: ['Premium rare'],
-    common: ['High-value standard', 'Base chase card'],
+    base: ['Standard card'],
   },
 };
 
