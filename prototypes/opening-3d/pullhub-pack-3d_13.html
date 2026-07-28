@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#07070f">
+<title>PullHub｜パック開封 3D プロトタイプ</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; overflow:hidden; }
+  body {
+    background:#07070f;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",system-ui,sans-serif;
+    user-select:none; -webkit-user-select:none;
+  }
+  body::before {
+    content:""; position:fixed; inset:0; pointer-events:none;
+    background:
+      radial-gradient(60% 42% at 18% 8%, rgba(255,63,216,.14), transparent 70%),
+      radial-gradient(55% 40% at 85% 88%, rgba(55,230,255,.12), transparent 70%),
+      radial-gradient(120% 90% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%),
+      linear-gradient(180deg,#0a0b18 0%,#07070f 55%,#05050b 100%);
+  }
+  body::after {
+    content:""; position:fixed; inset:-40%; pointer-events:none; opacity:.5;
+    background:repeating-linear-gradient(112deg, rgba(150,190,255,.05) 0 1px, transparent 1px 110px);
+  }
+  #c { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; z-index:1; }
+  #brand { position:fixed; top:calc(14px + env(safe-area-inset-top)); left:18px; z-index:3; pointer-events:none; }
+  .bw { font-weight:900; font-size:20px; letter-spacing:.14em;
+    background:linear-gradient(90deg,#7ff3ff,#ff3fd8);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 12px rgba(55,230,255,.35)); }
+  .bs { font-size:9px; letter-spacing:.3em; color:#8fa3d9; margin-top:3px; }
+  #hint { position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom));
+    transform:translateX(-50%); z-index:3; padding:10px 18px; border-radius:999px;
+    background:rgba(10,13,26,.55); border:1px solid rgba(127,243,255,.28);
+    backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
+    color:#cfe3ff; font-size:12.5px; letter-spacing:.05em; white-space:nowrap;
+    box-shadow:0 0 26px rgba(55,230,255,.12); transition:opacity .3s ease; }
+  #hint.off { opacity:0; pointer-events:none; }
+  #resetBtn { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom));
+    transform:translateX(-50%) translateY(10px); z-index:3; opacity:0; pointer-events:none;
+    padding:13px 30px; border-radius:999px; border:1px solid rgba(255,215,106,.55);
+    background:linear-gradient(180deg,rgba(34,28,10,.75),rgba(16,13,5,.75));
+    color:#ffd76a; font-weight:700; font-size:14px; letter-spacing:.16em; font-family:inherit;
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    box-shadow:0 0 34px rgba(255,215,106,.16);
+    transition:opacity .35s cubic-bezier(.2,.8,.2,1), transform .35s cubic-bezier(.2,.8,.2,1); cursor:pointer; }
+  #resetBtn.on { opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
+  #resetBtn:active { transform:translateX(-50%) scale(.96); }
+  #cardInfo { position:fixed; left:50%; bottom:calc(84px + env(safe-area-inset-bottom));
+    transform:translateX(-50%) translateY(14px); z-index:3; opacity:0; pointer-events:none;
+    text-align:center; padding:14px 28px; border-radius:20px; min-width:230px;
+    background:rgba(10,13,26,.62); border:1px solid rgba(255,215,106,.32);
+    backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
+    box-shadow:0 0 30px rgba(255,215,106,.12);
+    transition:opacity .4s cubic-bezier(.2,.8,.2,1), transform .4s cubic-bezier(.2,.8,.2,1); }
+  #cardInfo.on { opacity:1; transform:translateX(-50%) translateY(0); }
+  .ci-tier { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px; }
+  #ciTier { font-size:12px; font-weight:900; letter-spacing:.18em; color:#241a05;
+    background:linear-gradient(90deg,#ffe9a8,#c98f2d); padding:3px 12px; border-radius:999px; }
+  #ciStars { color:var(--tierCol,#ffd76a); font-size:14px; letter-spacing:.14em;
+    text-shadow:0 0 10px var(--tierCol,rgba(255,215,106,.65)); }
+  .ci-name { color:#ffffff; font-size:17px; font-weight:800; letter-spacing:.04em; }
+  .ci-meta { margin-top:4px; color:#9fb0d9; font-size:12px; letter-spacing:.08em; }
+  .ci-dot { margin:0 6px; opacity:.6; }
+  @media (prefers-reduced-motion: reduce){ #hint,#resetBtn,#cardInfo{ transition:opacity .15s ease; } }
+</style>
+</head>
+<body>
+<div id="brand"><div class="bw">PULLHUB</div><div class="bs">PACK OPENING PROTOTYPE ・ 3D</div></div>
+<div id="hint">✨ 光るラインを横にスワイプで開封 ・ ドラッグで回転</div>
+<button id="resetBtn">もう一度開封する</button>
+<div id="cardInfo">
+  <div class="ci-tier"><span id="ciTier">SSR</span><span id="ciStars">★★★★☆</span></div>
+  <div class="ci-name" id="ciName">ミッドナイト・クリスタル</div>
+  <div class="ci-meta"><span id="ciYear">2026</span><span class="ci-dot">・</span><span id="ciGrade">GEM MINT 10</span></div>
+</div>
+<canvas id="c"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+var hintEl=document.getElementById('hint');
+var resetBtn=document.getElementById('resetBtn');
+var infoEl=document.getElementById('cardInfo');
+if(!window.THREE){ hintEl.textContent='3Dライブラリの読み込みに失敗しました（通信環境をご確認ください）'; return; }
+
+/* ============ 基本設定 ============ */
+var reduce=false;
+try{ reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+var PW=1.68, PH=2.95, PD=0.15;
+var TEAR_Y=1.185, BODY_H=2.66, BODY_CY=-0.145, STRIP_CY=1.33, CARD_Y0=0.0;
+var CARD_CY=0.95, CARD_CZ=1.1, CARD_SC=1.0, SLAB_S0=0.7;
+var HINT0='✨ 光るラインを横にスワイプで開封 ・ ドラッグで回転';
+
+/* ============ Canvas ユーティリティ ============ */
+function cnv(w,h){ var c=document.createElement('canvas'); c.width=w; c.height=h; return c; }
+function ctex(c){ var t=new THREE.CanvasTexture(c); t.encoding=THREE.sRGBEncoding; t.anisotropy=8; return t; }
+function rr(x,cx,cy,w,h,r){ x.beginPath(); x.moveTo(cx+r,cy); x.arcTo(cx+w,cy,cx+w,cy+h,r); x.arcTo(cx+w,cy+h,cx,cy+h,r); x.arcTo(cx,cy+h,cx,cy,r); x.arcTo(cx,cy,cx+w,cy,r); x.closePath(); }
+function spaced(x,text,cx,cy,ls){ var i,w=[],tot=0;
+  for(i=0;i<text.length;i++){ w[i]=x.measureText(text[i]).width; tot+=w[i]; }
+  tot+=ls*(text.length-1);
+  var px=cx-tot/2, pa=x.textAlign; x.textAlign='left';
+  for(i=0;i<text.length;i++){ x.fillText(text[i],px,cy); px+=w[i]+ls; }
+  x.textAlign=pa; }
+function star4(x,cx,cy,r){ var q=r*0.1; x.beginPath(); x.moveTo(cx,cy-r);
+  x.quadraticCurveTo(cx+q,cy-q,cx+r,cy); x.quadraticCurveTo(cx+q,cy+q,cx,cy+r);
+  x.quadraticCurveTo(cx-q,cy+q,cx-r,cy); x.quadraticCurveTo(cx-q,cy-q,cx,cy-r); x.closePath(); }
+
+/* ============ パック表面テクスチャ ============ */
+function texFront(){
+  var W=768,H=1350,c=cnv(W,H),x=c.getContext('2d'),g;
+  g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#101430'); g.addColorStop(0.55,'#0b0e22'); g.addColorStop(1,'#060814');
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.fillStyle='rgba(160,190,255,0.025)';
+  for(var sy=0; sy<H; sy+=7) x.fillRect(0,sy,W,1);
+  /* 「引」ウォーターマーク（PullHub＝引く） */
+  x.save(); x.translate(W/2,660); x.rotate(-0.08);
+  g=x.createLinearGradient(0,-300,0,300); g.addColorStop(0,'rgba(255,63,216,0.16)'); g.addColorStop(1,'rgba(55,230,255,0.12)');
+  x.fillStyle=g; x.font='900 600px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.textAlign='center'; x.textBaseline='middle'; x.fillText('引',0,16); x.restore();
+  x.textBaseline='alphabetic';
+  /* ホロ斜めストリーク */
+  x.save(); x.translate(W/2,H/2); x.rotate(-0.45);
+  var cols=['rgba(127,243,255,','rgba(255,255,255,','rgba(255,63,216,'];
+  for(var i=0;i<6;i++){
+    var bx=-560+i*190;
+    g=x.createLinearGradient(bx,-1060,bx+60,1060);
+    g.addColorStop(0,cols[i%3]+'0)'); g.addColorStop(0.5,cols[i%3]+'0.10)'); g.addColorStop(1,cols[i%3]+'0)');
+    x.fillStyle=g; x.fillRect(bx,-1080,54,2160);
+  }
+  x.restore();
+  /* ネオン枠 */
+  g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#37e6ff'); g.addColorStop(1,'#ff3fd8');
+  x.strokeStyle=g; x.lineWidth=5;
+  x.shadowColor='rgba(55,230,255,0.9)'; x.shadowBlur=24; rr(x,26,26,W-52,H-52,30); x.stroke();
+  x.shadowColor='rgba(255,63,216,0.8)'; x.shadowBlur=20; x.stroke();
+  x.shadowBlur=0;
+  x.strokeStyle='rgba(160,200,255,0.28)'; x.lineWidth=1.5; rr(x,44,44,W-88,H-88,20); x.stroke();
+  x.textAlign='center';
+  /* ロゴ */
+  x.font='900 96px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.shadowColor='rgba(55,230,255,0.95)'; x.shadowBlur=30; x.fillStyle='#ffffff';
+  spaced(x,'PULLHUB',W/2,168,10);
+  x.shadowBlur=0;
+  x.font='700 26px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillStyle='rgba(159,216,255,0.92)';
+  spaced(x,'オリジナル・オリパ',W/2,218,9);
+  /* 中央エンブレム */
+  var ex=W/2, ey=672;
+  g=x.createRadialGradient(ex,ey,0,ex,ey,200); g.addColorStop(0,'rgba(55,230,255,0.28)'); g.addColorStop(1,'rgba(55,230,255,0)');
+  x.fillStyle=g; x.fillRect(ex-210,ey-210,420,420);
+  x.save(); x.translate(ex,ey); x.rotate(0.12);
+  x.fillStyle='#10132a'; rr(x,-96,-136,192,272,18); x.fill();
+  g=x.createLinearGradient(-96,-136,96,136); g.addColorStop(0,'#7ff3ff'); g.addColorStop(1,'#ff3fd8');
+  x.strokeStyle=g; x.lineWidth=4; x.shadowColor='rgba(127,243,255,0.8)'; x.shadowBlur=18;
+  rr(x,-96,-136,192,272,18); x.stroke(); x.shadowBlur=0;
+  x.restore();
+  g=x.createRadialGradient(ex,ey,0,ex,ey,96); g.addColorStop(0,'#ffffff'); g.addColorStop(0.45,'#ffe9a8'); g.addColorStop(1,'rgba(255,215,106,0)');
+  x.fillStyle=g; x.shadowColor='rgba(255,236,170,0.95)'; x.shadowBlur=40;
+  star4(x,ex,ey,96); x.fill(); x.shadowBlur=0;
+  x.fillStyle='rgba(255,255,255,0.92)';
+  star4(x,ex-118,ey-92,16); x.fill(); star4(x,ex+124,ey+70,12); x.fill(); star4(x,ex+96,ey-128,9); x.fill();
+  /* エディション表記 */
+  x.font='900 40px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillStyle='#ffd76a'; x.shadowColor='rgba(255,215,106,0.75)'; x.shadowBlur=18;
+  spaced(x,'MIDNIGHT EDITION',W/2,976,7);
+  x.shadowBlur=0;
+  x.font='500 22px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillStyle='rgba(185,198,255,0.8)';
+  spaced(x,'真夜中のカードショップ',W/2,1016,6);
+  /* 下部インフォ */
+  x.strokeStyle='rgba(160,200,255,0.3)'; x.lineWidth=1;
+  x.beginPath(); x.moveTo(70,1134); x.lineTo(W-70,1134); x.stroke();
+  var bx2=76;
+  x.fillStyle='rgba(235,242,255,0.9)';
+  while(bx2<268){ var bw=1+Math.floor(Math.random()*4); x.fillRect(bx2,1160,bw,70); bx2+=bw+1+Math.floor(Math.random()*4); }
+  x.textAlign='right';
+  x.font='900 34px "Hiragino Sans","Noto Sans JP",sans-serif'; x.fillStyle='#ffffff';
+  x.fillText('10 CARDS / PACK', W-72, 1188);
+  x.font='500 17px "Hiragino Sans","Noto Sans JP",sans-serif'; x.fillStyle='rgba(190,205,255,0.6)';
+  x.fillText('提供割合はアプリ内でご確認ください', W-72, 1218);
+  x.textAlign='center';
+  x.fillStyle='rgba(160,180,230,0.28)';
+  for(var fy=0; fy<2; fy++){ var fx=76; while(fx<W-260){ var fw=18+Math.random()*46; x.fillRect(fx,1254+fy*14,fw,3); fx+=fw+10; } }
+  return c;
+}
+function texBack(){
+  var W=768,H=1350,c=cnv(W,H),x=c.getContext('2d'),g;
+  g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0c1028'); g.addColorStop(1,'#060812');
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.save(); x.translate(W/2,H/2); x.rotate(-0.5);
+  x.font='700 26px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillStyle='rgba(140,170,255,0.07)'; x.textAlign='center';
+  for(var ry=-900; ry<900; ry+=64){
+    var off=((ry/64)%2)?130:0;
+    for(var rx=-900; rx<900; rx+=260){ x.fillText('PULLHUB ★', rx+off, ry); }
+  }
+  x.restore();
+  x.textAlign='center';
+  var ex=W/2, ey=H/2-40;
+  g=x.createLinearGradient(ex-150,ey-150,ex+150,ey+150); g.addColorStop(0,'#37e6ff'); g.addColorStop(1,'#ff3fd8');
+  x.strokeStyle=g; x.lineWidth=5; x.shadowColor='rgba(55,230,255,0.7)'; x.shadowBlur=22;
+  x.beginPath(); x.arc(ex,ey,150,0,Math.PI*2); x.stroke();
+  x.lineWidth=1.5; x.beginPath(); x.arc(ex,ey,168,0,Math.PI*2); x.stroke(); x.shadowBlur=0;
+  g=x.createRadialGradient(ex,ey,0,ex,ey,86); g.addColorStop(0,'#ffffff'); g.addColorStop(0.5,'#bfeaff'); g.addColorStop(1,'rgba(127,243,255,0)');
+  x.fillStyle=g; x.shadowColor='rgba(191,234,255,0.9)'; x.shadowBlur=34;
+  star4(x,ex,ey,84); x.fill(); x.shadowBlur=0;
+  x.font='900 58px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillStyle='#ffffff'; x.shadowColor='rgba(255,63,216,0.7)'; x.shadowBlur=22;
+  spaced(x,'PULLHUB',ex,ey+266,8); x.shadowBlur=0;
+  x.font='500 20px "Hiragino Sans","Noto Sans JP",sans-serif'; x.fillStyle='rgba(159,216,255,0.7)';
+  spaced(x,'TOKYO → WORLDWIDE',ex,ey+306,4);
+  x.fillStyle='rgba(160,180,230,0.26)';
+  for(var fy=0; fy<4; fy++){ var fx=96; while(fx<W-96){ var fw=16+Math.random()*54; x.fillRect(fx,1140+fy*17,fw,3); fx+=fw+9; } }
+  return c;
+}
+function texCrimp(){
+  var c=cnv(128,64),x=c.getContext('2d');
+  var g=x.createLinearGradient(0,0,0,64); g.addColorStop(0,'#8e96b4'); g.addColorStop(0.5,'#565d78'); g.addColorStop(1,'#7f88a8');
+  x.fillStyle=g; x.fillRect(0,0,128,64);
+  x.fillStyle='rgba(20,24,40,0.6)';
+  for(var i=0;i<128;i+=6) x.fillRect(i,0,2,64);
+  x.fillStyle='rgba(200,210,235,0.3)';
+  for(var j=3;j<128;j+=6) x.fillRect(j,0,1,64);
+  return c;
+}
+function texTorn(){
+  var c=cnv(512,64),x=c.getContext('2d');
+  x.clearRect(0,0,512,64);
+  x.beginPath(); x.moveTo(0,64);
+  var px2=0;
+  while(px2<512){ var step=10+Math.random()*16; var hh=12+Math.random()*26;
+    x.lineTo(px2+step/2,64-hh); x.lineTo(px2+step,64); px2+=step; }
+  x.lineTo(512,64); x.closePath();
+  var g=x.createLinearGradient(0,0,0,64); g.addColorStop(0,'#f2f6ff'); g.addColorStop(1,'#8a92b8');
+  x.fillStyle=g; x.fill();
+  x.strokeStyle='rgba(127,243,255,0.85)'; x.lineWidth=2; x.stroke();
+  return c;
+}
+function texDash(){
+  var c=cnv(512,24),x=c.getContext('2d');
+  x.clearRect(0,0,512,24);
+  x.shadowColor='#7ff3ff'; x.shadowBlur=7; x.fillStyle='#aef7ff';
+  for(var i=6;i<488;i+=34){ rr(x,i,8,20,8,4); x.fill(); }
+  return c;
+}
+function texCardBack(){
+  var W=512,H=716,c=cnv(W,H),x=c.getContext('2d'),g;
+  g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0d1126'); g.addColorStop(1,'#070912');
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.save(); x.translate(W/2,H/2); x.rotate(-0.5);
+  g=x.createLinearGradient(-400,-40,400,40); g.addColorStop(0,'rgba(255,255,255,0)'); g.addColorStop(0.5,'rgba(180,220,255,0.06)'); g.addColorStop(1,'rgba(255,255,255,0)');
+  x.fillStyle=g; x.fillRect(-500,-90,1000,180); x.restore();
+  g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#37e6ff'); g.addColorStop(1,'#ff3fd8');
+  x.strokeStyle=g; x.lineWidth=6; x.shadowColor='rgba(55,230,255,0.8)'; x.shadowBlur=16;
+  rr(x,14,14,W-28,H-28,22); x.stroke(); x.shadowBlur=0;
+  x.strokeStyle='rgba(160,200,255,0.3)'; x.lineWidth=1.5; rr(x,34,34,W-68,H-68,14); x.stroke();
+  var ex=W/2, ey=H/2-26;
+  x.save(); x.translate(ex,ey); x.rotate(Math.PI/4);
+  x.strokeStyle='rgba(255,215,106,0.9)'; x.lineWidth=3; x.shadowColor='rgba(255,215,106,0.7)'; x.shadowBlur=14;
+  x.strokeRect(-78,-78,156,156); x.restore(); x.shadowBlur=0;
+  g=x.createRadialGradient(ex,ey,0,ex,ey,64); g.addColorStop(0,'#ffffff'); g.addColorStop(0.55,'#bfeaff'); g.addColorStop(1,'rgba(127,243,255,0)');
+  x.fillStyle=g; x.shadowColor='rgba(191,234,255,0.95)'; x.shadowBlur=26;
+  star4(x,ex,ey,62); x.fill(); x.shadowBlur=0;
+  x.textAlign='center'; x.font='900 42px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillStyle='#ffffff'; x.shadowColor='rgba(255,63,216,0.7)'; x.shadowBlur=16;
+  spaced(x,'PULLHUB',ex,ey+178,6); x.shadowBlur=0;
+  x.fillStyle='rgba(255,255,255,0.85)';
+  star4(x,64,64,10); x.fill(); star4(x,W-64,64,10); x.fill();
+  star4(x,64,H-64,10); x.fill(); star4(x,W-64,H-64,10); x.fill();
+  return c;
+}
+function texCardFront(){
+  var W=512,H=716,c=cnv(W,H),x=c.getContext('2d'),g,p;
+  x.fillStyle='#070a18'; x.fillRect(0,0,W,H);
+  g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#ffe9a8'); g.addColorStop(0.5,'#c98f2d'); g.addColorStop(1,'#ffe9a8');
+  x.strokeStyle=g; x.lineWidth=10; x.shadowColor='rgba(255,215,106,0.6)'; x.shadowBlur=14;
+  rr(x,12,12,W-24,H-24,20); x.stroke(); x.shadowBlur=0;
+  x.lineWidth=2; rr(x,30,30,W-60,H-60,14); x.stroke();
+  g=x.createLinearGradient(0,58,0,470); g.addColorStop(0,'#0a1234'); g.addColorStop(0.6,'#131048'); g.addColorStop(1,'#050718');
+  x.fillStyle=g; x.fillRect(38,58,W-76,414);
+  x.fillStyle='rgba(255,255,255,0.8)';
+  for(var i=0;i<50;i++){ var sx2=44+Math.random()*(W-88), sy2=64+Math.random()*400, sr=Math.random()*1.6+0.4;
+    x.globalAlpha=0.25+Math.random()*0.6; x.beginPath(); x.arc(sx2,sy2,sr,0,Math.PI*2); x.fill(); }
+  x.globalAlpha=1;
+  var pts=[[256,120],[350,198],[368,300],[308,392],[204,392],[144,300],[162,198]];
+  x.save();
+  x.shadowColor='rgba(102,228,255,0.95)'; x.shadowBlur=46;
+  g=x.createRadialGradient(256,250,10,256,270,190);
+  g.addColorStop(0,'#ecffff'); g.addColorStop(0.35,'#54d8ff'); g.addColorStop(0.75,'#7a3ff0'); g.addColorStop(1,'#1a1050');
+  x.fillStyle=g; x.beginPath(); x.moveTo(pts[0][0],pts[0][1]);
+  for(p=1;p<pts.length;p++) x.lineTo(pts[p][0],pts[p][1]);
+  x.closePath(); x.fill(); x.restore();
+  x.strokeStyle='rgba(255,255,255,0.4)'; x.lineWidth=2;
+  x.beginPath(); x.moveTo(pts[0][0],pts[0][1]);
+  for(p=1;p<pts.length;p++) x.lineTo(pts[p][0],pts[p][1]);
+  x.closePath(); x.stroke();
+  x.beginPath();
+  for(p=1;p<pts.length;p++){ x.moveTo(256,120); x.lineTo(pts[p][0],pts[p][1]); }
+  x.moveTo(162,198); x.lineTo(350,198); x.stroke();
+  x.fillStyle='rgba(255,255,255,0.18)';
+  x.beginPath(); x.moveTo(256,120); x.lineTo(350,198); x.lineTo(162,198); x.closePath(); x.fill();
+  x.fillStyle='rgba(255,255,255,0.9)';
+  star4(x,206,180,14); x.fill(); star4(x,330,340,10); x.fill(); star4(x,150,330,7); x.fill();
+  g=x.createLinearGradient(46,74,200,74); g.addColorStop(0,'#ffe9a8'); g.addColorStop(1,'#c98f2d');
+  x.fillStyle=g; rr(x,46,66,150,36,18); x.fill();
+  x.fillStyle='#241a05'; x.font='900 22px "Hiragino Sans","Noto Sans JP",sans-serif'; x.textAlign='center';
+  x.fillText('★ SECRET', 121, 91);
+  x.fillStyle='rgba(8,10,24,0.85)'; rr(x,38,488,W-76,86,10); x.fill();
+  x.strokeStyle='rgba(255,215,106,0.7)'; x.lineWidth=1.5; rr(x,38,488,W-76,86,10); x.stroke();
+  x.fillStyle='#ffffff'; x.font='800 32px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillText('ミッドナイト・クリスタル', W/2, 528);
+  x.fillStyle='rgba(200,214,255,0.6)'; x.font='500 16px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillText('PULLHUB PROTOTYPE ・ No.001', W/2, 558);
+  x.fillStyle='#ffd76a'; x.shadowColor='rgba(255,215,106,0.8)'; x.shadowBlur=10;
+  x.font='700 30px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillText('★ ★ ★ ★ ★', W/2, 618); x.shadowBlur=0;
+  x.fillStyle='rgba(150,165,215,0.45)'; x.font='400 13px "Hiragino Sans","Noto Sans JP",sans-serif';
+  x.fillText('サンプルアートワーク — 実カードではありません', W/2, 672);
+  return c;
+}
+function texGlow(){ var c=cnv(256,256),x=c.getContext('2d');
+  var g=x.createRadialGradient(128,128,0,128,128,128);
+  g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(0.25,'rgba(190,240,255,0.55)');
+  g.addColorStop(0.6,'rgba(120,200,255,0.18)'); g.addColorStop(1,'rgba(120,200,255,0)');
+  x.fillStyle=g; x.fillRect(0,0,256,256); return c; }
+function texDot(){ var c=cnv(64,64),x=c.getContext('2d');
+  var g=x.createRadialGradient(32,32,0,32,32,32);
+  g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(0.4,'rgba(255,255,255,0.55)'); g.addColorStop(1,'rgba(255,255,255,0)');
+  x.fillStyle=g; x.fillRect(0,0,64,64); return c; }
+function envFace(bright){ var c=cnv(128,128),x=c.getContext('2d');
+  var g=x.createLinearGradient(0,0,0,128); g.addColorStop(0,'#252c56'); g.addColorStop(1,'#0a0d1e');
+  x.fillStyle=g; x.fillRect(0,0,128,128);
+  function blob(bx,by,r,col,a){ var rg=x.createRadialGradient(bx,by,0,bx,by,r);
+    rg.addColorStop(0,col); rg.addColorStop(1,'rgba(0,0,0,0)');
+    x.globalAlpha=a; x.fillStyle=rg; x.fillRect(0,0,128,128); x.globalAlpha=1; }
+  if(bright) blob(64,42,74,'#ffffff',0.95);
+  blob(28+Math.random()*24,84,52,'#37e6ff',0.55);
+  blob(92,26+Math.random()*30,46,'#ff3fd8',0.5);
+  return c; }
+
+/* ============ シーン ============ */
+var cv=document.getElementById('c');
+var renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+renderer.setClearColor(0x000000,0);
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.12;
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(42,1,0.1,60);
+var camZ=7.6;
+function resize(){ var w=window.innerWidth,h=window.innerHeight;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setSize(w,h,false); camera.aspect=w/h;
+  camZ=Math.max(7.6, 1.55/(0.3839*camera.aspect));
+  camera.updateProjectionMatrix(); }
+window.addEventListener('resize',resize); resize();
+
+var env=new THREE.CubeTexture([envFace(false),envFace(false),envFace(true),envFace(false),envFace(false),envFace(false)]);
+env.needsUpdate=true; env.encoding=THREE.sRGBEncoding;
+
+scene.add(new THREE.AmbientLight(0x3a3f66,0.75));
+var key=new THREE.DirectionalLight(0xeef2ff,0.85); key.position.set(2.5,4,5); scene.add(key);
+var rim=new THREE.DirectionalLight(0x5f7cff,0.4); rim.position.set(-3,2,-4); scene.add(rim);
+var lC=new THREE.PointLight(0x37e6ff,1.15,24); scene.add(lC);
+var lM=new THREE.PointLight(0xff3fd8,1.0,24); scene.add(lM);
+var flashL=new THREE.PointLight(0xbfe8ff,0,30); flashL.position.set(0,1.6,3.4); scene.add(flashL);
+
+/* ============ ホロ（虹色フレネル）シェーダ注入 ============ */
+var tUniform={value:0};
+function holo(m){
+  m.onBeforeCompile=function(s){
+    s.uniforms.uTime=tUniform;
+    s.fragmentShader=s.fragmentShader
+      .replace('#include <common>','#include <common>\nuniform float uTime;')
+      .replace('#include <emissivemap_fragment>',
+        '#include <emissivemap_fragment>\n'+
+        'vec3 hVDir=normalize(vViewPosition);\n'+
+        'float hFr=pow(1.0-abs(dot(normalize(normal),hVDir)),3.2);\n'+
+        'float hBand=sin((vUv.x*5.0+vUv.y*2.5)*3.14159+uTime*0.9+hFr*7.0);\n'+
+        'vec3 hRb=0.5+0.5*cos(6.2831*(vec3(0.0,0.33,0.66)+hBand*0.45+uTime*0.03));\n'+
+        'totalEmissiveRadiance+=hRb*hFr*0.16;\n');
+  };
+}
+
+/* ============ パック形状（上下をつまんだピロー形） ============ */
+function pinch(yg){ var t=(yg+PH/2)/PH; if(t<0)t=0; if(t>1)t=1;
+  var e=0.09, ea=Math.min(t/e,1), eb=Math.min((1-t)/e,1);
+  var sm=Math.min(ea,eb); sm=sm*sm*(3-2*sm);
+  return (0.05+0.95*sm)*(0.9+0.1*Math.sin(Math.PI*t)); }
+function bow(bx){ var hx=PW/2; if(bx>hx)bx=hx; if(bx<-hx)bx=-hx;
+  return 0.9+0.1*Math.cos((bx/hx)*Math.PI/2); }
+function frontZAt(y){ return (PD/2)*pinch(y)*bow(0); }
+function pinchedBox(w,h,d,cy,sw,sh){
+  var geo=new THREE.BoxGeometry(w,h,d,sw,sh,6);
+  var pos=geo.attributes.position;
+  for(var i=0;i<pos.count;i++){
+    pos.setZ(i, pos.getZ(i)*pinch(pos.getY(i)+cy)*bow(pos.getX(i)));
+  }
+  pos.needsUpdate=true; geo.computeVertexNormals();
+  return geo;
+}
+
+/* ============ マテリアル ============ */
+var frontTex=ctex(texFront()), backTex=ctex(texBack());
+function sub(tex,y0,hf){ var t=tex.clone(); t.needsUpdate=true; t.repeat.set(1,hf); t.offset.set(0,y0); return t; }
+var BFR=BODY_H/PH, SFR=1-BFR;
+function foilMat(map){ return new THREE.MeshStandardMaterial({map:map,metalness:0.72,roughness:0.34,envMap:env,envMapIntensity:0.9}); }
+var bodyFrontM=foilMat(sub(frontTex,0,BFR)); holo(bodyFrontM);
+var bodyBackM =foilMat(sub(backTex,0,BFR));
+var stripFrontM=foilMat(sub(frontTex,BFR,SFR)); holo(stripFrontM);
+var stripBackM =foilMat(sub(backTex,BFR,SFR));
+var sideB=new THREE.MeshStandardMaterial({color:0x141830,metalness:0.55,roughness:0.5,envMap:env,envMapIntensity:0.35});
+var sideS=sideB.clone();
+var seamB=new THREE.MeshStandardMaterial({color:0x0a0c16,metalness:0.2,roughness:0.9});
+var seamS=seamB.clone();
+var crimpTexture=ctex(texCrimp());
+var crimpB=new THREE.MeshStandardMaterial({map:crimpTexture,metalness:0.85,roughness:0.45,envMap:env,envMapIntensity:0.7});
+var crimpS=crimpB.clone();
+var stripFadeMats=[stripFrontM,stripBackM,sideS,seamS,crimpS];
+for(var fi=0; fi<stripFadeMats.length; fi++){
+  stripFadeMats[fi].transparent=false; stripFadeMats[fi].opacity=1;
+  stripFadeMats[fi].side=THREE.DoubleSide;
+  stripFadeMats[fi].needsUpdate=true;
+}
+function setStripOpacity(o){ for(var i=0;i<stripFadeMats.length;i++){ stripFadeMats[i].opacity=o; stripFadeMats[i].depthWrite=o>0.55; } }
+
+/* ============ メッシュ構築 ============ */
+var packRoot=new THREE.Group(); packRoot.position.y=-0.15; scene.add(packRoot);
+var bodyGroup=new THREE.Group(); bodyGroup.position.y=BODY_CY; packRoot.add(bodyGroup);
+var HINGE_X=PW/2-0.12, STRIP_LX=-HINGE_X, STRIP_LY=STRIP_CY-TEAR_Y;
+var stripHinge=new THREE.Group();
+stripHinge.position.set(HINGE_X, TEAR_Y-BODY_CY, 0);
+bodyGroup.add(stripHinge);
+var stripGroup=new THREE.Group();
+stripGroup.position.set(STRIP_LX, STRIP_LY, 0);
+stripHinge.add(stripGroup);
+
+var bodyMesh=new THREE.Mesh(pinchedBox(PW,BODY_H,PD,BODY_CY,18,26),
+  [sideB,sideB,seamB,sideB,bodyFrontM,bodyBackM]);
+bodyGroup.add(bodyMesh);
+var stripMesh=new THREE.Mesh(pinchedBox(PW,0.29,PD,STRIP_CY,18,8),
+  [sideS,sideS,sideS,seamS,stripFrontM,stripBackM]);
+stripGroup.add(stripMesh);
+
+
+var tabTop=new THREE.Mesh(new THREE.BoxGeometry(PW,0.16,0.03,18,2,1),crimpS);
+tabTop.position.y=0.23; stripGroup.add(tabTop);
+var tabBot=new THREE.Mesh(new THREE.BoxGeometry(PW,0.16,0.045),crimpB);
+tabBot.position.y=-1.41; bodyGroup.add(tabBot);
+
+/* ---- 薄いフィルムの手ちぎり変形 ----
+   裂け目の先端より左の頂点を、距離に応じた曲率でカール（上→後方へ巻き上げ）。
+   右端は繋がったまま。開封後は微風でひらひら揺れる。 */
+var stripOrig=stripMesh.geometry.attributes.position.array.slice();
+var tabOrig=tabTop.geometry.attributes.position.array.slice();
+var TEAR_X0=-PW/2, TEAR_SPAN=HINGE_X+PW/2;
+var CURL_K=1.7, CURL_MAX=2.35, openCurl=1, windA=0, windEff=0, stripDirty=false;
+function deformStrip(geo,orig,yOff,amt){
+  var pos=geo.attributes.position, R=1/(CURL_K*openCurl);
+  var xF=TEAR_X0+TEAR_SPAN*amt;
+  for(var i=0;i<pos.count;i++){
+    var ox=orig[i*3], oy=orig[i*3+1], oz=orig[i*3+2];
+    var d=xF-ox;
+    if(d<=0||amt<=0.001){ pos.setXYZ(i,ox,oy,oz); continue; }
+    var v=oy+yOff;
+    var th=d/R; var ax,ay;
+    if(th<=CURL_MAX){
+      ax=xF-R*Math.sin(th); ay=R*(1-Math.cos(th));
+    } else {
+      var rest=d-CURL_MAX*R; th=CURL_MAX;
+      ax=xF-R*Math.sin(CURL_MAX)-Math.cos(CURL_MAX)*rest;
+      ay=R*(1-Math.cos(CURL_MAX))+Math.sin(CURL_MAX)*rest;
+    }
+    var nx=ax-v*Math.sin(th);
+    var ny=ay+v*Math.cos(th)-yOff;
+    var nz=oz-0.22*(1-Math.cos(th))
+          +windEff*0.035*Math.sin(tGlobal*2.8+d*4.0)*(th/CURL_MAX);
+    pos.setXYZ(i,nx,ny,nz);
+  }
+  pos.needsUpdate=true;
+  geo.computeVertexNormals();
+}
+
+var tornMat=new THREE.MeshBasicMaterial({map:ctex(texTorn()),transparent:true,side:THREE.DoubleSide,depthWrite:false});
+var tornF=new THREE.Mesh(new THREE.PlaneGeometry(1.34,0.11),tornMat);
+tornF.position.set(-0.12,TEAR_Y-BODY_CY+0.008,frontZAt(TEAR_Y-0.03)-0.012);
+var tornBk=new THREE.Mesh(new THREE.PlaneGeometry(1.34,0.11),tornMat);
+tornBk.position.set(-0.12,TEAR_Y-BODY_CY+0.008,-(frontZAt(TEAR_Y-0.03)-0.012));
+tornBk.rotation.y=Math.PI;
+tornF.geometry.translate(0.67,0,0); tornF.position.x=-PW/2;
+tornBk.geometry.translate(-0.67,0,0); tornBk.position.x=-PW/2;
+tornF.visible=false; tornBk.visible=false;
+bodyGroup.add(tornF); bodyGroup.add(tornBk);
+
+var ZLINE=frontZAt(TEAR_Y)+0.02;
+var tearMat=new THREE.MeshBasicMaterial({map:ctex(texDash()),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0.9});
+var tearLine=new THREE.Mesh(new THREE.PlaneGeometry(1.30,0.08),tearMat);
+tearLine.geometry.translate(0.65,0,0);
+tearLine.position.set(TEAR_X0,TEAR_Y,ZLINE); packRoot.add(tearLine);
+
+var tearHit=new THREE.Mesh(new THREE.BoxGeometry(2.0,0.75,1.0),
+  new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false}));
+tearHit.position.set(0,TEAR_Y+0.03,0); packRoot.add(tearHit);
+
+var glowTexture=ctex(texGlow());
+var spark=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:0xbffaff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+spark.scale.set(0.5,0.5,1); spark.visible=false;
+spark.position.set(0,TEAR_Y,ZLINE+0.05); packRoot.add(spark);
+
+/* ============ 交換可能なカードデータ ============ */
+var CARD_DATA={
+  photo:null,                                  /* カード写真のURL/パス。nullなら内蔵サンプルアート */
+  name:'ミッドナイト・クリスタル',
+  year:'2026',
+  grade:'GEM MINT 10',
+  rarity:4,                                    /* このオリパ内のレア度 1〜段階数 */
+  rarityLabels:['N','R','SR','SSR','UR'],      /* 段階名は自由に増減OK */
+  rarityColors:['#8fb6ff','#37e6ff','#b26bff','#ffd76a','#ff5fa2'] /* 漏れ光の色 */
+};
+
+/* ============ グレーディングスラブ（PSA風・汎用ラベル） ============ */
+var SLAB_W=1.9, SLAB_H=3.0, SLAB_D=0.12;
+function texLabel(){
+  var W=760,H=224,c=cnv(W,H),x=c.getContext('2d');
+  x.fillStyle='#fbfcfe'; x.fillRect(0,0,W,H);
+  x.save(); x.globalAlpha=0.05; x.strokeStyle='#3b5aa0'; x.lineWidth=1;
+  for(var dl=-H; dl<W+H; dl+=9){ x.beginPath(); x.moveTo(dl,0); x.lineTo(dl+H,H); x.stroke(); }
+  x.restore();
+  x.strokeStyle='#d9dce4'; x.lineWidth=3; x.strokeRect(1,1,W-2,H-2);
+  x.fillStyle='#c8102e'; x.fillRect(0,0,W,5);
+  x.textAlign='left'; x.fillStyle='#15171c';
+  x.font='700 30px "Helvetica Neue",Arial,sans-serif';
+  x.fillText('20XX POKEMON XXX XXX',26,54);
+  x.font='800 32px "Helvetica Neue",Arial,sans-serif';
+  x.fillText('CARD NAME',26,98);
+  x.font='700 28px "Helvetica Neue",Arial,sans-serif';
+  x.fillText('#XXX',26,140);
+  var bx=26; x.fillStyle='#15171c';
+  while(bx<230){ var bw=2+Math.floor(Math.random()*3); x.fillRect(bx,164,bw,44); bx+=bw+2+Math.floor(Math.random()*3); }
+  x.save(); x.translate(452,100);
+  x.fillStyle='#c8102e';
+  x.beginPath(); x.moveTo(-30,-38); x.lineTo(30,-38);
+  x.quadraticCurveTo(35,-38,35,-31); x.lineTo(35,8);
+  x.quadraticCurveTo(35,34,0,46); x.quadraticCurveTo(-35,34,-35,8);
+  x.lineTo(-35,-31); x.quadraticCurveTo(-35,-38,-30,-38); x.closePath(); x.fill();
+  x.fillStyle='#1c3f8f'; x.fillRect(-35,-12,70,13);
+  x.fillStyle='#ffffff'; star4(x,0,-24,10); x.fill();
+  x.font='900 19px "Helvetica Neue",Arial,sans-serif'; x.textAlign='center';
+  x.fillText('CERT',0,28);
+  x.restore();
+  x.textAlign='center'; x.font='600 18px "Helvetica Neue",Arial,sans-serif'; x.fillStyle='#5a5f6e';
+  x.fillText('XXXXXXXXXX',452,186);
+  x.textAlign='right'; x.fillStyle='#15171c';
+  x.font='700 26px "Helvetica Neue",Arial,sans-serif';
+  x.fillText('GRADE',W-26,50);
+  x.font='900 110px "Helvetica Neue",Arial,sans-serif';
+  x.fillText('XX',W-26,162);
+  x.font='500 20px "Helvetica Neue",Arial,sans-serif'; x.fillStyle='#5a5f6e';
+  x.fillText('GEM MT ・ XX',W-26,202);
+  x.textAlign='center';
+  return c;
+}
+function texLabelBack(){
+  var W=760,H=224,c=cnv(W,H),x=c.getContext('2d');
+  x.fillStyle='#fbfcfe'; x.fillRect(0,0,W,H);
+  x.save(); x.globalAlpha=0.05; x.strokeStyle='#3b5aa0'; x.lineWidth=1;
+  for(var dl=-H; dl<W+H; dl+=9){ x.beginPath(); x.moveTo(dl,0); x.lineTo(dl+H,H); x.stroke(); }
+  x.restore();
+  x.strokeStyle='#d9dce4'; x.lineWidth=3; x.strokeRect(1,1,W-2,H-2);
+  var bx=140; x.fillStyle='#15171c';
+  while(bx<620){ var bw=2+Math.floor(Math.random()*4); x.fillRect(bx,46,bw,86); bx+=bw+2+Math.floor(Math.random()*3); }
+  x.textAlign='center'; x.font='600 26px "Helvetica Neue",Arial,sans-serif';
+  x.fillText('XXXXXXXXXX',380,168);
+  x.font='500 17px "Helvetica Neue",Arial,sans-serif'; x.fillStyle='#7a7f8e';
+  x.fillText('AUTHENTICATED ・ ENCAPSULATED',380,202);
+  return c;
+}
+/* 中のカード面：写真があれば差し替え、なければ内蔵サンプル */
+var sampleFace=texCardFront();
+var faceCanvas=cnv(512,716);
+var cardFaceTex=null;
+function drawFace(img){
+  var x=faceCanvas.getContext('2d');
+  x.clearRect(0,0,512,716);
+  if(img){
+    x.fillStyle='#0b0d16'; x.fillRect(0,0,512,716);
+    var sc=Math.max(512/img.width,716/img.height), dw=img.width*sc, dh=img.height*sc;
+    x.save(); rr(x,8,8,496,700,14); x.clip();
+    x.drawImage(img,(512-dw)/2,(716-dh)/2,dw,dh); x.restore();
+    x.strokeStyle='rgba(255,255,255,0.75)'; x.lineWidth=3; rr(x,8,8,496,700,14); x.stroke();
+  } else {
+    x.drawImage(sampleFace,0,0);
+  }
+  if(cardFaceTex) cardFaceTex.needsUpdate=true;
+}
+drawFace(null);
+cardFaceTex=ctex(faceCanvas);
+function loadPhoto(){
+  if(!CARD_DATA.photo){ drawFace(null); return; }
+  var img=new Image();
+  img.crossOrigin='anonymous';
+  img.onload=function(){ drawFace(img); };
+  img.onerror=function(){ drawFace(null); };
+  img.src=CARD_DATA.photo;
+}
+function applyCardInfo(){
+  var d=CARD_DATA, max=d.rarityLabels.length;
+  var r=Math.max(1,Math.min(max,d.rarity|0));
+  document.getElementById('ciName').textContent=d.name;
+  document.getElementById('ciYear').textContent=d.year;
+  document.getElementById('ciGrade').textContent=d.grade;
+  document.getElementById('ciTier').textContent=d.rarityLabels[r-1];
+  var st=''; for(var i2=0;i2<max;i2++) st+=(i2<r?'★':'☆');
+  document.getElementById('ciStars').textContent=st;
+  applyRarityColor();
+}
+window.setCard=function(d){ for(var k2 in d) CARD_DATA[k2]=d[k2]; applyCardInfo(); loadPhoto(); };
+
+var cardBackTex=ctex(texCardBack());
+/* めくるまでは表面にも裏面デザインを貼っておく（どの角度からもネタバレしない） */
+var cardFrontM=new THREE.MeshStandardMaterial({map:cardBackTex,metalness:0.35,roughness:0.4,envMap:env,envMapIntensity:0.75}); holo(cardFrontM);
+var cardBackM=new THREE.MeshStandardMaterial({map:cardBackTex,metalness:0.45,roughness:0.4,envMap:env,envMapIntensity:0.75});
+var cardEdgeM=new THREE.MeshStandardMaterial({color:0x1a1e33,metalness:0.3,roughness:0.7});
+function roundedRectShape(w,h,r){
+  var sh=new THREE.Shape(), hw=w/2, hh=h/2;
+  sh.moveTo(-hw+r,-hh);
+  sh.lineTo(hw-r,-hh); sh.quadraticCurveTo(hw,-hh,hw,-hh+r);
+  sh.lineTo(hw,hh-r); sh.quadraticCurveTo(hw,hh,hw-r,hh);
+  sh.lineTo(-hw+r,hh); sh.quadraticCurveTo(-hw,hh,-hw,hh-r);
+  sh.lineTo(-hw,-hh+r); sh.quadraticCurveTo(-hw,-hh,-hw+r,-hh);
+  return sh;
+}
+/* 本体：ほぼ無色透明（中のカードをはっきり見せる） */
+var glassM=new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:0.05,
+  transparent:true,opacity:0.055,envMap:env,envMapIntensity:0.5,
+  clearcoat:1,clearcoatRoughness:0.05,depthWrite:false});
+var slabGeo=new THREE.ExtrudeGeometry(roundedRectShape(SLAB_W-0.05,SLAB_H-0.05,0.16),
+  {depth:SLAB_D-0.06,bevelEnabled:true,bevelThickness:0.03,bevelSize:0.025,bevelSegments:3,curveSegments:8});
+slabGeo.translate(0,0,-(SLAB_D-0.06)/2);
+var cardMesh=new THREE.Mesh(slabGeo,glassM);
+cardMesh.renderOrder=4;
+/* 反射シェル：ハイライトだけ加算で乗せる（カードは暗くならない） */
+var reflM=new THREE.MeshStandardMaterial({color:0x8fa8c8,metalness:1,roughness:0.06,
+  envMap:env,envMapIntensity:1.0,transparent:true,opacity:0.5,
+  blending:THREE.AdditiveBlending,depthWrite:false});
+var reflMesh=new THREE.Mesh(slabGeo,reflM);
+reflMesh.scale.set(1.002,1.002,1.002);
+reflMesh.renderOrder=6;
+/* 超音波溶着の縁：うっすら曇った帯 */
+var frostM=new THREE.MeshStandardMaterial({color:0xdfe9f5,metalness:0,roughness:0.6,
+  transparent:true,opacity:0.28,envMap:env,envMapIntensity:0.5,depthWrite:false});
+var frostShape=roundedRectShape(SLAB_W-0.02,SLAB_H-0.02,0.17);
+frostShape.holes.push(roundedRectShape(SLAB_W-0.2,SLAB_H-0.2,0.11));
+var frostGeo=new THREE.ShapeGeometry(frostShape,8);
+var frostF=new THREE.Mesh(frostGeo,frostM);
+frostF.position.z=(SLAB_D-0.06)/2+0.028; frostF.renderOrder=5;
+var frostB=new THREE.Mesh(frostGeo,frostM);
+frostB.position.z=-((SLAB_D-0.06)/2+0.028); frostB.rotation.y=Math.PI; frostB.renderOrder=5;
+/* 内側チャンバーの段差ライン＋カード室コーナーの逃し穴＋背面の型押し */
+function texChamber(back){
+  var W=512,H=824,c=cnv(W,H),x=c.getContext('2d');
+  x.clearRect(0,0,W,H);
+  function outline(ix,iy,iw,ih,ir){
+    x.strokeStyle='rgba(15,20,34,0.28)'; x.lineWidth=3; rr(x,ix+2,iy+3,iw,ih,ir); x.stroke();
+    x.strokeStyle='rgba(255,255,255,0.34)'; x.lineWidth=2.5; rr(x,ix,iy,iw,ih,ir); x.stroke();
+  }
+  outline(16,16,480,792,26);
+  outline(32,192,448,612,14);
+  x.strokeStyle='rgba(15,20,34,0.28)'; x.lineWidth=3;
+  x.beginPath(); x.moveTo(22,170); x.lineTo(490,170); x.stroke();
+  x.strokeStyle='rgba(255,255,255,0.34)'; x.lineWidth=2.5;
+  x.beginPath(); x.moveTo(22,167); x.lineTo(490,167); x.stroke();
+  x.strokeStyle='rgba(255,255,255,0.3)'; x.lineWidth=2.5;
+  var cc=[[32,192],[480,192],[32,804],[480,804]];
+  for(var ci=0;ci<4;ci++){ x.beginPath(); x.arc(cc[ci][0],cc[ci][1],11,0,Math.PI*2); x.stroke(); }
+  if(back){
+    x.textAlign='center'; x.font='800 26px "Helvetica Neue",Arial,sans-serif';
+    x.strokeStyle='rgba(255,255,255,0.22)'; x.lineWidth=1.5;
+    x.strokeText('CERTIFIED ・ ENCAPSULATED',256,790);
+  }
+  return c;
+}
+var chamberFM=new THREE.MeshBasicMaterial({map:ctex(texChamber(false)),transparent:true,depthWrite:false});
+var chamberBM=new THREE.MeshBasicMaterial({map:ctex(texChamber(true)),transparent:true,depthWrite:false});
+var chamberF=new THREE.Mesh(new THREE.PlaneGeometry(SLAB_W-0.1,SLAB_H-0.1),chamberFM);
+chamberF.position.z=0.033; chamberF.renderOrder=3;
+var chamberB=new THREE.Mesh(new THREE.PlaneGeometry(SLAB_W-0.1,SLAB_H-0.1),chamberBM);
+chamberB.position.z=-0.033; chamberB.rotation.y=Math.PI; chamberB.renderOrder=3;
+var labelWhite=new THREE.MeshStandardMaterial({color:0xf4f6fb,roughness:0.5,metalness:0.05});
+var labelFrontM=new THREE.MeshStandardMaterial({map:ctex(texLabel()),roughness:0.5,metalness:0.05});
+var labelBackM=new THREE.MeshStandardMaterial({map:ctex(texLabelBack()),roughness:0.5,metalness:0.05});
+var labelMesh=new THREE.Mesh(new THREE.BoxGeometry(SLAB_W-0.06,0.56,0.055),
+  [labelWhite,labelWhite,labelWhite,labelWhite,labelFrontM,labelBackM]);
+labelMesh.position.y=SLAB_H/2-0.33;
+var innerCard=new THREE.Mesh(new THREE.BoxGeometry(1.5,2.08,0.02),
+  [cardEdgeM,cardEdgeM,cardEdgeM,cardEdgeM,cardFrontM,cardBackM]);
+innerCard.position.y=-0.28;
+var cardInner=new THREE.Group();
+cardInner.add(cardMesh); cardInner.add(reflMesh);
+cardInner.add(frostF); cardInner.add(frostB);
+cardInner.add(chamberF); cardInner.add(chamberB);
+cardInner.add(labelMesh); cardInner.add(innerCard);
+cardInner.rotation.y=Math.PI;
+var cardGroup=new THREE.Group(); cardGroup.add(cardInner); cardGroup.position.set(0,CARD_Y0,0);
+cardGroup.scale.set(SLAB_S0,SLAB_S0,SLAB_S0);
+packRoot.add(cardGroup);
+cardGroup.visible=false;
+
+var glow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:0x9fe9ff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0.85}));
+glow.scale.set(0.01,0.01,1); glow.position.z=-0.12; glow.visible=false; cardGroup.add(glow);
+
+/* ============ レア度に応じた漏れ光 ============ */
+function texRay(){ var c=cnv(64,256),x=c.getContext('2d');
+  var g=x.createLinearGradient(0,256,0,0);
+  g.addColorStop(0,'rgba(255,255,255,0.95)'); g.addColorStop(0.5,'rgba(255,255,255,0.35)'); g.addColorStop(1,'rgba(255,255,255,0)');
+  x.fillStyle=g; x.fillRect(0,0,64,256);
+  var g2=x.createLinearGradient(0,0,64,0);
+  g2.addColorStop(0,'rgba(0,0,0,1)'); g2.addColorStop(0.2,'rgba(0,0,0,0)');
+  g2.addColorStop(0.8,'rgba(0,0,0,0)'); g2.addColorStop(1,'rgba(0,0,0,1)');
+  x.globalCompositeOperation='destination-out'; x.fillStyle=g2; x.fillRect(0,0,64,256);
+  return c; }
+var rayTex=ctex(texRay());
+var leakCol=new THREE.Color('#ffd76a');
+var leakLight=new THREE.PointLight(0xffd76a,0,9);
+leakLight.position.set(0,TEAR_Y-BODY_CY+0.06,0.28); bodyGroup.add(leakLight);
+var slitGlow=new THREE.Mesh(new THREE.PlaneGeometry(1.40,0.07),
+  new THREE.MeshBasicMaterial({color:0xffd76a,transparent:true,opacity:0,
+    blending:THREE.AdditiveBlending,depthWrite:false}));
+slitGlow.geometry.translate(0.70,0,0);
+slitGlow.position.set(-PW/2,TEAR_Y-BODY_CY+0.01,frontZAt(TEAR_Y)+0.015);
+slitGlow.renderOrder=2; bodyGroup.add(slitGlow);
+var rayGroup=new THREE.Group();
+rayGroup.position.set(-0.1,TEAR_Y-BODY_CY+0.03,0); bodyGroup.add(rayGroup);
+var rayMats=[], rays=[];
+for(var ri=0;ri<3;ri++){
+  var rh=[1.7,1.15,1.15][ri], rw=[0.16,0.11,0.11][ri];
+  var rg2=new THREE.PlaneGeometry(rw,rh); rg2.translate(0,rh/2,0);
+  var rm=new THREE.MeshBasicMaterial({map:rayTex,color:0xffd76a,transparent:true,opacity:0,
+    blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide});
+  var rmesh=new THREE.Mesh(rg2,rm);
+  rmesh.rotation.z=[0,0.34,-0.34][ri];
+  rayGroup.add(rmesh); rayMats.push(rm); rays.push(rmesh);
+}
+function applyRarityColor(){
+  var d=CARD_DATA, i=Math.max(1,Math.min(d.rarityLabels.length,d.rarity|0))-1;
+  leakCol.set((d.rarityColors&&d.rarityColors[i])||'#37e6ff');
+  leakLight.color.copy(leakCol);
+  slitGlow.material.color.copy(leakCol);
+  for(var q=0;q<rayMats.length;q++) rayMats[q].color.copy(leakCol);
+  glow.material.color.copy(leakCol);
+  spark.material.color.copy(leakCol);
+  try{ document.documentElement.style.setProperty('--tierCol','#'+leakCol.getHexString()); }catch(e){}
+}
+function rarityPal(){ return [[leakCol.r,leakCol.g,leakCol.b],WH]; }
+
+/* 背景の塵・星 */
+var starGeo=new THREE.BufferGeometry();
+var sPos=new Float32Array(130*3);
+for(var si=0;si<130;si++){ sPos[si*3]=(Math.random()-0.5)*15; sPos[si*3+1]=(Math.random()-0.5)*9+1; sPos[si*3+2]=-4-Math.random()*6; }
+starGeo.setAttribute('position',new THREE.BufferAttribute(sPos,3));
+var stars=new THREE.Points(starGeo,new THREE.PointsMaterial({color:0x7f9bff,size:0.05,transparent:true,opacity:0.55,depthWrite:false}));
+scene.add(stars);
+
+/* ============ パーティクル ============ */
+var PN=200;
+var pPos=new Float32Array(PN*3), pCol=new Float32Array(PN*3), pVel=new Float32Array(PN*3), pLife=new Float32Array(PN);
+for(var pi0=0;pi0<PN;pi0++){ pPos[pi0*3+1]=-999; }
+var pGeo=new THREE.BufferGeometry();
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
+var pPts=new THREE.Points(pGeo,new THREE.PointsMaterial({size:0.13,map:ctex(texDot()),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true}));
+pPts.frustumCulled=false; scene.add(pPts);
+var pIdx=0;
+var CY=[0.45,0.95,1], MG=[1,0.35,0.9], WH=[1,1,1], GD=[1,0.85,0.45];
+function burst(wp,n,pal,spd,up){
+  for(var i=0;i<n;i++){
+    pIdx=(pIdx+1)%PN;
+    pLife[pIdx]=0.55+Math.random()*0.65;
+    pPos[pIdx*3]=wp.x+(Math.random()-0.5)*0.2;
+    pPos[pIdx*3+1]=wp.y+(Math.random()-0.5)*0.2;
+    pPos[pIdx*3+2]=wp.z+(Math.random()-0.5)*0.2;
+    var a=Math.random()*Math.PI*2, el=(Math.random()-0.5)*Math.PI;
+    var s=spd*(0.35+Math.random()*0.8);
+    pVel[pIdx*3]=Math.cos(a)*Math.cos(el)*s;
+    pVel[pIdx*3+1]=Math.sin(el)*s+up;
+    pVel[pIdx*3+2]=Math.sin(a)*Math.cos(el)*s*0.7;
+    var col=pal[Math.floor(Math.random()*pal.length)];
+    pCol[pIdx*3]=col[0]; pCol[pIdx*3+1]=col[1]; pCol[pIdx*3+2]=col[2];
+  }
+  pGeo.attributes.position.needsUpdate=true;
+  pGeo.attributes.color.needsUpdate=true;
+}
+function stepParticles(dt){
+  var dirty=false;
+  for(var i=0;i<PN;i++){
+    if(pLife[i]>0){
+      pLife[i]-=dt;
+      pPos[i*3]+=pVel[i*3]*dt; pPos[i*3+1]+=pVel[i*3+1]*dt; pPos[i*3+2]+=pVel[i*3+2]*dt;
+      pVel[i*3+1]-=2.2*dt;
+      if(pLife[i]<=0){ pPos[i*3+1]=-999; }
+      dirty=true;
+    }
+  }
+  if(dirty) pGeo.attributes.position.needsUpdate=true;
+}
+
+/* ============ トゥイーン ============ */
+var tweens=[];
+function eOutCubic(k){ return 1-Math.pow(1-k,3); }
+function eInOut(k){ return k<0.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2; }
+function eBack(k){ var c1=1.15; return 1+(c1+1)*Math.pow(k-1,3)+c1*Math.pow(k-1,2); }
+function tw(dur,fn,ease,done){ tweens.push({e:0,d:dur,f:fn,z:ease||eOutCubic,c:done}); }
+function stepTweens(dt){
+  for(var i=tweens.length-1;i>=0;i--){
+    var t2=tweens[i]; t2.e+=dt;
+    var k=t2.e/t2.d; if(k>1)k=1;
+    t2.f(t2.z(k),k);
+    if(k>=1){ tweens.splice(i,1); if(t2.c)t2.c(); }
+  }
+}
+
+/* ============ サウンド／ハプティクス ============ */
+var AC=null;
+function audio(){ try{
+  if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)();
+  if(AC&&AC.state==='suspended') AC.resume();
+}catch(e){} }
+function tone(f,dur,type,vol,delay){ if(!AC)return;
+  try{ var o=AC.createOscillator(),g=AC.createGain();
+    o.type=type||'sine'; o.frequency.value=f; o.connect(g); g.connect(AC.destination);
+    var t0=AC.currentTime+(delay||0);
+    g.gain.setValueAtTime(0.0001,t0);
+    g.gain.exponentialRampToValueAtTime(vol||0.15,t0+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.start(t0); o.stop(t0+dur+0.06);
+  }catch(e){} }
+function tick(){ if(!AC)return;
+  try{ var len=Math.floor(AC.sampleRate*0.05), b=AC.createBuffer(1,len,AC.sampleRate), d=b.getChannelData(0);
+    for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len);
+    var n=AC.createBufferSource(); n.buffer=b;
+    var f=AC.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1700+Math.random()*1400;
+    var g=AC.createGain(); g.gain.value=0.09;
+    n.connect(f); f.connect(g); g.connect(AC.destination); n.start();
+  }catch(e){} }
+function chime(){ tone(784,0.35,'sine',0.14); tone(1174.7,0.5,'sine',0.11,0.07); tone(1568,0.7,'sine',0.09,0.14); }
+function buzz(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
+
+/* ============ 状態と入力 ============ */
+var opened=false,emerged=false,revealed=false,flipping=false,centering=false,centered=false,flapDone=false;
+var progress=0,lastTickN=-1,mode=null,flashVal=0,stripFly=null,sbTok=null;
+var rotT={x:0,y:0},rotC={x:0,y:0},dragVel=0,dragVelX=0,camTy=0.15,cardBaseY=CARD_Y0;
+var lastX=0,lastY=0,tGlobal=0;
+var ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function hits(e,obj){ var r=cv.getBoundingClientRect();
+  ndc.x=((e.clientX-r.left)/r.width)*2-1;
+  ndc.y=-((e.clientY-r.top)/r.height)*2+1;
+  ray.setFromCamera(ndc,camera);
+  return ray.intersectObject(obj,true).length>0; }
+function hint(s){ hintEl.textContent=s; }
+
+cv.addEventListener('pointerdown',function(e){
+  audio();
+  try{ cv.setPointerCapture(e.pointerId); }catch(err){}
+  lastX=e.clientX; lastY=e.clientY; dragVel=0; dragVelX=0;
+  if(!opened && hits(e,tearHit)){
+    mode='tear';
+    if(sbTok){ sbTok.dead=true; sbTok=null; }
+  }
+  else if(emerged && !revealed && !flipping && hits(e,cardMesh)){ mode=null; flip(); }
+  else { mode='rotate'; }
+});
+cv.addEventListener('pointermove',function(e){
+  if(!mode) return;
+  var dx=e.clientX-lastX, dy=e.clientY-lastY;
+  lastX=e.clientX; lastY=e.clientY;
+  if(mode==='tear'){
+    if(opened) return;
+    progress+=Math.abs(dx)/Math.min(cv.clientWidth*0.5,420);
+    if(progress>1) progress=1;
+    var tk=Math.floor(progress*9);
+    if(tk!==lastTickN){ lastTickN=tk; tick(); buzz(6); }
+    if(Math.abs(dx)>1){
+      var wp=new THREE.Vector3(-0.68+1.24*progress,TEAR_Y,ZLINE+0.05);
+      packRoot.localToWorld(wp);
+      burst(wp,2,rarityPal(),0.9,0.6);
+    }
+    if(progress>=1) openPack();
+  } else {
+    rotT.y+=dx*0.006;
+    rotT.x+=dy*0.0045;
+    if(rotT.x>0.42)rotT.x=0.42; if(rotT.x<-0.42)rotT.x=-0.42;
+    dragVel=dx*0.006;
+    dragVelX=dy*0.0045;
+  }
+});
+function endPointer(){
+  if(mode==='tear' && !opened && progress>0){
+    var p0=progress, tok={dead:false}; sbTok=tok;
+    tw(0.4,function(k){ if(tok.dead)return; progress=p0*(1-k); },eOutCubic);
+  }
+  mode=null;
+}
+cv.addEventListener('pointerup',endPointer);
+cv.addEventListener('pointercancel',endPointer);
+cv.addEventListener('contextmenu',function(e){ e.preventDefault(); });
+
+/* ============ 開封シーケンス ============ */
+function flapOpen(){
+  tw(reduce?0.25:0.5,function(k){
+    openCurl=1+0.14*k; windA=0.4+0.6*k;
+  },eOutCubic,function(){ flapDone=true; });
+}
+function openPack(){
+  if(opened) return;
+  opened=true; mode=null;
+  cardGroup.visible=true;
+  chime(); buzz([12,40,18]);
+  tw(0.3,function(k){ tearMat.opacity=0.9*(1-k); },eOutCubic,function(){ tearLine.visible=false; });
+  spark.visible=false;
+  flapOpen();
+  var wp=new THREE.Vector3(0,TEAR_Y,0.3); packRoot.localToWorld(wp);
+  burst(wp,36,rarityPal(),2.6,1.8);
+  flashVal=3.5;
+  hint('カードをタップしてめくろう');
+  var c0=camTy;
+  tw(0.45,function(k){ camTy=c0+(0.8-c0)*k; },eInOut);
+  setTimeout(packExit, reduce?40:180);
+  setTimeout(emerge, reduce?60:220);
+}
+var emTok=null;
+function packExit(){
+  tone(196,0.22,'sine',0.05); tone(147,0.28,'sine',0.04,0.06);
+  tw(reduce?0.28:0.6,function(k){
+    bodyGroup.position.y=BODY_CY-7.8*k;
+  },function(k){ return k*k; },function(){ bodyGroup.visible=false; });
+}
+function emerge(){
+  emerged=true; glow.visible=true;
+  tone(587.3,0.18,'sine',0.06);
+  var tok={dead:false}; emTok=tok;
+  tw(reduce?0.4:0.6,function(k){
+    if(tok.dead) return;
+    cardBaseY=CARD_Y0+0.3*k;
+  },eOutCubic);
+  setTimeout(centerCard, reduce?240:430);
+  tw(1.2,function(k){
+    var s=0.01+3.8*k;
+    glow.scale.set(s,s*0.82,1);
+    glow.material.opacity=0.85*(1-0.35*k);
+  },eOutCubic);
+}
+function centerCard(){
+  if(centering||centered||!opened) return;
+  centering=true;
+  if(emTok){ emTok.dead=true; emTok=null; }
+  rotT.x=0; rotT.y=0; rotC.x=0; rotC.y=0; dragVel=0; dragVelX=0;
+  packRoot.rotation.set(0,0,0);
+  scene.attach(cardGroup);
+  var p0=cardGroup.position.clone();
+  var r0=cardGroup.rotation.clone();
+  var s0=cardGroup.scale.x;
+  var c0=camTy;
+  tw(reduce?0.35:0.75,function(k){
+    cardGroup.position.set(p0.x*(1-k), p0.y+(CARD_CY-p0.y)*k, p0.z+(CARD_CZ-p0.z)*k);
+    cardGroup.rotation.set(r0.x*(1-k), r0.y*(1-k), r0.z*(1-k));
+    var sc=s0+(CARD_SC-s0)*k; cardGroup.scale.set(sc,sc,sc);
+    camTy=c0+(0.75-c0)*k;
+  },eInOut,function(){ centering=false; centered=true; });
+}
+function flip(){
+  if(flipping||revealed||!emerged) return;
+  flipping=true;
+  var flashed=false;
+  tone(392,0.1,'triangle',0.07); buzz(10);
+  tw(reduce?0.3:0.78,function(ek,rk){
+    cardInner.rotation.y=Math.PI*(1-ek);
+    if(!flashed && rk>=0.5){
+      flashed=true; flashVal=3;
+      cardFrontM.map=cardFaceTex;
+      var wp=cardGroup.getWorldPosition(new THREE.Vector3());
+      burst(wp,38,rarityPal(),2.6,0.8);
+      tone(1318.5,0.5,'sine',0.15); tone(1975.5,0.7,'sine',0.09,0.09);
+      buzz([8,30,20]);
+    }
+  },eInOut,function(){
+    flipping=false; revealed=true;
+    hintEl.classList.add('off');
+    resetBtn.classList.add('on');
+    infoEl.classList.add('on');
+  });
+}
+function resetAll(){
+  opened=false; emerged=false; revealed=false; flipping=false;
+  centering=false; centered=false; flapDone=false;
+  progress=0; lastTickN=-1; stripFly=null;
+  if(sbTok){ sbTok.dead=true; sbTok=null; }
+  if(emTok){ emTok.dead=true; emTok=null; }
+  rotT.x=0; rotT.y=0; rotC.x=0; rotC.y=0; dragVel=0; dragVelX=0;
+  packRoot.rotation.set(0,0,0);
+  stripHinge.rotation.set(0,0,0);
+  openCurl=1; windA=0; windEff=0; stripDirty=true;
+  stripGroup.position.set(STRIP_LX,STRIP_LY,0); stripGroup.rotation.set(0,0,0); stripGroup.visible=true;
+  setStripOpacity(1);
+  tornF.visible=false; tornBk.visible=false;
+  tearLine.visible=true; tearMat.opacity=0.9;
+  tearLine.position.x=TEAR_X0; tearLine.scale.x=(0.56-TEAR_X0)/1.30;
+  slitGlow.material.opacity=0; leakLight.intensity=0;
+  for(var rz=0;rz<rayMats.length;rz++){ rayMats[rz].opacity=0; rays[rz].scale.y=1; }
+  bodyGroup.visible=true; bodyGroup.position.set(0,BODY_CY,0); bodyGroup.rotation.set(0,0,0);
+  packRoot.add(cardGroup); cardGroup.scale.set(SLAB_S0,SLAB_S0,SLAB_S0); cardGroup.visible=false;
+  cardBaseY=CARD_Y0; cardGroup.position.set(0,CARD_Y0,0); cardGroup.rotation.set(0,0,0);
+  cardInner.rotation.y=Math.PI;
+  cardFrontM.map=cardBackTex;
+  glow.visible=false; glow.scale.set(0.01,0.01,1); glow.material.opacity=0.85;
+  var c0=camTy; tw(0.6,function(k){ camTy=c0+(0.15-c0)*k; },eInOut);
+  hint(HINT0); hintEl.classList.remove('off');
+  resetBtn.classList.remove('on');
+  infoEl.classList.remove('on');
+  buzz(8);
+}
+resetBtn.addEventListener('click',resetAll);
+
+/* ============ メインループ ============ */
+applyCardInfo(); loadPhoto();
+var clock=new THREE.Clock();
+function loop(){
+  requestAnimationFrame(loop);
+  var dt=clock.getDelta(); if(dt>0.033)dt=0.033;
+  tGlobal+=dt;
+  tUniform.value=tGlobal;
+  lC.position.set(Math.cos(tGlobal*0.6)*4.2, 1.6+Math.sin(tGlobal*0.4)*1.2, 2.6+Math.sin(tGlobal*0.6)*1.5);
+  lM.position.set(Math.cos(tGlobal*0.5+Math.PI)*4.2, 0.6+Math.cos(tGlobal*0.35), 2.4+Math.cos(tGlobal*0.5+Math.PI)*1.5);
+  if(mode!=='rotate'){
+    if(!centered&&!centering){
+      dragVel=dragVel*0.90-rotT.y*0.016; rotT.y+=dragVel;
+      dragVelX=dragVelX*0.90-rotT.x*0.016; rotT.x+=dragVelX;
+    } else {
+      rotT.y+=dragVel; dragVel*=0.93;
+    }
+  }
+  var sm=1-Math.exp(-10*dt);
+  rotC.x+=(rotT.x-rotC.x)*sm; rotC.y+=(rotT.y-rotC.y)*sm;
+  var sway=reduce?0:Math.sin(tGlobal*0.35)*0.05;
+  if(!centering&&!centered){ packRoot.rotation.set(rotC.x,rotC.y+sway,0); }
+  packRoot.position.y=-0.15+(reduce?0:Math.sin(tGlobal*1.1)*0.05);
+  var tearAmt=opened?1:progress;
+  if(!opened){
+    var op=0.45+0.3*(0.5+0.5*Math.sin(tGlobal*3))+0.5*progress;
+    tearMat.opacity=op>1?1:op;
+    var xF2=TEAR_X0+TEAR_SPAN*progress;
+    tearLine.position.x=xF2;
+    tearLine.scale.x=Math.max(0.001,(0.56-xF2)/1.30);
+    spark.visible=(progress>0.001)&&(mode==='tear');
+    if(spark.visible){
+      spark.position.set(TEAR_X0+TEAR_SPAN*progress,TEAR_Y,ZLINE+0.05);
+      var ss=0.42+0.14*Math.sin(tGlobal*30);
+      spark.scale.set(ss,ss,1);
+    }
+    slitGlow.material.opacity=progress*0.95;
+    leakLight.intensity=progress*2.0;
+  }
+  if(bodyGroup.visible){
+    if(tearAmt>0.001||stripDirty){
+      windEff=opened?windA:(reduce?0:progress*0.4);
+      deformStrip(stripMesh.geometry,stripOrig,0,tearAmt);
+      deformStrip(tabTop.geometry,tabOrig,0.23,tearAmt);
+      stripDirty=tearAmt>0.001;
+    }
+    slitGlow.scale.x=Math.max(0.02,tearAmt);
+    leakLight.position.x=TEAR_X0+TEAR_SPAN*tearAmt*0.5;
+  }
+  if(opened&&bodyGroup.visible){
+    var fl=0.75+0.25*Math.sin(tGlobal*13)+0.1*Math.sin(tGlobal*29);
+    slitGlow.material.opacity=0.85*fl;
+    leakLight.intensity=2.6*fl+(flashVal>0.2?flashVal:0);
+    for(var rq=0;rq<rayMats.length;rq++){
+      rayMats[rq].opacity=(0.5+0.3*Math.sin(tGlobal*11+rq*2.1))*(reduce?0.5:1);
+      rays[rq].scale.y=0.9+0.12*Math.sin(tGlobal*7+rq);
+    }
+  }
+  if(emerged&&!centering&&!centered){
+    cardGroup.position.y=cardBaseY+(reduce?0:Math.sin(tGlobal*1.5)*0.05);
+    cardGroup.rotation.z=reduce?0:Math.sin(tGlobal*0.9)*0.02;
+  }
+  if(centered){
+    cardGroup.position.y=CARD_CY+(reduce?0:Math.sin(tGlobal*1.5)*0.05);
+    cardGroup.rotation.set(rotC.x, rotC.y+sway*0.6, reduce?0:Math.sin(tGlobal*0.9)*0.02);
+  }
+  if(emerged && revealed && !reduce && Math.random()<0.045){
+    var wp2=new THREE.Vector3((Math.random()-0.5)*1.3,(Math.random()-0.5)*1.9,0.1);
+    cardGroup.localToWorld(wp2);
+    burst(wp2,1,rarityPal(),0.35,0.35);
+  }
+  flashL.intensity=flashVal; flashVal*=Math.exp(-dt*5.2);
+  stepParticles(dt);
+  stars.rotation.y+=dt*0.01;
+  stepTweens(dt);
+  camera.position.set(0,0.55,camZ);
+  camera.lookAt(0,camTy,0);
+  renderer.render(scene,camera);
+}
+loop();
+})();
+</script>
+</body>
+</html>
