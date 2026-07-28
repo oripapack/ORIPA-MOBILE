@@ -1,4 +1,4 @@
-import type { PackCategory, Pack } from './mockPacks';
+import type { Pack } from './mockPacks';
 import { N2_TIERS, type N2Tier } from '../lib/n2Rarity';
 
 /**
@@ -27,7 +27,7 @@ export type PackOdds = {
 /** Safe empty placeholder when pack is unresolved (hooks run before screen guard). */
 export const EMPTY_PACK_ODDS: PackOdds = { rows: [], note: '' };
 
-const NOTE = 'Demo probabilities. Final rates may change before launch.';
+const NOTE = 'Demo probabilities and tier descriptions. Final rates may change before launch.';
 
 /** MOCK probabilities — sum is exactly 100%. Awaiting real pack_versions data. */
 const MOCK_TIER_CHANCES: Record<N2Tier, string> = {
@@ -38,35 +38,23 @@ const MOCK_TIER_CHANCES: Record<N2Tier, string> = {
 };
 
 /**
- * Existing demo reward copy restructured to four tiers. BASE copy must stay
- * factual (§5: no hype for the 92% outcome — "high-value standard" was an
- * exaggeration and is gone). No new sales claims invented.
+ * MOCK tier descriptions — placeholders exactly like the probabilities above.
+ * Until the real card↔tier pool exists (KNOWN_ISSUES #4, and grading status
+ * unconfirmed — #6), the copy may state NO concrete contents: no grading
+ * companies or grades, no card names, no rarity counts, no prize claims.
+ * Only the tier's relative position. Intentionally identical for every
+ * category — per-pack flavor returns when real pool data is wired.
  */
-const MOCK_TIER_EXAMPLES: Record<PackCategory, Record<N2Tier, string[]>> = {
-  onboarding: {
-    mythic: ['3× coin bonus'],
-    legendary: ['Welcome surprise card'],
-    epic: ['2× coin bonus'],
-    base: ['Standard card', '1× coin return'],
-  },
-  micro: {
-    mythic: ['Nintendo Switch', 'PS5', 'iPhone 16'],
-    legendary: ['Gift coupon (¥5,000)'],
-    epic: ['Ultra rare card'],
-    base: ['Standard card', 'Small coin return'],
-  },
-  premium: {
-    mythic: ['PSA 10 Trophy Card', '1/1 holy grail'],
-    legendary: ['Graded slab'],
-    epic: ['PSA 9+ vintage holo'],
-    base: ['Standard card'],
-  },
+const MOCK_TIER_EXAMPLES: Record<N2Tier, string[]> = {
+  mythic: ['Highest tier'],
+  legendary: ['Second-highest tier'],
+  epic: ['Mid tier'],
+  base: ['Standard outcome'],
 };
 
-export function getMockPackOdds(pack: Pack): PackOdds {
-  const examples = MOCK_TIER_EXAMPLES[pack.category] ?? MOCK_TIER_EXAMPLES.onboarding;
+export function getMockPackOdds(_pack: Pack): PackOdds {
   return {
-    rows: N2_TIERS.map((tier) => ({ tier, chance: MOCK_TIER_CHANCES[tier], examples: examples[tier] })),
+    rows: N2_TIERS.map((tier) => ({ tier, chance: MOCK_TIER_CHANCES[tier], examples: MOCK_TIER_EXAMPLES[tier] })),
     note: NOTE,
   };
 }

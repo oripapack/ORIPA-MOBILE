@@ -67,7 +67,9 @@ export function catalogToPack(catalog: CatalogPack): Pack {
     totalInventory,
     remainingInventory,
     valueDescription: catalog.description,
-    guaranteeText: `${catalog.buybackRate}% instant buyback · transparent odds`,
+    // 2026-07-29 copy rule: trade-in is 100% of listed value, in Coins — never
+    // "buyback" (implies cash), and the number never appears without its basis.
+    guaranteeText: 'Instant 100% trade-in (listed value) · transparent odds',
     maxPerUser: catalog.id === 'welcome-pack' ? 1 : null,
     isFirstTimePack: catalog.id === 'welcome-pack',
     packVersionId: packVersionIdForCatalogPackId(catalog.id),

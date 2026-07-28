@@ -31,11 +31,10 @@ export function SgFeaturedPackCard({
   const lowStock = fraction < 0.1;
   const priceUsd = (pack.creditPrice / 100).toFixed(0);
 
-  // Old buyback-% claims are superseded by the confirmed trade-in pitch;
-  // pack-specific pull guarantees ("Rare slot or higher") pass through as-is.
-  const guaranteeLine = /buyback/i.test(loc.guaranteeText)
-    ? t('home.guaranteeTradeIn')
-    : loc.guaranteeText;
+  // The featured card always shows the localized trade-in pitch (2026-07-29
+  // copy rule: 100% never appears without its "listed value" basis). The full
+  // per-pack guarantee text lives on the pack page.
+  const guaranteeLine = t('home.guaranteeTradeIn');
 
   const goVerify = () => {
     // Fairness record lives on the pack page — VERIFY deep-links there.
