@@ -19,6 +19,12 @@
       "runtimeExecutable": "env",
       "runtimeArgs": ["EXPO_PUBLIC_DEV_SCREEN=UiGallery", "npx", "expo", "start", "--web", "--port", "8081"],
       "port": 8081
+    },
+    {
+      "name": "expo-web-result",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["EXPO_PUBLIC_DEV_SCREEN=Result", "npx", "expo", "start", "--web", "--port", "8081"],
+      "port": 8081
     }
   ]
 }

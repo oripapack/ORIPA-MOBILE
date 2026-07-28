@@ -32,6 +32,7 @@ import { PromotionsScreen } from '../screens/PromotionsScreen';
 import { MembershipScreen } from '../screens/MembershipScreen';
 import { CollectorQuestsScreen } from '../screens/CollectorQuestsScreen';
 import { PackDetailsScreen } from '../screens/PackDetailsScreen';
+import { ResultScreen } from '../screens/ResultScreen';
 import { FriendProfileScreen } from '../screens/FriendProfileScreen';
 import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
@@ -198,9 +199,16 @@ function RootStack() {
     <>
       {isClerkEnabled ? <ClerkProfileSync /> : null}
       <Stack.Navigator
-        // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery boots straight into the
-        // component gallery (docs/design-system-n2.md). No effect in normal runs.
-        initialRouteName={process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery' ? 'DevUiGallery' : 'MainTabs'}
+        // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery boots into the component
+        // gallery; =Result boots into the Result screen (MOCK data preview,
+        // docs/design-system-n2.md). No effect in normal runs.
+        initialRouteName={
+          process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
+            ? 'DevUiGallery'
+            : process.env.EXPO_PUBLIC_DEV_SCREEN === 'Result'
+              ? 'Result'
+              : 'MainTabs'
+        }
         screenOptions={{
           headerShown: false,
           cardStyle: { flex: 1, backgroundColor: colors.background },
@@ -212,6 +220,13 @@ function RootStack() {
         <Stack.Screen
           name="PackDetails"
           component={PackDetailsScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Result"
+          component={ResultScreen}
           options={{
             headerShown: false,
           }}
