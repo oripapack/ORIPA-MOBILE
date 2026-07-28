@@ -8,12 +8,12 @@ import { brandFont } from '../../tokens/typography';
 /**
  * N2 §5-2/§6: the colored rarity foils (incl. purple) are removed. The ground
  * is a single achromatic surface2/surface gradient (placeholder until real
- * pack art). Rank coloring follows the SINGLE mapping path (card → odds tier
- * → N2 rank, see src/lib/n2Rarity.ts); pack-level `rarityTier` has NO defined
- * odds-tier membership, so its rank state is UNKNOWN — the frame shows NO
- * rank chrome, just the standard 1px `line` border (BASE would falsely claim
- * "judged low"). The gradient plumbing stays so a §8 foil sweep can ride on
- * it later.
+ * pack art). Tier chrome follows the SINGLE mapping path (§6 v2.2, see
+ * src/lib/n2Rarity.ts); pack-level `rarityTier` (legacy card enum) has NO
+ * defined tier membership, so its tier state is UNKNOWN — the frame shows NO
+ * tier chrome, just the standard 1px `line` border (a low tier would falsely
+ * claim "judged low"). The gradient plumbing stays so a §8 foil sweep can
+ * ride on it later.
  */
 
 type Size = 'sm' | 'md' | 'lg' | 'hero';
@@ -38,7 +38,7 @@ export function PackVisual({
   size?: Size;
 }) {
   const catFoil = getCategoryFoil(category);
-  const border = catFoil.accent; // UNKNOWN rank — neutral line, no rank chrome
+  const border = catFoil.accent; // UNKNOWN tier — neutral line, no tier chrome
   const d = DIMS[size];
 
   return (

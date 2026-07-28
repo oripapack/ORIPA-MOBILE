@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../tokens/sg';
-import { SgCard, SgData, SgSectionHeader } from '../components/ui';
+import { SgCard, SgData, SgSectionHeader, SgTierTag } from '../components/ui';
 import { SgFairnessRecord } from '../components/pack/sg/SgFairnessRecord';
 import { PackVisual } from '../components/ph/PackVisual';
 import { spacing } from '../tokens/spacing';
@@ -24,7 +24,7 @@ import { PackRushConfirmModal } from '../components/pack/PackRushConfirmModal';
 import { packOpenTotalCredits } from '../lib/packMultiOpen';
 import { EMPTY_PACK_ODDS, getMockPackOdds } from '../data/mockPackOdds';
 import { getMockPackTopHit } from '../data/mockTopHits';
-import { rankFromOddsTier } from '../lib/n2Rarity';
+import { tierFromIsChase } from '../lib/n2Rarity';
 import { showUserMessage } from '../utils/showUserMessage';
 
 type Props = {
@@ -213,7 +213,7 @@ export function PackDetailsScreen({ route }: Props) {
             {topOddsRow ? (
               <View style={styles.oddsSummary}>
                 <Text style={styles.oddsSummaryLabel}>
-                  Top hit odds{' '}
+                  {topOddsRow.tier.toUpperCase()} odds{' '}
                   <Text style={styles.oddsSummaryValue}>{topOddsRow.chance}</Text>
                 </Text>
                 <TouchableOpacity onPress={() => setOddsOpen(true)} activeOpacity={0.86} style={styles.oddsBtn}>
@@ -236,8 +236,10 @@ export function PackDetailsScreen({ route }: Props) {
                     {topHit.name}
                   </Text>
                   <SgData value={topHit.estValue} unit="listed" size="sm" tone="gold" />
-                  {/* isChase is the only card→odds-tier link (true → 'Top hit'). isChase:false leaves the tier UNDEFINED → UNKNOWN, no rank chrome (BASE would falsely claim "judged low") */}
-                  <SgData value={topHit.rarity.toUpperCase()} size="sm" tone={topHit.isChase ? rankFromOddsTier('Top hit') : 'default'} />
+                  {/* Printed card rarity — a separate field from tier (§6): never merged into the tier slot */}
+                  <SgData value={topHit.rarity.toUpperCase()} size="sm" />
+                  {/* isChase (boolean) is the only card→tier link: true → MYTHIC, false → UNKNOWN (tag renders nothing) */}
+                  <SgTierTag tier={tierFromIsChase(topHit.isChase)} />
                 </View>
               </View>
               <Text style={styles.finePrint}>{t('packDetails.topHitPreviewFinePrint')}</Text>
@@ -248,9 +250,9 @@ export function PackDetailsScreen({ route }: Props) {
           <SgCard>
             <SgSectionHeader title={t('packDetails.whatYouCanPullTitle')} />
             <View style={styles.pullsGrid}>
-              {odds.rows.slice(0, 4).map((r) => (
+              {odds.rows.map((r) => (
                 <View key={r.tier} style={styles.pullsCell}>
-                  <SgData value={r.tier.toUpperCase()} size="sm" tone={rankFromOddsTier(r.tier)} />
+                  <SgTierTag tier={r.tier} />
                   <SgData value={r.chance} size="md" />
                   <Text style={styles.pullsExamples} numberOfLines={2}>
                     {r.examples.join(' / ')}

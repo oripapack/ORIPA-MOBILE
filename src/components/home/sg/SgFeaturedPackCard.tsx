@@ -70,7 +70,7 @@ export function SgFeaturedPackCard({
 
       {topOddsRow ? (
         <Text style={styles.oddsLine}>
-          Top hit odds <Text style={styles.oddsValue}>{topOddsRow.chance}</Text> — full table on pack page
+          {topOddsRow.tier.toUpperCase()} odds <Text style={styles.oddsValue}>{topOddsRow.chance}</Text> — full table on pack page
         </Text>
       ) : null}
 

@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PackOdds } from '../../data/mockPackOdds';
+import { SgTierTag } from '../ui';
 import { colors } from '../../tokens/colors';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -13,19 +14,6 @@ type Props = {
   packTitle: string;
   odds: PackOdds;
 };
-
-function tierPillColor(tier: string) {
-  switch (tier) {
-    case 'Top hit':
-      return { bg: 'rgba(234,179,8,0.14)', border: 'rgba(234,179,8,0.34)', text: '#FDE68A' };
-    case 'Ultra':
-      return { bg: 'rgba(147,51,234,0.14)', border: 'rgba(147,51,234,0.32)', text: '#E9D5FF' };
-    case 'Rare':
-      return { bg: 'rgba(59,130,246,0.14)', border: 'rgba(59,130,246,0.30)', text: '#BFDBFE' };
-    default:
-      return { bg: 'rgba(148,163,184,0.14)', border: 'rgba(148,163,184,0.30)', text: '#CBD5E1' };
-  }
-}
 
 export function PackOddsModal({ visible, onClose, packTitle, odds }: Props) {
   const { t } = useTranslation();
@@ -40,20 +28,16 @@ export function PackOddsModal({ visible, onClose, packTitle, odds }: Props) {
           </Text>
 
           <View style={styles.table}>
-            {odds.rows.map((row) => {
-              const c = tierPillColor(row.tier);
-              return (
-                <View key={row.tier} style={styles.row}>
-                  <View style={[styles.tierPill, { backgroundColor: c.bg, borderColor: c.border }]}>
-                    <Text style={[styles.tierText, { color: c.text }]}>{row.tier}</Text>
-                  </View>
-                  <Text style={styles.chance}>{row.chance}</Text>
-                  <Text style={styles.examples} numberOfLines={2}>
-                    {row.examples.join(' / ')}
-                  </Text>
-                </View>
-              );
-            })}
+            {odds.rows.map((row) => (
+              <View key={row.tier} style={styles.row}>
+                {/* §6: odds rows ARE tiers — the tag carries the 3-color / 6-form treatment */}
+                <SgTierTag tier={row.tier} />
+                <Text style={styles.chance}>{row.chance}</Text>
+                <Text style={styles.examples} numberOfLines={2}>
+                  {row.examples.join(' / ')}
+                </Text>
+              </View>
+            ))}
           </View>
 
           <Text style={styles.note}>{odds.note}</Text>
@@ -105,19 +89,6 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
     gap: 6,
     backgroundColor: 'rgba(2,6,23,0.28)',
-  },
-  tierPill: {
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderRadius: radius.full,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  tierText: {
-    fontSize: 11,
-    fontFamily: brandFont.black,
-    textTransform: 'uppercase',
-    letterSpacing: 0.7,
   },
   chance: {
     fontSize: fontSize.base,

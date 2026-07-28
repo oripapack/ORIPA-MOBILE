@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sg } from '../tokens/sg';
-import { SgButton, SgCard, SgData, SgSectionHeader } from '../components/ui';
+import { SgButton, SgCard, SgData, SgSectionHeader, SgTierTag } from '../components/ui';
 
 /**
  * Dev-only gallery for the N2 "Neon Torii" shared components.
@@ -44,12 +44,20 @@ export function DevUiGalleryScreen() {
           </SgCard>
           <View style={styles.gap} />
           <SgCard raised>
-            {/* §6 ranks: chase = neon+glow / hit = gold / base = muted@50%.
-                UNKNOWN (no odds-tier data) renders with no rank chrome at all */}
-            <SgData value="CHASE · 1 of 4" unit="rarity" tone="chase" size="sm" />
-            <SgData value="HIT" unit="rarity" tone="hit" size="sm" />
-            <SgData value="BASE" unit="rarity" tone="base" size="sm" />
-            <SgData value="UNKNOWN" unit="no tier data" tone="default" size="sm" />
+            {/* §6 v2.2 — all 7 states: 6 tiers (3 colors split by form) + UNKNOWN.
+                mythic = neon filled + glow / legendary = gold filled, black label /
+                epic = gold outline / rare = muted outline / uncommon = muted text /
+                common = muted text @50% / unknown = the tag renders NOTHING */}
+            <View style={styles.tierList}>
+              <SgTierTag tier="mythic" />
+              <SgTierTag tier="legendary" />
+              <SgTierTag tier="epic" />
+              <SgTierTag tier="rare" />
+              <SgTierTag tier="uncommon" />
+              <SgTierTag tier="common" />
+              <SgTierTag tier="unknown" />
+            </View>
+            <SgData value="UNKNOWN" unit="no tier data — tag above renders nothing" size="sm" />
             <View style={styles.gapSm} />
             <SgData value="+14,483" unit="Coins · trade-in complete" tone="success" size="md" />
           </SgCard>
@@ -103,6 +111,7 @@ const styles = StyleSheet.create({
     color: sg.text,
   },
   block: { paddingHorizontal: sg.space.lg, marginTop: sg.space.lg },
+  tierList: { gap: sg.space.sm, alignItems: 'flex-start', marginBottom: sg.space.sm },
   gap: { height: sg.space.sm },
   gapSm: { height: sg.space.xs },
   cardRow: {

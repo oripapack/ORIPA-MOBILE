@@ -1,38 +1,36 @@
-import type { OddsTier } from '../data/mockPackOdds';
-
 /**
- * N2 §6 rarity ranks — CHASE / HIT / BASE.
+ * N2 §6 (v2.2) tiers — MYTHIC / LEGENDARY / EPIC / RARE / UNCOMMON / COMMON.
  *
- * SINGLE mapping path: card rarity → odds tier → N2 rank. Display ranks must
- * come from the tiers we disclose in the odds table (mockPackOdds:
- * 'Top hit' | 'Ultra' | 'Rare' | 'Common') — deriving ranks from card labels
- * directly created contradictory colors for the same card and risks
- * misleading rarity presentation.
+ * A tier describes the pull ("引きの良さ") and belongs to the PACK side — it
+ * is NOT a card attribute. Printed card rarity (SR / SAR / Secret Rare /
+ * Alt Art …) is a separate vocabulary and must render in its own field,
+ * never in the tier slot. The UI label is "TIER", not "RARITY".
  *
- * Card → odds-tier membership is DATA, not a client-side guess:
- * - PackTopHit.isChase (mockTopHits) is currently the only such link
- *   (true → 'Top hit'). Anything without a defined tier membership renders
- *   as BASE until the pool mapping exists — never gold.
+ * SINGLE mapping path: a tier may only come from disclosed odds-table data
+ * (mockPackOdds rows carry N2Tier directly) or an explicit card→tier link.
+ * Deriving tiers from card labels, names or prices is forbidden — it
+ * created contradictory colors for the same card and risks misleading
+ * rarity presentation.
+ *
+ * The only card→tier link in the current data is PackTopHit.isChase.
  */
 
-export type N2Rank = 'chase' | 'hit' | 'base';
+export type N2Tier = 'mythic' | 'legendary' | 'epic' | 'rare' | 'uncommon' | 'common';
 
 /**
- * BASE means "judged, and it is a lower tier" — it must never absorb
- * "cannot judge, no tier data". Cards without a defined odds-tier membership
- * are UNKNOWN and render with NO rank chrome at all (no color, no badge;
- * the label itself shows in the default text color).
+ * The low tiers mean "judged low" — they must never absorb "cannot judge,
+ * no tier data". Cards without a defined tier are UNKNOWN and render with
+ * NO tier chrome at all (no tag, no color).
  */
-export type N2RankState = N2Rank | 'unknown';
+export type N2TierState = N2Tier | 'unknown';
 
-/** The one public mapping: odds tier → N2 rank (top → CHASE, second → HIT, rest → BASE). */
-export function rankFromOddsTier(tier: OddsTier): N2Rank {
-  switch (tier) {
-    case 'Top hit':
-      return 'chase';
-    case 'Ultra':
-      return 'hit';
-    default:
-      return 'base';
-  }
+/** Top → bottom display order (§6 — the odds table uses the same six steps). */
+export const N2_TIERS: readonly N2Tier[] = ['mythic', 'legendary', 'epic', 'rare', 'uncommon', 'common'];
+
+/**
+ * isChase is a boolean, so it can only assert "top tier or not":
+ * true → MYTHIC; false stays UNKNOWN — never downgraded to a low tier.
+ */
+export function tierFromIsChase(isChase: boolean): N2TierState {
+  return isChase ? 'mythic' : 'unknown';
 }

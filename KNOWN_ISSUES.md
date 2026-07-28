@@ -30,15 +30,16 @@
 ### 4. 【ブロッカー】オッズ表が実データに紐づいていない
 - **記録日**: 2026-07-25
 - **内容**: オッズ行は自由文の `examples` のみを持ち、カード個体を段に割り当てるデータ構造が存在しない。開示している確率を検証する手段が無い状態。バックエンドの pack_versions / provably-fair 側で「カード ↔ オッズ段」の対応を定義する必要がある。
+- **表示中の確率は仮の値(2026-07-29 追記)**: オッズ表の確率は仮の値。実データ未接続。スクリーンショットを外部に出さないこと。6段(MYTHIC 0.5% / LEGENDARY 2% / EPIC 5.5% / RARE 12% / UNCOMMON 30% / COMMON 50%)は `mockPackOdds.ts` の MOCK 定数。
 - **担当**: バックエンド(Yutaka 域)。**リリース前必須。**
 
 ### 5. 【ブロッカー】レアリティの語彙が3系統ある
 - **記録日**: 2026-07-25
-- **内容**: 現在レアリティの語彙が3系統併存している:
-  1. オッズ段: Top hit / Ultra / Rare / Common(`mockPackOdds.ts`)
-  2. カード enum: mythic / legendary / epic / rare / common(`shared/types/pack.ts` RarityTier)
-  3. TopHitRarity: Secret Rare / Alt Art など(`mockTopHits.ts`)
-- 2 はマジック・ザ・ギャザリング系の語彙でポケモンカードには存在しない。日本版ポケカの実際の表記(SR / SAR / AR / UR / RR / CHR 等)に統一する必要がある。**統一されるまで、カードのレアリティから表示ランクを導出することはできない**(現状はランク UNKNOWN として装飾なしで表示)。
+- **内容**: 現在レアリティの語彙が3系統併存している(2026-07-29 更新):
+  1. ティア(オッズ段): MYTHIC / LEGENDARY / EPIC / RARE / UNCOMMON / COMMON(`mockPackOdds.ts` — §6 v2.2 の6段に統一済み。ただし確率は仮 → #4)
+  2. カード enum: mythic / legendary / epic / rare / common(`shared/types/pack.ts` RarityTier)— ティアとほぼ同名だが**別物**(カード側の旧MTG系語彙)。RECENT_PULLS のフィールドと表示は削除済み。`pack.rarityTier` と isChase 導出に残存
+  3. TopHitRarity: Secret Rare / Alt Art など(`mockTopHits.ts`)— カードの印刷レアリティ側の語彙。ティアとして扱わない
+- 2 はマジック・ザ・ギャザリング系の語彙でポケモンカードには存在しない。日本版ポケカの実際の表記(SR / SAR / AR / UR / RR / CHR 等)に統一する必要がある。**統一されるまで、カードのレアリティから表示ティアを導出することはできない**(現状はティア UNKNOWN として装飾なしで表示)。
 - **担当**: データモデル定義(バックエンドと合同)。**リリース前必須。**
 
 ## 既知のギャップ(ブロッカーではない)

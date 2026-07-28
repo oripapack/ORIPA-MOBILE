@@ -47,7 +47,6 @@ export interface RecentPull {
   id: string;
   username: string;
   card: string;
-  rarity: RarityTier;
   value: string;
   timeAgo: string;
 }
