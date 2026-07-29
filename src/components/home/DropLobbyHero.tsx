@@ -61,7 +61,7 @@ export function DropLobbyHero({ pack, onBrowseFloor }: Props) {
     }
     requireAuth(() => {
       void openPack(pack, { quantity: qty });
-    });
+    }, { allowUnauthenticatedPackOpen: true });
   };
 
   const subtitle = topHit ? `${topHit.name} · ${topHit.estValue}` : loc.valueDescription;

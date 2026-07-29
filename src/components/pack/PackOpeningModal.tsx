@@ -3,8 +3,8 @@ import {
   Animated,
   Easing,
   Modal,
+  Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -22,26 +22,27 @@ import { useGuestBrowseStore } from '../../store/guestBrowseStore';
 import { isClerkEnabled } from '../../config/clerk';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
-import {
-  DEFAULT_PACK_OPENING_STYLE,
-  USE_PHYGITALS_OPEN,
-  USE_RING_PACK_OPEN,
-  USE_POKEPOKE_PACK_OPEN,
-  USE_PROTOTYPE_LINEUP_PACK_OPEN,
-} from '../../config/packOpeningAnimation';
-import { PhygitalsOpenFlow } from '../ph/PhygitalsOpenFlow';
-import { ph } from '../../tokens/phTheme';
-import { PackOpeningEngine } from './opening/PackOpeningEngine';
-import { PrototypePackOpenFlow } from './openingPrototype/PrototypePackOpenFlow';
-import { PokePokePackOpenFlow } from './opening/pokepoke/PokePokePackOpenFlow';
-import { RingPackOpenFlow } from './opening/ring/RingPackOpenFlow';
-import { StadiumGradient, Spotlight } from './opening/sharedStage';
 import { resolveRevealCardForTier } from './opening/mockRevealCards';
-import { generatePackOpenResult, bestRollFromResults } from './opening/generatePackRoll';
-import { revealRarityFromTier, type PackRollResult } from './opening/types';
+import { generatePackOpenResult } from './opening/generatePackRoll';
+import type { PackRollResult } from './opening/types';
 import { RevealCtaFade } from './opening/RevealResultCard';
 import { showUserMessage } from '../../utils/showUserMessage';
-import { shareUserContent } from '../../utils/shareUserContent';
+import { buildBulkOpenViewModel } from './opening/bulk/bulkOpenViewModel';
+
+/** Lazy so Three.js / R3F only load when a pack is opened (keeps web boot light). */
+const RingPackOpenFlow = React.lazy(() =>
+  import('./opening/ring/RingPackOpenFlow').then((m) => ({ default: m.RingPackOpenFlow })),
+);
+
+const BulkOpenCinematic = React.lazy(() =>
+  import('./opening/bulk/BulkOpenCinematic').then((m) => ({ default: m.BulkOpenCinematic })),
+);
+
+const BulkResultsScreen = React.lazy(() =>
+  import('./opening/bulk/BulkResultsScreen').then((m) => ({ default: m.BulkResultsScreen })),
+);
+
+type BulkOpenPhase = 'bulkCinematic' | 'bulkResults';
 
 export function PackOpeningModal() {
   const { t } = useTranslation();
@@ -65,23 +66,26 @@ export function PackOpeningModal() {
 
   const [pending, setPending] = useState<PackRollResult | null>(null);
   const [bulkRolls, setBulkRolls] = useState<PackRollResult[] | null>(null);
+  const [bulkPhase, setBulkPhase] = useState<BulkOpenPhase>('bulkCinematic');
   const [skippedToEnd, setSkippedToEnd] = useState(false);
   const [skipNonce, setSkipNonce] = useState(0);
   const [engineDone, setEngineDone] = useState(false);
 
   const didApplyRef = useRef(false);
   const rollRef = useRef<PackRollResult | null>(null);
+  const didAdvanceToWonRef = useRef(false);
   const isBulkOpen = packOpenQuantity > 1;
 
   const modalOpacity = useRef(new Animated.Value(0)).current;
-  const spotlightPulse = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) return;
     setPending(null);
     setBulkRolls(null);
+    setBulkPhase('bulkCinematic');
     rollRef.current = null;
     didApplyRef.current = false;
+    didAdvanceToWonRef.current = false;
     setSkippedToEnd(false);
     setSkipNonce(0);
     setEngineDone(false);
@@ -91,11 +95,12 @@ export function PackOpeningModal() {
   useEffect(() => {
     if (!visible || !selectedPack) return;
     didApplyRef.current = false;
+    didAdvanceToWonRef.current = false;
     setSkippedToEnd(false);
     setSkipNonce(0);
+    setBulkPhase('bulkCinematic');
 
-    modalOpacity.setValue(0);
-    spotlightPulse.setValue(0);
+    modalOpacity.setValue(1);
 
     const loc = getLocalizedPackFields(selectedPack, t);
 
@@ -107,8 +112,7 @@ export function PackOpeningModal() {
       setBulkRolls(rolls);
       setPending(null);
       rollRef.current = null;
-      setEngineDone(true);
-      setSkippedToEnd(true);
+      setEngineDone(false);
     } else {
       setBulkRolls(null);
       const serverRoll =
@@ -122,34 +126,12 @@ export function PackOpeningModal() {
       setEngineDone(false);
     }
 
-    const spotLoop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(spotlightPulse, {
-          toValue: 1,
-          duration: 1400,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-        Animated.timing(spotlightPulse, {
-          toValue: 0,
-          duration: 1400,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    spotLoop.start();
-
     Animated.timing(modalOpacity, {
       toValue: 1,
-      duration: 500,
+      duration: Platform.OS === 'web' ? 0 : 500,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
-
-    return () => {
-      spotLoop.stop();
-    };
   }, [
     visible,
     selectedPack,
@@ -158,7 +140,6 @@ export function PackOpeningModal() {
     pendingServerPull,
     t,
     modalOpacity,
-    spotlightPulse,
   ]);
 
   const onRevealDone = useCallback(() => {
@@ -166,9 +147,41 @@ export function PackOpeningModal() {
   }, []);
 
   const skipToEnd = useCallback(() => {
+    if (isBulkOpen && bulkPhase === 'bulkCinematic') {
+      setBulkPhase('bulkResults');
+      return;
+    }
     setSkippedToEnd(true);
     setSkipNonce((n) => n + 1);
+  }, [bulkPhase, isBulkOpen]);
+
+  const onBulkCinematicComplete = useCallback(() => {
+    setBulkPhase('bulkResults');
   }, []);
+
+  const bulkViewModel = useMemo(() => {
+    if (!bulkRolls || !selectedPack || packOpenQuantity <= 1) return null;
+    try {
+      return buildBulkOpenViewModel(
+        bulkRolls,
+        packOpenQuantity,
+        packOpenSessionId,
+        selectedPack.category,
+      );
+    } catch {
+      return null;
+    }
+  }, [bulkRolls, packOpenQuantity, packOpenSessionId, selectedPack]);
+
+  const onBulkContinue = useCallback(() => {
+    if (!bulkRolls) return;
+    if (!didApplyRef.current) {
+      didApplyRef.current = true;
+      applyBulkPackOpenResults(bulkRolls, { persistToVault: true });
+    }
+    closeModal('packOpening');
+    openModal('wonPrizes');
+  }, [applyBulkPackOpenResults, bulkRolls, closeModal, openModal]);
 
   useEffect(() => {
     if (!visible || !selectedPack || !pending) return;
@@ -177,56 +190,31 @@ export function PackOpeningModal() {
     if (!engineDone) return;
 
     didApplyRef.current = true;
-    applyPackOpenResult(pending, { persistToVault: !isGuest });
-  }, [applyPackOpenResult, engineDone, isGuest, packOpenQuantity, pending, selectedPack, visible]);
+    // Always record the pull so Won Prizes (convert vs vault) can open — even for unsigned demos.
+    applyPackOpenResult(pending, { persistToVault: true });
+  }, [applyPackOpenResult, engineDone, packOpenQuantity, pending, selectedPack, visible]);
 
+  /** After the 3D reveal finishes, go straight to convert / vault — CTAs under the iframe were unreachable. */
   useEffect(() => {
-    if (!visible || !selectedPack) return;
-    if (packOpenQuantity <= 1) return;
-    if (!bulkRolls || bulkRolls.length === 0) return;
-    if (didApplyRef.current) return;
+    if (!visible || !engineDone || isBulkOpen) return;
+    if (!didApplyRef.current || didAdvanceToWonRef.current) return;
 
-    didApplyRef.current = true;
-    applyBulkPackOpenResults(bulkRolls, { persistToVault: !isGuest });
-  }, [applyBulkPackOpenResults, bulkRolls, isGuest, packOpenQuantity, selectedPack, visible]);
+    didAdvanceToWonRef.current = true;
+    const t = setTimeout(() => {
+      closeModal('packOpening');
+      openModal('wonPrizes');
+    }, 600);
+    return () => clearTimeout(t);
+  }, [closeModal, engineDone, isBulkOpen, openModal, visible]);
 
-  const packTint = selectedPack?.imageColor ?? colors.nearBlack;
   const revealCard =
     pending && selectedPack && !isBulkOpen
       ? resolveRevealCardForTier(pending.tier, packOpenSessionId, selectedPack.category)
       : null;
-  const revealRarity = pending ? revealRarityFromTier(pending.tier) : 'common';
 
-  const bulkBest = bulkRolls && bulkRolls.length > 0 ? bestRollFromResults(bulkRolls) : null;
-  const bulkTotalCredits =
-    bulkRolls?.reduce((sum, r) => sum + r.creditsWon, 0) ?? 0;
-  const bulkTierCounts = bulkRolls?.reduce(
-    (acc, r) => {
-      acc[r.tier] = (acc[r.tier] ?? 0) + 1;
-      return acc;
-    },
-    {} as Partial<Record<PackRollResult['tier'], number>>,
-  );
-
-  const packFaceTitle = useMemo(() => {
-    if (!selectedPack) return undefined;
-    const title = getLocalizedPackFields(selectedPack, t).title.trim();
-    if (title.length <= 36) return title;
-    return `${title.slice(0, 35)}…`;
-  }, [selectedPack, t]);
-
-  const goToWonPrizes = () => {
-    closeModal('packOpening');
-    if (isGuest) {
-      if (!firstPackPromptHandled) {
-        showSignupPrompt();
-      } else {
-        showUserMessage(t('onboarding.guestClaimTitle'), t('onboarding.guestClaimBody'));
-      }
-      return;
-    }
-    openModal('wonPrizes');
-  };
+  const bulkOpenActive = isBulkOpen && !!bulkViewModel;
+  const bulkCinematicActive = bulkOpenActive && bulkPhase === 'bulkCinematic';
+  const bulkResultsActive = bulkOpenActive && bulkPhase === 'bulkResults';
 
   const openAnother = useCallback(() => {
     if (!selectedPack) return;
@@ -248,20 +236,17 @@ export function PackOpeningModal() {
     });
   }, [firstPackPromptHandled, isGuest, openPack, selectedPack, showSignupPrompt, t]);
 
-  const sharePullFromReveal = useCallback(() => {
-    if (!pending || !revealCard) return;
-    const tierLabel = t(`packOpening.tier_${pending.tier}`);
-    const msg = t('packOpening.shareMessage', {
-      name: revealCard.name,
-      tier: tierLabel,
-      credits: pending.creditsWon.toLocaleString(),
-    });
-    void shareUserContent(msg);
-  }, [pending, revealCard, t]);
+  const goToWonPrizes = () => {
+    closeModal('packOpening');
+    openModal('wonPrizes');
+  };
 
-  const showSkip = !!pending && !engineDone && !isBulkOpen;
+  const showSkip =
+    (!!pending && !engineDone && !isBulkOpen) ||
+    bulkCinematicActive;
   const compactPackHeader = !!(pending && engineDone && !isBulkOpen);
-  const immersiveOpen = USE_RING_PACK_OPEN || USE_PHYGITALS_OPEN;
+  const ringOpenActive = !!pending && !!selectedPack && !isBulkOpen && !!revealCard;
+  const fullscreenFlow = ringOpenActive || bulkOpenActive;
 
   return (
     <Modal
@@ -274,19 +259,19 @@ export function PackOpeningModal() {
       <View style={styles.rootPress}>
         {/* Background press-catcher (prevents tap-to-dismiss) */}
         <Pressable style={StyleSheet.absoluteFill} onPress={() => {}} />
-        {!immersiveOpen ? <StadiumGradient /> : null}
-        {!immersiveOpen ? <Spotlight pulse={spotlightPulse} /> : null}
 
         <Animated.View
           style={[
             styles.content,
             {
               opacity: modalOpacity,
-              paddingTop: insets.top + spacing.sm,
-              paddingBottom: insets.bottom + spacing.lg,
+              flex: fullscreenFlow ? 1 : undefined,
+              paddingTop: fullscreenFlow ? 0 : insets.top + spacing.sm,
+              paddingBottom: fullscreenFlow ? 0 : insets.bottom + spacing.lg,
             },
           ]}
         >
+          {!fullscreenFlow ? (
           <View style={styles.headerRow}>
             <View style={styles.headerTextBlock}>
               {compactPackHeader ? (
@@ -321,10 +306,29 @@ export function PackOpeningModal() {
               </View>
             </View>
           </View>
+          ) : showSkip ? (
+            <TouchableOpacity
+              onPress={skipToEnd}
+              hitSlop={12}
+              style={[
+                styles.ringSkipFab,
+                { top: insets.top + spacing.sm },
+                bulkCinematicActive && styles.bulkSkipFab,
+              ]}
+            >
+              <Text style={styles.skipText}>{t('packOpening.skip')}</Text>
+            </TouchableOpacity>
+          ) : null}
 
-          <View style={styles.body}>
-            {pending && selectedPack && !isBulkOpen ? (
-              USE_RING_PACK_OPEN && revealCard ? (
+          <View style={[styles.body, fullscreenFlow && styles.bodyRing]}>
+            {pending && selectedPack && !isBulkOpen && revealCard ? (
+              <React.Suspense
+                fallback={
+                  <View style={styles.ringLoading}>
+                    <Text style={styles.skipText}>Loading pack scene…</Text>
+                  </View>
+                }
+              >
                 <RingPackOpenFlow
                   key={`pack-open-ring-${packOpenSessionId}`}
                   pack={selectedPack}
@@ -334,116 +338,41 @@ export function PackOpeningModal() {
                   onRevealDone={onRevealDone}
                   onStoreInVault={goToWonPrizes}
                 />
-              ) : USE_PHYGITALS_OPEN ? (
-                <PhygitalsOpenFlow
-                  key={`pack-open-phyg-${packOpenSessionId}`}
-                  pack={selectedPack}
-                  skipNonce={skipNonce}
-                  onRevealDone={onRevealDone}
-                  onStoreInVault={goToWonPrizes}
-                />
-              ) : USE_POKEPOKE_PACK_OPEN && revealCard ? (
-                <PokePokePackOpenFlow
-                  key={`pack-open-pokepoke-${packOpenSessionId}`}
-                  roll={pending}
-                  revealCard={revealCard}
-                  revealRarity={revealRarity}
-                  packTint={packTint}
-                  packFaceTitle={packFaceTitle}
-                  sessionSalt={packOpenSessionId}
-                  replayKey={0}
-                  skipNonce={skipNonce}
-                  onRevealDone={onRevealDone}
-                  onStoreInVault={goToWonPrizes}
-                  onSharePull={sharePullFromReveal}
-                  pack={selectedPack}
-                />
-              ) : USE_PROTOTYPE_LINEUP_PACK_OPEN && revealCard ? (
-                <PrototypePackOpenFlow
-                  key={`pack-open-proto-${packOpenSessionId}`}
-                  roll={pending}
-                  revealCard={revealCard}
-                  revealRarity={revealRarity}
-                  packTint={packTint}
-                  packFaceTitle={packFaceTitle}
-                  sessionSalt={packOpenSessionId}
-                  replayKey={0}
-                  skipNonce={skipNonce}
-                  onRevealDone={onRevealDone}
-                  onStoreInVault={goToWonPrizes}
-                  onSharePull={sharePullFromReveal}
-                />
-              ) : revealCard ? (
-                <PackOpeningEngine
-                  key={`pack-open-${packOpenSessionId}`}
-                  style={DEFAULT_PACK_OPENING_STYLE}
-                  roll={pending}
-                  revealCard={revealCard}
-                  revealRarity={revealRarity}
-                  packTint={packTint}
-                  packFaceTitle={packFaceTitle}
-                  sessionSalt={packOpenSessionId}
-                  replayKey={0}
-                  skipNonce={skipNonce}
-                  onRevealDone={onRevealDone}
-                />
-              ) : null
+              </React.Suspense>
             ) : null}
 
-            {isBulkOpen && bulkRolls && bulkBest ? (
-              <View style={styles.bulkSummary}>
-                <Text style={styles.bulkTitle}>{t('packOpening.bulkSummaryTitle', { count: packOpenQuantity })}</Text>
-                <Text style={styles.bulkTotal}>
-                  {t('packOpening.bulkTotalCredits', { amount: bulkTotalCredits.toLocaleString() })}
-                </Text>
-                <View style={styles.bulkBestRow}>
-                  <Text style={styles.bulkBestLabel}>{t('packOpening.bulkBestHit')}</Text>
-                  <Text style={styles.bulkBestTier}>{t(`packOpening.tier_${bulkBest.tier}`)}</Text>
-                  <Text style={styles.bulkBestResult} numberOfLines={2}>
-                    {bulkBest.result}
-                  </Text>
-                  <Text style={styles.bulkBestCredits}>
-                    {t('packOpening.bulkRowCredits', { amount: bulkBest.creditsWon.toLocaleString() })}
-                  </Text>
-                </View>
-                {bulkTierCounts ? (
-                  <Text style={styles.bulkTierLine} numberOfLines={2}>
-                    {(['mythic', 'legendary', 'epic', 'rare', 'common'] as const)
-                      .flatMap((tier) => {
-                        const n = bulkTierCounts[tier];
-                        if (!n) return [];
-                        return [`${t(`packOpening.tier_${tier}`)} ×${n}`];
-                      })
-                      .join(' · ')}
-                  </Text>
+            {bulkOpenActive && bulkViewModel ? (
+              <React.Suspense
+                fallback={
+                  <View style={styles.ringLoading}>
+                    <Text style={styles.skipText}>{t('packOpening.reelEntering')}</Text>
+                  </View>
+                }
+              >
+                {bulkCinematicActive ? (
+                  <BulkOpenCinematic
+                    quantity={bulkViewModel.quantity}
+                    bestTier={bulkViewModel.best.roll.tier}
+                    onComplete={onBulkCinematicComplete}
+                    onSkip={onBulkCinematicComplete}
+                  />
                 ) : null}
-                <ScrollView
-                  style={styles.bulkScroll}
-                  contentContainerStyle={styles.bulkScrollContent}
-                  showsVerticalScrollIndicator
-                >
-                  {bulkRolls.map((r, idx) => (
-                    <View key={`bulk-${packOpenSessionId}-${idx}`} style={styles.bulkRow}>
-                      <Text style={styles.bulkRowIdx}>#{idx + 1}</Text>
-                      <View style={styles.bulkRowMid}>
-                        <Text style={styles.bulkRowTier}>{t(`packOpening.tier_${r.tier}`)}</Text>
-                        <Text style={styles.bulkRowResult} numberOfLines={1}>
-                          {r.result}
-                        </Text>
-                      </View>
-                      <Text style={styles.bulkRowCredits}>{r.creditsWon.toLocaleString()}</Text>
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
+                {bulkResultsActive ? (
+                  <BulkResultsScreen
+                    viewModel={bulkViewModel}
+                    onContinue={onBulkContinue}
+                  />
+                ) : null}
+              </React.Suspense>
             ) : null}
           </View>
 
+          {!isBulkOpen ? (
           <RevealCtaFade
             visible={engineDone}
-            instant={skippedToEnd || isBulkOpen}
-            enterDelayMs={isBulkOpen ? 120 : 720}
-            enterDurationMs={isBulkOpen ? 520 : 720}
+            instant={skippedToEnd}
+            enterDelayMs={720}
+            enterDurationMs={720}
           >
             {compactPackHeader ? (
               <LinearGradient
@@ -453,38 +382,36 @@ export function PackOpeningModal() {
               />
             ) : null}
             <View style={[styles.ctaRow, compactPackHeader && styles.ctaRowTight]}>
-              {!isBulkOpen ? (
-                <TouchableOpacity
-                  style={styles.openAnotherBtn}
-                  onPress={openAnother}
-                  activeOpacity={0.88}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('packOpening.openNext')}
+              <TouchableOpacity
+                style={styles.openAnotherBtn}
+                onPress={openAnother}
+                activeOpacity={0.88}
+                accessibilityRole="button"
+                accessibilityLabel={t('packOpening.openNext')}
+              >
+                <LinearGradient
+                  colors={[colors.gold, colors.goldDark]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.openAnotherGradient}
                 >
-                  <LinearGradient
-                    colors={[colors.gold, colors.goldDark]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.openAnotherGradient}
-                  >
-                    <View style={styles.openAnotherRow}>
-                      <View style={styles.openAnotherIconCircle}>
-                        <Ionicons name="flash" size={22} color={colors.black} />
-                      </View>
-                      <View style={styles.openAnotherCopy}>
-                        <Text style={styles.openAnotherHeadline}>{t('packOpening.openAnotherHeadline')}</Text>
-                        <Text style={styles.openAnotherSub}>
-                          {t('packOpening.openAnotherSub', {
-                            credits:
-                              selectedPack != null ? selectedPack.creditPrice.toLocaleString() : '—',
-                          })}
-                        </Text>
-                      </View>
-                      <Ionicons name="chevron-forward" size={22} color="rgba(2,6,23,0.45)" />
+                  <View style={styles.openAnotherRow}>
+                    <View style={styles.openAnotherIconCircle}>
+                      <Ionicons name="flash" size={22} color={colors.black} />
                     </View>
-                  </LinearGradient>
-                </TouchableOpacity>
-              ) : null}
+                    <View style={styles.openAnotherCopy}>
+                      <Text style={styles.openAnotherHeadline}>{t('packOpening.openAnotherHeadline')}</Text>
+                      <Text style={styles.openAnotherSub}>
+                        {t('packOpening.openAnotherSub', {
+                          credits:
+                            selectedPack != null ? selectedPack.creditPrice.toLocaleString() : '—',
+                        })}
+                      </Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={22} color="rgba(2,6,23,0.45)" />
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={goToWonPrizes}
                 style={styles.manageWinningsBtn}
@@ -495,6 +422,7 @@ export function PackOpeningModal() {
               </TouchableOpacity>
             </View>
           </RevealCtaFade>
+          ) : null}
         </Animated.View>
       </View>
     </Modal>
@@ -517,6 +445,31 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 0,
     width: '100%',
+  },
+  bodyRing: {
+    flex: 1,
+    minHeight: Platform.OS === 'web' ? ('100dvh' as unknown as number) : 420,
+  },
+  ringLoading: {
+    flex: 1,
+    minHeight: 420,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000',
+  },
+  ringSkipFab: {
+    position: 'absolute',
+    right: spacing.base,
+    zIndex: 20,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.full,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
+  },
+  bulkSkipFab: {
+    zIndex: 30,
   },
   stageHeader: {
     marginBottom: spacing.md,
@@ -671,104 +624,5 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.semibold,
     color: 'rgba(248,250,252,0.52)',
     letterSpacing: 0.2,
-  },
-  bulkSummary: {
-    flex: 1,
-    marginTop: spacing.md,
-    minHeight: 0,
-    paddingHorizontal: spacing.base,
-  },
-  bulkTitle: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: '#F8FAFC',
-    marginBottom: 4,
-  },
-  bulkTotal: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: 'rgba(226,232,240,0.72)',
-    marginBottom: spacing.md,
-  },
-  bulkBestRow: {
-    borderRadius: radius.lg,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.12)',
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    padding: spacing.md,
-    marginBottom: spacing.sm,
-    gap: 4,
-  },
-  bulkBestLabel: {
-    fontSize: 10,
-    fontFamily: brandFont.black,
-    color: 'rgba(248,250,252,0.45)',
-    letterSpacing: 1.4,
-    textTransform: 'uppercase',
-  },
-  bulkBestTier: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
-    color: colors.gold,
-  },
-  bulkBestResult: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: '#F8FAFC',
-    lineHeight: 20,
-  },
-  bulkBestCredits: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: 'rgba(226,232,240,0.55)',
-  },
-  bulkTierLine: {
-    fontSize: 11,
-    fontFamily: brandFont.semibold,
-    color: 'rgba(226,232,240,0.5)',
-    marginBottom: spacing.sm,
-  },
-  bulkScroll: {
-    flexGrow: 0,
-    maxHeight: 240,
-  },
-  bulkScrollContent: {
-    paddingBottom: spacing.sm,
-    gap: 0,
-  },
-  bulkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
-    gap: spacing.sm,
-  },
-  bulkRowIdx: {
-    width: 36,
-    fontSize: 11,
-    fontFamily: brandFont.bold,
-    color: 'rgba(248,250,252,0.38)',
-  },
-  bulkRowMid: {
-    flex: 1,
-    minWidth: 0,
-  },
-  bulkRowTier: {
-    fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.gold,
-    letterSpacing: 0.6,
-    marginBottom: 2,
-  },
-  bulkRowResult: {
-    fontSize: 12,
-    fontFamily: brandFont.semibold,
-    color: 'rgba(248,250,252,0.82)',
-  },
-  bulkRowCredits: {
-    fontSize: 12,
-    fontFamily: brandFont.bold,
-    color: 'rgba(226,232,240,0.65)',
   },
 });

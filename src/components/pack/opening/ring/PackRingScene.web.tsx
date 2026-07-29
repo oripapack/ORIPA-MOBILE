@@ -120,6 +120,10 @@ const S = {
   swipeSens:    0.0028,
   inertiaDamp:  0.91,
   tapThreshold: 8,     // px — max cumulative drag for a tap to register
+  // Phase F-1 — coast, then soft ease onto nearest pack (no spring / no bounce)
+  snapVelMin:   0.0010, // |velocity| below this → start ease settle
+  snapDur:      0.38,   // power3.out ease onto slot (never overshoots)
+  snapEps:      0.0015, // rad — treat as settled
 
   // Camera — result mode (card pulled toward camera for full view)
   camYR:    0.72,   // same height as zoomed camera
@@ -159,6 +163,16 @@ function packAngle(index: number, offset: number): number {
 
 function depthFactor(angle: number): number {
   return (Math.cos(angle) + 1) / 2;
+}
+
+/** Ring angle that places the nearest pack exactly at front (angle 0). */
+function nearestSnapAngle(ringAngle: number): number {
+  const step = (Math.PI * 2) / S.packCount;
+  return Math.round(ringAngle / step) * step;
+}
+
+function isNearSnap(ringAngle: number): boolean {
+  return Math.abs(ringAngle - nearestSnapAngle(ringAngle)) < S.snapEps;
 }
 
 // Aspect → mobile blend factor. 1 = full portrait telephoto, 0 = desktop.
@@ -1132,6 +1146,9 @@ export default function PackRingScene({
   const packFadeT        = useRef<number>(0);
   // Phase C — DOM flash overlay (no extra WebGL lights)
   const flashRef         = useRef<HTMLDivElement>(null);
+  // Phase F-1 — carousel settled on a centered pack (tap-to-open only when true)
+  const settled          = useRef<boolean>(true);
+  const snapping         = useRef<boolean>(false);
 
   useEffect(() => { modeRef.current = mode; }, [mode]);
 
@@ -1207,6 +1224,8 @@ export default function PackRingScene({
     setMode('zoomed');
     modeRef.current = 'zoomed';
     velocity.current = 0;
+    settled.current = true;
+    snapping.current = false;
     gsap.killTweensOf(zoomT);
     gsap.killTweensOf(ringAngle);
     gsap.to(zoomT,     { current: 1,               duration: S.zoomDur, ease: 'power2.out' });
@@ -1222,6 +1241,10 @@ export default function PackRingScene({
     gsap.killTweensOf(packFadeT);
     resultT.current = 0;  // instant reset — going back to ring, no need to ease
     packFadeT.current = 0;
+    velocity.current = 0;
+    const restoreAngle = nearestSnapAngle(savedRingAngle.current);
+    settled.current = true;
+    snapping.current = false;
     gsap.to(zoomT, {
       current: 0,
       duration: S.unzoomDur,
@@ -1230,11 +1253,12 @@ export default function PackRingScene({
       // never leaves non-front packs faintly invisible.
       onComplete: () => { zoomT.current = 0; },
     });
-    // Restore ring to its original angle before the tap
+    // Restore ring to a snapped slot so it is immediately tappable again
     gsap.to(ringAngle, {
-      current: savedRingAngle.current,
+      current: restoreAngle,
       duration: S.unzoomDur,
       ease: 'power2.inOut',
+      onComplete: () => { ringAngle.current = restoreAngle; },
     });
   }, []);
 
@@ -1263,11 +1287,50 @@ export default function PackRingScene({
     modeRef.current = 'result';
   }, []);
 
-  // Inertia loop outside R3F — only runs when in ring mode
+  /** Phase F-1 — soft ease onto nearest pack (coast handoff / mid-spin tap). */
+  const snapToNearest = useCallback(() => {
+    if (modeRef.current !== 'ring' || dragging.current || snapping.current) return;
+    const target = nearestSnapAngle(ringAngle.current);
+    if (Math.abs(ringAngle.current - target) < S.snapEps) {
+      ringAngle.current = target;
+      settled.current = true;
+      velocity.current = 0;
+      return;
+    }
+    settled.current = false;
+    snapping.current = true;
+    velocity.current = 0;
+    gsap.killTweensOf(ringAngle);
+    const dur = prefersReducedMotion() ? 0.01 : S.snapDur;
+    // power3.out approaches the slot asymptotically — no overshoot / bounce
+    gsap.to(ringAngle, {
+      current: target,
+      duration: dur,
+      ease: 'power3.out',
+      onComplete: () => {
+        ringAngle.current = target;
+        snapping.current = false;
+        settled.current = true;
+      },
+    });
+  }, []);
+
+  // Pure inertia coast; when spin dies, hand off to a one-shot ease settle.
   const inertiaLoop = useCallback(() => {
-    if (!dragging.current && modeRef.current === 'ring') {
+    if (!dragging.current && modeRef.current === 'ring' && !snapping.current) {
       velocity.current *= S.inertiaDamp;
       ringAngle.current += velocity.current;
+      settled.current = false;
+
+      if (Math.abs(velocity.current) < S.snapVelMin) {
+        velocity.current = 0;
+        if (isNearSnap(ringAngle.current)) {
+          ringAngle.current = nearestSnapAngle(ringAngle.current);
+          settled.current = true;
+        } else {
+          snapToNearest();
+        }
+      }
     }
     // Track which pack is centered so the dots can highlight it. Functional
     // update returns prev when unchanged → React bails out, no wasted renders.
@@ -1275,7 +1338,7 @@ export default function PackRingScene({
     const idx  = ((Math.round(-ringAngle.current / step) % S.packCount) + S.packCount) % S.packCount;
     setFrontIdx((prev) => (prev === idx ? prev : idx));
     rafId.current = requestAnimationFrame(inertiaLoop);
-  }, []);
+  }, [snapToNearest]);
 
   useEffect(() => {
     rafId.current = requestAnimationFrame(inertiaLoop);
@@ -1284,7 +1347,13 @@ export default function PackRingScene({
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     if (modeRef.current === 'opening' || modeRef.current === 'flipping') return;
+    // Interrupt an in-flight snap so the user can re-grab freely
+    if (snapping.current) {
+      gsap.killTweensOf(ringAngle);
+      snapping.current = false;
+    }
     dragging.current = true;
+    settled.current  = false;
     lastX.current    = e.clientX;
     velocity.current = 0;
     dragDist.current = 0;
@@ -1304,15 +1373,29 @@ export default function PackRingScene({
     if (!dragging.current) return;
     dragging.current = false;
     if (dragDist.current < S.tapThreshold) {
-      if      (modeRef.current === 'ring')      zoom();
-      else if (modeRef.current === 'zoomed')    startOpening();
+      // Only the centered pack is tappable (Phase F-1 settled gate)
+      if (modeRef.current === 'ring') {
+        if (settled.current || isNearSnap(ringAngle.current)) {
+          settled.current = true;
+          ringAngle.current = nearestSnapAngle(ringAngle.current);
+          zoom();
+        } else {
+          // Mid-spin tap: settle first instead of opening the wrong pack
+          snapToNearest();
+        }
+      } else if (modeRef.current === 'zoomed')    startOpening();
       else if (modeRef.current === 'revealing') setFlippingMode();
       else if (modeRef.current === 'result') {
         if (embed || onRevealDone) onRevealDone?.();
         else unzoom();
       }
+    } else if (modeRef.current === 'ring') {
+      // Drag ended — if already slow, snap now; else inertia loop will snap
+      if (Math.abs(velocity.current) < S.snapVelMin) {
+        snapToNearest();
+      }
     }
-  }, [zoom, startOpening, setFlippingMode, unzoom, embed, onRevealDone]);
+  }, [zoom, startOpening, setFlippingMode, unzoom, embed, onRevealDone, snapToNearest]);
 
   return (
     <div

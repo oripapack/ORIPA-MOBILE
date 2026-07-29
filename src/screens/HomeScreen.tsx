@@ -80,7 +80,7 @@ export function HomeScreen() {
 
   const onOpenFeatured = () => {
     if (!featuredPack) return;
-    requireAuth(() => { void openPack(featuredPack); });
+    requireAuth(() => { void openPack(featuredPack); }, { allowUnauthenticatedPackOpen: true });
   };
 
   const ListHeader = (

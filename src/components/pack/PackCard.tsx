@@ -98,7 +98,7 @@ export function PackCard({ pack, onPress }: Props) {
     }
     requireAuth(() => {
       void openPack(pack, { quantity: qty });
-    });
+    }, { allowUnauthenticatedPackOpen: true });
   };
 
   const goDetails = () => {

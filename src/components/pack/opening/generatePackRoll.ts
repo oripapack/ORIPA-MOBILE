@@ -89,7 +89,41 @@ const TIER_RANK: Record<RarityTier, number> = {
   mythic: 4,
 };
 
-export function bestRollFromResults(rolls: PackRollResult[]): PackRollResult | null {
+/**
+ * Compare two rolls for ranking. Negative → `a` is better (higher tier/credits).
+ * Tie-break: lower index wins (stable, first pull preferred).
+ */
+export function compareRolls(
+  a: PackRollResult,
+  aIndex: number,
+  b: PackRollResult,
+  bIndex: number,
+): number {
+  const tierDiff = TIER_RANK[b.tier] - TIER_RANK[a.tier];
+  if (tierDiff !== 0) return tierDiff;
+  const creditsDiff = b.creditsWon - a.creditsWon;
+  if (creditsDiff !== 0) return creditsDiff;
+  return aIndex - bIndex;
+}
+
+export type BestHitSelection = {
+  best: PackRollResult;
+  bestIndex: number;
+};
+
+/** Pick the single best hit: tier → credits → lowest index. */
+export function selectBestHit(rolls: PackRollResult[]): BestHitSelection | null {
   if (rolls.length === 0) return null;
-  return rolls.reduce((best, r) => (TIER_RANK[r.tier] > TIER_RANK[best.tier] ? r : best), rolls[0]);
+  let bestIndex = 0;
+  for (let i = 1; i < rolls.length; i++) {
+    if (compareRolls(rolls[i]!, i, rolls[bestIndex]!, bestIndex) < 0) {
+      bestIndex = i;
+    }
+  }
+  return { best: rolls[bestIndex]!, bestIndex };
+}
+
+/** @deprecated Prefer `selectBestHit` when you need the index; this wraps it for callers that only need the roll. */
+export function bestRollFromResults(rolls: PackRollResult[]): PackRollResult | null {
+  return selectBestHit(rolls)?.best ?? null;
 }

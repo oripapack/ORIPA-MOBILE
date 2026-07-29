@@ -26,6 +26,7 @@ import { SimulationDisclosure } from './src/components/shared/SimulationDisclosu
 import { PhysicalGoodsPaymentRoot } from './src/payments';
 import { CLERK_PUBLISHABLE_KEY, isClerkEnabled } from './src/config/clerk';
 import { ClerkSessionBridge } from './src/components/account/ClerkSessionBridge';
+import { ClerkSsoCallbackHandler } from './src/components/account/ClerkSsoCallbackHandler';
 import { colors } from './src/tokens/colors';
 import { brandFont } from './src/tokens/typography';
 
@@ -38,6 +39,7 @@ TI.defaultProps = { ...TI.defaultProps, style: [TI.defaultProps?.style, baseText
 
 export default function App() {
   const [localeReady, setLocaleReady] = useState(false);
+  const [fontsTimedOut, setFontsTimedOut] = useState(false);
   const [fontsLoaded] = useFonts({
     Outfit_100Thin,
     Outfit_200ExtraLight,
@@ -54,8 +56,21 @@ export default function App() {
     void hydrateLocaleFromStorage().then(() => setLocaleReady(true));
   }, []);
 
+  /** Don't hang forever on a blank screen if Google Fonts fail to load (common on web). */
+  useEffect(() => {
+    if (fontsLoaded) return;
+    const t = setTimeout(() => setFontsTimedOut(true), 4000);
+    return () => clearTimeout(t);
+  }, [fontsLoaded]);
+
   useEffect(() => {
     void WebBrowser.maybeCompleteAuthSession();
+  }, []);
+
+  /** Clean up leftover fullscreen pack overlays that can blank the page. */
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    document.querySelectorAll('[data-pack-ring-overlay]').forEach((n) => n.remove());
   }, []);
 
   /** RN Web: constrain document height so inner ScrollViews scroll instead of the page. */
@@ -66,13 +81,16 @@ export default function App() {
     const prevHtmlHeight = html.style.height;
     const prevBodyHeight = body.style.height;
     const prevBodyOverflow = body.style.overflow;
+    const prevBodyBg = body.style.backgroundColor;
     html.style.height = '100%';
     body.style.height = '100%';
     body.style.overflow = 'hidden';
+    body.style.backgroundColor = colors.background;
     return () => {
       html.style.height = prevHtmlHeight;
       body.style.height = prevBodyHeight;
       body.style.overflow = prevBodyOverflow;
+      body.style.backgroundColor = prevBodyBg;
     };
   }, []);
 
@@ -110,12 +128,19 @@ export default function App() {
     </PhysicalGoodsPaymentRoot>
   );
 
+  const bootReady = localeReady && (fontsLoaded || fontsTimedOut);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {!localeReady || !fontsLoaded ? (
-        <View style={[styles.root, { backgroundColor: colors.background }]} />
+      {!bootReady ? (
+        <View style={[styles.root, styles.boot, { backgroundColor: colors.background }]}>
+          {Platform.OS === 'web' ? (
+            <Text style={styles.bootText}>Loading Pull Hub…</Text>
+          ) : null}
+        </View>
       ) : isClerkEnabled ? (
         <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
+          <ClerkSsoCallbackHandler />
           <ClerkSessionBridge />
           {tree}
         </ClerkProvider>
@@ -128,6 +153,14 @@ export default function App() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  boot: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bootText: {
+    color: colors.textMuted,
+    fontSize: 14,
+  },
   clerkHint: {
     backgroundColor: colors.warningBannerBg,
     paddingHorizontal: 14,

@@ -115,9 +115,21 @@ export function AuthScreen({
       setError(null);
       setOauthBusy(label);
       try {
-        const { createdSessionId } = await startSSOFlow({ strategy });
+        // On web, Clerk returns to /sso-callback — handled by ClerkSsoCallbackHandler.
+        const redirectUrl =
+          Platform.OS === 'web' && typeof window !== 'undefined'
+            ? `${window.location.origin}/sso-callback`
+            : undefined;
+        const { createdSessionId, setActive: setActiveFromFlow } = await startSSOFlow({
+          strategy,
+          ...(redirectUrl ? { redirectUrl } : null),
+        });
         if (createdSessionId) {
-          await activateSession(createdSessionId);
+          if (setActiveFromFlow) {
+            await setActiveFromFlow({ session: createdSessionId });
+          } else {
+            await activateSession(createdSessionId);
+          }
         }
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : String(e);

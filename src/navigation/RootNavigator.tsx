@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
@@ -458,8 +458,9 @@ function ClerkAuthGate() {
   const hydrated = useGuestBrowseStore((s) => s.hydrated);
   const authWallForced = useGuestBrowseStore((s) => s.authWallForced);
   const onboardingSheetDismissed = useGuestBrowseStore((s) => s.onboardingSheetDismissed);
-  const [splashDone, setSplashDone] = useState(false);
-  const bootEntrance = useSharedValue(0);
+  const skipSplash = Platform.OS === 'web';
+  const [splashDone, setSplashDone] = useState(skipSplash);
+  const bootEntrance = useSharedValue(skipSplash ? 1 : 0);
 
   const loading = !isLoaded || !hydrated || (isSignedIn && (!userLoaded || !user));
 
@@ -496,14 +497,20 @@ function ClerkAuthGate() {
           onExitComplete={() => setSplashDone(true)}
         />
       ) : null}
+      {loading && splashDone ? (
+        <View style={styles.webLoading} pointerEvents="none">
+          <Text style={styles.webLoadingText}>Starting…</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
 
 /** Clerk disabled — still show branded boot once before tabs (dev / demo). */
 function NonClerkBoot() {
-  const [splashDone, setSplashDone] = useState(false);
-  const bootEntrance = useSharedValue(0);
+  const skipSplash = Platform.OS === 'web';
+  const [splashDone, setSplashDone] = useState(skipSplash);
+  const bootEntrance = useSharedValue(skipSplash ? 1 : 0);
 
   const onSplashExitStart = useCallback(() => {
     bootEntrance.value = withSpring(1, BOOT_ENTRANCE_SPRING);
@@ -542,6 +549,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     ...(Platform.OS === 'web' ? { minHeight: 0, height: '100%' } : null),
+  },
+  webLoading: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background,
+  },
+  webLoadingText: {
+    color: colors.textMuted,
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.medium,
   },
   tabBar: {
     backgroundColor: 'transparent',

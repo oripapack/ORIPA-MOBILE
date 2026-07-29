@@ -36,7 +36,7 @@ export function PhPackCard({
   };
 
   const onOpen = () => {
-    requireAuth(() => { void openPack(pack); });
+    requireAuth(() => { void openPack(pack); }, { allowUnauthenticatedPackOpen: true });
   };
 
   return (

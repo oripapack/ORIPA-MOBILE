@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
+import { Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@clerk/clerk-expo';
 import { useGuestBrowseStore } from '../../store/guestBrowseStore';
@@ -6,6 +7,7 @@ import { AuthBottomSheet, type AuthBottomSheetRef } from '../auth/AuthBottomShee
 import { AuthScreen } from '../../screens/AuthScreen';
 import { SIGNUP_PROMO_BONUS_USD } from '../../data/promotions.mock';
 import { confirmUserAction } from '../../utils/showUserMessage';
+import { canOpenPackWithoutSignIn } from '../../config/demo';
 
 /**
  * First-launch welcome: slide-up `AuthScreen` with a solid dim + opaque sheet (no blur).
@@ -45,6 +47,13 @@ export function OnboardingGate() {
       void dismissOnboardingSheet();
     }
   }, [isSignedIn, dismissOnboardingSheet, markWelcomePromoSeen]);
+
+  // Web / __DEV__: skip signup sheet so pack opening is reachable without OAuth.
+  useEffect(() => {
+    if (!canOpenPackWithoutSignIn) return;
+    if (Platform.OS !== 'web') return;
+    void finishPreview();
+  }, [finishPreview]);
 
   return (
     <AuthBottomSheet

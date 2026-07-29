@@ -105,7 +105,7 @@ export function PackDetailsScreen({ route }: Props) {
     }
     requireAuth(() => {
       void openPack(pack, { quantity: qty });
-    });
+    }, { allowUnauthenticatedPackOpen: true });
   };
 
   const onPressPrimaryCta = () => {

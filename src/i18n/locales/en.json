@@ -1195,6 +1195,8 @@
     "bulkSummaryTitle": "{{count}} pulls",
     "bulkTotalCredits": "Total card value: {{amount}} credits (if converted)",
     "bulkBestHit": "Best hit",
+    "bulkOtherPulls": "Your other pulls",
+    "continueToWonPrizes": "Continue to Won Prizes",
     "bulkRowCredits": "+{{amount}} credits",
     "tier_common": "Common",
     "tier_rare": "Rare",
