@@ -651,53 +651,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Welkomstbooster",
-      "value": "Meer dan 100% chase-waarde",
-      "guarantee": "Bonus gegarandeerd elke 2 opens"
-    },
-    "2": {
-      "title": "Pokémon Scarlet & Violet Hit-pack",
-      "value": "90% kans op 200+ credits waarde",
-      "guarantee": "Holofoil gegarandeerd in elke booster"
-    },
-    "3": {
-      "title": "One Piece gegradeerde kluis-pack",
-      "value": "PSA 9–10 graded kaarten",
-      "guarantee": "Elke booster bevat een graded kaart"
-    },
-    "4": {
-      "title": "Sports flash-pack",
-      "value": "Rookies van topkeuzes 2024",
-      "guarantee": "Auto of relic elke 5 opens"
-    },
-    "5": {
-      "title": "Pokémon vintage graded-pack",
-      "value": "Base Set-era graded hits",
-      "guarantee": "PSA 8+ gegarandeerd"
-    },
-    "6": {
-      "title": "Hot Drop mystery-pack",
-      "value": "Verrassingsmix uit alle categorieën",
-      "guarantee": "Bonusbooster na elke 3 opens"
-    },
-    "7": {
-      "title": "One Piece Paramount War-pack",
-      "value": "Leader SR met chase foils",
-      "guarantee": "1 op 10 kans op Alt Art"
-    },
-    "8": {
-      "title": "Nieuwe aanwinsten sample-pack",
-      "value": "Hits uit nieuwste sets",
-      "guarantee": "Minstens 3 kaarten per open"
-    },
-    "9": {
-      "title": "Yu-Gi-Oh! Battles of Legend-pack",
-      "value": "Secret Rares en starlight-slots",
-      "guarantee": "Ultra Rare of hoger in elke booster"
-    }
-  },
   "packOpening": {
     "title": "Booster openen",
     "opening": "Openen…",

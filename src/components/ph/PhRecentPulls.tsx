@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { RECENT_PULLS } from '../../../shared/mock/recentPulls';
-import { RarityBadge } from './PhBadge';
 import { ph } from '../../tokens/phTheme';
 import { brandFont, fontSize } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
@@ -17,7 +16,6 @@ export function PhRecentPulls() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {RECENT_PULLS.map((pull) => (
           <View key={pull.id} style={styles.card}>
-            <RarityBadge rarity={pull.rarity} small />
             <Text style={styles.cardName} numberOfLines={2}>{pull.card}</Text>
             <Text style={styles.user}>@{pull.username}</Text>
             <View style={styles.meta}>

@@ -1,11 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
 import { spacing, elevation } from '../../tokens/spacing';
 import { CreditsPill } from './CreditsPill';
 import { APP_DISPLAY_NAME, getLogoInitials, getLogoWordmarkParts } from '../../config/app';
@@ -16,6 +14,12 @@ interface Props {
   onSearch?: () => void;
 }
 
+/**
+ * App chrome header — N2 "Neon Torii": translucent night slab (functional
+ * chrome per §9). Gold budget is deliberately scarce here: wordmark accent +
+ * balance number only (§4 — gold stops signalling value when it multiplies).
+ * Logic (auth gate, PaymentPortal navigation) is unchanged.
+ */
 export function AppHeader({ onSearch }: Props) {
   const insets = useSafeAreaInsets();
   const { requireAuth } = useRequireAuth();
@@ -38,13 +42,6 @@ export function AppHeader({ onSearch }: Props) {
         style={StyleSheet.absoluteFill}
       />
       <View style={styles.scrim} pointerEvents="none" />
-      <LinearGradient
-        pointerEvents="none"
-        colors={['rgba(34,197,94,0.06)', 'transparent', 'rgba(255,255,255,0.02)']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
 
       <View style={styles.row}>
         <View
@@ -52,18 +49,14 @@ export function AppHeader({ onSearch }: Props) {
           accessibilityRole="header"
           accessibilityLabel={APP_DISPLAY_NAME}
         >
-          <LinearGradient
-            colors={[colors.goldDark, colors.gold, '#4ADE80']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.monogramRing}
-          >
+          {/* Monogram ring — line, not gold: the header gold budget is the wordmark accent + balance */}
+          <View style={styles.monogramRing}>
             <View style={styles.monogramInner}>
               <Text style={styles.monogramText} numberOfLines={1}>
                 {initials}
               </Text>
             </View>
-          </LinearGradient>
+          </View>
           <View style={styles.wordmarkCol}>
             {wordmark ? (
               <Text style={styles.wordmarkLine} numberOfLines={1}>
@@ -81,7 +74,7 @@ export function AppHeader({ onSearch }: Props) {
         <View style={styles.right}>
           <CreditsPill onAdd={goCredits} />
           <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75}>
-            <Ionicons name="search" size={20} color={colors.textPrimary} />
+            <Ionicons name="search" size={20} color={sg.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -94,14 +87,14 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.headerHairline,
+    borderBottomColor: sg.line,
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.md,
     zIndex: 2,
   },
   scrim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(7,5,15,0.42)',
+    backgroundColor: 'rgba(0,0,0,0.72)', // §9 functional-chrome translucency
   },
   row: {
     flexDirection: 'row',
@@ -117,20 +110,21 @@ const styles = StyleSheet.create({
   monogramRing: {
     borderRadius: 12,
     padding: 1.5,
+    backgroundColor: sg.line, // gold budget: wordmark accent + balance only
   },
   monogramInner: {
     minWidth: 36,
     height: 36,
     paddingHorizontal: 6,
     borderRadius: 10,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
   monogramText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontSize: 13,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     letterSpacing: 0.5,
   },
   wordmarkCol: {
@@ -138,22 +132,22 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   wordmarkLine: {
-    fontSize: fontSize.lg,
-    letterSpacing: -0.35,
+    fontSize: 17,
+    letterSpacing: -0.2,
   },
   wordmarkLead: {
-    color: colors.textPrimary,
-    fontFamily: brandFont.bold,
+    color: sg.text,
+    fontFamily: sg.font.bodyBold,
   },
   wordmarkAccent: {
-    color: colors.gold,
-    fontFamily: brandFont.black,
+    color: sg.gold,
+    fontFamily: sg.font.bodyBold,
   },
   wordmarkSingle: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
-    letterSpacing: -0.35,
+    fontSize: 17,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
+    letterSpacing: -0.2,
   },
   right: {
     flexDirection: 'row',
@@ -163,11 +157,9 @@ const styles = StyleSheet.create({
   iconBtn: {
     width: 38,
     height: 38,
-    borderRadius: 19,
+    borderRadius: sg.radius.btn,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surfaceMuted,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderLight,
+    backgroundColor: sg.surface,
   },
 });

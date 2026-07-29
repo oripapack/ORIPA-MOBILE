@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
@@ -16,6 +15,7 @@ import { AccountScreen } from '../screens/AccountScreen';
 import { MarketplaceScreen } from '../screens/MarketplaceScreen';
 import { VaultScreen } from '../screens/VaultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { DevUiGalleryScreen } from '../screens/DevUiGalleryScreen';
 import { PaymentPortalScreen } from '../screens/PaymentPortalScreen';
 import { HelpCenterScreen } from '../screens/HelpCenterScreen';
 import { ShippingAddressScreen } from '../screens/ShippingAddressScreen';
@@ -37,6 +37,7 @@ import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
 import { navigationRef } from './navigationRef';
 import { colors } from '../tokens/colors';
+import { sg } from '../tokens/sg';
 import { useAppStore } from '../store/useAppStore';
 import { fontSize, brandFont } from '../tokens/typography';
 import { RootStackParamList } from './types';
@@ -66,18 +67,24 @@ const tabBarDockStyles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
   },
-  topRim: {
+  slab: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.72)',
+  },
+  topLine: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: 2,
+    height: 1,
+    backgroundColor: sg.line,
   },
 });
 
 /**
- * Dock-style bar: stable jewel tones (no muddy blur tint) + beveled top for 3D depth.
- * iOS gets a very light blur under the gradients; Android uses gradients only.
+ * Dock-style bar — N2 functional chrome (§9): translucent night slab
+ * (rgba(0,0,0,.72) over blur), separated from content by a 1px `line`
+ * border — dividers are lines, not shadows or highlights (§3).
  */
 function PremiumTabBarBackground() {
   return (
@@ -86,41 +93,11 @@ function PremiumTabBarBackground() {
         <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
       ) : null}
 
-      {/* Base slab — matches app surfaces, darker toward bottom (receding plane) */}
-      <LinearGradient
-        colors={[colors.surfaceMuted, colors.surfaceElevated, colors.background]}
-        locations={[0, 0.5, 1]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      {/* Night slab — §9 functional-chrome translucency */}
+      <View style={tabBarDockStyles.slab} />
 
-      {/* Top “lit face” — subtle 3D bevel */}
-      <LinearGradient
-        colors={['rgba(255,255,255,0.11)', 'rgba(255,255,255,0.02)', 'transparent']}
-        locations={[0, 0.18, 1]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
-
-      {/* Emerald hairline rim (premium edge) */}
-      <LinearGradient
-        colors={['rgba(16,185,129,0.40)', 'rgba(16,185,129,0.14)', 'rgba(255,255,255,0.06)']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={tabBarDockStyles.topRim}
-        pointerEvents="none"
-      />
-
-      {/* Bottom weight — grounds the dock */}
-      <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.22)']}
-        locations={[0.55, 1]}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
+      {/* Top divider line */}
+      <View style={tabBarDockStyles.topLine} pointerEvents="none" />
     </View>
   );
 }
@@ -153,8 +130,8 @@ function TabNavigatorInner() {
         headerShown: false,
         sceneContainerStyle: Platform.OS === 'web' ? { flex: 1, minHeight: 0 } : undefined,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: colors.gold,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarActiveTintColor: sg.text,
+        tabBarInactiveTintColor: sg.muted,
         tabBarStyle: styles.tabBar,
         tabBarBackground: PremiumTabBarBackground,
         tabBarLabelStyle: styles.tabLabel,
@@ -207,7 +184,7 @@ function TabNavigatorInner() {
               : undefined,
           tabBarBadgeStyle:
             friendTabBadgeCount > 0
-              ? { backgroundColor: colors.red, color: colors.white, fontSize: 11 }
+              ? { backgroundColor: sg.error, color: sg.text, fontSize: 11 }
               : undefined,
         }}
       />
@@ -221,12 +198,16 @@ function RootStack() {
     <>
       {isClerkEnabled ? <ClerkProfileSync /> : null}
       <Stack.Navigator
+        // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery boots straight into the
+        // component gallery (docs/design-system-n2.md). No effect in normal runs.
+        initialRouteName={process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery' ? 'DevUiGallery' : 'MainTabs'}
         screenOptions={{
           headerShown: false,
           cardStyle: { flex: 1, backgroundColor: colors.background },
         }}
       >
         <Stack.Screen name="MainTabs" component={TabNavigatorInner} />
+        <Stack.Screen name="DevUiGallery" component={DevUiGalleryScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen
           name="PackDetails"
@@ -567,11 +548,6 @@ const styles = StyleSheet.create({
     height: 82,
     paddingBottom: 16,
     paddingTop: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -10 },
-    shadowOpacity: 0.45,
-    shadowRadius: 28,
-    elevation: 20,
   },
   tabLabel: {
     fontSize: fontSize.xs,

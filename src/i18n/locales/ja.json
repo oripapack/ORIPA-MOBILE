@@ -144,7 +144,8 @@
       "railGradedSub": "Slabbed pulls and graded chase — curated for collectors.",
       "liveHitsKicker": "Live hits",
       "hotFloorChip": "Hot"
-    }
+    },
+    "guaranteeTradeIn": "即時トレードイン 100%(表示価値)"
   },
   "packs": {
     "browseTitle": "パックを探す",
@@ -424,53 +425,6 @@
     "chase": "CHASE",
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
-  },
-  "packCatalog": {
-    "1": {
-      "title": "新規ユーザー歓迎パック",
-      "value": "チェイス価値100%超",
-      "guarantee": "2回に1回ボーナス確定"
-    },
-    "2": {
-      "title": "ポケモン スカーレット＆バイオレット ヒットパック",
-      "value": "90%で200クレジット以上相当",
-      "guarantee": "毎パックホロ確定"
-    },
-    "3": {
-      "title": "ワンピース 鑑定保管庫パック",
-      "value": "PSA 9〜10の鑑定カード",
-      "guarantee": "毎パック鑑定カード1枚"
-    },
-    "4": {
-      "title": "スポーツカード フラッシュパック",
-      "value": "2024年注目ルーキー",
-      "guarantee": "5回に1回サイン or レリック"
-    },
-    "5": {
-      "title": "ポケモン ビンテージ鑑定パック",
-      "value": "初版期の鑑定ヒット",
-      "guarantee": "PSA 8+ コンディション保証"
-    },
-    "6": {
-      "title": "ホットドロップ ミステリーパック",
-      "value": "全カテゴリからのサプライズ",
-      "guarantee": "3回に1回ボーナスパック"
-    },
-    "7": {
-      "title": "ワンピース 頂上戦争パック",
-      "value": "リーダーSR＆チェイス仕様",
-      "guarantee": "10回に1回アート違い"
-    },
-    "8": {
-      "title": "新着お試しサンプルパック",
-      "value": "最新セットからのサンプル",
-      "guarantee": "1回あたり最低3枚"
-    },
-    "9": {
-      "title": "遊戯王 バトルズ・オブ・レジェンド パック",
-      "value": "シークレットレア＆スターライト枠",
-      "guarantee": "毎パックウルトラレア以上"
-    }
   },
   "packOpening": {
     "title": "パック開封",
@@ -889,7 +843,7 @@
       "ctaOpenPack": "パックを開く",
       "ctaFastOpen": "高速オープンを開始",
       "ctaRush": "ラッシュ開始",
-      "ctaSubInventory": "このレーンの残り {{left}}",
+      "ctaSubInventory": "このレーンの残り <num>{{left}}</num>",
       "rushModalKicker": "プレミアムセッション",
       "rushModalTitle": "ラッシュの準備はOK？",
       "rushModalBody": "{{total}} クレジットで {{count}} パックを開きますか？",

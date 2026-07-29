@@ -109,7 +109,6 @@ export interface Pack {
 
   // --- Shared catalog fields (Phygitals redesign) ---
   tcgCategory?: TcgCategory;
-  buybackRate?: number;
   tagline?: string;
   catalogDescription?: string;
   topCard?: string;
@@ -151,11 +150,11 @@ const NICHE_TO_TCG: Record<Exclude<HomeNicheCategory, 'all'>, TcgCategory> = {
 /** The three display groups used in the "All packs" grouped view. */
 export const PACK_GROUPS: PackGroup[] = ['first_time', 'low_cost', 'high_value'];
 
-/** Emoji + label for each group header in the "All" view. */
-export const PACK_GROUP_META: Record<PackGroup, { emoji: string; labelKey: string }> = {
-  first_time: { emoji: '🔥', labelKey: 'packGroup.first_time' },
-  low_cost:   { emoji: '💰', labelKey: 'packGroup.low_cost' },
-  high_value: { emoji: '🚀', labelKey: 'packGroup.high_value' },
+/** Label key for each group header in the "All" view (no emoji — N2 §5-4). */
+export const PACK_GROUP_META: Record<PackGroup, { labelKey: string }> = {
+  first_time: { labelKey: 'packGroup.first_time' },
+  low_cost:   { labelKey: 'packGroup.low_cost' },
+  high_value: { labelKey: 'packGroup.high_value' },
 };
 
 export type PackSubfilter = 'all' | ChipTagType;

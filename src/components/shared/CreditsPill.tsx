@@ -1,21 +1,26 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
+import { spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 
 interface Props {
   onAdd: () => void;
 }
 
+/**
+ * Coin balance chip — N2: the balance NUMBER is the gold value signal (§4);
+ * the coin glyph stays muted so header gold stays scarce (wordmark accent +
+ * balance only). Surface fill + 1px line border; tag radius. Gold never
+ * fills the add button.
+ */
 export function CreditsPill({ onAdd }: Props) {
   const credits = useAppStore((s) => s.user.credits);
 
   return (
     <View style={styles.pill}>
-      <FontAwesome5 name="coins" size={14} color={colors.gold} style={styles.coin} solid />
+      <FontAwesome5 name="coins" size={13} color={sg.muted} style={styles.coin} solid />
       <Text style={styles.amount}>{credits.toLocaleString()}</Text>
       <TouchableOpacity style={styles.addBtn} onPress={onAdd} activeOpacity={0.8}>
         <Text style={styles.addText}>+</Text>
@@ -28,43 +33,37 @@ const styles = StyleSheet.create({
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.creditsPillBg,
-    borderRadius: radius.full,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: sg.radius.tag,
     paddingLeft: spacing.sm,
     paddingRight: 0,
     height: 34,
     gap: spacing.xs,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.goldBorderHairline,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 6,
+    overflow: 'hidden',
   },
   coin: {
     marginRight: 2,
   },
   amount: {
-    color: colors.textPrimary,
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    color: sg.gold,
+    fontSize: 13,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
     marginRight: spacing.xs,
   },
   addBtn: {
-    backgroundColor: colors.goldDark,
+    backgroundColor: sg.surface2,
     width: 34,
     height: 34,
-    borderRadius: radius.full,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.14)',
   },
   addText: {
-    color: colors.ink,
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    color: sg.text,
+    fontSize: 16,
+    fontFamily: sg.font.bodyBold,
     lineHeight: 20,
   },
 });

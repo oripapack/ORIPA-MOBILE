@@ -1,6 +1,17 @@
-import type { PackCategory, Pack } from './mockPacks';
+import type { Pack } from './mockPacks';
+import { N2_TIERS, type N2Tier } from '../lib/n2Rarity';
 
-export type OddsTier = 'Top hit' | 'Ultra' | 'Rare' | 'Common';
+/**
+ * MOCK ODDS — 実データ待ち。表示・共有しないこと。
+ * Every probability below is a PLACEHOLDER, not a real drop rate: the
+ * card↔tier assignment does not exist yet (KNOWN_ISSUES #4). Do not share
+ * screenshots of this table outside the team.
+ *
+ * §6 (v2.3): the odds table uses the same four steps and names as the tier
+ * system, and every tier shown on screen must have a disclosed probability.
+ */
+
+export type OddsTier = N2Tier;
 
 export type TierOddsRow = {
   tier: OddsTier;
@@ -16,81 +27,34 @@ export type PackOdds = {
 /** Safe empty placeholder when pack is unresolved (hooks run before screen guard). */
 export const EMPTY_PACK_ODDS: PackOdds = { rows: [], note: '' };
 
-const NOTE = 'Demo probabilities. Final rates may change before launch.';
+const NOTE = 'Demo probabilities and tier descriptions. Final rates may change before launch.';
 
-const ROWS: Record<PackCategory, TierOddsRow[]> = {
-  onboarding: [
-    {
-      tier: 'Top hit',
-      chance: '10%',
-      examples: ['3× coin bonus', 'Welcome surprise card'],
-    },
-    {
-      tier: 'Ultra',
-      chance: '20%',
-      examples: ['2× coin bonus', 'Holographic promo'],
-    },
-    {
-      tier: 'Rare',
-      chance: '30%',
-      examples: ['Rare card', '1.5× coin return'],
-    },
-    {
-      tier: 'Common',
-      chance: '40%',
-      examples: ['Standard card', '1× coin return'],
-    },
-  ],
-  micro: [
-    {
-      tier: 'Top hit',
-      chance: '2%',
-      examples: ['Nintendo Switch', 'PS5', 'iPhone 16'],
-    },
-    {
-      tier: 'Ultra',
-      chance: '8%',
-      examples: ['Gift coupon (¥5,000)', 'Ultra rare card'],
-    },
-    {
-      tier: 'Rare',
-      chance: '25%',
-      examples: ['Rare card', 'Coin bonus ×2'],
-    },
-    {
-      tier: 'Common',
-      chance: '65%',
-      examples: ['Standard card', 'Small coin return'],
-    },
-  ],
-  premium: [
-    {
-      tier: 'Top hit',
-      chance: '5%',
-      examples: ['PSA 10 Trophy Card', '1/1 holy grail'],
-    },
-    {
-      tier: 'Ultra',
-      chance: '15%',
-      examples: ['Chase-grade slab', 'PSA 9+ vintage holo'],
-    },
-    {
-      tier: 'Rare',
-      chance: '30%',
-      examples: ['Graded card hit', 'Premium rare'],
-    },
-    {
-      tier: 'Common',
-      chance: '50%',
-      examples: ['High-value standard', 'Base chase card'],
-    },
-  ],
+/** MOCK probabilities — sum is exactly 100%. Awaiting real pack_versions data. */
+const MOCK_TIER_CHANCES: Record<N2Tier, string> = {
+  mythic: '0.5%',
+  legendary: '2%',
+  epic: '5.5%',
+  base: '92%',
 };
 
-export function getMockPackOdds(pack: Pack): PackOdds {
-  const rows = ROWS[pack.category] ?? ROWS.onboarding;
+/**
+ * MOCK tier descriptions — placeholders exactly like the probabilities above.
+ * Until the real card↔tier pool exists (KNOWN_ISSUES #4, and grading status
+ * unconfirmed — #6), the copy may state NO concrete contents: no grading
+ * companies or grades, no card names, no rarity counts, no prize claims.
+ * Only the tier's relative position. Intentionally identical for every
+ * category — per-pack flavor returns when real pool data is wired.
+ */
+const MOCK_TIER_EXAMPLES: Record<N2Tier, string[]> = {
+  mythic: ['Highest tier'],
+  legendary: ['Second-highest tier'],
+  epic: ['Mid tier'],
+  base: ['Standard outcome'],
+};
+
+export function getMockPackOdds(_pack: Pack): PackOdds {
   return {
-    rows,
+    rows: N2_TIERS.map((tier) => ({ tier, chance: MOCK_TIER_CHANCES[tier], examples: MOCK_TIER_EXAMPLES[tier] })),
     note: NOTE,
   };
 }

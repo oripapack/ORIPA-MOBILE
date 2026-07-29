@@ -425,53 +425,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "신규 유저 웰컴 팩",
-      "value": "체이스 가치 100% 이상",
-      "guarantee": "2번 열 때마다 보너스 보장"
-    },
-    "2": {
-      "title": "포켓몬 스칼렛&바이올렛 히트 팩",
-      "value": "90% 확률로 200+ 크레딧 가치",
-      "guarantee": "매 팩 홀로 보장"
-    },
-    "3": {
-      "title": "원피스 슬랩 볼트 팩",
-      "value": "PSA 9–10 슬랩 카드",
-      "guarantee": "매 팩 슬랩 카드 1장"
-    },
-    "4": {
-      "title": "스포츠 카드 플래시 팩",
-      "value": "2024년 톱 루키",
-      "guarantee": "5번에 1번 사인/실물 카드"
-    },
-    "5": {
-      "title": "포켓몬 빈티지 슬랩 팩",
-      "value": "베이스 세대 슬랩 히트",
-      "guarantee": "PSA 8+ 컨디션 보장"
-    },
-    "6": {
-      "title": "핫드롭 미스터리 팩",
-      "value": "전 카테고리 랜덤 믹스",
-      "guarantee": "3번에 1번 보너스 팩"
-    },
-    "7": {
-      "title": "원피스 파라마운트 전쟁 팩",
-      "value": "리더 SR & 체이스 포일",
-      "guarantee": "10번에 1번 일러스트 변형"
-    },
-    "8": {
-      "title": "신상 샘플러 팩",
-      "value": "최신 세트 샘플 히트",
-      "guarantee": "1회 최소 3장"
-    },
-    "9": {
-      "title": "유희왕 배틀즈 오브 레전드 팩",
-      "value": "시크릿 레어 & 스타라이트 슬롯",
-      "guarantee": "매 팩 울트라 레어 이상"
-    }
-  },
   "packOpening": {
     "title": "팩 개봉",
     "opening": "열리는 중…",

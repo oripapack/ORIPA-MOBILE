@@ -425,53 +425,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Paquete de bienvenida (nuevo usuario)",
-      "value": "Más del 100% de valor chase",
-      "guarantee": "Bono garantizado cada 2 aperturas"
-    },
-    "2": {
-      "title": "Pokémon Escarlata y Púrpura — Paquete hit",
-      "value": "90% de probabilidad de 200+ créditos",
-      "guarantee": "Holo en cada paquete"
-    },
-    "3": {
-      "title": "One Piece — Bóveda graduada",
-      "value": "Cartas graduadas PSA 9–10",
-      "guarantee": "Una carta graduada por paquete"
-    },
-    "4": {
-      "title": "Deportes — Paquete flash",
-      "value": "Novatos top de 2024",
-      "guarantee": "Auto o reliquia cada 5 aperturas"
-    },
-    "5": {
-      "title": "Pokémon vintage graduado",
-      "value": "Hits graduados de era Base",
-      "guarantee": "PSA 8+ garantizado"
-    },
-    "6": {
-      "title": "Hot Drop — Paquete misterio",
-      "value": "Mezcla sorpresa de todas las categorías",
-      "guarantee": "Paquete bonus cada 3 aperturas"
-    },
-    "7": {
-      "title": "One Piece — Guerra en el Paramount",
-      "value": "SR líder con foil chase",
-      "guarantee": "1 de cada 10 — arte alternativo"
-    },
-    "8": {
-      "title": "Muestras de novedades",
-      "value": "Hits de los sets más nuevos",
-      "guarantee": "Al menos 3 cartas por apertura"
-    },
-    "9": {
-      "title": "Yu-Gi-Oh! — Batallas de Leyenda",
-      "value": "Secret Rares y huecos starlight",
-      "guarantee": "Ultra Rare o superior en cada paquete"
-    }
-  },
   "packOpening": {
     "title": "Abriendo paquete",
     "opening": "Abriendo…",

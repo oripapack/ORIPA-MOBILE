@@ -2,17 +2,19 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { RarityTier } from '../../../shared/types/pack';
-import { getCategoryFoil } from '../../../shared/utils/foil';
+import { getCategoryFoil } from '../../lib/packFoil';
 import { ph } from '../../tokens/phTheme';
 import { brandFont } from '../../tokens/typography';
-
-const RARITY_FOIL: Record<RarityTier, { top: string; mid: string; bot: string; border: string }> = {
-  common: { top: '#1e293b', mid: '#334155', bot: '#1e293b', border: 'rgba(148,163,184,0.22)' },
-  rare: { top: '#0f2040', mid: '#1e4080', bot: '#0f2040', border: 'rgba(96,165,250,0.32)' },
-  epic: { top: '#1a0f30', mid: '#3d1e6e', bot: '#1a0f30', border: 'rgba(168,85,247,0.36)' },
-  legendary: { top: '#281400', mid: '#5c3000', bot: '#1a0d00', border: 'rgba(245,158,11,0.40)' },
-  mythic: { top: '#200d18', mid: '#5c1a38', bot: '#200d18', border: 'rgba(236,72,153,0.38)' },
-};
+/**
+ * N2 §5-2/§6: the colored rarity foils (incl. purple) are removed. The ground
+ * is a single achromatic surface2/surface gradient (placeholder until real
+ * pack art). Tier chrome follows the SINGLE mapping path (§6 v2.2, see
+ * src/lib/n2Rarity.ts); pack-level `rarityTier` (legacy card enum) has NO
+ * defined tier membership, so its tier state is UNKNOWN — the frame shows NO
+ * tier chrome, just the standard 1px `line` border (a low tier would falsely
+ * claim "judged low"). The gradient plumbing stays so a §8 foil sweep can
+ * ride on it later.
+ */
 
 type Size = 'sm' | 'md' | 'lg' | 'hero';
 
@@ -26,28 +28,29 @@ const DIMS: Record<Size, { w: number; h: number; artH: number; fs1: number; fs2:
 export function PackVisual({
   name,
   category,
-  rarityTier = 'epic',
+  rarityTier: _rarityTier = 'epic',
   size = 'md',
 }: {
   name: string;
   category: string;
+  /** Kept for API compatibility — has no defined odds-tier membership yet, so it no longer drives color. */
   rarityTier?: RarityTier;
   size?: Size;
 }) {
   const catFoil = getCategoryFoil(category);
-  const f = RARITY_FOIL[rarityTier] ?? catFoil;
+  const border = catFoil.accent; // UNKNOWN tier — neutral line, no tier chrome
   const d = DIMS[size];
 
   return (
-    <View style={[styles.wrap, { width: d.w, height: d.h, borderColor: f.border }]}>
+    <View style={[styles.wrap, { width: d.w, height: d.h, borderColor: border }]}>
       <LinearGradient
-        colors={[f.top, f.mid, f.bot]}
+        colors={[catFoil.top, catFoil.mid, catFoil.bot]}
         start={{ x: 0.2, y: 0 }}
         end={{ x: 0.8, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
       <View style={[styles.seal, { width: '100%' }]} />
-      <View style={[styles.art, { height: d.artH, borderColor: `${f.border}` }]} />
+      <View style={[styles.art, { height: d.artH, borderColor: border }]} />
       <View style={styles.labelBlock}>
         <Text style={[styles.category, { fontSize: d.fs2 }]}>{category.toUpperCase()}</Text>
         <Text style={[styles.name, { fontSize: d.fs1 }]} numberOfLines={2}>{name}</Text>
@@ -59,7 +62,7 @@ export function PackVisual({
 const styles = StyleSheet.create({
   wrap: {
     borderRadius: ph.radius.lg,
-    borderWidth: 1.5,
+    borderWidth: 1, // 1px line rule (§3)
     overflow: 'hidden',
     padding: 12,
     justifyContent: 'space-between',

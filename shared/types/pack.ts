@@ -22,7 +22,6 @@ export interface CatalogPack {
   category: TcgCategory;
   /** USD display price (maps to credits × 100 in mobile). */
   price: number;
-  buybackRate: number;
   remainingFraction: number;
   tagline: string;
   description: string;
@@ -47,7 +46,6 @@ export interface RecentPull {
   id: string;
   username: string;
   card: string;
-  rarity: RarityTier;
   value: string;
   timeAgo: string;
 }

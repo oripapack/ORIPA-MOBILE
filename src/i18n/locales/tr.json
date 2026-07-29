@@ -651,53 +651,6 @@
     "unlockMembershipCta": "Unlock with membership",
     "metadataRow": "{{credits}} credits • {{remaining}} remaining"
   },
-  "packCatalog": {
-    "1": {
-      "title": "Yeni Kullanıcıya Hoş Geldiniz Paketi",
-      "value": "%100'ün üzerinde takip değeri",
-      "guarantee": "Her 2 açılışta garantili bonus"
-    },
-    "2": {
-      "title": "Pokémon Scarlet ve Violet Hit Paketi",
-      "value": "200+ kredi değerinde %90 şans",
-      "guarantee": "Her pakette holofoil garantisi"
-    },
-    "3": {
-      "title": "Tek Parça Kademeli Kasa Paketi",
-      "value": "PSA 9–10 dereceli kartlar içeride",
-      "guarantee": "Her pakette derecelendirilmiş bir kart bulunur"
-    },
-    "4": {
-      "title": "Spor Kartları Flash Paketi",
-      "value": "2024'ün en iyi seçimlerinden çaylak kartları",
-      "guarantee": "Her 5 açılışta bir otomatik veya kalıntı kart"
-    },
-    "5": {
-      "title": "Pokémon Vintage Kademeli Paket",
-      "value": "Temel Set dönemi derecelendirilmiş isabetler",
-      "guarantee": "Garantili PSA 8+ durumu"
-    },
-    "6": {
-      "title": "Sıcak Damla Gizem Paketi",
-      "value": "Tüm kategorilerden sürpriz karışım",
-      "guarantee": "Her 3 açılıştan sonra bonus paketi"
-    },
-    "7": {
-      "title": "Tek Parça Paramount Savaş Paketi",
-      "value": "Takip folyolarına sahip lider SR kartları",
-      "guarantee": "Alt Art'ta 10'da 1 şans"
-    },
-    "8": {
-      "title": "Yeni Gelenler Örnekleyici Paketi",
-      "value": "En yeni setlerden örnek hitler",
-      "guarantee": "Açık başına en az 3 kart"
-    },
-    "9": {
-      "title": "Yu-Gi-Oh! Efsane Savaşları Paketi",
-      "value": "Gizli Nadireler ve yıldız ışığı kovalamaca slotları",
-      "guarantee": "Her pakette Ultra Nadir veya daha üstü"
-    }
-  },
   "packOpening": {
     "title": "Paket açma",
     "opening": "Açılıyor…",
