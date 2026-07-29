@@ -4,7 +4,7 @@ import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 import QRCode from 'react-native-qrcode-svg';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
@@ -59,7 +59,7 @@ export function MyQrModal({
 
           <View style={styles.qrWrap}>
             {qrValue ? (
-              <QRCode value={qrValue} size={216} backgroundColor={colors.white} color={colors.black} />
+              <QRCode value={qrValue} size={216} backgroundColor={sg.text} color={sg.bg} />
             ) : (
               <Text style={styles.subtitle}>{t('myQr.missingUsername')}</Text>
             )}
@@ -116,21 +116,21 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 2,
     elevation: 8,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xl + 8,
     paddingTop: spacing.sm,
     borderTopWidth: 3,
-    borderTopColor: colors.accent,
+    borderTopColor: sg.gold,
   },
   handle: {
     alignSelf: 'center',
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
     marginBottom: spacing.base,
   },
   sheetTop: {
@@ -139,28 +139,28 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 10,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 2,
     marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.xl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   subtitle: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
   },
   qrWrap: {
     alignSelf: 'center',
     padding: spacing.md,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderRadius: radius.lg,
     borderWidth: 2,
-    borderColor: colors.accentBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
     marginBottom: spacing.lg,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
@@ -171,26 +171,26 @@ const styles = StyleSheet.create({
   nameLabel: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
   name: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.base,
   },
   idRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.casinoFelt,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.base,
     borderWidth: 1,
-    borderColor: colors.casinoFeltBorder,
+    borderColor: sg.line,
     marginBottom: spacing.lg,
   },
   idText: {
@@ -198,17 +198,17 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     fontFamily: brandFont.black,
     letterSpacing: 0.5,
-    color: colors.textPrimary,
+    color: sg.text,
     marginRight: spacing.sm,
   },
   copyBtn: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     borderRadius: radius.md,
   },
   copyBtnText: {
-    color: colors.white,
+    color: sg.text,
     fontSize: fontSize.sm,
     fontFamily: brandFont.black,
   },
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.base,
@@ -234,34 +234,34 @@ const styles = StyleSheet.create({
   scanOtherTitle: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   scanOtherSub: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginTop: 2,
     lineHeight: 16,
   },
   scanOtherChevron: {
     fontSize: 22,
-    color: colors.textMuted,
+    color: sg.muted,
     fontFamily: brandFont.regular,
   },
   doneBtn: {
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: colors.red,
+    backgroundColor: sg.error,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: colors.red,
+    shadowColor: sg.error,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 4,
   },
   doneBtnText: {
-    color: colors.white,
+    color: sg.text,
     fontSize: fontSize.base,
     fontFamily: brandFont.black,
     letterSpacing: 0.5,

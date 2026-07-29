@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { RefreshControl, Platform } from 'react-native';
-import { colors } from '../tokens/colors';
+import { sg } from '../tokens/sg';
 
 type Options = {
   minMs?: number;
@@ -33,9 +33,9 @@ export function usePullToRefresh(options: Options = {}) {
     <RefreshControl
       refreshing={refreshing}
       onRefresh={onRefresh}
-      tintColor={colors.gold}
+      tintColor={sg.gold}
       {...(Platform.OS === 'android'
-        ? { colors: [colors.gold] as [string], progressBackgroundColor: colors.surfaceElevated }
+        ? { colors: [sg.gold] as [string], progressBackgroundColor: sg.surface2 }
         : {})}
     />
   );

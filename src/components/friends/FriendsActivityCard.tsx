@@ -8,7 +8,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { FriendActivityFeedItem, SocialRarity } from '../../data/socialMock';
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     paddingLeft: spacing.md + 2,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: 1,
     minHeight: 148,
   },
@@ -169,11 +169,11 @@ const styles = StyleSheet.create({
   user: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   time: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   justPulled: {
     alignSelf: 'flex-start',
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 6,
     borderWidth: 1,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
   },
   justPulledText: {
     fontSize: 9,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 6,
     borderWidth: 1,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
   },
   rarityPillText: {
     fontSize: 8,
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.sm,
     lineHeight: 20,
   },
@@ -217,12 +217,12 @@ const styles = StyleSheet.create({
   value: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.black,
-    color: colors.casinoGold,
+    color: sg.gold,
   },
   pack: {
     flex: 1,
     fontSize: 10,
-    color: colors.textMuted,
+    color: sg.muted,
     textAlign: 'right',
   },
 });

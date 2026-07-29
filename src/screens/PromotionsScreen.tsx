@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
+import { sg } from '../tokens/sg';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { SgScreen } from '../components/ui';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
@@ -50,7 +51,7 @@ export function PromotionsScreen() {
   );
 
   return (
-    <>
+    <SgScreen>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} style={styles.backBtn}>
           <Text style={styles.backChevron}>‹</Text>
@@ -92,7 +93,7 @@ export function PromotionsScreen() {
         body={success?.body ?? ''}
         onDismiss={() => setSuccess(null)}
       />
-    </>
+    </SgScreen>
   );
 }
 
@@ -102,9 +103,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.sm,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: sg.line,
   },
   backBtn: {
     width: 40,
@@ -114,22 +115,22 @@ const styles = StyleSheet.create({
   },
   backChevron: {
     fontSize: 32,
-    color: colors.textPrimary,
+    color: sg.text,
     marginTop: -4,
   },
   headerTitle: {
     flex: 1,
     textAlign: 'center',
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   headerSpacer: {
     width: 40,
   },
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
   },
   content: {
     paddingHorizontal: spacing.base,
@@ -137,14 +138,14 @@ const styles = StyleSheet.create({
   },
   lead: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.lg,
   },
   sectionHeader: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -158,13 +159,13 @@ const styles = StyleSheet.create({
   },
   codeExplainer: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.sm,
   },
   error: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
-    color: colors.textMuted,
+    color: sg.muted,
   },
 });

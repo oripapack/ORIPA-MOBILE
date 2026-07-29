@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -131,38 +131,38 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.sm,
     borderTopWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   grabber: {
     alignSelf: 'center',
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
     marginBottom: spacing.md,
   },
   kicker: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1,
     marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.xl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   pack: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.md,
     lineHeight: 20,
   },
@@ -174,43 +174,43 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   badgeListed: {
-    backgroundColor: colors.goldWash,
+    backgroundColor: 'rgba(212,175,55,0.08)',
     borderWidth: 1,
-    borderColor: colors.goldBorderHeavy,
+    borderColor: 'rgba(212,175,55,0.55)',
   },
   badgeRequest: {
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
   },
   badgeText: {
     fontSize: 10,
     fontFamily: brandFont.black,
     letterSpacing: 0.6,
   },
-  badgeTextListed: { color: colors.gold },
-  badgeTextRequest: { color: colors.textSecondary },
+  badgeTextListed: { color: sg.gold },
+  badgeTextRequest: { color: sg.muted },
   price: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.md,
   },
   selfHint: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.lg,
   },
   lead: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.md,
   },
   fine: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.md,
   },
@@ -222,13 +222,13 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     alignItems: 'center',
   },
   outlineText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   ghost: {
     paddingVertical: spacing.sm,
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   ghostText: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.accent,
+    color: sg.gold,
     textDecorationLine: 'underline',
   },
 });

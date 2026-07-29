@@ -1,11 +1,11 @@
 import React, { useLayoutEffect, useMemo } from 'react';
+import { sg } from '../tokens/sg';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
@@ -31,10 +31,10 @@ export function TierBenefitsScreen() {
     navigation.setOptions({
       title: t('tierBenefits.navTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
 
@@ -65,7 +65,7 @@ export function TierBenefitsScreen() {
 
       {TIER_BENEFITS.map((row) => {
         const active = row.tier === userTier;
-        const accent = tierAccent[row.tier] ?? colors.textSecondary;
+        const accent = tierAccent[row.tier] ?? sg.muted;
         return (
           <View
             key={row.tier}
@@ -97,27 +97,27 @@ export function TierBenefitsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: sg.bg },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.sm,
   },
   progressHint: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     marginBottom: spacing.lg,
     lineHeight: 18,
   },
   card: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.xl,
     padding: spacing.base,
     marginBottom: spacing.base,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   cardTop: {
     flexDirection: 'row',
@@ -128,17 +128,17 @@ const styles = StyleSheet.create({
   },
   tierName: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     letterSpacing: 0.5,
   },
   minXp: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
-    fontFamily: brandFont.semibold,
+    color: sg.muted,
+    fontFamily: sg.font.bodyMedium,
   },
   pill: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     paddingHorizontal: spacing.sm,
     paddingVertical: 4,
     borderRadius: radius.full,
@@ -146,18 +146,18 @@ const styles = StyleSheet.create({
   },
   pillText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.red,
+    fontFamily: sg.font.bodyBold,
+    color: sg.error,
   },
   perk: {
     fontSize: fontSize.sm,
-    color: colors.textPrimary,
+    color: sg.text,
     lineHeight: 22,
     marginBottom: 4,
   },
   disclaimer: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     marginTop: spacing.sm,
   },

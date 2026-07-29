@@ -1,8 +1,8 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PAYMENT_ROUTING } from '../../payments/physicalGoodsPolicy';
 import { showUserMessage } from '../../utils/showUserMessage';
@@ -52,55 +52,55 @@ export function MarketplaceCheckoutSection({ listingTitle, listingPrice }: Props
 const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   lead: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     marginBottom: spacing.lg,
     lineHeight: 20,
   },
   card: {
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     borderRadius: radius.lg,
     padding: spacing.base,
     marginBottom: spacing.lg,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
   },
   label: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     marginBottom: 4,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   value: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   policy: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.lg,
   },
   cta: {
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     paddingVertical: spacing.sm + 4,
     borderRadius: radius.md,
     alignItems: 'center',
   },
   ctaText: {
-    color: colors.white,
+    color: sg.text,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
   },
 });

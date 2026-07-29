@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PackOdds } from '../../data/mockPackOdds';
 import { SgTierTag } from '../ui';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
+import { spacing } from '../../tokens/spacing';
 
 type Props = {
   visible: boolean;
@@ -56,70 +56,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.56)',
     justifyContent: 'center',
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   sheet: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.xl,
+    backgroundColor: sg.surface,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.lg,
+    borderColor: sg.line,
+    padding: sg.space.lg,
   },
   kicker: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     textTransform: 'uppercase',
     letterSpacing: 1.2,
   },
   title: {
     marginTop: 4,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     marginBottom: spacing.md,
   },
   table: {
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   row: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.sm,
+    borderColor: sg.line,
+    borderRadius: sg.radius.btn,
+    padding: sg.space.sm,
     gap: 6,
-    backgroundColor: 'rgba(2,6,23,0.28)',
+    backgroundColor: sg.surface2,
   },
   chance: {
     fontSize: fontSize.base,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   examples: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 17,
   },
   note: {
     marginTop: spacing.md,
     fontSize: 11,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 16,
   },
   closeBtn: {
     marginTop: spacing.md,
     alignSelf: 'flex-end',
     borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
+    borderColor: sg.line,
+    borderRadius: sg.radius.btn,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 2,
-    backgroundColor: 'rgba(2,6,23,0.34)',
+    paddingVertical: sg.space.xs + 2,
+    backgroundColor: sg.surface2,
   },
   closeText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
   },
 });
-

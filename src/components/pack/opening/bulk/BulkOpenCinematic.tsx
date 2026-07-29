@@ -22,8 +22,8 @@ import { useTranslation } from 'react-i18next';
 import type { RarityTier } from '../../../../audio/packOpeningFeedback';
 import { hapticPackReveal } from '../../../../audio/packOpeningFeedback';
 import type { PackOpenQuantity } from '../../../../store/useAppStore';
-import { colors } from '../../../../tokens/colors';
-import { brandFont, fontSize } from '../../../../tokens/typography';
+import { sg } from '../../../../tokens/sg';
+import { fontSize } from '../../../../tokens/typography';
 import { tierCelebrationFor } from '../tierCelebration';
 
 /** Shared multi-pack open beat (~1.5s) before bulk results. */
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   root: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 20,
-    backgroundColor: colors.black,
+    backgroundColor: sg.bg,
   },
   stage: {
     flex: 1,
@@ -295,20 +295,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: sg.line,
   },
   countQty: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     fontSize: fontSize.xl,
-    color: colors.textPrimary,
+    color: sg.text,
     letterSpacing: 1,
+    fontVariant: [...sg.numeric],
   },
   countMode: {
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
@@ -323,13 +324,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.14)',
+    borderColor: sg.line,
   },
   skipLabel: {
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
 });

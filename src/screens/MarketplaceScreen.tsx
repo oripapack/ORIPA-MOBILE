@@ -16,11 +16,11 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader } from '../components/shared/AppHeader';
-import { HomeBackground } from '../components/shared/HomeBackground';
+import { SgScreen } from '../components/ui';
 import { ListingCard } from '../components/marketplace/ListingCard';
 import { WhyChoosePullHub } from '../components/marketplace/WhyChoosePullHub';
 import { CardMarketListingRow } from '../components/marketplace/CardMarketListingRow';
-import { colors } from '../tokens/colors';
+import { sg } from '../tokens/sg';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import {
@@ -210,8 +210,7 @@ export function MarketplaceScreen() {
   };
 
   return (
-    <View style={styles.root}>
-      <HomeBackground />
+    <SgScreen>
       <AppHeader onSearch={() => searchRef.current?.focus()} />
 
       {/* Market tab switcher */}
@@ -251,18 +250,18 @@ export function MarketplaceScreen() {
 
           {/* Search */}
           <View style={styles.searchShell}>
-            <Ionicons name="search" size={18} color={colors.textMuted} style={styles.searchIcon} />
+            <Ionicons name="search" size={18} color={sg.muted} style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
               placeholder="Search cards, packs, sellers…"
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={sg.muted}
               value={cardQuery}
               onChangeText={setCardQuery}
               returnKeyType="search"
             />
             {cardQuery.length > 0 ? (
               <TouchableOpacity onPress={() => setCardQuery('')} hitSlop={12}>
-                <Ionicons name="close-circle" size={20} color={colors.textMuted} />
+                <Ionicons name="close-circle" size={20} color={sg.muted} />
               </TouchableOpacity>
             ) : null}
           </View>
@@ -327,12 +326,12 @@ export function MarketplaceScreen() {
         <Text style={styles.lead}>{t('marketplace.storeLead')}</Text>
 
         <View style={styles.searchShell}>
-          <Ionicons name="search" size={18} color={colors.textMuted} style={styles.searchIcon} />
+          <Ionicons name="search" size={18} color={sg.muted} style={styles.searchIcon} />
           <TextInput
             ref={searchRef}
             style={styles.searchInput}
             placeholder={t('marketplace.searchPlaceholder')}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={sg.muted}
             value={query}
             onChangeText={setQuery}
             returnKeyType="search"
@@ -349,7 +348,7 @@ export function MarketplaceScreen() {
               accessibilityRole="button"
               accessibilityLabel={t('marketplace.clearSearchA11y')}
             >
-              <Ionicons name="close-circle" size={20} color={colors.textMuted} />
+              <Ionicons name="close-circle" size={20} color={sg.muted} />
             </TouchableOpacity>
           ) : null}
         </View>
@@ -389,7 +388,7 @@ export function MarketplaceScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('marketplace.openFiltersA11y')}
           >
-            <Ionicons name="options-outline" size={22} color={colors.textPrimary} />
+            <Ionicons name="options-outline" size={22} color={sg.text} />
             {activeFilterCount > 0 ? (
               <View style={styles.filterBadge}>
                 <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
@@ -442,7 +441,7 @@ export function MarketplaceScreen() {
                       <Ionicons
                         name="checkmark-circle"
                         size={18}
-                        color={colors.gold}
+                        color={sg.gold}
                         accessibilityLabel={t('marketplace.verified')}
                         style={styles.verifiedIcon}
                       />
@@ -547,7 +546,7 @@ export function MarketplaceScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('marketplace.filtersDone')}
               >
-                <Ionicons name="close" size={26} color={colors.textMuted} />
+                <Ionicons name="close" size={26} color={sg.muted} />
               </TouchableOpacity>
             </View>
 
@@ -615,14 +614,14 @@ export function MarketplaceScreen() {
       </Modal>
 
       <ShopCoach />
-    </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.homeGradientBottom,
+    backgroundColor: sg.bg,
   },
   // ── Tab switcher ──
   tabBar: {
@@ -630,11 +629,11 @@ const styles = StyleSheet.create({
     marginHorizontal: spacing.base,
     marginTop: spacing.sm,
     marginBottom: spacing.xs,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     padding: 3,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   tabBtn: {
     flex: 1,
@@ -643,22 +642,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabBtnActive: {
-    backgroundColor: colors.nearBlack,
-    shadowColor: colors.gold,
+    backgroundColor: sg.surface2,
+    shadowColor: sg.gold,
     shadowOpacity: 0.12,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 0 },
     elevation: 2,
     borderWidth: 1,
-    borderColor: colors.goldBorderMuted,
+    borderColor: 'rgba(212,175,55,0.30)',
   },
   tabBtnText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   tabBtnTextActive: {
-    color: colors.textPrimary,
+    color: sg.text,
     fontFamily: brandFont.bold,
   },
   // ── Card marketplace ──
@@ -669,14 +668,14 @@ const styles = StyleSheet.create({
   cardMarketTitle: {
     fontSize: fontSize.xl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     letterSpacing: -0.3,
     marginTop: spacing.sm,
     marginBottom: 4,
   },
   cardMarketLead: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.md,
   },
@@ -689,21 +688,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: 7,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   sortPillActive: {
-    backgroundColor: colors.accentSoft,
-    borderColor: colors.accentBorder,
+    backgroundColor: 'rgba(212,175,55,0.12)',
+    borderColor: 'rgba(212,175,55,0.38)',
   },
   sortPillText: {
     fontSize: 12,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   sortPillTextActive: {
-    color: colors.accentDark,
+    color: sg.gold,
   },
   cardListContent: {
     paddingTop: spacing.xs,
@@ -719,12 +718,12 @@ const styles = StyleSheet.create({
   cardEmptyTitle: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   cardEmptyBody: {
     fontSize: fontSize.sm,
-    color: colors.textMuted,
+    color: sg.muted,
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -739,14 +738,14 @@ const styles = StyleSheet.create({
   pageTitle: {
     fontSize: fontSize.xl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     paddingHorizontal: spacing.base,
     marginBottom: 4,
     letterSpacing: -0.3,
   },
   lead: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     paddingHorizontal: spacing.base,
     marginBottom: spacing.md,
@@ -759,9 +758,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     minHeight: 44,
     borderRadius: radius.lg,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   searchIcon: {
     marginRight: spacing.xs,
@@ -769,14 +768,14 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: fontSize.sm,
-    color: colors.textPrimary,
+    color: sg.text,
     paddingVertical: spacing.sm,
     minWidth: 0,
   },
   resultsMeta: {
     fontSize: 11,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
     paddingHorizontal: spacing.base,
     marginBottom: spacing.sm,
   },
@@ -804,9 +803,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacing.sm,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   filterBadge: {
     position: 'absolute',
@@ -815,17 +814,17 @@ const styles = StyleSheet.create({
     minWidth: 17,
     height: 17,
     borderRadius: 9,
-    backgroundColor: colors.gold,
+    backgroundColor: sg.gold,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,
     borderWidth: 1,
-    borderColor: colors.background,
+    borderColor: sg.bg,
   },
   filterBadgeText: {
     fontSize: 9,
     fontFamily: brandFont.black,
-    color: colors.nearBlack,
+    color: sg.surface2,
   },
   modalRoot: {
     flex: 1,
@@ -836,7 +835,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(2,6,23,0.5)',
   },
   modalSheet: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     paddingHorizontal: spacing.base,
@@ -844,14 +843,14 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   modalGrabber: {
     alignSelf: 'center',
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
     marginBottom: spacing.md,
   },
   modalHeaderRow: {
@@ -863,14 +862,14 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     flex: 1,
     paddingRight: spacing.sm,
   },
   modalSectionLabel: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginBottom: spacing.sm,
@@ -897,11 +896,11 @@ const styles = StyleSheet.create({
   modalResetText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   modalDoneBtn: {
     flex: 1,
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -909,21 +908,21 @@ const styles = StyleSheet.create({
   modalDoneText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.white,
+    color: sg.text,
   },
   catChip: {
     paddingHorizontal: spacing.md,
     paddingVertical: 9,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   catChipActive: {
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     borderWidth: 1.5,
-    borderColor: colors.gold,
-    shadowColor: colors.gold,
+    borderColor: sg.gold,
+    shadowColor: sg.gold,
     shadowOpacity: 0.22,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 0 },
@@ -932,51 +931,51 @@ const styles = StyleSheet.create({
   catChipText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
   catChipTextActive: {
-    color: colors.gold,
+    color: sg.gold,
     fontFamily: brandFont.bold,
   },
   sortChip: {
     paddingHorizontal: spacing.sm,
     paddingVertical: 7,
     borderRadius: radius.md,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
   },
   sortChipActive: {
-    borderColor: colors.accentBorder,
-    backgroundColor: colors.accentSoft,
+    borderColor: 'rgba(212,175,55,0.38)',
+    backgroundColor: 'rgba(212,175,55,0.12)',
   },
   sortChipText: {
     fontSize: 11,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   sortChipTextActive: {
-    color: colors.accentDark,
+    color: sg.gold,
   },
   regionChip: {
     paddingHorizontal: spacing.sm,
     paddingVertical: 7,
     borderRadius: radius.md,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   regionChipActive: {
-    borderColor: colors.accent,
-    backgroundColor: colors.accentSoft,
+    borderColor: sg.gold,
+    backgroundColor: 'rgba(212,175,55,0.12)',
   },
   regionChipText: {
     fontSize: 11,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
   regionChipTextActive: {
-    color: colors.accentDark,
+    color: sg.gold,
   },
   section: {
     marginBottom: spacing.lg,
@@ -991,10 +990,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   saleTag: {
-    backgroundColor: colors.red,
+    backgroundColor: sg.error,
     paddingHorizontal: spacing.sm,
     paddingVertical: 3,
     borderRadius: radius.sm,
@@ -1002,7 +1001,7 @@ const styles = StyleSheet.create({
   saleTagText: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.white,
+    color: sg.text,
     letterSpacing: 0.5,
   },
   hRow: {
@@ -1012,7 +1011,7 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     fontSize: 11,
     fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    color: sg.muted,
     letterSpacing: 0.2,
     paddingHorizontal: spacing.base,
     marginBottom: spacing.sm,
@@ -1023,7 +1022,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
     paddingBottom: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   storeHeader: {
     marginBottom: spacing.sm,
@@ -1042,7 +1041,7 @@ const styles = StyleSheet.create({
   storeName: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   verifiedIcon: {
     marginTop: 1,
@@ -1050,34 +1049,34 @@ const styles = StyleSheet.create({
   storeShipsFrom: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: 2,
     letterSpacing: 0.2,
   },
   storeCrossBorder: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: sg.muted,
     marginBottom: 4,
     lineHeight: 15,
   },
   storeMetaLine: {
     fontSize: 11,
-    color: colors.textSecondary,
+    color: sg.muted,
     fontFamily: brandFont.medium,
     marginBottom: 2,
   },
   storeMetaDot: {
-    color: colors.textMuted,
+    color: sg.muted,
   },
   storeSpecialty: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: sg.muted,
     marginBottom: 4,
     fontFamily: brandFont.semibold,
   },
   storeTagline: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: 2,
     lineHeight: 18,
   },
@@ -1089,13 +1088,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.xs,
     textAlign: 'center',
   },
   emptyHint: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     textAlign: 'center',
     lineHeight: 18,
     marginBottom: spacing.md,
@@ -1105,13 +1104,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.accentBorder,
-    backgroundColor: colors.accentSoft,
+    borderColor: 'rgba(212,175,55,0.38)',
+    backgroundColor: 'rgba(212,175,55,0.12)',
   },
   emptyCtaText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.accentDark,
+    color: sg.gold,
   },
   promoCompact: {
     flexDirection: 'row',
@@ -1121,16 +1120,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
     padding: spacing.sm,
     borderRadius: radius.lg,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     gap: spacing.sm,
   },
   promoThumb: {
     width: 52,
     height: 52,
     borderRadius: radius.md,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
   },
   promoCopy: {
     flex: 1,
@@ -1138,7 +1137,7 @@ const styles = StyleSheet.create({
   promoEyebrow: {
     fontSize: 9,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1,
     marginBottom: 2,
     textTransform: 'uppercase',
@@ -1146,12 +1145,12 @@ const styles = StyleSheet.create({
   promoTitle: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sg.gold,
     marginBottom: 2,
   },
   promoBody: {
     fontSize: 10,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 15,
   },
   demoNoteEmpty: {
@@ -1164,12 +1163,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.demoNoteBorder,
-    backgroundColor: colors.demoNoteBg,
+    borderColor: 'rgba(111,191,143,0.35)',
+    backgroundColor: 'rgba(111,191,143,0.12)',
   },
   demoNoteText: {
     fontSize: 10,
-    color: colors.demoNoteText,
+    color: sg.success,
     lineHeight: 16,
     textAlign: 'center',
   },

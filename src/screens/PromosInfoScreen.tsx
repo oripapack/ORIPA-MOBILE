@@ -1,11 +1,11 @@
 import React, { useLayoutEffect } from 'react';
+import { sg } from '../tokens/sg';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 
@@ -20,10 +20,10 @@ export function PromosInfoScreen() {
     navigation.setOptions({
       title: t('promosInfo.navTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
 
@@ -50,37 +50,37 @@ export function PromosInfoScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: sg.bg },
   content: { padding: spacing.base, paddingTop: spacing.md },
   body: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 22,
     marginBottom: spacing.md,
   },
   bullet: {
     fontSize: fontSize.sm,
-    color: colors.textPrimary,
+    color: sg.text,
     lineHeight: 22,
     marginBottom: spacing.xs,
   },
   callout: {
     marginTop: spacing.lg,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     padding: spacing.base,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   calloutTitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   calloutText: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
   },
 });

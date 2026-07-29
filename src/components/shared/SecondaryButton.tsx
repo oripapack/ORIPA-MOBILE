@@ -1,8 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
 
 interface Props {
   label: string;
@@ -20,16 +18,18 @@ export function SecondaryButton({ label, onPress, style }: Props) {
 
 const styles = StyleSheet.create({
   button: {
-    height: 52,
-    borderRadius: radius.lg,
+    minHeight: 52,
+    borderRadius: sg.radius.btn,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-    backgroundColor: colors.surfaceMuted,
+    paddingHorizontal: sg.space.lg,
+    backgroundColor: sg.surface2,
+    borderWidth: 1,
+    borderColor: sg.line,
   },
   label: {
-    color: colors.textPrimary,
-    fontSize: fontSize.base,
-    fontFamily: brandFont.semibold,
+    color: sg.text,
+    fontSize: 16,
+    fontFamily: sg.font.bodyMedium,
   },
 });

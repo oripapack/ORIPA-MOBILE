@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { sg } from '../tokens/sg';
 import {
   View,
   Text,
@@ -10,13 +11,12 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { SgScreen } from '../components/ui';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useClerk, useSSO, useSignIn, useSignUp } from '@clerk/clerk-expo';
-import { HomeBackground } from '../components/shared/HomeBackground';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
@@ -242,26 +242,26 @@ export function AuthScreen({
   const isSheet = presentation === 'sheet';
 
   if (!signInLoaded || !signUpLoaded) {
-    return (
-      <View style={isSheet ? styles.sheetOuter : styles.welcomeScreenRoot}>
-        {!isSheet ? <HomeBackground /> : null}
-        <View
-          style={[
-            styles.centered,
-            isSheet && styles.centeredSheet,
-            !isSheet && styles.centeredOnArt,
-            { paddingTop: isSheet ? 0 : insets.top },
-          ]}
-        >
-          <ActivityIndicator size="large" color={isSheet ? colors.red : colors.gold} />
-        </View>
+    const loading = (
+      <View
+        style={[
+          styles.centered,
+          isSheet && styles.centeredSheet,
+          !isSheet && styles.centeredOnArt,
+          { paddingTop: isSheet ? 0 : insets.top },
+        ]}
+      >
+        <ActivityIndicator size="large" color={isSheet ? sg.error : sg.gold} />
       </View>
     );
+    if (isSheet) {
+      return <View style={styles.sheetOuter}>{loading}</View>;
+    }
+    return <SgScreen style={styles.welcomeScreenRoot}>{loading}</SgScreen>;
   }
 
-  return (
-    <View style={isSheet ? styles.sheetOuter : styles.welcomeScreenRoot}>
-      {!isSheet ? <HomeBackground /> : null}
+  const body = (
+    <>
       <KeyboardAvoidingView
         style={[isSheet ? styles.flexSheet : styles.flexOverWelcome]}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -291,7 +291,7 @@ export function AuthScreen({
               accessibilityRole="button"
               accessibilityLabel={t('common.close')}
             >
-              <Ionicons name="close" size={isSheet ? 22 : 26} color={colors.textMuted} />
+              <Ionicons name="close" size={isSheet ? 22 : 26} color={sg.muted} />
             </TouchableOpacity>
           </View>
         ) : null}
@@ -360,7 +360,7 @@ export function AuthScreen({
           accessibilityLabel={t('auth.continueGoogle')}
         >
           {oauthBusy === 'google' ? (
-            <ActivityIndicator color={colors.textPrimary} />
+            <ActivityIndicator color={sg.text} />
           ) : (
             <>
               <Text style={styles.googleIcon}>G</Text>
@@ -378,10 +378,10 @@ export function AuthScreen({
           accessibilityLabel={t('auth.continueApple')}
         >
           {oauthBusy === 'apple' ? (
-            <ActivityIndicator color={colors.white} />
+            <ActivityIndicator color={sg.text} />
           ) : (
             <>
-              <Ionicons name="logo-apple" size={22} color={colors.white} />
+              <Ionicons name="logo-apple" size={22} color={sg.text} />
               <Text style={styles.appleText}>{t('auth.continueApple')}</Text>
             </>
           )}
@@ -439,7 +439,7 @@ export function AuthScreen({
             <TextInput
               style={[styles.input, isSheet && styles.inputSheet]}
               placeholder={t('auth.codePlaceholder')}
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={sg.muted}
               value={code}
               onChangeText={setCode}
               keyboardType="number-pad"
@@ -453,7 +453,7 @@ export function AuthScreen({
               disabled={emailDisabled}
             >
               {emailBusy ? (
-                <ActivityIndicator color={colors.white} />
+                <ActivityIndicator color={sg.onGold} />
               ) : (
                 <Text style={styles.primaryBtnText}>{t('auth.verifyCode')}</Text>
               )}
@@ -467,7 +467,7 @@ export function AuthScreen({
             <TextInput
               style={[styles.input, isSheet && styles.inputSheet]}
               placeholder={t('auth.emailPlaceholder')}
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={sg.muted}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -478,7 +478,7 @@ export function AuthScreen({
             <TextInput
               style={[styles.input, isSheet && styles.inputSheet]}
               placeholder={t('auth.passwordPlaceholder')}
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={sg.muted}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -490,7 +490,7 @@ export function AuthScreen({
               disabled={emailDisabled}
             >
               {emailBusy ? (
-                <ActivityIndicator color={colors.white} />
+                <ActivityIndicator color={sg.onGold} />
               ) : (
                 <Text style={styles.primaryBtnText}>
                   {emailMode === 'signin' ? t('auth.emailSignIn') : t('auth.emailContinue')}
@@ -525,19 +525,24 @@ export function AuthScreen({
         )}
       </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </>
   );
+
+  if (isSheet) {
+    return <View style={styles.sheetOuter}>{body}</View>;
+  }
+  return <SgScreen style={styles.welcomeScreenRoot}>{body}</SgScreen>;
 }
 
 const styles = StyleSheet.create({
   welcomeScreenRoot: {
     flex: 1,
-    backgroundColor: colors.homeGradientBottom,
+    backgroundColor: sg.bg,
   },
   sheetOuter: {
     flex: 1,
   },
-  flex: { flex: 1, backgroundColor: colors.surfaceElevated },
+  flex: { flex: 1, backgroundColor: sg.surface2 },
   flexOverWelcome: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -578,22 +583,22 @@ const styles = StyleSheet.create({
   titleSheet: {
     fontSize: fontSize.xl,
     marginBottom: spacing.sm,
-    color: colors.textPrimary,
-    fontFamily: brandFont.black,
+    color: sg.text,
+    fontFamily: sg.font.display,
   },
   subtitleSheet: {
     marginBottom: spacing.lg,
     lineHeight: 22,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   flowMapLine: {
     alignSelf: 'center',
     textAlign: 'center',
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.accent,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.gold,
     letterSpacing: 0.2,
     marginTop: -spacing.sm,
     marginBottom: spacing.md,
@@ -604,40 +609,40 @@ const styles = StyleSheet.create({
     marginVertical: spacing.lg,
   },
   dividerLineSheet: {
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: sg.line,
   },
   dividerTextSheet: {
-    color: 'rgba(196,181,154,0.75)',
+    color: sg.muted,
   },
   oauthBtnSheet: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.14)',
+    borderColor: sg.line,
   },
   appleBtnSheet: {
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: sg.bg,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: sg.line,
   },
   modeChipSheet: {
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: sg.line,
     paddingVertical: spacing.md,
     minHeight: 50,
   },
   modeChipOnSheet: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255, 203, 5, 0.45)',
-    backgroundColor: 'rgba(255, 203, 5, 0.18)',
+    borderColor: 'rgba(212, 175, 55, 0.45)',
+    backgroundColor: 'rgba(212, 175, 55, 0.18)',
   },
   modeChipTextSheet: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
   },
   modeChipTextOnSheet: {
-    color: colors.textPrimary,
-    fontFamily: brandFont.black,
+    color: sg.text,
+    fontFamily: sg.font.display,
   },
   modeRowSheet: {
     marginTop: spacing.xs,
@@ -645,25 +650,25 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   inputSheet: {
-    backgroundColor: 'rgba(255,255,255,0.04)',
-    borderColor: 'rgba(255,255,255,0.09)',
+    backgroundColor: sg.surface2,
+    borderColor: sg.line,
     borderWidth: StyleSheet.hairlineWidth,
   },
   primaryBtnSheet: {
-    shadowColor: colors.accent,
+    shadowColor: sg.gold,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.22,
     shadowRadius: 10,
     elevation: 6,
   },
   hintSheet: {
-    color: 'rgba(138,123,104,0.85)',
+    color: sg.muted,
   },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
   },
   centeredSheet: {
     flex: 1,
@@ -691,26 +696,26 @@ const styles = StyleSheet.create({
   },
   logoPrimary: {
     fontSize: fontSize.hero,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     letterSpacing: -0.5,
   },
   logoSecondary: {
     fontSize: fontSize.hero,
-    fontFamily: brandFont.black,
-    color: colors.gold,
+    fontFamily: sg.font.display,
+    color: sg.gold,
     letterSpacing: -0.5,
   },
   title: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
@@ -719,35 +724,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderWidth: 1.5,
-    borderColor: colors.border,
+    borderColor: sg.line,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     minHeight: 52,
     marginBottom: spacing.sm,
   },
   appleBtn: {
-    backgroundColor: colors.nearBlack,
-    borderColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
+    borderColor: sg.surface2,
   },
   btnDisabled: {
     opacity: 0.65,
   },
   googleIcon: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: '#4285F4',
   },
   oauthText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
   },
   appleText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
-    color: colors.white,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
   },
   dividerRow: {
     flexDirection: 'row',
@@ -758,12 +763,12 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
   },
   dividerText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   modeRow: {
     flexDirection: 'row',
@@ -775,102 +780,100 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     alignItems: 'center',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
   },
   modeChipOn: {
-    borderColor: colors.goldBorder,
-    backgroundColor: colors.goldSoft,
+    borderColor: 'rgba(212,175,55,0.38)',
+    backgroundColor: 'rgba(212,175,55,0.12)',
   },
   modeChipText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   modeChipTextOn: {
-    color: colors.textPrimary,
+    color: sg.text,
   },
   input: {
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     borderRadius: radius.md,
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    fontFamily: brandFont.regular,
-    color: colors.textPrimary,
+    fontFamily: sg.font.body,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   primaryBtn: {
-    backgroundColor: colors.accentDark,
+    backgroundColor: sg.gold,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
     minHeight: 52,
     justifyContent: 'center',
     marginTop: spacing.xs,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.12)',
   },
   primaryBtnText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.white,
+    fontFamily: sg.font.bodyBold,
+    color: sg.onGold,
   },
   verifyHint: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     marginBottom: spacing.sm,
     lineHeight: 20,
   },
   link: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.accent,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.gold,
     textAlign: 'center',
   },
   error: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.redDark,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.error,
     lineHeight: 20,
   },
   hint: {
     marginTop: spacing.xl,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 18,
   },
   promoBanner: {
-    backgroundColor: 'rgba(248, 250, 252, 0.97)',
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(15, 23, 42, 0.12)',
+    borderColor: sg.line,
     padding: spacing.base,
     marginBottom: spacing.lg,
   },
   /** Full-screen auth on jewel background — no “light card on dark” clash */
   promoBannerOnArt: {
-    backgroundColor: colors.surfaceMuted,
-    borderColor: colors.goldBorderMuted,
+    backgroundColor: sg.surface,
+    borderColor: 'rgba(212,175,55,0.30)',
     borderWidth: StyleSheet.hairlineWidth,
   },
   promoBannerTitleOnArt: {
-    color: colors.gold,
+    color: sg.gold,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     marginBottom: spacing.sm,
     letterSpacing: 0.5,
   },
   promoBannerBodyOnArt: {
-    color: colors.textSecondary,
+    color: sg.muted,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     lineHeight: 22,
   },
   /** Taller card, clearer separation from OAuth row on glass sheets */
@@ -878,8 +881,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
     marginBottom: spacing.xl,
-    borderColor: colors.accentBorder,
-    backgroundColor: '#F8FAFC',
+    borderColor: sg.line,
+    backgroundColor: sg.surface,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -892,27 +895,27 @@ const styles = StyleSheet.create({
   },
   promoBannerTitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
-    color: '#0F172A',
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.sm,
     letterSpacing: 0.4,
   },
   promoBannerTitleSheet: {
     fontSize: fontSize.md,
     letterSpacing: 0.8,
-    color: '#0B1120',
+    color: sg.text,
   },
   promoBannerBody: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: '#475569',
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     lineHeight: 22,
   },
   promoBannerBodySheet: {
     fontSize: fontSize.base,
     lineHeight: 24,
-    color: '#334155',
-    fontFamily: brandFont.medium,
+    color: sg.muted,
+    fontFamily: sg.font.bodyMedium,
   },
   skipBtn: {
     marginTop: spacing.xl,
@@ -921,7 +924,7 @@ const styles = StyleSheet.create({
   },
   skipBtnText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
 });

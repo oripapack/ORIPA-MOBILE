@@ -1,44 +1,38 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, ViewStyle, ActivityIndicator } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
 
 interface Props {
   label: string;
   onPress: () => void;
-  variant?: 'red' | 'black';
+  /** @deprecated Prefer default gold CTA. `red` maps to line/secondary for N2. */
+  variant?: 'red' | 'black' | 'gold' | 'line';
   disabled?: boolean;
   loading?: boolean;
   style?: ViewStyle;
 }
 
-export function PrimaryButton({ label, onPress, variant = 'black', disabled, loading, style }: Props) {
-  const isRed = variant === 'red';
+/** N2 primary CTA — gold fill, black label (§4). Prefer `SgButton` for new code. */
+export function PrimaryButton({ label, onPress, variant = 'gold', disabled, loading, style }: Props) {
+  const isLine = variant === 'red' || variant === 'line';
 
   return (
     <TouchableOpacity
-      style={[styles.button, disabled && styles.disabled, style]}
+      style={[
+        styles.button,
+        isLine ? styles.line : styles.gold,
+        disabled && styles.disabled,
+        style,
+      ]}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.88}
     >
-      {isRed ? (
-        <View style={[styles.fill, { backgroundColor: colors.red }]} />
-      ) : (
-        <LinearGradient
-          colors={[colors.goldDark, colors.gold]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.fill}
-        />
-      )}
       <View style={styles.labelWrap} pointerEvents="none">
         {loading ? (
-          <ActivityIndicator color={colors.white} size="small" />
+          <ActivityIndicator color={isLine ? sg.text : sg.onGold} size="small" />
         ) : (
-          <Text style={[styles.label, !isRed && styles.labelOnGreen]}>{label}</Text>
+          <Text style={[styles.label, isLine && styles.labelLine]}>{label}</Text>
         )}
       </View>
     </TouchableOpacity>
@@ -47,29 +41,34 @@ export function PrimaryButton({ label, onPress, variant = 'black', disabled, loa
 
 const styles = StyleSheet.create({
   button: {
-    height: 52,
-    borderRadius: radius.lg,
+    minHeight: 52,
+    borderRadius: sg.radius.btn,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.lg,
   },
-  fill: {
-    ...StyleSheet.absoluteFillObject,
+  gold: {
+    backgroundColor: sg.gold,
+  },
+  line: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: sg.line,
   },
   labelWrap: {
-    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
   },
   label: {
-    color: colors.white,
-    fontSize: fontSize.base,
-    fontFamily: brandFont.bold,
-    letterSpacing: 0.3,
+    color: sg.onGold,
+    fontSize: 16,
+    fontFamily: sg.font.bodyBold,
+    letterSpacing: 0.2,
   },
-  labelOnGreen: {
-    color: colors.ink,
+  labelLine: {
+    color: sg.text,
   },
   disabled: {
     opacity: 0.4,

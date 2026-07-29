@@ -1,9 +1,9 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -41,42 +41,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
   },
   card: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.xl,
     padding: spacing.xl,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.gold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginBottom: spacing.sm,
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   body: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 22,
     marginBottom: spacing.xl,
   },
   btn: {
-    backgroundColor: colors.red,
+    backgroundColor: sg.gold,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
   },
   btnText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.white,
+    fontFamily: sg.font.bodyBold,
+    color: sg.onGold,
   },
 });

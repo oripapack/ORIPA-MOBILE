@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react';
+import { sg } from '../tokens/sg';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { SgScreen } from '../components/ui';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
 import { screenRoot, screenScroll, screenHeader } from '../tokens/layout';
 import { ListRow } from '../components/shared/ListRow';
@@ -94,7 +95,7 @@ export function SettingsScreen() {
   };
 
   return (
-    <View style={styles.screenRoot}>
+    <SgScreen>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} style={styles.backBtn}>
           <Text style={styles.backChevron}>‹</Text>
@@ -118,7 +119,7 @@ export function SettingsScreen() {
               key={key}
               label={t(`accountRows.${key}`)}
               icon={
-                <Ionicons name={accountIcons[key]} size={ROW_ICON_SIZE} color={colors.textMuted} />
+                <Ionicons name={accountIcons[key]} size={ROW_ICON_SIZE} color={sg.muted} />
               }
               onPress={() => onAccountRow(key)}
             />
@@ -132,7 +133,7 @@ export function SettingsScreen() {
               key={key}
               label={t(`supportRows.${key}`)}
               icon={
-                <Ionicons name={supportIcons[key]} size={ROW_ICON_SIZE} color={colors.textMuted} />
+                <Ionicons name={supportIcons[key]} size={ROW_ICON_SIZE} color={sg.muted} />
               }
               onPress={() => onSupportRow(key)}
             />
@@ -143,22 +144,22 @@ export function SettingsScreen() {
         <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
           <ListRow
             label={t('legalRows.terms')}
-            icon={<Ionicons name="document-text-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
+            icon={<Ionicons name="document-text-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
             onPress={() => setLegalSheet('terms')}
           />
           <ListRow
             label={t('legalRows.privacy')}
-            icon={<Ionicons name="lock-closed-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
+            icon={<Ionicons name="lock-closed-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
             onPress={() => setLegalSheet('privacy')}
           />
           <ListRow
             label={t('legalRows.promo')}
-            icon={<Ionicons name="megaphone-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
+            icon={<Ionicons name="megaphone-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
             onPress={() => setLegalSheet('promo')}
           />
           <ListRow
             label={t('legalRows.payment')}
-            icon={<Ionicons name="card-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
+            icon={<Ionicons name="card-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
             onPress={() => setLegalSheet('payment')}
           />
         </VaultFramedCard>
@@ -167,7 +168,7 @@ export function SettingsScreen() {
         <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
           <ListRow
             label={t('account.languageRegion')}
-            icon={<Ionicons name="globe-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
+            icon={<Ionicons name="globe-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
             rightContent={<Text style={styles.localeValue}>{localeSummary}</Text>}
             onPress={() => setLocaleOpen(true)}
           />
@@ -181,7 +182,7 @@ export function SettingsScreen() {
             <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
               <ListRow
                 label={t('settings.devResetLocalOnboarding')}
-                icon={<Ionicons name="refresh-outline" size={ROW_ICON_SIZE} color={colors.textMuted} />}
+                icon={<Ionicons name="refresh-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
                 onPress={() => {
                   confirmUserAction({
                     title: t('settings.devResetAlertTitle'),
@@ -217,14 +218,13 @@ export function SettingsScreen() {
         region={region}
         onApply={(l, r) => void saveLocale(l, r)}
       />
-    </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
   screenRoot: {
     ...screenRoot,
-    backgroundColor: colors.background,
   },
   header: {
     ...screenHeader,
@@ -232,9 +232,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.sm,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: sg.line,
   },
   backBtn: {
     width: 40,
@@ -244,22 +244,22 @@ const styles = StyleSheet.create({
   },
   backChevron: {
     fontSize: 32,
-    color: colors.textPrimary,
+    color: sg.text,
     marginTop: -4,
   },
   headerTitle: {
     flex: 1,
     textAlign: 'center',
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   headerSpacer: {
     width: 40,
   },
   container: {
     ...screenScroll,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
   },
   content: {
     paddingHorizontal: spacing.base,
@@ -267,8 +267,8 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginTop: spacing.xl,
@@ -286,15 +286,15 @@ const styles = StyleSheet.create({
   },
   localeValue: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     maxWidth: 160,
     textAlign: 'right',
   },
   version: {
     textAlign: 'center',
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     marginTop: spacing.xl,
   },
 });

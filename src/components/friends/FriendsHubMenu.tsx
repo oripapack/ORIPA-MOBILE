@@ -11,7 +11,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
@@ -57,10 +57,10 @@ export function FriendsHubMenu({ visible, onClose, onSelect }: Props) {
               accessibilityLabel={t(`friends.hubMenu.${row.action}`)}
             >
               <View style={styles.rowIcon}>
-                <Ionicons name={row.icon} size={22} color={colors.gold} />
+                <Ionicons name={row.icon} size={22} color={sg.gold} />
               </View>
               <Text style={styles.rowLabel}>{t(`friends.hubMenu.${row.action}`)}</Text>
-              <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+              <Ionicons name="chevron-forward" size={18} color={sg.muted} />
             </TouchableOpacity>
           ))}
           <TouchableOpacity style={styles.cancel} onPress={onClose} activeOpacity={0.85}>
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     paddingHorizontal: spacing.base,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderRightWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   sheetTitle: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
     marginBottom: spacing.md,
@@ -121,23 +121,23 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     paddingVertical: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   rowIcon: {
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: colors.goldSoft,
+    backgroundColor: 'rgba(212,175,55,0.14)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: colors.demoNoteBorder,
+    borderColor: 'rgba(111,191,143,0.35)',
   },
   rowLabel: {
     flex: 1,
     fontSize: fontSize.md,
     fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   cancel: {
     marginTop: spacing.sm,
@@ -147,6 +147,6 @@ const styles = StyleSheet.create({
   cancelText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
   },
 });

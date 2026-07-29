@@ -1,4 +1,5 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import {
   Modal,
   View,
@@ -12,8 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SocialUserProfile } from '../../data/socialMock';
 import { buildCompareRows } from '../../data/socialMock';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { formatUsd } from '../../lib/socialFormat';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   back: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   backTap: { ...StyleSheet.absoluteFillObject },
   sheet: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     paddingHorizontal: spacing.lg,
@@ -108,18 +108,18 @@ const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
     marginBottom: spacing.md,
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   sub: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.lg,
     lineHeight: 20,
   },
@@ -129,21 +129,21 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     gap: spacing.sm,
   },
-  headName: { flex: 1, fontSize: fontSize.sm, fontFamily: brandFont.bold, color: colors.textPrimary },
+  headName: { flex: 1, fontSize: fontSize.sm, fontFamily: sg.font.bodyBold, color: sg.text },
   headYou: { textAlign: 'left' },
   headThem: { textAlign: 'right' },
   vs: {
     fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.textMuted,
+    fontFamily: sg.font.display,
+    color: sg.muted,
     letterSpacing: 1,
   },
   scroll: { maxHeight: 360 },
   row: { marginBottom: spacing.md },
   rowLabel: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
     marginBottom: spacing.xs,
@@ -161,8 +161,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(22,163,74,0.35)',
   },
   lose: {
-    backgroundColor: colors.surfaceMuted,
-    borderColor: colors.border,
+    backgroundColor: sg.surface,
+    borderColor: sg.line,
   },
   tie: {
     backgroundColor: 'rgba(59,130,246,0.08)',
@@ -170,16 +170,16 @@ const styles = StyleSheet.create({
   },
   cellText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
   },
   done: {
     marginTop: spacing.md,
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  doneText: { color: colors.white, fontFamily: brandFont.black, fontSize: fontSize.md },
+  doneText: { color: sg.text, fontFamily: sg.font.display, fontSize: fontSize.md },
 });

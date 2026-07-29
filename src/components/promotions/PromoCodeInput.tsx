@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { sg } from '../../tokens/sg';
 import {
   View,
   Text,
@@ -9,8 +10,7 @@ import {
   Keyboard,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -45,7 +45,7 @@ export function PromoCodeInput({ onSubmit, disabled }: Props) {
           value={value}
           onChangeText={setValue}
           placeholder={t('promotions.codePlaceholder')}
-          placeholderTextColor={colors.textMuted}
+          placeholderTextColor={sg.muted}
           autoCapitalize="characters"
           autoCorrect={false}
           editable={!disabled && !busy}
@@ -61,7 +61,7 @@ export function PromoCodeInput({ onSubmit, disabled }: Props) {
           accessibilityLabel={t('promotions.applyCode')}
         >
           {busy ? (
-            <ActivityIndicator color={colors.white} size="small" />
+            <ActivityIndicator color={sg.onGold} size="small" />
           ) : (
             <Text style={styles.btnText}>{t('promotions.apply')}</Text>
           )}
@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 0.6,
     marginBottom: spacing.sm,
     textTransform: 'uppercase',
@@ -91,17 +91,17 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     borderRadius: radius.md,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
-    backgroundColor: colors.surfaceMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
+    backgroundColor: sg.surface,
   },
   btn: {
-    backgroundColor: colors.red,
+    backgroundColor: sg.gold,
     borderRadius: radius.md,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: colors.white,
+    fontFamily: sg.font.bodyBold,
+    color: sg.onGold,
   },
 });

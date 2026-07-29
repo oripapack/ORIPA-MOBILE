@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { CollectorQuestDef } from '../../data/collectorQuests';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     paddingBottom: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   questRowCompact: {
     marginBottom: spacing.sm,
@@ -87,19 +87,19 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     fontSize: 9,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   questTitle: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     lineHeight: 20,
   },
   questDesc: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.sm,
   },
@@ -107,35 +107,35 @@ const styles = StyleSheet.create({
   miniTrack: {
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     overflow: 'hidden',
   },
   miniFill: {
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.accentDark,
+    backgroundColor: sg.gold,
   },
   questMeta: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 0.3,
   },
   claimBtn: {
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     paddingVertical: 6,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.md,
   },
   claimBtnText: {
-    color: colors.white,
+    color: sg.text,
     fontSize: 10,
     fontFamily: brandFont.bold,
   },
   claimedPill: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     paddingVertical: 6,
   },
 });

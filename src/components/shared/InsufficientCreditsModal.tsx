@@ -3,8 +3,8 @@ import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from './PrimaryButton';
 import { SecondaryButton } from './SecondaryButton';
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   modal: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderRadius: radius.xxl,
     padding: spacing.xl,
     width: '100%',
@@ -109,27 +109,27 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: radius.full,
-    backgroundColor: '#FFF7ED',
+    backgroundColor: 'rgba(212,175,55,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.base,
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     textAlign: 'center',
     marginBottom: spacing.sm,
   },
   body: {
     fontSize: fontSize.base,
-    color: colors.textSecondary,
+    color: sg.muted,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: spacing.base,
   },
   packInfo: {
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     borderRadius: radius.lg,
     padding: spacing.base,
     marginBottom: spacing.base,
@@ -137,15 +137,15 @@ const styles = StyleSheet.create({
   },
   packInfoLabel: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
-    fontFamily: brandFont.medium,
+    color: sg.muted,
+    fontFamily: sg.font.bodyMedium,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   packInfoValue: {
     fontSize: fontSize.sm,
-    color: colors.textPrimary,
-    fontFamily: brandFont.semibold,
+    color: sg.text,
+    fontFamily: sg.font.bodyMedium,
     marginBottom: spacing.xs,
   },
   primaryBtn: {

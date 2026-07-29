@@ -1,4 +1,5 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
+import type { ResultPullData, MockResultVariant } from '../data/mockResultPull';
 
 export type RootTabParamList = {
   Marketplace: undefined;
@@ -14,6 +15,17 @@ export type RootStackParamList = {
   /** Dev-only component gallery (EXPO_PUBLIC_DEV_SCREEN=UiGallery). */
   DevUiGallery: undefined;
   PackDetails: { packId: string };
+  /**
+   * Post-opening pull record. Not wired to the opening flow yet — without
+   * params it renders MOCK data for review; `pullIds` enables finalize actions.
+   */
+  Result:
+    | {
+        pull?: ResultPullData;
+        pullIds?: string[];
+        mock?: MockResultVariant;
+      }
+    | undefined;
   /** Unified checkout: in-app credits (digital) vs marketplace physical goods (Stripe server flow). */
   PaymentPortal:
     | {

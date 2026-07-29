@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
+import { sg } from '../../tokens/sg';
 import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '../../tokens/colors';
 import { radius, spacing } from '../../tokens/spacing';
 
 const BR = 10;
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.border,
-    shadowColor: colors.shadowStrong,
+    borderColor: sg.line,
+    shadowColor: 'rgba(0,0,0,0.72)',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 1,
     shadowRadius: 18,
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     top: 14,
     bottom: 14,
     width: 3,
-    backgroundColor: colors.accent,
+    backgroundColor: sg.neon,
     opacity: 0.45,
     zIndex: 2,
   },
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderTopWidth: 1.5,
     borderLeftWidth: 1.5,
-    borderColor: colors.accentBorder,
+    borderColor: sg.line,
     zIndex: 1,
   },
   bracketBR: {
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     height: BR,
     borderBottomWidth: 1.5,
     borderRightWidth: 1.5,
-    borderColor: colors.accentBorder,
+    borderColor: sg.line,
     zIndex: 1,
   },
   inner: {

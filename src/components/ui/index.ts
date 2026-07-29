@@ -5,5 +5,6 @@
 export { SgButton } from './SgButton';
 export { SgCard } from './SgCard';
 export { SgData } from './SgData';
+export { SgScreen } from './SgScreen';
 export { SgSectionHeader } from './SgSectionHeader';
 export { SgTierTag } from './SgTierTag';

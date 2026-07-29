@@ -12,10 +12,9 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { HomeBackground } from '../shared/HomeBackground';
+import { sg } from '../../tokens/sg';
 import { SplashCardFrame } from './SplashCardFrame';
 import { SplashLogoReveal } from './SplashLogoReveal';
-import { colors } from '../../tokens/colors';
 
 const { width: SW } = Dimensions.get('window');
 
@@ -145,9 +144,7 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
 
   return (
     <Animated.View style={[styles.root, rootStyle]} pointerEvents="auto">
-      <View style={styles.artLayer} pointerEvents="none">
-        <HomeBackground />
-      </View>
+      <View style={styles.artLayer} pointerEvents="none" />
 
       <Animated.View style={[styles.spotlight, spotlightStyle]} pointerEvents="none">
         <LinearGradient
@@ -206,6 +203,7 @@ const styles = StyleSheet.create({
   },
   artLayer: {
     ...StyleSheet.absoluteFillObject,
+    backgroundColor: sg.bg,
   },
   spotlight: {
     position: 'absolute',

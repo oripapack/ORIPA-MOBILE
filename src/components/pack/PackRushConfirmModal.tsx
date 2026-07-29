@@ -2,8 +2,8 @@ import React from 'react';
 import { Modal, View, Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -47,68 +47,68 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.58)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: spacing.xl,
+    padding: sg.space.xl,
   },
   sheet: {
     width: '100%',
     maxWidth: 360,
     borderRadius: radius.xxl,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
-    backgroundColor: colors.surfaceElevated,
-    padding: spacing.xl,
+    borderColor: sg.line,
+    backgroundColor: sg.surface,
+    padding: sg.space.xl,
   },
   kicker: {
     alignSelf: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.gold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     textAlign: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   body: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   disclosure: {
     fontSize: 13,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     textAlign: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   primary: {
     height: 50,
-    borderRadius: radius.lg,
-    backgroundColor: colors.gold,
+    borderRadius: sg.radius.btn,
+    backgroundColor: sg.gold,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   primaryLabel: {
     fontSize: fontSize.base,
-    fontFamily: brandFont.black,
-    color: colors.ink,
+    fontFamily: sg.font.bodyBold,
+    color: sg.onGold,
   },
   secondary: {
-    paddingVertical: spacing.sm,
+    paddingVertical: sg.space.sm,
     alignItems: 'center',
   },
   secondaryLabel: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
   },
 });

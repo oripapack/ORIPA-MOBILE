@@ -1,4 +1,5 @@
 import React, { useCallback, useLayoutEffect, useState } from 'react';
+import { sg } from '../tokens/sg';
 import {
   View,
   Text,
@@ -12,8 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { SHIPPING_ADDRESS_STORAGE_KEY } from '../lib/shippingAddress';
@@ -54,10 +54,10 @@ export function ShippingAddressScreen() {
     navigation.setOptions({
       title: t('shippingAddress.navTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
 
@@ -97,7 +97,7 @@ export function ShippingAddressScreen() {
         value={form[key]}
         onChangeText={(v) => setForm((s) => ({ ...s, [key]: v }))}
         placeholder={t(`shippingAddress.placeholders.${key}`)}
-        placeholderTextColor={colors.textMuted}
+        placeholderTextColor={sg.muted}
         style={[styles.input, multiline && styles.inputMulti]}
         multiline={multiline}
         textAlignVertical={multiline ? 'top' : 'center'}
@@ -106,7 +106,7 @@ export function ShippingAddressScreen() {
   );
 
   if (!loaded) {
-    return <View style={[styles.container, { backgroundColor: colors.background }]} />;
+    return <View style={[styles.container, { backgroundColor: sg.bg }]} />;
   }
 
   return (
@@ -134,30 +134,30 @@ export function ShippingAddressScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: sg.bg },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.lg,
   },
   field: { marginBottom: spacing.md },
   label: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     marginBottom: spacing.xs,
   },
   input: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.sm,
     fontSize: fontSize.base,
-    color: colors.textPrimary,
+    color: sg.text,
     minHeight: 48,
   },
   inputMulti: { minHeight: 72, paddingTop: spacing.sm },
@@ -165,14 +165,14 @@ const styles = StyleSheet.create({
   col: { flex: 1 },
   saveBtn: {
     marginTop: spacing.md,
-    backgroundColor: colors.red,
+    backgroundColor: sg.gold,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
   },
   saveBtnText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.white,
+    fontFamily: sg.font.bodyBold,
+    color: sg.onGold,
   },
 });

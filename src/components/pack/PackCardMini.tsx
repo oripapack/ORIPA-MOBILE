@@ -2,9 +2,8 @@ import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import type { Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { getMockPackTopHit } from '../../data/mockTopHits';
@@ -14,7 +13,7 @@ export function PackCardMini({ pack }: { pack: Pack }) {
   const { t } = useTranslation();
   const loc = getLocalizedPackFields(pack, t);
   const topHit = getMockPackTopHit(pack);
-  const accent = pack.imageColor ?? colors.nearBlack;
+  const accent = pack.imageColor ?? sg.bg;
 
   const meta = useMemo(() => {
     const tag = pack.tags?.[0];
@@ -52,11 +51,11 @@ export function PackCardMini({ pack }: { pack: Pack }) {
 const styles = StyleSheet.create({
   card: {
     width: 168,
-    borderRadius: radius.xl,
+    borderRadius: sg.radius.panel,
     overflow: 'hidden',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   pressed: {
     transform: [{ scale: 0.98 }],
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
   thumb: {
     height: 108,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
+    borderBottomColor: sg.line,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -74,22 +73,21 @@ const styles = StyleSheet.create({
   },
   thumbEmoji: {
     fontSize: 28,
-    color: '#fff',
   },
   body: {
-    padding: spacing.sm,
+    padding: sg.space.sm,
     gap: 4,
   },
   title: {
     fontSize: 12,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     lineHeight: 16,
   },
   sub: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
+    fontVariant: [...sg.numeric],
   },
 });
-

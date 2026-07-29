@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { MarketplaceListing } from '../../data/marketplace';
@@ -130,12 +130,12 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: colors.accentBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
   },
   regionPillText: {
     fontSize: 8,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sg.gold,
     letterSpacing: 0.3,
   },
   badgePill: {
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     left: 6,
     bottom: 6,
     zIndex: 1,
-    backgroundColor: colors.red,
+    backgroundColor: sg.error,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderRadius: radius.sm,
@@ -158,25 +158,25 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 8,
     fontFamily: brandFont.bold,
-    color: colors.white,
+    color: sg.text,
     letterSpacing: 0.3,
   },
   title: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     lineHeight: 15,
     minHeight: 30,
   },
   subtitle: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: sg.muted,
     marginTop: 2,
   },
   condition: {
     fontSize: 9,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginTop: 3,
     letterSpacing: 0.2,
     textTransform: 'uppercase',
@@ -184,16 +184,16 @@ const styles = StyleSheet.create({
   price: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginTop: 4,
   },
   footerHint: {
     fontSize: 9,
-    color: colors.textMuted,
+    color: sg.muted,
     marginTop: 3,
     fontFamily: brandFont.medium,
   },
   footerDelta: {
-    color: colors.chipBestValueText,
+    color: sg.success,
   },
 });

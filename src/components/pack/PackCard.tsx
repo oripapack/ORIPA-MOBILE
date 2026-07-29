@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { ChipTagType, Pack, packImageSource } from '../../data/mockPacks';
 import { getMockPackTopHit } from '../../data/mockTopHits';
 import { getMockPackOdds } from '../../data/mockPackOdds';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 import { useMembershipSimulationStore } from '../../store/membershipSimulationStore';
@@ -122,7 +122,7 @@ export function PackCard({ pack, onPress }: Props) {
         accessibilityRole="button"
         accessibilityLabel={loc.title}
       >
-        <View style={[styles.hero, { backgroundColor: pack.imageColor ?? colors.surfaceMuted }]}>
+        <View style={[styles.hero, { backgroundColor: pack.imageColor ?? sg.surface2 }]}>
           {pack.imageUrl != null ? (
             <>
               <Image
@@ -295,13 +295,13 @@ export function PackCard({ pack, onPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderRadius: CARD_RADIUS,
     marginHorizontal: spacing.base,
     marginBottom: spacing.xl,
     overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   cardMemberLocked: {
     opacity: 0.92,
@@ -341,8 +341,8 @@ const styles = StyleSheet.create({
   },
   badgeMainText: {
     fontSize: 10,
-    fontFamily: brandFont.semibold,
-    color: colors.textOnDark,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
     letterSpacing: 0.8,
   },
   badgeSecondary: {
@@ -355,8 +355,9 @@ const styles = StyleSheet.create({
   },
   badgeSecondaryText: {
     fontSize: 10,
-    fontFamily: brandFont.semibold,
-    color: 'rgba(255,255,255,0.9)',
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
+    opacity: 0.9,
     letterSpacing: 0.6,
   },
   memberLockOverlay: {
@@ -372,45 +373,45 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     backgroundColor: 'rgba(0,0,0,0.78)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   memberLockPillText: {
     fontSize: 10,
-    fontFamily: brandFont.semibold,
-    color: colors.textOnDark,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
     letterSpacing: 0.4,
   },
   meta: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.lg,
     paddingBottom: spacing.lg + 2,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
   },
   productTitle: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
     lineHeight: 22,
     marginBottom: spacing.sm,
     letterSpacing: -0.2,
   },
   productSubtitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.md,
   },
   topHitWrap: {
     borderRadius: radius.md,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceMuted,
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
     padding: spacing.md,
     marginBottom: spacing.lg,
   },
   topHitWrapChase: {
-    borderColor: colors.accentBorder,
+    borderColor: 'rgba(212,175,55,0.35)',
   },
   topHitHeader: {
     flexDirection: 'row',
@@ -420,8 +421,8 @@ const styles = StyleSheet.create({
   },
   topHitLabel: {
     fontSize: 10,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
@@ -429,14 +430,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   chaseText: {
     fontSize: 10,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
     letterSpacing: 0.6,
   },
   topHitRow: {
@@ -448,7 +449,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 56,
     borderRadius: radius.sm,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
   },
   topHitCopy: {
     flex: 1,
@@ -456,8 +457,8 @@ const styles = StyleSheet.create({
   },
   topHitName: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
     marginBottom: 6,
   },
   topHitMetaRow: {
@@ -470,50 +471,50 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   rarityPillChase: {
-    borderColor: colors.accentBorder,
+    borderColor: 'rgba(212,175,55,0.35)',
   },
   rarityText: {
     fontSize: 10,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   rarityTextChase: {
-    color: colors.accentDark,
+    color: sg.gold,
   },
   topHitValue: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
   },
   metadataRow: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     marginBottom: spacing.lg,
     lineHeight: 20,
   },
   limitText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
-    color: colors.red,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.error,
     marginBottom: spacing.sm,
   },
   guaranteeText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.lg,
   },
   primaryCta: {
     height: 48,
     borderRadius: radius.md,
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.gold,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -521,9 +522,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   primaryCtaText: {
-    color: colors.white,
+    color: sg.onGold,
     fontSize: fontSize.base,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     letterSpacing: 0.2,
   },
   openOptionsWrap: {
@@ -538,8 +539,8 @@ const styles = StyleSheet.create({
     minHeight: 54,
     borderRadius: radius.md,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceMuted,
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.sm,
@@ -549,14 +550,14 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   quickCtaTitle: {
-    color: colors.textPrimary,
+    color: sg.text,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
   },
   quickCtaSub: {
-    color: colors.textSecondary,
+    color: sg.muted,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     marginTop: 2,
   },
   oddsLinkHit: {
@@ -566,8 +567,8 @@ const styles = StyleSheet.create({
   },
   oddsLink: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.accent,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.gold,
     textDecorationLine: 'underline',
   },
 });

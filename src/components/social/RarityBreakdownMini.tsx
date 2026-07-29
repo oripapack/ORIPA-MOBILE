@@ -1,8 +1,8 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet } from 'react-native';
 import type { RarityBreakdown } from '../../data/socialMock';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { rarityColor } from './rarityStyles';
 import type { SocialRarity } from '../../data/socialMock';
@@ -46,11 +46,11 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: radius.full,
     overflow: 'hidden',
-    backgroundColor: colors.borderLight,
+    backgroundColor: sg.line,
   },
   seg: { height: '100%' },
   legend: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   legRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   dot: { width: 6, height: 6, borderRadius: 3 },
-  legText: { fontSize: fontSize.xs, color: colors.textSecondary, fontFamily: brandFont.medium },
+  legText: { fontSize: fontSize.xs, color: sg.muted, fontFamily: sg.font.bodyMedium },
 });

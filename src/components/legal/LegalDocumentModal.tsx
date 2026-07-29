@@ -1,4 +1,5 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import {
   Modal,
   View,
@@ -10,8 +11,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 interface Props {
@@ -49,7 +49,7 @@ export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
   },
   header: {
     flexDirection: 'row',
@@ -58,13 +58,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: sg.line,
   },
   title: {
     flex: 1,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     paddingRight: spacing.sm,
   },
   closeBtn: {
@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
   },
   closeLabel: {
     fontSize: fontSize.base,
-    fontFamily: brandFont.bold,
-    color: colors.red,
+    fontFamily: sg.font.bodyBold,
+    color: sg.error,
   },
   scroll: {
     flex: 1,
@@ -87,6 +87,6 @@ const styles = StyleSheet.create({
   body: {
     fontSize: fontSize.sm,
     lineHeight: 22,
-    color: colors.textPrimary,
+    color: sg.text,
   },
 });

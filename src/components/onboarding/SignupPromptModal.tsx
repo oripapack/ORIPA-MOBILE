@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
@@ -44,7 +43,6 @@ export function SignupPromptModal() {
             style={[styles.card, { paddingBottom: insets.bottom + spacing.lg }]}
             onPress={(e) => e.stopPropagation()}
           >
-            <LinearGradient colors={['#1A1F1C', '#121614']} style={StyleSheet.absoluteFillObject} />
             <View style={styles.accent} />
             <Text style={styles.eyebrow}>{t('onboarding.promptEyebrow')}</Text>
             <Text style={styles.title}>{t('onboarding.promptTitle')}</Text>
@@ -81,8 +79,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.xl,
+    backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: sg.line,
   },
   accent: {
     position: 'absolute',
@@ -90,27 +89,27 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 3,
-    backgroundColor: colors.gold,
+    backgroundColor: sg.gold,
     opacity: 0.85,
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.gold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: spacing.sm,
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   body: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
@@ -120,8 +119,8 @@ const styles = StyleSheet.create({
   later: {
     marginTop: spacing.lg,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     textAlign: 'center',
   },
 });

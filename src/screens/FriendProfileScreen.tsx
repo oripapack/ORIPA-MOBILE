@@ -1,4 +1,5 @@
 import React, { useLayoutEffect, useMemo, useState } from 'react';
+import { sg } from '../tokens/sg';
 import {
   View,
   Text,
@@ -10,8 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
@@ -62,10 +62,10 @@ export function FriendProfileScreen() {
     navigation.setOptions({
       title: profile ? `@${profile.username}` : t('social.profileNavTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, profile, t]);
 
@@ -215,24 +215,24 @@ export function FriendProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background },
+  root: { flex: 1, backgroundColor: sg.bg },
   scroll: { paddingHorizontal: spacing.base },
-  center: { flex: 1, paddingHorizontal: spacing.lg, backgroundColor: colors.background },
+  center: { flex: 1, paddingHorizontal: spacing.lg, backgroundColor: sg.bg },
   errTitle: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
-  errBody: { fontSize: fontSize.sm, color: colors.textSecondary, lineHeight: 20, marginBottom: spacing.lg },
+  errBody: { fontSize: fontSize.sm, color: sg.muted, lineHeight: 20, marginBottom: spacing.lg },
   errBtn: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
     borderRadius: radius.lg,
   },
-  errBtnText: { color: colors.white, fontFamily: brandFont.bold },
+  errBtnText: { color: sg.text, fontFamily: sg.font.bodyBold },
   hero: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
   avatar: {
     fontSize: 48,
@@ -240,28 +240,28 @@ const styles = StyleSheet.create({
     height: 72,
     textAlign: 'center',
     lineHeight: 72,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: 36,
     overflow: 'hidden',
     borderWidth: 2,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   heroText: { flex: 1, minWidth: 0 },
-  dn: { fontSize: fontSize.xl, fontFamily: brandFont.black, color: colors.textPrimary },
-  un: { fontSize: fontSize.sm, fontFamily: brandFont.semibold, color: colors.textMuted, marginTop: 2 },
+  dn: { fontSize: fontSize.xl, fontFamily: sg.font.display, color: sg.text },
+  un: { fontSize: fontSize.sm, fontFamily: sg.font.bodyMedium, color: sg.muted, marginTop: 2 },
   status: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.red,
+    fontFamily: sg.font.bodyBold,
+    color: sg.error,
     marginTop: spacing.xs,
   },
   bio: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 21,
     marginBottom: spacing.sm,
   },
-  joined: { fontSize: fontSize.xs, color: colors.textMuted, marginBottom: spacing.lg },
+  joined: { fontSize: fontSize.xs, color: sg.muted, marginBottom: spacing.lg },
   statGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -270,58 +270,58 @@ const styles = StyleSheet.create({
   },
   statCell: {
     width: '47%',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     padding: spacing.md,
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
   },
-  statVal: { fontSize: fontSize.lg, fontFamily: brandFont.black, color: colors.textPrimary },
-  statLab: { fontSize: 10, fontFamily: brandFont.bold, color: colors.textMuted, marginTop: 4, letterSpacing: 0.5 },
+  statVal: { fontSize: fontSize.lg, fontFamily: sg.font.display, color: sg.text },
+  statLab: { fontSize: 10, fontFamily: sg.font.bodyBold, color: sg.muted, marginTop: 4, letterSpacing: 0.5 },
   section: {
     fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.textMuted,
+    fontFamily: sg.font.display,
+    color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: spacing.md,
     marginTop: spacing.sm,
   },
   bestCard: {
-    backgroundColor: colors.casinoFelt,
+    backgroundColor: sg.surface,
     borderRadius: radius.xl,
     padding: spacing.lg,
     marginBottom: spacing.lg,
     borderWidth: 1,
-    borderColor: colors.casinoFeltBorder,
+    borderColor: sg.line,
   },
-  bestName: { fontSize: fontSize.lg, fontFamily: brandFont.black, color: colors.textPrimary, marginBottom: spacing.sm },
-  bestVal: { fontSize: fontSize.hero - 4, fontFamily: brandFont.black, color: colors.accent },
-  bestSub: { fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 4 },
+  bestName: { fontSize: fontSize.lg, fontFamily: sg.font.display, color: sg.text, marginBottom: spacing.sm },
+  bestVal: { fontSize: fontSize.hero - 4, fontFamily: sg.font.display, color: sg.neon },
+  bestSub: { fontSize: fontSize.xs, color: sg.muted, marginTop: 4 },
   actions: { gap: spacing.sm, marginTop: spacing.lg },
   btnDark: {
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnDarkText: { color: colors.white, fontFamily: brandFont.black, fontSize: fontSize.md },
+  btnDarkText: { color: sg.text, fontFamily: sg.font.display, fontSize: fontSize.md },
   btnOutline: {
     height: 52,
     borderRadius: radius.lg,
     borderWidth: 1.5,
-    borderColor: colors.border,
+    borderColor: sg.line,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnOutlineText: { color: colors.textPrimary, fontFamily: brandFont.black, fontSize: fontSize.md },
+  btnOutlineText: { color: sg.text, fontFamily: sg.font.display, fontSize: fontSize.md },
   btnGhost: { height: 48, alignItems: 'center', justifyContent: 'center' },
-  btnGhostText: { color: colors.textSecondary, fontFamily: brandFont.semibold, fontSize: fontSize.sm },
+  btnGhostText: { color: sg.muted, fontFamily: sg.font.bodyMedium, fontSize: fontSize.sm },
   selfLb: { marginTop: spacing.md },
   emptyPulls: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.md,
   },
 });

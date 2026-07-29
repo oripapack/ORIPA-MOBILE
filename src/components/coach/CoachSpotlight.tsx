@@ -8,10 +8,9 @@ import {
   Platform,
   useWindowDimensions,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
@@ -40,6 +39,10 @@ type Props = {
   /** Second button (defaults to `onDismiss` if omitted). */
   onSecondary?: () => void;
 };
+
+const GOLD_SOFT = 'rgba(212,175,55,0.10)';
+const GOLD_BORDER = 'rgba(212,175,55,0.38)';
+const GOLD_WASH = 'rgba(212,175,55,0.08)';
 
 /**
  * Bottom-anchored coach card — solid dim (no blur) so the tab behind stays readable.
@@ -71,12 +74,7 @@ export function CoachSpotlight({
           style={[styles.cardWrap, { paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.sm }]}
           pointerEvents="box-none"
         >
-          <LinearGradient
-            colors={['rgba(16,185,129,0.45)', 'rgba(16,185,129,0.04)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0.9, y: 1 }}
-            style={styles.cardRing}
-          >
+          <View style={styles.cardRing}>
             <View style={styles.cardInner}>
               <View style={styles.handle} />
               {eyebrow ? (
@@ -135,7 +133,7 @@ export function CoachSpotlight({
                 <SecondaryButton label={secondaryLabel} onPress={onSecondary ?? onDismiss} />
               </View>
             </View>
-          </LinearGradient>
+          </View>
         </View>
       </View>
     </Modal>
@@ -149,8 +147,7 @@ const styles = StyleSheet.create({
   },
   dim: {
     ...StyleSheet.absoluteFillObject,
-    /** Scrim — deep near-black to match the app background and feel immersive. */
-    backgroundColor: 'rgba(5, 7, 10, 0.74)',
+    backgroundColor: 'rgba(0, 0, 0, 0.74)',
   },
   cardWrap: {
     paddingHorizontal: spacing.base,
@@ -159,11 +156,13 @@ const styles = StyleSheet.create({
   cardRing: {
     borderRadius: radius.xl,
     padding: 1.5,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: sg.line,
     ...Platform.select({
       ios: {
-        shadowColor: colors.green,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.28,
+        shadowOpacity: 0.35,
         shadowRadius: 24,
       },
       android: { elevation: 14 },
@@ -171,12 +170,12 @@ const styles = StyleSheet.create({
   },
   cardInner: {
     borderRadius: radius.xl - 1,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     paddingBottom: spacing.lg,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
     overflow: 'hidden',
   },
   handle: {
@@ -184,7 +183,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: radius.full,
-    backgroundColor: colors.borderLight,
+    backgroundColor: sg.line,
     marginBottom: spacing.md,
   },
   eyebrowPill: {
@@ -195,36 +194,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: 5,
     borderRadius: radius.full,
-    backgroundColor: colors.goldSoft,
+    backgroundColor: GOLD_SOFT,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.goldBorderHairline,
+    borderColor: GOLD_BORDER,
     marginBottom: spacing.md,
   },
   eyebrowDot: {
     width: 6,
     height: 6,
     borderRadius: radius.full,
-    backgroundColor: colors.green,
+    backgroundColor: sg.gold,
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.green,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     letterSpacing: 1.1,
     textTransform: 'uppercase',
   },
   title: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.md,
     letterSpacing: -0.6,
     lineHeight: 32,
   },
   bodyLine: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     lineHeight: 22,
     marginBottom: spacing.xs,
   },
@@ -234,51 +233,51 @@ const styles = StyleSheet.create({
   },
   comparePrimaryBlock: {
     borderLeftWidth: 3,
-    borderLeftColor: colors.green,
+    borderLeftColor: sg.gold,
     paddingLeft: spacing.md,
     paddingVertical: spacing.md,
     marginLeft: 1,
-    backgroundColor: colors.goldSoft,
+    backgroundColor: GOLD_SOFT,
     borderRadius: radius.md,
   },
   comparePrimaryHeading: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    color: colors.green,
+    fontFamily: sg.font.display,
+    color: sg.gold,
     letterSpacing: -0.3,
     marginBottom: spacing.sm,
   },
   comparePrimaryLine: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
     lineHeight: 22,
     marginTop: 4,
   },
   compareDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
     marginVertical: spacing.sm + 2,
   },
   compareSecondaryBlock: {
     borderLeftWidth: 2,
-    borderLeftColor: colors.border,
+    borderLeftColor: sg.line,
     paddingLeft: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface,
   },
   compareSecondaryHeading: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     letterSpacing: -0.15,
     marginBottom: spacing.xs,
   },
   compareSecondaryLine: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     lineHeight: 19,
     marginTop: 3,
     opacity: 0.95,
@@ -293,21 +292,21 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm + 2,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.md,
-    backgroundColor: colors.goldWash,
+    backgroundColor: GOLD_WASH,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.goldBorderHairline,
+    borderColor: GOLD_BORDER,
   },
   flowStep: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },
   flowArrow: {
     fontSize: fontSize.xs,
-    color: colors.green,
-    fontFamily: brandFont.bold,
+    color: sg.gold,
+    fontFamily: sg.font.bodyBold,
   },
   actions: {
     marginTop: spacing.md + 4,

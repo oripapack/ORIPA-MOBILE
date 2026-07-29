@@ -1,11 +1,11 @@
 import React, { useLayoutEffect } from 'react';
+import { sg } from '../tokens/sg';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { PullHistoryRow, useCompletedPullsSorted } from '../components/account/PullHistoryRow';
@@ -22,10 +22,10 @@ export function PullHistoryScreen() {
     navigation.setOptions({
       title: t('pullHistoryScreen.navTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
 
@@ -54,11 +54,11 @@ export function PullHistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: sg.bg },
   content: { paddingHorizontal: spacing.base },
   lead: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.lg,
   },
@@ -68,13 +68,13 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   emptyBody: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     textAlign: 'center',
     lineHeight: 20,
   },

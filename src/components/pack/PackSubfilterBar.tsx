@@ -3,9 +3,8 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { useTranslation } from 'react-i18next';
 import { HOME_SUBFILTER_KEYS } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 
 export function PackSubfilterBar() {
   const { t } = useTranslation();
@@ -45,34 +44,34 @@ export function PackSubfilterBar() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    borderBottomColor: sg.line,
   },
   scroll: {
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.xs,
-    gap: spacing.xs,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.xs,
+    gap: sg.space.xs,
     alignItems: 'center',
   },
   chip: {
-    paddingHorizontal: spacing.sm + 2,
+    paddingHorizontal: sg.space.sm + 2,
     paddingVertical: 6,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceMuted,
+    borderRadius: sg.radius.tag,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
   },
   chipActive: {
-    borderColor: colors.accentBorder,
-    backgroundColor: colors.accentSoft,
+    borderColor: sg.gold,
+    backgroundColor: 'rgba(212,175,55,0.15)',
   },
   label: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   labelActive: {
-    color: colors.accentDark,
+    color: sg.gold,
   },
 });

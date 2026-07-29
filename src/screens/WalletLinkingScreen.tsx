@@ -1,4 +1,5 @@
 import React, { useCallback, useLayoutEffect, useState } from 'react';
+import { sg } from '../tokens/sg';
 import {
   View,
   Text,
@@ -13,8 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '@clerk/clerk-expo';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { createClerkAuthedClient } from '../lib/supabaseAuthed';
@@ -38,10 +38,10 @@ export function WalletLinkingScreen() {
     navigation.setOptions({
       title: t('walletLinking.navTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
 
@@ -124,7 +124,7 @@ export function WalletLinkingScreen() {
   }, [address, t, userId]);
 
   if (!loaded) {
-    return <View style={[styles.container, { backgroundColor: colors.background }]} />;
+    return <View style={[styles.container, { backgroundColor: sg.bg }]} />;
   }
 
   return (
@@ -142,7 +142,7 @@ export function WalletLinkingScreen() {
           value={address}
           onChangeText={setAddress}
           placeholder={t('walletLinking.placeholder')}
-          placeholderTextColor={colors.textMuted}
+          placeholderTextColor={sg.muted}
           style={styles.input}
           autoCapitalize="none"
           autoCorrect={false}
@@ -160,7 +160,7 @@ export function WalletLinkingScreen() {
         disabled={saving}
       >
         {saving ? (
-          <ActivityIndicator color={colors.white} />
+          <ActivityIndicator color={sg.text} />
         ) : (
           <Text style={styles.saveBtnText}>{t('walletLinking.save')}</Text>
         )}
@@ -170,41 +170,41 @@ export function WalletLinkingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: sg.bg },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
   field: { marginBottom: spacing.sm },
   label: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     marginBottom: spacing.xs,
   },
   input: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.sm,
     fontSize: fontSize.base,
-    color: colors.textPrimary,
+    color: sg.text,
     minHeight: 48,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
   },
   hint: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.lg,
   },
   saveBtn: {
-    backgroundColor: colors.red,
+    backgroundColor: sg.gold,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   saveBtnDisabled: { opacity: 0.7 },
   saveBtnText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.white,
+    fontFamily: sg.font.bodyBold,
+    color: sg.onGold,
   },
 });

@@ -1,8 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
 
 interface Props {
   label: string;
@@ -32,35 +30,35 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing.md + 2,
-    paddingHorizontal: spacing.base,
-    backgroundColor: colors.surfaceElevated,
+    paddingVertical: sg.space.md + 2,
+    paddingHorizontal: sg.space.md,
+    backgroundColor: sg.surface,
     borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
     minHeight: 52,
   },
   icon: {
-    marginRight: spacing.md,
+    marginRight: sg.space.md,
     width: 22,
     alignItems: 'center',
   },
   label: {
     flex: 1,
-    fontSize: fontSize.base,
-    fontFamily: brandFont.regular,
-    color: colors.textPrimary,
+    fontSize: 16,
+    fontFamily: sg.font.body,
+    color: sg.text,
   },
   destructive: {
-    color: colors.red,
+    color: sg.error,
   },
   right: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
+    gap: sg.space.xs,
   },
   chevron: {
     fontSize: 20,
-    color: colors.textMuted,
-    marginLeft: spacing.xs,
+    color: sg.muted,
+    marginLeft: sg.space.xs,
   },
 });

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     fontSize: 10,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: spacing.sm,
@@ -80,42 +80,42 @@ const styles = StyleSheet.create({
   streakVal: {
     fontSize: fontSize.hero,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     letterSpacing: -1,
   },
   streakLab: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginTop: 2,
   },
   streakDivider: {
     width: StyleSheet.hairlineWidth,
     height: 44,
-    backgroundColor: colors.borderLight,
+    backgroundColor: sg.line,
     marginHorizontal: spacing.md,
   },
   streakSide: { alignItems: 'flex-end' },
   streakBestLab: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     fontFamily: brandFont.medium,
   },
   streakBestVal: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginTop: 2,
   },
   streakFine: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.xs,
   },
   questsHint: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     marginBottom: spacing.sm,
     lineHeight: 18,
   },

@@ -12,7 +12,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
@@ -95,7 +95,7 @@ export function AddFriendModal({
             accessibilityRole="button"
             accessibilityLabel={t('common.close')}
           >
-            <Ionicons name="close" size={24} color={colors.textSecondary} />
+            <Ionicons name="close" size={24} color={sg.muted} />
           </TouchableOpacity>
         </View>
 
@@ -110,7 +110,7 @@ export function AddFriendModal({
           <TextInput
             style={styles.input}
             placeholder={t('friends.placeholderUsername')}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={sg.muted}
             autoCapitalize="none"
             autoCorrect={false}
             value={lookupInput}
@@ -141,10 +141,10 @@ export function AddFriendModal({
                 accessibilityLabel={row.label}
               >
                 <View style={styles.methodIcon}>
-                  <Ionicons name={row.icon} size={20} color={colors.gold} />
+                  <Ionicons name={row.icon} size={20} color={sg.gold} />
                 </View>
                 <Text style={styles.methodLabel}>{row.label}</Text>
-                <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+                <Ionicons name="chevron-forward" size={18} color={sg.muted} />
               </TouchableOpacity>
             ))}
           </View>
@@ -192,7 +192,7 @@ export function AddFriendModal({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
   },
   topBar: {
     flexDirection: 'row',
@@ -201,13 +201,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    borderBottomColor: sg.line,
   },
   title: {
     flex: 1,
     fontSize: fontSize.xl,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   closeBtn: {
     width: 40,
@@ -222,26 +222,26 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.lg,
   },
   fieldLabel: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
     marginBottom: spacing.xs,
   },
   input: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
     borderRadius: radius.md,
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
     fontFamily: brandFont.regular,
-    color: colors.textPrimary,
-    backgroundColor: colors.nearBlack,
+    color: sg.text,
+    backgroundColor: sg.surface2,
     marginBottom: spacing.md,
   },
   addBtn: {
@@ -256,19 +256,19 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.border,
+    backgroundColor: sg.line,
   },
   dividerText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   methodList: {
     borderRadius: radius.lg,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
     overflow: 'hidden',
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
   },
   methodRow: {
     flexDirection: 'row',
@@ -277,13 +277,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   methodIcon: {
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: colors.goldSoft,
+    backgroundColor: 'rgba(212,175,55,0.14)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: fontSize.md,
     fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   demoBlock: {
     marginTop: spacing.xl,
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   demoTitle: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
     marginBottom: spacing.sm,
   },
   demoRow: {
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     paddingVertical: spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   demoText: {
     flex: 1,
@@ -317,25 +317,25 @@ const styles = StyleSheet.create({
   demoName: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   demoHandle: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    color: sg.muted,
     marginTop: 2,
   },
   demoAddBtn: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
-    backgroundColor: colors.goldSoft,
+    backgroundColor: 'rgba(212,175,55,0.14)',
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
   },
   demoAddText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sg.gold,
   },
 });

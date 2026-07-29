@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing, Dimensions,
 import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { elevation, radius, spacing } from '../../tokens/spacing';
 import { demoHomeHeroBackground } from '../../data/demoMedia';
 
@@ -92,7 +92,7 @@ export function HeroBanner({ onBrowsePacks, onDismiss }: Props) {
         <Text style={styles.subtext}>{t('hero.sub')}</Text>
         <TouchableOpacity style={styles.cta} onPress={onBrowsePacks} activeOpacity={0.88}>
           <ExpoLinearGradient
-            colors={[colors.gold, colors.goldDark]}
+            colors={[sg.gold, sg.goldHi]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFillObject}
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.goldBorderHairline,
-    backgroundColor: colors.surfaceElevated,
+    borderColor: 'rgba(212,175,55,0.25)',
+    backgroundColor: sg.surface,
     ...elevation.heroBanner,
   },
   bgPhoto: {
@@ -159,9 +159,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   closeText: {
-    color: colors.textMuted,
+    color: sg.muted,
     fontSize: 28,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     lineHeight: 30,
   },
   inner: {
@@ -171,21 +171,21 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.gold,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.gold,
     letterSpacing: 1.2,
     marginBottom: spacing.xs,
   },
   headline: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     lineHeight: 28,
     marginBottom: spacing.sm,
   },
   subtext: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 19,
     marginBottom: spacing.base,
   },
@@ -196,13 +196,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm + 2,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.goldBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
     position: 'relative',
   },
   ctaText: {
-    color: colors.ink,
+    color: sg.onGold,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 0.35,
     zIndex: 1,
   },
@@ -213,8 +213,8 @@ const styles = StyleSheet.create({
   },
   notNowText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     textDecorationLine: 'underline',
   },
   cardStack: {
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   cardBack2: {
     backgroundColor: '#243B56',
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '4deg' }],
   },
   cardFront: {
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.bg,
     top: 4,
     left: 0,
     transform: [{ rotate: '-2deg' }],
@@ -255,9 +255,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   cardLabel: {
-    color: colors.textOnDark,
+    color: sg.text,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     marginTop: 4,
   },
 });

@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
+import { spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 
@@ -86,11 +86,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
     paddingVertical: spacing.md,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    borderBottomColor: sg.line,
   },
   sortBtn: {
     flexDirection: 'row',
@@ -99,16 +99,16 @@ const styles = StyleSheet.create({
   },
   sortLabel: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
   sortValue: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
   },
   sortChevron: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginLeft: 2,
   },
   overlay: {
@@ -117,17 +117,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   dropdown: {
-    backgroundColor: colors.surfaceElevated,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    padding: spacing.xl,
-    paddingBottom: spacing.xxxl,
+    backgroundColor: sg.surface,
+    borderTopLeftRadius: sg.radius.panel,
+    borderTopRightRadius: sg.radius.panel,
+    padding: sg.space.xl,
+    paddingBottom: sg.space.xxxl,
   },
   dropdownTitle: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.base,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
+    marginBottom: sg.space.md,
   },
   dropdownItem: {
     flexDirection: 'row',
@@ -135,20 +135,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   dropdownItemActive: {},
   dropdownText: {
     fontSize: fontSize.base,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   dropdownTextActive: {
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   checkmark: {
-    color: colors.accentDark,
-    fontFamily: brandFont.bold,
+    color: sg.gold,
+    fontFamily: sg.font.bodyBold,
     fontSize: fontSize.base,
   },
 });

@@ -12,8 +12,8 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { mockPacks, type Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
@@ -98,17 +98,17 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{t('search.title')}</Text>
           <TouchableOpacity style={styles.closeBtn} onPress={close} activeOpacity={0.85}>
-            <Ionicons name="close" size={22} color={colors.textPrimary} />
+            <Ionicons name="close" size={22} color={sg.text} />
           </TouchableOpacity>
         </View>
 
         <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
+          <Ionicons name="search" size={20} color={sg.muted} style={styles.searchIcon} />
           <TextInput
             ref={inputRef}
             style={styles.searchInput}
             placeholder={t('search.placeholder')}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={sg.muted}
             value={query}
             onChangeText={setQuery}
             autoFocus
@@ -120,7 +120,7 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
           />
           {query.trim().length > 0 ? (
             <TouchableOpacity onPress={clear} style={styles.clearBtn} activeOpacity={0.85}>
-              <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+              <Ionicons name="close-circle" size={18} color={sg.muted} />
             </TouchableOpacity>
           ) : null}
         </View>
@@ -154,7 +154,7 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     paddingHorizontal: spacing.base,
   },
   header: {
@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
   },
   closeBtn: {
     width: 36,
@@ -178,10 +178,10 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     paddingHorizontal: spacing.md,
     minHeight: 48,
     marginBottom: spacing.md,
@@ -192,7 +192,8 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: fontSize.base,
-    color: colors.textPrimary,
+    fontFamily: sg.font.body,
+    color: sg.text,
     paddingVertical: spacing.sm,
   },
   clearBtn: {
@@ -207,21 +208,22 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: fontSize.base,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     marginBottom: 6,
   },
   emptyBody: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 20,
   },
   row: {
     padding: spacing.base,
     borderRadius: radius.lg,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     marginBottom: spacing.sm,
   },
   rowTop: {
@@ -234,31 +236,33 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: fontSize.base,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
   },
   sub: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: 6,
   },
   hint: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    fontFamily: sg.font.body,
+    color: sg.muted,
   },
   pricePill: {
     paddingHorizontal: spacing.sm,
     paddingVertical: 6,
     borderRadius: radius.full,
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   priceText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.gold,
+    fontFamily: sg.font.dataBold,
+    color: sg.gold,
+    fontVariant: [...sg.numeric],
   },
 });
-

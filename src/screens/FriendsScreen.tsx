@@ -16,11 +16,11 @@ import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../tokens/colors';
+import { sg } from '../tokens/sg';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
+import { SgScreen } from '../components/ui';
 import { PrimaryButton } from '../components/shared/PrimaryButton';
-import { HomeBackground } from '../components/shared/HomeBackground';
 import { MyQrModal } from '../components/friends/MyQrModal';
 import { AddFriendModal } from '../components/friends/AddFriendModal';
 import { useAppStore } from '../store/useAppStore';
@@ -47,12 +47,12 @@ import { PUBLIC_WEB_ORIGIN } from '../config/app';
 import { showUserMessage } from '../utils/showUserMessage';
 
 const RING_PALETTE = [
-  colors.red,
-  colors.gold,
-  colors.accentSapphire,
-  colors.accent,
-  colors.accentJade,
-  colors.accentCopper,
+  sg.error,
+  sg.gold,
+  '#60A5FA',
+  '#A855F7',
+  sg.success,
+  sg.warning,
 ];
 
 function accentForId(id: string): string {
@@ -241,8 +241,7 @@ export function FriendsScreen() {
   }, [reopenAddSheetIfNeeded]);
 
   return (
-    <View style={styles.root}>
-      <HomeBackground />
+    <SgScreen>
       <View style={[styles.safeTop, { paddingTop: insets.top + spacing.md }]}>
         <ScrollView
           contentContainerStyle={styles.scroll}
@@ -268,7 +267,7 @@ export function FriendsScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('friends.addFriendA11y')}
               >
-                <Ionicons name="add" size={28} color={colors.ink} />
+                <Ionicons name="add" size={28} color={sg.onGold} />
               </TouchableOpacity>
             ) : (
               <View style={styles.headerBtnPlaceholder} />
@@ -380,7 +379,7 @@ export function FriendsScreen() {
                         </Text>
                         <Text style={styles.squadStatMuted}>{formatUsd(profile.stats.totalEstimatedValue)} total</Text>
                       </View>
-                      <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+                      <Ionicons name="chevron-forward" size={18} color={sg.muted} />
                     </TouchableOpacity>
                   );
                 })}
@@ -419,7 +418,7 @@ export function FriendsScreen() {
                 ))}
                 <TouchableOpacity style={styles.seeAllBtn} onPress={openLeaderboard} activeOpacity={0.85}>
                   <Text style={styles.seeAllText}>{t('friends.leaderboardSeeAll')}</Text>
-                  <Ionicons name="chevron-forward" size={14} color={colors.gold} />
+                  <Ionicons name="chevron-forward" size={14} color={sg.gold} />
                 </TouchableOpacity>
               </View>
             )}
@@ -465,15 +464,11 @@ export function FriendsScreen() {
           reopenAddSheetIfNeeded();
         }}
       />
-    </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.homeGradientBottom,
-  },
   safeTop: {
     flex: 1,
     zIndex: 1,
@@ -489,13 +484,13 @@ const styles = StyleSheet.create({
   guestBannerTitle: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sg.gold,
     marginBottom: spacing.xs,
   },
   guestBannerBody: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
   },
   headerRow: {
@@ -507,7 +502,7 @@ const styles = StyleSheet.create({
   pageTitle: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     letterSpacing: -0.5,
   },
   headerBtn: {
@@ -516,13 +511,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   headerBtnAdd: {
-    backgroundColor: colors.gold,
-    borderColor: colors.goldBorder,
+    backgroundColor: sg.gold,
+    borderColor: 'rgba(212,175,55,0.38)',
   },
   headerBtnPlaceholder: {
     width: 44,
@@ -540,17 +535,17 @@ const styles = StyleSheet.create({
   requestName: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   requestHandle: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.xs,
   },
   requestHint: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.sm,
   },
@@ -569,7 +564,7 @@ const styles = StyleSheet.create({
   requestDeclineText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   requestAcceptBtn: {
     flex: 1.2,
@@ -578,14 +573,14 @@ const styles = StyleSheet.create({
   sectionEyebrow: {
     fontSize: 11,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 2.2,
     marginBottom: spacing.md,
   },
   sectionEyebrowSm: {
     fontSize: 10,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1.6,
     marginBottom: spacing.sm,
     opacity: 0.92,
@@ -601,7 +596,7 @@ const styles = StyleSheet.create({
   },
   sectionHintCompact: {
     fontSize: 10,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.sm,
     opacity: 0.75,
     lineHeight: 14,
@@ -616,14 +611,14 @@ const styles = StyleSheet.create({
   },
   inlineEmpty: {
     fontSize: fontSize.sm,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 20,
     paddingVertical: spacing.sm,
     opacity: 0.85,
   },
   inlineEmptySm: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     paddingVertical: spacing.xs,
     opacity: 0.8,
@@ -631,8 +626,8 @@ const styles = StyleSheet.create({
   leaderboardBlock: {
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceElevated,
+    borderColor: sg.line,
+    backgroundColor: sg.surface,
     overflow: 'hidden',
     marginBottom: spacing.xs,
   },
@@ -643,16 +638,16 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm + 2,
     paddingHorizontal: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   lbRowMe: {
-    backgroundColor: colors.accentSoft,
+    backgroundColor: 'rgba(212,175,55,0.12)',
   },
   lbRank: {
     width: 24,
     fontSize: fontSize.sm,
     fontFamily: brandFont.black,
-    color: colors.gold,
+    color: sg.gold,
     textAlign: 'center',
   },
   lbEmoji: {
@@ -665,17 +660,17 @@ const styles = StyleSheet.create({
   lbName: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   lbUn: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: sg.muted,
     marginTop: 2,
   },
   lbVal: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   seeAllBtn: {
     flexDirection: 'row',
@@ -683,12 +678,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     paddingVertical: spacing.sm + 2,
-    backgroundColor: colors.accentSoft,
+    backgroundColor: 'rgba(212,175,55,0.12)',
   },
   seeAllText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.accentDark,
+    color: sg.gold,
   },
   squadBlock: {
     gap: spacing.sm,
@@ -698,12 +693,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderRadius: radius.md,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
     overflow: 'hidden',
   },
   squadAccent: {
@@ -718,11 +713,11 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: colors.accentSoft,
+    backgroundColor: 'rgba(212,175,55,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
     marginLeft: 2,
   },
   squadAvatarText: {
@@ -736,22 +731,22 @@ const styles = StyleSheet.create({
   squadName: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   squadHandle: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    color: sg.muted,
     marginTop: 2,
   },
   squadStat: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginTop: spacing.xs,
   },
   squadStatMuted: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: sg.muted,
     marginTop: 2,
   },
   addFriendsBelowActivity: {
@@ -764,13 +759,13 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
     paddingBottom: spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.border,
+    borderTopColor: sg.line,
     alignItems: 'center',
   },
   socialFooterTitle: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -778,7 +773,7 @@ const styles = StyleSheet.create({
   },
   socialFooterSub: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.sm,
     textAlign: 'center',

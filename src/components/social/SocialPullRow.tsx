@@ -1,8 +1,8 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import type { SocialPullEvent } from '../../data/socialMock';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { formatRelativeTime, formatUsd } from '../../lib/socialFormat';
 import { rarityColor, rarityLabel } from './rarityStyles';
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     gap: spacing.md,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     padding: spacing.md,
     borderWidth: 1,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 78,
     borderRadius: radius.md,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
   cardName: {
     flex: 1,
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     lineHeight: 20,
   },
   badge: {
@@ -94,13 +94,13 @@ const styles = StyleSheet.create({
   badgeHit: { backgroundColor: 'rgba(245,158,11,0.15)' },
   badgeText: {
     fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.red,
+    fontFamily: sg.font.display,
+    color: sg.error,
     letterSpacing: 0.5,
   },
   pack: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.sm,
   },
   bottom: {
@@ -116,16 +116,16 @@ const styles = StyleSheet.create({
   },
   rarityText: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
   },
   value: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
   },
   time: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     marginLeft: 'auto',
   },
 });

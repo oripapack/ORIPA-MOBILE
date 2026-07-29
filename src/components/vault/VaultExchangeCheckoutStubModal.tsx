@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
+import { sgVault } from '../../tokens/sgVault';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -58,41 +58,41 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, justifyContent: 'flex-end' },
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' },
   card: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sgVault.surface,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     padding: spacing.xl,
     borderTopWidth: 1,
-    borderColor: colors.border,
+    borderColor: sgVault.line,
   },
   kicker: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sgVault.gold,
     letterSpacing: 1.1,
     marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.xl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sgVault.text,
     marginBottom: spacing.sm,
   },
   item: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sgVault.muted,
     marginBottom: spacing.xs,
   },
   price: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sgVault.text,
     marginBottom: spacing.md,
   },
   body: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sgVault.muted,
     lineHeight: 22,
     marginBottom: spacing.lg,
   },

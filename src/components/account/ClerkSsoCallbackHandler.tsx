@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useAuth, useClerk } from '@clerk/clerk-expo';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { brandFont, fontSize } from '../../tokens/typography';
 
 function readCallbackSessionId(): string | null {
@@ -90,19 +90,19 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 9999,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
     gap: 12,
   },
   title: {
-    color: colors.textPrimary,
+    color: sg.text,
     fontSize: fontSize.lg,
     fontFamily: brandFont.bold,
   },
   error: {
-    color: colors.warningBannerText,
+    color: sg.warning,
     fontSize: fontSize.sm,
     fontFamily: brandFont.regular,
     textAlign: 'center',

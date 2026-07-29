@@ -1,4 +1,4 @@
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import type { SocialRarity } from '../../data/socialMock';
 
 export function rarityColor(r: SocialRarity): string {
@@ -8,7 +8,7 @@ export function rarityColor(r: SocialRarity): string {
     rare: '#3B82F6',
     epic: '#A855F7',
     legendary: '#F59E0B',
-    mythic: colors.red,
+    mythic: sg.neon,
   };
   return map[r];
 }

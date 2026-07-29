@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, type ViewStyle, type TextStyle } from 'react-native';
+import { View, Text, StyleSheet, Platform, type ViewStyle, type TextStyle } from 'react-native';
+import Svg, { Defs, RadialGradient, Stop, Ellipse } from 'react-native-svg';
 import { sg } from '../../tokens/sg';
 import type { N2TierState } from '../../lib/n2Rarity';
 
@@ -25,11 +26,35 @@ export function SgTierTag({ tier, context }: { tier: N2TierState; context: 'disc
   if (tier === 'unknown') return null;
   if (tier === 'base' && context === 'badge') return null;
   const text = tier === 'base' ? styles.baseDisclosure : textStyles[tier];
-  return (
+  const tag = (
     <View style={[styles.tag, tier === 'base' ? null : boxStyles[tier]]}>
       <Text style={[styles.label, text]}>{tier.toUpperCase()}</Text>
     </View>
   );
+  // Android renders no colored box shadow — the MYTHIC glow is meaningful
+  // (§6: neon must glow), so it gets an svg radial halo behind the tag there.
+  if (tier === 'mythic' && Platform.OS === 'android') {
+    return (
+      <View style={styles.mythicWrap}>
+        <Svg
+          pointerEvents="none"
+          style={styles.androidGlow}
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <Defs>
+            <RadialGradient id="sgTierGlow" cx="50%" cy="50%" r="50%">
+              <Stop offset="0%" stopColor={sg.neon} stopOpacity={0.4} />
+              <Stop offset="100%" stopColor={sg.neon} stopOpacity={0} />
+            </RadialGradient>
+          </Defs>
+          <Ellipse cx="50" cy="50" rx="50" ry="50" fill="url(#sgTierGlow)" />
+        </Svg>
+        {tag}
+      </View>
+    );
+  }
+  return tag;
 }
 
 const boxStyles: Record<'mythic' | 'legendary' | 'epic', ViewStyle> = {
@@ -62,4 +87,6 @@ const styles = StyleSheet.create({
   },
   // §6 disclosure: plain text, full-opacity `text` color — never dimmed.
   baseDisclosure: { color: sg.text },
+  mythicWrap: { alignSelf: 'flex-start' },
+  androidGlow: { position: 'absolute', left: -16, right: -16, top: -12, bottom: -12 },
 });

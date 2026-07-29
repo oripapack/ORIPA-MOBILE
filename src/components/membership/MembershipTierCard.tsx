@@ -1,10 +1,10 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import type { MembershipPlan } from '../../data/membershipPlans';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 export interface MembershipTierCardProps {
@@ -25,7 +25,7 @@ const TIER_STYLES: Record<
   },
   gold: {
     border: 'rgba(255, 203, 5, 0.55)',
-    accent: colors.gold,
+    accent: sg.gold,
     glow: 'rgba(255, 203, 5, 0.12)',
     surface: 'rgba(255, 203, 5, 0.06)',
   },
@@ -62,7 +62,7 @@ export function MembershipTierCard({ plan, selected, onSelect }: MembershipTierC
 
       <View style={styles.headerRow}>
         <View>
-          <Text style={[styles.tierName, plan.id === 'gold' && { color: colors.gold }]}>
+          <Text style={[styles.tierName, plan.id === 'gold' && { color: sg.gold }]}>
             {t(`membership.tierName_${plan.id}`)}
           </Text>
           <Text style={styles.badgeMicro}>{t(`membership.badge_${plan.id}`)}</Text>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cardPopular: {
-    shadowColor: colors.gold,
+    shadowColor: sg.gold,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.18,
     shadowRadius: 12,
@@ -107,9 +107,9 @@ const styles = StyleSheet.create({
   },
   popularRibbon: {
     alignSelf: 'center',
-    backgroundColor: colors.goldSoft,
+    backgroundColor: 'rgba(212,175,55,0.12)',
     borderWidth: 1,
-    borderColor: colors.accentBorder,
+    borderColor: sg.line,
     paddingHorizontal: spacing.md,
     paddingVertical: 5,
     borderRadius: radius.full,
@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
   },
   popularRibbonText: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.gold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
   },
@@ -130,14 +130,14 @@ const styles = StyleSheet.create({
   },
   tierName: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     letterSpacing: -0.3,
   },
   badgeMicro: {
     fontSize: 10,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     marginTop: 4,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    borderColor: colors.border,
+    borderColor: sg.line,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -158,18 +158,18 @@ const styles = StyleSheet.create({
   },
   priceLine: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     marginTop: spacing.sm,
   },
   coinsLine: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginTop: 4,
   },
   divider: {
     height: 1,
-    backgroundColor: colors.borderLight,
+    backgroundColor: sg.line,
     marginVertical: spacing.sm,
   },
   bulletRow: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   bulletText: {
     flex: 1,
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
   },
 });

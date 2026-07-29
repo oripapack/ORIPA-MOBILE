@@ -1,4 +1,5 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import {
   View,
   Text,
@@ -13,8 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { creditBundles } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
@@ -98,7 +98,7 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
                   </View>
                 ) : null}
                 <View style={[styles.bundleRow, !promo && styles.bundleRowNoBadge]}>
-                  <MaterialCommunityIcons name="sack" size={36} color={colors.gold} />
+                  <MaterialCommunityIcons name="sack" size={36} color={sg.gold} />
                   <View style={styles.bundleCenter}>
                     <Text style={styles.pointsLine}>
                       {t('buyCredits.pointsLine', {
@@ -142,22 +142,22 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
 const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   subtitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     marginBottom: spacing.sm,
     lineHeight: 20,
   },
   mockNote: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.redDark,
-    backgroundColor: colors.promoBannerBg,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.error,
+    backgroundColor: 'rgba(255,74,56,0.10)',
     padding: spacing.sm,
     borderRadius: radius.md,
     marginBottom: spacing.md,
@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
   },
   probabilityLinkText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.red,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.error,
     textDecorationLine: 'underline',
   },
   scroll: {},
@@ -183,11 +183,11 @@ const styles = StyleSheet.create({
   },
   bundleCard: {
     position: 'relative',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     padding: spacing.base,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   bundleRow: {
     flexDirection: 'row',
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     left: 8,
-    backgroundColor: colors.red,
+    backgroundColor: sg.neon,
     paddingHorizontal: spacing.sm,
     paddingVertical: 3,
     borderRadius: radius.sm,
@@ -210,8 +210,8 @@ const styles = StyleSheet.create({
   },
   discountBadgeText: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.white,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     letterSpacing: 0.5,
   },
   bundleCenter: {
@@ -220,8 +220,8 @@ const styles = StyleSheet.create({
   },
   pointsLine: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: 2,
   },
   priceRow: {
@@ -232,28 +232,28 @@ const styles = StyleSheet.create({
   },
   priceNow: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    color: colors.gold,
+    fontFamily: sg.font.display,
+    color: sg.gold,
   },
   priceList: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
   },
   priceWas: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     textDecorationLine: 'line-through',
   },
   bundleBonus: {
     fontSize: fontSize.xs,
-    color: colors.green,
-    fontFamily: brandFont.semibold,
+    color: sg.success,
+    fontFamily: sg.font.bodyMedium,
     marginTop: 6,
   },
   buyBtn: {
-    backgroundColor: colors.gold,
+    backgroundColor: sg.gold,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 2,
     borderRadius: radius.md,
@@ -263,22 +263,22 @@ const styles = StyleSheet.create({
   },
   buyBtnText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.black,
-    color: colors.ink,
+    fontFamily: sg.font.bodyBold,
+    color: sg.onGold,
     letterSpacing: 0.3,
   },
   disclaimer: {
     fontSize: 10,
-    fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 15,
     marginTop: spacing.sm,
     marginBottom: spacing.sm,
   },
   routingNote: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.sm,
   },
@@ -287,8 +287,8 @@ const styles = StyleSheet.create({
   },
   trustText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     textAlign: 'center',
   },
 });

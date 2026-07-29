@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -40,70 +40,67 @@ export function WinningsSummaryCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.casinoFelt,
-    borderRadius: radius.xl,
-    padding: spacing.xl,
+    backgroundColor: sg.surface2,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.xl,
     borderWidth: 1,
-    borderColor: colors.casinoFeltBorder,
-    shadowColor: colors.shadowStrong,
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 10 },
+    borderColor: sg.line,
+    ...sg.shadowHero,
   },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.md,
-    gap: spacing.md,
+    marginBottom: sg.space.md,
+    gap: sg.space.md,
   },
   label: {
-    color: colors.textMuted,
+    color: sg.muted,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
     flex: 1,
   },
   pill: {
-    backgroundColor: colors.goldSoft,
-    borderColor: colors.accentBorder,
+    backgroundColor: 'rgba(212,175,55,0.15)',
+    borderColor: sg.gold,
     borderWidth: 1,
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: sg.space.sm,
     paddingVertical: 6,
     borderRadius: radius.full,
   },
   pillText: {
-    color: colors.accentDark,
+    color: sg.gold,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 0.2,
   },
   valueRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     flexWrap: 'wrap',
-    columnGap: spacing.sm,
-    rowGap: spacing.xs,
-    marginBottom: spacing.sm,
+    columnGap: sg.space.sm,
+    rowGap: sg.space.xs,
+    marginBottom: sg.space.sm,
   },
   amount: {
-    color: colors.textPrimary,
+    color: sg.text,
     fontSize: 44,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     letterSpacing: -0.8,
     lineHeight: 48,
+    fontVariant: [...sg.numeric],
   },
   amountUnit: {
-    color: colors.textSecondary,
+    color: sg.muted,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     paddingBottom: 6,
   },
   helper: {
-    color: colors.textSecondary,
+    color: sg.muted,
     fontSize: fontSize.sm,
     lineHeight: 20,
   },
 });
-

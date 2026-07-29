@@ -6,10 +6,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
+import { sg } from '../tokens/sg';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
-import { screenRoot, screenScroll } from '../tokens/layout';
+import { screenScroll } from '../tokens/layout';
 import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
@@ -20,7 +20,7 @@ import { deriveSocialProfileFromUser } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
 import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
-import { HomeBackground } from '../components/shared/HomeBackground';
+import { SgScreen } from '../components/ui';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
 import { progressionFromTotalXp } from '../lib/collectorProgression';
@@ -51,12 +51,12 @@ export function AccountScreen() {
   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
   const prog = progressionFromTotalXp(user.xp);
   const tierColors: Record<string, string> = {
-    Starter: colors.accentDark,
-    Bronze: colors.goldDark,
-    Silver: colors.accentSapphire,
-    Gold: colors.gold,
+    Starter: sg.gold,
+    Bronze: sg.gold,
+    Silver: '#60A5FA',
+    Gold: sg.gold,
   };
-  const tierColor = tierColors[user.tier] ?? colors.textSecondary;
+  const tierColor = tierColors[user.tier] ?? sg.muted;
 
   const previewQuests = useMemo(() => pickPreviewQuests(questProgress, PREVIEW_QUESTS), [questProgress]);
   const claimableCount = useMemo(() => countClaimableQuests(questProgress), [questProgress]);
@@ -106,8 +106,7 @@ export function AccountScreen() {
   );
 
   return (
-    <View style={styles.screenRoot}>
-      <HomeBackground />
+    <SgScreen>
       <ScrollView
         style={styles.container}
         contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
@@ -140,7 +139,7 @@ export function AccountScreen() {
           accessibilityLabel={t('account.heroMembership')}
         >
           <View style={styles.membershipRowLeft}>
-            <Ionicons name="ribbon-outline" size={20} color={colors.gold} />
+            <Ionicons name="ribbon-outline" size={20} color={sg.gold} />
             <View style={styles.membershipCopy}>
               <Text style={styles.membershipLabel}>{t('account.heroMembership')}</Text>
               <Text style={styles.membershipValue} numberOfLines={1}>
@@ -150,7 +149,7 @@ export function AccountScreen() {
               </Text>
             </View>
           </View>
-          <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+          <Ionicons name="chevron-forward" size={18} color={sg.muted} />
         </TouchableOpacity>
 
         <Text style={styles.levelLine}>
@@ -260,45 +259,41 @@ export function AccountScreen() {
       <View style={styles.quickGrid}>
         <TouchableOpacity style={styles.quickCell} onPress={goVault} activeOpacity={0.88}>
           <View style={styles.quickIconWrap}>
-            <Ionicons name="file-tray-stacked-outline" size={22} color={colors.textPrimary} />
+            <Ionicons name="file-tray-stacked-outline" size={22} color={sg.text} />
           </View>
           <Text style={styles.quickLabel}>{t('account.quickVault')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.quickCell} onPress={goPullHistory} activeOpacity={0.88}>
           <View style={styles.quickIconWrap}>
-            <Ionicons name="time-outline" size={22} color={colors.textPrimary} />
+            <Ionicons name="time-outline" size={22} color={sg.text} />
           </View>
           <Text style={styles.quickLabel}>{t('account.quickPullHistory')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.quickCell} onPress={goLeaderboard} activeOpacity={0.88}>
           <View style={styles.quickIconWrap}>
-            <Ionicons name="trophy-outline" size={22} color={colors.textPrimary} />
+            <Ionicons name="trophy-outline" size={22} color={sg.text} />
           </View>
           <Text style={styles.quickLabel}>{t('account.quickLeaderboard')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.quickCell} onPress={goPromotions} activeOpacity={0.88}>
           <View style={styles.quickIconWrap}>
-            <Ionicons name="gift-outline" size={22} color={colors.textPrimary} />
+            <Ionicons name="gift-outline" size={22} color={sg.text} />
           </View>
           <Text style={styles.quickLabel}>{t('account.quickPromotions')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.quickCell} onPress={goSettings} activeOpacity={0.88}>
           <View style={styles.quickIconWrap}>
-            <Ionicons name="settings-outline" size={22} color={colors.textPrimary} />
+            <Ionicons name="settings-outline" size={22} color={sg.text} />
           </View>
           <Text style={styles.quickLabel}>{t('account.quickSettings')}</Text>
         </TouchableOpacity>
       </View>
       </ScrollView>
-    </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  screenRoot: {
-    ...screenRoot,
-    backgroundColor: colors.homeGradientBottom,
-  },
   container: {
     ...screenScroll,
     backgroundColor: 'transparent',
@@ -310,7 +305,7 @@ const styles = StyleSheet.create({
   pageTitle: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     letterSpacing: -0.5,
     marginBottom: spacing.base,
   },
@@ -320,7 +315,7 @@ const styles = StyleSheet.create({
   guestSignInEyebrow: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.red,
+    color: sg.error,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -328,18 +323,18 @@ const styles = StyleSheet.create({
   guestSignInTitle: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   guestSignInBody: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.md,
   },
   guestSignInBtn: {
-    backgroundColor: colors.red,
+    backgroundColor: sg.error,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -349,7 +344,7 @@ const styles = StyleSheet.create({
   guestSignInBtnText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.white,
+    color: sg.text,
   },
   heroCard: {
     marginBottom: spacing.lg,
@@ -367,10 +362,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderRadius: 28,
     overflow: 'hidden',
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     fontSize: 30,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   heroMeta: {
     flex: 1,
@@ -379,13 +374,13 @@ const styles = StyleSheet.create({
   heroName: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   heroUsername: {
     marginTop: 2,
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   membershipRow: {
     flexDirection: 'row',
@@ -394,10 +389,10 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.sm,
     marginBottom: spacing.sm,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
   },
   membershipRowLeft: {
     flexDirection: 'row',
@@ -413,7 +408,7 @@ const styles = StyleSheet.create({
   membershipLabel: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
@@ -421,12 +416,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   levelLine: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.md,
   },
   heroMetrics: {
@@ -434,9 +429,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: radius.lg,
     overflow: 'hidden',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   heroMetric: {
     flex: 1,
@@ -447,26 +442,26 @@ const styles = StyleSheet.create({
   heroMetricDivider: {
     width: StyleSheet.hairlineWidth,
     alignSelf: 'stretch',
-    backgroundColor: colors.borderLight,
+    backgroundColor: sg.line,
   },
   heroMetricVal: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     maxWidth: '100%',
   },
   heroMetricLab: {
     marginTop: 4,
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },
   sectionEyebrow: {
     fontSize: 10,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: spacing.md,
@@ -485,19 +480,19 @@ const styles = StyleSheet.create({
   },
   xpText: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     fontFamily: brandFont.medium,
     flex: 1,
     paddingRight: spacing.sm,
   },
   xpPct: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     fontFamily: brandFont.semibold,
   },
   barTrack: {
     height: 8,
-    backgroundColor: colors.borderLight,
+    backgroundColor: sg.line,
     borderRadius: radius.full,
     marginBottom: spacing.md,
     overflow: 'hidden',
@@ -513,16 +508,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     paddingBottom: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   streakInlineVal: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   streakInlineLab: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginTop: 2,
     fontFamily: brandFont.medium,
   },
@@ -531,23 +526,23 @@ const styles = StyleSheet.create({
   },
   streakInlineBestLab: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   streakInlineBestVal: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginTop: 2,
   },
   claimCta: {
     marginTop: spacing.sm,
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
   },
   claimCtaText: {
-    color: colors.white,
+    color: sg.text,
     fontFamily: brandFont.bold,
     fontSize: fontSize.sm,
   },
@@ -558,7 +553,7 @@ const styles = StyleSheet.create({
   viewAllQuestsText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.accentDark,
+    color: sg.gold,
   },
   tierLink: {
     marginTop: spacing.sm,
@@ -567,7 +562,7 @@ const styles = StyleSheet.create({
   tierLinkText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   bestCard: {
     marginBottom: spacing.md,
@@ -578,7 +573,7 @@ const styles = StyleSheet.create({
   bestKicker: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -586,35 +581,35 @@ const styles = StyleSheet.create({
   bestName: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   bestVal: {
     fontSize: fontSize.hero - 4,
     fontFamily: brandFont.black,
-    color: colors.accent,
+    color: sg.gold,
   },
   bestSub: {
     marginTop: 4,
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
   subsection: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.sm,
     marginTop: spacing.xs,
   },
   subsectionInCard: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.sm,
   },
   emptyPulls: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.md,
   },
   rarityCard: {
@@ -633,10 +628,10 @@ const styles = StyleSheet.create({
   },
   quickCell: {
     width: '48%',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.sm,
     alignItems: 'center',
@@ -646,14 +641,14 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   quickLabel: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     textAlign: 'center',
   },
 });

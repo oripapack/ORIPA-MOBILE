@@ -1,8 +1,8 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../../tokens/colors';
-import { fontSize, brandFont } from '../../../tokens/typography';
+import { sg } from '../../../tokens/sg';
+import { fontSize } from '../../../tokens/typography';
 import type { PackRollResult, RevealRarity } from './types';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 
@@ -39,21 +39,22 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 1.3,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   value: {
     marginTop: 4,
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     letterSpacing: -0.4,
+    fontVariant: [...sg.numeric],
   },
   subtitle: {
     marginTop: 2,
     fontSize: 11,
-    fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 1.1,
   },
 });

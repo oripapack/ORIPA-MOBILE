@@ -3,8 +3,8 @@ import type { GestureResponderHandlers } from 'react-native';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../../../tokens/colors';
-import { fontSize, brandFont } from '../../../../tokens/typography';
+import { sg } from '../../../../tokens/sg';
+import { fontSize } from '../../../../tokens/typography';
 import { spacing } from '../../../../tokens/spacing';
 import { REVEAL_RARITY_VISUAL } from '../rarityTokens';
 import type { PackRollResult, RevealCard, RevealRarity } from '../types';
@@ -161,13 +161,14 @@ const styles = StyleSheet.create({
   },
   hintArrow: {
     fontSize: 28,
-    color: 'rgba(255,255,255,0.72)',
+    color: sg.text,
+    opacity: 0.72,
   },
   hintText: {
     marginTop: 4,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: 'rgba(255,255,255,0.56)',
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     letterSpacing: 0.4,
   },
   rarityBadge: {
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
   },
   rarityLabel: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
   },

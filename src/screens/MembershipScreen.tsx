@@ -1,4 +1,5 @@
 import React, { useCallback, useLayoutEffect, useState } from 'react';
+import { sg } from '../tokens/sg';
 import {
   View,
   Text,
@@ -14,8 +15,7 @@ import { MembershipTierCard } from '../components/membership/MembershipTierCard'
 import { MEMBERSHIP_PLANS, type MembershipTierId } from '../data/membershipPlans';
 import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { RootStackParamList } from '../navigation/types';
 import { confirmUserAction, showUserMessage } from '../utils/showUserMessage';
@@ -38,10 +38,10 @@ export function MembershipScreen() {
     navigation.setOptions({
       title: t('membership.navTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold, fontSize: fontSize.md },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold, fontSize: fontSize.md },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
 
@@ -136,7 +136,7 @@ export function MembershipScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
   },
   scroll: {
     flex: 1,
@@ -147,34 +147,34 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     padding: spacing.md,
     borderRadius: radius.lg,
-    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+    backgroundColor: 'rgba(111,191,143,0.12)',
     borderWidth: 1,
-    borderColor: 'rgba(74, 222, 128, 0.35)',
+    borderColor: 'rgba(111,191,143,0.35)',
   },
   activeBannerTitle: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.chipBestValueText,
+    fontFamily: sg.font.bodyBold,
+    color: sg.success,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
   activeBannerBody: {
     fontSize: fontSize.sm,
-    color: colors.textPrimary,
+    color: sg.text,
     lineHeight: 20,
     marginBottom: spacing.sm,
   },
   activeBannerLink: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     textDecorationLine: 'underline',
   },
   heroEyebrow: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
     paddingHorizontal: spacing.base,
@@ -182,15 +182,15 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     paddingHorizontal: spacing.base,
     marginTop: spacing.xs,
     letterSpacing: -0.5,
   },
   heroLead: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 22,
     paddingHorizontal: spacing.base,
     marginTop: spacing.sm,
@@ -201,19 +201,19 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
     padding: spacing.md,
     borderRadius: radius.lg,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
   valueTitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: colors.gold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     marginBottom: spacing.xs,
   },
   valueBody: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 18,
   },
   trustBlock: {
@@ -223,41 +223,39 @@ const styles = StyleSheet.create({
   },
   trustLine: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: 4,
   },
   lockNote: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: sg.muted,
     paddingHorizontal: spacing.base,
     lineHeight: 16,
     fontStyle: 'italic',
   },
   stickyCta: {
     borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.background,
+    borderTopColor: sg.line,
+    backgroundColor: sg.bg,
     paddingHorizontal: spacing.base,
     paddingTop: spacing.sm,
   },
   ctaButton: {
-    backgroundColor: colors.nearBlack,
-    borderWidth: 1,
-    borderColor: colors.gold,
+    backgroundColor: sg.gold,
     borderRadius: radius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
   },
   ctaText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    color: colors.gold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.onGold,
     letterSpacing: 0.3,
   },
   ctaHint: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: sg.muted,
     textAlign: 'center',
     marginTop: spacing.sm,
   },

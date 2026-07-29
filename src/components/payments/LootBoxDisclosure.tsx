@@ -1,4 +1,5 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import {
   Modal,
   View,
@@ -11,8 +12,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PACK_OPENING_TIER_ODDS } from '../../data/lootBoxOdds';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     right: spacing.lg,
     top: '18%',
     maxHeight: '72%',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.xl,
     padding: spacing.lg,
     shadowColor: '#000',
@@ -90,14 +90,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.xs,
   },
   lead: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     marginBottom: spacing.md,
     lineHeight: 20,
   },
@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
   scrollContent: { paddingBottom: spacing.sm },
   tableHead: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
@@ -116,36 +116,36 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    borderBottomColor: sg.line,
   },
   tier: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
   },
   pct: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   footnote: {
     marginTop: spacing.md,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 18,
   },
   doneBtn: {
     marginTop: spacing.md,
     alignSelf: 'stretch',
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     paddingVertical: spacing.sm + 2,
     borderRadius: radius.md,
     alignItems: 'center',
   },
   doneText: {
-    color: colors.white,
+    color: sg.text,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
   },
 });

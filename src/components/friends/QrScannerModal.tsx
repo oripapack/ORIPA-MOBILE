@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { parseFriendInviteFromQr } from '../../lib/friendQr';
 import { showUserMessage } from '../../utils/showUserMessage';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
@@ -91,7 +91,7 @@ export function QrScannerModal({ visible, onClose, onUsernameScanned }: Props) {
 
         {!permission && (
           <View style={styles.permBody}>
-            <ActivityIndicator color={colors.gold} />
+            <ActivityIndicator color={sg.gold} />
           </View>
         )}
 
@@ -109,7 +109,7 @@ export function QrScannerModal({ visible, onClose, onUsernameScanned }: Props) {
                   value={pasteInput}
                   onChangeText={setPasteInput}
                   placeholder={t('qrScanner.webPastePlaceholder')}
-                  placeholderTextColor={colors.textMuted}
+                  placeholderTextColor={sg.muted}
                   autoCapitalize="none"
                   autoCorrect={false}
                 />
@@ -143,7 +143,7 @@ export function QrScannerModal({ visible, onClose, onUsernameScanned }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.black,
+    backgroundColor: sg.bg,
   },
   topBar: {
     flexDirection: 'row',
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   cancel: {
     fontSize: fontSize.base,
     fontFamily: brandFont.semibold,
-    color: colors.white,
+    color: sg.text,
     width: 56,
   },
   headerTitle: {
     fontSize: fontSize.base,
     fontFamily: brandFont.bold,
-    color: colors.white,
+    color: sg.text,
   },
   permBody: {
     flex: 1,
@@ -177,13 +177,13 @@ const styles = StyleSheet.create({
   },
   permBtn: {
     alignSelf: 'center',
-    backgroundColor: colors.gold,
+    backgroundColor: sg.gold,
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
     borderRadius: radius.lg,
   },
   permBtnText: {
-    color: colors.ink,
+    color: sg.onGold,
     fontFamily: brandFont.bold,
     fontSize: fontSize.base,
   },
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     fontSize: fontSize.md,
     fontFamily: brandFont.regular,
-    color: colors.white,
+    color: sg.text,
     backgroundColor: 'rgba(255,255,255,0.06)',
   },
   cameraContainer: {
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     height: 260,
     borderRadius: radius.lg,
     borderWidth: 3,
-    borderColor: colors.gold,
+    borderColor: sg.gold,
     backgroundColor: 'transparent',
   },
   hint: {

@@ -8,8 +8,8 @@ import Animated, {
   type SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 
 const FRAME_W = 236;
 const FRAME_H = 132;
@@ -158,7 +158,7 @@ export function SplashCardFrame({
   });
 
   const corner = (pos: 'tl' | 'tr' | 'bl' | 'br') => {
-    const base = { position: 'absolute' as const, width: 20, height: 20, borderColor: colors.accentBorder };
+    const base = { position: 'absolute' as const, width: 20, height: 20, borderColor: sg.line };
     switch (pos) {
       case 'tl':
         return { ...base, left: 0, top: 0, borderTopWidth: 2, borderLeftWidth: 2 };
@@ -287,9 +287,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'rgba(62, 92, 118, 0.22)',
     backgroundColor: 'transparent',
-    shadowColor: colors.shadowStrong,
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.72,
     shadowRadius: 14,
     elevation: 8,
   },
@@ -306,9 +306,9 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 1.5,
     overflow: 'hidden',
-    shadowColor: colors.shadowStrong,
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.72,
     shadowRadius: 18,
     elevation: 10,
     zIndex: 2,
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.accentBorder,
+    borderColor: sg.line,
   },
   frameCopy: {
     ...StyleSheet.absoluteFillObject,
@@ -342,8 +342,8 @@ const styles = StyleSheet.create({
   },
   typewriterCursor: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.accent,
+    fontFamily: sg.font.display,
+    color: sg.gold,
     marginLeft: 1,
     marginTop: -2,
     textShadowColor: 'rgba(62, 92, 118, 0.15)',
@@ -352,8 +352,8 @@ const styles = StyleSheet.create({
   },
   frameLine: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     letterSpacing: -0.5,
     textAlign: 'center',
     textShadowColor: 'rgba(192,132,252,0.45)',

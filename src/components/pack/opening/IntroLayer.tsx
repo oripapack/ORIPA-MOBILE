@@ -1,9 +1,8 @@
 import React from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../../tokens/colors';
-import { fontSize, brandFont } from '../../../tokens/typography';
-import { spacing } from '../../../tokens/spacing';
+import { sg } from '../../../tokens/sg';
+import { fontSize } from '../../../tokens/typography';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import { packArtBase } from './sharedStage';
 import type { RevealRarity } from './types';
@@ -57,16 +56,16 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   title: {
-    color: colors.white,
+    color: sg.text,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 4,
   },
   body: {
-    marginTop: spacing.md,
-    color: 'rgba(255,255,255,0.65)',
+    marginTop: sg.space.md,
+    color: sg.muted,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     letterSpacing: 1,
   },
 });

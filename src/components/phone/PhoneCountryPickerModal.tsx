@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { sg } from '../../tokens/sg';
 import {
   Modal,
   View,
@@ -13,8 +14,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { DialCodeOption, PHONE_DIAL_CODES } from '../../constants/phoneDialCodes';
@@ -60,18 +60,18 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
               accessibilityRole="button"
               accessibilityLabel={t('phonePicker.close')}
             >
-              <Ionicons name="close" size={26} color={colors.textPrimary} />
+              <Ionicons name="close" size={26} color={sg.text} />
             </TouchableOpacity>
           </View>
 
           <View style={styles.searchRow}>
-            <Ionicons name="search" size={20} color={colors.textMuted} />
+            <Ionicons name="search" size={20} color={sg.muted} />
             <TextInput
               style={styles.searchInput}
               value={q}
               onChangeText={setQ}
               placeholder={t('phonePicker.searchPlaceholder')}
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={sg.muted}
               autoCapitalize="none"
               autoCorrect={false}
               clearButtonMode="while-editing"
@@ -101,7 +101,7 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
                     {item.name}
                   </Text>
                   <Text style={styles.rowDial}>{item.dial}</Text>
-                  {isOn ? <Ionicons name="checkmark" size={22} color={colors.red} /> : <View style={styles.checkSpacer} />}
+                  {isOn ? <Ionicons name="checkmark" size={22} color={sg.error} /> : <View style={styles.checkSpacer} />}
                 </TouchableOpacity>
               );
             }}
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     maxHeight: '88%',
@@ -136,15 +136,15 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     borderRadius: radius.md,
     paddingHorizontal: spacing.sm,
     marginBottom: spacing.sm,
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   row: {
     flexDirection: 'row',
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
   },
   rowOn: {
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface,
   },
   flag: {
     fontSize: 22,
@@ -174,13 +174,13 @@ const styles = StyleSheet.create({
   rowName: {
     flex: 1,
     fontSize: fontSize.md,
-    fontFamily: brandFont.medium,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
   },
   rowDial: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     marginRight: spacing.xs,
   },
   checkSpacer: {
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   empty: {
     textAlign: 'center',
     paddingVertical: spacing.xl,
-    color: colors.textMuted,
+    color: sg.muted,
     fontSize: fontSize.sm,
   },
   list: {

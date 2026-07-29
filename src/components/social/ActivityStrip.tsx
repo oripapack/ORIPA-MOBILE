@@ -1,8 +1,8 @@
 import React from 'react';
+import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import type { ActivityHighlight } from '../../data/socialMock';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 export function ActivityStrip({ items }: { items: ActivityHighlight[] }) {
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     width: 220,
     padding: spacing.md,
     borderRadius: radius.lg,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
     flexDirection: 'row',
@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     lineHeight: 17,
   },
 });

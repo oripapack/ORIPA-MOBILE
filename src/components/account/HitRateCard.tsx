@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Pull } from '../../data/mockUser';
 import { buildHitRateWindow } from '../../lib/hitRate';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
@@ -88,14 +88,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 10,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
     marginBottom: spacing.md,
   },
   empty: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
   },
   pctRow: {
@@ -107,12 +107,12 @@ const styles = StyleSheet.create({
   pct: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     letterSpacing: -0.5,
   },
   pctHint: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     flex: 1,
   },
   bar: {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   tickEmpty: {
     fontSize: 9,
-    color: colors.textMuted,
+    color: sg.muted,
     opacity: 0.5,
   },
 });

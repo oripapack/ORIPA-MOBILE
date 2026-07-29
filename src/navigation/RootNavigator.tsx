@@ -32,14 +32,13 @@ import { PromotionsScreen } from '../screens/PromotionsScreen';
 import { MembershipScreen } from '../screens/MembershipScreen';
 import { CollectorQuestsScreen } from '../screens/CollectorQuestsScreen';
 import { PackDetailsScreen } from '../screens/PackDetailsScreen';
+import { ResultScreen } from '../screens/ResultScreen';
 import { FriendProfileScreen } from '../screens/FriendProfileScreen';
 import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
 import { navigationRef } from './navigationRef';
-import { colors } from '../tokens/colors';
 import { sg } from '../tokens/sg';
 import { useAppStore } from '../store/useAppStore';
-import { fontSize, brandFont } from '../tokens/typography';
 import { RootStackParamList } from './types';
 import { GuestAuthWallModal } from '../components/auth/GuestAuthWallModal';
 import { LinkPhoneScreen } from '../screens/LinkPhoneScreen';
@@ -166,7 +165,7 @@ function TabNavigatorInner() {
               : undefined,
           tabBarBadgeStyle:
             vaultTabBadgeCount > 0
-              ? { backgroundColor: colors.goldDark, color: colors.ink, fontSize: 11 }
+              ? { backgroundColor: sg.gold, color: sg.onGold, fontSize: 11 }
               : undefined,
         }}
       />
@@ -194,16 +193,29 @@ function TabNavigatorInner() {
 }
 
 function RootStack() {
+  const stackHeader = {
+    headerShown: true as const,
+    headerTintColor: sg.text,
+    headerTitleStyle: styles.stackHeaderTitle,
+    headerShadowVisible: false,
+    headerStyle: { backgroundColor: sg.surface },
+  };
+
   return (
     <>
       {isClerkEnabled ? <ClerkProfileSync /> : null}
       <Stack.Navigator
-        // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery boots straight into the
-        // component gallery (docs/design-system-n2.md). No effect in normal runs.
-        initialRouteName={process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery' ? 'DevUiGallery' : 'MainTabs'}
+        // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery | Result. No effect in normal runs.
+        initialRouteName={
+          process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
+            ? 'DevUiGallery'
+            : process.env.EXPO_PUBLIC_DEV_SCREEN === 'Result'
+              ? 'Result'
+              : 'MainTabs'
+        }
         screenOptions={{
           headerShown: false,
-          cardStyle: { flex: 1, backgroundColor: colors.background },
+          cardStyle: { flex: 1, backgroundColor: sg.bg },
         }}
       >
         <Stack.Screen name="MainTabs" component={TabNavigatorInner} />
@@ -217,60 +229,17 @@ function RootStack() {
           }}
         />
         <Stack.Screen
-          name="PaymentPortal"
-          component={PaymentPortalScreen}
+          name="Result"
+          component={ResultScreen}
           options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
+            headerShown: false,
           }}
         />
-        <Stack.Screen
-          name="HelpCenter"
-          component={HelpCenterScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="ShippingAddress"
-          component={ShippingAddressScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="TierBenefits"
-          component={TierBenefitsScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="Membership"
-          component={MembershipScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
+        <Stack.Screen name="PaymentPortal" component={PaymentPortalScreen} options={stackHeader} />
+        <Stack.Screen name="HelpCenter" component={HelpCenterScreen} options={stackHeader} />
+        <Stack.Screen name="ShippingAddress" component={ShippingAddressScreen} options={stackHeader} />
+        <Stack.Screen name="TierBenefits" component={TierBenefitsScreen} options={stackHeader} />
+        <Stack.Screen name="Membership" component={MembershipScreen} options={stackHeader} />
         <Stack.Screen
           name="CollectorQuests"
           component={CollectorQuestsScreen}
@@ -278,116 +247,16 @@ function RootStack() {
             headerShown: false,
           }}
         />
-        <Stack.Screen
-          name="Notifications"
-          component={NotificationsScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="HotDropsInfo"
-          component={HotDropsInfoScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="PromosInfo"
-          component={PromosInfoScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="PullHistory"
-          component={PullHistoryScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="FriendProfile"
-          component={FriendProfileScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="FriendsLeaderboard"
-          component={FriendsLeaderboardScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="LinkedAccounts"
-          component={LinkedAccountsScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="WalletLinking"
-          component={WalletLinkingScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="IdentityVerification"
-          component={IdentityVerificationScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
-        <Stack.Screen
-          name="PayoutMethod"
-          component={PayoutMethodScreen}
-          options={{
-            headerShown: true,
-            headerTintColor: colors.textPrimary,
-            headerTitleStyle: styles.stackHeaderTitle,
-            headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surfaceElevated },
-          }}
-        />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} options={stackHeader} />
+        <Stack.Screen name="HotDropsInfo" component={HotDropsInfoScreen} options={stackHeader} />
+        <Stack.Screen name="PromosInfo" component={PromosInfoScreen} options={stackHeader} />
+        <Stack.Screen name="PullHistory" component={PullHistoryScreen} options={stackHeader} />
+        <Stack.Screen name="FriendProfile" component={FriendProfileScreen} options={stackHeader} />
+        <Stack.Screen name="FriendsLeaderboard" component={FriendsLeaderboardScreen} options={stackHeader} />
+        <Stack.Screen name="LinkedAccounts" component={LinkedAccountsScreen} options={stackHeader} />
+        <Stack.Screen name="WalletLinking" component={WalletLinkingScreen} options={stackHeader} />
+        <Stack.Screen name="IdentityVerification" component={IdentityVerificationScreen} options={stackHeader} />
+        <Stack.Screen name="PayoutMethod" component={PayoutMethodScreen} options={stackHeader} />
         <Stack.Screen
           name="Promotions"
           component={PromotionsScreen}
@@ -528,19 +397,19 @@ export function RootNavigator() {
 const styles = StyleSheet.create({
   gateRoot: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
     ...(Platform.OS === 'web' ? { minHeight: 0, height: '100%' } : null),
   },
   webLoading: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
   },
   webLoadingText: {
-    color: colors.textMuted,
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    color: sg.muted,
+    fontSize: 13,
+    fontFamily: sg.font.bodyMedium,
   },
   tabBar: {
     backgroundColor: 'transparent',
@@ -550,12 +419,12 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   tabLabel: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontSize: 11,
+    fontFamily: sg.font.bodyMedium,
   },
   stackHeaderTitle: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontSize: 17,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
 });

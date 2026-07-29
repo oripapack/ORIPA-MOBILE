@@ -55,6 +55,7 @@
 
 ## 既知のギャップ(ブロッカーではない)
 
+- **Result 画面は開封フロー未接続(2026-07-29)**: `src/screens/ResultScreen.tsx` は task1-result-screen-spec.md どおり実装済みだが、開封演出(Yutaka 域)からの遷移は未配線。パラメータ無しでは `mockResultPull.ts` の MOCK データを表示する(レビュー用。`EXPO_PUBLIC_DEV_SCREEN=Result` で直接起動可)。`pullIds` が渡されれば finalizePendingFulfillment に接続済み。カードのティアは全て UNKNOWN(#4 のため — 実装不足ではなくデータ不在)。文言は仕様指定の英語ハードコードで、17ロケール展開は配線時。
 - **カタログ説明文は全パック仮(2026-07-29)**: `shared/mock/catalog.ts` の tagline / description / topCard は実在するパックの中身を反映していないデモコピー(「Charizard ex SAR in the prize pool」等)。**実データ接続時に、全パックの説明文を実際の中身に基づいて書き直すこと**。それまで外部に見せない(ファイル先頭にも同コメントあり)
 - CTA サブ文の Trans タグ(数値の等幅化)が en/ja/zh/zht の4ロケールのみ。残り13ロケールは等幅未適用(描画は正常)
 - `bulkStockBody` はネイティブ Alert のためスタイル不可

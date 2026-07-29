@@ -86,43 +86,48 @@ Use these when Claude should change a **widget** used on multiple screens, not a
 
 | Folder | What's inside |
 |--------|----------------|
-| `src/components/ph/` | Phygitals-style UI: pack cards, hero, badges, buttons |
-| `src/components/shared/` | Header, credits pill, primary buttons, backgrounds |
+| `src/components/ui/` | N2 primitives: `SgButton`, `SgCard`, `SgData`, `SgScreen`, `SgSectionHeader`, `SgTierTag` |
+| `src/components/home/sg/` | Home shelf UI (banner, featured pack, shelf tiles, recent pulls) |
+| `src/components/pack/sg/` | Pack detail N2 pieces (e.g. fairness record) |
+| `src/components/shared/` | Header, credits pill, primary buttons, list rows |
 | `src/components/pack/` | Pack cards, odds modal, opening flow helpers |
 | `src/components/vault/` | Vault cards, list-for-sale modals |
 | `src/components/marketplace/` | Marketplace listing rows |
 | `src/components/account/` | Account section, sign out |
+| `src/components/ph/` | Legacy pack visual helpers still in use (`PackVisual`, badges) |
+| `src/components/_archive/` | Unused pre-N2 home/lobby UI — do not wire back without migrating |
 
 **Examples:**
-- Change how a pack looks on the home grid → `src/components/ph/PhPackCard.tsx`
+- Change how a pack looks on the home shelf → `src/components/home/sg/SgShelfPackTile.tsx` / `SgFeaturedPackCard.tsx`
 - Change the top header → `src/components/shared/AppHeader.tsx`
-- Change home hero banner → `src/components/ph/PhHomeHero.tsx`
+- Change home banner carousel → `src/components/home/sg/SgBannerCarousel.tsx`
 
 ---
 
 ## Design system (colors & spacing)
 
-**Do not invent random hex colors.** Use the existing tokens so everything stays consistent.
+**Do not invent random hex colors.** Use N2 tokens so everything stays consistent.
 
 | Token file | Use for |
 |------------|---------|
-| `shared/tokens/ph.ts` | Main dark theme: backgrounds, green/gold accents, rarity colors |
-| `src/tokens/phTheme.ts` | Re-exports `ph` — import as `import { ph } from '../tokens/phTheme'` |
-| `src/tokens/colors.ts` | Older/alternate color palette (some screens still use it) |
-| `src/tokens/spacing.ts` | Padding, margins, border radius |
-| `src/tokens/typography.ts` | Font sizes and Outfit font family |
+| `src/tokens/sg.ts` | **Primary** N2 "Neon Torii" colors, fonts, radii (`import { sg } from '../tokens/sg'`) |
+| `src/tokens/sgVault.ts` | Vault / buyback FINTECH skin only (`sgVault`) |
+| `docs/design-system-n2.md` | Full N2 handoff (roles, ban list, skins) |
+| `src/tokens/spacing.ts` | Legacy spacing helpers (prefer `sg.space` for new UI) |
+| `src/tokens/colors.ts` | Deprecated Phygitals palette — do not use for new work |
 
 **Example** (inside a screen):
 
 ```ts
-import { ph } from '../tokens/phTheme';
+import { sg } from '../tokens/sg';
+import { SgScreen, SgButton } from '../components/ui';
 
-// background: ph.bg
-// green button: ph.green
-// muted text: ph.textMuted
+// background: sg.bg
+// primary CTA: sg.gold with sg.onGold label
+// muted text: sg.muted
 ```
 
-Font is **Outfit** (loaded in root `App.tsx`). Do not add new font families without checking with the team.
+Fonts are **Fraunces / Schibsted Grotesk / Spline Sans Mono** (loaded in root `App.tsx`). Prefer `sg.font.*`. Do not add new font families without checking with the team.
 
 ---
 
@@ -194,7 +199,7 @@ I'm working on Pull Hub (Expo app). Edit ONLY visual/layout in:
 Goal: [describe what you want — e.g. "add a prize pool grid like the prototype"]
 
 Rules:
-- Use ph design tokens from src/tokens/phTheme.ts (ph.bg, ph.green, etc.)
+- Use N2 tokens from src/tokens/sg.ts (sg.bg, sg.gold, sg.text, etc.)
 - Use React Native components: View, Text, TouchableOpacity, ScrollView
 - Do NOT edit backend/, src/lib/, or src/store/
 - Do NOT use HTML, div, or Tailwind — this is React Native
@@ -206,12 +211,12 @@ Reference (layout only): prototypes/next-ui-lab/app/pack-detail/page.tsx
 ### Prompt for a small component
 
 ```
-Update src/components/ph/PhPackCard.tsx only.
+Update src/components/home/sg/SgShelfPackTile.tsx only.
 
 Add a "return rate" and "floor value" row under the pack title, matching
 the style in prototypes/next-ui-lab/components/pack/PackCard.tsx.
 
-Use ph tokens. React Native only. No logic changes to openPack.
+Use sg tokens. React Native only. No logic changes to openPack.
 ```
 
 ### Prompt to see what file to edit
@@ -229,14 +234,14 @@ Do not change any files yet.
 | I want to… | Start here |
 |------------|------------|
 | Change home page layout | `src/screens/HomeScreen.tsx` |
-| Change pack card on home | `src/components/ph/PhPackCard.tsx` |
+| Change pack card on home | `src/components/home/sg/SgShelfPackTile.tsx` |
 | Change pack detail page | `src/screens/PackDetailsScreen.tsx` |
 | Add filters on browse | `src/screens/HomeScreen.tsx` (search for sort/niche state) |
 | Change opening animation look | `src/components/pack/opening/` |
 | Change vault card layout | `src/components/vault/PortfolioCard.tsx` |
 | Change tab bar icons/labels | `src/navigation/RootNavigator.tsx` |
 | Change mock pack names/images | `src/data/mockPacks.ts` |
-| Change global colors | `shared/tokens/ph.ts` |
+| Change global colors | `src/tokens/sg.ts` + `docs/design-system-n2.md` |
 
 ---
 
@@ -250,7 +255,7 @@ These prototype designs should be **ported into `src/`**, not left only in `prot
 
 2. **Pack card stats** — return rate, floor value on cards  
    - From: `prototypes/next-ui-lab/components/pack/PackCard.tsx`  
-   - To: `src/components/ph/PhPackCard.tsx`
+   - To: `src/components/home/sg/SgShelfPackTile.tsx` / `SgFeaturedPackCard.tsx`
 
 3. **Browse filters** — price range chips  
    - From: `prototypes/next-ui-lab/app/packs/page.tsx`  

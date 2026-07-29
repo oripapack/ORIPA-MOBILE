@@ -13,8 +13,8 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../store/useAppStore';
@@ -266,8 +266,8 @@ export function PackOpeningModal() {
             {
               opacity: modalOpacity,
               flex: fullscreenFlow ? 1 : undefined,
-              paddingTop: fullscreenFlow ? 0 : insets.top + spacing.sm,
-              paddingBottom: fullscreenFlow ? 0 : insets.bottom + spacing.lg,
+              paddingTop: fullscreenFlow ? 0 : insets.top + sg.space.sm,
+              paddingBottom: fullscreenFlow ? 0 : insets.bottom + sg.space.lg,
             },
           ]}
         >
@@ -312,7 +312,7 @@ export function PackOpeningModal() {
               hitSlop={12}
               style={[
                 styles.ringSkipFab,
-                { top: insets.top + spacing.sm },
+                { top: insets.top + sg.space.sm },
                 bulkCinematicActive && styles.bulkSkipFab,
               ]}
             >
@@ -376,7 +376,7 @@ export function PackOpeningModal() {
           >
             {compactPackHeader ? (
               <LinearGradient
-                colors={['transparent', 'rgba(2,6,23,0.55)']}
+                colors={['transparent', 'rgba(0,0,0,0.55)']}
                 style={styles.ctaBridge}
                 pointerEvents="none"
               />
@@ -390,14 +390,14 @@ export function PackOpeningModal() {
                 accessibilityLabel={t('packOpening.openNext')}
               >
                 <LinearGradient
-                  colors={[colors.gold, colors.goldDark]}
+                  colors={[sg.gold, sg.goldHi]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.openAnotherGradient}
                 >
                   <View style={styles.openAnotherRow}>
                     <View style={styles.openAnotherIconCircle}>
-                      <Ionicons name="flash" size={22} color={colors.black} />
+                      <Ionicons name="flash" size={22} color={sg.onGold} />
                     </View>
                     <View style={styles.openAnotherCopy}>
                       <Text style={styles.openAnotherHeadline}>{t('packOpening.openAnotherHeadline')}</Text>
@@ -408,7 +408,7 @@ export function PackOpeningModal() {
                         })}
                       </Text>
                     </View>
-                    <Ionicons name="chevron-forward" size={22} color="rgba(2,6,23,0.45)" />
+                    <Ionicons name="chevron-forward" size={22} color="rgba(0,0,0,0.45)" />
                   </View>
                 </LinearGradient>
               </TouchableOpacity>
@@ -432,7 +432,7 @@ export function PackOpeningModal() {
 const styles = StyleSheet.create({
   rootPress: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: sg.bg,
   },
   content: {
     flex: 1,
@@ -455,18 +455,18 @@ const styles = StyleSheet.create({
     minHeight: 420,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000',
+    backgroundColor: sg.bg,
   },
   ringSkipFab: {
     position: 'absolute',
-    right: spacing.base,
+    right: sg.space.md,
     zIndex: 20,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.sm,
     borderRadius: radius.full,
     backgroundColor: 'rgba(0,0,0,0.55)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: sg.line,
   },
   bulkSkipFab: {
     zIndex: 30,
@@ -477,23 +477,23 @@ const styles = StyleSheet.create({
   headerBridge: {
     width: '100%',
     height: 1,
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
     opacity: 0.85,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   headerTextBlock: {
     flex: 1,
-    paddingRight: spacing.sm,
+    paddingRight: sg.space.sm,
   },
   stageEyebrow: {
     fontSize: 10,
-    fontFamily: brandFont.black,
-    color: 'rgba(248,250,252,0.38)',
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 3.2,
     textTransform: 'uppercase',
     marginBottom: 4,
@@ -501,25 +501,25 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   titleFifa: {
     fontSize: 22,
-    fontFamily: brandFont.extraBold,
-    color: 'rgba(248,250,252,0.92)',
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     marginBottom: 4,
     letterSpacing: 1.2,
   },
   titleCompact: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: 'rgba(226,232,240,0.55)',
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     letterSpacing: 0.2,
     marginTop: 2,
   },
   subFifa: {
     fontSize: fontSize.xs,
-    color: 'rgba(148,163,184,0.78)',
+    color: sg.muted,
     maxWidth: '80%',
     letterSpacing: 0.2,
   },
@@ -529,8 +529,8 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: 'rgba(255,255,255,0.62)',
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   livePillFifa: {
     flexDirection: 'row',
@@ -540,17 +540,17 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: radius.full,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.10)',
-    backgroundColor: 'rgba(2,6,23,0.35)',
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
   },
   liveDot: {
     fontSize: 9,
-    color: colors.red,
+    color: sg.error,
   },
   liveText: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: 'rgba(255,255,255,0.68)',
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 1.6,
   },
   ctaBridge: {
@@ -559,42 +559,38 @@ const styles = StyleSheet.create({
     marginTop: -4,
   },
   ctaRow: {
-    marginTop: spacing.sm,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.xs,
-    paddingHorizontal: spacing.base,
-    gap: spacing.md,
+    marginTop: sg.space.sm,
+    paddingTop: sg.space.sm,
+    paddingBottom: sg.space.xs,
+    paddingHorizontal: sg.space.md,
+    gap: sg.space.md,
   },
   ctaRowTight: {
     marginTop: 0,
-    paddingTop: spacing.xs,
+    paddingTop: sg.space.xs,
   },
   openAnotherBtn: {
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.btn,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 18 },
-    shadowOpacity: 0.45,
-    shadowRadius: 26,
-    elevation: 14,
+    ...sg.shadowHero,
   },
   openAnotherGradient: {
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.18)',
   },
   openAnotherRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
+    gap: sg.space.md,
     paddingVertical: spacing.md + 4,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   openAnotherIconCircle: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(2,6,23,0.18)',
+    backgroundColor: 'rgba(0,0,0,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -603,26 +599,26 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   openAnotherHeadline: {
-    color: colors.black,
+    color: sg.onGold,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 0.2,
     marginBottom: 2,
   },
   openAnotherSub: {
-    color: 'rgba(2,6,23,0.62)',
+    color: 'rgba(0,0,0,0.62)',
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
   },
   manageWinningsBtn: {
-    paddingVertical: spacing.sm + 2,
+    paddingVertical: sg.space.sm + 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   manageWinningsText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: 'rgba(248,250,252,0.52)',
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     letterSpacing: 0.2,
   },
 });

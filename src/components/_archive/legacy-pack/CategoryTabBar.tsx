@@ -3,8 +3,8 @@ import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from 'react-nati
 import { useTranslation } from 'react-i18next';
 import { HOME_NICHE_CATEGORIES } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 export function CategoryTabBar() {
@@ -41,9 +41,9 @@ export function CategoryTabBar() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    borderBottomColor: sg.line,
   },
   scroll: {
     paddingHorizontal: spacing.base,
@@ -54,14 +54,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.xs + 2,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
   },
   tabActive: {
-    backgroundColor: colors.goldSoft,
-    borderColor: colors.goldBorderMuted,
-    shadowColor: colors.gold,
+    backgroundColor: 'rgba(212,175,55,0.15)',
+    borderColor: 'rgba(212,175,55,0.30)',
+    shadowColor: sg.gold,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.22,
     shadowRadius: 8,
@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   labelActive: {
-    color: colors.gold,
-    fontFamily: brandFont.bold,
+    color: sg.gold,
+    fontFamily: sg.font.bodyBold,
   },
 });

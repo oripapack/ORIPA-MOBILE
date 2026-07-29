@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { SOCIAL_URLS } from '../../config/social';
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     width: '48%',
     flexGrow: 1,
     minWidth: '45%',
-    backgroundColor: colors.nearBlack,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.sm,

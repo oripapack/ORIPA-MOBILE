@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, Text, View, ScrollView } from 'react-native';
 import type { ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type HitRarity = 'Gold' | 'Rainbow' | 'PSA 10' | 'Legendary' | 'Secret Rare';
@@ -35,8 +35,8 @@ function rarityColors(r: HitRarity) {
   switch (r) {
     case 'Gold':
       return {
-        pill: { backgroundColor: colors.goldPillBg, borderColor: colors.goldPillBorder } as ViewStyle,
-        text: colors.gold,
+        pill: { backgroundColor: 'rgba(212,175,55,0.15)', borderColor: 'rgba(212,175,55,0.35)' } as ViewStyle,
+        text: sg.gold,
       };
     case 'PSA 10':
       return {
@@ -51,7 +51,7 @@ function rarityColors(r: HitRarity) {
     case 'Legendary':
       return {
         pill: { backgroundColor: 'rgba(196, 30, 58, 0.12)', borderColor: 'rgba(196, 30, 58, 0.4)' } as ViewStyle,
-        text: colors.red,
+        text: sg.error,
       };
     case 'Secret Rare':
       return {
@@ -61,7 +61,7 @@ function rarityColors(r: HitRarity) {
     default:
       return {
         pill: { backgroundColor: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.14)' } as ViewStyle,
-        text: colors.textSecondary,
+        text: sg.muted,
       };
   }
 }
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     backgroundColor: 'rgba(0,0,0,0.42)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.goldBorderHairline,
+    borderColor: 'rgba(212,175,55,0.25)',
     overflow: 'hidden',
   },
   labelRow: {
@@ -200,15 +200,15 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.gold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
   },
   subLabel: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     textTransform: 'uppercase',
     letterSpacing: 1.2,
   },
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: colors.red,
+    backgroundColor: sg.error,
     opacity: 0.85,
   },
   scrollContent: {
@@ -240,32 +240,32 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: colors.goldWashMedium,
+    backgroundColor: 'rgba(212,175,55,0.12)',
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
     fontSize: 10,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   fire: {
     fontSize: 12,
   },
   text: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     maxWidth: 210,
   },
   user: {
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   card: {
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   rarityPill: {
     paddingHorizontal: 8,
@@ -277,14 +277,14 @@ const styles = StyleSheet.create({
   },
   rarityText: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
   value: {
     fontSize: 11,
-    fontFamily: brandFont.black,
-    color: colors.gold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
   },
 });
 

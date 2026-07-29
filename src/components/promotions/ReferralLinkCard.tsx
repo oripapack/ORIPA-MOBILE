@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
+import { sg } from '../../tokens/sg';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 import { PUBLIC_WEB_ORIGIN } from '../../config/app';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -54,37 +54,37 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   body: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.md,
   },
   linkBox: {
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface,
     borderRadius: radius.md,
     padding: spacing.base,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: sg.line,
     marginBottom: spacing.md,
   },
   link: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.gold,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.gold,
   },
   copyBtn: {
     alignSelf: 'flex-start',
@@ -92,12 +92,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceElevated,
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
   },
   copyText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.text,
   },
 });

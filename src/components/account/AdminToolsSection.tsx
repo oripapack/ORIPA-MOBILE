@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useUser } from '@clerk/clerk-expo';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
@@ -40,7 +40,7 @@ function AdminToolsCard() {
       <Text style={styles.sectionHeader}>Admin Tools</Text>
       <VaultFramedCard style={styles.wrap} contentStyle={styles.inner}>
         <View style={styles.balanceRow}>
-          <Ionicons name="diamond-outline" size={18} color={colors.gold} />
+          <Ionicons name="diamond-outline" size={18} color={sg.gold} />
           <Text style={styles.balanceLabel}>Current balance</Text>
           <Text style={styles.balanceValue}>{credits.toLocaleString()}</Text>
         </View>
@@ -52,7 +52,7 @@ function AdminToolsCard() {
           accessibilityRole="button"
           accessibilityLabel="Grant infinite credits"
         >
-          <Ionicons name="infinite-outline" size={20} color={colors.white} />
+          <Ionicons name="infinite-outline" size={20} color={sg.text} />
           <Text style={styles.primaryActionText}>Grant infinite credits</Text>
         </TouchableOpacity>
 
@@ -63,7 +63,7 @@ function AdminToolsCard() {
           accessibilityRole="button"
           accessibilityLabel="Reset balance to zero"
         >
-          <Ionicons name="refresh-outline" size={18} color={colors.textSecondary} />
+          <Ionicons name="refresh-outline" size={18} color={sg.muted} />
           <Text style={styles.secondaryActionText}>Reset balance to 0</Text>
         </TouchableOpacity>
 
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sg.gold,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginTop: spacing.xl,
@@ -102,19 +102,19 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: fontSize.sm,
     fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
   balanceValue: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   primaryAction: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.accentDark,
+    backgroundColor: sg.gold,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     minHeight: 48,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   primaryActionText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.white,
+    color: sg.text,
   },
   secondaryAction: {
     flexDirection: 'row',
@@ -132,21 +132,21 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceElevated,
+    borderColor: sg.line,
+    backgroundColor: sg.surface,
     paddingVertical: spacing.md,
     minHeight: 48,
   },
   secondaryActionText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
   note: {
     marginTop: spacing.md,
     fontSize: fontSize.xs,
     fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 16,
   },
 });

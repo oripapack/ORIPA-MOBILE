@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useClerk, useUser } from '@clerk/clerk-expo';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
@@ -45,7 +45,7 @@ function AccountAuthCardInner() {
           accessibilityRole="button"
           accessibilityLabel={t('account.guestSignInCta')}
         >
-          <Ionicons name="log-in-outline" size={20} color={colors.white} />
+          <Ionicons name="log-in-outline" size={20} color={sg.text} />
           <Text style={styles.signInBtnText}>{t('account.guestSignInCta')}</Text>
         </TouchableOpacity>
       </VaultFramedCard>
@@ -73,7 +73,7 @@ function AccountAuthCardInner() {
     <VaultFramedCard style={styles.card}>
       <View style={styles.identityRow}>
         <View style={styles.avatar}>
-          <Ionicons name="person" size={22} color={colors.gold} />
+          <Ionicons name="person" size={22} color={sg.gold} />
         </View>
         <View style={styles.identityMeta}>
           <Text style={styles.signedInLabel}>{t('account.usernameLabel')}</Text>
@@ -94,7 +94,7 @@ function AccountAuthCardInner() {
         accessibilityRole="button"
         accessibilityLabel={t('account.logout')}
       >
-        <Ionicons name="log-out-outline" size={18} color={colors.textSecondary} />
+        <Ionicons name="log-out-outline" size={18} color={sg.muted} />
         <Text style={styles.signOutBtnText}>{t('account.logout')}</Text>
       </TouchableOpacity>
     </VaultFramedCard>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   guestEyebrow: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.red,
+    color: sg.error,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -116,13 +116,13 @@ const styles = StyleSheet.create({
   guestTitle: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   guestBody: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.md,
   },
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
-    backgroundColor: colors.red,
+    backgroundColor: sg.error,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     minHeight: 48,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   signInBtnText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.white,
+    color: sg.text,
   },
   identityRow: {
     flexDirection: 'row',
@@ -153,9 +153,9 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
   },
   identityMeta: {
     flex: 1,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   signedInLabel: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
     marginBottom: 2,
@@ -172,13 +172,13 @@ const styles = StyleSheet.create({
   identityName: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   identityEmail: {
     marginTop: 2,
     fontSize: fontSize.sm,
     fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   signOutBtn: {
     flexDirection: 'row',
@@ -187,14 +187,14 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceElevated,
+    borderColor: sg.line,
+    backgroundColor: sg.surface,
     paddingVertical: spacing.md,
     minHeight: 48,
   },
   signOutBtnText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
 });

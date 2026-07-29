@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { getLogoWordmarkParts, APP_DISPLAY_NAME } from '../../config/app';
 
 /** PullHub wordmark — editorial split weight for the splash only. */
@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
   },
   pull: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     letterSpacing: -0.5,
     textShadowColor: 'rgba(192, 132, 252, 0.35)',
     textShadowOffset: { width: 0, height: 0 },
@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
   },
   hub: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.gold,
+    fontFamily: sg.font.display,
+    color: sg.gold,
     letterSpacing: -0.3,
     textShadowColor: 'rgba(232, 197, 71, 0.28)',
     textShadowOffset: { width: 0, height: 0 },

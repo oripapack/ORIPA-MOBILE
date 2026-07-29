@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { PublicVaultListing } from '../../lib/friendVaultShop';
@@ -8,11 +8,11 @@ import type { PullRarityTier } from '../../data/mockUser';
 import { confirmUserAction, showUserMessage } from '../../utils/showUserMessage';
 
 const TIER_COLOR: Record<PullRarityTier, string> = {
-  common: colors.textMuted,
-  rare: colors.accentSapphire,
-  epic: colors.accent,
-  legendary: colors.gold,
-  mythic: colors.magenta,
+  common: sg.muted,
+  rare: '#60A5FA',
+  epic: '#A855F7',
+  legendary: sg.gold,
+  mythic: '#FB7185',
 };
 
 const TIER_LABEL: Record<PullRarityTier, string> = {
@@ -107,10 +107,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     marginBottom: spacing.sm,
     overflow: 'hidden',
   },
@@ -133,27 +133,27 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     flex: 1,
   },
   ownBadge: {
-    backgroundColor: colors.goldPillBg,
+    backgroundColor: 'rgba(212,175,55,0.14)',
     borderRadius: radius.sm,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderWidth: 1,
-    borderColor: colors.goldPillBorder,
+    borderColor: 'rgba(212,175,55,0.35)',
   },
   ownBadgeText: {
     fontSize: 9,
     fontFamily: brandFont.black,
-    color: colors.gold,
+    color: sg.gold,
     letterSpacing: 0.5,
   },
   packName: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 16,
   },
   metaRow: {
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   sellerText: {
     fontSize: 10,
     fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   rightWrap: {
     alignItems: 'flex-end',
@@ -187,26 +187,26 @@ const styles = StyleSheet.create({
   price: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   buyBtn: {
-    backgroundColor: colors.gold,
+    backgroundColor: sg.gold,
     borderRadius: radius.md,
     paddingVertical: 6,
     paddingHorizontal: spacing.md,
   },
   buyBtnOwn: {
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
   },
   buyBtnText: {
     fontSize: 11,
     fontFamily: brandFont.black,
-    color: colors.ink,
+    color: sg.onGold,
     letterSpacing: 0.3,
   },
   buyBtnTextOwn: {
-    color: colors.gold,
+    color: sg.gold,
   },
 });

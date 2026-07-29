@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import type { Pack } from '../../data/mockPacks';
 import { PackCardMini } from './PackCardMini';
@@ -29,28 +29,27 @@ export function PackRail({ title, subtitle, packs }: { title: string; subtitle?:
 
 const styles = StyleSheet.create({
   wrap: {
-    paddingTop: spacing.base,
+    paddingTop: sg.space.md,
   },
   head: {
-    paddingHorizontal: spacing.base,
-    marginBottom: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    marginBottom: sg.space.sm,
   },
   title: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     letterSpacing: -0.2,
   },
   sub: {
     marginTop: 2,
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 18,
   },
   scroll: {
-    paddingHorizontal: spacing.base,
-    gap: spacing.sm,
-    paddingBottom: spacing.xs,
+    paddingHorizontal: sg.space.md,
+    gap: sg.space.sm,
+    paddingBottom: sg.space.xs,
   },
 });
-

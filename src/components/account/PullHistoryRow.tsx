@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import { useAppStore } from '../../store/useAppStore';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { Pull } from '../../data/mockUser';
@@ -53,7 +53,7 @@ export function useCompletedPullsSorted() {
 
 const styles = StyleSheet.create({
   pullCard: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderRadius: 12,
     padding: spacing.base,
     marginBottom: spacing.sm,
@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
   pullResult: {
     fontSize: fontSize.base,
     fontFamily: brandFont.semibold,
-    color: colors.textPrimary,
+    color: sg.text,
     width: '100%',
   },
   pullPack: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginTop: 2,
     width: '100%',
   },
@@ -101,13 +101,13 @@ const styles = StyleSheet.create({
   pullCredits: {
     fontSize: fontSize.base,
     fontFamily: brandFont.bold,
-    color: colors.green,
+    color: sg.success,
     textAlign: 'right',
     width: '100%',
   },
   pullDate: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     marginTop: 2,
   },
 });

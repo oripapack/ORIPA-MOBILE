@@ -23,8 +23,8 @@ import Reanimated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { hapticPackResult } from '../../../../audio/packOpeningFeedback';
-import { colors } from '../../../../tokens/colors';
-import { brandFont, fontSize } from '../../../../tokens/typography';
+import { sg } from '../../../../tokens/sg';
+import { fontSize } from '../../../../tokens/typography';
 import { radius, spacing } from '../../../../tokens/spacing';
 import { HERO_CARD_STOCK } from '../heroVisualTokens';
 import { tierCelebrationFor } from '../tierCelebration';
@@ -325,7 +325,7 @@ function BulkResultsFooter({ onContinue }: { onContinue: () => void }) {
         style={styles.footerBtnOuter}
       >
         <LinearGradient
-          colors={[colors.gold, colors.goldDark]}
+          colors={[sg.gold, sg.goldHi]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.footerBtn}
@@ -368,34 +368,34 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     minHeight: 0,
-    backgroundColor: colors.black,
+    backgroundColor: sg.bg,
   },
   header: {
     paddingHorizontal: spacing.base,
-    paddingBottom: spacing.sm,
+    paddingBottom: sg.space.sm,
     gap: 4,
   },
   headerEyebrow: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: 10,
-    color: 'rgba(248,250,252,0.42)',
+    color: sg.muted,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
   headerTitle: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: fontSize.lg,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   headerTotal: {
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
   headerTierLine: {
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     fontSize: 11,
-    color: 'rgba(226,232,240,0.48)',
+    color: sg.muted,
     marginTop: 2,
   },
   heroWrap: {
@@ -422,9 +422,9 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   heroBadgeText: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: 11,
-    color: colors.black,
+    color: sg.onGold,
     letterSpacing: 1.6,
   },
   flipContainer: {
@@ -477,9 +477,9 @@ const styles = StyleSheet.create({
     height: 28,
   },
   cardBackMark: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: 10,
-    color: 'rgba(248,250,252,0.28)',
+    color: sg.muted,
     letterSpacing: 3,
   },
   cardFrontSpine: {
@@ -519,25 +519,26 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   cardArtMonogram: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: fontSize.lg,
-    color: 'rgba(248,250,252,0.75)',
+    color: sg.text,
   },
   cardFrontTier: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: 10,
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
   cardFrontName: {
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     fontSize: fontSize.sm,
-    color: colors.textPrimary,
+    color: sg.text,
     lineHeight: 18,
   },
   cardFrontCredits: {
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.dataBold,
     fontSize: fontSize.xs,
+    fontVariant: [...sg.numeric],
   },
   poolPlaceholder: {
     flex: 1,
@@ -549,13 +550,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
   },
   poolSectionTitle: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: fontSize.sm,
-    color: 'rgba(248,250,252,0.55)',
+    color: sg.muted,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    marginBottom: spacing.sm,
-    paddingHorizontal: spacing.xs,
+    marginBottom: sg.space.sm,
+    paddingHorizontal: sg.space.xs,
   },
   poolListContent: {
     paddingBottom: 120,
@@ -567,10 +568,10 @@ const styles = StyleSheet.create({
     padding: spacing.xs / 2,
   },
   poolTile: {
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     borderWidth: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.04)',
-    padding: spacing.sm,
+    backgroundColor: sg.surface2,
+    padding: sg.space.sm,
     minHeight: 96,
     gap: 4,
     overflow: 'hidden',
@@ -584,25 +585,26 @@ const styles = StyleSheet.create({
     width: 3,
   },
   poolTileTier: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: 9,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
     paddingLeft: 4,
   },
   poolTileName: {
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     fontSize: 11,
-    color: 'rgba(248,250,252,0.86)',
+    color: sg.text,
     lineHeight: 14,
     paddingLeft: 4,
     flex: 1,
   },
   poolTileCredits: {
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.dataBold,
     fontSize: 11,
-    color: 'rgba(226,232,240,0.58)',
+    color: sg.muted,
     paddingLeft: 4,
+    fontVariant: [...sg.numeric],
   },
   footer: {
     position: 'absolute',
@@ -617,26 +619,22 @@ const styles = StyleSheet.create({
     top: -28,
   },
   footerBtnOuter: {
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.btn,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    elevation: 10,
+    ...sg.shadowHero,
   },
   footerBtn: {
     paddingVertical: spacing.md + 2,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.16)',
   },
   footerBtnText: {
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     fontSize: fontSize.md,
-    color: colors.black,
+    color: sg.onGold,
     letterSpacing: 0.3,
   },
 });

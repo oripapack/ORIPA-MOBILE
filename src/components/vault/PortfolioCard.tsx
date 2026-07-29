@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '../../tokens/colors';
+import { sgVault } from '../../tokens/sgVault';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { Pull, PullRarityTier } from '../../data/mockUser';
@@ -25,11 +25,11 @@ function formatUsd(usd: number): string {
 }
 
 const TIER_BAR_COLOR: Record<PullRarityTier, string> = {
-  common: colors.textMuted,
-  rare: colors.accentSapphire,
-  epic: colors.accent,
-  legendary: colors.gold,
-  mythic: colors.magenta,
+  common: sgVault.muted,
+  rare: '#60A5FA',
+  epic: '#A855F7',
+  legendary: sgVault.gold,
+  mythic: '#FB7185',
 };
 
 interface Props {
@@ -70,7 +70,7 @@ export function PortfolioCard({ pulls }: Props) {
 
   return (
     <LinearGradient
-      colors={['#1C1435', '#12102A', '#0A0818']}
+      colors={[sgVault.surface2, sgVault.surface, sgVault.bg]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.card}
@@ -205,9 +205,9 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     marginBottom: spacing.md,
     borderWidth: 1.5,
-    borderColor: colors.goldBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
     overflow: 'hidden',
-    shadowColor: colors.gold,
+    shadowColor: sgVault.gold,
     shadowOpacity: 0.15,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 4 },
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: colors.gold,
+    backgroundColor: sgVault.gold,
     opacity: 0.5,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
@@ -233,30 +233,30 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sgVault.gold,
     letterSpacing: 1.8,
     marginBottom: 4,
   },
   totalValue: {
     fontSize: 36,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sgVault.text,
     letterSpacing: -1,
     lineHeight: 40,
   },
   totalLabel: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    color: sgVault.muted,
     marginTop: 2,
   },
   trophyWrap: {
     width: 48,
     height: 48,
     borderRadius: radius.full,
-    backgroundColor: colors.goldWashMedium,
+    backgroundColor: 'rgba(212,175,55,0.10)',
     borderWidth: 1,
-    borderColor: colors.goldBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: colors.goldBorderHairline,
+    backgroundColor: 'rgba(212,175,55,0.25)',
     marginBottom: spacing.md,
   },
   statsRow: {
@@ -277,13 +277,13 @@ const styles = StyleSheet.create({
   },
   statSep: {
     width: 1,
-    backgroundColor: colors.borderLight,
+    backgroundColor: sgVault.line,
     marginHorizontal: spacing.md,
   },
   statLabel: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sgVault.muted,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: 4,
@@ -291,11 +291,11 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sgVault.text,
     lineHeight: 20,
   },
   statValueAccent: {
-    color: colors.accentSapphire,
+    color: sgVault.up,
   },
   distHeader: {
     marginBottom: spacing.sm,
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   distLabel: {
     fontSize: 9,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sgVault.muted,
     letterSpacing: 1.2,
   },
   distBars: {
@@ -317,14 +317,14 @@ const styles = StyleSheet.create({
   distBarLabel: {
     fontSize: 10,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sgVault.muted,
     width: 44,
   },
   distBarTrack: {
     flex: 1,
     height: 6,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sgVault.surface2,
     overflow: 'hidden',
   },
   distBarFill: {
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   distBarCount: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    color: sgVault.muted,
     width: 20,
     textAlign: 'right',
   },

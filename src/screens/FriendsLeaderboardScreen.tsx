@@ -1,11 +1,11 @@
 import React, { useLayoutEffect, useMemo, useState } from 'react';
+import { sg } from '../tokens/sg';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
@@ -52,10 +52,10 @@ export function FriendsLeaderboardScreen() {
     navigation.setOptions({
       title: t('social.leaderboardNavTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
 
@@ -115,23 +115,23 @@ export function FriendsLeaderboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background },
-  tabBar: { maxHeight: 52, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+  root: { flex: 1, backgroundColor: sg.bg },
+  tabBar: { maxHeight: 52, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: sg.line },
   tabs: { paddingHorizontal: spacing.base, paddingVertical: spacing.sm, gap: spacing.sm, alignItems: 'center' },
   tab: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
   },
-  tabOn: { backgroundColor: colors.accentDark, borderColor: colors.accentDark },
-  tabText: { fontSize: fontSize.xs, fontFamily: brandFont.bold, color: colors.textSecondary },
-  tabTextOn: { color: colors.white },
+  tabOn: { backgroundColor: sg.surface2, borderColor: sg.surface2 },
+  tabText: { fontSize: fontSize.xs, fontFamily: sg.font.bodyBold, color: sg.muted },
+  tabTextOn: { color: sg.text },
   lead: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
     lineHeight: 20,
@@ -141,23 +141,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.lg,
     padding: spacing.md,
     marginBottom: spacing.sm,
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
   },
-  rowMe: { borderColor: colors.accentBorder, backgroundColor: colors.accentSoft },
+  rowMe: { borderColor: sg.line, backgroundColor: 'rgba(255,74,56,0.10)' },
   rank: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    color: colors.textMuted,
+    fontFamily: sg.font.display,
+    color: sg.muted,
     width: 28,
   },
   emoji: { fontSize: 22 },
   rowMeta: { flex: 1, minWidth: 0 },
-  rowName: { fontSize: fontSize.md, fontFamily: brandFont.bold, color: colors.textPrimary },
-  rowUn: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 2 },
-  rowVal: { fontSize: fontSize.md, fontFamily: brandFont.black, color: colors.accentDark },
+  rowName: { fontSize: fontSize.md, fontFamily: sg.font.bodyBold, color: sg.text },
+  rowUn: { fontSize: fontSize.xs, color: sg.muted, marginTop: 2 },
+  rowVal: { fontSize: fontSize.md, fontFamily: sg.font.display, color: sg.surface2 },
 });

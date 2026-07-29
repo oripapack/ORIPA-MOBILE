@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.sm,
     textAlign: 'left',
     letterSpacing: 0.2,
@@ -68,9 +68,9 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -82,29 +82,29 @@ const styles = StyleSheet.create({
   },
   pointPill: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.goldSoft,
+    backgroundColor: 'rgba(212,175,55,0.14)',
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: colors.accentBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
     marginBottom: 4,
   },
   pointPillText: {
     fontSize: 8,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sg.gold,
     letterSpacing: 0.5,
   },
   heading: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     marginBottom: 2,
   },
   body: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 17,
   },
 });

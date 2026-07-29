@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   section: {
     fontSize: 10,
     fontFamily: brandFont.black,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   hint: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.md,
   },
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   tileOuter: { marginBottom: spacing.sm },
   tileCard: { minHeight: 168 },
   tileCardListed: {
-    borderColor: colors.goldBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
     borderWidth: 1.5,
   },
   tileInner: { padding: spacing.md, minHeight: 168 },
@@ -217,13 +217,13 @@ const styles = StyleSheet.create({
   tileResult: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sg.text,
     lineHeight: 20,
     marginBottom: spacing.xs,
   },
   tilePack: {
     fontSize: fontSize.xs,
-    color: colors.textMuted,
+    color: sg.muted,
     lineHeight: 18,
     flex: 1,
   },
@@ -233,21 +233,21 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.full,
-    backgroundColor: colors.goldWash,
+    backgroundColor: 'rgba(212,175,55,0.08)',
     borderWidth: 1,
-    borderColor: colors.goldBorderHeavy,
+    borderColor: 'rgba(212,175,55,0.55)',
   },
   buyBadgeText: {
     fontSize: 9,
     fontFamily: brandFont.black,
-    color: colors.gold,
+    color: sg.gold,
     letterSpacing: 0.5,
   },
   tilePrice: {
     marginTop: 4,
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   reqBadge: {
     alignSelf: 'flex-start',
@@ -255,26 +255,26 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.full,
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: sg.line,
   },
   reqBadgeText: {
     fontSize: 9,
     fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    color: sg.muted,
     letterSpacing: 0.4,
   },
   manage: {
     marginTop: 6,
     fontSize: 9,
     fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    color: sg.muted,
   },
   emptyInner: { padding: spacing.lg },
   empty: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sg.muted,
     textAlign: 'center',
     lineHeight: 20,
   },

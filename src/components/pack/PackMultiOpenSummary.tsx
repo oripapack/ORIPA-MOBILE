@@ -3,8 +3,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { PackOpenQuantity } from '../../store/useAppStore';
 import { packOpenTotalCredits } from '../../lib/packMultiOpen';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
@@ -55,44 +55,44 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    backgroundColor: 'rgba(2,6,23,0.35)',
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
     padding: spacing.md,
     gap: 6,
   },
   cardRush: {
-    borderColor: colors.magentaBorder,
-    backgroundColor: colors.magentaSoft,
+    borderColor: sg.neon,
+    backgroundColor: 'rgba(255,74,56,0.10)',
   },
   title: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     letterSpacing: 0.2,
   },
   lead: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     lineHeight: 20,
   },
   support: {
     marginTop: 2,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     letterSpacing: 0.15,
   },
   supportMuted: {
     fontSize: 12,
-    fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyBold,
+    color: sg.muted,
     opacity: 0.92,
   },
   divider: {
-    marginTop: spacing.xs,
+    marginTop: sg.space.xs,
     marginBottom: 2,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: sg.line,
   },
 });

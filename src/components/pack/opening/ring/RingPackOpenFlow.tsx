@@ -4,8 +4,8 @@ import { WebView } from 'react-native-webview';
 import type { RingPackOpenFlowProps } from './ringTypes';
 import { tierToRingRarity } from './ringRarity';
 import { getPackRingWebBaseUrl } from '../../../../config/packRingWebUrl';
-import { colors } from '../../../../tokens/colors';
-import { fontSize, brandFont } from '../../../../tokens/typography';
+import { sg } from '../../../../tokens/sg';
+import { fontSize } from '../../../../tokens/typography';
 import { spacing } from '../../../../tokens/spacing';
 
 /**
@@ -100,7 +100,7 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
       />
       {loading ? (
         <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color={colors.gold} />
+          <ActivityIndicator size="large" color={sg.gold} />
           <Text style={styles.loadingText}>Loading pack scene…</Text>
         </View>
       ) : null}
@@ -113,51 +113,51 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 420,
     width: '100%',
-    backgroundColor: '#000',
+    backgroundColor: sg.bg,
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000',
+    backgroundColor: sg.bg,
     gap: spacing.md,
   },
   loadingText: {
-    color: colors.textMuted,
+    color: sg.muted,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
   },
   errorBox: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: sg.space.xl,
     gap: spacing.md,
   },
   errorTitle: {
-    color: colors.textPrimary,
+    color: sg.text,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     textAlign: 'center',
   },
   errorBody: {
-    color: colors.textMuted,
+    color: sg.muted,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     textAlign: 'center',
     lineHeight: 22,
   },
   retryBtn: {
-    marginTop: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    marginTop: sg.space.sm,
+    paddingHorizontal: sg.space.lg,
+    paddingVertical: sg.space.sm,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderColor: sg.line,
   },
   retryText: {
-    color: colors.gold,
+    color: sg.gold,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
   },
 });

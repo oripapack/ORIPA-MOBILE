@@ -16,8 +16,8 @@ import {
 } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { HomeBackground } from '../components/shared/HomeBackground';
 import { AppHeader } from '../components/shared/AppHeader';
+import { SgScreen } from '../components/ui';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { VaultAssetSheet } from '../components/vault/VaultAssetSheet';
@@ -33,7 +33,7 @@ import { isClerkEnabled } from '../config/clerk';
 import { useAppStore } from '../store/useAppStore';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { getLocalizedPackTitle } from '../i18n/packCopy';
-import { colors } from '../tokens/colors';
+import { sgVault } from '../tokens/sgVault';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { Pull, PullRarityTier } from '../data/mockUser';
@@ -60,7 +60,7 @@ const TIER_GLOW: Record<PullRarityTier, string> = {
 };
 
 function tierAccent(tier: PullRarityTier | undefined): string {
-  if (!tier) return colors.textMuted;
+  if (!tier) return sgVault.muted;
   return TIER_ACCENT[tier];
 }
 
@@ -175,8 +175,7 @@ export function VaultScreen() {
 
   if (showGuestGate) {
     return (
-      <View style={styles.container}>
-        <HomeBackground />
+      <SgScreen skin="vault">
         <AppHeader onSearch={() => setSearchOpen(true)} />
         <FlatList
           key="vault-guest-list"
@@ -216,13 +215,12 @@ export function VaultScreen() {
           onRequestShipment={requestVaultShipment}
           onConvertToCoins={convertVaultPullToCoins}
         />
-      </View>
+      </SgScreen>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <HomeBackground />
+    <SgScreen skin="vault">
       <AppHeader onSearch={() => setSearchOpen(true)} />
       <FlatList
         key="vault-grid-list"
@@ -251,7 +249,7 @@ export function VaultScreen() {
         onRequestShipment={requestVaultShipment}
         onConvertToCoins={convertVaultPullToCoins}
       />
-    </View>
+    </SgScreen>
   );
 }
 
@@ -359,20 +357,19 @@ function VaultTile({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.homeGradientBottom },
   listContent: { paddingTop: spacing.sm, flexGrow: 1 },
   headerBlock: { marginBottom: spacing.md },
   pageEyebrow: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.gold,
+    color: sgVault.gold,
     letterSpacing: 1.4,
     marginBottom: spacing.xs,
   },
   pageTitle: {
     fontSize: fontSize.xxl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sgVault.text,
     letterSpacing: -0.5,
     marginBottom: spacing.md,
   },
@@ -382,7 +379,7 @@ const styles = StyleSheet.create({
   historyLink: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: colors.accent,
+    color: sgVault.gold,
   },
   row: {
     justifyContent: 'space-between',
@@ -392,7 +389,7 @@ const styles = StyleSheet.create({
   tileWrap: {},
   tileCard: { minHeight: 168 },
   tileCardVault: {
-    borderColor: colors.goldBorder,
+    borderColor: 'rgba(212,175,55,0.38)',
   },
   tileInner: {
     padding: spacing.md,
@@ -407,32 +404,32 @@ const styles = StyleSheet.create({
   tileResult: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sgVault.text,
     lineHeight: 20,
     marginBottom: spacing.xs,
   },
   tilePack: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    color: sgVault.muted,
     lineHeight: 18,
     flex: 1,
   },
   tileMeta: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    color: sgVault.muted,
     marginTop: spacing.sm,
   },
   tileTimer: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sgVault.muted,
     marginTop: 6,
     letterSpacing: 0.3,
   },
   tileTimerUrgent: {
-    color: colors.gold,
+    color: sgVault.gold,
   },
   tileValueRow: {
     flexDirection: 'row',
@@ -446,30 +443,30 @@ const styles = StyleSheet.create({
     letterSpacing: -0.2,
   },
   tileListedBadge: {
-    backgroundColor: colors.accentJadeSoft,
+    backgroundColor: 'rgba(61,220,151,0.12)',
     borderRadius: radius.sm,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderWidth: 1,
-    borderColor: colors.accentJade + '55',
+    borderColor: 'rgba(61,220,151,0.35)',
   },
   tileListedBadgeText: {
     fontSize: 8,
     fontFamily: brandFont.black,
-    color: colors.accentJade,
+    color: sgVault.up,
     letterSpacing: 0.5,
   },
   tileStatus: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sgVault.muted,
     marginTop: 2,
   },
   tileStatusPending: {
-    color: colors.gold,
+    color: sgVault.gold,
   },
   tileStatusUrgent: {
-    color: colors.gold,
+    color: sgVault.gold,
   },
   // Empty state
   emptyWrap: {
@@ -477,28 +474,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.xl,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sgVault.surface,
     borderRadius: radius.xl,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sgVault.line,
   },
   emptyTitle: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    color: sgVault.text,
     marginBottom: spacing.sm,
     textAlign: 'center',
   },
   emptyBody: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    color: sgVault.muted,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
   emptyCta: {
-    backgroundColor: colors.gold,
+    backgroundColor: sgVault.gold,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.xl,
     borderRadius: radius.lg,
@@ -506,7 +503,7 @@ const styles = StyleSheet.create({
   emptyCtaText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.ink,
+    color: sgVault.onGold,
     letterSpacing: 0.3,
   },
   // Guest gate
@@ -515,19 +512,19 @@ const styles = StyleSheet.create({
   guestTitle: {
     fontSize: fontSize.md,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sgVault.text,
     marginBottom: spacing.sm,
   },
   guestBody: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    color: sgVault.muted,
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
   guestCta: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.red,
+    backgroundColor: sgVault.error,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
     borderRadius: radius.lg,
@@ -535,6 +532,6 @@ const styles = StyleSheet.create({
   guestCtaText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: colors.white,
+    color: sgVault.text,
   },
 });

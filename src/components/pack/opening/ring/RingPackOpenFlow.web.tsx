@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import type { RingPackOpenFlowProps } from './ringTypes';
 import { tierToRingRarity } from './ringRarity';
-import { colors } from '../../../../tokens/colors';
-import { fontSize, brandFont } from '../../../../tokens/typography';
+import { sg } from '../../../../tokens/sg';
+import { fontSize } from '../../../../tokens/typography';
 import { spacing } from '../../../../tokens/spacing';
 
 /**
@@ -81,7 +81,7 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
       />
       {loading ? (
         <View style={styles.loading}>
-          <ActivityIndicator size="large" color={colors.gold} />
+          <ActivityIndicator size="large" color={sg.gold} />
           <Text style={styles.loadingText}>Loading pack scene…</Text>
         </View>
       ) : null}
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: '100dvh' as unknown as number,
     width: '100%',
-    backgroundColor: '#000',
+    backgroundColor: sg.bg,
     position: 'relative',
   },
   iframe: {
@@ -102,32 +102,32 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     minHeight: '100dvh',
-    backgroundColor: '#000',
+    backgroundColor: sg.bg,
   } as unknown as object,
   loading: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000',
+    backgroundColor: sg.bg,
     gap: spacing.md,
   },
   loadingText: {
-    color: colors.textMuted,
+    color: sg.muted,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
   },
   errorTitle: {
-    color: colors.textPrimary,
+    color: sg.text,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     textAlign: 'center',
     marginTop: 80,
     paddingHorizontal: 24,
   },
   errorBody: {
-    color: colors.textMuted,
+    color: sg.muted,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     textAlign: 'center',
     marginTop: 12,
     paddingHorizontal: 32,

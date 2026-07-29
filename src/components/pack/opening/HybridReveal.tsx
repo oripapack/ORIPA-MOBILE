@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { hapticPackEnter, hapticPackReveal } from '../../../audio/packOpeningFeedback';
-import { colors } from '../../../tokens/colors';
-import { fontSize, brandFont } from '../../../tokens/typography';
+import { sg } from '../../../tokens/sg';
+import { fontSize } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
 import { getAppLogoParts } from '../../../config/app';
 import { useTranslation } from 'react-i18next';
@@ -370,23 +370,24 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   packArtTitle: {
-    color: colors.white,
+    color: sg.text,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 4,
   },
   packArtSub: {
-    color: 'rgba(255,255,255,0.65)',
+    color: sg.muted,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 4,
     marginTop: 6,
   },
   packHint: {
     marginTop: spacing.md,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: 'rgba(255,255,255,0.5)',
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
+    opacity: 0.85,
     letterSpacing: 1,
   },
   burstTintLayer: {

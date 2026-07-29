@@ -14,12 +14,12 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useClerk, useUser } from '@clerk/clerk-expo';
 import { isClerkAPIResponseError } from '@clerk/clerk-expo';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { sg } from '../tokens/sg';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import { AppUserUnsafeMetadata, isValidAppUsername, normalizeDisplayName } from '../lib/clerkProfile';
-import { HomeBackground } from '../components/shared/HomeBackground';
+import { SgScreen } from '../components/ui';
 import { PrimaryButton } from '../components/shared/PrimaryButton';
 
 function mergeUnsafeMetadata(
@@ -89,16 +89,15 @@ export function ProfileOnboardingScreen() {
 
   if (!isLoaded || !user) {
     return (
-      <View style={[styles.centered, { paddingTop: insets.top }]}>
-        <HomeBackground />
-        <ActivityIndicator size="large" color={colors.gold} />
-      </View>
+      <SgScreen style={styles.centered}>
+        <ActivityIndicator size="large" color={sg.gold} />
+      </SgScreen>
     );
   }
 
   return (
-    <View style={styles.screenRoot}>
-      <HomeBackground />
+    <SgScreen style={styles.screenRoot}>
+      
       <KeyboardAvoidingView
         style={styles.flexOverBg}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -127,7 +126,7 @@ export function ProfileOnboardingScreen() {
           value={username}
           onChangeText={setUsername}
           placeholder={t('profileOnboarding.usernamePlaceholder')}
-          placeholderTextColor={colors.textMuted}
+          placeholderTextColor={sg.muted}
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="username"
@@ -140,7 +139,7 @@ export function ProfileOnboardingScreen() {
           value={displayName}
           onChangeText={setDisplayName}
           placeholder={t('profileOnboarding.displayNamePlaceholder')}
-          placeholderTextColor={colors.textMuted}
+          placeholderTextColor={sg.muted}
           autoCapitalize="words"
           editable={!busy}
         />
@@ -162,14 +161,13 @@ export function ProfileOnboardingScreen() {
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
-    </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
   screenRoot: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   flexOverBg: {
     flex: 1,
@@ -179,7 +177,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
   },
   scrollContent: {
     paddingHorizontal: spacing.xl,
@@ -193,53 +190,53 @@ const styles = StyleSheet.create({
   },
   logoPrimary: {
     fontSize: fontSize.hero,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     letterSpacing: -0.5,
   },
   logoSecondary: {
     fontSize: fontSize.hero,
-    fontFamily: brandFont.black,
-    color: colors.gold,
+    fontFamily: sg.font.display,
+    color: sg.gold,
     letterSpacing: -0.5,
   },
   title: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
-    color: colors.textSecondary,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
   label: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
   input: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    backgroundColor: colors.nearBlack,
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
     borderRadius: radius.md,
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    fontFamily: brandFont.regular,
-    color: colors.textPrimary,
+    fontFamily: sg.font.body,
+    color: sg.text,
     marginBottom: spacing.md,
   },
   hintInline: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
-    color: colors.textMuted,
+    fontFamily: sg.font.body,
+    color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.lg,
   },
@@ -249,14 +246,14 @@ const styles = StyleSheet.create({
   error: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.red,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.error,
     lineHeight: 20,
   },
   linkMuted: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   signOutWrap: {
     marginTop: spacing.xl,

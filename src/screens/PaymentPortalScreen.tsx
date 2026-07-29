@@ -1,11 +1,11 @@
 import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { sg } from '../tokens/sg';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { colors } from '../tokens/colors';
-import { fontSize, brandFont } from '../tokens/typography';
+import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { LootBoxDisclosure } from '../components/payments/LootBoxDisclosure';
@@ -34,10 +34,10 @@ export function PaymentPortalScreen() {
     navigation.setOptions({
       title: t('paymentPortal.navTitle'),
       headerShown: true,
-      headerTintColor: colors.textPrimary,
-      headerTitleStyle: { fontFamily: brandFont.bold },
+      headerTintColor: sg.text,
+      headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.surfaceElevated },
+      headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
 
@@ -107,7 +107,7 @@ export function PaymentPortalScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
   },
   scroll: { flex: 1 },
   content: {
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
-    color: colors.textMuted,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     marginBottom: spacing.sm,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
@@ -132,21 +132,21 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     alignItems: 'center',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
   },
   tabActive: {
-    borderColor: colors.gold,
-    backgroundColor: colors.surfaceMuted,
+    borderColor: sg.gold,
+    backgroundColor: sg.surface,
   },
   tabText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
   },
   tabTextActive: {
-    color: colors.textPrimary,
-    fontFamily: brandFont.bold,
+    color: sg.text,
+    fontFamily: sg.font.bodyBold,
   },
 });

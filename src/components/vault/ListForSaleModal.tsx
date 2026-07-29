@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../tokens/colors';
+import { sgVault } from '../../tokens/sgVault';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -59,7 +59,7 @@ export function ListForSaleModal({ visible, suggestedPriceUsd, onClose, onConfir
             onChangeText={setRaw}
             keyboardType="number-pad"
             placeholder={t('vaultList.pricePlaceholder')}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={sgVault.muted}
             style={styles.input}
           />
           <View style={styles.presets}>
@@ -90,42 +90,42 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, justifyContent: 'flex-end' },
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.45)' },
   card: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sgVault.surface,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     padding: spacing.xl,
     borderTopWidth: 1,
-    borderColor: colors.border,
+    borderColor: sgVault.line,
   },
   title: {
     fontSize: fontSize.xl,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sgVault.text,
     marginBottom: spacing.sm,
   },
   body: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: sgVault.muted,
     lineHeight: 20,
     marginBottom: spacing.lg,
   },
   label: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sgVault.muted,
     marginBottom: spacing.xs,
     letterSpacing: 0.5,
   },
   input: {
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sgVault.line,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.base,
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
-    backgroundColor: colors.background,
+    color: sgVault.text,
+    backgroundColor: sgVault.bg,
     marginBottom: spacing.md,
   },
   presets: {
@@ -139,20 +139,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: radius.full,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    backgroundColor: colors.surfaceMuted,
+    borderColor: sgVault.line,
+    backgroundColor: sgVault.surface2,
   },
   presetOn: {
-    borderColor: colors.accentBorder,
-    backgroundColor: colors.accentSoft,
+    borderColor: 'rgba(212,175,55,0.38)',
+    backgroundColor: 'rgba(61,220,151,0.12)',
   },
   presetText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textSecondary,
+    color: sgVault.muted,
   },
   presetTextOn: {
-    color: colors.accentDark,
+    color: sgVault.gold,
   },
   cta: { marginBottom: spacing.sm },
 });

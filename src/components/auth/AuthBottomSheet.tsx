@@ -9,7 +9,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { spacing } from '../../tokens/spacing';
 import { BOOT_ENTRANCE_SPRING } from '../splash/AppBootEntrance';
 
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     borderTopWidth: StyleSheet.hairlineWidth,

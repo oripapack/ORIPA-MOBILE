@@ -2,22 +2,21 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ChipTagType } from '../../data/mockPacks';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { sg } from '../../tokens/sg';
 
+/** N2 chip skins — surface + line chassis; semantic accents without Phygitals green/purple washes. */
 const chipStyle: Record<ChipTagType, { bg: string; text: string; border: string }> = {
-  new: { bg: colors.chipNew, text: colors.chipNewText, border: colors.chipNewBorder },
-  new_user: { bg: colors.chipNewUser, text: colors.chipNewUserText, border: colors.chipNewUserBorder },
-  best_value: { bg: colors.chipBestValue, text: colors.chipBestValueText, border: colors.chipBestValueBorder },
-  graded: { bg: colors.chipGraded, text: colors.chipGradedText, border: colors.chipGradedBorder },
-  hot_drop: { bg: colors.chipHotDrop, text: colors.chipHotDropText, border: colors.chipHotDropBorder },
-  bonus_pack: { bg: colors.chipBestValue, text: colors.chipBestValueText, border: colors.chipBestValueBorder },
-  chase_boost: { bg: colors.chipHotDrop, text: colors.chipHotDropText, border: colors.chipHotDropBorder },
-  first_time: { bg: 'rgba(22,163,74,0.15)', text: '#4ADE80', border: 'rgba(74,222,128,0.35)' },
-  low_cost: { bg: 'rgba(245,158,11,0.15)', text: '#FCD34D', border: 'rgba(252,211,77,0.35)' },
-  high_return: { bg: 'rgba(168,85,247,0.15)', text: '#C084FC', border: 'rgba(192,132,252,0.35)' },
-  premium_pack: { bg: 'rgba(124,58,237,0.15)', text: '#A78BFA', border: 'rgba(167,139,250,0.35)' },
+  new: { bg: sg.surface2, text: sg.gold, border: sg.line },
+  new_user: { bg: sg.surface2, text: sg.goldHi, border: sg.line },
+  best_value: { bg: sg.surface2, text: sg.gold, border: sg.line },
+  graded: { bg: sg.surface2, text: sg.muted, border: sg.line },
+  hot_drop: { bg: 'rgba(255,74,56,0.12)', text: sg.neon, border: 'rgba(255,74,56,0.35)' },
+  bonus_pack: { bg: sg.surface2, text: sg.gold, border: sg.line },
+  chase_boost: { bg: 'rgba(255,74,56,0.12)', text: sg.neon, border: 'rgba(255,74,56,0.35)' },
+  first_time: { bg: 'rgba(111,191,143,0.12)', text: sg.success, border: 'rgba(111,191,143,0.35)' },
+  low_cost: { bg: sg.surface2, text: sg.warning, border: sg.line },
+  high_return: { bg: sg.surface2, text: sg.goldHi, border: sg.line },
+  premium_pack: { bg: sg.surface2, text: sg.gold, border: sg.line },
 };
 
 interface Props {
@@ -36,15 +35,15 @@ export function ChipTag({ type }: Props) {
 
 const styles = StyleSheet.create({
   chip: {
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: sg.space.sm,
     paddingVertical: 3,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
-    marginRight: spacing.xs,
+    marginRight: sg.space.xs,
   },
   label: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontSize: 11,
+    fontFamily: sg.font.bodyMedium,
     letterSpacing: 0.2,
   },
 });

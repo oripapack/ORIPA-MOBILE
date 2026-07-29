@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { SHOW_SIMULATION_DISCLOSURE } from '../../config/app';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from './PrimaryButton';
 
@@ -90,11 +90,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   sheet: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface2,
     borderRadius: radius.xl,
     padding: spacing.xl,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     maxWidth: 400,
     alignSelf: 'center',
     width: '100%',
@@ -107,16 +107,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    fontFamily: sg.font.display,
+    color: sg.text,
     marginBottom: spacing.md,
     textAlign: 'center',
     letterSpacing: 0.3,
   },
   body: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     lineHeight: 22,
     marginBottom: 0,
     textAlign: 'center',
@@ -125,19 +125,19 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     paddingTop: spacing.lg,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.border,
+    borderTopColor: sg.line,
   },
   titleJa: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
-    color: colors.textPrimary,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
     marginBottom: spacing.sm,
     textAlign: 'center',
   },
   bodyJa: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
-    color: colors.textSecondary,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
     lineHeight: 24,
     textAlign: 'left',
   },

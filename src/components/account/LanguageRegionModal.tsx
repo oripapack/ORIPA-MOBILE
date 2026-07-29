@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
+import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useTranslation } from 'react-i18next';
@@ -110,7 +110,7 @@ export function LanguageRegionModal({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: sg.bg,
   },
   header: {
     flexDirection: 'row',
@@ -119,18 +119,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    backgroundColor: colors.surfaceElevated,
+    borderBottomColor: sg.line,
+    backgroundColor: sg.surface,
   },
   title: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
-    color: colors.textPrimary,
+    color: sg.text,
   },
   cancel: {
     fontSize: fontSize.base,
     fontFamily: brandFont.semibold,
-    color: colors.textSecondary,
+    color: sg.muted,
   },
   scroll: {
     padding: spacing.base,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: colors.textMuted,
+    color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginBottom: spacing.sm,
@@ -147,15 +147,15 @@ const styles = StyleSheet.create({
   },
   sectionHint: {
     fontSize: fontSize.xs,
-    color: colors.textSecondary,
+    color: sg.muted,
     marginBottom: spacing.sm,
     lineHeight: 18,
   },
   group: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: sg.surface,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: sg.line,
     overflow: 'hidden',
     marginBottom: spacing.base,
   },
@@ -166,35 +166,35 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.base,
     borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: sg.line,
   },
   rowSelected: {
     backgroundColor: '#FFF1F2',
   },
   rowLabel: {
     fontSize: fontSize.base,
-    color: colors.textPrimary,
+    color: sg.text,
     fontFamily: brandFont.medium,
   },
   rowLabelSelected: {
     fontFamily: brandFont.bold,
-    color: colors.redDark,
+    color: sg.error,
   },
   check: {
     fontSize: fontSize.lg,
-    color: colors.red,
+    color: sg.error,
     fontFamily: brandFont.bold,
   },
   doneBtn: {
     marginHorizontal: spacing.base,
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: colors.red,
+    backgroundColor: sg.error,
     alignItems: 'center',
     justifyContent: 'center',
   },
   doneText: {
-    color: colors.white,
+    color: sg.text,
     fontSize: fontSize.base,
     fontFamily: brandFont.bold,
   },

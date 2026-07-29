@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../tokens/colors';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
+import { fontSize } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { SHOW_DEMO_BANNER } from '../../config/app';
 
@@ -22,17 +22,18 @@ export function DemoBanner() {
 
 const styles = StyleSheet.create({
   wrap: {
-    backgroundColor: colors.black,
+    backgroundColor: sg.bg,
     paddingBottom: spacing.sm,
     paddingHorizontal: spacing.base,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.12)',
+    borderBottomColor: sg.line,
   },
   text: {
-    color: 'rgba(255,255,255,0.88)',
+    color: sg.text,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     textAlign: 'center',
     lineHeight: 20,
+    opacity: 0.88,
   },
 });
