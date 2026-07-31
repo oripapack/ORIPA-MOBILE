@@ -36,7 +36,8 @@
 - **Backend:** `backend/supabase/` — migrations / Edge Functions。
 - **開封演出:** `src/components/pack/opening/`(ring は :3000 の Vite が配信)— 開封フロー担当の領域。指示なく触らない。
 - `prototypes/` と `marketing/` はプロダクトコードとして扱わない。
-- **`prototypes/next-ui-lab` = CSSサンドボックス/スキン比較実験場。** スキン・派生テーマは `[data-theme]` スコープ+`?theme=` クエリの差分のみ(既定テーマ不変・ページ複製禁止)。運用ルールはハンドオフ第4部 SKIN & DERIVATIVE WORKFLOW。
+- **`prototypes/next-ui-lab` = CSSサンドボックス/スキン比較実験場。** スキン・派生テーマは `[data-theme]` スコープ+`?theme=` クエリの差分のみ(既定テーマ不変・ページ複製禁止)。運用ルールはハンドオフ第4部 SKIN & DERIVATIVE WORKFLOW。**スキン実験のベース面は N2 化済みの `/redesign` のみ。**
+- **旧デザインの残骸は参照・流用・その上での実装を禁止。新規実装は必ずゼロから書く。** 対象: `docs/archive/` 配下すべて、および lab 内の旧世代モックページ(`/`・`/packs`・`/pack-detail`・`/vault`・`/lp`・`/opening` — A+B/Urushi 期の提案物)。`app/sandbox/` は開封担当領域のため対象外(不可侵)。`prototypes/opening-3d` は移植待ちの現役プロトタイプで対象外。
 
 ## コマンド
 

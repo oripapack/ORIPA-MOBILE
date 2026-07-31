@@ -1,52 +1,54 @@
 /**
- * Pull Hub UI Redesign — N2 "Neon Torii" token sheet + Home static mock.
- * 既定テーマ = N2(docs/design-system-n2.md v3.0 CORE)。
- * スキン・派生テーマは [data-theme] 差分のみで重ねる(第4部 S-4)。
- * 旧 Urushi Archive 版は docs/archive/next-ui-lab-redesign-urushi-DEPRECATED.tsx
- * に退避済み(参照禁止)。Lab-only prototype (not product code).
+ * ⛔ DEPRECATED — 廃止済み(2026-07-31 退避)。参照禁止(docs/archive/README.md)。
+ * lab /redesign の旧 Urushi Archive 既定テーマ原本。T8 前倒しで N2 ベースに
+ * 書き換えた際の退避コピー。和方針(v3.0 第2部)の NG レジスターに該当。
+ *
+ * Pull Hub UI Redesign — "Stage & Gallery" token sheet + Home static mock.
+ * Palette revision: "Urushi Archive" (2026-07-14).
+ * Lab-only prototype (not product code).
  */
 
-/** 和モチーフ退避フラグ — 浮世絵波は和方針(J-1)の NG レジスター(工芸的)につきオフのまま。 */
+/** 和モチーフ退避フラグ — 削除ではなくオフ。1つずつ戻して比較する。 */
 const SHOW_JAPANESE_MOTIFS = false;
 
-/** ノイズ用 data URI — N2 既定では不使用(opacity 0)。スキンが opacity を上げて流用する。 */
+/** 約1.8%のモノクロノイズ (soft-light) — SVG turbulence の data URI */
 const NOISE_URI =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
 const css = `
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@500;600&display=swap');
 
 :root {
-  /* ── N2 基層(C-3 verbatim) ── */
-  --bg: #000000;        /* 地 = 夜 */
-  --surface: #101013;   /* 面 = 夜の中の灯り */
-  --surface-2: #17171C; /* 一段上の面 */
-  --line: #27272E;      /* 1pxボーダー。区切りは影でなく線 */
-  --text: #F0EEE8;      /* #FFFFFF は全面禁止 */
-  --muted: #8E8C85;
-  /* ── ブランド ── */
-  --gold: #D4AF37;
-  --gold-hover: #E8CE7E;
-  --on-gold: #000000;
-  --neon: #FF4A38;
-  --neon-glow: rgba(255,74,56,0.32);
-  /* ── セマンティック ── */
-  --success: #6FBF8F;
-  --error: #E5484D;
-  --warning: #FFB224;
-  /* ── 型(C-7) ── */
+  /* ── sumi 墨 (暗部4層) ── */
+  --sumi0: #090A0A;   /* Stage */
+  --sumi1: #111313;   /* Showroom bg */
+  --sumi2: #171918;   /* satin surface */
+  --sumi3: #1D201F;   /* raised surface */
+  --text: #E8E5DE;    /* 純白は使わない */
+  --text-mut: #9A968D;
+  /* ── washi 和紙 (Gallery) ── */
+  --washi-bg: #F2EFE8;
+  --washi-surface: #F8F6F1;
+  --ink: #201F1C;
+  --ink-mut: #6E6960;
+  /* ── アクセント ── */
+  --shu: #A63B32;
+  --shu-hover: #AF4036;
+  --on-shu: #F5EFE9;
+  --brass: #A88B58;     /* レアリティ・装飾線・細部のみ。ボタン禁止 */
+  --jade: #33705C;      /* テキスト/ステータスのみ */
+  --jade-dark: #4E8F76; /* 暗部上の jade (派生値) */
+  /* ── 型 ── */
   --f-display: 'Fraunces', serif;
   --f-body: 'Schibsted Grotesk', sans-serif;
   --f-data: 'Spline Sans Mono', monospace;
-  /* ── 質感(C-3) ── */
-  --radius-panel: 13px;
-  --radius-btn: 10px;
-  --radius-tag: 6px;
-  --shadow-hero: 0 20px 48px rgba(0,0,0,0.65); /* 主役1要素のみ */
+  /* ── 質感 ── */
+  --satin-top: rgba(255,255,255,0.05);
+  --shadow-washi: 0 8px 24px rgba(32,31,28,0.08);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
+body { background: #0C0D0D; color: var(--text); font-family: var(--f-body); }
 
 .rd-wrap { max-width: 1200px; margin: 0 auto; padding: 48px 24px 96px; }
 @media (max-width: 500px) {
@@ -57,24 +59,24 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
   .rd-grid, .spec { margin-left: 16px; margin-right: 16px; }
   .phone { border-radius: 0; }
 }
-.rd-h1 { font-family: var(--f-display); font-weight: 500; font-size: 28px; letter-spacing: 0.01em; }
-.rd-sub { color: var(--muted); font-size: 14px; margin-top: 8px; }
+.rd-h1 { font-family: var(--f-display); font-weight: 600; font-size: 28px; letter-spacing: 0.01em; }
+.rd-sub { color: var(--text-mut); font-size: 14px; margin-top: 8px; }
 .rd-section { margin-top: 64px; }
-.rd-label { font-family: var(--f-body); font-weight: 500; font-size: 11px; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
+.rd-label { font-family: var(--f-body); font-weight: 500; font-size: 11px; letter-spacing: 0.16em; color: var(--brass); text-transform: uppercase; }
 .rd-section h2 { font-family: var(--f-body); font-weight: 700; font-size: 19px; margin-top: 8px; }
 .rd-grid { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px; }
 
-/* ── Swatches — 面は surface + 1px line(サテン・satin ハイライト廃止) ── */
-.sw { width: 132px; border-radius: var(--radius-panel); overflow: hidden; background: var(--surface); border: 1px solid var(--line); }
+/* ── Swatches ── */
+.sw { width: 132px; border-radius: 12px; overflow: hidden; background: var(--sumi2); }
 .sw-chip { height: 64px; }
-.sw-meta { padding: 8px 10px; border-top: 1px solid var(--line); }
+.sw-meta { padding: 8px 10px; box-shadow: inset 0 1px 0 var(--satin-top); }
 .sw-name { font-size: 12px; font-weight: 500; }
-.sw-hex { font-family: var(--f-data); font-size: 11px; color: var(--muted); }
+.sw-hex { font-family: var(--f-data); font-size: 11px; color: var(--text-mut); }
 
 /* ── Type specimens ── */
-.spec { border-left: 2px solid var(--line); padding-left: 20px; margin-top: 24px; }
+.spec { border-left: 2px solid var(--sumi3); padding-left: 20px; margin-top: 24px; }
 .spec + .spec { margin-top: 32px; }
-.spec-role { font-size: 11px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; font-weight: 500; }
+.spec-role { font-size: 11px; letter-spacing: 0.12em; color: var(--text-mut); text-transform: uppercase; font-weight: 500; }
 
 /* ═══════════════ PHONE ARTBOARD (440×956) ═══════════════ */
 .phone {
@@ -82,120 +84,125 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
   border-radius: 24px;
   overflow-y: auto; overflow-x: hidden; position: relative;
   scrollbar-width: none;
-  background: var(--bg); /* N2: 地は漆黒フラット(照明リグ廃止) */
+  /* 照明: 上中央の暖色スポット1灯 + 下方向へ暗くなる縦グラデ (マット地) */
+  background:
+    radial-gradient(420px 380px at 50% 40px, rgba(255,250,238,0.085), transparent 70%),
+    linear-gradient(180deg, var(--sumi1) 0%, var(--sumi1) 55%, #0D0F0E 100%);
 }
 .phone::-webkit-scrollbar { display: none; }
-/* ノイズ層 — N2 既定は不可視(opacity 0)。DOM/ルールはスキンのフックとして残す */
+/* 暗部全面 約1.8% モノクロノイズ */
 .noise {
   position: sticky; top: 0; height: 0; z-index: 5; pointer-events: none;
 }
 .noise::after {
   content: ''; position: absolute; left: 0; right: 0; top: 0; height: 956px;
   background-image: ${'NOISE_PLACEHOLDER'};
-  mix-blend-mode: soft-light; opacity: 0;
+  mix-blend-mode: soft-light; opacity: 0.018;
 }
 
 /* Top bar */
 .tb { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 0; position: relative; }
-.tb-logo { font-family: var(--f-display); font-weight: 500; font-size: 18px; letter-spacing: 0.02em; }
+.tb-logo { font-family: var(--f-display); font-weight: 600; font-size: 18px; letter-spacing: 0.02em; }
 .tb-coins {
   display: flex; align-items: center; gap: 8px;
-  background: var(--surface); border: 1px solid var(--line);
-  border-radius: 999px; padding: 6px 14px 6px 8px; /* pill = ステータスチップのみ可 */
+  background: var(--sumi2); box-shadow: inset 0 1px 0 var(--satin-top);
+  border-radius: 999px; padding: 6px 14px 6px 8px; /* pill = ステータスチップ */
 }
-.tb-coin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); }
-.tb-coins span { font-family: var(--f-data); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tb-coin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--brass); }
+.tb-coins span { font-family: var(--f-data); font-size: 13px; font-weight: 600; }
 
 /* Hero */
 .hero { position: relative; padding: 40px 24px 32px; overflow: hidden; }
 .hero-wave { position: absolute; left: -40px; right: -40px; top: 96px; opacity: 0.5; pointer-events: none; }
-.hero-eyebrow { text-align: center; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; color: var(--muted); }
+.hero-eyebrow { text-align: center; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; color: var(--brass); }
 .hero-pack-zone { position: relative; display: flex; justify-content: center; margin-top: 24px; }
 .pack {
-  width: 148px; height: 208px; border-radius: var(--radius-btn); position: relative;
-  background: linear-gradient(170deg, var(--surface-2) 0%, var(--surface) 70%);
-  box-shadow: inset 0 0 0 1px var(--line), var(--shadow-hero); /* shadow-hero はこの1箇所のみ */
+  width: 148px; height: 208px; border-radius: 10px; position: relative;
+  background: linear-gradient(170deg, #1E211F 0%, #141615 70%);
+  box-shadow: inset 0 0 0 1px rgba(168,139,88,0.45), 0 14px 28px rgba(0,0,0,0.5);
 }
-.pack::before { /* クリンプ(圧着ギザ) — 装飾は line 明度のみ */
+.pack::before { /* クリンプ(圧着ギザ) — 装飾線 = brass 可 */
   content: ''; position: absolute; left: 8px; right: 8px; top: 7px; height: 6px;
-  background: repeating-linear-gradient(90deg, var(--line) 0 2px, transparent 2px 5px);
+  background: repeating-linear-gradient(90deg, rgba(168,139,88,0.4) 0 2px, transparent 2px 5px);
 }
-.pack::after { /* 箔の固定斜め反射1本(静的・アニメ不可) */
-  content: ''; position: absolute; inset: 0; border-radius: var(--radius-btn);
-  background: linear-gradient(115deg, transparent 32%, rgba(240,238,232,0.06) 45%, transparent 56%);
+.pack::after { /* 箔の固定斜め反射1本 (グロス・アニメ不可) */
+  content: ''; position: absolute; inset: 0; border-radius: 10px;
+  background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,0.07) 45%, transparent 56%);
 }
 .pack-emblem {
   position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%);
   width: 64px; height: 64px; border-radius: 50%;
-  border: 1px solid var(--line);
+  border: 1.5px solid rgba(168,139,88,0.7);
   display: flex; align-items: center; justify-content: center;
 }
-.pack-emblem span { font-family: var(--f-display); font-size: 13px; color: var(--muted); letter-spacing: 0.04em; }
+.pack-emblem span { font-family: var(--f-display); font-size: 13px; color: var(--brass); letter-spacing: 0.04em; }
 .pack-name-strip { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center;
-  font-size: 9px; font-weight: 500; letter-spacing: 0.24em; color: var(--muted); }
+  font-size: 9px; font-weight: 500; letter-spacing: 0.24em; color: var(--text-mut); }
 .pack-shadow {
   position: absolute; left: 50%; bottom: -18px; transform: translateX(-50%);
   width: 180px; height: 24px; border-radius: 50%;
   background: radial-gradient(closest-side, rgba(0,0,0,0.6), transparent);
 }
-/* パック名 = Fraunces 500 許可対象 */
-.hero-title { text-align: center; font-family: var(--f-display); font-weight: 500; font-size: 32px; line-height: 1.15; margin-top: 32px; }
-.hero-set { text-align: center; font-size: 12px; color: var(--muted); margin-top: 6px; }
+/* パック名 = Fraunces 許可対象 */
+.hero-title { text-align: center; font-family: var(--f-display); font-weight: 600; font-size: 32px; line-height: 1.15; margin-top: 32px; }
+.hero-set { text-align: center; font-size: 12px; color: var(--text-mut); margin-top: 6px; }
 .hero-meta { display: flex; justify-content: center; align-items: baseline; gap: 14px; margin-top: 12px; }
-.hero-meta .coins { font-family: var(--f-data); font-size: 15px; font-weight: 600; color: var(--gold); font-variant-numeric: tabular-nums; }
-.hero-meta .slots { font-family: var(--f-data); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-/* 残口数: 極細ヘアライン + 中立色(赤・点滅禁止) */
-.slots-bar { width: 200px; height: 2px; background: var(--line); border-radius: 1px; margin: 10px auto 0; }
-.slots-bar i { display: block; height: 2px; width: 43%; background: var(--muted); border-radius: 1px; }
-/* オッズ要約1行 — 常時表示(C-9 情報開示) */
-.odds-line { text-align: center; margin-top: 12px; font-size: 12px; color: var(--muted); }
-.odds-line b { font-family: var(--f-data); font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+.hero-meta .coins { font-family: var(--f-data); font-size: 15px; font-weight: 600; }
+.hero-meta .slots { font-family: var(--f-data); font-size: 12px; color: var(--text-mut); }
+/* 残口数: 極細ヘアライン + 中立色 */
+.slots-bar { width: 200px; height: 2px; background: rgba(232,229,222,0.14); border-radius: 1px; margin: 10px auto 0; }
+.slots-bar i { display: block; height: 2px; width: 43%; background: rgba(232,229,222,0.55); border-radius: 1px; }
+/* オッズ要約1行 — 常時表示 (法務要件) */
+.odds-line { text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-mut); }
+.odds-line b { font-family: var(--f-data); font-weight: 600; color: var(--text); }
 
-/* CTA — 金・フラット・黒文字(1画面1つ) */
+/* CTA — 朱・半光沢。ベタ塗り禁止 */
 .cta {
   display: flex; align-items: center; justify-content: center;
-  margin: 24px 0 0; padding: 16px; border-radius: var(--radius-btn);
-  background: var(--gold);
-  color: var(--on-gold);
+  margin: 24px 0 0; padding: 16px; border-radius: 8px; /* control = 8px */
+  background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 55%), var(--shu);
+  color: var(--on-shu);
   font-family: var(--f-body); font-size: 16px; font-weight: 700; letter-spacing: 0.02em;
   border: none; width: 100%; cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 6px 16px rgba(0,0,0,0.35);
 }
-.cta:hover { background: var(--gold-hover); }
-.demo-link { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.cta:hover { background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 55%), var(--shu-hover); }
+.demo-link { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-mut); text-decoration: underline; text-underline-offset: 3px; }
 
-/* Trust strip — 区切りは 1px line */
-.trust { display: flex; margin: 28px 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+/* Trust strip — 区切りは中立ヘアライン */
+.trust { display: flex; margin: 28px 24px 0; border-top: 1px solid rgba(232,229,222,0.08); border-bottom: 1px solid rgba(232,229,222,0.08); }
 .trust div { flex: 1; padding: 14px 8px; text-align: center; }
-.trust div + div { border-left: 1px solid var(--line); }
+.trust div + div { border-left: 1px solid rgba(232,229,222,0.08); }
 .trust b { display: block; font-size: 12px; font-weight: 700; }
-.trust span { display: block; font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+.trust span { display: block; font-size: 10px; color: var(--text-mut); margin-top: 3px; line-height: 1.4; }
 
-/* Section head */
+/* Section head — 見出しは Schibsted */
 .sec-head { display: flex; align-items: baseline; justify-content: space-between; padding: 32px 24px 0; }
 .sec-head h3 { font-family: var(--f-body); font-weight: 700; font-size: 16px; letter-spacing: 0.02em; }
-.sec-head a { font-size: 11px; font-weight: 500; color: var(--muted); text-decoration: none; letter-spacing: 0.12em; display: inline-flex; align-items: center; gap: 6px; }
-/* LIVE ドット — neon + グロー(C-8 の常時明滅例外・1.6s) */
+.sec-head a { font-size: 11px; font-weight: 500; color: var(--text-mut); text-decoration: none; letter-spacing: 0.12em; display: inline-flex; align-items: center; gap: 6px; }
+/* 発光は LIVE インジケータのみ許可 (単一光源ルールの唯一の例外) */
 .live-dot {
   width: 6px; height: 6px; border-radius: 50%;
-  background: var(--neon);
-  box-shadow: 0 0 6px 1px var(--neon-glow);
-  animation: live-pulse 1.6s ease-out infinite;
+  background: var(--brass);
+  box-shadow: 0 0 6px 1px rgba(168,139,88,0.6);
+  animation: live-pulse 2.4s ease-out infinite;
 }
 @keyframes live-pulse {
-  0%, 100% { box-shadow: 0 0 4px 0px var(--neon-glow); }
-  50% { box-shadow: 0 0 10px 2px var(--neon-glow); }
+  0%, 100% { box-shadow: 0 0 4px 0px rgba(168,139,88,0.45); }
+  50% { box-shadow: 0 0 9px 2px rgba(168,139,88,0.75); }
 }
 @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
 
-/* Just Pulled — 面は surface + 1px line */
+/* Just Pulled — カードはサテン(ボーダーなし・上辺ハイライトのみ) */
 .jp-row { display: flex; gap: 12px; padding: 16px 24px 4px; overflow-x: auto; scrollbar-width: none; }
 .jp-row::-webkit-scrollbar { display: none; }
 .jp-card {
-  min-width: 150px; background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--radius-panel); padding: 10px;
+  min-width: 150px; background: var(--sumi2); box-shadow: inset 0 1px 0 var(--satin-top);
+  border-radius: 12px; padding: 10px; /* card = 12px */
 }
-/* スラブ画像 = 実物の物撮り(静的な反射1本のみ・多層影は廃止) */
-.slab { height: 96px; border-radius: var(--radius-tag); background: #E9E6DF; position: relative; overflow: hidden; }
+/* スラブ画像 = グロス: 多層影 + 固定斜め反射1本 */
+.slab { height: 96px; border-radius: 7px; background: #E9E6DF; position: relative; overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.35), 0 8px 18px rgba(0,0,0,0.3); }
 .slab::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(120deg, transparent 38%, rgba(255,255,255,0.16) 47%, transparent 55%);
@@ -206,50 +213,50 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
 .slab-art { position: absolute; top: 28px; left: 18px; right: 18px; bottom: 8px; border-radius: 3px; }
 .jp-name { font-size: 12px; font-weight: 500; margin-top: 10px; line-height: 1.3; }
 .jp-meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; }
-.jp-value { font-family: var(--f-data); font-size: 12px; font-weight: 600; color: var(--gold); font-variant-numeric: tabular-nums; }
-.jp-value small { display: block; font-family: var(--f-data); font-size: 8.5px; color: var(--muted); font-weight: 500; letter-spacing: 0.05em; }
-.jp-time { font-size: 10px; color: var(--muted); }
+.jp-value { font-family: var(--f-data); font-size: 12px; font-weight: 600; color: var(--jade-dark); }
+.jp-value small { display: block; font-family: var(--f-data); font-size: 8.5px; color: var(--text-mut); font-weight: 500; letter-spacing: 0.05em; }
+.jp-time { font-size: 10px; color: var(--text-mut); }
 
 /* Pack shelf */
 .shelf { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 24px 0; }
-.shelf-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); padding: 16px 14px 14px; text-align: center; }
-.shelf-card .pack { width: 96px; height: 134px; margin: 0 auto; border-radius: 8px; box-shadow: inset 0 0 0 1px var(--line); /* 影は hero のみ */ }
+.shelf-card { background: var(--sumi2); box-shadow: inset 0 1px 0 var(--satin-top); border-radius: 12px; padding: 16px 14px 14px; text-align: center; }
+.shelf-card .pack { width: 96px; height: 134px; margin: 0 auto; border-radius: 8px; }
 .shelf-card .pack-emblem { width: 42px; height: 42px; }
 .shelf-card .pack-emblem span { font-size: 9px; }
 .shelf-name { font-size: 14px; font-weight: 700; margin-top: 14px; }
-.shelf-price { font-family: var(--f-data); font-size: 13px; font-weight: 600; margin-top: 4px; color: var(--gold); font-variant-numeric: tabular-nums; }
-.shelf-slots { font-family: var(--f-data); font-size: 10px; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.shelf-price { font-family: var(--f-data); font-size: 13px; font-weight: 600; margin-top: 4px; }
+.shelf-slots { font-family: var(--f-data); font-size: 10px; color: var(--text-mut); margin-top: 6px; }
 
 /* Footer */
-.foot { margin-top: 40px; padding: 24px; border-top: 1px solid var(--line); }
+.foot { margin-top: 40px; padding: 24px; border-top: 1px solid rgba(232,229,222,0.08); }
 .foot-fair { display: flex; align-items: center; gap: 10px; }
-.foot-fair .shield { width: 28px; height: 28px; border-radius: 8px; box-shadow: inset 0 0 0 1px var(--line);
-  display: flex; align-items: center; justify-content: center; color: var(--success); font-size: 13px; }
+.foot-fair .shield { width: 28px; height: 28px; border-radius: 8px; box-shadow: inset 0 0 0 1px rgba(168,139,88,0.4);
+  display: flex; align-items: center; justify-content: center; color: var(--brass); font-size: 13px; }
 .foot-fair b { font-size: 13px; }
-.foot-fair span { display: block; font-size: 11px; color: var(--muted); }
-.fair-record { margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); padding: 12px 14px; }
+.foot-fair span { display: block; font-size: 11px; color: var(--text-mut); }
+.fair-record { margin-top: 16px; background: var(--sumi2); box-shadow: inset 0 1px 0 var(--satin-top); border-radius: 12px; padding: 12px 14px; }
 .fair-row { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; }
-.fair-row span { font-size: 11px; color: var(--muted); }
-.fair-row b { font-family: var(--f-data); font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.fair-row span { font-size: 11px; color: var(--text-mut); }
+.fair-row b { font-family: var(--f-data); font-size: 11px; font-weight: 500; }
 .fair-row a { font-size: 11px; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: 0.06em; }
-.foot-legal { font-size: 9.5px; color: var(--muted); line-height: 1.6; margin-top: 16px; }
+.foot-legal { font-size: 9.5px; color: #706C63; line-height: 1.6; margin-top: 16px; }
 
-/* ── 結果パネル(surface 層 — 旧 washi 光面は廃止) ── */
-.gal-panel { background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius-panel); padding: 24px; max-width: 440px; }
+/* ── Gallery mini-panel (washi) ── */
+.gal-panel { background: var(--washi-bg); color: var(--ink); border-radius: 16px; padding: 24px; max-width: 440px; }
 .gal-panel h4 { font-family: var(--f-body); font-weight: 700; font-size: 17px; }
 .gal-cardrow { display: flex; gap: 12px; margin-top: 16px; }
-.gal-choice { flex: 1; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-btn); padding: 14px; }
-.gal-choice small { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; color: var(--muted); }
-.gal-choice .v { font-family: var(--f-data); font-size: 18px; font-weight: 600; margin-top: 6px; font-variant-numeric: tabular-nums; }
-.gal-choice .v.jade { color: var(--gold); /* 受取額 = 価値 = 金 */ }
-.gal-choice p { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.gal-choice { flex: 1; background: var(--washi-surface); border-radius: 12px; padding: 14px; box-shadow: var(--shadow-washi); }
+.gal-choice small { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; color: var(--ink-mut); }
+.gal-choice .v { font-family: var(--f-data); font-size: 18px; font-weight: 600; margin-top: 6px; }
+.gal-choice .v.jade { color: var(--jade); }
+.gal-choice p { font-size: 11px; color: var(--ink-mut); margin-top: 4px; }
 
-/* ティア見本 — MYTHIC は neon + グロー(C-6) */
-.brass-rule { width: 220px; height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); margin-top: 8px; }
-.rarity-line { font-family: var(--f-data); font-size: 12px; font-weight: 600; color: var(--neon); letter-spacing: 0.14em; text-shadow: 0 0 16px var(--neon-glow); }
+/* Brass sample — 装飾線・レアリティ用 */
+.brass-rule { width: 220px; height: 1px; background: linear-gradient(90deg, transparent, var(--brass), transparent); margin-top: 8px; }
+.rarity-line { font-family: var(--f-data); font-size: 12px; font-weight: 600; color: var(--brass); letter-spacing: 0.14em; }
 `.replace("${'NOISE_PLACEHOLDER'}", NOISE_URI);
 
-/* 浮世絵様式の波 — 退避中 (SHOW_JAPANESE_MOTIFS で復帰。和方針 J-1 では NG レジスター) */
+/* 浮世絵様式の波 — 退避中 (SHOW_JAPANESE_MOTIFS で復帰) */
 function Wave({ stroke = '#2A2D2B' }: { stroke?: string }) {
   return (
     <svg viewBox="0 0 880 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -268,22 +275,22 @@ function Wave({ stroke = '#2A2D2B' }: { stroke?: string }) {
 
 const swatches = {
   sumi: [
-    { n: 'bg — 夜', v: '#000000' },
-    { n: 'surface — 灯り', v: '#101013' },
-    { n: 'surface-2 — 一段上', v: '#17171C' },
-    { n: 'line — 1px区切り', v: '#27272E' },
-    { n: 'text (純白不使用)', v: '#F0EEE8' },
+    { n: 'sumi/0 — Stage', v: '#090A0A' },
+    { n: 'sumi/1 — Showroom bg', v: '#111313' },
+    { n: 'sumi/2 — surface', v: '#171918' },
+    { n: 'sumi/3 — raised', v: '#1D201F' },
+    { n: 'text/on-dark', v: '#E8E5DE' },
   ],
   washi: [
-    { n: 'muted — 補助', v: '#8E8C85' },
-    { n: 'success — 検証のみ', v: '#6FBF8F' },
-    { n: 'error — フラット', v: '#E5484D' },
+    { n: 'washi/bg', v: '#F2EFE8' },
+    { n: 'washi/surface', v: '#F8F6F1' },
+    { n: 'ink', v: '#201F1C' },
   ],
   accent: [
-    { n: 'gold — 価値/CTA', v: '#D4AF37' },
-    { n: 'gold hover', v: '#E8CE7E' },
-    { n: 'neon 朱 — 瞬間のみ', v: '#FF4A38' },
-    { n: 'warning', v: '#FFB224' },
+    { n: 'shu 朱 (CTA専用)', v: '#A63B32' },
+    { n: 'shu/hover', v: '#AF4036' },
+    { n: 'brass 真鍮 (装飾のみ)', v: '#A88B58' },
+    { n: 'jade (ステータス文字のみ)', v: '#33705C' },
   ],
 };
 
@@ -305,25 +312,17 @@ export default function RedesignTokenSheet() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
-      {/* スキン切替(第4部 S-4): /redesign?theme=xxx で有効化。無指定は N2 既定のまま */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html:
-            "try{var t=new URLSearchParams(location.search).get('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}",
-        }}
-      />
       <div className="rd-wrap">
-        <div className="rd-label">Pull Hub UI Redesign — N2 Neon Torii (v3.0 CORE)</div>
-        <h1 className="rd-h1">Midnight Tokyo</h1>
+        <div className="rd-label">Pull Hub UI Redesign — Urushi Archive</div>
+        <h1 className="rd-h1">Stage &amp; Gallery</h1>
         <p className="rd-sub">
-          漆黒の地+1px line の区切り+金=価値(CTA/価格/残高)+ネオン朱=瞬間のみ。
-          既定テーマは N2。スキンは [data-theme] 差分で重ねる(?theme=)。
-          下のモックはホーム 440×956。
+          漆黒4層(sumi)+和紙(washi)+朱の半光沢CTA+真鍮の細部。単一光源・素材差・約1.8%ノイズ。
+          和モチーフは退避中(フラグでオフ)。下のモックはホーム(Showroom 層)440×956。
         </p>
 
         {/* ═══ 1. Home mock ═══ */}
         <div className="rd-section">
-          <div className="rd-label">01 — Home Mock (N2 CORE, 440×956)</div>
+          <div className="rd-label">01 — Home Mock (Showroom, 440×956)</div>
           <div className="phone">
             <div className="noise" />
             <div className="tb">
@@ -421,8 +420,8 @@ export default function RedesignTokenSheet() {
 
         {/* ═══ 2. Palette ═══ */}
         <div className="rd-section">
-          <div className="rd-label">02 — Palette (N2 基層+セマンティック+ブランド)</div>
-          <h2>N2 Neon Torii</h2>
+          <div className="rd-label">02 — Palette (sumi 4層 + washi + アクセント)</div>
+          <h2>Urushi Archive</h2>
           {(['sumi', 'washi', 'accent'] as const).map((k) => (
             <div className="rd-grid" key={k}>
               {swatches[k].map((s) => (
@@ -440,36 +439,36 @@ export default function RedesignTokenSheet() {
 
         {/* ═══ 3. Type ═══ */}
         <div className="rd-section">
-          <div className="rd-label">03 — Typography (C-7)</div>
+          <div className="rd-label">03 — Typography (役割制限つき)</div>
           <h2>3つの声と使用範囲</h2>
           <div className="spec">
-            <div className="spec-role">Display — Fraunces 500。パック名・開封結果のカード名のみ(イタリックは1見出し1箇所まで)</div>
-            <div style={{ fontFamily: 'var(--f-display)', fontSize: 34, fontWeight: 500, marginTop: 8 }}>Kanto Origins</div>
+            <div className="spec-role">Display — Fraunces 600。ブランドステートメント・パック名・開封結果のカード名のみ</div>
+            <div style={{ fontFamily: 'var(--f-display)', fontSize: 34, fontWeight: 600, marginTop: 8 }}>Kanto Origins</div>
           </div>
           <div className="spec">
-            <div className="spec-role">Body — Schibsted Grotesk(第一候補)。ナビ・セクション見出し・CTA・本文</div>
+            <div className="spec-role">Body — Schibsted Grotesk。ナビ・セクション見出し・CTA・本文・日付</div>
             <div style={{ fontSize: 15, marginTop: 8, maxWidth: 560 }}>
               <b style={{ fontWeight: 700 }}>Just Pulled</b> — Each pack contains one graded Japanese card.
               Trade it back instantly for 100% of listed value, in Coins. · 3m ago
             </div>
           </div>
           <div className="spec">
-            <div className="spec-role">Data — Spline Sans Mono + tabular-nums。価格・オッズ・在庫・コイン数・ハッシュのみ</div>
-            <div style={{ fontFamily: 'var(--f-data)', fontSize: 18, fontWeight: 600, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>
+            <div className="spec-role">Data — Spline Sans Mono。価格・オッズ・在庫・コイン数・ハッシュのみ</div>
+            <div style={{ fontFamily: 'var(--f-data)', fontSize: 18, fontWeight: 600, marginTop: 8 }}>
               2,500 Coins · 214/500 · 1.2% · a41f8c…9c2e
             </div>
           </div>
         </div>
 
-        {/* ═══ 4. ティアと結果パネル ═══ */}
+        {/* ═══ 4. 質感・washi プレビュー ═══ */}
         <div className="rd-section">
-          <div className="rd-label">04 — ティア(C-6)と結果パネル(surface 層)</div>
-          <h2>MYTHIC は neon+グロー・結果は暗い面で</h2>
+          <div className="rd-label">04 — 質感 & Gallery 層 (結果画面の二択)</div>
+          <h2>真鍮の細部・washi の取引画面</h2>
           <div className="rd-grid" style={{ alignItems: 'flex-start' }}>
             <div>
               <div className="rarity-line">MYTHIC · 1 OF 4</div>
               <div className="brass-rule" />
-              <p className="rd-sub" style={{ maxWidth: 220 }}>ティア描画は SgTierTag が唯一の経路。neon は MYTHIC / LIVE / カウントダウンのみ(面積2%以下)。</p>
+              <p className="rd-sub" style={{ maxWidth: 220 }}>真鍮はレアリティ表示・装飾線・細部のみ。ボタンには使わない。</p>
             </div>
             <div className="gal-panel">
               <h4>Your pull is in the vault</h4>
@@ -491,16 +490,17 @@ export default function RedesignTokenSheet() {
 
         {/* ═══ 5. ルール ═══ */}
         <div className="rd-section">
-          <div className="rd-label">05 — 実行ルール (N2 CORE digest)</div>
+          <div className="rd-label">05 — 実行ルール (Urushi Archive)</div>
           <h2>規律</h2>
           <p className="rd-sub" style={{ maxWidth: 680, lineHeight: 1.9 }}>
-            区切りは 1px line と明度差のみ。影は主役1要素の shadow-hero だけ。
-            CTA は金・黒文字・1画面1つ。neon 朱は「瞬間」専用(LIVE / MYTHIC / カウントダウン / 開封)・
-            面積2%以下・必ずグロー付き。金と neon の同一要素での併用禁止。
-            数字は全て Spline Mono + tabular-nums。#FFFFFF 不使用。純白なし。
-            角丸は panel 13 / btn 10 / tag 6。pill はステータスチップのみ。
-            残口数はヘアライン+中立色(赤・点滅禁止)。オッズ要約1行は常時表示。
-            禁止事項は C-5 の9項目(grep 対象)。和要素は第2部 JAPAN ELEMENTS のレジスター指定に従う。
+            照明: 画面上中央の暖色スポット1灯+下方向へ暗くなる縦グラデ。個別発光は禁止(LIVE ドットのみ例外)。
+            素材: 背景マット / UIカードはサテン(上辺insetハイライトのみ、全要素への1pxボーダー禁止) /
+            実物カード画像はグロス(多層影+固定斜め反射1本・アニメ不可) / CTAは半光沢。
+            暗部全面に約1.8%のモノクロノイズ(soft-light)。
+            角丸: control 8 / card 12 / panel 16 / image 7。pill はステータスチップのみ。
+            朱は1画面1要素・CTA専用。真鍮はボタン禁止。jade はステータス文字のみ。純白不使用。
+            残口数はヘアライン+中立モノスペース(赤・点滅禁止)。オッズ要約1行は常時表示。
+            和モチーフは退避中(SHOW_JAPANESE_MOTIFS=false)。漢字刻印は不採用。
           </p>
         </div>
       </div>

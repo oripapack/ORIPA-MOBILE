@@ -16,7 +16,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={dmSans.variable}>
+    // data-theme is set pre-hydration by the /redesign skin-switch script —
+    // suppress the expected attribute mismatch (same pattern as next-themes).
+    <html lang="en" className={dmSans.variable} suppressHydrationWarning>
       <body className="min-h-dvh antialiased font-sans">
         <Providers>{children}</Providers>
       </body>

@@ -64,7 +64,7 @@
 - **T5** 【開封担当への申し送り】開封領域の掃除: 絵文字モックカード(mockRevealCards の 🌟🔮👑)と PSA 表現の除去(R-044/R-083。上記 #6 関連)
 - **T6** sgVault.ts コメント「buyback surfaces」→「trade-in surfaces」— **2026-07-31 実施済み**
 - **T7** バナー再調理(上記 #3 を再定義済み。和方針 J-1)(R-073)
-- **T8** lab /redesign 既定テーマの N2 化+Urushi 実装の退避(R-030/R-056)。**neo-tokyo 比較の判定後に実施**
+- **T8** lab /redesign 既定テーマの N2 化+Urushi 実装の退避(R-030/R-056)— **2026-07-31 前倒しで実施済み**(Urushi 露出事故を受け人間承認。既定=N2、原本は docs/archive/next-ui-lab-redesign-urushi-DEPRECATED.tsx へ退避。スキンブランチは rebase で追従)
 - **T9** P-1(旧§9 物理)+C-7 組版詳細の RN 換算表作成 — PLANNED 着手時の最初のタスク(R-037/R-048〜052)
 - **T10** 「docs/opening-spec 2.md」(複製ファイル)の削除 — **2026-07-31 実施済み**
 - **T11** C-5/C-12 チェックの grep スクリプト化(R-098)
