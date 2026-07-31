@@ -1,5 +1,5 @@
 /**
- * N2 §10 FINTECH VAULT skin — Vault / buyback surfaces only.
+ * N2 §10 FINTECH VAULT skin — Vault / trade-in surfaces only.
  * Trust chassis (gold = price/CTA, text hierarchy) stays; bg/surface/line/up differ.
  */
 import { sg } from './sg';

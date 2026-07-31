@@ -8,8 +8,8 @@
 
 | Question | Answer |
 |----------|--------|
-| Is there an `apps/` folder? | **No.** It was removed. Do not look for it. |
-| Where is the real app? | **`src/`** — this is the only product UI. |
+| Is there an `apps/` folder? | **Yes** (`apps/pack-opening-web/` — the pack-opening owner's area). **Do not edit it** for look-and-feel work. |
+| Where is the real app? | **`src/`** — this is the product UI you edit. |
 | Where do I edit for mobile + web? | **`src/`** — same code runs on phone and browser. |
 | Can I use the Next.js prototype? | Only as **inspiration**. Real changes go in **`src/`**. |
 
