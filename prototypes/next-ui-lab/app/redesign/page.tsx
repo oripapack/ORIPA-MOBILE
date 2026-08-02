@@ -194,14 +194,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
   min-width: 150px; background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--radius-panel); padding: 10px;
 }
-/* スラブ画像 = 実物の物撮り(静的な反射1本のみ・多層影は廃止) */
-.slab { height: 96px; border-radius: var(--radius-tag); background: #E9E6DF; position: relative; overflow: hidden; }
+/* スラブ枠 — 暗い面(surface-2 + 1px line)。白系のUI面は廃止(最明は text)。
+   実物スラブ写真の導入後は「写真としての白」を許可(照明・影付きの実写に限る。UI面の白は引き続き禁止)。 */
+.slab { height: 96px; border-radius: var(--radius-tag); background: var(--surface-2); border: 1px solid var(--line); position: relative; overflow: hidden; }
 .slab::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(120deg, transparent 38%, rgba(255,255,255,0.16) 47%, transparent 55%);
+  background: linear-gradient(120deg, transparent 38%, rgba(240,238,232,0.10) 47%, transparent 55%);
 }
 .slab-label { position: absolute; top: 6px; left: 6px; right: 6px; height: 16px; border-radius: 3px;
-  background: #201F1C; color: #E9E6DF; font-size: 7.5px; font-weight: 500;
+  background: var(--surface); color: var(--text); font-family: var(--f-data); font-size: 7.5px; font-weight: 500;
   display: flex; align-items: center; justify-content: center; letter-spacing: 0.1em; }
 .slab-art { position: absolute; top: 28px; left: 18px; right: 18px; bottom: 8px; border-radius: 3px; }
 .jp-name { font-size: 12px; font-weight: 500; margin-top: 10px; line-height: 1.3; }
