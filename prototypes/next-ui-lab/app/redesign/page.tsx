@@ -6,6 +6,35 @@
  * に退避済み(参照禁止)。Lab-only prototype (not product code).
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
+
+/**
+ * 実写アセットの自動検出(docs/asset-spec.md)。
+ * public/assets/slabs/ に slab-NN.png / wrap-NN.png / stage-01.png を置くと
+ * リロード時に自動で拾う。無いスロットは CSS プレースホルダーへフォールバック。
+ * ガードレール: 実在の他社カード写真の流用禁止・自社在庫の実写のみ(C-5-9)。
+ */
+function readSlabAssets(count: number) {
+  const empty = { stage: null as string | null, slots: Array.from({ length: count }, () => ({ slab: null as string | null, wrap: null as string | null })) };
+  try {
+    const dir = path.join(process.cwd(), 'public', 'assets', 'slabs');
+    const files = new Set(fs.readdirSync(dir));
+    return {
+      stage: files.has('stage-01.png') ? '/assets/slabs/stage-01.png' : null,
+      slots: Array.from({ length: count }, (_, i) => {
+        const nn = String(i + 1).padStart(2, '0');
+        return {
+          slab: files.has(`slab-${nn}.png`) ? `/assets/slabs/slab-${nn}.png` : null,
+          wrap: files.has(`wrap-${nn}.png`) ? `/assets/slabs/wrap-${nn}.png` : null,
+        };
+      }),
+    };
+  } catch {
+    return empty;
+  }
+}
+
 /** 和モチーフ退避フラグ — 浮世絵波は和方針(J-1)の NG レジスター(工芸的)につきオフのまま。 */
 const SHOW_JAPANESE_MOTIFS = false;
 
@@ -203,7 +232,24 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
 }
 .slab-label { position: absolute; top: 6px; left: 6px; right: 6px; height: 16px; border-radius: 3px;
   background: var(--surface); color: var(--text); font-family: var(--f-data); font-size: 7.5px; font-weight: 500;
-  display: flex; align-items: center; justify-content: center; letter-spacing: 0.1em; }
+  display: flex; align-items: center; justify-content: center; letter-spacing: 0.1em; z-index: 3; }
+/* ── 実写レイヤー(public/assets/slabs にアセットがある時のみ — docs/asset-spec.md)
+   下: ステージ / 中: スラブ実写 / 上: 破れ包装 / 最前: GRADED ラベル。
+   アセットが無いスロットは従来の CSS プレースホルダー(.slab-art)に自動フォールバック ── */
+.slab-stage { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.slab-photo, .slab-wrap {
+  position: absolute; left: 8%; top: 4px;
+  width: 84%; height: calc(100% - 10px); object-fit: contain;
+}
+.slab-photo { z-index: 1; filter: drop-shadow(0 5px 8px rgba(0,0,0,0.55)); }
+.slab-wrap { z-index: 2; }
+/* 台座+反射(CSS簡易版 — stage-01.png があれば画像側が主、これは薄い受け皿) */
+.slab--photo::before {
+  content: ''; position: absolute; left: 22%; right: 22%; bottom: 3px; height: 8px;
+  border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,0.55), transparent); z-index: 0;
+}
+/* 実写時は擬似グロスを消す(写真に嘘の光沢を乗せない) */
+.slab--photo::after { display: none; }
 .slab-art { position: absolute; top: 28px; left: 18px; right: 18px; bottom: 8px; border-radius: 3px; }
 .jp-name { font-size: 12px; font-weight: 500; margin-top: 10px; line-height: 1.3; }
 .jp-meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; }
@@ -303,6 +349,7 @@ const shelf = [
 ];
 
 export default function RedesignTokenSheet() {
+  const assets = readSlabAssets(pulls.length);
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
@@ -365,11 +412,21 @@ export default function RedesignTokenSheet() {
               <a href="#"><i className="live-dot" />LIVE ›</a>
             </div>
             <div className="jp-row">
-              {pulls.map((p) => (
+              {pulls.map((p, i) => {
+                const slot = assets.slots[i];
+                return (
                 <div className="jp-card" key={p.name}>
-                  <div className="slab">
+                  <div className={slot.slab ? 'slab slab--photo' : 'slab'}>
                     <div className="slab-label">{p.grade}</div>
-                    <div className="slab-art" style={{ background: p.art }} />
+                    {slot.slab ? (
+                      <>
+                        {assets.stage ? <img className="slab-stage" src={assets.stage} alt="" /> : null}
+                        <img className="slab-photo" src={slot.slab} alt="" />
+                        {slot.wrap ? <img className="slab-wrap" src={slot.wrap} alt="" /> : null}
+                      </>
+                    ) : (
+                      <div className="slab-art" style={{ background: p.art }} />
+                    )}
                   </div>
                   <div className="jp-name">{p.name}</div>
                   <div className="jp-meta">
@@ -377,7 +434,8 @@ export default function RedesignTokenSheet() {
                     <div className="jp-time">{p.time}</div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="sec-head">
