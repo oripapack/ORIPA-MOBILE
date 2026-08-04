@@ -39,8 +39,12 @@ function readSlabAssets(count: number) {
   }
 }
 
+/** ノイズ用 data URI — N2 既定では不使用。neo-tokyo スキンのグレインのみが参照する。 */
+const NOISE_URI =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+
 const css = `
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500;600&family=Space+Grotesk:wght@700&family=Noto+Sans+JP:wght@700&display=swap');
 
 :root {
   /* N2 基層(C-3 verbatim — /redesign と同値) */
@@ -242,6 +246,121 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
 .v2-record-row b { font-family: var(--f-data); font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .v2-record-row a { font-size: 11px; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: 0.06em; }
 .v2-legal { font-size: 9.5px; color: var(--muted); line-height: 1.6; margin-top: 14px; }
+
+/* ═══════════════ NEO-TOKYO v2 SKIN — [data-theme] スコープ ═══════════════
+   design/neo-tokyo-v2(/redesign 用)から v2 構造へ移植。S-2 の差し替え可能
+   範囲のみ(トークン上書き・背景・グロー・疑似要素装飾)・DOM 変更なし。
+   N2 既定は完全不変。有効化: /redesign-v2?theme=neo-tokyo
+   ネオンは3箇所固定: ①縦書きカタカナ看板 ②LIVE ③MYTHIC 表示。
+   ③は v2 ホームモックに MYTHIC 表示要素が無いためアンカー無し(ルール不要)。
+   金・success・error・warning は N2 のまま上書きなし(信頼シャーシ C-9)。
+   JAPAN ELEMENTS(J-1): 富士フラットシルエット+赤鳥居ミニアイコンの2点。
+   元スキンの .noise DOM(グレイン/ビネット)は v2 に無いため、DOM を足さず
+   body::before/::after の固定オーバーレイで代替。 */
+[data-theme="neo-tokyo"] {
+  --bg: #05070C; --surface: #0C1018; --surface-2: #131A24; --line: #1F2937;
+  --text: #E9EEF2; --muted: #8393A3;
+  --neon: #4FD8E8; --neon-mid: rgba(79,216,232,0.45); --neon-far: rgba(79,216,232,0.16);
+  --neon-plate: rgba(79,216,232,0.07); --neon-edge: rgba(79,216,232,0.35);
+  --neon-glow: rgba(79,216,232,0.32);
+  --neon-2: #E85FA8; /* 予約: MYTHIC 開封演出のみ。本スキンの常設UIでの使用0件 */
+  --torii: #FF4A38; /* J-1 鳥居アイコン用フラット朱(N2 朱の再利用・グロー無し) */
+  --fuji: #0D1420; --bldg: #0A0E16; --sky-glow: rgba(79,216,232,0.05);
+  --vig: rgba(0,0,0,0.35); --spot: rgba(233,238,242,0.04);
+  --f-display: 'Space Grotesk', sans-serif; /* 見出しのみ。本文・等幅はブランドのまま */
+}
+[data-theme="neo-tokyo"] .v2-logo, [data-theme="neo-tokyo"] .v2-title { font-weight: 700; letter-spacing: 0; }
+/* ページ地: 夜空(青みの暗闇)+冷スポット(元 .phone 背景の移植) */
+[data-theme="neo-tokyo"] body {
+  background:
+    radial-gradient(420px 380px at 50% 40px, var(--spot), transparent 70%),
+    linear-gradient(180deg, var(--surface) 0%, var(--bg) 60%, var(--bg) 100%);
+}
+/* フィルムグレイン 0.05 / レンズビネット 0.35 — 固定オーバーレイで代替 */
+[data-theme="neo-tokyo"] body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 40;
+  background: radial-gradient(130% 85% at 50% 42%, transparent 55%, var(--vig) 100%);
+}
+[data-theme="neo-tokyo"] body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 41;
+  background-image: ${NOISE_URI}; opacity: 0.05;
+}
+/* ═ ネオン②: LIVE(C-8 の常時明滅例外・3層グロー。周期は基底の 1.6s を継承) ═ */
+[data-theme="neo-tokyo"] .v2-live-dot {
+  background: var(--neon);
+  box-shadow: 0 0 2px var(--neon), 0 0 12px var(--neon-mid), 0 0 42px var(--neon-far);
+  animation-name: nt2-live-pulse;
+}
+@keyframes nt2-live-pulse {
+  0%, 100% { box-shadow: 0 0 2px var(--neon), 0 0 10px var(--neon-mid), 0 0 34px var(--neon-far); }
+  50% { box-shadow: 0 0 3px var(--neon), 0 0 14px var(--neon-mid), 0 0 48px var(--neon-far); }
+}
+/* ヒーロー: CSS夜景 — 暗青グラデ+富士フラットシルエット(J-1 ①)+ビル群。
+   コピー・レイアウト不変(背景のみ)。v2-hero 幅412にビル5本がちょうど収まる。
+   データURI内の色はトークン値(%230D1420=--fuji, %234FD8E8=--neon) */
+[data-theme="neo-tokyo"] .v2-hero {
+  position: relative; /* 疑似要素(看板)のアンカー。レイアウト影響なし */
+  background-image:
+    linear-gradient(var(--bldg), var(--bldg)),
+    linear-gradient(var(--bldg), var(--bldg)),
+    linear-gradient(var(--bldg), var(--bldg)),
+    linear-gradient(var(--bldg), var(--bldg)),
+    linear-gradient(var(--bldg), var(--bldg)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 108'%3E%3Cpath d='M0 108 L84 22 Q92 12 100 22 L112 34 L124 22 Q132 12 140 22 L240 108 Z' fill='%230D1420' stroke='%234FD8E8' stroke-opacity='0.35' stroke-width='1.5'/%3E%3C/svg%3E"),
+    radial-gradient(70% 45% at 68% 0%, var(--sky-glow), transparent 70%),
+    linear-gradient(180deg, var(--surface-2) 0%, var(--bg) 78%);
+  background-repeat: no-repeat;
+  background-position: 18px bottom, 84px bottom, 158px bottom, 262px bottom, 348px bottom, left 70px bottom, top, top;
+  background-size: 54px 96px, 62px 148px, 88px 74px, 70px 122px, 64px 88px, 280px 112px, 100% 100%, 100% 100%;
+}
+/* J-1 ②: 赤鳥居ミニアイコン(フラット単色・グロー無し) */
+[data-theme="neo-tokyo"] .v2-eyebrow::before {
+  content: ''; display: inline-block; width: 14px; height: 12px;
+  margin-right: 8px; vertical-align: -1px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 20'%3E%3Cpath d='M1 3.4 Q12 0.4 23 3.4 L23 6 Q12 3.4 1 6 Z' fill='%23FF4A38'/%3E%3Crect x='3.4' y='8.6' width='17.2' height='2.2' fill='%23FF4A38'/%3E%3Crect x='5' y='5' width='2.4' height='15' fill='%23FF4A38'/%3E%3Crect x='16.6' y='5' width='2.4' height='15' fill='%23FF4A38'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* ═ ネオン①: 縦書きカタカナ看板 — 主役級(3層グロー+細ボーダー+面発光)。
+   装飾テキストは事実主張なし ═ */
+[data-theme="neo-tokyo"] .v2-hero::before {
+  content: 'トーキョー';
+  position: absolute; right: 18px; top: 40px;
+  writing-mode: vertical-rl;
+  font-family: 'Noto Sans JP', sans-serif; font-size: 40px; font-weight: 700;
+  letter-spacing: 0.18em; line-height: 1;
+  color: var(--neon);
+  text-shadow: 0 0 2px var(--neon), 0 0 12px var(--neon-mid), 0 0 42px var(--neon-far);
+  padding: 14px 8px;
+  border: 1px solid var(--neon-edge); border-radius: 4px;
+  background: var(--neon-plate);
+  box-shadow: 0 0 12px var(--neon-far);
+  animation: nt2-ignite 0.9s steps(9, end) 1 both; /* 点灯は1回だけ・ループ禁止 */
+  pointer-events: none;
+}
+/* 濡れた路面の反射 — 看板直下に1箇所のみ */
+[data-theme="neo-tokyo"] .v2-hero::after {
+  content: 'トーキョー';
+  position: absolute; right: 18px; top: 330px;
+  writing-mode: vertical-rl;
+  font-family: 'Noto Sans JP', sans-serif; font-size: 40px; font-weight: 700;
+  letter-spacing: 0.18em; line-height: 1;
+  padding: 14px 8px;
+  color: var(--neon);
+  text-shadow: 0 0 2px var(--neon), 0 0 12px var(--neon-mid);
+  transform: scaleY(-1); filter: blur(6px); opacity: 0.12;
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 10%, #000 60%);
+  mask-image: linear-gradient(to top, rgba(0,0,0,0) 10%, #000 60%);
+  pointer-events: none;
+}
+@keyframes nt2-ignite {
+  0% { opacity: 0.15; } 18% { opacity: 1; } 26% { opacity: 0.3; }
+  38% { opacity: 1; } 47% { opacity: 0.5; } 60% { opacity: 1; }
+  74% { opacity: 0.85; } 100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="neo-tokyo"] .v2-hero::before { animation: none; }
+  [data-theme="neo-tokyo"] .v2-hero::after { display: none; }
+  [data-theme="neo-tokyo"] .v2-live-dot { animation: none; }
+}
 `;
 
 const pulls = [
@@ -263,6 +382,13 @@ export default function RedesignV2() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
+      {/* スキン切替(第4部 S-4): /redesign-v2?theme=xxx で有効化。無指定は N2 既定のまま(/redesign と同じ基盤フック) */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            "try{var t=new URLSearchParams(location.search).get('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}",
+        }}
+      />
       <div className="v2-wrap">
         <div className="v2-tb">
           <div className="v2-logo">Pull Hub</div>
