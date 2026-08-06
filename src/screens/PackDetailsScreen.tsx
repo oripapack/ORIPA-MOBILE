@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../tokens/sg';
+import { AssetBlockedCard } from '../components/shared/AssetBlockedCard';
 import { SgCard, SgData, SgSectionHeader, SgTierTag } from '../components/ui';
 import { SgFairnessRecord } from '../components/pack/sg/SgFairnessRecord';
 import { PackVisual } from '../components/ph/PackVisual';
@@ -165,7 +165,7 @@ export function PackDetailsScreen({ route }: Props) {
             ) : null}
             {/* Trade-in is structurally 100% of listed value (coin economy) —
                 there is no per-pack rate, so this is fixed copy, not data. */}
-            <SgData value="100%" unit="trade-in · listed value" size="sm" tone="gold" />
+            <SgData value="100%" unit="Trade in · listed value" size="sm" tone="gold" />
           </View>
           <Text style={styles.heroTitle}>{loc.title}</Text>
           <Text style={styles.heroSet}>{pack.tagline ?? loc.valueDescription}</Text>
@@ -229,7 +229,7 @@ export function PackDetailsScreen({ route }: Props) {
               <SgSectionHeader title={t('packDetails.topHitPreviewTitle')} />
               <View style={styles.topHitRow}>
                 <View style={styles.topHitImgFrame}>
-                  <Image source={{ uri: topHit.imageUrl }} style={styles.topHitImg} contentFit="cover" />
+                  <AssetBlockedCard label="INVENTORY MEDIA PENDING" compact />
                 </View>
                 <View style={styles.topHitBody}>
                   <Text style={styles.topHitName} numberOfLines={2}>
@@ -274,8 +274,8 @@ export function PackDetailsScreen({ route }: Props) {
               <View style={styles.shipBody}>
                 <Text style={styles.shipTitle}>Ships from Tokyo</Text>
                 <Text style={styles.sectionBody}>
-                  Japanese exclusives, packed and shipped direct. Free shipping on orders{' '}
-                  <Text style={styles.inlineNum}>$100+</Text>.
+                  Japanese-market items are prepared for tracked fulfillment. Shipping options are
+                  shown before confirmation.
                 </Text>
               </View>
             </View>
@@ -484,7 +484,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: sg.surface2,
   },
-  topHitImg: { width: '100%', height: '100%' },
   topHitBody: { flex: 1, gap: 6, justifyContent: 'center' },
   topHitName: { fontFamily: sg.font.bodyBold, fontSize: 14, lineHeight: 19, color: sg.text },
   finePrint: {
@@ -533,12 +532,6 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.dataBold,
     fontSize: 11,
     color: 'rgba(0,0,0,0.7)',
-    fontVariant: ['tabular-nums'],
-  },
-  inlineNum: {
-    fontFamily: sg.font.dataBold,
-    fontSize: 13,
-    color: sg.muted,
     fontVariant: ['tabular-nums'],
   },
   ctaArrow: { fontFamily: sg.font.bodyBold, fontSize: 20, color: sg.onGold, marginLeft: sg.space.sm },

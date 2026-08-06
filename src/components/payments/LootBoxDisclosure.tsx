@@ -5,7 +5,6 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
   Pressable,
   Platform,
@@ -13,8 +12,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
-import { PACK_OPENING_TIER_ODDS } from '../../data/lootBoxOdds';
+import { spacing } from '../../tokens/spacing';
+import { MOCK_PACK_OPENING_TIER_ODDS } from '../../data/lootBoxOdds';
+import { SgButton } from '../ui';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 
 interface Props {
@@ -51,7 +51,7 @@ export function LootBoxDisclosure({ visible, onClose }: Props) {
           bounces={Platform.OS !== 'android'}
         >
           <Text style={styles.tableHead}>{t('lootBox.columnTier')}</Text>
-          {PACK_OPENING_TIER_ODDS.map((row) => (
+          {MOCK_PACK_OPENING_TIER_ODDS.map((row) => (
             <View key={row.tier} style={styles.row}>
               <Text style={styles.tier}>{row.tier}</Text>
               <Text style={styles.pct}>~{row.probabilityPct}%</Text>
@@ -60,9 +60,7 @@ export function LootBoxDisclosure({ visible, onClose }: Props) {
           <Text style={styles.footnote}>{t('lootBox.footnote')}</Text>
         </ScrollView>
 
-        <TouchableOpacity style={styles.doneBtn} onPress={onClose} activeOpacity={0.88}>
-          <Text style={styles.doneText}>{t('lootBox.done')}</Text>
-        </TouchableOpacity>
+        <SgButton label={t('lootBox.done')} onPress={onClose} />
       </View>
     </Modal>
   );
@@ -80,7 +78,9 @@ const styles = StyleSheet.create({
     top: '18%',
     maxHeight: '72%',
     backgroundColor: sg.surface2,
-    borderRadius: radius.xl,
+    borderRadius: sg.radius.panel,
+    borderWidth: 1,
+    borderColor: sg.line,
     padding: spacing.lg,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   scrollContent: { paddingBottom: spacing.sm },
   tableHead: {
     fontSize: fontSize.xs,
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.dataBold,
     color: sg.muted,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
@@ -120,13 +120,15 @@ const styles = StyleSheet.create({
   },
   tier: {
     fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
+    letterSpacing: 0.8,
   },
   pct: {
     fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
-    color: sg.muted,
+    fontFamily: sg.font.dataBold,
+    color: sg.gold,
+    fontVariant: [...sg.numeric],
   },
   footnote: {
     marginTop: spacing.md,
@@ -134,18 +136,5 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 18,
-  },
-  doneBtn: {
-    marginTop: spacing.md,
-    alignSelf: 'stretch',
-    backgroundColor: sg.surface2,
-    paddingVertical: spacing.sm + 2,
-    borderRadius: radius.md,
-    alignItems: 'center',
-  },
-  doneText: {
-    color: sg.text,
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyBold,
   },
 });

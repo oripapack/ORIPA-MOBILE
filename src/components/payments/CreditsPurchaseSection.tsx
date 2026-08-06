@@ -15,8 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
-import { creditBundles } from '../../data/mockPacks';
+import { spacing } from '../../tokens/spacing';
+import { MOCK_POINT_BUNDLES } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
 import { CREDITS_ARE_MOCK } from '../../config/app';
 import type { RootStackParamList } from '../../navigation/types';
@@ -33,6 +33,7 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
   const { t } = useTranslation();
   const navigation = useNavigation<RootNav>();
   const addCredits = useAppStore((s) => s.addCredits);
+  const isPreviewPricing = __DEV__ || CREDITS_ARE_MOCK;
 
   const handlePurchase = (credits: number) => {
     addCredits(credits);
@@ -66,7 +67,7 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
     <View>
       <Text style={styles.title}>{t('buyCredits.title')}</Text>
       <Text style={styles.subtitle}>{t('buyCredits.subtitle')}</Text>
-      {CREDITS_ARE_MOCK && <Text style={styles.mockNote}>{t('buyCredits.mockNote')}</Text>}
+      {isPreviewPricing ? <Text style={styles.mockNote}>{t('buyCredits.mockNote')}</Text> : null}
 
       <TouchableOpacity
         style={styles.probabilityLink}
@@ -85,7 +86,7 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
         bounces
         nestedScrollEnabled={Platform.OS === 'android'}
       >
-        {creditBundles.map((bundle) => {
+        {MOCK_POINT_BUNDLES.map((bundle) => {
           const promo = bundle.showPromoDiscount;
           return (
             <View key={bundle.id} style={styles.bundleWrap}>
@@ -98,7 +99,10 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
                   </View>
                 ) : null}
                 <View style={[styles.bundleRow, !promo && styles.bundleRowNoBadge]}>
-                  <MaterialCommunityIcons name="sack" size={36} color={sg.gold} />
+                  <View style={styles.pointsMark}>
+                    <MaterialCommunityIcons name="star-four-points-small" size={18} color={sg.gold} />
+                    <Text style={styles.pointsMarkText}>PTS</Text>
+                  </View>
                   <View style={styles.bundleCenter}>
                     <Text style={styles.pointsLine}>
                       {t('buyCredits.pointsLine', {
@@ -131,7 +135,7 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
 
         <View style={styles.trustRow}>
           <Text style={styles.trustText}>
-            {CREDITS_ARE_MOCK ? t('buyCredits.mockFooter') : t('buyCredits.liveFooter')}
+            {isPreviewPricing ? t('buyCredits.mockFooter') : t('buyCredits.liveFooter')}
           </Text>
         </View>
       </ScrollView>
@@ -156,10 +160,12 @@ const styles = StyleSheet.create({
   mockNote: {
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyMedium,
-    color: sg.error,
-    backgroundColor: 'rgba(255,74,56,0.10)',
+    color: sg.muted,
+    backgroundColor: sg.surface,
     padding: spacing.sm,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
+    borderWidth: 1,
+    borderColor: sg.line,
     marginBottom: spacing.md,
     lineHeight: 18,
   },
@@ -171,7 +177,7 @@ const styles = StyleSheet.create({
   probabilityLinkText: {
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyMedium,
-    color: sg.error,
+    color: sg.gold,
     textDecorationLine: 'underline',
   },
   scroll: {},
@@ -183,8 +189,8 @@ const styles = StyleSheet.create({
   },
   bundleCard: {
     position: 'relative',
-    backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
+    backgroundColor: sg.surface,
+    borderRadius: sg.radius.panel,
     padding: spacing.base,
     borderWidth: 1,
     borderColor: sg.line,
@@ -202,27 +208,45 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     left: 8,
-    backgroundColor: sg.neon,
+    backgroundColor: sg.gold,
     paddingHorizontal: spacing.sm,
     paddingVertical: 3,
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     zIndex: 2,
   },
   discountBadgeText: {
     fontSize: 10,
     fontFamily: sg.font.bodyBold,
-    color: sg.text,
+    color: sg.onGold,
     letterSpacing: 0.5,
   },
   bundleCenter: {
     flex: 1,
     minWidth: 0,
   },
+  pointsMark: {
+    width: 48,
+    height: 48,
+    borderRadius: sg.radius.btn,
+    borderWidth: 1,
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pointsMarkText: {
+    marginTop: -3,
+    fontSize: 8,
+    fontFamily: sg.font.dataBold,
+    color: sg.gold,
+    letterSpacing: 1,
+  },
   pointsLine: {
     fontSize: fontSize.lg,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
     marginBottom: 2,
+    fontVariant: [...sg.numeric],
   },
   priceRow: {
     flexDirection: 'row',
@@ -232,19 +256,22 @@ const styles = StyleSheet.create({
   },
   priceNow: {
     fontSize: fontSize.md,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.dataBold,
     color: sg.gold,
+    fontVariant: [...sg.numeric],
   },
   priceList: {
     fontSize: fontSize.md,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
+    fontVariant: [...sg.numeric],
   },
   priceWas: {
     fontSize: fontSize.xs,
-    fontFamily: sg.font.body,
+    fontFamily: sg.font.data,
     color: sg.muted,
     textDecorationLine: 'line-through',
+    fontVariant: [...sg.numeric],
   },
   bundleBonus: {
     fontSize: fontSize.xs,
@@ -256,7 +283,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.gold,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 2,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     justifyContent: 'center',
     minWidth: 72,
     alignItems: 'center',

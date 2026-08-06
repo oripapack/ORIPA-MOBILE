@@ -8,8 +8,9 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useTranslation } from 'react-i18next';
 import {
@@ -75,7 +76,7 @@ export function LanguageRegionModal({
                 <Text style={[styles.rowLabel, draftLang === opt.code && styles.rowLabelSelected]}>
                   {opt.label}
                 </Text>
-                {draftLang === opt.code ? <Text style={styles.check}>✓</Text> : null}
+                {draftLang === opt.code ? <Ionicons name="checkmark" size={20} color={sg.gold} /> : null}
               </TouchableOpacity>
             ))}
           </View>
@@ -93,7 +94,7 @@ export function LanguageRegionModal({
                 <Text style={[styles.rowLabel, draftRegion === opt.code && styles.rowLabelSelected]}>
                   {t(`regions.${opt.code}`)}
                 </Text>
-                {draftRegion === opt.code ? <Text style={styles.check}>✓</Text> : null}
+                {draftRegion === opt.code ? <Ionicons name="checkmark" size={20} color={sg.gold} /> : null}
               </TouchableOpacity>
             ))}
           </View>
@@ -124,12 +125,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     color: sg.text,
   },
   cancel: {
     fontSize: fontSize.base,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   scroll: {
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.dataBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -169,33 +170,28 @@ const styles = StyleSheet.create({
     borderBottomColor: sg.line,
   },
   rowSelected: {
-    backgroundColor: '#FFF1F2',
+    backgroundColor: 'rgba(212,175,55,0.08)',
   },
   rowLabel: {
     fontSize: fontSize.base,
     color: sg.text,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
   },
   rowLabelSelected: {
-    fontFamily: brandFont.bold,
-    color: sg.error,
-  },
-  check: {
-    fontSize: fontSize.lg,
-    color: sg.error,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   doneBtn: {
     marginHorizontal: spacing.base,
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: sg.error,
+    backgroundColor: sg.gold,
     alignItems: 'center',
     justifyContent: 'center',
   },
   doneText: {
-    color: sg.text,
+    color: sg.onGold,
     fontSize: fontSize.base,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
   },
 });

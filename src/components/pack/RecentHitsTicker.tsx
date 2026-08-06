@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, Text, View, ScrollView } from 'react-native';
 import type { ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
 import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -155,7 +156,7 @@ export function RecentHitsTicker() {
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>{initials(h.username)}</Text>
             </View>
-            <Text style={styles.fire}>🔥</Text>
+            <Ionicons name="flash" size={13} color={sg.gold} />
             <Text style={styles.text} numberOfLines={1}>
               <Text style={styles.user}>{h.username}</Text>
               <Text style={styles.text}> {t('recentHits.pulled')} </Text>
@@ -251,9 +252,6 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
-  fire: {
-    fontSize: 12,
-  },
   text: {
     fontSize: fontSize.xs,
     color: sg.muted,
@@ -283,8 +281,8 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 11,
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.dataBold,
     color: sg.gold,
+    fontVariant: [...sg.numeric],
   },
 });
-

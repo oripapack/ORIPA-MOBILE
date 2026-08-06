@@ -31,13 +31,8 @@ export type ResultPullData = {
 
 export type MockResultVariant = '1' | '5' | '10' | 'long';
 
-// Same demo imagery the top-hit mock already uses.
-const IMG = [
-  'https://images.unsplash.com/photo-1613771404721-1f92d799e49f?auto=format&fit=crop&w=256&q=80',
-  'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&w=256&q=80',
-  'https://images.unsplash.com/photo-1611599537845-1c7aca0091c0?auto=format&fit=crop&w=256&q=80',
-  'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&w=256&q=80',
-] as const;
+// Rights-cleared inventory media is blocked; the UI renders AssetBlockedCard.
+const IMG = [''] as const;
 
 function card(name: string, listedValueUsd: number, i: number): ResultCard {
   return { name, tier: 'unknown', imageUrl: IMG[i % IMG.length], listedValueUsd };
@@ -66,7 +61,7 @@ export const MOCK_RESULT_PULLS: Record<MockResultVariant, ResultPullData> = {
     cards: FIVE_CARDS,
     totalListedValueUsd: 264,
   },
-  // 10 cards + 6-digit coin total (126,450) in one variant.
+  // 10 cards + a four-digit listed-value total in one layout-stress variant.
   '10': {
     pullId: '00413',
     pulledAt: '2026-07-27T05:32:00Z',

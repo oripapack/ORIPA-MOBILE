@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import type { RarityTier } from '../../../shared/types/pack';
 import { ph } from '../../tokens/phTheme';
-import { brandFont, fontSize } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
 
 const RARITY_LABEL: Record<RarityTier, string> = {
   common: 'Common',
@@ -56,12 +57,12 @@ const styles = StyleSheet.create({
   dot: { width: 6, height: 6, borderRadius: 3 },
   text: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     textTransform: 'uppercase',
     letterSpacing: 0.8,
   },
   textSmall: { fontSize: 9 },
-  statusText: { fontSize: 10, fontFamily: brandFont.bold, color: ph.textSec, textTransform: 'uppercase' },
+  statusText: { fontSize: 10, fontFamily: sg.font.bodyBold, color: ph.textSec, textTransform: 'uppercase' },
   success: { backgroundColor: ph.greenSoft, borderColor: ph.greenBorder },
   warning: { backgroundColor: ph.redSoft, borderColor: ph.redBorder },
   featured: { backgroundColor: ph.rarityBg.epic, borderColor: ph.rarityBorder.epic },

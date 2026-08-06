@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { SOCIAL_URLS } from '../../config/social';
 import { openExternalUrl } from '../../utils/openExternalUrl';
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   socialLabel: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: 'rgba(248,250,252,0.88)',
     letterSpacing: 0.2,
   },

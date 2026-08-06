@@ -4,8 +4,9 @@ import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 import QRCode from 'react-native-qrcode-svg';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 interface Props {
@@ -83,7 +84,7 @@ export function MyQrModal({
               accessibilityRole="button"
               accessibilityLabel={t('myQr.scanAnother')}
             >
-              <Text style={styles.scanOtherEmoji}>📷</Text>
+              <Ionicons name="camera-outline" size={22} color={sg.gold} />
               <View style={styles.scanOtherTextCol}>
                 <Text style={styles.scanOtherTitle}>{t('myQr.scanAnother')}</Text>
                 <Text style={styles.scanOtherSub}>{t('myQr.scanAnotherSub')}</Text>
@@ -138,14 +139,14 @@ const styles = StyleSheet.create({
   },
   badge: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 2,
     marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     color: sg.text,
     marginBottom: spacing.xs,
   },
@@ -170,14 +171,14 @@ const styles = StyleSheet.create({
   },
   nameLabel: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
   name: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     color: sg.text,
     marginBottom: spacing.base,
   },
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   idText: {
     flex: 1,
     fontSize: fontSize.base,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     letterSpacing: 0.5,
     color: sg.text,
     marginRight: spacing.sm,
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
   copyBtnText: {
     color: sg.text,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
   },
   scanOtherBtn: {
     flexDirection: 'row',
@@ -233,12 +234,12 @@ const styles = StyleSheet.create({
   },
   scanOtherTitle: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   scanOtherSub: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     marginTop: 2,
     lineHeight: 16,
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
   scanOtherChevron: {
     fontSize: 22,
     color: sg.muted,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
   },
   doneBtn: {
     height: 52,
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
   doneBtnText: {
     color: sg.text,
     fontSize: fontSize.base,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 0.5,
   },
 });

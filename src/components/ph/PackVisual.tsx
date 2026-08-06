@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import type { RarityTier } from '../../../shared/types/pack';
 import { getCategoryFoil } from '../../lib/packFoil';
 import { ph } from '../../tokens/phTheme';
-import { brandFont } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
 /**
  * N2 §5-2/§6: the colored rarity foils (incl. purple) are removed. The ground
  * is a single achromatic surface2/surface gradient (placeholder until real
@@ -76,6 +76,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   labelBlock: { alignItems: 'center' },
-  category: { color: 'rgba(255,255,255,0.45)', fontFamily: brandFont.bold, letterSpacing: 1.4 },
-  name: { color: 'rgba(255,255,255,0.92)', fontFamily: brandFont.black, textAlign: 'center', marginTop: 4 },
+  category: { color: sg.muted, fontFamily: sg.font.bodyBold, letterSpacing: 1.4 },
+  name: { color: sg.text, fontFamily: sg.font.display, textAlign: 'center', marginTop: 4 },
 });

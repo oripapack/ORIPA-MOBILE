@@ -96,12 +96,12 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
                   }}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.flag}>{item.flag}</Text>
+                  <Text style={styles.countryCode}>{item.id}</Text>
                   <Text style={styles.rowName} numberOfLines={1}>
                     {item.name}
                   </Text>
                   <Text style={styles.rowDial}>{item.dial}</Text>
-                  {isOn ? <Ionicons name="checkmark" size={22} color={sg.error} /> : <View style={styles.checkSpacer} />}
+                  {isOn ? <Ionicons name="checkmark" size={22} color={sg.gold} /> : <View style={styles.checkSpacer} />}
                 </TouchableOpacity>
               );
             }}
@@ -166,8 +166,11 @@ const styles = StyleSheet.create({
   rowOn: {
     backgroundColor: sg.surface,
   },
-  flag: {
-    fontSize: 22,
+  countryCode: {
+    fontSize: 11,
+    fontFamily: sg.font.dataBold,
+    color: sg.gold,
+    letterSpacing: 0.6,
     width: 32,
     textAlign: 'center',
   },

@@ -13,8 +13,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sgVault } from '../../tokens/sgVault';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
@@ -24,7 +22,7 @@ const PRESETS = [25, 49, 99, 199, 499] as const;
 
 type Props = {
   visible: boolean;
-  /** Hint from coin value / tier — whole USD. */
+  /** Hint from the internal Point value / tier — whole USD. */
   suggestedPriceUsd: number;
   onClose: () => void;
   onConfirm: (priceUsd: number) => void;
@@ -50,7 +48,7 @@ export function ListForSaleModal({ visible, suggestedPriceUsd, onClose, onConfir
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={[styles.card, { paddingBottom: insets.bottom + spacing.lg }]}>
+        <View style={[styles.card, { paddingBottom: insets.bottom + sgVault.space.lg }]}>
           <Text style={styles.title}>{t('vaultList.title')}</Text>
           <Text style={styles.body}>{t('vaultList.body')}</Text>
           <Text style={styles.label}>{t('vaultList.priceLabel')}</Text>
@@ -75,7 +73,6 @@ export function ListForSaleModal({ visible, suggestedPriceUsd, onClose, onConfir
           </View>
           <PrimaryButton
             label={t('vaultList.confirm', { price: formatVaultExchangeUsd(parsed) })}
-            variant="red"
             onPress={() => onConfirm(parsed)}
             style={styles.cta}
           />
@@ -91,68 +88,70 @@ const styles = StyleSheet.create({
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.45)' },
   card: {
     backgroundColor: sgVault.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    padding: spacing.xl,
+    borderTopLeftRadius: sgVault.radius.panel,
+    borderTopRightRadius: sgVault.radius.panel,
+    padding: sgVault.space.lg,
     borderTopWidth: 1,
     borderColor: sgVault.line,
   },
   title: {
-    fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+    fontSize: 24,
+    fontFamily: sgVault.font.display,
     color: sgVault.text,
-    marginBottom: spacing.sm,
+    marginBottom: sgVault.space.sm,
   },
   body: {
-    fontSize: fontSize.sm,
+    fontSize: 13,
     color: sgVault.muted,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: sgVault.space.lg,
   },
   label: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: 11,
+    fontFamily: sgVault.font.dataBold,
     color: sgVault.muted,
-    marginBottom: spacing.xs,
+    marginBottom: sgVault.space.xs,
     letterSpacing: 0.5,
   },
   input: {
     borderWidth: 1,
     borderColor: sgVault.line,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.base,
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    borderRadius: sgVault.radius.btn,
+    paddingVertical: sgVault.space.md,
+    paddingHorizontal: sgVault.space.md,
+    fontSize: 18,
+    fontFamily: sgVault.font.dataBold,
     color: sgVault.text,
     backgroundColor: sgVault.bg,
-    marginBottom: spacing.md,
+    marginBottom: sgVault.space.md,
+    fontVariant: [...sgVault.numeric],
   },
   presets: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginBottom: spacing.lg,
+    gap: sgVault.space.sm,
+    marginBottom: sgVault.space.lg,
   },
   preset: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.full,
+    paddingVertical: sgVault.space.sm,
+    paddingHorizontal: sgVault.space.md,
+    borderRadius: sgVault.radius.tag,
     borderWidth: 1,
     borderColor: sgVault.line,
     backgroundColor: sgVault.surface2,
   },
   presetOn: {
     borderColor: 'rgba(212,175,55,0.38)',
-    backgroundColor: 'rgba(61,220,151,0.12)',
+    backgroundColor: 'rgba(212,175,55,0.08)',
   },
   presetText: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: 11,
+    fontFamily: sgVault.font.dataBold,
     color: sgVault.muted,
+    fontVariant: [...sgVault.numeric],
   },
   presetTextOn: {
     color: sgVault.gold,
   },
-  cta: { marginBottom: spacing.sm },
+  cta: { marginBottom: sgVault.space.sm },
 });

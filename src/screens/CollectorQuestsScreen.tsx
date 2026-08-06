@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: 10,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.dataBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -127,9 +127,10 @@ const styles = StyleSheet.create({
   streakMain: { flex: 1 },
   streakVal: {
     fontSize: fontSize.hero,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
     letterSpacing: -1,
+    fontVariant: [...sg.numeric],
   },
   streakLab: {
     fontSize: fontSize.xs,
@@ -151,9 +152,10 @@ const styles = StyleSheet.create({
   },
   streakBestVal: {
     fontSize: fontSize.lg,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
     marginTop: 2,
+    fontVariant: [...sg.numeric],
   },
   streakFine: {
     fontSize: fontSize.xs,
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
   },
   section: {
     fontSize: 10,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.dataBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',

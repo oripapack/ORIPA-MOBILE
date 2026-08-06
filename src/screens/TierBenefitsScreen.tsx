@@ -1,31 +1,27 @@
-import React, { useLayoutEffect, useMemo } from 'react';
-import { sg } from '../tokens/sg';
+import React, { useLayoutEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
+import { sg } from '../tokens/sg';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
-import { TIER_BENEFITS } from '../data/tierBenefits';
+import { progressionFromTotalXp } from '../lib/collectorProgression';
+import { SgData } from '../components/ui';
 
 type Nav = StackNavigationProp<RootStackParamList, 'TierBenefits'>;
 
-const tierAccent: Record<string, string> = {
-  Starter: '#6B7280',
-  Bronze: '#92400E',
-  Silver: '#6B7280',
-  Gold: '#B45309',
-};
-
+/**
+ * Collector level status. Product benefits are intentionally not invented:
+ * only the XP progression already implemented in the app is shown here.
+ */
 export function TierBenefitsScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
-  const userTier = useAppStore((s) => s.user.tier);
-  const userXp = useAppStore((s) => s.user.xp);
+  const totalXp = useAppStore((s) => s.user.xp);
+  const progress = progressionFromTotalXp(totalXp);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -34,131 +30,130 @@ export function TierBenefitsScreen() {
       headerTintColor: sg.text,
       headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: sg.surface2 },
+      headerStyle: { backgroundColor: sg.bg },
     });
   }, [navigation, t]);
 
-  const nextTierXp = useMemo(() => {
-    const order = TIER_BENEFITS.map((x) => x.tier);
-    const idx = order.indexOf(userTier);
-    if (idx < 0 || idx >= TIER_BENEFITS.length - 1) return null;
-    return TIER_BENEFITS[idx + 1]?.minXp ?? null;
-  }, [userTier]);
-
   return (
     <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+      style={styles.root}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxxl }]}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.lead}>{t('tierBenefits.lead')}</Text>
-      {nextTierXp != null ? (
-        <Text style={styles.progressHint}>
-          {t('tierBenefits.progressHint', {
-            xp: userXp.toLocaleString(),
-            need: nextTierXp.toLocaleString(),
+      <Text style={styles.eyebrow}>{t('tierBenefits.eyebrow')}</Text>
+      <Text style={styles.title}>{t('tierBenefits.currentLevel', { level: progress.level })}</Text>
+      <Text style={styles.rank}>{t(`progression.rankBand_${progress.rankBand}`)}</Text>
+
+      <View style={styles.progressCard}>
+        <View style={styles.progressTop}>
+          <SgData value={totalXp.toLocaleString()} unit="TOTAL XP" size="lg" tone="gold" />
+          <SgData value={`${progress.pctInLevel}%`} unit="THIS LEVEL" size="sm" />
+        </View>
+        <View style={styles.track}>
+          <View style={[styles.fill, { width: `${progress.pctInLevel}%` as `${number}%` }]} />
+        </View>
+        <Text style={styles.progressLine}>
+          {t('tierBenefits.progressLine', {
+            current: progress.xpIntoLevel.toLocaleString(),
+            next: progress.xpForNextLevel.toLocaleString(),
           })}
         </Text>
-      ) : (
-        <Text style={styles.progressHint}>{t('tierBenefits.topTier')}</Text>
-      )}
+      </View>
 
-      {TIER_BENEFITS.map((row) => {
-        const active = row.tier === userTier;
-        const accent = tierAccent[row.tier] ?? sg.muted;
-        return (
-          <View
-            key={row.tier}
-            style={[styles.card, active && { borderColor: accent, borderWidth: 2 }]}
-          >
-            <View style={styles.cardTop}>
-              <Text style={[styles.tierName, { color: accent }]}>{row.tier}</Text>
-              <Text style={styles.minXp}>
-                {t('tierBenefits.fromXp', { xp: row.minXp.toLocaleString() })}
-              </Text>
-            </View>
-            {active ? (
-              <View style={styles.pill}>
-                <Text style={styles.pillText}>{t('tierBenefits.yourTier')}</Text>
-              </View>
-            ) : null}
-            {row.perks.map((p) => (
-              <Text key={p} style={styles.perk}>
-                • {p}
-              </Text>
-            ))}
-          </View>
-        );
-      })}
+      <View style={styles.infoCard}>
+        <Text style={styles.infoKicker}>{t('tierBenefits.previewKicker')}</Text>
+        <Text style={styles.infoTitle}>{t('tierBenefits.previewTitle')}</Text>
+        <Text style={styles.infoBody}>{t('tierBenefits.previewBody')}</Text>
+      </View>
 
-      <Text style={styles.disclaimer}>{t('tierBenefits.disclaimer')}</Text>
+      <Text style={styles.note}>{t('tierBenefits.disclaimer')}</Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
-  content: { padding: spacing.base, paddingTop: spacing.md },
-  lead: {
-    fontSize: fontSize.sm,
-    color: sg.muted,
-    lineHeight: 20,
-    marginBottom: spacing.sm,
+  root: { flex: 1, backgroundColor: sg.bg },
+  content: { padding: sg.space.md, paddingTop: sg.space.lg },
+  eyebrow: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 10,
+    letterSpacing: 1.5,
+    color: sg.gold,
+    marginBottom: sg.space.sm,
   },
-  progressHint: {
-    fontSize: fontSize.xs,
-    color: sg.muted,
-    marginBottom: spacing.lg,
-    lineHeight: 18,
+  title: {
+    fontFamily: sg.font.display,
+    fontSize: 32,
+    lineHeight: 36,
+    color: sg.text,
   },
-  card: {
-    backgroundColor: sg.surface2,
-    borderRadius: radius.xl,
-    padding: spacing.base,
-    marginBottom: spacing.base,
+  rank: {
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 13,
+    color: sg.muted,
+    marginTop: sg.space.xs,
+    marginBottom: sg.space.lg,
+  },
+  progressCard: {
+    backgroundColor: sg.surface,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
+    padding: sg.space.lg,
   },
-  cardTop: {
+  progressTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'baseline',
-    marginBottom: spacing.sm,
-    gap: spacing.md,
+    alignItems: 'flex-end',
+    gap: sg.space.md,
   },
-  tierName: {
-    fontSize: fontSize.lg,
+  track: {
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: sg.line,
+    overflow: 'hidden',
+    marginTop: sg.space.lg,
+  },
+  fill: { height: 4, borderRadius: 2, backgroundColor: sg.gold },
+  progressLine: {
+    fontFamily: sg.font.data,
+    fontSize: 11,
+    color: sg.muted,
+    marginTop: sg.space.sm,
+    fontVariant: [...sg.numeric],
+  },
+  infoCard: {
+    marginTop: sg.space.md,
+    backgroundColor: sg.surface2,
+    borderRadius: sg.radius.panel,
+    borderWidth: 1,
+    borderColor: sg.line,
+    padding: sg.space.lg,
+  },
+  infoKicker: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 10,
+    letterSpacing: 1.2,
+    color: sg.muted,
+    marginBottom: sg.space.sm,
+  },
+  infoTitle: {
     fontFamily: sg.font.display,
-    letterSpacing: 0.5,
-  },
-  minXp: {
-    fontSize: fontSize.xs,
-    color: sg.muted,
-    fontFamily: sg.font.bodyMedium,
-  },
-  pill: {
-    alignSelf: 'flex-start',
-    backgroundColor: sg.bg,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: radius.full,
-    marginBottom: spacing.sm,
-  },
-  pillText: {
-    fontSize: fontSize.xs,
-    fontFamily: sg.font.bodyBold,
-    color: sg.error,
-  },
-  perk: {
-    fontSize: fontSize.sm,
+    fontSize: 22,
     color: sg.text,
-    lineHeight: 22,
-    marginBottom: 4,
+    marginBottom: sg.space.sm,
   },
-  disclaimer: {
-    fontSize: fontSize.xs,
+  infoBody: {
+    fontFamily: sg.font.body,
+    fontSize: 13,
+    lineHeight: 20,
     color: sg.muted,
+  },
+  note: {
+    fontFamily: sg.font.body,
+    fontSize: 11,
     lineHeight: 18,
-    marginTop: spacing.sm,
+    color: sg.muted,
+    marginTop: sg.space.md,
   },
 });

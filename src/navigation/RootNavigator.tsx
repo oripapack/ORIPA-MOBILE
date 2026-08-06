@@ -35,6 +35,8 @@ import { PackDetailsScreen } from '../screens/PackDetailsScreen';
 import { ResultScreen } from '../screens/ResultScreen';
 import { FriendProfileScreen } from '../screens/FriendProfileScreen';
 import { FriendsLeaderboardScreen } from '../screens/FriendsLeaderboardScreen';
+import { OffersScreen } from '../screens/OffersScreen';
+import { MessagesScreen } from '../screens/MessagesScreen';
 import { GlobalPackModals } from '../components/pack/GlobalPackModals';
 import { navigationRef } from './navigationRef';
 import { sg } from '../tokens/sg';
@@ -193,6 +195,7 @@ function TabNavigatorInner() {
 }
 
 function RootStack() {
+  const { t } = useTranslation();
   const stackHeader = {
     headerShown: true as const,
     headerTintColor: sg.text,
@@ -258,6 +261,8 @@ function RootStack() {
         <Stack.Screen name="PullHistory" component={PullHistoryScreen} options={stackHeader} />
         <Stack.Screen name="FriendProfile" component={FriendProfileScreen} options={stackHeader} />
         <Stack.Screen name="FriendsLeaderboard" component={FriendsLeaderboardScreen} options={stackHeader} />
+        <Stack.Screen name="Offers" component={OffersScreen} options={{ ...stackHeader, title: t('offersScreen.navTitle') }} />
+        <Stack.Screen name="Messages" component={MessagesScreen} options={{ ...stackHeader, title: t('messagesScreen.navTitle') }} />
         <Stack.Screen name="LinkedAccounts" component={LinkedAccountsScreen} options={stackHeader} />
         <Stack.Screen name="WalletLinking" component={WalletLinkingScreen} options={stackHeader} />
         <Stack.Screen name="IdentityVerification" component={IdentityVerificationScreen} options={stackHeader} />

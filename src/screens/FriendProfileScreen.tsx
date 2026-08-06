@@ -24,7 +24,6 @@ import {
 } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
-import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
 import { FriendVaultShowcaseSection } from '../components/friends/FriendVaultShowcaseSection';
@@ -108,7 +107,7 @@ export function FriendProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.hero}>
-          <Text style={styles.avatar}>{profile.avatarEmoji}</Text>
+          <Text style={styles.avatar}>{profile.displayName.slice(0, 1).toUpperCase()}</Text>
           <View style={styles.heroText}>
             <Text style={styles.dn}>{profile.displayName}</Text>
             <Text style={styles.un}>@{profile.username}</Text>
@@ -155,7 +154,9 @@ export function FriendProfileScreen() {
         </View>
 
         <Text style={styles.section}>{t('social.rarityMix')}</Text>
-        <RarityBreakdownMini breakdown={s.rarityBreakdown} />
+        <View style={styles.tierPendingCard}>
+          <Text style={styles.tierPending}>{t('social.tierDataPending')}</Text>
+        </View>
 
         <Text style={styles.section}>{t('social.highlights')}</Text>
         <ActivityStrip items={highlights} />
@@ -235,7 +236,9 @@ const styles = StyleSheet.create({
   errBtnText: { color: sg.text, fontFamily: sg.font.bodyBold },
   hero: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
   avatar: {
-    fontSize: 48,
+    fontSize: 22,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     width: 72,
     height: 72,
     textAlign: 'center',
@@ -276,7 +279,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
   },
-  statVal: { fontSize: fontSize.lg, fontFamily: sg.font.display, color: sg.text },
+  statVal: {
+    fontSize: fontSize.lg,
+    fontFamily: sg.font.dataBold,
+    color: sg.text,
+    fontVariant: [...sg.numeric],
+  },
   statLab: { fontSize: 10, fontFamily: sg.font.bodyBold, color: sg.muted, marginTop: 4, letterSpacing: 0.5 },
   section: {
     fontSize: 10,
@@ -296,8 +304,27 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   bestName: { fontSize: fontSize.lg, fontFamily: sg.font.display, color: sg.text, marginBottom: spacing.sm },
-  bestVal: { fontSize: fontSize.hero - 4, fontFamily: sg.font.display, color: sg.neon },
+  bestVal: {
+    fontSize: fontSize.hero - 4,
+    fontFamily: sg.font.dataBold,
+    color: sg.gold,
+    fontVariant: [...sg.numeric],
+  },
   bestSub: { fontSize: fontSize.xs, color: sg.muted, marginTop: 4 },
+  tierPendingCard: {
+    backgroundColor: sg.surface,
+    borderRadius: sg.radius.panel,
+    borderWidth: 1,
+    borderColor: sg.line,
+    padding: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  tierPending: {
+    fontSize: fontSize.sm,
+    fontFamily: sg.font.body,
+    color: sg.muted,
+    lineHeight: 20,
+  },
   actions: { gap: spacing.sm, marginTop: spacing.lg },
   btnDark: {
     height: 52,

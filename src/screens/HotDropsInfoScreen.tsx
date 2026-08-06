@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 type Nav = StackNavigationProp<RootStackParamList, 'HotDropsInfo'>;
 
@@ -28,6 +29,7 @@ export function HotDropsInfoScreen() {
   }, [navigation, t]);
 
   const bulletKeys = ['b1', 'b2', 'b3'] as const;
+  const bulletIcons = ['calendar-outline', 'analytics-outline', 'notifications-outline'] as const;
 
   return (
     <ScrollView
@@ -35,12 +37,19 @@ export function HotDropsInfoScreen() {
       contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
       showsVerticalScrollIndicator={false}
     >
+      <Text style={styles.eyebrow}>{t('hotDropsInfo.eyebrow')}</Text>
+      <Text style={styles.title}>{t('hotDropsInfo.title')}</Text>
       <Text style={styles.body}>{t('hotDropsInfo.body')}</Text>
-      {bulletKeys.map((k) => (
-        <Text key={k} style={styles.bullet}>
-          • {t(`hotDropsInfo.${k}`)}
-        </Text>
-      ))}
+      <View style={styles.stepsCard}>
+        {bulletKeys.map((k, index) => (
+          <View key={k} style={[styles.stepRow, index < bulletKeys.length - 1 && styles.stepBorder]}>
+            <View style={styles.iconWell}>
+              <Ionicons name={bulletIcons[index]} size={19} color={sg.gold} />
+            </View>
+            <Text style={styles.stepText}>{t(`hotDropsInfo.${k}`)}</Text>
+          </View>
+        ))}
+      </View>
       <View style={styles.callout}>
         <Text style={styles.calloutText}>{t('hotDropsInfo.callout')}</Text>
       </View>
@@ -51,21 +60,62 @@ export function HotDropsInfoScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
   content: { padding: spacing.base, paddingTop: spacing.md },
+  eyebrow: {
+    fontSize: 10,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    marginBottom: spacing.xs,
+  },
+  title: {
+    fontSize: fontSize.xxl,
+    fontFamily: sg.font.display,
+    color: sg.text,
+    letterSpacing: -0.5,
+    marginBottom: spacing.sm,
+  },
   body: {
     fontSize: fontSize.sm,
     color: sg.muted,
     lineHeight: 22,
     marginBottom: spacing.md,
   },
-  bullet: {
+  stepsCard: {
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: radius.lg,
+    backgroundColor: sg.surface2,
+    overflow: 'hidden',
+  },
+  stepRow: {
+    minHeight: 70,
+    padding: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  stepBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: sg.line,
+  },
+  iconWell: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(212,175,55,0.09)',
+  },
+  stepText: {
+    flex: 1,
     fontSize: fontSize.sm,
     color: sg.text,
-    lineHeight: 22,
-    marginBottom: spacing.xs,
+    lineHeight: 20,
   },
   callout: {
     marginTop: spacing.lg,
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.surface,
     borderRadius: radius.lg,
     padding: spacing.base,
     borderWidth: 1,

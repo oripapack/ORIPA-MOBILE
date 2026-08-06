@@ -1,9 +1,11 @@
 import React from 'react';
 import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import type { ActivityHighlight } from '../../data/socialMock';
-import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
+
+const ACTIVITY_ICONS = ['trophy-outline', 'cube-outline', 'sparkles-outline'] as const;
 
 export function ActivityStrip({ items }: { items: ActivityHighlight[] }) {
   return (
@@ -12,9 +14,9 @@ export function ActivityStrip({ items }: { items: ActivityHighlight[] }) {
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.scroll}
     >
-      {items.map((item) => (
+      {items.map((item, index) => (
         <View key={item.id} style={styles.card}>
-          <Text style={styles.emoji}>{item.emoji}</Text>
+          <Ionicons name={ACTIVITY_ICONS[index % ACTIVITY_ICONS.length]} size={20} color={sg.gold} />
           <Text style={styles.text} numberOfLines={2}>
             {item.text}
           </Text>
@@ -37,10 +39,9 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     alignItems: 'flex-start',
   },
-  emoji: { fontSize: 20 },
   text: {
     flex: 1,
-    fontSize: fontSize.xs,
+    fontSize: 11,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 17,

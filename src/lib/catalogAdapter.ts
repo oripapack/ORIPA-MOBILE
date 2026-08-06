@@ -71,7 +71,7 @@ export function catalogToPack(catalog: CatalogPack): Pack {
     // "buyback" (implies cash), and the number never appears without its basis.
     // "· transparent odds" was removed while the odds are mock — restore it
     // when the odds table is wired to real data (KNOWN_ISSUES #4).
-    guaranteeText: 'Instant 100% trade-in (listed value)',
+    guaranteeText: 'Instant Trade in at 100% of listed value',
     maxPerUser: catalog.id === 'welcome-pack' ? 1 : null,
     isFirstTimePack: catalog.id === 'welcome-pack',
     packVersionId: packVersionIdForCatalogPackId(catalog.id),

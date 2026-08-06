@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
 import type { Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { getMockPackTopHit } from '../../data/mockTopHits';
@@ -32,7 +32,7 @@ export function PackCardMini({ pack }: { pack: Pack }) {
           <Image source={{ uri: topHit.imageUrl }} style={StyleSheet.absoluteFillObject} contentFit="cover" />
         ) : null}
         <View style={styles.thumbOverlay} />
-        <Text style={styles.thumbEmoji}>🎴</Text>
+        <Ionicons name="cube-outline" size={27} color={sg.muted} />
       </View>
 
       <View style={styles.body}>
@@ -70,9 +70,6 @@ const styles = StyleSheet.create({
   thumbOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.25)',
-  },
-  thumbEmoji: {
-    fontSize: 28,
   },
   body: {
     padding: sg.space.sm,

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 import { COLLECTOR_QUESTS } from '../../data/collectorQuests';
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   inner: { padding: spacing.lg, gap: 0 },
   sectionEyebrow: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -79,13 +79,14 @@ const styles = StyleSheet.create({
   streakMain: { flex: 1 },
   streakVal: {
     fontSize: fontSize.hero,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
     color: sg.text,
     letterSpacing: -1,
   },
   streakLab: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     marginTop: 2,
   },
@@ -99,11 +100,12 @@ const styles = StyleSheet.create({
   streakBestLab: {
     fontSize: fontSize.xs,
     color: sg.muted,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
   },
   streakBestVal: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
     color: sg.text,
     marginTop: 2,
   },

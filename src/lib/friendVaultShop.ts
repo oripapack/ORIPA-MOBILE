@@ -1,6 +1,7 @@
+// 実データ待ち。外部に見せないこと。
 import type { PullRarityTier } from '../data/mockUser';
 
-/** Active Vault Exchange listing — instant purchase via cash checkout (stub in app). */
+/** Preview Vault Exchange listing. No transaction service is connected. */
 export type PublicVaultListing = {
   id: string;
   sellerUsername: string;

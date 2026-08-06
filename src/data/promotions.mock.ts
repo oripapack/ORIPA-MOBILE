@@ -1,3 +1,4 @@
+/** 実データ待ち。外部に見せないこと。 */
 import type {
   PromoCodeDefinition,
   ReferralProgramDefinition,
@@ -20,11 +21,6 @@ export const MOCK_REFERRAL_PROGRAM: ReferralProgramDefinition = {
   newUser: { freePacks: 1 },
   referrer: { freePacks: 1 },
 };
-
-/** Demo mapping for “$5 in credits” promo copy and grants — tune against real shop pricing later. */
-export const SIGNUP_PROMO_CREDITS_PER_USD = 100;
-export const SIGNUP_PROMO_BONUS_USD = 5;
-export const SIGNUP_PROMO_BONUS_CREDITS = SIGNUP_PROMO_BONUS_USD * SIGNUP_PROMO_CREDITS_PER_USD;
 
 /**
  * First signup reward — applied once per user id in `promotionStore.syncSessionRewards`.

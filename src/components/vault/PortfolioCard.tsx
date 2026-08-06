@@ -4,40 +4,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sgVault } from '../../tokens/sgVault';
 import { radius, spacing } from '../../tokens/spacing';
-import type { Pull, PullRarityTier } from '../../data/mockUser';
+import type { Pull } from '../../data/mockUser';
 
 const fontSize = { xs: 11, sm: 13 } as const;
-const brandFont = {
+const vaultFont = {
   medium: sgVault.font.bodyMedium,
   semibold: sgVault.font.bodyMedium,
   bold: sgVault.font.bodyBold,
 } as const;
 
-const COINS_PER_USD = 100;
-
-function coinsToUsd(coins: number): number {
-  return coins / COINS_PER_USD;
+function formatPoints(points: number): string {
+  return `${Math.max(0, points).toLocaleString('en-US')} pts`;
 }
-
-function formatUsd(usd: number): string {
-  if (usd >= 1000) {
-    return `$${(usd / 1000).toFixed(1)}K`;
-  }
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(Math.max(0, usd));
-}
-
-const TIER_BAR_COLOR: Record<PullRarityTier, string> = {
-  common: sgVault.muted,
-  rare: '#60A5FA',
-  epic: '#A855F7',
-  legendary: sgVault.gold,
-  mythic: '#FB7185',
-};
 
 interface Props {
   pulls: Pull[];
@@ -46,7 +24,7 @@ interface Props {
 export function PortfolioCard({ pulls }: Props) {
   const stats = useMemo(() => {
     const count = pulls.length;
-    const totalUsd = pulls.reduce((acc, p) => acc + coinsToUsd(p.creditsWon), 0);
+    const totalPoints = pulls.reduce((acc, p) => acc + p.creditsWon, 0);
     const listedItems = pulls.filter((p) => (p.vaultExchangeListUsd ?? 0) >= 1);
     const listedUsd = listedItems.reduce((acc, p) => acc + (p.vaultExchangeListUsd ?? 0), 0);
     const topCard = pulls.reduce<Pull | null>(
@@ -54,23 +32,23 @@ export function PortfolioCard({ pulls }: Props) {
       null,
     );
 
-    const dist = { sub10: 0, ten50: 0, fifty100: 0, over100: 0 };
+    const dist = { sub1k: 0, one5k: 0, five10k: 0, over10k: 0 };
     pulls.forEach((p) => {
-      const usd = coinsToUsd(p.creditsWon);
-      if (usd >= 100) dist.over100++;
-      else if (usd >= 50) dist.fifty100++;
-      else if (usd >= 10) dist.ten50++;
-      else dist.sub10++;
+      const points = p.creditsWon;
+      if (points >= 10_000) dist.over10k++;
+      else if (points >= 5_000) dist.five10k++;
+      else if (points >= 1_000) dist.one5k++;
+      else dist.sub1k++;
     });
 
-    return { count, totalUsd, listedUsd, listedCount: listedItems.length, topCard, dist };
+    return { count, totalPoints, listedUsd, listedCount: listedItems.length, topCard, dist };
   }, [pulls]);
 
   const maxBucket = Math.max(
-    stats.dist.sub10,
-    stats.dist.ten50,
-    stats.dist.fifty100,
-    stats.dist.over100,
+    stats.dist.sub1k,
+    stats.dist.one5k,
+    stats.dist.five10k,
+    stats.dist.over10k,
     1,
   );
   const hasCards = stats.count > 0;
@@ -88,9 +66,9 @@ export function PortfolioCard({ pulls }: Props) {
       <View style={styles.headerRow}>
         <View>
           <Text style={styles.eyebrow}>PORTFOLIO</Text>
-          <Text style={styles.totalValue}>{formatUsd(stats.totalUsd)}</Text>
+          <Text style={styles.totalValue}>{formatPoints(stats.totalPoints)}</Text>
           <Text style={styles.totalLabel}>
-            Total Value · {stats.count} {stats.count === 1 ? 'Card' : 'Cards'}
+            Total listed value · {stats.count} {stats.count === 1 ? 'Card' : 'Cards'}
           </Text>
         </View>
         <View style={styles.trophyWrap}>
@@ -109,7 +87,7 @@ export function PortfolioCard({ pulls }: Props) {
         <View style={styles.statSep} />
         <StatBlock
           label="Listed"
-          value={stats.listedCount > 0 ? formatUsd(stats.listedUsd) : '—'}
+          value={stats.listedCount > 0 ? `$${stats.listedUsd.toLocaleString('en-US')}` : '—'}
           accent={stats.listedCount > 0}
         />
       </View>
@@ -121,28 +99,28 @@ export function PortfolioCard({ pulls }: Props) {
           </View>
           <View style={styles.distBars}>
             <DistBar
-              label="<$10"
-              count={stats.dist.sub10}
+              label="<1K"
+              count={stats.dist.sub1k}
               max={maxBucket}
-              color={TIER_BAR_COLOR.common}
+              color={sgVault.muted}
             />
             <DistBar
-              label="$10–50"
-              count={stats.dist.ten50}
+              label="1–5K"
+              count={stats.dist.one5k}
               max={maxBucket}
-              color={TIER_BAR_COLOR.rare}
+              color={sgVault.muted}
             />
             <DistBar
-              label="$50–100"
-              count={stats.dist.fifty100}
+              label="5–10K"
+              count={stats.dist.five10k}
               max={maxBucket}
-              color={TIER_BAR_COLOR.epic}
+              color={sgVault.muted}
             />
             <DistBar
-              label="$100+"
-              count={stats.dist.over100}
+              label="10K+"
+              count={stats.dist.over10k}
               max={maxBucket}
-              color={TIER_BAR_COLOR.legendary}
+              color={sgVault.gold}
             />
           </View>
         </>
@@ -239,7 +217,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: vaultFont.bold,
     color: sgVault.gold,
     letterSpacing: 1.8,
     marginBottom: 4,
@@ -254,7 +232,7 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontFamily: vaultFont.medium,
     color: sgVault.muted,
     marginTop: 2,
   },
@@ -287,7 +265,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: vaultFont.bold,
     color: sgVault.muted,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
@@ -295,7 +273,7 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: vaultFont.bold,
     color: sgVault.text,
     lineHeight: 20,
   },
@@ -307,7 +285,7 @@ const styles = StyleSheet.create({
   },
   distLabel: {
     fontSize: 9,
-    fontFamily: brandFont.bold,
+    fontFamily: vaultFont.bold,
     color: sgVault.muted,
     letterSpacing: 1.2,
   },
@@ -321,7 +299,7 @@ const styles = StyleSheet.create({
   },
   distBarLabel: {
     fontSize: 10,
-    fontFamily: brandFont.semibold,
+    fontFamily: vaultFont.semibold,
     color: sgVault.muted,
     width: 44,
   },

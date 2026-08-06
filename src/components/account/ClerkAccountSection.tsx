@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { AppUserUnsafeMetadata } from '../../lib/clerkProfile';
@@ -70,7 +70,7 @@ function ClerkAccountSectionInner() {
 const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -93,18 +93,18 @@ const styles = StyleSheet.create({
   },
   contactLabel: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     marginBottom: 4,
   },
   contactValue: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   contactValueMuted: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
 });

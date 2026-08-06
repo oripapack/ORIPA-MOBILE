@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
 import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -23,11 +24,11 @@ import { WinningsSummaryCard } from './WinningsSummaryCard';
 import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
 
 const TIER_BADGE: Record<PullRarityTier, string> = {
-  common: 'Common',
-  rare: 'Rare',
-  epic: 'Epic',
-  legendary: 'Legendary',
-  mythic: 'Mythic',
+  common: 'BASE',
+  rare: 'BASE',
+  epic: 'EPIC',
+  legendary: 'LEGENDARY',
+  mythic: 'MYTHIC',
 };
 
 /**
@@ -190,13 +191,13 @@ export function WonPrizesModal() {
                   onPress={() => setVaultSelected((s) => ({ ...s, [pull.id]: !s[pull.id] }))}
                   activeOpacity={0.8}
                 >
-                  {toVault ? <Text style={styles.checkmark}>✓</Text> : null}
+                  {toVault ? <Ionicons name="checkmark" size={15} color={sg.onGold} /> : null}
                 </TouchableOpacity>
 
                 <View style={styles.thumb}>
-                  <Text style={styles.thumbEmoji}>🎴</Text>
+                  <Ionicons name="albums-outline" size={27} color={sg.muted} />
                   <View style={styles.thumbZoom}>
-                    <Text style={styles.thumbZoomIcon}>🔍</Text>
+                    <Ionicons name="search" size={11} color={sg.text} />
                   </View>
                 </View>
 
@@ -220,7 +221,7 @@ export function WonPrizesModal() {
                 </View>
 
                 <View style={styles.itemCoins}>
-                  <Text style={styles.coinIcon}>🪙</Text>
+                  <Text style={styles.pointsUnit}>PTS</Text>
                   <Text style={styles.itemCoinValue}>{itemValue.toLocaleString()}</Text>
                 </View>
               </Pressable>
@@ -233,7 +234,6 @@ export function WonPrizesModal() {
         <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
           <PrimaryButton
             label={primaryCtaLabel}
-            variant={selectionState === 'allVault' ? 'black' : 'red'}
             onPress={onPrimaryPress}
             style={styles.footerBtn}
           />
@@ -251,14 +251,14 @@ export function WonPrizesModal() {
         <Pressable style={styles.confirmOverlay} onPress={() => setShowConvertConfirm(false)}>
           <Pressable style={styles.confirmCard} onPress={() => {}}>
             <TouchableOpacity style={styles.confirmClose} onPress={() => setShowConvertConfirm(false)}>
-              <Text style={styles.confirmCloseText}>✕</Text>
+              <Ionicons name="close" size={20} color={sg.muted} />
             </TouchableOpacity>
             <Text style={styles.confirmTitle}>{t('wonPrizesModal.confirmTitle')}</Text>
             <Text style={styles.confirmBody}>{t('wonPrizesModal.confirmBody')}</Text>
             <View style={styles.confirmRow}>
               <Text style={styles.confirmLabel}>{t('wonPrizesModal.confirmCoinsLabel')}</Text>
               <View style={styles.confirmValue}>
-                <Text style={styles.coinIcon}>🪙</Text>
+                <Text style={styles.pointsUnit}>PTS</Text>
                 <Text style={styles.confirmAmount}>{creditsToReceiveAmount.toLocaleString()}</Text>
               </View>
             </View>
@@ -267,7 +267,7 @@ export function WonPrizesModal() {
                 {t('wonPrizesModal.confirmVaultNote', { count: vaultCount, days: VAULT_HOLD_DAYS })}
               </Text>
             ) : null}
-            <PrimaryButton label={t('wonPrizesModal.confirmCta')} variant="red" onPress={onConfirmConvert} />
+            <PrimaryButton label={t('wonPrizesModal.confirmCta')} onPress={onConfirmConvert} />
             <SecondaryButton label={t('wonPrizesModal.confirmCancel')} onPress={() => setShowConvertConfirm(false)} />
           </Pressable>
         </Pressable>
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: fontSize.xxl,
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.display,
     color: sg.text,
   },
   instructions: {
@@ -348,11 +348,6 @@ const styles = StyleSheet.create({
     backgroundColor: sg.gold,
     borderColor: sg.goldHi,
   },
-  checkmark: {
-    color: sg.onGold,
-    fontSize: 14,
-    fontFamily: sg.font.bodyBold,
-  },
   thumb: {
     width: 64,
     height: 88,
@@ -360,9 +355,6 @@ const styles = StyleSheet.create({
     backgroundColor: sg.bg,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  thumbEmoji: {
-    fontSize: 28,
   },
   thumbZoom: {
     position: 'absolute',
@@ -374,9 +366,6 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  thumbZoomIcon: {
-    fontSize: 10,
   },
   itemBody: {
     flex: 1,
@@ -413,8 +402,8 @@ const styles = StyleSheet.create({
     borderColor: sg.gold,
   },
   intentConvert: {
-    backgroundColor: 'rgba(229,72,77,0.14)',
-    borderColor: 'rgba(229,72,77,0.45)',
+    backgroundColor: sg.surface,
+    borderColor: sg.line,
   },
   intentText: {
     color: sg.text,
@@ -441,8 +430,11 @@ const styles = StyleSheet.create({
     color: sg.text,
     fontVariant: [...sg.numeric],
   },
-  coinIcon: {
-    fontSize: 14,
+  pointsUnit: {
+    fontSize: 8,
+    fontFamily: sg.font.dataBold,
+    color: sg.muted,
+    letterSpacing: 1,
   },
   hint: {
     fontSize: fontSize.xs,
@@ -485,13 +477,9 @@ const styles = StyleSheet.create({
     zIndex: 2,
     padding: sg.space.xs,
   },
-  confirmCloseText: {
-    fontSize: 18,
-    color: sg.muted,
-  },
   confirmTitle: {
     fontSize: fontSize.xl,
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.display,
     color: sg.text,
     marginBottom: sg.space.sm,
     paddingRight: sg.space.xl,

@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { parseFriendInviteFromQr } from '../../lib/friendQr';
 import { showUserMessage } from '../../utils/showUserMessage';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 interface Props {
@@ -154,13 +154,13 @@ const styles = StyleSheet.create({
   },
   cancel: {
     fontSize: fontSize.base,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     width: 56,
   },
   headerTitle: {
     fontSize: fontSize.base,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   permBody: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   permBtnText: {
     color: sg.onGold,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     fontSize: fontSize.base,
   },
   webPasteBlock: {
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   webPasteLabel: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: 'rgba(255,255,255,0.7)',
     textAlign: 'center',
   },
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
     fontSize: fontSize.md,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     color: sg.text,
     backgroundColor: 'rgba(255,255,255,0.06)',
   },
@@ -233,6 +233,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'rgba(255,255,255,0.85)',
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
   },
 });

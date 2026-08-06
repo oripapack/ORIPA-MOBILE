@@ -19,6 +19,7 @@ import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { createClerkAuthedClient } from '../lib/supabaseAuthed';
 import { isSupabaseConfigured } from '../lib/supabase';
+import { isClerkEnabled } from '../config/clerk';
 import { showUserMessage } from '../utils/showUserMessage';
 
 type Nav = StackNavigationProp<RootStackParamList, 'WalletLinking'>;
@@ -27,12 +28,7 @@ const EVM_ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
 
 export function WalletLinkingScreen() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
-  const { userId, isLoaded } = useAuth();
-  const [address, setAddress] = useState('');
-  const [loaded, setLoaded] = useState(false);
-  const [saving, setSaving] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -44,6 +40,29 @@ export function WalletLinkingScreen() {
       headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
+
+  if (!isClerkEnabled) {
+    return (
+      <View style={styles.unavailableRoot}>
+        <View style={styles.unavailableCard}>
+          <Text style={styles.unavailableEyebrow}>{t('walletLinking.navTitle')}</Text>
+          <Text style={styles.unavailableTitle}>{t('walletLinking.unavailableTitle')}</Text>
+          <Text style={styles.unavailableBody}>{t('walletLinking.unavailableBody')}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  return <WalletLinkingClerkContent />;
+}
+
+function WalletLinkingClerkContent() {
+  const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const { userId, isLoaded } = useAuth();
+  const [address, setAddress] = useState('');
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   React.useEffect(() => {
     if (!isLoaded) return;
@@ -170,6 +189,38 @@ export function WalletLinkingScreen() {
 }
 
 const styles = StyleSheet.create({
+  unavailableRoot: {
+    flex: 1,
+    backgroundColor: sg.bg,
+    padding: sg.space.md,
+  },
+  unavailableCard: {
+    backgroundColor: sg.surface,
+    borderRadius: sg.radius.panel,
+    borderWidth: 1,
+    borderColor: sg.line,
+    padding: sg.space.lg,
+  },
+  unavailableEyebrow: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 10,
+    letterSpacing: 1.4,
+    textTransform: 'uppercase',
+    color: sg.gold,
+    marginBottom: sg.space.sm,
+  },
+  unavailableTitle: {
+    fontFamily: sg.font.display,
+    fontSize: 24,
+    color: sg.text,
+    marginBottom: sg.space.sm,
+  },
+  unavailableBody: {
+    fontFamily: sg.font.body,
+    fontSize: 13,
+    lineHeight: 20,
+    color: sg.muted,
+  },
   container: { flex: 1, backgroundColor: sg.bg },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {

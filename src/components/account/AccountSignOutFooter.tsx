@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useClerk } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { confirmUserAction } from '../../utils/showUserMessage';
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
 });

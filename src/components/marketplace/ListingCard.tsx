@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
 import { radius, spacing } from '../../tokens/spacing';
 import type { MarketplaceListing } from '../../data/marketplace';
+import { AssetBlockedCard } from '../shared/AssetBlockedCard';
 
 const CARD_W = 158;
 
@@ -30,12 +30,7 @@ export function ListingCard({ listing, shipsFromShort, onPress }: Props) {
   const shipLine =
     listing.listingShipKey != null ? t(`marketplace.listingShip.${listing.listingShipKey}`) : null;
 
-  const deltaLine =
-    listing.marketDeltaPct != null
-      ? t('marketplace.vsMarket', { pct: Math.abs(listing.marketDeltaPct) })
-      : null;
-
-  const footerLine = deltaLine ?? shipLine;
+  const footerLine = shipLine;
 
   const a11yLabel = [listing.title, listing.price, listing.subtitle].filter(Boolean).join('. ');
 
@@ -48,16 +43,7 @@ export function ListingCard({ listing, shipsFromShort, onPress }: Props) {
       accessibilityLabel={a11yLabel}
     >
       <View style={[styles.thumb, { backgroundColor: listing.imageColor }]}>
-        {listing.imageUrl ? (
-          <Image
-            source={{ uri: listing.imageUrl }}
-            style={StyleSheet.absoluteFillObject}
-            resizeMode="cover"
-            accessibilityIgnoresInvertColors
-          />
-        ) : (
-          <Ionicons name="albums-outline" size={34} color={sg.muted} />
-        )}
+        <AssetBlockedCard label="LISTING MEDIA PENDING" />
         <View style={styles.thumbScrim} pointerEvents="none" />
         {shipsFromShort ? (
           <View style={styles.regionPill} pointerEvents="none">
@@ -78,14 +64,9 @@ export function ListingCard({ listing, shipsFromShort, onPress }: Props) {
       <Text style={styles.subtitle} numberOfLines={1}>
         {listing.subtitle}
       </Text>
-      {listing.conditionGrade ? (
-        <Text style={styles.condition} numberOfLines={1}>
-          {t('marketplace.conditionLabel', { grade: listing.conditionGrade })}
-        </Text>
-      ) : null}
       <Text style={styles.price}>{listing.price}</Text>
       {footerLine ? (
-        <Text style={[styles.footerHint, listing.marketDeltaPct != null && styles.footerDelta]} numberOfLines={1}>
+        <Text style={styles.footerHint} numberOfLines={1}>
           {footerLine}
         </Text>
       ) : null}
@@ -169,14 +150,6 @@ const styles = StyleSheet.create({
     color: sg.muted,
     marginTop: 2,
   },
-  condition: {
-    fontSize: 9,
-    fontFamily: sg.font.bodyMedium,
-    color: sg.muted,
-    marginTop: 3,
-    letterSpacing: 0.2,
-    textTransform: 'uppercase',
-  },
   price: {
     fontSize: 13,
     fontFamily: sg.font.dataBold,
@@ -189,8 +162,5 @@ const styles = StyleSheet.create({
     color: sg.muted,
     marginTop: 3,
     fontFamily: sg.font.bodyMedium,
-  },
-  footerDelta: {
-    color: sg.success,
   },
 });

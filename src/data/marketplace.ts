@@ -1,6 +1,8 @@
 /**
- * Marketplace listing thumbnails — Unsplash URLs (512×512 via `w`/`h` query).
- * `GEMINI_IMAGE_PROMPT` comments above each row were used to pick images; swap URLs anytime.
+ * 実データ待ち。外部に見せないこと。
+ * Marketplace stores, titles, prices, grades, availability, and image URLs are
+ * MOCK review data. Product UI renders rights-safe placeholders instead of the
+ * remote URLs until owned listing media and a live catalog are connected.
  */
 
 /** Product line on a listing (not pack-opening). */

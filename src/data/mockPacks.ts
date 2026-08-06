@@ -219,7 +219,8 @@ export const categories: { key: PackCategory | 'all'; label: string }[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Credit bundles (unchanged)
+// Point bundles
+// 実データ待ち。価格・割引率は検証用 MOCK。外部に見せないこと。
 // ---------------------------------------------------------------------------
 
 export interface CreditBundle {
@@ -235,7 +236,7 @@ export interface CreditBundle {
   jpyWas: string;
 }
 
-export const creditBundles: CreditBundle[] = [
+export const MOCK_POINT_BUNDLES: CreditBundle[] = [
   {
     id: 'b1',
     credits: 500,

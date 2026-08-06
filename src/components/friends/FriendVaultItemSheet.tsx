@@ -10,7 +10,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
@@ -28,7 +28,7 @@ type Props = {
   sellerDisplayHandle: string;
   isSelf: boolean;
   onClose: () => void;
-  /** When listed — open cash checkout stub (parent owns purchase). */
+  /** When listed — open the unconnected physical-checkout preview. */
   onBuyNow: (listingId: string, priceUsd: number) => void;
 };
 
@@ -149,14 +149,14 @@ const styles = StyleSheet.create({
   },
   kicker: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     color: sg.text,
     marginBottom: spacing.xs,
   },
@@ -185,14 +185,15 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     letterSpacing: 0.6,
   },
   badgeTextListed: { color: sg.gold },
   badgeTextRequest: { color: sg.muted },
   price: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
     color: sg.text,
     marginBottom: spacing.md,
   },
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
   },
   outlineText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   ghost: {
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
   },
   ghostText: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
     textDecorationLine: 'underline',
   },

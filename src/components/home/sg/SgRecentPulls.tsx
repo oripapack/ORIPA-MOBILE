@@ -16,7 +16,7 @@ export function SgRecentPulls() {
   return (
     <View style={styles.wrap}>
       <View style={styles.header}>
-        <SgSectionHeader title="Just Pulled" actionLabel="LIVE" live />
+        <SgSectionHeader title="Just Pulled" actionLabel="PREVIEW" />
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {RECENT_PULLS.map((pull) => (

@@ -1,35 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { PublicVaultListing } from '../../lib/friendVaultShop';
-import type { PullRarityTier } from '../../data/mockUser';
-import { confirmUserAction, showUserMessage } from '../../utils/showUserMessage';
-
-const TIER_COLOR: Record<PullRarityTier, string> = {
-  common: sg.muted,
-  rare: '#60A5FA',
-  epic: '#A855F7',
-  legendary: sg.gold,
-  mythic: '#FB7185',
-};
-
-const TIER_LABEL: Record<PullRarityTier, string> = {
-  common: 'Common',
-  rare: 'Rare',
-  epic: 'Epic',
-  legendary: 'Legendary',
-  mythic: 'Mythic',
-};
-
-const TIER_BG: Record<PullRarityTier, string> = {
-  common: 'rgba(139, 130, 168, 0.12)',
-  rare: 'rgba(56, 189, 248, 0.12)',
-  epic: 'rgba(192, 132, 252, 0.12)',
-  legendary: 'rgba(232, 197, 71, 0.12)',
-  mythic: 'rgba(244, 114, 182, 0.12)',
-};
+import { showUserMessage } from '../../utils/showUserMessage';
+import { navigationRef } from '../../navigation/navigationRef';
 
 interface Props {
   listing: PublicVaultListing;
@@ -37,34 +13,20 @@ interface Props {
 }
 
 export function CardMarketListingRow({ listing, isOwnListing }: Props) {
-  const tier = listing.tier ?? 'common';
-  const tierColor = TIER_COLOR[tier];
-  const tierBg = TIER_BG[tier];
-  const tierLabel = TIER_LABEL[tier];
-
   const onBuyNow = () => {
     if (isOwnListing) {
       showUserMessage('Your Listing', 'This is your own listing. Visit your Vault to manage it.');
       return;
     }
-    confirmUserAction({
-      title: 'Buy Now',
-      message: `Purchase "${listing.result}" for $${listing.listPriceUsd}?\n\nStripe checkout coming soon.`,
-      cancelLabel: 'Cancel',
-      confirmLabel: `Buy for $${listing.listPriceUsd}`,
-      onConfirm: () =>
-        showUserMessage(
-          'Order Placed!',
-          'Your purchase will be processed via Stripe. The seller will be notified.',
-        ),
+    navigationRef.navigate('PaymentPortal', {
+      initialTab: 'marketplace',
+      listingTitle: listing.result,
+      listingPrice: `$${listing.listPriceUsd}`,
     });
   };
 
   return (
     <View style={styles.row}>
-      {/* Rarity left bar */}
-      <View style={[styles.rarityBar, { backgroundColor: tierColor }]} />
-
       {/* Card info */}
       <View style={styles.infoWrap}>
         <View style={styles.topLine}>
@@ -77,9 +39,6 @@ export function CardMarketListingRow({ listing, isOwnListing }: Props) {
           {listing.packTitle}
         </Text>
         <View style={styles.metaRow}>
-          <View style={[styles.rarityPill, { backgroundColor: tierBg, borderColor: tierColor + '55' }]}>
-            <Text style={[styles.rarityPillText, { color: tierColor }]}>{tierLabel}</Text>
-          </View>
           <Text style={styles.sellerText}>@{listing.sellerUsername}</Text>
         </View>
       </View>
@@ -87,6 +46,7 @@ export function CardMarketListingRow({ listing, isOwnListing }: Props) {
       {/* Price + CTA */}
       <View style={styles.rightWrap}>
         <Text style={styles.price}>${listing.listPriceUsd}</Text>
+        <Text style={styles.priceBasis}>Listed price</Text>
         <TouchableOpacity
           style={[styles.buyBtn, isOwnListing && styles.buyBtnOwn]}
           onPress={onBuyNow}
@@ -114,11 +74,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     overflow: 'hidden',
   },
-  rarityBar: {
-    width: 3,
-    alignSelf: 'stretch',
-    opacity: 0.7,
-  },
   infoWrap: {
     flex: 1,
     padding: spacing.md,
@@ -132,7 +87,7 @@ const styles = StyleSheet.create({
   },
   cardName: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     flex: 1,
   },
@@ -146,13 +101,13 @@ const styles = StyleSheet.create({
   },
   ownBadgeText: {
     fontSize: 9,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
     letterSpacing: 0.5,
   },
   packName: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 16,
   },
@@ -162,20 +117,9 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     marginTop: 2,
   },
-  rarityPill: {
-    borderRadius: radius.sm,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderWidth: 1,
-  },
-  rarityPillText: {
-    fontSize: 9,
-    fontFamily: brandFont.bold,
-    letterSpacing: 0.3,
-  },
   sellerText: {
     fontSize: 10,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   rightWrap: {
@@ -186,8 +130,17 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
     color: sg.text,
+  },
+  priceBasis: {
+    marginTop: -2,
+    fontSize: 8,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
   },
   buyBtn: {
     backgroundColor: sg.gold,
@@ -202,7 +155,7 @@ const styles = StyleSheet.create({
   },
   buyBtnText: {
     fontSize: 11,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.onGold,
     letterSpacing: 0.3,
   },

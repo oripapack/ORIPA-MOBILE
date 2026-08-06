@@ -1,3 +1,4 @@
+// 実データ待ち。外部に見せないこと。
 /**
  * Demo-only social / collector profiles. Replace with API later.
  * Kept separate from gameplay `Pull` types for clarity.
@@ -114,12 +115,16 @@ export function computeLuckScore(stats: ProfileStats): number {
 export function pullToSocialEvent(p: Pull, idx: number): SocialPullEvent {
   const rarity = tierToSocial(p.tier);
   const badge: 'hit' | 'chase' | undefined =
-    p.creditsWon >= 600 ? 'chase' : p.creditsWon >= 300 ? 'hit' : undefined;
+    p.tier === 'mythic' || p.tier === 'legendary'
+      ? 'chase'
+      : p.tier === 'epic'
+        ? 'hit'
+        : undefined;
   return {
     id: p.id,
     cardName: p.result,
     rarity,
-    estimatedValue: p.creditsWon,
+    estimatedValue: p.creditsWon / 100,
     packTitle: p.packTitle,
     timestamp: p.timestamp instanceof Date ? p.timestamp : new Date(p.timestamp),
     badge,
@@ -154,7 +159,7 @@ export function deriveSocialProfileFromUser(user: UserState): SocialUserProfile 
     username: user.username,
     displayName: user.displayName,
     bio: 'Chasing hits & building the binder. PullHub demo profile.',
-    avatarEmoji: '🎴',
+    avatarEmoji: 'TA',
     joinDateIso: '2025-11-01T12:00:00.000Z',
     status: 'Opening packs',
     stats,
@@ -167,7 +172,7 @@ const JORDAN: SocialUserProfile = {
   username: 'jordan',
   displayName: 'Jordan K.',
   bio: 'Full-art hunter · JP promos · late-night rips.',
-  avatarEmoji: '🔥',
+  avatarEmoji: 'CM',
   joinDateIso: '2025-08-12T10:00:00.000Z',
   status: 'Hunting Charizards',
   stats: {
@@ -216,7 +221,7 @@ const SAM: SocialUserProfile = {
   username: 'sam_r',
   displayName: 'Sam R.',
   bio: 'Budget rips · best hit: $4k · always chasing.',
-  avatarEmoji: '⚡',
+  avatarEmoji: 'RT',
   joinDateIso: '2025-09-01T15:30:00.000Z',
   status: 'In queue for drops',
   stats: {
@@ -257,7 +262,7 @@ const CASEY: SocialUserProfile = {
   username: 'casey_m',
   displayName: 'Casey M.',
   bio: 'Sealed sometimes · mostly singles · luck goblin.',
-  avatarEmoji: '✨',
+  avatarEmoji: 'MP',
   joinDateIso: '2025-10-05T08:00:00.000Z',
   status: 'AFK — grading',
   stats: {
@@ -310,7 +315,7 @@ export function buildMinimalSocialProfile(entry: FriendEntry): SocialUserProfile
     username: entry.username,
     displayName: entry.displayName,
     bio: 'Demo profile — connect the API to sync full stats.',
-    avatarEmoji: '🎴',
+    avatarEmoji: 'TA',
     joinDateIso: new Date(entry.addedAt).toISOString(),
     status: 'Collector',
     stats: {
@@ -343,20 +348,26 @@ export function getActivityHighlights(profile: SocialUserProfile): ActivityHighl
   return [
     {
       id: 'a1',
-      emoji: '🎯',
+      emoji: 'target',
       text: `${profile.displayName.split(' ')[0]}’s best hit: ${best}`,
     },
     {
       id: 'a2',
-      emoji: '📦',
-      text: `${profile.stats.packsOpened} packs opened · $${(profile.stats.totalEstimatedValue / 1000).toFixed(0)}k est. value`,
+      emoji: 'package',
+      text: `${profile.stats.packsOpened} packs opened · ${formatSocialValue(profile.stats.totalEstimatedValue)} listed value`,
     },
     {
       id: 'a3',
-      emoji: '🍀',
+      emoji: 'luck',
       text: `Luck score ${profile.luckScore} · ${profile.stats.chaseHits} chase pulls`,
     },
   ];
+}
+
+function formatSocialValue(value: number): string {
+  if (value >= 1000) return `$${(value / 1000).toFixed(1)}k`;
+  if (Number.isInteger(value)) return `$${value.toLocaleString()}`;
+  return `$${value.toFixed(2)}`;
 }
 
 export function metricValue(profile: SocialUserProfile, metric: LeaderboardMetric): number {
@@ -475,7 +486,7 @@ export function buildCompareRows(me: SocialUserProfile, them: SocialUserProfile)
     },
     {
       key: 'value',
-      label: 'Total est. value',
+      label: 'Total listed value',
       me: a.totalEstimatedValue,
       them: b.totalEstimatedValue,
       winner: num(a.totalEstimatedValue, b.totalEstimatedValue),

@@ -1,6 +1,6 @@
 /**
- * Disclosure copy for App Store Guideline 3.1.1 (randomized digital items).
- * Replace with live server-driven odds when backend exists.
+ * MOCK ODDS — 実データ待ち。外部に見せないこと。
+ * Replace with live, per-pack server-driven odds before release (KNOWN_ISSUES #4).
  */
 export interface LootTierOdds {
   tier: string;
@@ -9,10 +9,9 @@ export interface LootTierOdds {
   notes?: string;
 }
 
-export const PACK_OPENING_TIER_ODDS: LootTierOdds[] = [
-  { tier: 'Common', probabilityPct: 62, notes: 'Baseline hits and bulk cards.' },
-  { tier: 'Rare', probabilityPct: 22 },
-  { tier: 'Epic', probabilityPct: 10 },
-  { tier: 'Legendary', probabilityPct: 4.5 },
-  { tier: 'Mythic', probabilityPct: 1.5, notes: 'Chase hits; rates vary by pack.' },
+export const MOCK_PACK_OPENING_TIER_ODDS: LootTierOdds[] = [
+  { tier: 'MYTHIC', probabilityPct: 0.5 },
+  { tier: 'LEGENDARY', probabilityPct: 2 },
+  { tier: 'EPIC', probabilityPct: 5.5 },
+  { tier: 'BASE', probabilityPct: 92 },
 ];

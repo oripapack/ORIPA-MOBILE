@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { Pull } from '../../data/mockUser';
 import { buildHitRateWindow } from '../../lib/hitRate';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
   },
   pct: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
     color: sg.text,
     letterSpacing: -0.5,
   },
@@ -144,7 +145,8 @@ const styles = StyleSheet.create({
   },
   tick: {
     fontSize: 9,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
   },
   tickHit: {
     color: 'rgba(34, 197, 94, 0.95)',

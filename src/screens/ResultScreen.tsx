@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Modal, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { sg } from '../tokens/sg';
+import { AssetBlockedCard } from '../components/shared/AssetBlockedCard';
 import { SgButton, SgTierTag } from '../components/ui';
 import { navigationRef } from '../navigation/navigationRef';
 import { useAppStore } from '../store/useAppStore';
@@ -20,7 +20,7 @@ import { MOCK_RESULT_PULLS, type ResultCard, type ResultPullData, type MockResul
  * Copy is intentionally hardcoded English per the spec ("英語ロケール・その
  * まま使う") — locale keys come later with the flow wiring.
  *
- * Leaving without choosing NEVER converts to Coins: no action is taken on
+ * Leaving without choosing NEVER converts to Points: no action is taken on
  * unmount, so pending pulls stay pending (vault-by-default is the flow-side
  * contract).
  */
@@ -57,8 +57,8 @@ function fmtUsd(v: number): string {
   return `$${groupThousands(int)}.${dec}`;
 }
 
-/** 100 Coins = $1.00 — same rate the rest of the app uses (VaultScreen etc.). */
-function usdToCoins(usd: number): number {
+/** 100 Points = $1.00 — same internal rate the rest of the app uses (VaultScreen etc.). */
+function usdToPoints(usd: number): number {
   return Math.round(usd * 100);
 }
 
@@ -78,8 +78,8 @@ export function ResultScreen({ route }: Props) {
 
   const count = pull.cards.length;
   const multi = count > 1;
-  const coins = groupThousands(String(usdToCoins(pull.totalListedValueUsd)));
-  const ctaLabel = multi ? `Trade in all — ${coins} Points` : `Trade in — ${coins} Points`;
+  const points = groupThousands(String(usdToPoints(pull.totalListedValueUsd)));
+  const ctaLabel = multi ? `Trade in all — ${points} Points` : `Trade in — ${points} Points`;
 
   const goTabs = (screen?: 'Vault') => {
     if (!navigationRef.isReady()) return;
@@ -126,7 +126,7 @@ export function ResultScreen({ route }: Props) {
             <View style={styles.heroBlock}>
               <View style={styles.heroShadow}>
                 <View style={styles.heroImgClip}>
-                  <Image source={{ uri: hero.imageUrl }} style={styles.heroImg} contentFit="cover" />
+                  <AssetBlockedCard label="INVENTORY MEDIA PENDING" />
                 </View>
               </View>
               <Text style={styles.heroName} numberOfLines={2}>{hero.name}</Text>
@@ -191,8 +191,8 @@ export function ResultScreen({ route }: Props) {
           <View style={styles.sheet}>
             <View style={styles.grabber} />
             <Text style={styles.sheetTitle}>{multi ? `Trade in ${count} cards?` : 'Trade in 1 card?'}</Text>
-            <Text style={styles.sheetAmount}>{coins}</Text>
-            <Text style={styles.sheetAmountSub}>COINS · 100% OF LISTED VALUE</Text>
+            <Text style={styles.sheetAmount}>{points}</Text>
+            <Text style={styles.sheetAmountSub}>POINTS · 100% OF LISTED VALUE</Text>
             <Text style={styles.sheetBody}>
               {multi
                 ? `All ${count} cards will be traded in for Points at their listed value.`
@@ -211,7 +211,7 @@ function GridCell({ card }: { card: ResultCard }) {
   return (
     <View style={styles.cell}>
       <View style={styles.cellImgClip}>
-        <Image source={{ uri: card.imageUrl }} style={styles.cellImg} contentFit="cover" />
+        <AssetBlockedCard label="MEDIA PENDING" compact />
       </View>
       <Text style={styles.cellName} numberOfLines={2}>{card.name}</Text>
       <Text style={styles.cellValue}>{fmtUsd(card.listedValueUsd)}</Text>
@@ -286,7 +286,6 @@ const styles = StyleSheet.create({
     ...sg.shadowHero,
   },
   heroImgClip: { flex: 1, borderRadius: 10, overflow: 'hidden' },
-  heroImg: { width: '100%', height: '100%' },
   heroName: {
     fontFamily: sg.font.bodyBold, // spec 600 — loaded weights are 400/500/700, 700 is the closest
     fontSize: 16,
@@ -306,7 +305,6 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
   cell: { width: 80 },
   cellImgClip: { width: 80, height: 112, borderRadius: 10, overflow: 'hidden', backgroundColor: sg.surface2 },
-  cellImg: { width: '100%', height: '100%' },
   cellName: {
     fontFamily: sg.font.body,
     fontSize: 10.5,

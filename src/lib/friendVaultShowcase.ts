@@ -1,3 +1,4 @@
+// 実データ待ち。外部に見せないこと。
 import type { Pull } from '../data/mockUser';
 import type { UserState } from '../data/mockUser';
 import { normalizeFriendUsername } from '../data/friends';

@@ -8,33 +8,24 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 import { useAppStore } from '../../store/useAppStore';
 import { normalizeFriendUsername } from '../../data/friends';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
-import type { Pull, PullRarityTier } from '../../data/mockUser';
+import type { Pull } from '../../data/mockUser';
 import type { PublicVaultListing } from '../../lib/friendVaultShop';
 import { getFriendVaultShowcasePulls } from '../../lib/friendVaultShowcase';
 import { vaultExchangeBuyerRules, formatVaultExchangeUsd } from '../../lib/vaultExchange';
 import { FriendVaultItemSheet } from './FriendVaultItemSheet';
-import { VaultExchangeCheckoutStubModal } from '../vault/VaultExchangeCheckoutStubModal';
 import type { FriendEntry } from '../../data/friends';
-import { showUserMessage } from '../../utils/showUserMessage';
+import { navigationRef } from '../../navigation/navigationRef';
 
 type Props = {
   sellerUsername: string;
   isSelf: boolean;
   friendEntry?: FriendEntry | null;
-};
-
-const TIER_DOT: Record<PullRarityTier, string> = {
-  common: '#94A3B8',
-  rare: '#60A5FA',
-  epic: '#A855F7',
-  legendary: '#FBBF24',
-  mythic: '#FB7185',
 };
 
 export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry }: Props) {
@@ -43,7 +34,6 @@ export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry
   const user = useAppStore((s) => s.user);
   const key = useMemo(() => normalizeFriendUsername(sellerUsername), [sellerUsername]);
   const listings = useAppStore((s) => s.friendVaultShopByUser[key] ?? []);
-  const purchase = useAppStore((s) => s.purchaseFriendVaultListing);
 
   const pulls = useMemo(
     () => getFriendVaultShowcasePulls({ username: key, isSelf, user, friendEntry: friendEntry ?? null }),
@@ -51,32 +41,19 @@ export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry
   );
 
   const [sheetPull, setSheetPull] = useState<Pull | null>(null);
-  const [checkout, setCheckout] = useState<{
-    listingId: string;
-    priceUsd: number;
-    title: string;
-  } | null>(null);
 
   const horizontalPad = spacing.base;
   const gap = spacing.sm;
   const tileW = Math.max(148, (width - horizontalPad * 2 - gap) / 2);
 
-  const openCheckout = useCallback((listingId: string, priceUsd: number, title: string) => {
-    setCheckout({ listingId, priceUsd, title });
+  const openCheckout = useCallback((_listingId: string, priceUsd: number, title: string) => {
+    if (!navigationRef.isReady()) return;
+    navigationRef.navigate('PaymentPortal', {
+      initialTab: 'marketplace',
+      listingTitle: title,
+      listingPrice: formatVaultExchangeUsd(priceUsd),
+    });
   }, []);
-
-  const onSimulatePaid = useCallback(() => {
-    if (!checkout) return;
-    const res = purchase(key, checkout.listingId);
-    setCheckout(null);
-    if (res === 'ok') {
-      showUserMessage(t('vaultExchange.purchaseOkTitle'), t('vaultExchange.purchaseOkBody'));
-    } else if (res === 'own_listing') {
-      showUserMessage(t('friendVaultShop.ownTitle'), t('friendVaultShop.ownBody'));
-    } else {
-      showUserMessage(t('vaultExchange.purchaseFailTitle'), t('vaultExchange.purchaseFailBody'));
-    }
-  }, [checkout, purchase, key, t]);
 
   if (pulls.length === 0) {
     return (
@@ -117,13 +94,6 @@ export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry
         onBuyNow={(listingId, priceUsd) => openCheckout(listingId, priceUsd, sheetPull?.result ?? '')}
       />
 
-      <VaultExchangeCheckoutStubModal
-        visible={checkout != null}
-        itemTitle={checkout?.title ?? ''}
-        listPriceUsd={checkout?.priceUsd ?? 0}
-        onClose={() => setCheckout(null)}
-        onSimulatePaid={onSimulatePaid}
-      />
     </View>
   );
 }
@@ -144,7 +114,6 @@ function VaultTile({
   const { t } = useTranslation();
   const rules = vaultExchangeBuyerRules(pull, listings);
   const listed = rules.surface === 'listed_buy_now';
-  const dot = TIER_DOT[pull.tier ?? 'rare'];
 
   return (
     <TouchableOpacity
@@ -158,7 +127,6 @@ function VaultTile({
         style={[styles.tileCard, listed && styles.tileCardListed]}
         contentStyle={styles.tileInner}
       >
-        <View style={[styles.dot, { backgroundColor: dot }]} />
         <Text style={styles.tileResult} numberOfLines={3}>
           {pull.result}
         </Text>
@@ -189,7 +157,7 @@ const styles = StyleSheet.create({
   wrap: { marginBottom: spacing.lg },
   section: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -213,10 +181,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
   tileInner: { padding: spacing.md, minHeight: 168 },
-  dot: { width: 8, height: 8, borderRadius: 4, marginBottom: spacing.sm },
   tileResult: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     lineHeight: 20,
     marginBottom: spacing.xs,
@@ -239,14 +206,15 @@ const styles = StyleSheet.create({
   },
   buyBadgeText: {
     fontSize: 9,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
     letterSpacing: 0.5,
   },
   tilePrice: {
     marginTop: 4,
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
     color: sg.text,
   },
   reqBadge: {
@@ -261,14 +229,14 @@ const styles = StyleSheet.create({
   },
   reqBadgeText: {
     fontSize: 9,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.4,
   },
   manage: {
     marginTop: 6,
     fontSize: 9,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
   },
   emptyInner: { padding: spacing.lg },

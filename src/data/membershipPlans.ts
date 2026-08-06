@@ -1,6 +1,7 @@
 /**
- * Pull Hub paid membership (会員) — demo config only.
- * Benefits copy lives in i18n (`membership.benefits.<id>`).
+ * 実データ待ち。外部に見せないこと。
+ * Pull Hub membership preview only: prices, Points grants, tier gates, and
+ * benefits are MOCK product assumptions until billing and entitlement data exist.
  */
 
 export type MembershipTierId = 'silver' | 'gold' | 'black';
@@ -24,7 +25,7 @@ export interface MembershipPlan {
   id: MembershipTierId;
   /** Monthly price in USD (display only until IAP is wired). */
   priceUsd: number;
-  monthlyCoins: number;
+  monthlyPoints: number;
   /** Ordered benefit ids — must exist under `membership.benefits` in locales. */
   benefitIds: string[];
   /** Gold tier is the recommended plan in product. */
@@ -33,11 +34,11 @@ export interface MembershipPlan {
   sortOrder: number;
 }
 
-const MEMBERSHIP_PLANS_UNSORTED: MembershipPlan[] = [
+const MOCK_MEMBERSHIP_PLANS_UNSORTED: MembershipPlan[] = [
   {
     id: 'silver',
     priceUsd: 9.99,
-    monthlyCoins: 1200,
+    monthlyPoints: 1200,
     benefitIds: ['silver_packs', 'early_drops', 'silver_badge'],
     isPopular: false,
     sortOrder: 0,
@@ -45,7 +46,7 @@ const MEMBERSHIP_PLANS_UNSORTED: MembershipPlan[] = [
   {
     id: 'gold',
     priceUsd: 29.99,
-    monthlyCoins: 4000,
+    monthlyPoints: 4000,
     benefitIds: ['gold_packs', 'earlier_drops', 'premium_drops', 'gold_badge'],
     isPopular: true,
     sortOrder: 1,
@@ -53,15 +54,17 @@ const MEMBERSHIP_PLANS_UNSORTED: MembershipPlan[] = [
   {
     id: 'black',
     priceUsd: 99.99,
-    monthlyCoins: 15000,
+    monthlyPoints: 15000,
     benefitIds: ['black_packs', 'earliest_drops', 'ultra_drops', 'vip_support', 'black_badge'],
     isPopular: false,
     sortOrder: 2,
   },
 ];
 
-export const MEMBERSHIP_PLANS = [...MEMBERSHIP_PLANS_UNSORTED].sort((a, b) => a.sortOrder - b.sortOrder);
+export const MOCK_MEMBERSHIP_PLANS = [...MOCK_MEMBERSHIP_PLANS_UNSORTED].sort(
+  (a, b) => a.sortOrder - b.sortOrder,
+);
 
 export function getMembershipPlan(id: MembershipTierId): MembershipPlan | undefined {
-  return MEMBERSHIP_PLANS.find((p) => p.id === id);
+  return MOCK_MEMBERSHIP_PLANS.find((p) => p.id === id);
 }

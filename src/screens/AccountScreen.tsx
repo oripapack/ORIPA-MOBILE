@@ -17,7 +17,6 @@ import { AccountAuthCard } from '../components/account/AccountAuthCard';
 import { deriveSocialProfileFromUser } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
-import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { SgScreen } from '../components/ui';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
@@ -263,7 +262,7 @@ export function AccountScreen() {
 
       <VaultFramedCard style={styles.rarityCard} contentStyle={styles.rarityInner}>
         <Text style={styles.subsectionInCard}>{t('social.rarityMix')}</Text>
-        <RarityBreakdownMini breakdown={socialProfile.stats.rarityBreakdown} />
+        <Text style={styles.tierPending}>{t('social.tierDataPending')}</Text>
       </VaultFramedCard>
 
       {/* 4 · Quick actions */}
@@ -639,6 +638,12 @@ const styles = StyleSheet.create({
   },
   rarityInner: {
     padding: spacing.lg,
+  },
+  tierPending: {
+    fontSize: fontSize.sm,
+    fontFamily: sg.font.body,
+    color: sg.muted,
+    lineHeight: 20,
   },
   quickGrid: {
     flexDirection: 'row',

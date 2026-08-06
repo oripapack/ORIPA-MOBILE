@@ -51,7 +51,7 @@
     "ctaAllConvert": "Trade in all · {{coins}} Points",
     "ctaMixed": "Trade in · {{coins}} Points · Vault {{vaultCount}}",
     "footerAllVault": "{{count}} secured",
-    "footerAllConvert": "Instant credit",
+    "footerAllConvert": "Points added instantly",
     "footerMixed": "{{convertCount}} convert · {{vaultCount}} vault",
     "footerVaultLine": "{{days}}-day Vault hold · auto-convert if untouched",
     "footerCoinsOnly": "{{coins}} Points on confirm",
@@ -110,9 +110,9 @@
   },
   "vaultExchange": {
     "checkoutKicker": "VAULT EXCHANGE",
-    "checkoutTitle": "Secure card checkout",
-    "checkoutBody": "Peer sales use real payments (e.g. Stripe) — not Points. This build simulates a successful charge so you can test the flow.",
-    "checkoutSimulateCta": "Simulate paid checkout",
+    "checkoutTitle": "Physical checkout preview",
+    "checkoutBody": "Payment, inventory lock, tax, and fulfillment are not connected in this build. No charge or transfer can be completed here.",
+    "checkoutSimulateCta": "Checkout unavailable",
     "checkoutCancel": "Not now",
     "friendSectionTitle": "Their Vault",
     "friendSectionHint": "Full collection is visible. Request, offer, or ask on anything. Only Vault Exchange listings show Buy now with a cash price.",
@@ -123,7 +123,7 @@
     "tileYourListing": "Your listing · edit in Vault",
     "sheetKicker": "COLLECTOR VAULT",
     "buyNowCta": "Buy now",
-    "buyNowFine": "Charged in USD. Platform fee may apply at real checkout.",
+    "buyNowFine": "Physical checkout preview. Payment and inventory lock are not connected.",
     "requestableLead": "Not listed for instant sale. You can still show interest — the seller may add a Vault Exchange price later.",
     "actionRequest": "Request",
     "actionOffer": "Make offer",
@@ -212,20 +212,20 @@
   },
   "onboarding": {
     "welcomeTitle": "Welcome to Pull Hub",
-    "welcomeSubtitle": "Your first visit includes a sign-up bonus — create an account now or preview the lobby first.",
-    "firstLaunchPromoPill": "{{credits}} bonus Points · ~${{usd}} value",
+    "welcomeSubtitle": "Create an account to save your collection, or preview the pack floor first.",
+    "firstLaunchPromoPill": "Save your Vault and player profile",
     "signUpCta": "Sign up free",
     "signInCta": "Sign in",
     "continueGuest": "Continue as guest",
-    "sheetHint": "Swipe down or tap outside the sheet — we’ll confirm before you skip the sign-up offer.",
+    "sheetHint": "Swipe down or tap outside the sheet — we’ll confirm before you continue as a guest.",
     "dismissConfirmTitle": "Skip sign-up?",
-    "dismissConfirmMessage": "You can always create an account later, but this visit’s bonus (about ${{usd}} in Points) is only available if you sign up now.",
-    "dismissConfirmStay": "Keep offer — I’ll sign up",
+    "dismissConfirmMessage": "You can create an account later. Guest progress is not synced to a Vault or player profile.",
+    "dismissConfirmStay": "Stay and sign up",
     "dismissConfirmLeave": "Continue without account",
     "promptEyebrow": "Nice pull",
     "promptTitle": "Sign up to keep it",
-    "promptBody": "Create an account to save pulls to your vault, claim rewards, and unlock your welcome pack.",
-    "promptSignUp": "Claim free pack",
+    "promptBody": "Create an account to save pulls to your Vault and sync your player profile.",
+    "promptSignUp": "Create account",
     "promptSignIn": "I already have an account",
     "promptLater": "Maybe later",
     "guestClaimTitle": "Sign in to claim",
@@ -303,7 +303,7 @@
     "replay": "Replay",
     "cardLabel": "Card",
     "estValueLabel": "Est. value",
-    "estimatedValueLabel": "Estimated value"
+    "estimatedValueLabel": "Listed value"
   },
   "recentHits": {
     "title": "Recent hits",
@@ -408,7 +408,7 @@
   },
   "membership": {
     "navTitle": "Membership",
-    "heroEyebrow": "Pull Hub 会員",
+    "heroEyebrow": "Membership product preview",
     "heroTitle": "Membership",
     "heroLead": "A monthly pass for collectors — Points, status, and curated access to member-only packs and drops. Not a one-off Points bundle.",
     "valueBlockTitle": "Why membership",
@@ -459,7 +459,7 @@
     "simActiveBody": "{{tier}} is active — your tier’s member packs are unlocked.",
     "simClearLink": "Clear demo membership",
     "ctaSimSameTier": "Grant monthly Points again",
-    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet."
+    "ctaSimHint": "Preview only — no charge or live membership entitlement is created."
   },
   "common": {
     "error": "Error",
@@ -490,9 +490,10 @@
       }
     },
     "contactSection": "Still stuck?",
+    "guidesSection": "Product guides",
     "emailCta": "Email {{email}}",
     "emailUs": "Email support",
-    "responseTime": "We aim to reply within 1–2 business days (demo — not monitored)."
+    "responseTime": "The support inbox is not monitored in this preview."
   },
   "shippingAddress": {
     "navTitle": "Shipping address",
@@ -523,13 +524,19 @@
     }
   },
   "tierBenefits": {
-    "navTitle": "Tier benefits",
-    "lead": "Tiers are a loyalty ladder based on XP from activity. Sample perks below — tune before launch.",
-    "progressHint": "You have {{xp}} XP. Next tier unlocks at {{need}} XP (demo ladder).",
-    "topTier": "You are at the highest preview tier — thanks for playing with the sample data.",
-    "fromXp": "From {{xp}} XP",
-    "yourTier": "Your tier",
-    "disclaimer": "Benefits, thresholds, and availability are illustrative only and may change."
+    "navTitle": "Level progress",
+    "eyebrow": "COLLECTOR PROGRESSION",
+    "currentLevel": "Level {{level}}",
+    "progressLine": "{{current}} / {{next}} XP this level",
+    "previewKicker": "PRODUCT STATUS",
+    "previewTitle": "Level benefits are not active",
+    "previewBody": "XP progression is available for review. Pack access, shipping, pricing, and marketplace permissions do not change by level in this build.",
+    "disclaimer": "Benefits will appear only after their rules and data sources are approved.",
+    "lead": "",
+    "progressHint": "",
+    "topTier": "",
+    "fromXp": "",
+    "yourTier": ""
   },
   "notifications": {
     "navTitle": "Notifications",
@@ -556,20 +563,24 @@
   },
   "hotDropsInfo": {
     "navTitle": "Hot drops",
-    "body": "Hot drops are time-limited or high-demand pack releases — often a specific set, collab, or flash window. They are about the product and timing.",
-    "b1": "Announced start and end times (or “while supplies last”).",
-    "b2": "May have different odds or price than evergreen packs — always read the pack details.",
-    "b3": "Can sell out quickly; enabling notifications helps you catch restocks.",
-    "callout": "Not the same as Promos: promos are marketing incentives (bonus Points, coupons), not the pack release itself."
+    "eyebrow": "Release system preview",
+    "title": "Release windows, made clear.",
+    "body": "Product concept preview. Hot drops are planned as limited release windows for selected packs; no live schedule is connected in this build.",
+    "b1": "Planned: show a start time, end time, and remaining availability.",
+    "b2": "Planned: link directly to the pack’s approved price and probability disclosure.",
+    "b3": "Planned: optional alerts after notification delivery is connected.",
+    "callout": "Hot drops describe a pack release. Promos describe a separate incentive. Both remain preview concepts until their services and approved rules are connected."
   },
   "promosInfo": {
     "navTitle": "Promos",
-    "body": "Promos are marketing programs: bonus Points, coupon codes, seasonal campaigns, or partner offers. They reward actions like signing up, buying bundles, or referring friends.",
-    "b1": "Shown in-app, email, or social — each promo has its own rules and dates.",
-    "b2": "May stack with tiers or be limited to certain packs — read the fine print before launch.",
-    "b3": "Different from Hot Drops: a promo is the offer; a hot drop is the product release.",
+    "eyebrow": "Incentive system preview",
+    "title": "Rules before rewards.",
+    "body": "Product concept preview. Promo rules, eligibility, dates, and rewards are not connected or approved in this build.",
+    "b1": "Planned: show the official rules and active dates beside every offer.",
+    "b2": "Planned: make eligibility and stacking limits clear before activation.",
+    "b3": "Planned: keep incentives separate from pack availability and probabilities.",
     "vsHotTitle": "Hot drops vs promos",
-    "vsHotBody": "Use Hot Drops to learn about limited pack releases. Use Promos (this screen) to understand bonus Points and coupon-style incentives."
+    "vsHotBody": "A hot drop would describe a limited pack release. A promo would describe an incentive governed by separate approved rules."
   },
   "pullHistoryScreen": {
     "navTitle": "Play history",
@@ -588,21 +599,21 @@
   },
   "identityVerification": {
     "navTitle": "Identity verification",
-    "body": "Identity verification (sometimes called KYC) confirms you are a real person and meets age or compliance rules before high-value payouts, certain promos, or regulated features.",
+    "body": "Identity verification may be required before selected marketplace, shipping, or payout features become available.",
     "whyTitle": "Why apps ask for this",
-    "whyBody": "It reduces fraud, protects minors, and satisfies financial or marketplace rules when money or valuable prizes move between users and platforms.",
+    "whyBody": "Requirements vary by region and processor. Pull Hub will request only the checks required for the feature being used.",
     "previewTitle": "Preview flow (not active)",
     "step1": "Government ID or document check",
     "step2": "Selfie or liveness check (if required)",
-    "step3": "Review — usually minutes, sometimes longer",
-    "note": "This build only explains the concept. Wire your vendor (e.g. Persona, Stripe Identity) before requiring verification."
+    "step3": "Status and next steps from the selected provider",
+    "note": "This build only explains the concept. No identity documents are collected in this preview."
   },
   "payoutMethod": {
     "navTitle": "Payout method",
-    "body": "When you sell cards or receive cash-outs, payouts go to a linked bank or debit card. This preview does not connect to real banking.",
+    "body": "Seller proceeds from future marketplace transactions will use a verified payout method. This preview does not connect to real banking.",
     "line1": "Add a bank account (ACH / local rails) or debit card depending on region.",
-    "line2": "Verify small deposits or instant micro-charges when your processor requires it.",
-    "line3": "Payout timing and fees follow marketplace rules — see Terms before launch.",
+    "line2": "Verification steps will depend on the selected payment processor and region.",
+    "line3": "Payout timing and fees are pending marketplace policy approval.",
     "note": "Replace this placeholder with real payout onboarding when Stripe Connect or your PSP is integrated."
   },
   "settings": {
@@ -648,7 +659,7 @@
       "railGradedTitle": "Graded vault",
       "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
     },
-    "guaranteeTradeIn": "Instant 100% trade-in (listed value)"
+    "guaranteeTradeIn": "Instant Trade in at 100% of listed value"
   },
   "packs": {
     "browseTitle": "Pack floor",
@@ -683,6 +694,9 @@
     "hitCard": "Jackpot card"
   },
   "friends": {
+    "listedValue": "Listed value",
+    "offers": "Offers",
+    "messages": "Messages",
     "title": "Friends",
     "heroEyebrow": "SQUAD LOUNGE",
     "lead": "Link up with people you play with — share your handle, scan QR, or send your invite link.",
@@ -739,12 +753,28 @@
     "sectionActivity": "Friends activity",
     "sectionFriends": "Friends",
     "sectionLeaderboard": "Leaderboard",
-    "leaderboardPreviewHint": "Total estimated value · tap for full board",
+    "leaderboardPreviewHint": "Total listed value · tap for full board",
     "leaderboardSeeAll": "See full leaderboard",
     "emptyActivity": "Add collectors to see their pulls here.",
     "emptyLeaderboardHint": "Invite friends to climb the board together.",
     "emptySquadTitle": "No friends yet",
     "emptySquadBody": "Add collectors to see their pulls, stats, and leaderboard spots."
+  },
+  "offersScreen": {
+    "navTitle": "Offers",
+    "lead": "Review trade proposals without mixing them into fixed-price marketplace orders.",
+    "received": "Received",
+    "sent": "Sent",
+    "eyebrow": "TRADE SERVICE",
+    "unavailableTitle": "Offers are not connected",
+    "unavailableBody": "The route and visual states are ready. A server-side offer ledger, acceptance rules, inventory locks, and notifications are required before trading can be enabled."
+  },
+  "messagesScreen": {
+    "navTitle": "Messages",
+    "lead": "Conversation threads for collectors and support will appear here.",
+    "eyebrow": "MESSAGING SERVICE",
+    "unavailableTitle": "Messages are not connected",
+    "unavailableBody": "This preview does not send or store messages. Authentication, moderation, delivery status, and a conversation backend must be connected first."
   },
   "social": {
     "profileNavTitle": "Profile",
@@ -753,12 +783,13 @@
     "profileMissingBody": "We don’t have a demo profile for this username yet.",
     "joined": "Joined {{date}}",
     "statPacks": "Packs opened",
-    "statValue": "Total value",
+    "statValue": "Total listed value",
     "statChase": "Chase hits",
     "statLuck": "Luck score",
     "bestPull": "Best pull",
-    "estimatedValue": "Estimated value",
-    "rarityMix": "Tier mix",
+    "estimatedValue": "Listed value",
+    "rarityMix": "Tier data",
+    "tierDataPending": "Tier analytics will appear when live pack inventory is connected.",
     "highlights": "Activity",
     "recentPulls": "Recent pulls",
     "noRecentPulls": "No recent pulls yet.",
@@ -775,7 +806,7 @@
     "compareSub": "Side-by-side stats — higher wins each row.",
     "compareDone": "Done",
     "metric": {
-      "totalValue": "Total value",
+      "totalValue": "Total listed value",
       "biggestPull": "Biggest pull",
       "packsOpened": "Packs opened",
       "chaseHits": "Chase hits",
@@ -832,7 +863,7 @@
     "guestSignInCta": "Sign in or create account",
     "playerDeskEyebrow": "PLAYER DESK",
     "pullHistoryCta": "Full play history",
-    "pullHistorySub": "Every open, credit win, and hit — complete log",
+    "pullHistorySub": "Every open, Points result, and hit — complete log",
     "accountDetailsEyebrow": "Account details",
     "usernameLabel": "Username",
     "usernameUnset": "Not set yet",
@@ -848,7 +879,7 @@
     "viewAllQuests": "View all quests",
     "claimRewardsCta_one": "Claim {{count}} reward",
     "claimRewardsCta_other": "Claim {{count}} rewards",
-    "viewTierBenefitsLink": "Tier benefits →",
+    "viewTierBenefitsLink": "Level progress →",
     "collectorQuestsTitle": "Collector quests",
     "quickVault": "Vault",
     "quickPullHistory": "Pull history",
@@ -892,13 +923,15 @@
   },
   "walletLinking": {
     "navTitle": "Wallet address",
-    "lead": "Link your Base wallet to receive Digital Twin NFTs when you ship high-tier pulls from your vault.",
+    "lead": "Wallet linking is reserved for a future Digital Twin workflow. No assets are minted in this build.",
+    "unavailableTitle": "Wallet linking is not connected",
+    "unavailableBody": "Sign-in and the profile backend must be configured before a wallet address can be linked. This preview does not request or store an address.",
     "fieldLabel": "EVM wallet address",
     "placeholder": "0x…",
     "hint": "Must start with 0x and be 42 characters (Base / Ethereum format).",
     "save": "Save wallet address",
     "savedTitle": "Saved",
-    "savedBody": "Your wallet address was saved. NFTs will mint to this address when you request shipping.",
+    "savedBody": "Your wallet address was saved. Saving an address does not trigger an asset mint or shipment.",
     "saveFailed": "Could not save. Try again.",
     "invalidTitle": "Invalid address",
     "invalidBody": "Enter a valid EVM address (0x followed by 40 hex characters).",
@@ -936,27 +969,27 @@
   "buyCredits": {
     "close": "Close",
     "title": "Add Points",
-    "subtitle": "Points open packs. Promotional discounts show on smaller bundles; higher tiers are list price.",
-    "mockNote": "Preview: no real payment — Points are added instantly for demos.",
+    "subtitle": "Choose a Points bundle for pack openings.",
+    "mockNote": "Preview pricing only. No payment is charged in this build.",
     "discountBadge": "{{pct}}% OFF",
-    "pointsLine": "{{count}} pt",
+    "pointsLine": "{{count}} PTS",
     "approx": "approx.",
     "buyNow": "Buy now",
-    "disclaimer": "After confirming a credit purchase, cancellations, refunds, or point returns may not be possible. (Final policy before launch.)",
+    "disclaimer": "Final pricing, purchase policy, and store availability are pending product approval.",
     "mockFooter": "Simulated bundles — replace with real checkout before launch.",
     "liveFooter": "Secure checkout · Instant delivery · No expiry"
   },
   "lootBox": {
     "title": "Probability of contents",
-    "lead": "Pack openings are randomized. Approximate tier rates below are for disclosure; specific packs may vary.",
+    "lead": "Illustrative placeholder rates for internal review. Final odds must come from each pack's live inventory.",
     "columnTier": "Tier",
     "footnote": "Rates are illustrative for this preview build. Published products will show final odds before purchase where required.",
     "done": "Got it"
   },
   "welcome": {
     "flowMapLine": "Packs tab = mystery pulls in-app · Shop tab = pick cards & ship",
-    "signupPromoTitle": "New player bonus",
-    "signupPromoBody": "Create your account on this first visit and we’ll add {{credits}} bonus Points (about ${{usd}} in pull value) when you sign in.",
+    "signupPromoTitle": "Save your collection",
+    "signupPromoBody": "Create an account to keep eligible pulls in your Vault and sync your player profile across signed-in sessions.",
     "skip": "Browse without signing in",
     "guestHint": "You can browse the catalog. Sign in to open packs, add Points, checkout, and use Friends."
   },
@@ -1029,10 +1062,10 @@
     "viewProbabilities": "View probability of contents",
     "digitalRoutingNote": "Digital Points: use App Store / Google Play in-app purchase when live — not Stripe.",
     "marketplaceTitle": "Physical order",
-    "marketplaceLead": "Partner listings ship real products. Checkout uses a physical-goods payment flow (server-backed Stripe), separate from in-app credit packs.",
+    "marketplaceLead": "Physical-order checkout preview. Payment, inventory reservation, tax, and fulfillment services are not connected in this build.",
     "item": "Item",
     "price": "Price",
-    "physicalPolicy": "Physical goods only — PaymentIntent created on your server ({{mode}}). Apple Pay / Google Pay may appear for shipping purchases, not for digital currency.",
+    "physicalPolicy": "Planned route: a server-created physical-goods payment intent ({{mode}}), kept separate from digital Points purchases.",
     "continueCheckout": "Continue to checkout",
     "physicalStubTitle": "Checkout not connected",
     "physicalStubBody": "Wire your backend to create a Stripe PaymentIntent, then open the client with the returned client secret. No keys in the app binary.",

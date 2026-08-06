@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Animated, AccessibilityInfo } from 'react-native';
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
+import Svg, { Circle, G, Line, Path, Rect } from 'react-native-svg';
 import { sg } from '../../../tokens/sg';
 
 /**
@@ -9,42 +8,31 @@ import { sg } from '../../../tokens/sg';
  * touched, and never auto-advances under reduced motion (dots become the
  * manual control).
  *
- * Slide text is a real UI overlay — NEVER baked into the artwork. A thin
- * dark gradient sits behind the text zone only; the artwork itself is not
- * dimmed. Sources are WebP (originals kept as PNG in assets/home/banners/).
- *
- * KNOWN ISSUE: the torii / Fuji artwork violates N2 §5-8 (no traditional
- * Japan symbols). Kept until replacement art lands — see KNOWN_ISSUES.md.
+ * Slide text is real UI overlay text — never baked into artwork. The artwork
+ * is a rights-safe, flat vector system: Japanese inbound symbols are treated
+ * as pop/wayfinding graphics per JAPAN ELEMENTS, never as solemn photography.
  */
 const SLIDES = [
   {
     key: 'exclusives',
-    title: 'JAPANESE EXCLUSIVES',
-    sub: 'Direct from Tokyo.',
-    image: require('../../../../assets/home/banners/banner-01.webp'),
+    title: 'TOKYO-BORN DESIGN',
+    sub: 'Japanese Oripa culture, built for collectors in the U.S.',
+    art: 'tokyo',
   },
   {
     key: 'tradein',
     title: '100% of listed value in Points.',
     sub: 'Zero fees. Instantly.',
     footnote: '*of listed value',
-    image: require('../../../../assets/home/banners/banner-02.webp'),
-    // Portrait art: y=75% (between center and bottom) keeps the torii gate
-    // shape in frame. Art is slated for a Shibuya-nightscape replacement.
-    contentPosition: { left: '50%', top: '75%' } as const,
+    art: 'value',
   },
   {
     key: 'fair',
-    title: 'Provably fair.',
-    sub: 'Verify every pull.',
-    image: require('../../../../assets/home/banners/banner-03.webp'),
-    // Bright sakura sky: stronger horizontal scrim.
-    scrim: { alpha: 0.55, stop: 0.55 } as const,
+    title: 'VERIFY THE RECORD',
+    sub: 'Pull details, in one place.',
+    art: 'verify',
   },
 ] as const;
-
-/** Shared legibility scrim defaults (slide1 stays exactly on these values). */
-const DEFAULT_SCRIM = { alpha: 0.45, stop: 0.6 } as const;
 
 const INTERVAL_MS = 3000;
 const FADE_MS = 450;
@@ -92,27 +80,7 @@ export function SgBannerCarousel() {
       accessibilityRole="none"
     >
       <Animated.View style={[styles.slide, { opacity: fade }]}>
-        <Image
-          source={slide.image}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          contentPosition={'contentPosition' in slide ? slide.contentPosition : 'center'}
-          transition={0}
-        />
-        {/* Legibility gradient — left-edge alpha fading to 0 by the stop
-            position (per-slide override for bright art); the right side of
-            the art stays fully bright */}
-        <LinearGradient
-          colors={[
-            `rgba(0,0,0,${('scrim' in slide ? slide.scrim : DEFAULT_SCRIM).alpha})`,
-            'rgba(0,0,0,0)',
-          ]}
-          locations={[0, ('scrim' in slide ? slide.scrim : DEFAULT_SCRIM).stop]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
+        <BannerArtwork variant={slide.art} />
         {/* Overlay text — real UI, not baked into the artwork */}
         <View style={styles.textWrap}>
           <Text style={styles.title}>{slide.title}</Text>
@@ -139,6 +107,72 @@ export function SgBannerCarousel() {
   );
 }
 
+function BannerArtwork({ variant }: { variant: (typeof SLIDES)[number]['art'] }) {
+  return (
+    <Svg
+      viewBox="0 0 408 144"
+      preserveAspectRatio="xMidYMid slice"
+      style={StyleSheet.absoluteFill}
+      pointerEvents="none"
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
+      <Rect width="408" height="144" fill={sg.surface2} />
+      <G opacity={0.42} stroke={sg.line} strokeWidth="1">
+        <Line x1="0" y1="24" x2="408" y2="24" />
+        <Line x1="0" y1="72" x2="408" y2="72" />
+        <Line x1="0" y1="120" x2="408" y2="120" />
+        <Line x1="306" y1="0" x2="306" y2="144" />
+        <Line x1="354" y1="0" x2="354" y2="144" />
+      </G>
+
+      {variant === 'tokyo' ? (
+        <G>
+          <G opacity={0.82} stroke={sg.neon} strokeWidth="5" strokeLinecap="square">
+            <Line x1="304" y1="41" x2="386" y2="41" />
+            <Line x1="314" y1="52" x2="376" y2="52" />
+            <Line x1="324" y1="53" x2="324" y2="119" />
+            <Line x1="366" y1="53" x2="366" y2="119" />
+          </G>
+          <G fill={sg.text} opacity={0.75}>
+            <Rect x="292" y="96" width="8" height="8" rx="2" />
+            <Rect x="389" y="24" width="5" height="5" rx="1" />
+          </G>
+          <Path d="M270 123 L294 99 L318 123" fill="none" stroke={sg.muted} strokeWidth="1.5" />
+        </G>
+      ) : null}
+
+      {variant === 'value' ? (
+        <G>
+          <Circle cx="345" cy="72" r="44" fill={sg.surface} stroke={sg.line} strokeWidth="1" />
+          <Path d="M327 59 H366 L354 47 M366 59 L354 71" fill="none" stroke={sg.gold} strokeWidth="5" strokeLinecap="square" />
+          <Path d="M363 85 H324 L336 73 M324 85 L336 97" fill="none" stroke={sg.gold} strokeWidth="5" strokeLinecap="square" />
+          <G fill={sg.goldHi} opacity={0.78}>
+            <Rect x="285" y="30" width="6" height="24" rx="2" />
+            <Rect x="285" y="60" width="6" height="44" rx="2" />
+            <Rect x="285" y="110" width="6" height="8" rx="2" />
+          </G>
+        </G>
+      ) : null}
+
+      {variant === 'verify' ? (
+        <G>
+          <Rect x="300" y="25" width="82" height="94" rx="13" fill={sg.surface} stroke={sg.line} />
+          <G opacity={0.74} stroke={sg.muted} strokeWidth="1">
+            <Line x1="314" y1="46" x2="368" y2="46" />
+            <Line x1="314" y1="60" x2="368" y2="60" />
+            <Line x1="314" y1="74" x2="352" y2="74" />
+            <Line x1="314" y1="88" x2="360" y2="88" />
+          </G>
+          <Circle cx="354" cy="93" r="18" fill={sg.surface2} stroke={sg.gold} strokeWidth="2" />
+          <Path d="M345 93 L352 100 L364 84" fill="none" stroke={sg.gold} strokeWidth="4" strokeLinecap="square" />
+          <Path d="M274 118 L296 91 L318 118" fill="none" stroke={sg.neon} strokeWidth="2" opacity={0.8} />
+        </G>
+      ) : null}
+    </Svg>
+  );
+}
+
 const styles = StyleSheet.create({
   wrap: {
     height: 144,
@@ -147,6 +181,8 @@ const styles = StyleSheet.create({
     borderRadius: sg.radius.panel,
     overflow: 'hidden',
     backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
   },
   slide: { ...StyleSheet.absoluteFillObject },
   textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md, maxWidth: '78%' },
@@ -155,9 +191,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: sg.text,
     letterSpacing: 0.3,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
   },
   sub: {
     fontFamily: sg.font.body,
@@ -165,9 +198,6 @@ const styles = StyleSheet.create({
     color: sg.text,
     marginTop: 3,
     opacity: 0.9,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
   },
   footnote: {
     fontFamily: sg.font.body,
@@ -175,9 +205,6 @@ const styles = StyleSheet.create({
     color: sg.text,
     opacity: 0.7,
     marginTop: 4,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
   },
   dots: {
     position: 'absolute',

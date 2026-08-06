@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { CollectorQuestDef } from '../../data/collectorQuests';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 
 type QuestProgress = { progress: number; claimed: boolean };
@@ -86,14 +86,14 @@ const styles = StyleSheet.create({
   kindPill: {
     alignSelf: 'flex-start',
     fontSize: 9,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   questTitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     lineHeight: 20,
   },
@@ -117,9 +117,10 @@ const styles = StyleSheet.create({
   },
   questMeta: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.dataBold,
     color: sg.muted,
     letterSpacing: 0.3,
+    fontVariant: [...sg.numeric],
   },
   claimBtn: {
     backgroundColor: sg.surface2,
@@ -130,11 +131,12 @@ const styles = StyleSheet.create({
   claimBtnText: {
     color: sg.text,
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
   },
   claimedPill: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     paddingVertical: 6,
   },

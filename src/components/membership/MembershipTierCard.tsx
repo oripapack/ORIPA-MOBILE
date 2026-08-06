@@ -75,7 +75,9 @@ export function MembershipTierCard({ plan, selected, onSelect }: MembershipTierC
       <Text style={styles.priceLine}>
         {t('membership.pricePerMonth', { price: `$${plan.priceUsd.toFixed(2)}` })}
       </Text>
-      <Text style={styles.coinsLine}>{t('membership.coinsMonthly', { count: plan.monthlyCoins })}</Text>
+      <Text style={styles.pointsLine}>
+        {t('membership.coinsMonthly', { count: plan.monthlyPoints.toLocaleString() })}
+      </Text>
 
       <View style={styles.divider} />
 
@@ -158,12 +160,14 @@ const styles = StyleSheet.create({
   },
   priceLine: {
     fontSize: fontSize.md,
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.data,
     color: sg.text,
     marginTop: spacing.sm,
   },
-  coinsLine: {
+  pointsLine: {
     fontSize: fontSize.sm,
+    fontFamily: sg.font.data,
+    fontVariant: ['tabular-nums'],
     color: sg.muted,
     marginTop: 4,
   },

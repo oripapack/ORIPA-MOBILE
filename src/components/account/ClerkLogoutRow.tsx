@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useClerk } from '@clerk/clerk-expo';
 import { ListRow } from '../shared/ListRow';
@@ -16,7 +16,7 @@ export function ClerkLogoutRow() {
   return (
     <ListRow
       label={t('account.logout')}
-      icon={<Text>🚪</Text>}
+      icon={<Ionicons name="log-out-outline" size={20} color="#E5484D" />}
       destructive
       showChevron={false}
       onPress={() =>

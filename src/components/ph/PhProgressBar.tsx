@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { ph } from '../../tokens/phTheme';
-import { brandFont, fontSize } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
+import { sg } from '../../tokens/sg';
 
 export function PhProgressBar({ fraction }: { fraction: number }) {
   const pct = Math.round(fraction * 100);
@@ -16,7 +17,7 @@ export function PhProgressBar({ fraction }: { fraction: number }) {
           ]}
         />
       </View>
-      <Text style={[styles.label, isLow && { color: ph.red, fontFamily: brandFont.bold }]}>
+      <Text style={[styles.label, isLow && { color: ph.red, fontFamily: sg.font.dataBold }]}>
         {isLow ? `Low stock — ${pct}% left` : `${pct}% remaining`}
       </Text>
     </View>
@@ -31,5 +32,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   fill: { height: '100%', borderRadius: 1 },
-  label: { marginTop: 4, fontSize: 10, color: ph.textMuted },
+  label: { marginTop: 4, fontSize: 10, fontFamily: sg.font.data, color: ph.textMuted },
 });

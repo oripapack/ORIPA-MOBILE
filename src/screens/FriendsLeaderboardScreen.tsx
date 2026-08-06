@@ -96,7 +96,9 @@ export function FriendsLeaderboardScreen() {
             style={[styles.row, e.isCurrentUser && styles.rowMe]}
           >
             <Text style={styles.rank}>{e.rank}</Text>
-            <Text style={styles.emoji}>{e.avatarEmoji}</Text>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>{e.displayName.slice(0, 1).toUpperCase()}</Text>
+            </View>
             <View style={styles.rowMeta}>
               <Text style={styles.rowName} numberOfLines={1}>
                 {e.displayName}
@@ -151,13 +153,29 @@ const styles = StyleSheet.create({
   rowMe: { borderColor: sg.line, backgroundColor: 'rgba(255,74,56,0.10)' },
   rank: {
     fontSize: fontSize.md,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.dataBold,
     color: sg.muted,
     width: 28,
+    fontVariant: [...sg.numeric],
   },
-  emoji: { fontSize: 22 },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
+  },
+  avatarText: { fontSize: 11, fontFamily: sg.font.bodyBold, color: sg.gold },
   rowMeta: { flex: 1, minWidth: 0 },
   rowName: { fontSize: fontSize.md, fontFamily: sg.font.bodyBold, color: sg.text },
   rowUn: { fontSize: fontSize.xs, color: sg.muted, marginTop: 2 },
-  rowVal: { fontSize: fontSize.md, fontFamily: sg.font.display, color: sg.surface2 },
+  rowVal: {
+    fontSize: fontSize.md,
+    fontFamily: sg.font.dataBold,
+    color: sg.text,
+    fontVariant: [...sg.numeric],
+  },
 });

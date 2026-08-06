@@ -37,7 +37,7 @@ export function PaymentPortalScreen() {
       headerTintColor: sg.text,
       headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: sg.surface2 },
+      headerStyle: { backgroundColor: sg.bg },
     });
   }, [navigation, t]);
 
@@ -107,7 +107,7 @@ export function PaymentPortalScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.bg,
   },
   scroll: { flex: 1 },
   content: {
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: sg.line,
     alignItems: 'center',
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.bg,
   },
   tabActive: {
     borderColor: sg.gold,

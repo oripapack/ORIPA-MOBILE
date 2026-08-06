@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MembershipTierCard } from '../components/membership/MembershipTierCard';
-import { MEMBERSHIP_PLANS, type MembershipTierId } from '../data/membershipPlans';
+import { MOCK_MEMBERSHIP_PLANS, type MembershipTierId } from '../data/membershipPlans';
 import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { fontSize } from '../tokens/typography';
@@ -50,15 +50,15 @@ export function MembershipScreen() {
   }, [simulatedTier]);
 
   const onSubscribe = useCallback(() => {
-    const plan = MEMBERSHIP_PLANS.find((p) => p.id === selectedId);
+    const plan = MOCK_MEMBERSHIP_PLANS.find((p) => p.id === selectedId);
     if (!plan) return;
     setSimulatedTier(plan.id);
-    addCredits(plan.monthlyCoins);
+    addCredits(plan.monthlyPoints);
     showUserMessage(
       t('membership.simActivatedTitle'),
       t('membership.simActivatedBody', {
         tier: t(`membership.tierName_${plan.id}`),
-        coins: plan.monthlyCoins.toLocaleString(),
+        coins: plan.monthlyPoints.toLocaleString(),
       }),
     );
   }, [addCredits, selectedId, setSimulatedTier, t]);
@@ -102,7 +102,7 @@ export function MembershipScreen() {
           <Text style={styles.valueBody}>{t('membership.valueBlockBody')}</Text>
         </View>
 
-        {MEMBERSHIP_PLANS.map((plan) => (
+        {MOCK_MEMBERSHIP_PLANS.map((plan) => (
           <MembershipTierCard
             key={plan.id}
             plan={plan}

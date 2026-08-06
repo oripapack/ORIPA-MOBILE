@@ -1,25 +1,23 @@
 import React from 'react';
 import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import type { SocialPullEvent } from '../../data/socialMock';
-import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { formatRelativeTime, formatUsd } from '../../lib/socialFormat';
-import { rarityColor, rarityLabel } from './rarityStyles';
 
 interface Props {
   pull: SocialPullEvent;
 }
 
 export function SocialPullRow({ pull }: Props) {
-  const rc = rarityColor(pull.rarity);
   return (
     <View style={styles.row}>
-      <View style={[styles.art, { borderColor: rc }]}>
+      <View style={styles.art}>
         {pull.imageUrl ? (
           <Image source={{ uri: pull.imageUrl }} style={styles.artImg} resizeMode="cover" />
         ) : (
-          <Text style={styles.artEmoji}>🃏</Text>
+          <Ionicons name="albums-outline" size={27} color={sg.muted} />
         )}
       </View>
       <View style={styles.meta}>
@@ -37,9 +35,6 @@ export function SocialPullRow({ pull }: Props) {
           {pull.packTitle}
         </Text>
         <View style={styles.bottom}>
-          <View style={[styles.rarityPill, { backgroundColor: `${rc}18` }]}>
-            <Text style={[styles.rarityText, { color: rc }]}>{rarityLabel(pull.rarity)}</Text>
-          </View>
           <Text style={styles.value}>{formatUsd(pull.estimatedValue)}</Text>
           <Text style={styles.time}>{formatRelativeTime(pull.timestamp)}</Text>
         </View>
@@ -66,11 +61,11 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1,
+    borderColor: sg.line,
     overflow: 'hidden',
   },
   artImg: { width: '100%', height: '100%' },
-  artEmoji: { fontSize: 28 },
   meta: { flex: 1, minWidth: 0 },
   titleRow: {
     flexDirection: 'row',
@@ -80,7 +75,7 @@ const styles = StyleSheet.create({
   },
   cardName: {
     flex: 1,
-    fontSize: fontSize.md,
+    fontSize: 17,
     fontFamily: sg.font.display,
     color: sg.text,
     lineHeight: 20,
@@ -99,7 +94,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   pack: {
-    fontSize: fontSize.xs,
+    fontSize: 11,
     color: sg.muted,
     marginBottom: spacing.sm,
   },
@@ -109,22 +104,14 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: spacing.sm,
   },
-  rarityPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: radius.full,
-  },
-  rarityText: {
-    fontSize: 10,
-    fontFamily: sg.font.bodyBold,
-  },
   value: {
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.display,
+    fontSize: 13,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
+    fontVariant: [...sg.numeric],
   },
   time: {
-    fontSize: fontSize.xs,
+    fontSize: 11,
     color: sg.muted,
     marginLeft: 'auto',
   },

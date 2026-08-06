@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useClerk, useUser } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { AppUserUnsafeMetadata } from '../../lib/clerkProfile';
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   guestEyebrow: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.error,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
@@ -115,13 +115,13 @@ const styles = StyleSheet.create({
   },
   guestTitle: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     color: sg.text,
     marginBottom: spacing.sm,
   },
   guestBody: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.md,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   signInBtnText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   identityRow: {
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   signedInLabel: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
@@ -171,13 +171,13 @@ const styles = StyleSheet.create({
   },
   identityName: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     color: sg.text,
   },
   identityEmail: {
     marginTop: 2,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   signOutBtn: {
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   signOutBtnText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
   },
 });

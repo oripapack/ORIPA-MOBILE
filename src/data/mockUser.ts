@@ -1,3 +1,4 @@
+// 実データ待ち。外部に見せないこと。
 /**
  * After a pack opens, user chooses Vault vs convert — until then, `pending`.
  * `vaulted`: secured hold with optional ship / trade / resale from Vault.
@@ -6,6 +7,9 @@ export type PullFulfillment = 'pending' | 'vaulted' | 'converted' | 'shipped';
 
 /** Lowest → highest: common (green) … mythic (red). */
 export type PullRarityTier = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+
+/** MOCK UI state only — keeps one Vault action sheet reachable in local review builds. */
+const MOCK_VAULT_EXPIRY = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 
 export interface Pull {
   id: string;
@@ -71,6 +75,11 @@ export const mockUser: UserState = {
       result: 'Charizard ex Full Art',
       creditsWon: 850,
       timestamp: new Date('2026-03-19T14:22:00'),
+      fulfillment: 'vaulted',
+      vaultExpiresAt: MOCK_VAULT_EXPIRY,
+      vaultHoldDays: 14,
+      convertCreditValue: 850,
+      tier: 'epic',
     },
     {
       id: 'p2',

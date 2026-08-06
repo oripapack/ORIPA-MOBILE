@@ -39,7 +39,6 @@ import { useRequireAuth } from '../hooks/useRequireAuth';
 import { ShopCoach } from '../components/coach/ShopCoach';
 import { useAppStore } from '../store/useAppStore';
 import { getAllCardMarketListings } from '../lib/friendVaultShop';
-import type { PullRarityTier } from '../data/mockUser';
 
 type MarketTab = 'packs' | 'cards';
 
@@ -55,17 +54,8 @@ const brandFont = {
 const CARD_SORT_OPTIONS = [
   { key: 'price_low', label: 'Price ↑' },
   { key: 'price_high', label: 'Price ↓' },
-  { key: 'rarity', label: 'Tier' },
 ] as const;
 type CardSortKey = (typeof CARD_SORT_OPTIONS)[number]['key'];
-
-const RARITY_RANK: Record<PullRarityTier, number> = {
-  common: 0,
-  rare: 1,
-  epic: 2,
-  legendary: 3,
-  mythic: 4,
-};
 
 const CATEGORY_KEYS: (ListingCategory | 'all')[] = [
   'all',
@@ -120,11 +110,6 @@ export function MarketplaceScreen() {
       list = [...list].sort((a, b) => a.listPriceUsd - b.listPriceUsd);
     } else if (cardSort === 'price_high') {
       list = [...list].sort((a, b) => b.listPriceUsd - a.listPriceUsd);
-    } else if (cardSort === 'rarity') {
-      list = [...list].sort(
-        (a, b) =>
-          (RARITY_RANK[b.tier ?? 'common'] ?? 0) - (RARITY_RANK[a.tier ?? 'common'] ?? 0),
-      );
     }
     return list;
   }, [allCardListings, cardQuery, cardSort]);

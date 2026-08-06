@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { useFriendInviteResolver } from '../../hooks/useFriendInviteResolver';
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: fontSize.xl,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   closeBtn: {
@@ -221,14 +221,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
     marginBottom: spacing.lg,
   },
   fieldLabel: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     marginBottom: spacing.xs,
   },
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
     fontSize: fontSize.md,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     color: sg.text,
     backgroundColor: sg.surface2,
     marginBottom: spacing.md,
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   methodList: {
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   methodLabel: {
     flex: 1,
     fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   demoBlock: {
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   },
   demoTitle: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     marginBottom: spacing.sm,
   },
@@ -316,12 +316,12 @@ const styles = StyleSheet.create({
   },
   demoName: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   demoHandle: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     color: sg.muted,
     marginTop: 2,
   },
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   demoAddText: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
   },
 });

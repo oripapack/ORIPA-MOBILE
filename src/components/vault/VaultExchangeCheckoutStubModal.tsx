@@ -3,7 +3,7 @@ import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sgVault } from '../../tokens/sgVault';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PrimaryButton } from '../shared/PrimaryButton';
@@ -16,8 +16,6 @@ type Props = {
   itemTitle: string;
   listPriceUsd: number;
   onClose: () => void;
-  /** Demo: completes purchase without real PSP (production: Stripe PaymentSheet). */
-  onSimulatePaid: () => void;
 };
 
 export function VaultExchangeCheckoutStubModal({
@@ -25,7 +23,6 @@ export function VaultExchangeCheckoutStubModal({
   itemTitle,
   listPriceUsd,
   onClose,
-  onSimulatePaid,
 }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -43,8 +40,9 @@ export function VaultExchangeCheckoutStubModal({
           <Text style={styles.price}>{formatVaultExchangeUsd(listPriceUsd)}</Text>
           <Text style={styles.body}>{t('vaultExchange.checkoutBody')}</Text>
           <PrimaryButton
-            label={t('vaultExchange.checkoutSimulateCta', { price: formatVaultExchangeUsd(listPriceUsd) })}
-            onPress={onSimulatePaid}
+            label={t('vaultExchange.checkoutSimulateCta')}
+            onPress={onClose}
+            disabled
             style={styles.primary}
           />
           <SecondaryButton label={t('vaultExchange.checkoutCancel')} onPress={onClose} />
@@ -67,26 +65,27 @@ const styles = StyleSheet.create({
   },
   kicker: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.gold,
     letterSpacing: 1.1,
     marginBottom: spacing.xs,
   },
   title: {
     fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+    fontFamily: sgVault.font.display,
     color: sgVault.text,
     marginBottom: spacing.sm,
   },
   item: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontFamily: sgVault.font.bodyMedium,
     color: sgVault.muted,
     marginBottom: spacing.xs,
   },
   price: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
+    fontFamily: sgVault.font.dataBold,
+    fontVariant: ['tabular-nums'],
     color: sgVault.text,
     marginBottom: spacing.md,
   },

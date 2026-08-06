@@ -23,41 +23,41 @@ Goal: upgrade and unify every user-facing screen at 440×956 in English without 
 
 ### Pack and fulfillment flow
 
-- [ ] Pack details
-- [ ] Opening pre/post chrome (opening engine itself is owned by the opening team)
-- [ ] Result
-- [ ] Payment portal
-- [ ] Shipping address
-- [ ] Pull history
+- [x] Pack details — 440×956 verified
+- [x] Opening pre/post chrome — ring connection verified; opening engine remains opening-team owned
+- [x] Result — 440×956 direct-review route and Trade in confirmation verified
+- [x] Payment portal — Points and physical-order preview states verified
+- [x] Shipping address — 440×956 verified
+- [x] Pull history — 440×956 verified
 
 ### Account and onboarding
 
 - [ ] Authentication
 - [ ] Phone linking
 - [ ] Profile onboarding
-- [ ] Settings
-- [ ] Linked accounts
-- [ ] Identity verification
-- [ ] Wallet linking
-- [ ] Payout method
+- [x] Settings — 440×956 verified
+- [x] Linked accounts — configuration-empty state verified
+- [x] Identity verification — configuration-empty state verified
+- [x] Wallet linking — disabled-provider state verified; Clerk hook boundary fixed
+- [x] Payout method — configuration-empty state verified
 
 ### Retention and social
 
-- [ ] Notifications
-- [ ] Promotions
-- [ ] Promos info
-- [ ] Hot drops info
-- [ ] Membership
-- [ ] Tier benefits
-- [ ] Collector quests
+- [x] Notifications — 440×956 verified; local-only preview state is explicit
+- [x] Promotions — 440×956 verified
+- [x] Promos info — Help Center route restored; 440×956 verified
+- [x] Hot drops info — Help Center route restored; 440×956 verified
+- [x] Membership — 440×956 preview state verified; billing blocked by `KNOWN_ISSUES` #8
+- [x] Level progress (former Tier benefits) — 440×956 verified; unsupported benefit claims removed
+- [x] Collector quests — 440×956 verified
 - [ ] Friend profile
 - [ ] Friends leaderboard
 
 ### Support and missing product surfaces
 
-- [ ] Help center
-- [ ] Offers — no routed screen exists; product/data scope required
-- [ ] Messages — no routed screen exists; product/data scope required
+- [x] Help center — 440×956 verified; preview support limitation is explicit
+- [x] Offers — routed N2 connection-empty state; service blocked by `KNOWN_ISSUES` #9
+- [x] Messages — routed N2 connection-empty state; service blocked by `KNOWN_ISSUES` #9
 
 ## Shared foundation
 
@@ -74,3 +74,5 @@ Goal: upgrade and unify every user-facing screen at 440×956 in English without 
 - Card rarity/tier data is unresolved (`KNOWN_ISSUES` #5).
 - Graded-card assumptions are not confirmed (`KNOWN_ISSUES` #6).
 - Result navigation is not connected from the owned opening flow.
+- Membership billing and server entitlements are not connected (`KNOWN_ISSUES` #8).
+- Physical checkout, Offers, and Messages service layers are not connected (`KNOWN_ISSUES` #9).

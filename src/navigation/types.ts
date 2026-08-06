@@ -43,6 +43,8 @@ export type RootStackParamList = {
   PullHistory: undefined;
   FriendProfile: { username: string };
   FriendsLeaderboard: undefined;
+  Offers: undefined;
+  Messages: undefined;
   LinkedAccounts: undefined;
   WalletLinking: undefined;
   IdentityVerification: undefined;

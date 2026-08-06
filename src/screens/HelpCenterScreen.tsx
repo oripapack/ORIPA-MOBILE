@@ -10,6 +10,7 @@ import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { SUPPORT_EMAIL } from '../config/app';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 type Nav = StackNavigationProp<RootStackParamList, 'HelpCenter'>;
 
@@ -55,6 +56,31 @@ export function HelpCenterScreen() {
           </View>
         );
       })}
+
+      <Text style={styles.sectionLabel}>{t('helpCenter.guidesSection')}</Text>
+      <View style={styles.guidesCard}>
+        <TouchableOpacity
+          style={styles.guideRow}
+          onPress={() => navigation.navigate('HotDropsInfo')}
+          activeOpacity={0.78}
+          accessibilityRole="button"
+        >
+          <Ionicons name="flash-outline" size={20} color={sg.gold} />
+          <Text style={styles.guideTitle}>{t('hotDropsInfo.navTitle')}</Text>
+          <Ionicons name="chevron-forward" size={18} color={sg.muted} />
+        </TouchableOpacity>
+        <View style={styles.guideDivider} />
+        <TouchableOpacity
+          style={styles.guideRow}
+          onPress={() => navigation.navigate('PromosInfo')}
+          activeOpacity={0.78}
+          accessibilityRole="button"
+        >
+          <Ionicons name="pricetag-outline" size={20} color={sg.gold} />
+          <Text style={styles.guideTitle}>{t('promosInfo.navTitle')}</Text>
+          <Ionicons name="chevron-forward" size={18} color={sg.muted} />
+        </TouchableOpacity>
+      </View>
 
       <Text style={styles.sectionLabel}>{t('helpCenter.contactSection')}</Text>
       <TouchableOpacity
@@ -105,6 +131,31 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginTop: spacing.lg,
     marginBottom: spacing.sm,
+  },
+  guidesCard: {
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: radius.lg,
+    backgroundColor: sg.surface2,
+    overflow: 'hidden',
+  },
+  guideRow: {
+    minHeight: 54,
+    paddingHorizontal: spacing.base,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  guideTitle: {
+    flex: 1,
+    fontSize: fontSize.sm,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
+  },
+  guideDivider: {
+    height: 1,
+    marginLeft: spacing.base + 20 + spacing.sm,
+    backgroundColor: sg.line,
   },
   contactBtn: {
     backgroundColor: sg.gold,

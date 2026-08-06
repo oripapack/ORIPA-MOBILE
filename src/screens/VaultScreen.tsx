@@ -35,7 +35,7 @@ import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { getLocalizedPackTitle } from '../i18n/packCopy';
 import { sgVault } from '../tokens/sgVault';
 import { radius, spacing } from '../tokens/spacing';
-import type { Pull, PullRarityTier } from '../data/mockUser';
+import type { Pull } from '../data/mockUser';
 
 const fontSize = { xs: 11, sm: 13, md: 17, xxl: 28 } as const;
 const brandFont = {
@@ -51,44 +51,8 @@ type VaultNav = CompositeNavigationProp<
   StackNavigationProp<RootStackParamList>
 >;
 
-const TIER_ACCENT: Record<PullRarityTier, string> = {
-  common: '#94A3B8',
-  rare: '#60A5FA',
-  epic: '#A855F7',
-  legendary: '#FBBF24',
-  mythic: '#FB7185',
-};
-
-const TIER_GLOW: Record<PullRarityTier, string> = {
-  common: 'rgba(148, 163, 184, 0.08)',
-  rare: 'rgba(96, 165, 250, 0.1)',
-  epic: 'rgba(168, 85, 247, 0.12)',
-  legendary: 'rgba(251, 191, 36, 0.14)',
-  mythic: 'rgba(251, 113, 133, 0.14)',
-};
-
-function tierAccent(tier: PullRarityTier | undefined): string {
-  if (!tier) return sgVault.muted;
-  return TIER_ACCENT[tier];
-}
-
-function tierGlow(tier: PullRarityTier | undefined): string {
-  if (!tier) return 'transparent';
-  return TIER_GLOW[tier];
-}
-
-function coinsToUsdText(coins: number): string {
-  const usd = coins / 100;
-  if (usd >= 1000) return `$${(usd / 1000).toFixed(1)}K`;
-  if (usd >= 1) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(usd);
-  }
-  return `$${usd.toFixed(2)}`;
+function pointsText(points: number): string {
+  return `${points.toLocaleString('en-US')} pts`;
 }
 
 export function VaultScreen() {
@@ -271,9 +235,6 @@ function VaultTile({
   onPress: () => void;
 }) {
   const { t, i18n } = useTranslation();
-  const accent = tierAccent(pull.tier);
-  const glow = tierGlow(pull.tier);
-
   const isListed = (pull.vaultExchangeListUsd ?? 0) >= 1;
   const isVaulted = pull.fulfillment === 'vaulted';
   const urgent = isVaulted && vaultExpiryNoticeActive(pull);
@@ -295,7 +256,7 @@ function VaultTile({
           ? 'vaultScreen.statusVaulted'
           : 'vaultScreen.statusKept';
 
-  const valueText = coinsToUsdText(pull.creditsWon);
+  const valueText = pointsText(pull.creditsWon);
 
   return (
     <TouchableOpacity
@@ -310,13 +271,9 @@ function VaultTile({
         style={[
           styles.tileCard,
           isVaulted && styles.tileCardVault,
-          { backgroundColor: glow },
         ]}
         contentStyle={styles.tileInner}
       >
-        {/* Tier accent dot */}
-        <View style={[styles.tierDot, { backgroundColor: accent }]} />
-
         {/* Card name */}
         <Text style={styles.tileResult} numberOfLines={3}>
           {pull.result}
@@ -341,7 +298,7 @@ function VaultTile({
 
         {/* Value + Listed badge row */}
         <View style={styles.tileValueRow}>
-          <Text style={[styles.tileValue, { color: accent }]}>{valueText}</Text>
+          <Text style={styles.tileValue}>{valueText}</Text>
           {isListed ? (
             <View style={styles.tileListedBadge}>
               <Text style={styles.tileListedBadgeText}>LISTED</Text>
@@ -403,12 +360,6 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     minHeight: 168,
   },
-  tierDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginBottom: spacing.sm,
-  },
   tileResult: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
@@ -451,6 +402,7 @@ const styles = StyleSheet.create({
     fontFamily: sgVault.font.dataBold,
     letterSpacing: -0.2,
     fontVariant: [...sgVault.numeric],
+    color: sgVault.text,
   },
   tileListedBadge: {
     backgroundColor: 'rgba(61,220,151,0.12)',

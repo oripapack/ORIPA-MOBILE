@@ -167,6 +167,11 @@ export function SettingsScreen() {
         <Text style={styles.sectionHeader}>{t('account.sectionPreferences')}</Text>
         <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
           <ListRow
+            label={t('notifications.navTitle')}
+            icon={<Ionicons name="notifications-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
+            onPress={() => navigation.navigate('Notifications')}
+          />
+          <ListRow
             label={t('account.languageRegion')}
             icon={<Ionicons name="globe-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
             rightContent={<Text style={styles.localeValue}>{localeSummary}</Text>}

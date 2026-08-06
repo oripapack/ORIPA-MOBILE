@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
 import { fontSize } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
@@ -52,7 +53,7 @@ export function FilterSortRow() {
       <TouchableOpacity style={styles.sortBtn} onPress={() => setShowSort(true)} activeOpacity={0.7}>
         <Text style={styles.sortLabel}>{t('filterRow.sortPrefix')}</Text>
         <Text style={styles.sortValue}>{currentLabel}</Text>
-        <Text style={styles.sortChevron}>▾</Text>
+        <Ionicons name="chevron-down" size={14} color={sg.muted} />
       </TouchableOpacity>
 
       <Modal visible={showSort} transparent animationType="fade" {...transparentModalIOSProps}>
@@ -71,7 +72,7 @@ export function FilterSortRow() {
                 <Text style={[styles.dropdownText, sortOrder === opt.key && styles.dropdownTextActive]}>
                   {opt.label}
                 </Text>
-                {sortOrder === opt.key && <Text style={styles.checkmark}>✓</Text>}
+                {sortOrder === opt.key ? <Ionicons name="checkmark" size={20} color={sg.gold} /> : null}
               </TouchableOpacity>
             ))}
           </View>
@@ -105,11 +106,6 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
-  },
-  sortChevron: {
-    fontSize: fontSize.sm,
-    color: sg.muted,
-    marginLeft: 2,
   },
   overlay: {
     flex: 1,
@@ -145,10 +141,5 @@ const styles = StyleSheet.create({
   dropdownTextActive: {
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-  },
-  checkmark: {
-    color: sg.gold,
-    fontFamily: sg.font.bodyBold,
-    fontSize: fontSize.base,
   },
 });

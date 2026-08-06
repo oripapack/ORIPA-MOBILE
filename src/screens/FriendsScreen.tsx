@@ -200,6 +200,16 @@ export function FriendsScreen() {
 
   const openAdd = useCallback(() => requireAuth(() => setAddOpen(true)), [requireAuth]);
 
+  const openOffers = useCallback(
+    () => requireAuth(() => navigationRef.isReady() && navigationRef.navigate('Offers')),
+    [requireAuth],
+  );
+
+  const openMessages = useCallback(
+    () => requireAuth(() => navigationRef.isReady() && navigationRef.navigate('Messages')),
+    [requireAuth],
+  );
+
   const copyInviteLink = useCallback(async () => {
     const handle = user.username.trim();
     if (!handle) {
@@ -283,6 +293,19 @@ export function FriendsScreen() {
               <View style={styles.headerBtnPlaceholder} />
             )}
           </View>
+
+          {!isGuest ? (
+            <View style={styles.inboxActions}>
+              <TouchableOpacity style={styles.inboxAction} onPress={openOffers} accessibilityRole="button">
+                <Ionicons name="swap-horizontal-outline" size={18} color={sg.gold} />
+                <Text style={styles.inboxActionText}>{t('friends.offers')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.inboxAction} onPress={openMessages} accessibilityRole="button">
+                <Ionicons name="chatbubbles-outline" size={18} color={sg.gold} />
+                <Text style={styles.inboxActionText}>{t('friends.messages')}</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
 
           {!isGuest && incomingFriendRequests.length > 0 ? (
             <View style={styles.requestsBlock}>
@@ -536,6 +559,29 @@ const styles = StyleSheet.create({
   headerBtnPlaceholder: {
     width: 44,
     height: 44,
+  },
+  inboxActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: -spacing.sm,
+    marginBottom: spacing.lg,
+  },
+  inboxAction: {
+    flex: 1,
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    borderRadius: sg.radius.btn,
+    borderWidth: 1,
+    borderColor: sg.line,
+    backgroundColor: sg.surface,
+  },
+  inboxActionText: {
+    fontSize: fontSize.sm,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   requestsBlock: {
     marginBottom: spacing.xl,

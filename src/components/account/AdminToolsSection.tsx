@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useUser } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { isAdminUser } from '../../config/admin';
@@ -78,7 +78,7 @@ function AdminToolsCard() {
 const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -101,12 +101,13 @@ const styles = StyleSheet.create({
   balanceLabel: {
     flex: 1,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   balanceValue: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
     color: sg.text,
   },
   primaryAction: {
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
   },
   primaryActionText: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   secondaryAction: {
@@ -139,13 +140,13 @@ const styles = StyleSheet.create({
   },
   secondaryActionText: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
   },
   note: {
     marginTop: spacing.md,
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 16,
   },

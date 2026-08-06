@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useAuth, useClerk } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { brandFont, fontSize } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 
 function readCallbackSessionId(): string | null {
   if (typeof window === 'undefined') return null;
@@ -99,12 +99,12 @@ const styles = StyleSheet.create({
   title: {
     color: sg.text,
     fontSize: fontSize.lg,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
   },
   error: {
     color: sg.warning,
     fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
+    fontFamily: sg.font.body,
     textAlign: 'center',
   },
 });

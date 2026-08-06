@@ -1,55 +1,15 @@
-import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from 'react-native-reanimated';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
+import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
-import type { FriendActivityFeedItem, SocialRarity } from '../../data/socialMock';
+import type { FriendActivityFeedItem } from '../../data/socialMock';
 import { formatUsd, formatRelativeTime } from '../../lib/socialFormat';
-
-const RARITY_COLORS: Record<SocialRarity, string> = {
-  common: '#94a3b8',
-  uncommon: '#22c55e',
-  rare: '#3b82f6',
-  epic: '#a855f7',
-  legendary: '#f59e0b',
-  mythic: '#ef4444',
-};
 
 function isJustPulled(d: Date): boolean {
   const s = (Date.now() - d.getTime()) / 1000;
   return s >= 0 && s < 180;
-}
-
-function RarityPill({ rarity }: { rarity: SocialRarity }) {
-  const c = RARITY_COLORS[rarity];
-  return (
-    <View style={[styles.rarityPill, { borderColor: `${c}88` }]}>
-      <Text style={[styles.rarityPillText, { color: c }]}>{rarity.toUpperCase()}</Text>
-    </View>
-  );
-}
-
-function AnimatedRarityBar({ color }: { color: string }) {
-  const o = useSharedValue(0.45);
-  useEffect(() => {
-    o.value = withRepeat(
-      withTiming(1, { duration: 1100, easing: Easing.inOut(Easing.ease) }),
-      -1,
-      true,
-    );
-  }, [o]);
-  const barAnim = useAnimatedStyle(() => ({
-    opacity: o.value,
-  }));
-  return <Animated.View style={[styles.rarityBar, { backgroundColor: color }, barAnim]} />;
 }
 
 type Props = {
@@ -60,56 +20,43 @@ type Props = {
 
 export function FriendsActivityCard({ item, cardWidth, onOpenProfile }: Props) {
   const { t } = useTranslation();
-  const rarityColor = RARITY_COLORS[item.rarity];
   const just = isJustPulled(item.timestamp);
 
-  const shadowWrap = Platform.select({
-    ios: {
-      shadowColor: rarityColor,
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.26,
-      shadowRadius: 14,
-    },
-    android: { elevation: 0 },
-  });
-
   return (
-    <View style={[styles.cardWrap, { width: cardWidth }, shadowWrap]}>
+    <View style={[styles.cardWrap, { width: cardWidth }]}>
       <TouchableOpacity
-        style={[
-          styles.cardTouchable,
-          Platform.OS === 'android'
-            ? { borderWidth: 1, borderColor: `${rarityColor}44`, elevation: 8 }
-            : null,
-        ]}
+        style={styles.cardTouchable}
         onPress={() => onOpenProfile(item.username)}
         activeOpacity={0.92}
       >
-      <AnimatedRarityBar color={rarityColor} />
-      <View style={[styles.cardInner, { borderColor: `${rarityColor}28` }]}>
+      <View style={styles.cardInner}>
         <View style={styles.top}>
-          <Text style={styles.emoji}>{item.avatarEmoji}</Text>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{item.displayName.slice(0, 1).toUpperCase()}</Text>
+          </View>
           <View style={styles.topText}>
             <Text style={styles.user} numberOfLines={1}>
               @{item.username}
             </Text>
             <View style={styles.metaRow}>
               {just ? (
-                <View style={[styles.justPulled, { borderColor: `${rarityColor}55` }]}>
-                  <Text style={[styles.justPulledText, { color: rarityColor }]}>{t('friends.justPulled')}</Text>
+                <View style={styles.justPulled}>
+                  <Text style={styles.justPulledText}>{t('friends.justPulled')}</Text>
                 </View>
               ) : (
                 <Text style={styles.time}>{formatRelativeTime(item.timestamp)}</Text>
               )}
             </View>
           </View>
-          <RarityPill rarity={item.rarity} />
         </View>
         <Text style={styles.cardName} numberOfLines={2}>
           {item.cardName}
         </Text>
         <View style={styles.bottom}>
-          <Text style={styles.value}>{formatUsd(item.estimatedValue)}</Text>
+          <View>
+            <Text style={styles.value}>{formatUsd(item.estimatedValue)}</Text>
+            <Text style={styles.valueBasis}>{t('friends.listedValue')}</Text>
+          </View>
           <Text style={styles.pack} numberOfLines={1}>
             {item.packTitle}
           </Text>
@@ -129,23 +76,12 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     overflow: 'hidden',
   },
-  rarityBar: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 4,
-    borderTopLeftRadius: radius.lg,
-    borderBottomLeftRadius: radius.lg,
-    zIndex: 2,
-  },
   cardInner: {
-    marginLeft: 3,
     borderRadius: radius.lg,
     padding: spacing.md,
-    paddingLeft: spacing.md + 2,
     backgroundColor: sg.surface,
     borderWidth: 1,
+    borderColor: sg.line,
     minHeight: 148,
   },
   top: {
@@ -154,8 +90,20 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginBottom: spacing.sm,
   },
-  emoji: {
-    fontSize: 22,
+  avatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
+  },
+  avatarText: {
+    fontSize: 11,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
   },
   topText: {
     flex: 1,
@@ -168,7 +116,7 @@ const styles = StyleSheet.create({
   },
   user: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   time: {
@@ -179,31 +127,21 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
+    borderColor: 'rgba(255,74,56,0.42)',
     backgroundColor: sg.surface2,
   },
   justPulledText: {
     fontSize: 9,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
+    color: sg.neon,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
-  rarityPill: {
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 6,
-    borderWidth: 1,
-    backgroundColor: sg.surface2,
-  },
-  rarityPillText: {
-    fontSize: 8,
-    fontFamily: brandFont.black,
-    letterSpacing: 0.5,
-  },
   cardName: {
     fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.display,
     color: sg.text,
     marginBottom: spacing.sm,
     lineHeight: 20,
@@ -216,8 +154,17 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     color: sg.gold,
+    fontVariant: [...sg.numeric],
+  },
+  valueBasis: {
+    marginTop: 2,
+    fontSize: 9,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.muted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   pack: {
     flex: 1,

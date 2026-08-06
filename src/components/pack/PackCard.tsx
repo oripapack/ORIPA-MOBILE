@@ -8,6 +8,7 @@ import { ChipTagType, Pack, packImageSource } from '../../data/mockPacks';
 import { getMockPackTopHit } from '../../data/mockTopHits';
 import { getMockPackOdds } from '../../data/mockPackOdds';
 import { sg } from '../../tokens/sg';
+import { AssetBlockedCard } from '../shared/AssetBlockedCard';
 import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
@@ -71,9 +72,10 @@ export function PackCard({ pack, onPress }: Props) {
   const loc = getLocalizedPackFields(pack, t);
   const topHit = getMockPackTopHit(pack);
   const isChase = !!topHit?.isChase || pack.tags.includes('chase_boost');
+  const displayTags = useMemo(() => pack.tags.filter((tag) => tag !== 'graded'), [pack.tags]);
 
-  const primary = useMemo(() => primaryTag(pack.tags), [pack.tags]);
-  const secondary = useMemo(() => secondaryTag(pack.tags, primary), [pack.tags, primary]);
+  const primary = useMemo(() => primaryTag(displayTags), [displayTags]);
+  const secondary = useMemo(() => secondaryTag(displayTags, primary), [displayTags, primary]);
 
   const [oddsOpen, setOddsOpen] = useState(false);
   const odds = useMemo(() => getMockPackOdds(pack), [pack]);
@@ -208,7 +210,9 @@ export function PackCard({ pack, onPress }: Props) {
               ) : null}
             </View>
             <View style={styles.topHitRow}>
-              <Image source={{ uri: topHit.imageUrl }} style={styles.topHitThumb} contentFit="cover" />
+              <View style={styles.topHitThumb}>
+                <AssetBlockedCard label="MEDIA PENDING" compact />
+              </View>
               <View style={styles.topHitCopy}>
                 <Text style={styles.topHitName} numberOfLines={1}>
                   {topHit.name}

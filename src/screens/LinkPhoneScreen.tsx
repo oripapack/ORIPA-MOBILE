@@ -226,7 +226,7 @@ export function LinkPhoneScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t('linkPhone.countryPickerA11y')}
               >
-                <Text style={styles.countryFlag}>{selectedCountry.flag}</Text>
+                <Text style={styles.countryCode}>{selectedCountry.id}</Text>
                 <Text style={styles.countryDial}>{selectedCountry.dial}</Text>
                 <Ionicons name="chevron-down" size={18} color={sg.muted} />
               </TouchableOpacity>
@@ -377,8 +377,12 @@ const styles = StyleSheet.create({
     minHeight: 50,
     backgroundColor: sg.surface2,
   },
-  countryFlag: {
-    fontSize: fontSize.lg,
+  countryCode: {
+    minWidth: 24,
+    fontSize: 11,
+    fontFamily: sg.font.dataBold,
+    color: sg.gold,
+    letterSpacing: 0.6,
   },
   countryDial: {
     fontSize: fontSize.md,

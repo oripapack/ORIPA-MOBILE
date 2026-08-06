@@ -54,6 +54,36 @@
 - 実際に PSA 鑑定済みのカードを扱うのか、生カードなのかが未確認。生カードの場合、上記の表現は全て誤りであり、開封アニメーションのスラブ演出も成立しない。**確認が取れるまで、鑑定に関する表現を新規に増やさないこと。**
 - **担当**: 事業判断(要確認)。
 
+### 7. 【ブロッカー】Points価格とアプリ内課金が未接続
+- **記録日**: 2026-08-06
+- **内容**: `src/data/mockPacks.ts` の `MOCK_POINT_BUNDLES` は検証用の仮価格・仮割引率。`CreditsPurchaseSection` の購入操作もローカル残高を増やすだけで、App Store / Google Play の課金には接続されていない。開発版UIでは「Preview pricing only. No payment is charged」と明示する。
+- **必要作業**: 正式なPoints価格表と販売ポリシーを事業側で承認し、ストア商品ID・レシート検証・復元・失敗時処理を接続する。完了まで価格スクリーンショットを外部に出さないこと。
+- **担当**: 事業判断 + 決済バックエンド。**リリース前必須。**
+
+### 8. 【ブロッカー】Membership商品・権限・課金が未確定
+- **記録日**: 2026-08-06
+- **内容**: `src/data/membershipPlans.ts` の `MOCK_MEMBERSHIP_PLANS` は、月額価格・付与Points・会員特典・パック閲覧権限を含む検証用仮データ。現在の操作は端末内のデモ会員状態とローカルPointsを更新するだけで、App Store / Google Play課金、レシート検証、サーバー権限には接続されていない。
+- **必要作業**: 正式な商品設計とストア審査方針を承認し、商品ID・権限台帳・更新/解約/復元・失敗時処理を接続する。完了までMembership画面は外部に見せないこと。
+- **担当**: 事業判断 + 決済/権限バックエンド。**リリース前必須。**
+
+### 9. 【ブロッカー】物理取引・Marketplaceデータ・Offers・Messagesのサービス層が未接続
+- **記録日**: 2026-08-06
+- **内容**: Marketplaceの店舗・商品名・価格・状態・在庫・画像は `src/data/marketplace.ts` のMOCK。物理決済、在庫確保、税・配送、出品/Offersの台帳、Messagesの保存・送信・モデレーションも未実装。UIは未接続であることを明示する完成形の空状態まで実装しているが、取引を成立させることはできない。権利確認済み商品写真が入るまで画像枠はグレーのasset-blocked表示とする。
+- **必要作業**: 認可境界と取引状態機械を確定し、PaymentIntent、inventory lock、offer ledger、conversation storage/moderation、shipping fulfillmentをサーバー側に実装する。
+- **担当**: 商品設計 + バックエンド。**リリース前必須。**
+
+### 10. 【ブロッカー】Promosのルール・付与量・不正防止が未接続
+- **記録日**: 2026-08-06
+- **内容**: `src/data/promotions.mock.ts` の `MOCK_PROMO_CODES` / `MOCK_REFERRAL_PROGRAM` / `MOCK_SIGNUP_PROMOTION` は端末内レビュー用の仮ルール。コード利用、Points/無料パック付与、紹介成立はいずれもローカル状態で、資格判定・上限・期間・重複利用防止・正式規約に接続されていない。
+- **必要作業**: 承認済みPromotion Rulesを定義し、サーバー側の資格判定・原子的付与・監査ログ・不正防止・無効化を実装する。完了まで仮コードや付与量を外部に見せないこと。
+- **担当**: 事業/法務判断 + バックエンド。**リリース前必須。**
+
+### 11. 【ブロッカー】Recent Pulls・Friends統計・Vault ExchangeのデータがMOCK
+- **記録日**: 2026-08-06
+- **内容**: `shared/mock/recentPulls.ts`、`src/data/socialMock.ts`、`src/lib/friendVaultShowcase.ts`、`src/lib/friendVaultShop.ts` は画面レビュー用の仮データ。HomeのRecent Pullsは誤認防止のためPREVIEW表示と汎用ダミーへ変更済み。Friendsのプロフィール・順位・Vault商品名・価格・時刻は実ユーザー活動や実在庫を示さない。
+- **必要作業**: 認証済みユーザー、pull ledger、承認済みlisted value、公開範囲、取引台帳をサーバーAPIへ接続し、権利確認済みカード情報のみ返す。
+- **担当**: 商品設計 + バックエンド。**リリース前必須。**
+
 ## タスク登録(2026-07-31 デザインルール棚卸し docs/design-rules-inventory.md の選別結果)
 
 コード挙動を変えるタスクは登録のみで未実行。R-xxx は inventory の ID。

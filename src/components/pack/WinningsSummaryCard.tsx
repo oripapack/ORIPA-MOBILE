@@ -24,7 +24,7 @@ export function WinningsSummaryCard({
       <View style={styles.topRow}>
         <Text style={styles.label}>{label}</Text>
         <View style={styles.pill}>
-          <Text style={styles.pillText}>🪙 {currencyLabel}</Text>
+          <Text style={styles.pillText}>{currencyLabel}</Text>
         </View>
       </View>
 
