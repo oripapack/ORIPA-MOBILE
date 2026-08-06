@@ -18,6 +18,8 @@
     "marketing:landing": "open marketing/landing/index.html",
     "generate:sfx": "node scripts/generate-pack-sfx.mjs",
     "validate:i18n": "node scripts/validate-i18n-locales.mjs",
+    "smoke:live-packs": "node scripts/smoke-live-packs.mjs",
+    "deploy:backend": "npm --prefix backend run deploy:all",
     "sync:i18n": "node scripts/sync-i18n-missing-from-en.mjs",
     "apply:i18n": "node scripts/apply-i18n-translations.mjs"
   },

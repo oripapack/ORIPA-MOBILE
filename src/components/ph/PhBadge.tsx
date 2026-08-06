@@ -5,8 +5,7 @@ import { ph } from '../../tokens/phTheme';
 import { brandFont, fontSize } from '../../tokens/typography';
 
 const RARITY_LABEL: Record<RarityTier, string> = {
-  common: 'Common',
-  rare: 'Rare',
+  base: 'Base',
   epic: 'Epic',
   legendary: 'Legendary',
   mythic: 'Mythic',

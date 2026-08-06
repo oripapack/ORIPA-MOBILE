@@ -19,14 +19,28 @@ import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
 import { CREDITS_ARE_MOCK, DEV_STARTER_CREDITS, SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
 import type { PackRollResult } from '../components/pack/opening/types';
 import {
+  executeBulkPullLive,
   executePullLive,
+  newBatchIdempotencyKey,
   newClientSeed,
   newIdempotencyKey,
 } from '../lib/executePull';
+import {
+  fetchUserVaultFromServer,
+  instantTradeInLive,
+  isLiveVaultEnabled,
+  mergeVaultItemsIntoPullHistory,
+  resolveVaultItemIdForPull,
+} from '../data/userVault';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { fetchUserCreditBalance } from '../lib/userCredits';
 import { loadShippingAddress } from '../lib/shippingAddress';
 import { requestShipmentLive } from '../lib/requestShipment';
+import {
+  ensureShippingAddressId,
+  isLiveShippingEnabled,
+  requestPhysicalFulfillmentLive,
+} from '../data/shipping';
 import { loadClaimedFirstTimePacks, canClaimFirstTimePack, commitFirstTimePackClaim } from '../lib/firstTimePack';
 import { showUserMessage } from '../utils/showUserMessage';
 import { userWithSyncedProgression, tierXpBonusForPull } from '../lib/collectorProgression';
@@ -103,7 +117,25 @@ interface AppStore {
     mintStatus: string;
     roll: PackRollResult;
     sessionId: number;
+    vaultItemId?: string;
+    tradeInValueCredits?: number;
   } | null;
+  /** Server-backed ×10 batch awaiting bulk cinematic (ledger debits already applied). */
+  pendingBulkServerPull: {
+    sessionId: number;
+    batchId: string;
+    pulls: Array<{
+      pullId: string;
+      mintStatus: string;
+      roll: PackRollResult;
+      idempotencyKey: string;
+      vaultItemId?: string;
+      tradeInValueCredits?: number;
+    }>;
+    balanceAfter: number;
+  } | null;
+  /** pull_id → vault_item.id cache from live API. */
+  vaultItemIdByPullId: Record<string, string>;
 
   // Actions
   addCredits: (amount: number) => void;
@@ -135,11 +167,14 @@ interface AppStore {
    * After post-open sheet: items in `convertIds` credit the wallet and leave pull history;
    * items in `vaultIds` become `vaulted` with a hold timer (shipping from Vault later).
    */
-  finalizePendingFulfillment: (opts: { vaultIds: string[]; convertIds: string[] }) => void;
+  finalizePendingFulfillment: (opts: {
+    vaultIds: string[];
+    convertIds: string[];
+  }) => Promise<boolean>;
   /** User requests physical shipment from Vault (live API when configured). */
   requestVaultShipment: (pullId: string) => Promise<boolean>;
   /** Instant coin conversion for a vaulted item. */
-  convertVaultPullToCoins: (pullId: string) => void;
+  convertVaultPullToCoins: (pullId: string) => Promise<boolean>;
   /** Auto-convert vaulted items past `vaultExpiresAt` (call on interval / resume). */
   processVaultExpiries: () => void;
   /**
@@ -154,7 +189,10 @@ interface AppStore {
   hydrateFirstTimePacks: () => Promise<void>;
   /** Sync wallet credits from `user_credits` (live backend). */
   hydrateUserCredits: (userId: string) => Promise<void>;
+  /** Sync vault inventory from `user_vault_items` (live backend). */
+  hydrateUserVault: () => Promise<void>;
   clearPendingServerPull: () => void;
+  clearPendingBulkServerPull: () => void;
   /** Adds a friend by unique username + display name (caller resolves name from lookup). */
   addFriend: (username: string, displayName: string) => AddFriendResult;
   acceptIncomingFriendRequest: (username: string) => void;
@@ -242,6 +280,8 @@ export const useAppStore = create<AppStore>((set, get) => {
   resumePackOpenAfterCredits: false,
   resumePackOpenQuantity: 1,
   pendingServerPull: null,
+  pendingBulkServerPull: null,
+  vaultItemIdByPullId: {},
   usedFirstTimePackIds: [],
   friendVaultShopByUser: createInitialFriendVaultShop(),
   collectorStreakDays: 0,
@@ -424,7 +464,27 @@ export const useAppStore = create<AppStore>((set, get) => {
     }));
   },
 
+  hydrateUserVault: async () => {
+    if (!isLiveVaultEnabled()) return;
+    const items = await fetchUserVaultFromServer();
+    if (!items.length) return;
+
+    const idMap: Record<string, string> = {};
+    for (const item of items) {
+      idMap[item.pull_id] = item.id;
+    }
+
+    set((state) => ({
+      vaultItemIdByPullId: { ...state.vaultItemIdByPullId, ...idMap },
+      user: {
+        ...state.user,
+        pullHistory: mergeVaultItemsIntoPullHistory(state.user.pullHistory, items),
+      },
+    }));
+  },
+
   clearPendingServerPull: () => set({ pendingServerPull: null }),
+  clearPendingBulkServerPull: () => set({ pendingBulkServerPull: null }),
 
   addCredits: (amount) =>
     set((state) => ({
@@ -465,8 +525,8 @@ export const useAppStore = create<AppStore>((set, get) => {
 
   /**
    * Opens one pack (free grant or credits) or a bulk session (×10, credits only).
-   * Credits deduct on commit; collector XP applies when pulls are recorded (`applyPackOpenResult` / bulk).
-   * ×10 always uses local rolls → BulkOpenCinematic until a live multi-pull API exists.
+   * Live packs debit via server ledger (`deduct_user_credits` inside `process_atomic_pull`).
+   * Demo/offline packs still deduct client-side credits × quantity.
    */
   openPack: async (pack, options) => {
     const keepPack = options?.keepPackModalOnInsufficient ?? false;
@@ -553,79 +613,156 @@ export const useAppStore = create<AppStore>((set, get) => {
       const useLiveEngine =
         !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
 
-      // Live execute-pull is single-pull only. ×10 uses local rolls + BulkOpenCinematic.
-      if (useLiveEngine && pack.packVersionId && quantity === 1) {
-        const totalCost = pack.creditPrice;
+      const isInsufficientFunds = (code: string, status?: number) =>
+        code === 'INSUFFICIENT_FUNDS' ||
+        code === 'INSUFFICIENT_CREDITS' ||
+        status === 402;
+
+      const showInsufficientCredits = () => {
+        set((state) => ({
+          selectedPack: pack,
+          resumePackOpenAfterCredits: true,
+          resumePackOpenQuantity: quantity,
+          modals: {
+            ...state.modals,
+            insufficientCredits: true,
+            packOpening: keepPack ? true : false,
+          },
+        }));
+      };
+
+      // Live ledger: server debits via deduct_user_credits inside process_atomic_pull.
+      if (useLiveEngine && pack.packVersionId && (quantity === 1 || quantity === 10)) {
+        const totalCost = pack.creditPrice * quantity;
         if (user.credits < totalCost) {
-          set((state) => ({
-            selectedPack: pack,
-            resumePackOpenAfterCredits: true,
-            resumePackOpenQuantity: quantity,
-            modals: {
-              ...state.modals,
-              insufficientCredits: true,
-              packOpening: keepPack ? true : false,
-            },
-          }));
+          showInsufficientCredits();
           return false;
         }
 
-        const pullResult = await executePullLive({
-          clientSeed: newClientSeed(),
-          packVersionId: pack.packVersionId,
-          idempotencyKey: newIdempotencyKey(),
-          packCreditPrice: pack.creditPrice,
-        });
+        if (quantity === 1) {
+          const pullResult = await executePullLive({
+            clientSeed: newClientSeed(),
+            packVersionId: pack.packVersionId,
+            idempotencyKey: newIdempotencyKey(),
+            packCreditPrice: pack.creditPrice,
+          });
 
-        if (!pullResult.ok) {
-          if (
-            pullResult.code === 'INSUFFICIENT_CREDITS' ||
-            pullResult.status === 402
-          ) {
-            set((state) => ({
-              selectedPack: pack,
-              resumePackOpenAfterCredits: true,
-              resumePackOpenQuantity: quantity,
-              modals: {
-                ...state.modals,
-                insufficientCredits: true,
-                packOpening: keepPack ? true : false,
-              },
-            }));
+          if (!pullResult.ok) {
+            if (isInsufficientFunds(pullResult.code, pullResult.status)) {
+              showInsufficientCredits();
+              return false;
+            }
+            if (pullResult.code === 'UNAUTHORIZED') {
+              showUserMessage('Sign in required', 'Please sign in to open packs.');
+              return false;
+            }
+            if (pullResult.code === 'DUPLICATE_TRANSACTION') {
+              showUserMessage('Already processed', 'This pack open was already recorded.');
+              return false;
+            }
+            const label =
+              pullResult.code === 'NETWORK_ERROR' ? 'Connection problem' : 'Pack open failed';
+            showUserMessage(label, pullResult.message);
             return false;
           }
 
-          if (pullResult.code === 'UNAUTHORIZED') {
+          const nextSessionId = get().packOpenSessionId + 1;
+          const balanceAfter =
+            pullResult.response.balance_after ?? user.credits - pack.creditPrice;
+          const vaultItemId =
+            pullResult.response.vault_item_id ?? pullResult.response.vault_item?.id;
+          const tradeInValueCredits = pullResult.response.vault_item?.trade_in_value_credits;
+
+          set((state) => ({
+            selectedPack: pack,
+            resumePackOpenAfterCredits: false,
+            resumePackOpenQuantity: 1,
+            packOpenQuantity: 1,
+            modals: { ...state.modals, packOpening: true },
+            _packOpenRewardApplied: false,
+            packOpenSessionId: nextSessionId,
+            pendingBulkServerPull: null,
+            pendingServerPull: {
+              pullId: pullResult.response.pull_id,
+              mintStatus: pullResult.response.mint_status,
+              roll: pullResult.roll,
+              sessionId: nextSessionId,
+              vaultItemId,
+              tradeInValueCredits,
+            },
+            vaultItemIdByPullId: vaultItemId
+              ? {
+                  ...state.vaultItemIdByPullId,
+                  [pullResult.response.pull_id]: vaultItemId,
+                }
+              : state.vaultItemIdByPullId,
+            user: {
+              ...state.user,
+              credits: balanceAfter,
+            },
+          }));
+          return true;
+        }
+
+        const batchKey = newBatchIdempotencyKey();
+        const bulkResult = await executeBulkPullLive({
+          packVersionId: pack.packVersionId,
+          packCreditPrice: pack.creditPrice,
+          quantity,
+          batchIdempotencyKey: batchKey,
+        });
+
+        if (!bulkResult.ok) {
+          if (isInsufficientFunds(bulkResult.code, bulkResult.status)) {
+            showInsufficientCredits();
+            return false;
+          }
+          if (bulkResult.code === 'UNAUTHORIZED') {
             showUserMessage('Sign in required', 'Please sign in to open packs.');
             return false;
           }
-
+          if (bulkResult.code === 'DUPLICATE_TRANSACTION') {
+            showUserMessage('Already processed', 'This bulk open was already recorded.');
+            return false;
+          }
           const label =
-            pullResult.code === 'NETWORK_ERROR'
-              ? 'Connection problem'
-              : 'Pack open failed';
-          showUserMessage(label, pullResult.message);
+            bulkResult.code === 'NETWORK_ERROR' ? 'Connection problem' : 'Pack open failed';
+          showUserMessage(label, bulkResult.message);
           return false;
         }
 
         const nextSessionId = get().packOpenSessionId + 1;
         const balanceAfter =
-          pullResult.response.balance_after ?? user.credits - totalCost;
+          bulkResult.response.balanceAfter ?? user.credits - totalCost;
+        const vaultMap: Record<string, string> = {};
+
+        for (const p of bulkResult.response.pulls) {
+          if (p.vaultItemId) vaultMap[p.pullId] = p.vaultItemId;
+        }
 
         set((state) => ({
           selectedPack: pack,
           resumePackOpenAfterCredits: false,
           resumePackOpenQuantity: 1,
-          packOpenQuantity: 1,
+          packOpenQuantity: quantity,
           modals: { ...state.modals, packOpening: true },
           _packOpenRewardApplied: false,
           packOpenSessionId: nextSessionId,
-          pendingServerPull: {
-            pullId: pullResult.response.pull_id,
-            mintStatus: pullResult.response.mint_status,
-            roll: pullResult.roll,
+          pendingServerPull: null,
+          pendingBulkServerPull: {
             sessionId: nextSessionId,
+            batchId: bulkResult.response.batchId,
+            pulls: bulkResult.response.pulls.map((p) => ({
+              pullId: p.pullId,
+              mintStatus: p.mintStatus,
+              roll: p.roll,
+              idempotencyKey: p.idempotencyKey,
+              vaultItemId: p.vaultItemId,
+              tradeInValueCredits: p.tradeInValueCredits,
+            })),
+            balanceAfter,
           },
+          vaultItemIdByPullId: { ...state.vaultItemIdByPullId, ...vaultMap },
           user: {
             ...state.user,
             credits: balanceAfter,
@@ -634,7 +771,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         return true;
       }
 
-      // Local / bulk open (animation + catalog). Deducts device credits × quantity.
+      // Demo / offline: client-side credit deduction × quantity.
       const totalCost = pack.creditPrice * quantity;
       if (user.credits < totalCost) {
         set((state) => ({
@@ -662,6 +799,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         modals: { ...state.modals, packOpening: true },
         _packOpenRewardApplied: false,
         pendingServerPull: null,
+        pendingBulkServerPull: null,
         packOpenSessionId: state.packOpenSessionId + 1,
         user: {
           ...state.user,
@@ -690,7 +828,8 @@ export const useAppStore = create<AppStore>((set, get) => {
       }
 
       /** Must match on-screen `creditsWon` from the opening reveal (full roll, not capped to pack price). */
-      const convertCreditValue = result.creditsWon;
+      const convertCreditValue =
+        pendingServerPull?.tradeInValueCredits ?? result.creditsWon;
 
       const pull: Pull = {
         id:
@@ -699,11 +838,12 @@ export const useAppStore = create<AppStore>((set, get) => {
         packId: selectedPack.id,
         packTitle: selectedPack.title,
         result: result.result,
-        creditsWon: result.creditsWon,
+        creditsWon: convertCreditValue,
         timestamp: new Date(),
         fulfillment: 'pending',
         convertCreditValue,
         tier: result.tier,
+        vaultItemId: pendingServerPull?.vaultItemId,
       };
 
       const xpGain = 22 + tierXpBonusForPull(result.tier);
@@ -725,29 +865,31 @@ export const useAppStore = create<AppStore>((set, get) => {
   },
 
   applyBulkPackOpenResults: (results, options) => {
-    const { selectedPack, _packOpenRewardApplied } = get();
+    const { selectedPack, _packOpenRewardApplied, pendingBulkServerPull } = get();
     if (!selectedPack || _packOpenRewardApplied || results.length === 0) return;
 
     const persistToVault = options?.persistToVault !== false;
 
     set((state) => {
       if (!persistToVault) {
-        return { _packOpenRewardApplied: true };
+        return { _packOpenRewardApplied: true, pendingBulkServerPull: null };
       }
 
       const baseTime = Date.now();
       const pulls: Pull[] = results.map((result, i) => {
-        const convertCreditValue = result.creditsWon;
+        const serverPull = pendingBulkServerPull?.pulls[i];
+        const convertCreditValue = serverPull?.tradeInValueCredits ?? result.creditsWon;
         return {
-          id: `pull_${baseTime}_${i}_${Math.random().toString(16).slice(2)}`,
+          id: serverPull?.pullId ?? `pull_${baseTime}_${i}_${Math.random().toString(16).slice(2)}`,
           packId: selectedPack.id,
           packTitle: selectedPack.title,
           result: result.result,
-          creditsWon: result.creditsWon,
+          creditsWon: convertCreditValue,
           timestamp: new Date(),
           fulfillment: 'pending' as const,
           convertCreditValue,
           tier: result.tier,
+          vaultItemId: serverPull?.vaultItemId,
         };
       });
       const newIds = pulls.map((p) => p.id);
@@ -758,6 +900,7 @@ export const useAppStore = create<AppStore>((set, get) => {
 
       return {
         _packOpenRewardApplied: true,
+        pendingBulkServerPull: null,
         pendingFulfillmentPullIds: [...newIds, ...state.pendingFulfillmentPullIds],
         collectorQuestProgress: qp,
         user: {
@@ -842,9 +985,42 @@ export const useAppStore = create<AppStore>((set, get) => {
       },
     })),
 
-  finalizePendingFulfillment: ({ vaultIds, convertIds }) => {
+  finalizePendingFulfillment: async ({ vaultIds, convertIds }) => {
     const vSet = new Set(vaultIds);
     const cSet = new Set(convertIds);
+    const liveVault = isLiveVaultEnabled();
+    let liveBalanceAfter: number | undefined;
+
+    if (liveVault && convertIds.length > 0) {
+      const { vaultItemIdByPullId, user } = get();
+      const index = new Map(Object.entries(vaultItemIdByPullId));
+
+      for (const pullId of convertIds) {
+        const pull = user.pullHistory.find((p) => p.id === pullId);
+        if (!pull) continue;
+        const vaultItemId = resolveVaultItemIdForPull(pull, index);
+        if (!vaultItemId) {
+          showUserMessage(
+            'Trade-in unavailable',
+            'Could not find this card in the live vault inventory.',
+          );
+          return false;
+        }
+
+        const tradeIn = await instantTradeInLive({
+          vaultItemId,
+          idempotencyKey: newIdempotencyKey(),
+        });
+
+        if (!tradeIn.ok) {
+          showUserMessage('Trade-in failed', tradeIn.message);
+          return false;
+        }
+
+        liveBalanceAfter = tradeIn.response.balance_after;
+      }
+    }
+
     let didUpdate = false;
     set((state) => {
       const pendingPulls = state.user.pullHistory.filter(
@@ -852,9 +1028,11 @@ export const useAppStore = create<AppStore>((set, get) => {
       );
       if (pendingPulls.length === 0) return state;
 
-      const creditsToAdd = pendingPulls
-        .filter((p) => cSet.has(p.id))
-        .reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0);
+      const creditsToAdd = liveVault
+        ? 0
+        : pendingPulls
+            .filter((p) => cSet.has(p.id))
+            .reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0);
 
       const clearedIds = new Set([...vaultIds, ...convertIds]);
       const now = new Date();
@@ -872,7 +1050,10 @@ export const useAppStore = create<AppStore>((set, get) => {
         collectorQuestProgress: qp,
         user: {
           ...synced,
-          credits: state.user.credits + creditsToAdd,
+          credits:
+            liveBalanceAfter != null
+              ? liveBalanceAfter
+              : state.user.credits + creditsToAdd,
           pullHistory: state.user.pullHistory.map((p) => {
             if (p.fulfillment !== 'pending') return p;
             if (cSet.has(p.id)) {
@@ -894,13 +1075,89 @@ export const useAppStore = create<AppStore>((set, get) => {
       };
     });
     if (didUpdate) persistCollector();
+    return didUpdate;
   },
 
   requestVaultShipment: async (pullId) => {
-    const useLiveShipment =
-      !CREDITS_ARE_MOCK && isSupabaseConfigured;
+    const { user, vaultItemIdByPullId } = get();
+    const pull = user.pullHistory.find((p) => p.id === pullId);
+    if (!pull || pull.fulfillment !== 'vaulted') return false;
 
-    if (useLiveShipment) {
+    const liveShipping = isLiveShippingEnabled();
+
+    if (liveShipping) {
+      const vaultItemId = resolveVaultItemIdForPull(
+        pull,
+        new Map(Object.entries(vaultItemIdByPullId)),
+      );
+      if (!vaultItemId) {
+        showUserMessage(
+          'Shipment unavailable',
+          'Could not find this card in the live vault inventory.',
+        );
+        return false;
+      }
+
+      const addressResult = await ensureShippingAddressId(user.id);
+      if (!addressResult.ok) {
+        showUserMessage(
+          addressResult.code === 'ADDRESS_REQUIRED'
+            ? 'Shipping address required'
+            : 'Shipment request failed',
+          addressResult.message,
+        );
+        return false;
+      }
+
+      const result = await requestPhysicalFulfillmentLive({
+        userId: user.id,
+        vaultItemIds: [vaultItemId],
+        addressId: addressResult.addressId,
+        idempotencyKey: newIdempotencyKey(),
+      });
+
+      if (!result.ok) {
+        if (result.code === 'INSUFFICIENT_FUNDS') {
+          showUserMessage('Insufficient credits', result.message);
+          return false;
+        }
+        const label =
+          result.code === 'UNAUTHORIZED' ? 'Sign in required' : 'Shipment request failed';
+        showUserMessage(label, result.message);
+        return false;
+      }
+
+      set((state) => {
+        const u = normalizeFriendUsername(state.user.username);
+        const shop = removeListingsForPullId(state.friendVaultShopByUser, u, pullId);
+        return {
+          friendVaultShopByUser: shop,
+          user: {
+            ...state.user,
+            credits:
+              result.response.balance_after != null
+                ? result.response.balance_after
+                : state.user.credits,
+            pullHistory: state.user.pullHistory.map((p) =>
+              p.id === pullId && p.fulfillment === 'vaulted'
+                ? {
+                    ...p,
+                    fulfillment: 'shipped' as const,
+                    vaultExpiresAt: undefined,
+                    vaultHoldDays: undefined,
+                    vaultExchangeListUsd: undefined,
+                  }
+                : p,
+            ),
+          },
+        };
+      });
+      return true;
+    }
+
+    // Demo / offline: optional legacy edge path, else local state only
+    const useLegacyEdge = !CREDITS_ARE_MOCK && isSupabaseConfigured;
+    if (useLegacyEdge) {
       const shippingAddress = await loadShippingAddress();
       if (!shippingAddress) {
         showUserMessage(
@@ -917,6 +1174,15 @@ export const useAppStore = create<AppStore>((set, get) => {
             ? 'Connection problem'
             : 'Shipment request failed';
         showUserMessage(label, result.message);
+        return false;
+      }
+    } else {
+      const shippingAddress = await loadShippingAddress();
+      if (!shippingAddress) {
+        showUserMessage(
+          'Shipping address required',
+          'Add a shipping address in Settings before requesting shipment.',
+        );
         return false;
       }
     }
@@ -945,12 +1211,44 @@ export const useAppStore = create<AppStore>((set, get) => {
     return true;
   },
 
-  convertVaultPullToCoins: (pullId) => {
+  convertVaultPullToCoins: async (pullId) => {
+    const { user, vaultItemIdByPullId } = get();
+    const pull = user.pullHistory.find((p) => p.id === pullId);
+    if (!pull || pull.fulfillment !== 'vaulted') return false;
+
+    let balanceAfter: number | undefined;
+
+    if (isLiveVaultEnabled()) {
+      const vaultItemId = resolveVaultItemIdForPull(
+        pull,
+        new Map(Object.entries(vaultItemIdByPullId)),
+      );
+      if (!vaultItemId) {
+        showUserMessage(
+          'Trade-in unavailable',
+          'Could not find this card in the live vault inventory.',
+        );
+        return false;
+      }
+
+      const tradeIn = await instantTradeInLive({
+        vaultItemId,
+        idempotencyKey: newIdempotencyKey(),
+      });
+
+      if (!tradeIn.ok) {
+        showUserMessage('Trade-in failed', tradeIn.message);
+        return false;
+      }
+
+      balanceAfter = tradeIn.response.balance_after;
+    }
+
     let did = false;
     set((state) => {
-      const pull = state.user.pullHistory.find((p) => p.id === pullId);
-      if (!pull || pull.fulfillment !== 'vaulted') return state;
-      const amt = pull.creditsWon ?? pull.convertCreditValue ?? 0;
+      const current = state.user.pullHistory.find((p) => p.id === pullId);
+      if (!current || current.fulfillment !== 'vaulted') return state;
+      const amt = current.creditsWon ?? current.convertCreditValue ?? 0;
       const u = normalizeFriendUsername(state.user.username);
       const shop = removeListingsForPullId(state.friendVaultShopByUser, u, pullId);
       const qp = bumpQuestTrack(state.collectorQuestProgress, 'vault_convert', 1);
@@ -961,7 +1259,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         collectorQuestProgress: qp,
         user: {
           ...synced,
-          credits: state.user.credits + amt,
+          credits: balanceAfter != null ? balanceAfter : state.user.credits + amt,
           pullHistory: state.user.pullHistory.map((p) =>
             p.id === pullId
               ? {
@@ -977,6 +1275,7 @@ export const useAppStore = create<AppStore>((set, get) => {
       };
     });
     if (did) persistCollector();
+    return did;
   },
 
   processVaultExpiries: () => {
@@ -1093,7 +1392,7 @@ export const useAppStore = create<AppStore>((set, get) => {
       timestamp: new Date(),
       fulfillment: 'vaulted',
       convertCreditValue: notionalCredits,
-      tier: listing.tier ?? 'rare',
+      tier: listing.tier ?? 'base',
       vaultExpiresAt: exp,
       vaultHoldDays: VAULT_HOLD_DAYS,
     };

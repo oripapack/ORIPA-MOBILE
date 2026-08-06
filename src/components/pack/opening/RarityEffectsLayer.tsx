@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { RareConfetti } from './RarityEffects';
-import type { RarityTier } from '../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../lib/n2Rarity';
 import type { PackOpeningPhase, RevealRarity } from './types';
 
 export function RarityEffectsLayer({
@@ -10,7 +10,7 @@ export function RarityEffectsLayer({
   revealRarity,
 }: {
   phase: PackOpeningPhase;
-  tier: RarityTier;
+  tier: N2Tier;
   revealRarity: RevealRarity;
 }) {
   const active = phase === 'reveal' || phase === 'result';

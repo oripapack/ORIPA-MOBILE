@@ -78,10 +78,9 @@ export interface ActivityHighlight {
 }
 
 function tierToSocial(t?: PullRarityTier): SocialRarity {
-  if (!t) return 'rare';
+  if (!t) return 'common';
   const m: Record<PullRarityTier, SocialRarity> = {
-    common: 'common',
-    rare: 'rare',
+    base: 'common',
     epic: 'epic',
     legendary: 'legendary',
     mythic: 'mythic',

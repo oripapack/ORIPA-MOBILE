@@ -17,6 +17,8 @@ import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { SHIPPING_ADDRESS_STORAGE_KEY } from '../lib/shippingAddress';
+import { createShippingAddressLive, getUserShippingAddressesLive } from '../data/shipping';
+import { useAppStore } from '../store/useAppStore';
 import { showUserMessage } from '../utils/showUserMessage';
 
 const STORAGE_KEY = SHIPPING_ADDRESS_STORAGE_KEY;
@@ -47,8 +49,10 @@ export function ShippingAddressScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
+  const userId = useAppStore((s) => s.user.id);
   const [form, setForm] = useState<Form>(empty);
   const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -64,6 +68,20 @@ export function ShippingAddressScreen() {
   React.useEffect(() => {
     void (async () => {
       try {
+        const live = await getUserShippingAddressesLive();
+        if (live[0]) {
+          const a = live[0];
+          setForm({
+            fullName: a.recipient_name,
+            line1: a.street1,
+            line2: a.street2 ?? '',
+            city: a.city,
+            region: a.state ?? '',
+            postal: a.postal_code ?? '',
+            country: a.country,
+          });
+          return;
+        }
         const raw = await AsyncStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw) as Partial<Form>;
@@ -82,13 +100,28 @@ export function ShippingAddressScreen() {
       showUserMessage(t('shippingAddress.missingTitle'), t('shippingAddress.missingBody'));
       return;
     }
+    setSaving(true);
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+      const result = await createShippingAddressLive(userId, {
+        fullName: form.fullName,
+        line1: form.line1,
+        line2: form.line2 || undefined,
+        city: form.city,
+        region: form.region || undefined,
+        postal: form.postal || undefined,
+        country: form.country,
+      });
+      if (!result.ok) {
+        showUserMessage(t('common.error'), result.message || t('shippingAddress.saveFailed'));
+        return;
+      }
       showUserMessage(t('shippingAddress.savedTitle'), t('shippingAddress.savedBody'));
     } catch {
       showUserMessage(t('common.error'), t('shippingAddress.saveFailed'));
+    } finally {
+      setSaving(false);
     }
-  }, [form, t]);
+  }, [form, t, userId]);
 
   const field = (key: keyof Form, multiline?: boolean) => (
     <View style={styles.field}>
@@ -126,7 +159,12 @@ export function ShippingAddressScreen() {
         <View style={styles.col}>{field('postal')}</View>
       </View>
       {field('country')}
-      <TouchableOpacity style={styles.saveBtn} onPress={() => void onSave()} activeOpacity={0.88}>
+      <TouchableOpacity
+        style={[styles.saveBtn, saving ? styles.saveBtnDisabled : null]}
+        onPress={() => void onSave()}
+        activeOpacity={0.88}
+        disabled={saving}
+      >
         <Text style={styles.saveBtnText}>{t('shippingAddress.save')}</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -170,6 +208,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     alignItems: 'center',
   },
+  saveBtnDisabled: { opacity: 0.55 },
   saveBtnText: {
     fontSize: fontSize.md,
     fontFamily: sg.font.bodyBold,

@@ -25,8 +25,7 @@ function formatUsd(usd: number): string {
 }
 
 const TIER_BAR_COLOR: Record<PullRarityTier, string> = {
-  common: sgVault.muted,
-  rare: '#60A5FA',
+  base: sgVault.muted,
   epic: '#A855F7',
   legendary: sgVault.gold,
   mythic: '#FB7185',
@@ -117,13 +116,13 @@ export function PortfolioCard({ pulls }: Props) {
               label="<$10"
               count={stats.dist.sub10}
               max={maxBucket}
-              color={TIER_BAR_COLOR.common}
+              color={TIER_BAR_COLOR.base}
             />
             <DistBar
               label="$10–50"
               count={stats.dist.ten50}
               max={maxBucket}
-              color={TIER_BAR_COLOR.rare}
+              color={TIER_BAR_COLOR.epic}
             />
             <DistBar
               label="$50–100"

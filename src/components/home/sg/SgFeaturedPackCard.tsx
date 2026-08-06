@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Pack } from '../../../data/mockPacks';
 import { PackVisual } from '../../ph/PackVisual';
 import { SgButton, SgData } from '../../ui';
 import { sg } from '../../../tokens/sg';
-import { getMockPackOdds } from '../../../data/mockPackOdds';
+import { usePackOdds } from '../../../hooks/usePackOdds';
 import { getLocalizedPackFields } from '../../../i18n/packCopy';
 import { navigationRef } from '../../../navigation/navigationRef';
 
@@ -25,7 +25,7 @@ export function SgFeaturedPackCard({
 }) {
   const { t } = useTranslation();
   const loc = getLocalizedPackFields(pack, t);
-  const odds = useMemo(() => getMockPackOdds(pack), [pack]);
+  const { odds } = usePackOdds(pack);
   const topOddsRow = odds.rows[0];
   const fraction = pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1);
   const lowStock = fraction < 0.1;
@@ -34,7 +34,9 @@ export function SgFeaturedPackCard({
   // The featured card always shows the localized trade-in pitch (2026-07-29
   // copy rule: 100% never appears without its "listed value" basis). The full
   // per-pack guarantee text lives on the pack page.
-  const guaranteeLine = t('home.guaranteeTradeIn');
+  const guaranteeLine = pack.packVersionId
+    ? t('home.guaranteeTradeInLive')
+    : t('home.guaranteeTradeIn');
 
   const goVerify = () => {
     // Fairness record lives on the pack page — VERIFY deep-links there.

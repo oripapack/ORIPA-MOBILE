@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
-import type { RarityTier } from '../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../lib/n2Rarity';
 import { radius } from '../../../tokens/spacing';
 import { REVEAL_RARITY_VISUAL } from './rarityTokens';
 import type { RevealRarity } from './types';
@@ -160,10 +160,9 @@ const beamStyles = StyleSheet.create({
   },
 });
 
-/** Map legacy audio tier to confetti palette (keeps parity with store tiers). */
-const TIER_CONFETTI: Record<RarityTier, string> = {
-  common: '#22C55E',
-  rare: '#60A5FA',
+/** Map N2 pull tier to confetti palette. */
+const TIER_CONFETTI: Record<N2Tier, string> = {
+  base: '#94A3B8',
   epic: '#A855F7',
   legendary: '#FBBF24',
   mythic: '#EF4444',
@@ -175,7 +174,7 @@ export function RareConfetti({
   revealRarity,
 }: {
   active: boolean;
-  tier: RarityTier;
+  tier: N2Tier;
   revealRarity: RevealRarity;
 }) {
   const progress = useRef(Array.from({ length: PARTICLE_COUNT }, () => new Animated.Value(0))).current;

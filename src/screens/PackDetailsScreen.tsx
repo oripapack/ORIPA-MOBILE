@@ -20,7 +20,7 @@ import { getLocalizedPackFields } from '../i18n/packCopy';
 import { PackOddsModal } from '../components/pack/PackOddsModal';
 import { PackOpenQuantitySelector } from '../components/pack/PackOpenQuantitySelector';
 import { PackMultiOpenSummary } from '../components/pack/PackMultiOpenSummary';
-import { EMPTY_PACK_ODDS, getMockPackOdds } from '../data/mockPackOdds';
+import { usePackOdds } from '../hooks/usePackOdds';
 import { getMockPackTopHit } from '../data/mockTopHits';
 import { tierFromIsChase } from '../lib/n2Rarity';
 import { showUserMessage } from '../utils/showUserMessage';
@@ -56,7 +56,7 @@ export function PackDetailsScreen({ route }: Props) {
   const bulkBusy = isPackOpening || awaitingFulfillment;
   const canBulk10 = !!(pack && !membershipLocked && !soldOut && pack.remainingInventory >= 10);
 
-  const odds = useMemo(() => (pack ? getMockPackOdds(pack) : EMPTY_PACK_ODDS), [pack]);
+  const { odds } = usePackOdds(pack);
   const topHit = useMemo(() => (pack ? getMockPackTopHit(pack) : null), [pack]);
   const fraction = pack
     ? pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1)
@@ -250,6 +250,9 @@ export function PackDetailsScreen({ route }: Props) {
                 </View>
               ))}
             </View>
+            {odds.isLive ? (
+              <Text style={styles.finePrint}>{t('packDetails.oddsLiveDisclaimer')}</Text>
+            ) : null}
           </SgCard>
 
           {/* ── 7. Trade-in policy ── */}

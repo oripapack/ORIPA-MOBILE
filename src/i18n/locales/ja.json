@@ -463,8 +463,10 @@
     "bulkTotalCredits": "Total card value: {{amount}} credits (if converted)",
     "bulkBestHit": "Best hit",
     "bulkRowCredits": "+{{amount}} credits",
-    "tier_common": "Common",
-    "tier_rare": "Rare",
+    "tier_base": "Base",
+
+    "tier_common": "Base",
+    "tier_rare": "Base",
     "tier_epic": "Epic",
     "tier_legendary": "Legendary",
     "tier_mythic": "Mythic",

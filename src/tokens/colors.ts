@@ -56,8 +56,8 @@ export const colors = {
   accentBorder: ph.rarityBorder.epic,
   accentGlow: 'rgba(168,85,247,0.20)',
 
-  accentSapphire: ph.rarity.rare,
-  accentSapphireSoft: ph.rarityBg.rare,
+  accentSapphire: ph.rarity.base,
+  accentSapphireSoft: ph.rarityBg.base,
 
   accentCopper: ph.amber,
   accentCopperSoft: 'rgba(245,158,11,0.12)',
@@ -78,9 +78,9 @@ export const colors = {
   headerBarBg: 'rgba(5,5,7,0.94)',
   tabBarBg: 'rgba(5,5,7,0.97)',
 
-  chipNew: ph.rarityBg.rare,
-  chipNewText: ph.rarity.rare,
-  chipNewBorder: ph.rarityBorder.rare,
+  chipNew: ph.rarityBg.base,
+  chipNewText: ph.rarity.base,
+  chipNewBorder: ph.rarityBorder.base,
 
   chipBestValue: ph.greenSoft,
   chipBestValueText: ph.green,

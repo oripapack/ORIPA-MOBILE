@@ -9,6 +9,10 @@ import type {
 } from '../data/mockPacks';
 import { packVersionIdForCatalogPackId } from '../../shared/api/catalogLive';
 
+const LIVE_GUARANTEE_TEXT =
+  'Instant 100% trade-in (listed value) · transparent odds';
+const DEMO_GUARANTEE_TEXT = 'Instant 100% trade-in (listed value)';
+
 const TOTAL_INVENTORY_BASE = 50_000;
 
 function inferPackCategory(catalog: CatalogPack): PackCategory {
@@ -69,9 +73,11 @@ export function catalogToPack(catalog: CatalogPack): Pack {
     valueDescription: catalog.description,
     // 2026-07-29 copy rule: trade-in is 100% of listed value, in Coins — never
     // "buyback" (implies cash), and the number never appears without its basis.
-    // "· transparent odds" was removed while the odds are mock — restore it
-    // when the odds table is wired to real data (KNOWN_ISSUES #4).
-    guaranteeText: 'Instant 100% trade-in (listed value)',
+    // Live packs (packVersionId set) restore "transparent odds" now that pool
+    // weights drive disclosure (Step 3 — KNOWN_ISSUES #4).
+    guaranteeText: packVersionIdForCatalogPackId(catalog.id)
+      ? LIVE_GUARANTEE_TEXT
+      : DEMO_GUARANTEE_TEXT,
     maxPerUser: catalog.id === 'welcome-pack' ? 1 : null,
     isFirstTimePack: catalog.id === 'welcome-pack',
     packVersionId: packVersionIdForCatalogPackId(catalog.id),

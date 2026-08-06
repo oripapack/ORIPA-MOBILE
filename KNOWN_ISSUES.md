@@ -27,12 +27,13 @@
 - **参照箇所**: `src/components/home/sg/SgBannerCarousel.tsx` の `SLIDES`(3件の `require(...)`)のみ。差し替えはこの1ファイルの画像参照交換で完結する。
 - **担当**: 再調理アセット支給待ち(デザイン)。
 
-### 4. 【ブロッカー】オッズ表が実データに紐づいていない
-- **記録日**: 2026-07-25
-- **内容**: オッズ行は自由文の `examples` のみを持ち、カード個体を段に割り当てるデータ構造が存在しない。開示している確率を検証する手段が無い状態。バックエンドの pack_versions / provably-fair 側で「カード ↔ オッズ段」の対応を定義する必要がある。
-- **表示中の確率は仮の値(2026-07-29 追記)**: オッズ表の確率は仮の値。実データ未接続。スクリーンショットを外部に出さないこと。4段(MYTHIC 0.5% / LEGENDARY 2% / EPIC 5.5% / BASE 92%)は `mockPackOdds.ts` の MOCK 定数。
-- **「transparent odds」文言は一時削除(2026-07-29)**: オッズが仮のため Guarantee から外した(現在は「Instant 100% trade-in (listed value)」のみ)。**オッズが実データに接続された時点で戻す**(catalogAdapter.ts にも同メモあり)。
-- **担当**: バックエンド(Yutaka 域)。**リリース前必須。**
+### 4. オッズ表 — ライブ3パックは DB 接続済み、残りはフォールバック
+- **記録日**: 2026-07-25 / **2026-08-06 Step 2–3**
+- **解決済み(ライブ3パック)**: `welcome-pack` / `grail-edition` / `charizard-chase` — Supabase 接続時 `pack_pool_items` weight から確率算出。UI に transparent odds 文言復活(Step 3)。
+- **デプロイ**: `cd backend && npm run deploy:catalog` → migrations + `seed.sql`。検証: `npm run smoke:live-packs`(root)。
+- **ブロッカー(2026-08-06)**: ホスト Supabase プロジェクト `akfxxfthwpylpwdnjzcy` が **paused** — Dashboard で unpause 後に deploy + smoke を実行すること。
+- **未解決(残カタログ)**: ライブ `packVersionId` なしパックは静的 N2 フォールバック。
+- **担当**: 残カタログ pool 定義(バックエンド)。**ライブ3パックは unpause + seed 後リリース可。**
 
 ### 5. 【ブロッカー】レアリティの語彙が3系統ある
 - **記録日**: 2026-07-25

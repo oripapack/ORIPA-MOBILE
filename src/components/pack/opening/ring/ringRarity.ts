@@ -1,20 +1,13 @@
-import type { RarityTier } from '../../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../../lib/n2Rarity';
+import { legacyTierToN2 } from '../../../../lib/n2Rarity';
 
-export type PackRingRarity = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+/** N2 pull tier passed to the 3D opening scene. */
+export type PackRingRarity = N2Tier;
 
-const RING_RARITIES: PackRingRarity[] = ['common', 'rare', 'epic', 'legendary', 'mythic'];
-
-export function tierToRingRarity(tier: RarityTier): PackRingRarity {
-  if (RING_RARITIES.includes(tier as PackRingRarity)) {
-    return tier as PackRingRarity;
-  }
-  return 'rare';
+export function tierToRingRarity(tier: N2Tier | string): PackRingRarity {
+  return typeof tier === 'string' && tier.length > 0 ? legacyTierToN2(tier) : (tier as N2Tier);
 }
 
 export function parseRingRarity(raw: string | null | undefined): PackRingRarity {
-  const v = raw?.trim().toLowerCase();
-  if (v && RING_RARITIES.includes(v as PackRingRarity)) {
-    return v as PackRingRarity;
-  }
-  return 'rare';
+  return legacyTierToN2(raw ?? 'base');
 }

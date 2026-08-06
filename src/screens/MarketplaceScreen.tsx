@@ -52,11 +52,10 @@ const CARD_SORT_OPTIONS = [
 type CardSortKey = (typeof CARD_SORT_OPTIONS)[number]['key'];
 
 const RARITY_RANK: Record<PullRarityTier, number> = {
-  common: 0,
-  rare: 1,
-  epic: 2,
-  legendary: 3,
-  mythic: 4,
+  base: 0,
+  epic: 1,
+  legendary: 2,
+  mythic: 3,
 };
 
 const CATEGORY_KEYS: (ListingCategory | 'all')[] = [
@@ -115,7 +114,7 @@ export function MarketplaceScreen() {
     } else if (cardSort === 'rarity') {
       list = [...list].sort(
         (a, b) =>
-          (RARITY_RANK[b.tier ?? 'common'] ?? 0) - (RARITY_RANK[a.tier ?? 'common'] ?? 0),
+          (RARITY_RANK[b.tier ?? 'base'] ?? 0) - (RARITY_RANK[a.tier ?? 'base'] ?? 0),
       );
     }
     return list;

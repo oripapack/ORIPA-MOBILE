@@ -1,5 +1,6 @@
 import type { TFunction } from 'i18next';
-import type { RarityTier } from '../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../lib/n2Rarity';
+import { N2_TIER_RANK } from '../../../lib/n2Rarity';
 import type { ChipTagType, Pack } from '../../../data/mockPacks';
 import type { PackRollResult } from './types';
 
@@ -14,17 +15,17 @@ function packResultPool(pack: Pack, t: TFunction, packName: string) {
   const isHot = tags.includes('hot_drop') || tags.includes('chase_boost');
   const isNew = tags.includes('new') || tags.includes('new_user');
 
-  const rarityCommon = [
+  const rarityBase = [
     t('packOpening.resultCommon1', { packName }),
     t('packOpening.resultCommon2', { packName }),
     t('packOpening.resultCommon3', { packName }),
   ];
-  const rarityRare = [
+  const rarityEpic = [
     t('packOpening.resultRare1', { packName }),
     t('packOpening.resultRare2', { packName }),
     t('packOpening.resultRare3', { packName }),
   ];
-  const rarityLegendary = [
+  const rarityTop = [
     t('packOpening.resultLegendary1', { packName }),
     t('packOpening.resultLegendary2', { packName }),
     t('packOpening.resultLegendary3', { packName }),
@@ -49,45 +50,36 @@ function packResultPool(pack: Pack, t: TFunction, packName: string) {
     maxMult = 3.0;
   }
 
-  return { rarityCommon, rarityRare, rarityLegendary, minMult, maxMult };
+  return { rarityBase, rarityEpic, rarityTop, minMult, maxMult };
 }
 
-function tierFromRoll(creditsWon: number, creditPrice: number): RarityTier {
+function tierFromRoll(creditsWon: number, creditPrice: number): N2Tier {
   const p = Math.max(1, creditPrice);
   const r = creditsWon / p;
   if (r >= 2.35) return 'mythic';
   if (r >= 1.9) return 'legendary';
   if (r >= 1.4) return 'epic';
-  if (r >= 1.07) return 'rare';
-  return 'common';
+  return 'base';
 }
 
 /** Demo RNG for a single pack pull (same rules as the reveal engine). */
 export function generatePackOpenResult(pack: Pack, t: TFunction, packName: string): PackRollResult {
-  const { rarityCommon, rarityRare, rarityLegendary, minMult, maxMult } = packResultPool(pack, t, packName);
+  const { rarityBase, rarityEpic, rarityTop, minMult, maxMult } = packResultPool(pack, t, packName);
   const mult = minMult + Math.random() * (maxMult - minMult);
   const creditsWon = Math.max(0, Math.floor(pack.creditPrice * mult));
 
   const tier = tierFromRoll(creditsWon, pack.creditPrice);
   let result: string;
   if (tier === 'mythic' || tier === 'legendary') {
-    result = pick(rarityLegendary);
-  } else if (tier === 'epic' || tier === 'rare') {
-    result = pick(rarityRare);
+    result = pick(rarityTop);
+  } else if (tier === 'epic') {
+    result = pick(rarityEpic);
   } else {
-    result = pick(rarityCommon);
+    result = pick(rarityBase);
   }
 
   return { result, creditsWon, tier };
 }
-
-const TIER_RANK: Record<RarityTier, number> = {
-  common: 0,
-  rare: 1,
-  epic: 2,
-  legendary: 3,
-  mythic: 4,
-};
 
 /**
  * Compare two rolls for ranking. Negative → `a` is better (higher tier/credits).
@@ -99,7 +91,7 @@ export function compareRolls(
   b: PackRollResult,
   bIndex: number,
 ): number {
-  const tierDiff = TIER_RANK[b.tier] - TIER_RANK[a.tier];
+  const tierDiff = N2_TIER_RANK[b.tier] - N2_TIER_RANK[a.tier];
   if (tierDiff !== 0) return tierDiff;
   const creditsDiff = b.creditsWon - a.creditsWon;
   if (creditsDiff !== 0) return creditsDiff;

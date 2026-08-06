@@ -1,4 +1,4 @@
-import type { RarityTier } from '../../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../../lib/n2Rarity';
 import type { PackOpenQuantity } from '../../../../store/useAppStore';
 import type { PackRollResult, RevealCard } from '../types';
 
@@ -17,5 +17,5 @@ export type BulkOpenViewModel = {
   /** All pulls except best, sorted by tier desc → credits desc → index asc. */
   rest: BulkPullItem[];
   totalCredits: number;
-  tierCounts: Partial<Record<RarityTier, number>>;
+  tierCounts: Partial<Record<N2Tier, number>>;
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
-import { PackOdds } from '../../data/mockPackOdds';
+import type { PackOdds } from '../../data/packOdds';
 import { SgTierTag } from '../ui';
 import { sg } from '../../tokens/sg';
 import { fontSize } from '../../tokens/typography';
@@ -40,7 +40,12 @@ export function PackOddsModal({ visible, onClose, packTitle, odds }: Props) {
             ))}
           </View>
 
-          <Text style={styles.note}>{odds.note}</Text>
+          <Text style={styles.note}>
+            {odds.isLive ? t('packOdds.liveNote') : t('packOdds.demoNote')}
+          </Text>
+          {odds.isLive ? (
+            <Text style={styles.disclaimer}>{t('packOdds.liveDisclaimer')}</Text>
+          ) : null}
 
           <Pressable style={styles.closeBtn} onPress={onClose}>
             <Text style={styles.closeText}>{t('common.close')}</Text>
@@ -105,6 +110,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: sg.muted,
     lineHeight: 16,
+  },
+  disclaimer: {
+    marginTop: spacing.sm,
+    fontSize: 11,
+    color: sg.muted,
+    lineHeight: 16,
+    fontFamily: sg.font.bodyMedium,
   },
   closeBtn: {
     marginTop: spacing.md,

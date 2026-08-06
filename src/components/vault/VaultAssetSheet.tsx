@@ -29,7 +29,7 @@ type Props = {
   pull: Pull | null;
   onClose: () => void;
   onRequestShipment: (pullId: string) => void | Promise<boolean>;
-  onConvertToCoins: (pullId: string) => void;
+  onConvertToCoins: (pullId: string) => void | Promise<boolean>;
 };
 
 export function VaultAssetSheet({
@@ -85,8 +85,10 @@ export function VaultAssetSheet({
       confirmLabel: t('vaultAsset.convertConfirm'),
       destructive: true,
       onConfirm: () => {
-        onConvertToCoins(pull.id);
-        onClose();
+        void (async () => {
+          const ok = await onConvertToCoins(pull.id);
+          if (ok !== false) onClose();
+        })();
       },
     });
   };

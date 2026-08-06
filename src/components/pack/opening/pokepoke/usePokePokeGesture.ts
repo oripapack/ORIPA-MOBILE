@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Easing, PanResponder } from 'react-native';
 import type { GestureResponderHandlers } from 'react-native';
 import { hapticPackReveal, hapticPackResult } from '../../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../../lib/n2Rarity';
 import type { RevealRarity } from '../types';
 
 export type PokePokePhase = 'float' | 'tearing' | 'burst' | 'reveal' | 'result';
@@ -117,11 +118,11 @@ export function usePokePokeGesture({ rarity, skipNonce, onBurst, onRevealSettled
         Animated.sequence(seq).start();
       }
 
-      const tier =
-        rarity === 'chase'      ? 'legendary' as const :
-        rarity === 'ultra_rare' ? 'epic'      as const :
-        rarity === 'rare'       ? 'rare'      as const :
-        'common' as const;
+      const tier: N2Tier =
+        rarity === 'chase' ? 'mythic' :
+        rarity === 'ultra_rare' ? 'legendary' :
+        rarity === 'rare' ? 'epic' :
+        'base';
       hapticPackResult(tier);
 
       const settleDelay = rarity === 'chase' ? 1300 : rarity === 'ultra_rare' ? 1000 : 700;

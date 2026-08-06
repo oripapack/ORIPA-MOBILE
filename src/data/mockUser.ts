@@ -4,8 +4,10 @@
  */
 export type PullFulfillment = 'pending' | 'vaulted' | 'converted' | 'shipped';
 
-/** Lowest → highest: common (green) … mythic (red). */
-export type PullRarityTier = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+import type { N2Tier } from '../lib/n2Rarity';
+
+/** N2 pull tier (MYTHIC / LEGENDARY / EPIC / BASE). */
+export type PullRarityTier = N2Tier;
 
 export interface Pull {
   id: string;
@@ -33,6 +35,8 @@ export interface Pull {
    * When unset, item is discoverable / requestable only until seller lists.
    */
   vaultExchangeListUsd?: number;
+  /** Live vault row id (`user_vault_items.id`) when synced from server. */
+  vaultItemId?: string;
 }
 
 export interface UserState {

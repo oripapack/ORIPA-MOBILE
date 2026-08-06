@@ -603,8 +603,8 @@ var CARD_DATA={
   grade:'GEM MINT 10',
   rarity:4,
   /* N2 §6 tiers — leak color only on top 3 */
-  rarityLabels:['COMMON','RARE','EPIC','LEGENDARY','MYTHIC'],
-  rarityColors:['#8E8C85','#8E8C85','#D4AF37','#D4AF37','#FF4A38']
+  rarityLabels:['BASE','EPIC','LEGENDARY','MYTHIC'],
+  rarityColors:['#8E8C85','#D4AF37','#D4AF37','#FF4A38']
 };
 
 /* ============ グレーディングスラブ（PSA風・汎用ラベル） ============ */
@@ -1210,12 +1210,11 @@ function postRevealDone(){
 
 function mapTierToRarity(tier){
   var t=(tier||'').toLowerCase();
-  if(t==='mythic') return 5;
-  if(t==='legendary') return 4;
-  if(t==='epic') return 3;
-  if(t==='rare') return 2;
-  if(t==='common'||t==='uncommon'||t==='base') return 1;
-  return 3;
+  if(t==='mythic') return 4;
+  if(t==='legendary') return 3;
+  if(t==='epic') return 2;
+  if(t==='base'||t==='common'||t==='rare'||t==='uncommon'||t==='bulk') return 1;
+  return 1;
 }
 
 function applyEmbedParams(){

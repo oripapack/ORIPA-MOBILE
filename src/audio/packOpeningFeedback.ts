@@ -1,7 +1,9 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
+import type { N2Tier } from '../lib/n2Rarity';
 
-export type RarityTier = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+/** @deprecated Prefer N2Tier from lib/n2Rarity */
+export type RarityTier = N2Tier;
 
 const runHaptic = (fn: () => Promise<void>) => {
   if (Platform.OS === 'web') return;
@@ -19,12 +21,12 @@ export function hapticPackReveal() {
 }
 
 /** Card shown — tier-based punch. */
-export function hapticPackResult(tier: RarityTier) {
+export function hapticPackResult(tier: N2Tier) {
   if (tier === 'mythic' || tier === 'legendary') {
     runHaptic(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success));
     return;
   }
-  if (tier === 'epic' || tier === 'rare') {
+  if (tier === 'epic') {
     runHaptic(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium));
     return;
   }

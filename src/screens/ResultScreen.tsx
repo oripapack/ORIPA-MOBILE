@@ -91,13 +91,13 @@ export function ResultScreen({ route }: Props) {
     setSheetOpen(false);
     // Real wiring: convert every pull of this opening. With mock data there is
     // nothing to finalize — state stays untouched.
-    if (pullIds?.length) finalize({ vaultIds: [], convertIds: pullIds });
+    if (pullIds?.length) void finalize({ vaultIds: [], convertIds: pullIds });
     goTabs();
   };
 
   const onKeepInVault = () => {
     // Spec: no confirmation for the Vault path.
-    if (pullIds?.length) finalize({ vaultIds: pullIds, convertIds: [] });
+    if (pullIds?.length) void finalize({ vaultIds: pullIds, convertIds: [] });
     goTabs('Vault');
   };
 

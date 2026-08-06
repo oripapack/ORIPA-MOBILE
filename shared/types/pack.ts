@@ -1,7 +1,9 @@
-/** Rarity tier for UI badges (Phygitals-style 5-tier system). */
-export type RarityTier = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+import type { N2Tier } from '../../src/lib/n2Rarity';
 
-/** Opening-flow rarity (4-tier reel / slab reveal). */
+/** N2 pull tier — canonical across catalog and mobile pack types. */
+export type RarityTier = N2Tier;
+
+/** Opening-flow rarity (4-tier reel / slab reveal — presentation only, not pull tier). */
 export type RevealRarity = 'common' | 'rare' | 'ultra' | 'chase';
 
 export type TcgCategory =

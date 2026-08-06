@@ -31,10 +31,54 @@ export type N2TierState = N2Tier | 'unknown';
 /** Top → bottom display order (§6 — the odds table uses the same four steps). */
 export const N2_TIERS: readonly N2Tier[] = ['mythic', 'legendary', 'epic', 'base'];
 
+/** Lowest → highest for roll ranking and sort. */
+export const N2_TIER_RANK: Record<N2Tier, number> = {
+  base: 0,
+  epic: 1,
+  legendary: 2,
+  mythic: 3,
+};
+
 /**
  * isChase is a boolean, so it can only assert "top tier or not":
  * true → MYTHIC; false stays UNKNOWN — never downgraded to a low tier.
  */
 export function tierFromIsChase(isChase: boolean): N2TierState {
   return isChase ? 'mythic' : 'unknown';
+}
+
+export function isN2Tier(value: string): value is N2Tier {
+  return (N2_TIERS as readonly string[]).includes(value);
+}
+
+/** Uppercase label for UI chrome (odds rows, badges). */
+export function n2TierLabel(tier: N2Tier): string {
+  return tier.toUpperCase();
+}
+
+/**
+ * Map legacy 5-tier strings, admin DB labels, and unknown inputs → N2 pull tier.
+ * Used during migration and when reading persisted / external data.
+ */
+export function legacyTierToN2(tier: string): N2Tier {
+  const t = tier.trim().toLowerCase();
+  switch (t) {
+    case 'mythic':
+    case 'grail':
+      return 'mythic';
+    case 'legendary':
+      return 'legendary';
+    case 'epic':
+    case 'mid-tier':
+    case 'mid_tier':
+      return 'epic';
+    case 'base':
+    case 'bulk':
+    case 'common':
+    case 'rare':
+    case 'uncommon':
+      return 'base';
+    default:
+      return 'base';
+  }
 }

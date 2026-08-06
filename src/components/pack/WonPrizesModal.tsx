@@ -23,8 +23,7 @@ import { WinningsSummaryCard } from './WinningsSummaryCard';
 import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
 
 const TIER_BADGE: Record<PullRarityTier, string> = {
-  common: 'Common',
-  rare: 'Rare',
+  base: 'Base',
   epic: 'Epic',
   legendary: 'Legendary',
   mythic: 'Mythic',
@@ -121,8 +120,9 @@ export function WonPrizesModal() {
   }, [selectionState, vaultCount, convertCount, t]);
 
   const runFulfillment = () => {
-    finalizePendingFulfillment({ vaultIds, convertIds });
-    setVaultSelected({});
+    void finalizePendingFulfillment({ vaultIds, convertIds }).then((ok) => {
+      if (ok !== false) setVaultSelected({});
+    });
   };
 
   const onPrimaryPress = () => {
@@ -176,7 +176,7 @@ export function WonPrizesModal() {
           </View>
 
           {pulls.map((pull) => {
-            const tier: PullRarityTier = pull.tier ?? 'common';
+            const tier: PullRarityTier = pull.tier ?? 'base';
             const toVault = !!vaultSelected[pull.id];
             const itemValue = pull.creditsWon ?? pull.convertCreditValue ?? 0;
             return (

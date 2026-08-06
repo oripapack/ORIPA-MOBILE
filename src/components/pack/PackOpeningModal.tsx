@@ -62,7 +62,9 @@ export function PackOpeningModal() {
   const openPack = useAppStore((s) => s.openPack);
   const packOpenQuantity = useAppStore((s) => s.packOpenQuantity);
   const pendingServerPull = useAppStore((s) => s.pendingServerPull);
+  const pendingBulkServerPull = useAppStore((s) => s.pendingBulkServerPull);
   const clearPendingServerPull = useAppStore((s) => s.clearPendingServerPull);
+  const clearPendingBulkServerPull = useAppStore((s) => s.clearPendingBulkServerPull);
 
   const [pending, setPending] = useState<PackRollResult | null>(null);
   const [bulkRolls, setBulkRolls] = useState<PackRollResult[] | null>(null);
@@ -90,7 +92,8 @@ export function PackOpeningModal() {
     setSkipNonce(0);
     setEngineDone(false);
     clearPendingServerPull();
-  }, [visible, clearPendingServerPull]);
+    clearPendingBulkServerPull();
+  }, [visible, clearPendingServerPull, clearPendingBulkServerPull]);
 
   useEffect(() => {
     if (!visible || !selectedPack) return;
@@ -105,9 +108,15 @@ export function PackOpeningModal() {
     const loc = getLocalizedPackFields(selectedPack, t);
 
     if (packOpenQuantity > 1) {
-      const rolls: PackRollResult[] = [];
-      for (let i = 0; i < packOpenQuantity; i += 1) {
-        rolls.push(generatePackOpenResult(selectedPack, t, loc.title));
+      const serverBulk =
+        pendingBulkServerPull && pendingBulkServerPull.sessionId === packOpenSessionId
+          ? pendingBulkServerPull.pulls.map((p) => p.roll)
+          : null;
+      const rolls: PackRollResult[] = serverBulk ?? [];
+      if (!serverBulk) {
+        for (let i = 0; i < packOpenQuantity; i += 1) {
+          rolls.push(generatePackOpenResult(selectedPack, t, loc.title));
+        }
       }
       setBulkRolls(rolls);
       setPending(null);
@@ -138,6 +147,7 @@ export function PackOpeningModal() {
     packOpenSessionId,
     packOpenQuantity,
     pendingServerPull,
+    pendingBulkServerPull,
     t,
     modalOpacity,
   ]);

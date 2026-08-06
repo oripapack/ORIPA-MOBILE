@@ -4,6 +4,7 @@ import { normalizeFriendUsername } from '../data/friends';
 import { getSocialProfile, buildMinimalSocialProfile } from '../data/socialMock';
 import type { FriendEntry } from '../data/friends';
 import { VAULT_HOLD_DAYS } from './vaultConstants';
+import { legacyTierToN2 } from './n2Rarity';
 
 function vaultExpiry(): Date {
   const exp = new Date();
@@ -42,7 +43,7 @@ const MOCK_VAULT_BY_USER: Record<string, Pull[]> = {
       result: 'Trainer gallery rare',
       creditsWon: 1800,
       timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      tier: 'rare',
+      tier: 'base',
     }),
     makeVaultPull({
       id: 'pull_sam_v_3',
@@ -60,7 +61,7 @@ const MOCK_VAULT_BY_USER: Record<string, Pull[]> = {
       result: 'Illustration rare energy',
       creditsWon: 320,
       timestamp: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
-      tier: 'rare',
+      tier: 'base',
     }),
   ],
   casey_m: [
@@ -109,7 +110,7 @@ const MOCK_VAULT_BY_USER: Record<string, Pull[]> = {
       result: 'Leafeon VSTAR',
       creditsWon: 900,
       timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-      tier: 'rare',
+      tier: 'base',
     }),
     makeVaultPull({
       id: 'pull_jordan_v_3',
@@ -118,7 +119,7 @@ const MOCK_VAULT_BY_USER: Record<string, Pull[]> = {
       result: 'Miraidon ex',
       creditsWon: 1800,
       timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      tier: 'rare',
+      tier: 'base',
     }),
   ],
 };
@@ -134,7 +135,7 @@ function pullsFromRecentSocial(username: string): Pull[] {
       result: ev.cardName,
       creditsWon: ev.estimatedValue,
       timestamp: ev.timestamp,
-      tier: ev.rarity === 'uncommon' ? 'rare' : ev.rarity === 'mythic' ? 'mythic' : ev.rarity,
+      tier: legacyTierToN2(ev.rarity),
     }),
   );
 }

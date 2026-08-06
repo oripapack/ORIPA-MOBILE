@@ -6,7 +6,7 @@ import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from 'reac
 import { useTranslation } from 'react-i18next';
 import { ChipTagType, Pack, packImageSource } from '../../data/mockPacks';
 import { getMockPackTopHit } from '../../data/mockTopHits';
-import { getMockPackOdds } from '../../data/mockPackOdds';
+import { usePackOdds } from '../../hooks/usePackOdds';
 import { sg } from '../../tokens/sg';
 import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
@@ -76,7 +76,7 @@ export function PackCard({ pack, onPress }: Props) {
   const secondary = useMemo(() => secondaryTag(pack.tags, primary), [pack.tags, primary]);
 
   const [oddsOpen, setOddsOpen] = useState(false);
-  const odds = useMemo(() => getMockPackOdds(pack), [pack]);
+  const { odds } = usePackOdds(pack);
 
   const cardScale = React.useRef(new Animated.Value(1)).current;
   const pressIn = () => {

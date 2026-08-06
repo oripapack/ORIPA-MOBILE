@@ -12,6 +12,7 @@ export function ClerkProfileSync() {
   const { getToken } = useAuth();
   const setUserFromClerkProfile = useAppStore((s) => s.setUserFromClerkProfile);
   const hydrateUserCredits = useAppStore((s) => s.hydrateUserCredits);
+  const hydrateUserVault = useAppStore((s) => s.hydrateUserVault);
 
   useEffect(() => {
     setClerkSupabaseTokenGetter(async () => {
@@ -32,7 +33,8 @@ export function ClerkProfileSync() {
       username: profile.username,
     });
     void hydrateUserCredits(user.id);
-  }, [isLoaded, user, setUserFromClerkProfile, hydrateUserCredits]);
+    void hydrateUserVault();
+  }, [isLoaded, user, setUserFromClerkProfile, hydrateUserCredits, hydrateUserVault]);
 
   return null;
 }

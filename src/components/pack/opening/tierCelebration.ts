@@ -1,6 +1,6 @@
-import type { RarityTier } from '../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../lib/n2Rarity';
 
-/** Pull-result screen: tier colors and glow strength (Common → Mythic). */
+/** Pull-result screen: tier colors and glow strength (BASE → MYTHIC). */
 export type TierCelebrationVisual = {
   accent: string;
   glow: string;
@@ -11,22 +11,14 @@ export type TierCelebrationVisual = {
   pulseStrength: number;
 };
 
-export const TIER_CELEBRATION: Record<RarityTier, TierCelebrationVisual> = {
-  common: {
+export const TIER_CELEBRATION: Record<N2Tier, TierCelebrationVisual> = {
+  base: {
     accent: '#CBD5E1',
     glow: 'rgba(203, 213, 225, 0.38)',
     border: 'rgba(148, 163, 184, 0.55)',
     halo: 'rgba(148, 163, 184, 0.22)',
     emoji: '●',
     pulseStrength: 0.12,
-  },
-  rare: {
-    accent: '#60A5FA',
-    glow: 'rgba(59, 130, 246, 0.5)',
-    border: 'rgba(96, 165, 250, 0.82)',
-    halo: 'rgba(37, 99, 235, 0.28)',
-    emoji: '✦',
-    pulseStrength: 0.32,
   },
   epic: {
     accent: '#C084FC',
@@ -54,6 +46,6 @@ export const TIER_CELEBRATION: Record<RarityTier, TierCelebrationVisual> = {
   },
 };
 
-export function tierCelebrationFor(tier: RarityTier): TierCelebrationVisual {
-  return TIER_CELEBRATION[tier] ?? TIER_CELEBRATION.common;
+export function tierCelebrationFor(tier: N2Tier): TierCelebrationVisual {
+  return TIER_CELEBRATION[tier] ?? TIER_CELEBRATION.base;
 }

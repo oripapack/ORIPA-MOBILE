@@ -1,5 +1,5 @@
 import type { ImageSourcePropType } from 'react-native';
-import type { RarityTier } from '../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../lib/n2Rarity';
 
 export type PackOpeningStyle = 'csgo' | 'fifa' | 'hybrid';
 export type PackOpeningPhase =
@@ -39,16 +39,16 @@ export interface RevealCard {
 export type PackRollResult = {
   result: string;
   creditsWon: number;
-  tier: RarityTier;
+  tier: N2Tier;
 };
 
-export function revealRarityFromTier(tier: RarityTier): RevealRarity {
+/** Map N2 pull tier → reveal animation vocabulary (presentation only). */
+export function revealRarityFromTier(tier: N2Tier): RevealRarity {
   switch (tier) {
-    case 'common':
+    case 'base':
       return 'common';
-    case 'rare':
-      return 'rare';
     case 'epic':
+      return 'rare';
     case 'legendary':
       return 'ultra_rare';
     case 'mythic':

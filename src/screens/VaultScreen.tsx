@@ -44,16 +44,14 @@ type VaultNav = CompositeNavigationProp<
 >;
 
 const TIER_ACCENT: Record<PullRarityTier, string> = {
-  common: '#94A3B8',
-  rare: '#60A5FA',
+  base: '#94A3B8',
   epic: '#A855F7',
   legendary: '#FBBF24',
   mythic: '#FB7185',
 };
 
 const TIER_GLOW: Record<PullRarityTier, string> = {
-  common: 'rgba(148, 163, 184, 0.08)',
-  rare: 'rgba(96, 165, 250, 0.1)',
+  base: 'rgba(148, 163, 184, 0.08)',
   epic: 'rgba(168, 85, 247, 0.12)',
   legendary: 'rgba(251, 191, 36, 0.14)',
   mythic: 'rgba(251, 113, 133, 0.14)',

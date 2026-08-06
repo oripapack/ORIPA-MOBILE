@@ -19,7 +19,7 @@ import Reanimated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
-import type { RarityTier } from '../../../../audio/packOpeningFeedback';
+import type { N2Tier } from '../../../../lib/n2Rarity';
 import { hapticPackReveal } from '../../../../audio/packOpeningFeedback';
 import type { PackOpenQuantity } from '../../../../store/useAppStore';
 import { sg } from '../../../../tokens/sg';
@@ -57,7 +57,7 @@ const easeIn = Easing.bezier(0.55, 0, 0.9, 0.45);
 
 export type BulkOpenCinematicProps = {
   quantity: Extract<PackOpenQuantity, 10>;
-  bestTier: RarityTier;
+  bestTier: N2Tier;
   onComplete: () => void;
   /** Optional — parent wires Skip FAB. */
   onSkip?: () => void;

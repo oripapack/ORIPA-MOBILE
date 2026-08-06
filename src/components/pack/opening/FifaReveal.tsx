@@ -86,9 +86,7 @@ export function FifaReveal({ roll, revealRarity, packTint, replayKey, skipNonce,
           ? 0.4
           : tier === 'epic'
             ? 0.43
-            : tier === 'rare'
-              ? 0.47
-              : 0.52;
+            : 0.52;
     walkoutScale.setValue(startScale);
     walkoutRotate.setValue(0);
     cardShine.setValue(0);
@@ -100,9 +98,7 @@ export function FifaReveal({ roll, revealRarity, packTint, replayKey, skipNonce,
           ? { friction: 5, tension: 68 }
           : tier === 'epic'
             ? { friction: 5, tension: 72 }
-            : tier === 'rare'
-              ? { friction: 6, tension: 74 }
-              : { friction: 7, tension: 80 };
+            : { friction: 7, tension: 80 };
 
     const scaleSpring =
       tier === 'mythic' || tier === 'legendary'
@@ -333,7 +329,7 @@ export function FifaReveal({ roll, revealRarity, packTint, replayKey, skipNonce,
   ]);
 
   const showConfetti =
-    roll.tier !== 'common' && (phase === 'walkout' || phase === 'done') && !skippedToEnd;
+    roll.tier !== 'base' && (phase === 'walkout' || phase === 'done') && !skippedToEnd;
 
   return (
     <View style={styles.stage}>

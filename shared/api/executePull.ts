@@ -1,23 +1,61 @@
 import { invokeEdgeFunction } from './invokeEdgeFunction';
+import {
+  idempotencyKeyForBulkPull,
+  newBatchIdempotencyKey,
+  newClientSeed,
+  newIdempotencyKey,
+} from './idempotency';
 import type {
+  BulkPullLiveResult,
+  ExecuteBulkPullResponse,
   ExecutePullResponse,
+  LedgerErrorCode,
   PackRollResult,
   PullRarityTier,
   SupabaseFunctionsClient,
 } from './types';
+import { legacyTierToN2 } from '../../src/lib/n2Rarity';
 
-/** Live pack version from seed.sql — map catalog packs via `packVersionId`. */
-export const LIVE_DEMO_PACK_VERSION_ID =
-  'a0000000-0000-4000-8000-000000000002';
+export {
+  idempotencyKeyForBulkPull,
+  newBatchIdempotencyKey,
+  newClientSeed,
+  newIdempotencyKey,
+};
+
+/** @deprecated Import from catalogLive */
+export { LIVE_DEMO_PACK_VERSION_ID } from './catalogLive';
 
 function tierForWonItem(wonItemId: string): PullRarityTier {
-  if (wonItemId.includes('grail') || wonItemId.includes('1pct')) {
+  const id = wonItemId.toLowerCase();
+  if (id.includes('mythic') || id.includes('grail') || id.includes('1pct')) {
+    return 'mythic';
+  }
+  if (id.includes('legendary')) {
     return 'legendary';
   }
-  if (wonItemId.includes('epic') || wonItemId.includes('rare')) {
-    return 'rare';
+  if (id.includes('epic') || id.includes('mid-tier') || id.includes('mid_tier')) {
+    return 'epic';
   }
-  return 'common';
+  if (id.includes('bulk') || id.includes('99pct') || id.includes('standard') || id.includes('base')) {
+    return 'base';
+  }
+  return legacyTierToN2(id);
+}
+
+function creditMultiplierForTier(tier: PullRarityTier): number {
+  switch (tier) {
+    case 'mythic':
+      return 2.8;
+    case 'legendary':
+      return 2.5;
+    case 'epic':
+      return 1.4;
+    case 'base':
+      return 0.85;
+    default:
+      return 0.85;
+  }
 }
 
 export function mapExecutePullToRollResult(
@@ -25,18 +63,16 @@ export function mapExecutePullToRollResult(
   packCreditPrice: number,
 ): PackRollResult {
   const tier = tierForWonItem(response.won_item_id);
-  const mult =
-    tier === 'legendary' || tier === 'mythic'
-      ? 2.5
-      : tier === 'epic' || tier === 'rare'
-        ? 1.4
-        : 0.85;
-  const creditsWon = Math.max(0, Math.floor(packCreditPrice * mult));
+  const fromVault = response.vault_item?.trade_in_value_credits;
+  const creditsWon =
+    fromVault != null && fromVault > 0
+      ? fromVault
+      : Math.max(0, Math.floor(packCreditPrice * creditMultiplierForTier(tier)));
 
   return {
     result: response.card_name,
     creditsWon,
-    tier,
+    tier: response.vault_item?.rarity_tier ?? tier,
   };
 }
 
@@ -59,7 +95,7 @@ export async function executePullLive(
   });
 
   if (!result.ok) {
-    return result;
+    return mapLedgerEdgeError(result);
   }
 
   const response = result.data;
@@ -78,10 +114,84 @@ export async function executePullLive(
   };
 }
 
-export function newClientSeed(): string {
-  return `ph_${crypto.randomUUID().replace(/-/g, '')}_${Date.now().toString(36)}`;
+/** Live ×10: sequential execute-pull calls with batch-scoped idempotency keys. */
+export async function executeBulkPullLive(
+  client: SupabaseFunctionsClient,
+  input: {
+    packVersionId: string;
+    packCreditPrice: number;
+    quantity: number;
+    batchIdempotencyKey?: string;
+  },
+): Promise<
+  | { ok: true; response: ExecuteBulkPullResponse }
+  | { ok: false; status?: number; code: string; message: string }
+> {
+  const batchId = input.batchIdempotencyKey ?? newBatchIdempotencyKey();
+  const quantity = Math.max(1, Math.min(10, input.quantity));
+  const pulls: BulkPullLiveResult[] = [];
+  let balanceAfter = 0;
+  let creditCostTotal = 0;
+
+  for (let i = 0; i < quantity; i += 1) {
+    const idempotencyKey = idempotencyKeyForBulkPull(batchId, i);
+    const pullResult = await executePullLive(client, {
+      clientSeed: newClientSeed(),
+      packVersionId: input.packVersionId,
+      idempotencyKey,
+      packCreditPrice: input.packCreditPrice,
+    });
+
+    if (!pullResult.ok) {
+      return pullResult;
+    }
+
+    const { response, roll } = pullResult;
+    creditCostTotal += response.credit_cost ?? input.packCreditPrice;
+    balanceAfter = response.balance_after ?? balanceAfter;
+
+    pulls.push({
+      pullId: response.pull_id,
+      mintStatus: response.mint_status,
+      roll,
+      idempotencyKey,
+      balanceAfter: response.balance_after,
+      vaultItemId: response.vault_item_id ?? response.vault_item?.id,
+      tradeInValueCredits: response.vault_item?.trade_in_value_credits,
+    });
+  }
+
+  return {
+    ok: true,
+    response: {
+      batchId,
+      pulls,
+      balanceAfter,
+      creditCostTotal,
+    },
+  };
 }
 
-export function newIdempotencyKey(): string {
-  return crypto.randomUUID();
+function mapLedgerEdgeError(result: {
+  ok: false;
+  status?: number;
+  code: string;
+  message: string;
+}): { ok: false; status?: number; code: string; message: string } {
+  const code = normalizeLedgerErrorCode(result.code);
+  return { ...result, code };
+}
+
+function normalizeLedgerErrorCode(code: string): string {
+  if (code === 'INSUFFICIENT_CREDITS' || code === 'INSUFFICIENT_FUNDS') {
+    return 'INSUFFICIENT_FUNDS';
+  }
+  if (code === 'DUPLICATE_TRANSACTION' || code === 'already_processed') {
+    return 'DUPLICATE_TRANSACTION';
+  }
+  return code;
+}
+
+export function isLedgerErrorCode(code: string): code is LedgerErrorCode {
+  return code === 'INSUFFICIENT_FUNDS' || code === 'DUPLICATE_TRANSACTION';
 }

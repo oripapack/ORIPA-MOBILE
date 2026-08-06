@@ -8,24 +8,21 @@ import type { PullRarityTier } from '../../data/mockUser';
 import { confirmUserAction, showUserMessage } from '../../utils/showUserMessage';
 
 const TIER_COLOR: Record<PullRarityTier, string> = {
-  common: sg.muted,
-  rare: '#60A5FA',
+  base: sg.muted,
   epic: '#A855F7',
   legendary: sg.gold,
   mythic: '#FB7185',
 };
 
 const TIER_LABEL: Record<PullRarityTier, string> = {
-  common: 'Common',
-  rare: 'Rare',
+  base: 'Base',
   epic: 'Epic',
   legendary: 'Legendary',
   mythic: 'Mythic',
 };
 
 const TIER_BG: Record<PullRarityTier, string> = {
-  common: 'rgba(139, 130, 168, 0.12)',
-  rare: 'rgba(56, 189, 248, 0.12)',
+  base: 'rgba(139, 130, 168, 0.12)',
   epic: 'rgba(192, 132, 252, 0.12)',
   legendary: 'rgba(232, 197, 71, 0.12)',
   mythic: 'rgba(244, 114, 182, 0.12)',
@@ -37,7 +34,7 @@ interface Props {
 }
 
 export function CardMarketListingRow({ listing, isOwnListing }: Props) {
-  const tier = listing.tier ?? 'common';
+  const tier = listing.tier ?? 'base';
   const tierColor = TIER_COLOR[tier];
   const tierBg = TIER_BG[tier];
   const tierLabel = TIER_LABEL[tier];

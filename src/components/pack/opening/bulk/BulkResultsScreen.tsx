@@ -23,6 +23,7 @@ import Reanimated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { hapticPackResult } from '../../../../audio/packOpeningFeedback';
+import { N2_TIERS } from '../../../../lib/n2Rarity';
 import { sg } from '../../../../tokens/sg';
 import { fontSize } from '../../../../tokens/typography';
 import { radius, spacing } from '../../../../tokens/spacing';
@@ -58,8 +59,7 @@ function BulkResultsHeader({ viewModel }: { viewModel: BulkOpenViewModel }) {
       </Text>
       {viewModel.tierCounts ? (
         <Text style={styles.headerTierLine} numberOfLines={2}>
-          {(['mythic', 'legendary', 'epic', 'rare', 'common'] as const)
-            .flatMap((tier) => {
+          {N2_TIERS.flatMap((tier) => {
               const n = viewModel.tierCounts[tier];
               if (!n) return [];
               return [`${t(`packOpening.tier_${tier}`)} ×${n}`];

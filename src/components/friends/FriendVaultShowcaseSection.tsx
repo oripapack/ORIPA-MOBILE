@@ -30,8 +30,7 @@ type Props = {
 };
 
 const TIER_DOT: Record<PullRarityTier, string> = {
-  common: '#94A3B8',
-  rare: '#60A5FA',
+  base: '#94A3B8',
   epic: '#A855F7',
   legendary: '#FBBF24',
   mythic: '#FB7185',
@@ -144,7 +143,7 @@ function VaultTile({
   const { t } = useTranslation();
   const rules = vaultExchangeBuyerRules(pull, listings);
   const listed = rules.surface === 'listed_buy_now';
-  const dot = TIER_DOT[pull.tier ?? 'rare'];
+  const dot = TIER_DOT[pull.tier ?? 'base'];
 
   return (
     <TouchableOpacity

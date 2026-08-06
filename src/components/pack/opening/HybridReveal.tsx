@@ -255,7 +255,7 @@ export function HybridReveal({
   }, [phase, skipAll, skipNonce]);
 
   const showConfetti = useMemo(
-    () => roll.tier !== 'common' && (phase === 'finale' || phase === 'done'),
+    () => roll.tier !== 'base' && (phase === 'finale' || phase === 'done'),
     [phase, roll.tier],
   );
 
