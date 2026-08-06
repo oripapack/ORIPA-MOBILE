@@ -21,7 +21,6 @@ import { ListingCard } from '../components/marketplace/ListingCard';
 import { WhyChoosePullHub } from '../components/marketplace/WhyChoosePullHub';
 import { CardMarketListingRow } from '../components/marketplace/CardMarketListingRow';
 import { sg } from '../tokens/sg';
-import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import {
   marketplaceStores,
@@ -44,10 +43,19 @@ import type { PullRarityTier } from '../data/mockUser';
 
 type MarketTab = 'packs' | 'cards';
 
+// Screen-local migration adapter: active marketplace UI uses the N2 faces.
+const fontSize = { xs: 11, sm: 13, base: 15, md: 17, lg: 20, xl: 24 } as const;
+const brandFont = {
+  medium: sg.font.bodyMedium,
+  semibold: sg.font.bodyMedium,
+  bold: sg.font.bodyBold,
+  black: sg.font.bodyBold,
+} as const;
+
 const CARD_SORT_OPTIONS = [
   { key: 'price_low', label: 'Price ↑' },
   { key: 'price_high', label: 'Price ↓' },
-  { key: 'rarity', label: 'Rarity' },
+  { key: 'rarity', label: 'Tier' },
 ] as const;
 type CardSortKey = (typeof CARD_SORT_OPTIONS)[number]['key'];
 
@@ -222,9 +230,16 @@ export function MarketplaceScreen() {
           accessibilityRole="tab"
           accessibilityState={{ selected: marketTab === 'packs' }}
         >
-          <Text style={[styles.tabBtnText, marketTab === 'packs' && styles.tabBtnTextActive]}>
-            🎴 Packs
-          </Text>
+          <View style={styles.tabLabelRow}>
+            <Ionicons
+              name="cube-outline"
+              size={16}
+              color={marketTab === 'packs' ? sg.text : sg.muted}
+            />
+            <Text style={[styles.tabBtnText, marketTab === 'packs' && styles.tabBtnTextActive]}>
+              Packs
+            </Text>
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tabBtn, marketTab === 'cards' && styles.tabBtnActive]}
@@ -233,9 +248,16 @@ export function MarketplaceScreen() {
           accessibilityRole="tab"
           accessibilityState={{ selected: marketTab === 'cards' }}
         >
-          <Text style={[styles.tabBtnText, marketTab === 'cards' && styles.tabBtnTextActive]}>
-            💎 Cards
-          </Text>
+          <View style={styles.tabLabelRow}>
+            <Ionicons
+              name="albums-outline"
+              size={16}
+              color={marketTab === 'cards' ? sg.text : sg.muted}
+            />
+            <Text style={[styles.tabBtnText, marketTab === 'cards' && styles.tabBtnTextActive]}>
+              Cards
+            </Text>
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -302,7 +324,7 @@ export function MarketplaceScreen() {
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
               <View style={styles.cardEmptyWrap}>
-                <Text style={styles.cardEmptyEmoji}>🃏</Text>
+                <Ionicons name="albums-outline" size={42} color={sg.muted} style={styles.cardEmptyIcon} />
                 <Text style={styles.cardEmptyTitle}>No cards found</Text>
                 <Text style={styles.cardEmptyBody}>
                   List your vault cards for sale to get them here.
@@ -651,6 +673,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(212,175,55,0.30)',
   },
+  tabLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: sg.space.sm,
+  },
   tabBtnText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
@@ -666,8 +693,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
   },
   cardMarketTitle: {
-    fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+    fontSize: 26,
+    fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.3,
     marginTop: spacing.sm,
@@ -711,8 +738,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacing.xxxl,
   },
-  cardEmptyEmoji: {
-    fontSize: 48,
+  cardEmptyIcon: {
     marginBottom: spacing.md,
   },
   cardEmptyTitle: {
@@ -736,8 +762,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   pageTitle: {
-    fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+    fontSize: 26,
+    fontFamily: sg.font.display,
     color: sg.text,
     paddingHorizontal: spacing.base,
     marginBottom: 4,
@@ -988,8 +1014,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   sectionTitle: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontSize: 20,
+    fontFamily: sg.font.display,
     color: sg.text,
   },
   saleTag: {

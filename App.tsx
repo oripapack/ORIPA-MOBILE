@@ -34,11 +34,10 @@ import { PhysicalGoodsPaymentRoot } from './src/payments';
 import { CLERK_PUBLISHABLE_KEY, isClerkEnabled } from './src/config/clerk';
 import { ClerkSessionBridge } from './src/components/account/ClerkSessionBridge';
 import { ClerkSsoCallbackHandler } from './src/components/account/ClerkSsoCallbackHandler';
-import { colors } from './src/tokens/colors';
-import { brandFont } from './src/tokens/typography';
+import { sg } from './src/tokens/sg';
 
-/** Default text: Outfit regular (weights use explicit `brandFont` faces in styles). */
-const baseTextStyle = { fontFamily: brandFont.regular } as const;
+/** N2 default text. Explicit display/data roles still opt into `sg.font.*`. */
+const baseTextStyle = { fontFamily: sg.font.body, color: sg.text } as const;
 const T = Text as typeof Text & { defaultProps?: { style?: unknown } };
 const TI = TextInput as typeof TextInput & { defaultProps?: { style?: unknown } };
 T.defaultProps = { ...T.defaultProps, style: [T.defaultProps?.style, baseTextStyle] };
@@ -99,7 +98,7 @@ export default function App() {
     html.style.height = '100%';
     body.style.height = '100%';
     body.style.overflow = 'hidden';
-    body.style.backgroundColor = colors.background;
+    body.style.backgroundColor = sg.bg;
     return () => {
       html.style.height = prevHtmlHeight;
       body.style.height = prevBodyHeight;
@@ -128,14 +127,6 @@ export default function App() {
         <StatusBar style="light" />
         <View style={styles.root}>
           <SimulationDisclosure />
-          {__DEV__ && !isClerkEnabled ? (
-            <View style={styles.clerkHint} accessibilityRole="text">
-              <Text style={styles.clerkHintText}>
-                Sign-in is disabled: set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in a root `.env` file (see
-                `.env.example`), then restart Metro with a clean cache (`npx expo start -c`).
-              </Text>
-            </View>
-          ) : null}
           <RootNavigator />
         </View>
       </SafeAreaProvider>
@@ -147,7 +138,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       {!bootReady ? (
-        <View style={[styles.root, styles.boot, { backgroundColor: colors.background }]}>
+        <View style={[styles.root, styles.boot, { backgroundColor: sg.bg }]}>
           {Platform.OS === 'web' ? (
             <Text style={styles.bootText}>Loading Pull Hub…</Text>
           ) : null}
@@ -172,19 +163,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bootText: {
-    color: colors.textMuted,
+    color: sg.muted,
+    fontFamily: sg.font.body,
     fontSize: 14,
-  },
-  clerkHint: {
-    backgroundColor: colors.warningBannerBg,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.warningBannerBorder,
-  },
-  clerkHintText: {
-    fontSize: 12,
-    color: colors.warningBannerText,
-    lineHeight: 18,
   },
 });

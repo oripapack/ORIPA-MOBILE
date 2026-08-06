@@ -14,12 +14,12 @@ import { useIsFocused } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../tokens/sg';
-import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { SgScreen } from '../components/ui';
+import { AppHeader } from '../components/shared/AppHeader';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 import { PrimaryButton } from '../components/shared/PrimaryButton';
 import { MyQrModal } from '../components/friends/MyQrModal';
 import { AddFriendModal } from '../components/friends/AddFriendModal';
@@ -63,6 +63,15 @@ function accentForId(id: string): string {
 
 const LB_PREVIEW = 3;
 
+const fontSize = { xs: 11, sm: 13, md: 17, lg: 20, xxl: 28 } as const;
+const brandFont = {
+  regular: sg.font.body,
+  medium: sg.font.bodyMedium,
+  semibold: sg.font.bodyMedium,
+  bold: sg.font.bodyBold,
+  black: sg.font.bodyBold,
+} as const;
+
 /** Seconds between auto-advance steps; keep slow so it feels ambient, not flashy */
 const ACTIVITY_AUTO_SCROLL_INTERVAL_MS = 4200;
 /** After the user drags the carousel, pause auto-scroll for this long */
@@ -70,7 +79,6 @@ const ACTIVITY_AUTO_SCROLL_PAUSE_AFTER_DRAG_MS = 14_000;
 
 export function FriendsScreen() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
@@ -84,6 +92,7 @@ export function FriendsScreen() {
   const [qrOpen, setQrOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [friendScannerOpen, setFriendScannerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   /** Re-open Add friends sheet after QR / scanner sub-modals (pageSheet blocks stacked modals). */
   const reopenAddSheetRef = useRef(false);
 
@@ -242,7 +251,8 @@ export function FriendsScreen() {
 
   return (
     <SgScreen>
-      <View style={[styles.safeTop, { paddingTop: insets.top + spacing.md }]}>
+      <AppHeader onSearch={() => setSearchOpen(true)} />
+      <View style={styles.safeTop}>
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
@@ -403,7 +413,9 @@ export function FriendsScreen() {
                     activeOpacity={0.88}
                   >
                     <Text style={styles.lbRank}>{e.rank}</Text>
-                    <Text style={styles.lbEmoji}>{e.avatarEmoji}</Text>
+                    <View style={styles.lbAvatar}>
+                      <Text style={styles.lbAvatarText}>{e.displayName.slice(0, 1).toUpperCase()}</Text>
+                    </View>
                     <View style={styles.lbMeta}>
                       <Text style={styles.lbName} numberOfLines={1}>
                         {e.displayName}
@@ -464,6 +476,7 @@ export function FriendsScreen() {
           reopenAddSheetIfNeeded();
         }}
       />
+      <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </SgScreen>
   );
 }
@@ -475,6 +488,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     paddingHorizontal: spacing.base,
+    paddingTop: spacing.md,
     paddingBottom: 120,
   },
   guestBanner: {
@@ -500,8 +514,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   pageTitle: {
-    fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
+    fontSize: 30,
+    fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
   },
@@ -650,8 +664,20 @@ const styles = StyleSheet.create({
     color: sg.gold,
     textAlign: 'center',
   },
-  lbEmoji: {
-    fontSize: 18,
+  lbAvatar: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
+  },
+  lbAvatarText: {
+    fontSize: 10,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
   },
   lbMeta: {
     flex: 1,
@@ -669,8 +695,9 @@ const styles = StyleSheet.create({
   },
   lbVal: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
+    fontVariant: [...sg.numeric],
   },
   seeAllBtn: {
     flexDirection: 'row',

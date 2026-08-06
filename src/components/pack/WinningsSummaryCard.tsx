@@ -15,7 +15,7 @@ type Props = {
 export function WinningsSummaryCard({
   label = 'Total Convert Value',
   amount,
-  currencyLabel = 'Coins',
+  currencyLabel = 'Points',
   helperText,
   style,
 }: Props) {

@@ -79,7 +79,7 @@ export function ResultScreen({ route }: Props) {
   const count = pull.cards.length;
   const multi = count > 1;
   const coins = groupThousands(String(usdToCoins(pull.totalListedValueUsd)));
-  const ctaLabel = multi ? `Trade in all — ${coins} Coins` : `Trade in — ${coins} Coins`;
+  const ctaLabel = multi ? `Trade in all — ${coins} Points` : `Trade in — ${coins} Points`;
 
   const goTabs = (screen?: 'Vault') => {
     if (!navigationRef.isReady()) return;
@@ -174,7 +174,7 @@ export function ResultScreen({ route }: Props) {
       {/* ── 4. Action bar ── */}
       <View style={styles.actionBar}>
         <SgButton label={ctaLabel} onPress={() => setSheetOpen(true)} style={styles.cta} />
-        <Text style={styles.disclaimer}>100% of listed value, in Coins.</Text>
+        <Text style={styles.disclaimer}>100% of listed value, in Points.</Text>
         <SgButton label="Keep in Vault" variant="line" onPress={onKeepInVault} style={styles.secondary} />
       </View>
 
@@ -195,8 +195,8 @@ export function ResultScreen({ route }: Props) {
             <Text style={styles.sheetAmountSub}>COINS · 100% OF LISTED VALUE</Text>
             <Text style={styles.sheetBody}>
               {multi
-                ? `All ${count} cards will be traded in for Coins at their listed value.`
-                : 'This card will be traded in for Coins at its listed value.'}
+                ? `All ${count} cards will be traded in for Points at their listed value.`
+                : 'This card will be traded in for Points at its listed value.'}
             </Text>
             <SgButton label="Trade in" onPress={onConfirmTradeIn} style={styles.cta} />
             <SgButton label="Cancel" variant="line" onPress={() => setSheetOpen(false)} style={styles.sheetCancel} />

@@ -4,8 +4,7 @@ import { BlurView } from 'expo-blur';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sg } from '../../tokens/sg';
-import { spacing, elevation } from '../../tokens/spacing';
-import { CreditsPill } from './CreditsPill';
+import { PointsPill } from './PointsPill';
 import { APP_DISPLAY_NAME, getLogoInitials, getLogoWordmarkParts } from '../../config/app';
 import { navigationRef } from '../../navigation/navigationRef';
 import { useRequireAuth } from '../../hooks/useRequireAuth';
@@ -26,7 +25,7 @@ export function AppHeader({ onSearch }: Props) {
   const initials = getLogoInitials();
   const wordmark = getLogoWordmarkParts();
 
-  const goCredits = () => {
+  const goPoints = () => {
     requireAuth(() => {
       if (navigationRef.isReady()) {
         navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
@@ -35,7 +34,7 @@ export function AppHeader({ onSearch }: Props) {
   };
 
   return (
-    <View style={[styles.shell, { paddingTop: insets.top + spacing.sm }, elevation.chromeBar]}>
+    <View style={[styles.shell, { paddingTop: insets.top + sg.space.sm }]}>
       <BlurView
         intensity={Platform.OS === 'ios' ? 52 : 40}
         tint="dark"
@@ -72,7 +71,7 @@ export function AppHeader({ onSearch }: Props) {
         </View>
 
         <View style={styles.right}>
-          <CreditsPill onAdd={goCredits} />
+          <PointsPill onAdd={goPoints} />
           <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75}>
             <Ionicons name="search" size={20} color={sg.text} />
           </TouchableOpacity>
@@ -88,8 +87,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sg.line,
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.md,
+    paddingHorizontal: sg.space.md,
+    paddingBottom: sg.space.md,
     zIndex: 2,
   },
   scrim: {
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
   logo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     flexShrink: 1,
   },
   monogramRing: {
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
   right: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   iconBtn: {
     width: 38,

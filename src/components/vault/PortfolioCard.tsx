@@ -1,10 +1,17 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { sgVault } from '../../tokens/sgVault';
-import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { Pull, PullRarityTier } from '../../data/mockUser';
+
+const fontSize = { xs: 11, sm: 13 } as const;
+const brandFont = {
+  medium: sgVault.font.bodyMedium,
+  semibold: sgVault.font.bodyMedium,
+  bold: sgVault.font.bodyBold,
+} as const;
 
 const COINS_PER_USD = 100;
 
@@ -87,7 +94,7 @@ export function PortfolioCard({ pulls }: Props) {
           </Text>
         </View>
         <View style={styles.trophyWrap}>
-          <Text style={styles.trophyEmoji}>🏆</Text>
+          <Ionicons name="trophy-outline" size={22} color={sgVault.gold} />
         </View>
       </View>
 
@@ -239,10 +246,11 @@ const styles = StyleSheet.create({
   },
   totalValue: {
     fontSize: 36,
-    fontFamily: brandFont.black,
+    fontFamily: sgVault.font.dataBold,
     color: sgVault.text,
     letterSpacing: -1,
     lineHeight: 40,
+    fontVariant: [...sgVault.numeric],
   },
   totalLabel: {
     fontSize: fontSize.xs,
@@ -259,9 +267,6 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(212,175,55,0.38)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  trophyEmoji: {
-    fontSize: 22,
   },
   divider: {
     height: 1,
@@ -334,9 +339,10 @@ const styles = StyleSheet.create({
   },
   distBarCount: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sgVault.font.dataBold,
     color: sgVault.muted,
     width: 20,
     textAlign: 'right',
+    fontVariant: [...sgVault.numeric],
   },
 });

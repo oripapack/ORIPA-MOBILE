@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { sg } from '../../tokens/sg';
 
 interface Props {
   /** surface2 lifts one step (hover/emphasis surface). */
   raised?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   children: React.ReactNode;
 }
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { MarketplaceListing } from '../../data/marketplace';
 
@@ -56,7 +56,7 @@ export function ListingCard({ listing, shipsFromShort, onPress }: Props) {
             accessibilityIgnoresInvertColors
           />
         ) : (
-          <Text style={styles.thumbPlaceholder}>🃏</Text>
+          <Ionicons name="albums-outline" size={34} color={sg.muted} />
         )}
         <View style={styles.thumbScrim} pointerEvents="none" />
         {shipsFromShort ? (
@@ -111,10 +111,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.06)',
   },
-  thumbPlaceholder: {
-    fontSize: 36,
-    opacity: 0.35,
-  },
   thumbScrim: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.1)',
@@ -134,7 +130,7 @@ const styles = StyleSheet.create({
   },
   regionPillText: {
     fontSize: 8,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
     letterSpacing: 0.3,
   },
@@ -157,13 +153,13 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 8,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     letterSpacing: 0.3,
   },
   title: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: 11,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     lineHeight: 15,
     minHeight: 30,
@@ -175,23 +171,24 @@ const styles = StyleSheet.create({
   },
   condition: {
     fontSize: 9,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     marginTop: 3,
     letterSpacing: 0.2,
     textTransform: 'uppercase',
   },
   price: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
+    fontSize: 13,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
     marginTop: 4,
+    fontVariant: [...sg.numeric],
   },
   footerHint: {
     fontSize: 9,
     color: sg.muted,
     marginTop: 3,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
   },
   footerDelta: {
     color: sg.success,

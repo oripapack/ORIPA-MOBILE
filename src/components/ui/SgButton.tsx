@@ -1,5 +1,13 @@
 import React from 'react';
-import { Pressable, Text, StyleSheet, View, ViewStyle, ActivityIndicator } from 'react-native';
+import {
+  Pressable,
+  Text,
+  StyleSheet,
+  View,
+  type StyleProp,
+  type ViewStyle,
+  ActivityIndicator,
+} from 'react-native';
 import { sg } from '../../tokens/sg';
 
 interface Props {
@@ -13,7 +21,7 @@ interface Props {
   variant?: 'gold' | 'line';
   disabled?: boolean;
   loading?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function SgButton({ label, onPress, variant = 'gold', disabled, loading, style }: Props) {
@@ -22,7 +30,9 @@ export function SgButton({ label, onPress, variant = 'gold', disabled, loading, 
     <Pressable
       style={({ pressed }) => [
         styles.base,
-        isGold ? [styles.gold, pressed && styles.goldPressed] : styles.line,
+        isGold
+          ? [styles.gold, pressed && styles.goldPressed]
+          : [styles.line, pressed && styles.linePressed],
         disabled && styles.disabled,
         style,
       ]}
@@ -30,6 +40,7 @@ export function SgButton({ label, onPress, variant = 'gold', disabled, loading, 
       disabled={disabled || loading}
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityState={{ disabled: Boolean(disabled), busy: Boolean(loading) }}
     >
       <View style={styles.labelWrap} pointerEvents="none">
         {loading ? (
@@ -44,6 +55,7 @@ export function SgButton({ label, onPress, variant = 'gold', disabled, loading, 
 
 const styles = StyleSheet.create({
   base: {
+    minHeight: 52,
     borderRadius: sg.radius.btn,
     paddingVertical: sg.space.md,
     paddingHorizontal: sg.space.lg,
@@ -58,6 +70,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: sg.line,
   },
+  linePressed: { backgroundColor: sg.surface2 },
   disabled: { opacity: 0.4 },
   labelWrap: { flexDirection: 'row', alignItems: 'center' },
   label: {

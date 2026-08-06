@@ -25,7 +25,7 @@ const SLIDES = [
   },
   {
     key: 'tradein',
-    title: '100% back in Coins.',
+    title: '100% of listed value in Points.',
     sub: 'Zero fees. Instantly.',
     footnote: '*of listed value',
     image: require('../../../../assets/home/banners/banner-02.webp'),

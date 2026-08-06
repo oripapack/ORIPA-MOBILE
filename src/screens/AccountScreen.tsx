@@ -1,13 +1,11 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { sg } from '../tokens/sg';
-import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { screenScroll } from '../tokens/layout';
 import { useAppStore } from '../store/useAppStore';
@@ -25,9 +23,20 @@ import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
 import { progressionFromTotalXp } from '../lib/collectorProgression';
 import { countClaimableQuests, pickPreviewQuests } from '../lib/collectorQuestPreview';
+import { AppHeader } from '../components/shared/AppHeader';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 
 const PREVIEW_PULLS = 2;
 const PREVIEW_QUESTS = 3;
+
+const fontSize = { xs: 11, sm: 13, md: 17, lg: 20, xxl: 28, hero: 34 } as const;
+const brandFont = {
+  regular: sg.font.body,
+  medium: sg.font.bodyMedium,
+  semibold: sg.font.bodyMedium,
+  bold: sg.font.bodyBold,
+  black: sg.font.bodyBold,
+} as const;
 
 type AccountNav = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Account'>,
@@ -36,7 +45,6 @@ type AccountNav = CompositeNavigationProp<
 
 export function AccountScreen() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation<AccountNav>();
   const user = useAppStore((s) => s.user);
   const coinBalance = useAppStore((s) => s.user.credits);
@@ -47,6 +55,7 @@ export function AccountScreen() {
   const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
   const simulatedMemberTier = useMembershipSimulationStore((s) => s.simulatedTier);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
   const prog = progressionFromTotalXp(user.xp);
@@ -107,9 +116,10 @@ export function AccountScreen() {
 
   return (
     <SgScreen>
+      <AppHeader onSearch={() => setSearchOpen(true)} />
       <ScrollView
         style={styles.container}
-        contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
+        contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         refreshControl={refreshControl}
       >
@@ -120,7 +130,9 @@ export function AccountScreen() {
       {/* 1 · Hero profile */}
       <VaultFramedCard style={styles.heroCard}>
         <View style={styles.heroTop}>
-          <Text style={styles.heroAvatar}>{socialProfile.avatarEmoji}</Text>
+          <Text style={styles.heroAvatar}>
+            {socialProfile.displayName.slice(0, 1).toUpperCase()}
+          </Text>
           <View style={styles.heroMeta}>
             <Text style={styles.heroName} numberOfLines={1}>
               {socialProfile.displayName}
@@ -289,6 +301,7 @@ export function AccountScreen() {
         </TouchableOpacity>
       </View>
       </ScrollView>
+      <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </SgScreen>
   );
 }
@@ -300,11 +313,12 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: spacing.base,
+    paddingTop: spacing.md,
     paddingBottom: 120,
   },
   pageTitle: {
-    fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
+    fontSize: 30,
+    fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
     marginBottom: spacing.base,
@@ -363,7 +377,9 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     overflow: 'hidden',
     backgroundColor: sg.bg,
-    fontSize: 30,
+    fontSize: 20,
+    fontFamily: sg.font.bodyBold,
+    color: sg.gold,
     borderWidth: 1,
     borderColor: sg.line,
   },
@@ -446,9 +462,10 @@ const styles = StyleSheet.create({
   },
   heroMetricVal: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
     maxWidth: '100%',
+    fontVariant: [...sg.numeric],
   },
   heroMetricLab: {
     marginTop: 4,
@@ -488,7 +505,8 @@ const styles = StyleSheet.create({
   xpPct: {
     fontSize: fontSize.sm,
     color: sg.muted,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.dataBold,
+    fontVariant: [...sg.numeric],
   },
   barTrack: {
     height: 8,
@@ -512,8 +530,9 @@ const styles = StyleSheet.create({
   },
   streakInlineVal: {
     fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
+    fontVariant: [...sg.numeric],
   },
   streakInlineLab: {
     fontSize: fontSize.xs,
@@ -530,9 +549,10 @@ const styles = StyleSheet.create({
   },
   streakInlineBestVal: {
     fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     color: sg.text,
     marginTop: 2,
+    fontVariant: [...sg.numeric],
   },
   claimCta: {
     marginTop: spacing.sm,
@@ -586,8 +606,9 @@ const styles = StyleSheet.create({
   },
   bestVal: {
     fontSize: fontSize.hero - 4,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.dataBold,
     color: sg.gold,
+    fontVariant: [...sg.numeric],
   },
   bestSub: {
     marginTop: 4,

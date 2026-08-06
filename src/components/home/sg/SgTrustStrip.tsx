@@ -4,7 +4,7 @@ import { sg } from '../../../tokens/sg';
 
 const ITEMS = [
   { title: 'Zero-fee', sub: 'trade-in, always' },
-  { title: '100% listed value', sub: 'back in Coins' },
+  { title: '100% listed value', sub: 'in Points' },
   { title: 'Free shipping', sub: 'on orders ', subNum: '$100+' },
 ] as const;
 

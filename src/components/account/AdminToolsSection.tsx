@@ -50,10 +50,10 @@ function AdminToolsCard() {
           onPress={() => setCredits(INFINITE_CREDITS)}
           activeOpacity={0.88}
           accessibilityRole="button"
-          accessibilityLabel="Grant infinite credits"
+          accessibilityLabel="Grant infinite Points"
         >
           <Ionicons name="infinite-outline" size={20} color={sg.text} />
-          <Text style={styles.primaryActionText}>Grant infinite credits</Text>
+          <Text style={styles.primaryActionText}>Grant infinite Points</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

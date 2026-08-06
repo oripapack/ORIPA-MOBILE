@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 
-const POINTS: { pointKey: '1' | '2' | '3'; icon: string }[] = [
-  { pointKey: '1', icon: '🚚' },
-  { pointKey: '2', icon: '💴' },
-  { pointKey: '3', icon: '🃏' },
-];
+const POINTS = [
+  { pointKey: '1', icon: 'cube-outline' },
+  { pointKey: '2', icon: 'pricetag-outline' },
+  { pointKey: '3', icon: 'albums-outline' },
+] as const;
 
 /**
  * Post-browse trust reinforcement — vault-framed but visually secondary to inventory.
@@ -25,7 +25,7 @@ export function WhyChoosePullHub() {
       {POINTS.map(({ pointKey, icon }) => (
         <View key={pointKey} style={styles.row}>
           <View style={styles.iconCircle}>
-            <Text style={styles.iconEmoji}>{icon}</Text>
+            <Ionicons name={icon} size={19} color={sg.gold} />
           </View>
           <View style={styles.textCol}>
             <View style={styles.pointPill}>
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   sectionTitle: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontSize: 19,
+    fontFamily: sg.font.display,
     color: sg.muted,
     marginBottom: spacing.sm,
     textAlign: 'left',
@@ -74,9 +74,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconEmoji: {
-    fontSize: 18,
-  },
   textCol: {
     flex: 1,
   },
@@ -92,13 +89,13 @@ const styles = StyleSheet.create({
   },
   pointPillText: {
     fontSize: 8,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
     letterSpacing: 0.5,
   },
   heading: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: 13,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     marginBottom: 2,
   },

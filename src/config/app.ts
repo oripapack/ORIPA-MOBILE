@@ -76,4 +76,4 @@ export const SHOW_SIMULATION_DISCLOSURE = CREDITS_ARE_MOCK;
 export const SHOW_DEMO_BANNER = false;
 
 /** @deprecated Copy for legacy banner; modal uses i18n `demoSimulation.*`. */
-export const DEMO_BANNER_TEXT = 'Preview build — credits & rewards are simulated.';
+export const DEMO_BANNER_TEXT = 'Preview build — Points & rewards are simulated.';

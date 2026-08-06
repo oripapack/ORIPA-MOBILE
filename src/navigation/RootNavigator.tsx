@@ -198,7 +198,12 @@ function RootStack() {
     headerTintColor: sg.text,
     headerTitleStyle: styles.stackHeaderTitle,
     headerShadowVisible: false,
-    headerStyle: { backgroundColor: sg.surface },
+    headerBackTitleVisible: false,
+    headerStyle: {
+      backgroundColor: sg.bg,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: sg.line,
+    },
   };
 
   return (
@@ -421,6 +426,7 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 11,
     fontFamily: sg.font.bodyMedium,
+    letterSpacing: 0.15,
   },
   stackHeaderTitle: {
     fontSize: 17,

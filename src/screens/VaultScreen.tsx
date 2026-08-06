@@ -34,9 +34,17 @@ import { useAppStore } from '../store/useAppStore';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { getLocalizedPackTitle } from '../i18n/packCopy';
 import { sgVault } from '../tokens/sgVault';
-import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { Pull, PullRarityTier } from '../data/mockUser';
+
+const fontSize = { xs: 11, sm: 13, md: 17, xxl: 28 } as const;
+const brandFont = {
+  regular: sgVault.font.body,
+  medium: sgVault.font.bodyMedium,
+  semibold: sgVault.font.bodyMedium,
+  bold: sgVault.font.bodyBold,
+  black: sgVault.font.bodyBold,
+} as const;
 
 type VaultNav = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Vault'>,
@@ -367,8 +375,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   pageTitle: {
-    fontSize: fontSize.xxl,
-    fontFamily: brandFont.black,
+    fontSize: 30,
+    fontFamily: sgVault.font.display,
     color: sgVault.text,
     letterSpacing: -0.5,
     marginBottom: spacing.md,
@@ -417,9 +425,10 @@ const styles = StyleSheet.create({
   },
   tileMeta: {
     fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
+    fontFamily: sgVault.font.data,
     color: sgVault.muted,
     marginTop: spacing.sm,
+    fontVariant: [...sgVault.numeric],
   },
   tileTimer: {
     fontSize: 10,
@@ -439,8 +448,9 @@ const styles = StyleSheet.create({
   },
   tileValue: {
     fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
+    fontFamily: sgVault.font.dataBold,
     letterSpacing: -0.2,
+    fontVariant: [...sgVault.numeric],
   },
   tileListedBadge: {
     backgroundColor: 'rgba(61,220,151,0.12)',

@@ -230,7 +230,7 @@ export function PackCard({ pack, onPress }: Props) {
 
         <Text style={styles.metadataRow}>
           {t('packCard.metadataRow', {
-            defaultValue: '{{credits}} credits • {{remaining}} remaining',
+            defaultValue: '{{credits}} Points • {{remaining}} remaining',
             credits: pack.creditPrice.toLocaleString(),
             remaining: pack.remainingInventory.toLocaleString(),
           })}
@@ -269,7 +269,7 @@ export function PackCard({ pack, onPress }: Props) {
                 disabled={ctaBlocked || pack.remainingInventory < 10}
               >
                 <Text style={styles.quickCtaTitle}>Open 10</Text>
-                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 10).toLocaleString()} credits</Text>
+                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 10).toLocaleString()} Points</Text>
               </Pressable>
               <Pressable
                 style={[styles.quickCta, (ctaBlocked || pack.remainingInventory < 100) && styles.quickCtaDisabled]}
@@ -277,7 +277,7 @@ export function PackCard({ pack, onPress }: Props) {
                 disabled={ctaBlocked || pack.remainingInventory < 100}
               >
                 <Text style={styles.quickCtaTitle}>Open 100</Text>
-                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 100).toLocaleString()} credits</Text>
+                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 100).toLocaleString()} Points</Text>
               </Pressable>
             </View>
           </View>
