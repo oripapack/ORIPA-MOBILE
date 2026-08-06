@@ -7,7 +7,7 @@ import { sg } from '../tokens/sg';
 import { AssetBlockedCard } from '../components/shared/AssetBlockedCard';
 import { SgCard, SgData, SgSectionHeader, SgTierTag } from '../components/ui';
 import { SgFairnessRecord } from '../components/pack/sg/SgFairnessRecord';
-import { PackVisual } from '../components/ph/PackVisual';
+import { TokyoArcadePackCover } from '../components/pack/TokyoArcadePackCover';
 import { screenRoot, screenScroll, screenFooter } from '../tokens/layout';
 import { navigationRef } from '../navigation/navigationRef';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -149,11 +149,11 @@ export function PackDetailsScreen({ route }: Props) {
         {/* ── 1. Pack name / set ── */}
         <View style={styles.hero}>
           <View style={styles.heroVisualWrap}>
-            <PackVisual
+            <TokyoArcadePackCover
               name={pack.title}
               category={pack.tcgCategory ?? 'TCG'}
               rarityTier={pack.rarityTier ?? 'epic'}
-              size="hero"
+              variant="detail"
             />
           </View>
           <View style={styles.heroBadges}>
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   scroll: { ...screenScroll },
   scrollContent: { paddingBottom: sg.space.xl },
   hero: { alignItems: 'center', paddingTop: sg.space.sm, paddingHorizontal: sg.space.md },
-  heroVisualWrap: { alignItems: 'center' },
+  heroVisualWrap: { alignSelf: 'stretch', alignItems: 'center' },
   heroBadges: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Pack } from '../../../data/mockPacks';
-import { PackVisual } from '../../ph/PackVisual';
+import { TokyoArcadePackCover } from '../../pack/TokyoArcadePackCover';
 import { SgButton, SgData } from '../../ui';
 import { sg } from '../../../tokens/sg';
 import { getLocalizedPackFields } from '../../../i18n/packCopy';
@@ -11,7 +11,7 @@ import { navigationRef } from '../../../navigation/navigationRef';
 /**
  * Shelf-first featured pack card — the ONE hero element on Home, so it is
  * the screen's single `shadowHero` carrier (§3). The pack itself is the
- * existing PackVisual asset. Stock counts use `success` semantics when low
+ * user-supplied chamber artwork. Stock counts use `success` semantics when low
  * (§4). No red, no blinking, no fake timers, and no unsupported odds callout.
  */
 export function SgFeaturedPackCard({
@@ -39,22 +39,10 @@ export function SgFeaturedPackCard({
   return (
     <View style={styles.card}>
       <View style={styles.visualZone}>
-        <View style={styles.halo} pointerEvents="none" />
-        <View style={[styles.bolt, styles.boltTopLeft]} pointerEvents="none" />
-        <View style={[styles.bolt, styles.boltTopRight]} pointerEvents="none" />
-        <View style={[styles.bolt, styles.boltBottomLeft]} pointerEvents="none" />
-        <View style={[styles.bolt, styles.boltBottomRight]} pointerEvents="none" />
-        <View style={styles.sideLane} pointerEvents="none">
-          <View style={styles.sideCobalt} />
-          <View style={styles.sideTeal} />
-          <View style={styles.sideSignal} />
-        </View>
-        <View style={styles.platform} pointerEvents="none" />
-        <PackVisual
+        <TokyoArcadePackCover
           name={pack.title}
           category={pack.tcgCategory ?? 'TCG'}
           rarityTier={pack.rarityTier ?? 'epic'}
-          size="lg"
         />
       </View>
 
@@ -103,64 +91,16 @@ const styles = StyleSheet.create({
   },
   visualZone: {
     alignSelf: 'stretch',
-    height: 304,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: sg.space.md,
-    borderWidth: 2,
-    borderColor: sg.chrome,
     borderRadius: sg.radius.panel,
-    backgroundColor: sg.surface2,
     overflow: 'hidden',
     shadowColor: sg.gold,
     shadowOpacity: 0.13,
     shadowRadius: 18,
     shadowOffset: { width: 0, height: 0 },
   },
-  halo: {
-    position: 'absolute',
-    top: 14,
-    width: 156,
-    height: 12,
-    borderRadius: sg.radius.btn,
-    borderWidth: 3,
-    borderColor: sg.gold,
-    backgroundColor: sg.surface,
-  },
-  platform: {
-    position: 'absolute',
-    bottom: 14,
-    width: 174,
-    height: 18,
-    borderRadius: sg.radius.btn,
-    borderWidth: 3,
-    borderColor: sg.chrome,
-    backgroundColor: sg.surface,
-  },
-  bolt: {
-    position: 'absolute',
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: sg.chrome,
-    borderWidth: 1,
-    borderColor: sg.surface,
-  },
-  boltTopLeft: { top: 12, left: 12 },
-  boltTopRight: { top: 12, right: 12 },
-  boltBottomLeft: { bottom: 12, left: 12 },
-  boltBottomRight: { bottom: 12, right: 12 },
-  sideLane: {
-    position: 'absolute',
-    right: 14,
-    top: 54,
-    width: 18,
-    height: 150,
-    gap: 4,
-  },
-  sideCobalt: { flex: 2, backgroundColor: sg.gold, borderRadius: 2 },
-  sideTeal: { flex: 2, backgroundColor: sg.teal, borderRadius: 2 },
-  sideSignal: { flex: 1, backgroundColor: sg.neon, borderRadius: 2 },
   title: {
     fontFamily: sg.font.display,
     fontSize: 22,

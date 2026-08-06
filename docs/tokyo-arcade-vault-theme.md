@@ -56,4 +56,4 @@ WCAG contrast ratios for the core pairings:
 
 ## Asset policy
 
-Third-party card photos, grading labels, logos, and package art are not recreated. The app uses a black generic package and labeled neutral media frames (`PACK ART PENDING`, `LISTING MEDIA PENDING`) until licensed assets are supplied. CSS gradients must not imitate missing photography.
+The user-supplied acrylic chamber image is approved for the Home and pack-detail hero covers and is stored at `assets/home/tokyo-arcade-vault-chamber.png`. Third-party card photos, grading labels, logos, and package art are not recreated. The app keeps the black generic package and labeled neutral media frames (`PACK ART PENDING`, `LISTING MEDIA PENDING`) until licensed assets are supplied. CSS gradients must not imitate missing photography.
