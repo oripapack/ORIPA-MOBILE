@@ -44,7 +44,7 @@ const NOISE_URI =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
 const css = `
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
 
 :root {
   /* ── N2 基層(C-3 verbatim) ── */
@@ -302,23 +302,24 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
    S-4: the route is unchanged; this block is enabled only by ?theme=tokyo-arcade-vault.
    Trust chassis stays invariant: gold value/CTA, mono data, odds ledger, dark ground. */
 html[data-theme='tokyo-arcade-vault'] {
-  --tokyo-cyan: #32D9EA;
-  --tokyo-cyan-dim: rgba(50,217,234,0.16);
-  --tokyo-pink: #FF3E7F;
-  --tokyo-pink-glow: rgba(255,62,127,0.28);
-  --tokyo-indigo: #111828;
-  --tokyo-line: #263147;
-  --neon: var(--tokyo-pink);
-  --neon-glow: var(--tokyo-pink-glow);
-  --f-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --tokyo-blue: #2058D5;
+  --tokyo-mint: #2ECDB2;
+  --tokyo-coral: #FF5A4E;
+  --tokyo-cream: #F0EEE8;
+  --tokyo-ink: #08090B;
+  --tokyo-steel: #C9CDD2;
+  --tokyo-line: #30343B;
+  --f-display: 'Chakra Petch', 'Arial Black', sans-serif;
+  --neon: #FF4A38;
+  --neon-glow: rgba(255,74,56,0.32);
   --radius-panel: 10px;
-  --radius-btn: 8px;
+  --radius-btn: 10px;
   --radius-tag: 4px;
 }
 html[data-theme='tokyo-arcade-vault'] body {
-  background: #05070B;
-  background-image: linear-gradient(rgba(50,217,234,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(50,217,234,0.025) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background: #050506;
+  background-image: linear-gradient(rgba(240,238,232,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(240,238,232,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 html[data-theme='tokyo-arcade-vault'] .theme-only { display: flex; }
 html[data-theme='tokyo-arcade-vault'] .theme-hide { display: none; }
@@ -327,167 +328,202 @@ html[data-theme='tokyo-arcade-vault'] .rd-h1 .theme-only,
 html[data-theme='tokyo-arcade-vault'] .rd-sub .theme-only { display: block; }
 html[data-theme='tokyo-arcade-vault'] .rd-wrap { max-width: 1240px; }
 html[data-theme='tokyo-arcade-vault'] .rd-h1 {
-  font-family: var(--f-display); font-size: 38px; line-height: 0.95; letter-spacing: 0.035em; text-transform: uppercase;
+  font-family: var(--f-display); font-size: 40px; font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; text-transform: uppercase;
 }
-html[data-theme='tokyo-arcade-vault'] .rd-label { color: var(--tokyo-cyan); }
+html[data-theme='tokyo-arcade-vault'] .rd-label { color: var(--tokyo-blue); }
 html[data-theme='tokyo-arcade-vault'] .phone {
-  border: 1px solid var(--tokyo-line); border-radius: 18px;
-  background: #080B12;
-  box-shadow: 0 0 0 4px #05070B, 0 26px 80px rgba(0,0,0,0.72);
+  border: 1px solid var(--tokyo-line); border-radius: 18px; background: var(--bg);
+  box-shadow: 0 0 0 4px #050506, 0 28px 84px rgba(0,0,0,0.74);
 }
-html[data-theme='tokyo-arcade-vault'] .noise::after { opacity: 0.025; }
+html[data-theme='tokyo-arcade-vault'] .noise::after { opacity: 0.018; }
+
+/* Off-white header is functional chrome; the page ground remains N2 black. */
 html[data-theme='tokyo-arcade-vault'] .tb {
-  min-height: 78px; padding: 20px 20px 14px;
-  border-bottom: 1px solid var(--tokyo-line);
-  background: #080B12;
-}
-html[data-theme='tokyo-arcade-vault'] .tb::after {
-  content: ''; position: absolute; left: 20px; right: 20px; bottom: -1px; height: 1px;
-  background: linear-gradient(90deg, var(--tokyo-pink) 0 42px, transparent 42px 55px, var(--tokyo-cyan) 55px 108px, transparent 108px);
+  min-height: 86px; padding: 22px 20px; color: var(--tokyo-ink);
+  border-bottom: 1px solid var(--tokyo-steel); background: var(--tokyo-cream);
 }
 html[data-theme='tokyo-arcade-vault'] .tb-logo {
-  display: flex; align-items: center; gap: 10px; font-family: var(--f-display);
-  font-size: 24px; font-weight: 700; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 12px; font-family: var(--f-display);
+  font-size: 27px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase;
 }
 html[data-theme='tokyo-arcade-vault'] .tb-mark {
-  width: 22px; height: 22px; position: relative; flex: 0 0 22px;
-  background: linear-gradient(90deg, var(--text) 0 45%, transparent 45% 55%, var(--tokyo-pink) 55%);
-  clip-path: polygon(0 0, 72% 0, 72% 18%, 100% 18%, 100% 72%, 80% 72%, 80% 100%, 25% 100%, 25% 78%, 0 78%);
+  width: 26px; height: 34px; position: relative; flex: 0 0 26px; background: var(--tokyo-ink);
+  clip-path: polygon(0 0, 45% 0, 45% 76%, 60% 76%, 60% 0, 100% 0, 100% 64%, 78% 64%, 78% 100%, 34% 100%, 34% 84%, 0 84%);
+}
+html[data-theme='tokyo-arcade-vault'] .tb-mark::after {
+  content: ''; position: absolute; width: 7px; height: 7px; right: 0; top: 0; border-radius: 50%; background: var(--tokyo-blue);
 }
 html[data-theme='tokyo-arcade-vault'] .tb-points {
-  border-radius: 4px; border-color: var(--tokyo-line); background: var(--tokyo-indigo);
-  padding: 9px 11px; gap: 8px;
+  border-radius: 999px; border-color: var(--tokyo-steel); background: transparent; padding: 9px 12px; gap: 7px;
 }
 html[data-theme='tokyo-arcade-vault'] .tb-points::before {
-  content: 'POINTS'; font-family: var(--f-data); font-size: 9px; color: var(--muted); letter-spacing: 0.12em;
+  content: 'POINTS'; font-family: var(--f-display); font-size: 11px; font-weight: 700; color: var(--tokyo-ink); letter-spacing: 0.04em;
 }
-html[data-theme='tokyo-arcade-vault'] .tb-point-dot {
-  width: 7px; height: 7px; border-radius: 2px; background: var(--tokyo-cyan); box-shadow: 0 0 10px rgba(50,217,234,0.8);
-}
-html[data-theme='tokyo-arcade-vault'] .tokyo-status {
-  align-items: center; justify-content: space-between; padding: 10px 20px 0;
-  color: var(--muted); font-family: var(--f-data); font-size: 9px; letter-spacing: 0.12em;
-}
-html[data-theme='tokyo-arcade-vault'] .tokyo-status b { color: var(--tokyo-cyan); font-weight: 500; }
-html[data-theme='tokyo-arcade-vault'] .status-ready { display: flex; align-items: center; gap: 7px; }
-html[data-theme='tokyo-arcade-vault'] .status-ready i {
-  width: 5px; height: 5px; background: var(--tokyo-cyan); box-shadow: 0 0 8px rgba(50,217,234,0.72);
-}
-html[data-theme='tokyo-arcade-vault'] .journey {
-  margin: 14px 20px 0; border: 1px solid var(--tokyo-line); background: #0B101B;
-  display: grid; grid-template-columns: repeat(4,1fr);
-}
-html[data-theme='tokyo-arcade-vault'] .journey span {
-  padding: 8px 3px 7px; text-align: center; font-family: var(--f-data); font-size: 8px; color: #636E81; letter-spacing: 0.09em;
-}
-html[data-theme='tokyo-arcade-vault'] .journey span + span { border-left: 1px solid var(--tokyo-line); }
-html[data-theme='tokyo-arcade-vault'] .journey .active { color: var(--tokyo-cyan); background: var(--tokyo-cyan-dim); }
-html[data-theme='tokyo-arcade-vault'] .hero { padding: 22px 20px 26px; }
+html[data-theme='tokyo-arcade-vault'] .tb-points span { color: var(--tokyo-ink); }
+html[data-theme='tokyo-arcade-vault'] .tb-point-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tokyo-blue); }
+html[data-theme='tokyo-arcade-vault'] .tokyo-status,
+html[data-theme='tokyo-arcade-vault'] .journey { display: none; }
+
+html[data-theme='tokyo-arcade-vault'] .hero { padding: 14px 12px 28px; }
 html[data-theme='tokyo-arcade-vault'] .hero-eyebrow {
-  color: var(--tokyo-pink); font-family: var(--f-data); font-size: 9px; letter-spacing: 0.18em;
-  text-shadow: 0 0 12px var(--tokyo-pink-glow);
+  margin: 2px 0 12px; color: var(--muted); font-family: var(--f-data); font-size: 8px; letter-spacing: 0.17em;
 }
 html[data-theme='tokyo-arcade-vault'] .hero-pack-zone {
-  min-height: 244px; margin-top: 15px; align-items: center;
-  border: 1px solid var(--tokyo-line); border-radius: 8px;
-  background: linear-gradient(180deg, #0B1321 0%, #080B12 75%);
-  box-shadow: inset 0 0 0 4px #070A11, inset 0 0 34px rgba(50,217,234,0.065);
+  min-height: 600px; margin-top: 0; align-items: center; overflow: hidden;
+  border: 1px solid #BFC4CC; border-radius: 13px;
+  background: var(--tokyo-cream) url('/assets/tokyo-arcade-vault/acrylic-chamber-v1.png') center / 100% 100% no-repeat;
+  box-shadow: var(--shadow-hero);
 }
-html[data-theme='tokyo-arcade-vault'] .hero-pack-zone::before,
-html[data-theme='tokyo-arcade-vault'] .hero-pack-zone::after {
-  content: ''; position: absolute; top: 22px; bottom: 22px; width: 3px; background: var(--tokyo-cyan);
-  box-shadow: 0 0 9px rgba(50,217,234,0.75);
-}
-html[data-theme='tokyo-arcade-vault'] .hero-pack-zone::before { left: 14px; }
-html[data-theme='tokyo-arcade-vault'] .hero-pack-zone::after { right: 14px; }
 html[data-theme='tokyo-arcade-vault'] .chamber-code {
-  position: absolute; top: 9px; left: 28px; right: 28px; justify-content: space-between;
-  font-family: var(--f-data); font-size: 7px; color: #667287; letter-spacing: 0.13em;
+  position: absolute; z-index: 6; left: 24px; right: 24px; top: 19px; justify-content: space-between;
+  font-family: var(--f-data); font-size: 7px; color: #5D6570; letter-spacing: 0.13em;
 }
 html[data-theme='tokyo-arcade-vault'] .hero-pack-zone > .pack {
-  width: 142px; height: 198px; border-radius: 4px;
-  background-color: #080A10;
-  background-image: linear-gradient(rgba(50,217,234,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(50,217,234,0.055) 1px, transparent 1px);
-  background-size: 18px 18px;
-  box-shadow: inset 0 0 0 1px #303A4C, 0 18px 28px rgba(0,0,0,0.72);
-  z-index: 2;
+  width: 214px; height: 330px; border-radius: 5px; z-index: 4; color: var(--tokyo-cream);
+  background: linear-gradient(145deg, #17191D 0%, #030405 48%, #15171A 100%);
+  box-shadow: inset 0 0 0 1px #30343A, inset 11px 0 20px rgba(240,238,232,0.045), inset -9px 0 18px rgba(0,0,0,0.62), 0 24px 34px rgba(12,16,24,0.34);
+  transform: translateY(7px);
 }
 html[data-theme='tokyo-arcade-vault'] .hero-pack-zone > .pack::before {
-  left: 0; right: 0; top: 0; height: 8px; background: repeating-linear-gradient(90deg, #2B3444 0 2px, #070A10 2px 5px);
+  left: 0; right: 0; top: 0; height: 12px; background: repeating-linear-gradient(90deg, #1C1E22 0 2px, #050607 2px 5px);
 }
 html[data-theme='tokyo-arcade-vault'] .hero-pack-zone > .pack::after {
-  background: linear-gradient(115deg, transparent 36%, rgba(240,238,232,0.055) 46%, transparent 55%);
+  background: linear-gradient(112deg, transparent 30%, rgba(240,238,232,0.07) 41%, transparent 50%);
 }
 html[data-theme='tokyo-arcade-vault'] .tear-line {
-  position: absolute; left: 0; right: 0; top: 50px; height: 2px; z-index: 5;
-  background: var(--tokyo-pink); box-shadow: 0 0 10px var(--tokyo-pink-glow);
+  position: absolute; z-index: 7; left: 0; right: 0; top: 133px; height: 3px;
+  background: var(--neon); box-shadow: 0 0 12px var(--neon-glow);
 }
 html[data-theme='tokyo-arcade-vault'] .pack-id {
-  position: absolute; right: 10px; top: 28px; flex-direction: column; align-items: flex-end;
-  font-family: var(--f-data); color: var(--tokyo-pink); font-size: 8px; line-height: 1.1; z-index: 4;
+  position: absolute; z-index: 8; right: 14px; top: 24px; padding: 6px 7px; border: 1px solid var(--tokyo-cream);
+  flex-direction: column; align-items: flex-end; font-family: var(--f-data); color: var(--tokyo-cream); font-size: 7px; line-height: 1.1;
 }
-html[data-theme='tokyo-arcade-vault'] .pack-id b { font-size: 18px; }
-html[data-theme='tokyo-arcade-vault'] .pack-emblem {
-  width: 54px; height: 54px; border-radius: 2px; border-color: #39465D; transform: translate(-50%, -42%) rotate(45deg);
+html[data-theme='tokyo-arcade-vault'] .pack-id b { margin-top: 4px; font-size: 14px; }
+html[data-theme='tokyo-arcade-vault'] .pack-emblem,
+html[data-theme='tokyo-arcade-vault'] .pack-name-strip { display: none; }
+html[data-theme='tokyo-arcade-vault'] .pack-face {
+  position: absolute; z-index: 6; inset: 0; flex-direction: column; padding: 25px 15px 16px;
 }
-html[data-theme='tokyo-arcade-vault'] .pack-emblem span {
-  font-family: var(--f-display); color: var(--text); font-size: 15px; font-weight: 700; transform: rotate(-45deg); letter-spacing: 0.08em;
+html[data-theme='tokyo-arcade-vault'] .pack-wordmark {
+  font-family: var(--f-display); font-size: 14px; font-weight: 700; line-height: 0.82; letter-spacing: -0.03em; text-transform: uppercase;
 }
-html[data-theme='tokyo-arcade-vault'] .pack-name-strip {
-  bottom: 17px; font-family: var(--f-data); color: var(--text); font-size: 8px; letter-spacing: 0.15em;
+html[data-theme='tokyo-arcade-vault'] .pack-title-panel {
+  margin-top: 57px; padding: 12px 11px 10px; color: var(--tokyo-ink); background: var(--tokyo-cream); border-radius: 4px;
 }
-html[data-theme='tokyo-arcade-vault'] .pack-name-strip .theme-only,
-html[data-theme='tokyo-arcade-vault'] .hero-title .theme-only,
-html[data-theme='tokyo-arcade-vault'] .hero-set .theme-only { display: block; text-align: center; }
+html[data-theme='tokyo-arcade-vault'] .pack-title-panel b {
+  display: block; font-family: var(--f-display); font-size: 25px; font-weight: 700; line-height: 0.88; letter-spacing: -0.055em; text-transform: uppercase;
+}
+html[data-theme='tokyo-arcade-vault'] .pack-origin {
+  margin: 0 0 0 0; padding: 7px 10px 6px; width: 148px; color: var(--tokyo-ink); background: var(--tokyo-mint);
+  font-family: var(--f-data); font-size: 6px; line-height: 1.25; letter-spacing: 0.08em;
+}
+html[data-theme='tokyo-arcade-vault'] .pack-origin::after {
+  content: '/////'; float: right; margin-top: -2px; font-family: var(--f-display); font-size: 15px; font-weight: 700; color: var(--tokyo-cream); letter-spacing: -0.14em;
+}
+html[data-theme='tokyo-arcade-vault'] .pack-barcode {
+  width: 58px; height: 36px; margin-top: auto; background: var(--tokyo-cream); position: relative;
+}
+html[data-theme='tokyo-arcade-vault'] .pack-barcode::before {
+  content: ''; position: absolute; inset: 8px 8px 10px; background: repeating-linear-gradient(90deg, var(--tokyo-ink) 0 1px, transparent 1px 3px, var(--tokyo-ink) 3px 5px, transparent 5px 7px);
+}
+html[data-theme='tokyo-arcade-vault'] .chamber-ribbon {
+  position: absolute; z-index: 8; right: 24px; top: 184px; width: 52px; flex-direction: column; color: var(--tokyo-ink); box-shadow: 0 8px 20px rgba(26,36,54,0.14);
+}
+html[data-theme='tokyo-arcade-vault'] .chamber-ribbon b {
+  padding: 9px 6px; color: var(--tokyo-cream); background: var(--tokyo-blue); font-family: var(--f-display); font-size: 12px; line-height: 0.88; text-transform: uppercase;
+}
+html[data-theme='tokyo-arcade-vault'] .chamber-ribbon span {
+  padding: 10px 6px; background: var(--tokyo-mint); font-family: var(--f-data); font-size: 7px; font-weight: 600; line-height: 1.35;
+}
+html[data-theme='tokyo-arcade-vault'] .chamber-ribbon i { height: 58px; background: var(--tokyo-coral); position: relative; }
+html[data-theme='tokyo-arcade-vault'] .chamber-ribbon i::before,
+html[data-theme='tokyo-arcade-vault'] .chamber-ribbon i::after {
+  content: ''; position: absolute; left: 20px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 9px solid var(--tokyo-ink);
+}
+html[data-theme='tokyo-arcade-vault'] .chamber-ribbon i::before { top: 12px; }
+html[data-theme='tokyo-arcade-vault'] .chamber-ribbon i::after { top: 29px; }
 html[data-theme='tokyo-arcade-vault'] .pack-shadow {
-  width: 174px; bottom: 13px; z-index: 1; background: radial-gradient(closest-side, rgba(50,217,234,0.28), transparent);
+  width: 210px; height: 28px; bottom: 65px; z-index: 3; background: radial-gradient(closest-side, rgba(20,36,56,0.36), transparent);
 }
-html[data-theme='tokyo-arcade-vault'] .hero-title {
-  margin-top: 20px; font-size: 36px; line-height: 0.94; letter-spacing: 0.035em; text-transform: uppercase;
+html[data-theme='tokyo-arcade-vault'] .hero-title,
+html[data-theme='tokyo-arcade-vault'] .hero-set { display: none; }
+
+/* Instrument panel under the chamber. */
+html[data-theme='tokyo-arcade-vault'] .hero-meta {
+  justify-content: space-between; align-items: center; margin-top: 12px; padding: 13px 14px 10px;
+  color: var(--tokyo-ink); background: var(--tokyo-cream); border: 1px solid var(--tokyo-steel); border-bottom: 0;
+  border-radius: 10px 10px 0 0;
 }
-html[data-theme='tokyo-arcade-vault'] .hero-set { margin-top: 8px; font-family: var(--f-data); font-size: 9px; letter-spacing: 0.09em; }
-html[data-theme='tokyo-arcade-vault'] .hero-meta { margin-top: 14px; justify-content: space-between; }
-html[data-theme='tokyo-arcade-vault'] .hero-meta .points { font-size: 14px; }
-html[data-theme='tokyo-arcade-vault'] .hero-meta .slots { font-size: 10px; }
-html[data-theme='tokyo-arcade-vault'] .slots-bar { width: 100%; margin-top: 8px; }
-html[data-theme='tokyo-arcade-vault'] .slots-bar i { background: var(--tokyo-cyan); }
+html[data-theme='tokyo-arcade-vault'] .hero-meta .points { color: var(--tokyo-ink); font-size: 14px; }
+html[data-theme='tokyo-arcade-vault'] .hero-meta .slots { color: #4F5257; font-size: 10px; }
+html[data-theme='tokyo-arcade-vault'] .slots-bar {
+  width: 100%; height: 14px; margin: 0; padding: 5px 14px 7px; background: var(--tokyo-cream);
+  border: 1px solid var(--tokyo-steel); border-top: 0; border-radius: 0 0 10px 10px;
+}
+html[data-theme='tokyo-arcade-vault'] .slots-bar i { height: 3px; background: #72767D; }
 html[data-theme='tokyo-arcade-vault'] .tokyo-odds {
-  margin-top: 12px; border: 1px solid var(--tokyo-line); background: #0B101B; flex-direction: column;
+  margin-top: 12px; border: 1px solid var(--tokyo-steel); border-radius: 10px; background: var(--tokyo-cream); color: var(--tokyo-ink); flex-direction: column; overflow: hidden;
 }
 html[data-theme='tokyo-arcade-vault'] .odds-head {
-  display: flex; justify-content: space-between; gap: 16px; padding: 8px 9px 7px; border-bottom: 1px solid var(--tokyo-line);
-  font-family: var(--f-data); font-size: 8px; color: var(--muted); letter-spacing: 0.11em;
+  display: flex; justify-content: space-between; gap: 16px; padding: 11px 12px 9px; border-bottom: 1px solid var(--tokyo-steel);
+  font-family: var(--f-display); font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
 }
-html[data-theme='tokyo-arcade-vault'] .odds-head a { color: var(--tokyo-cyan); text-decoration: none; margin-left: auto; white-space: nowrap; }
-html[data-theme='tokyo-arcade-vault'] .odds-grid { display: grid; grid-template-columns: repeat(4,1fr); }
-html[data-theme='tokyo-arcade-vault'] .odds-grid div { padding: 8px 4px; text-align: center; }
-html[data-theme='tokyo-arcade-vault'] .odds-grid div + div { border-left: 1px solid var(--tokyo-line); }
-html[data-theme='tokyo-arcade-vault'] .odds-grid span { display: block; font-size: 7px; color: var(--muted); letter-spacing: 0.06em; }
-html[data-theme='tokyo-arcade-vault'] .odds-grid b { display: block; margin-top: 4px; font-family: var(--f-data); font-size: 10px; }
-html[data-theme='tokyo-arcade-vault'] .odds-grid .mythic { color: var(--tokyo-pink); text-shadow: 0 0 8px var(--tokyo-pink-glow); }
+html[data-theme='tokyo-arcade-vault'] .odds-head a { color: var(--tokyo-blue); text-decoration: none; margin-left: auto; white-space: nowrap; }
+html[data-theme='tokyo-arcade-vault'] .odds-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; padding: 8px; }
+html[data-theme='tokyo-arcade-vault'] .odds-grid > div {
+  min-width: 0; padding: 9px 4px 8px; text-align: center; border: 1px solid var(--tokyo-steel); border-top: 3px solid #777A80; border-radius: 6px; background: #E7E5DF;
+}
+html[data-theme='tokyo-arcade-vault'] .odds-grid > div:nth-child(2) { border-top-color: var(--gold); }
+html[data-theme='tokyo-arcade-vault'] .odds-grid > div:nth-child(3) { border-top-color: var(--gold); }
+html[data-theme='tokyo-arcade-vault'] .odds-grid > div:nth-child(4) { border-top-color: var(--neon); }
+html[data-theme='tokyo-arcade-vault'] .tier-card-art {
+  width: 38px; height: 48px; margin: 0 auto 7px; display: block; border: 2px solid #777A80; transform: rotate(-5deg);
+  background: repeating-linear-gradient(135deg, transparent 0 6px, rgba(8,9,11,0.06) 6px 8px);
+}
+html[data-theme='tokyo-arcade-vault'] .odds-grid > div:nth-child(2) .tier-card-art,
+html[data-theme='tokyo-arcade-vault'] .odds-grid > div:nth-child(3) .tier-card-art { border-color: var(--gold); }
+html[data-theme='tokyo-arcade-vault'] .odds-grid > div:nth-child(4) .tier-card-art { border-color: var(--neon); box-shadow: 0 0 10px var(--neon-glow); }
+html[data-theme='tokyo-arcade-vault'] .odds-grid span {
+  display: block; overflow: hidden; font-family: var(--f-display); font-size: 7px; font-weight: 700; color: var(--tokyo-ink); letter-spacing: 0; text-overflow: clip;
+}
+html[data-theme='tokyo-arcade-vault'] .odds-grid b { display: block; margin-top: 4px; font-family: var(--f-data); font-size: 9px; color: var(--tokyo-ink); }
+html[data-theme='tokyo-arcade-vault'] .odds-grid .mythic {
+  display: inline-block; padding: 2px 4px; color: var(--neon); background: var(--tokyo-ink); text-shadow: 0 0 8px var(--neon-glow);
+}
 html[data-theme='tokyo-arcade-vault'] .cta {
-  margin-top: 14px; min-height: 54px; border: 1px solid var(--gold-hover); border-radius: 4px;
-  font-family: var(--f-display); font-size: 23px; letter-spacing: 0.08em; text-transform: uppercase;
-  box-shadow: 0 0 0 4px rgba(212,175,55,0.06);
+  position: relative; margin-top: 12px; min-height: 64px; padding-right: 42px; border: 1px solid var(--gold-hover); border-radius: 10px;
+  font-family: var(--f-display); font-size: 18px; font-weight: 700; letter-spacing: -0.01em; text-transform: uppercase;
+  box-shadow: 0 0 0 4px rgba(212,175,55,0.08);
 }
+html[data-theme='tokyo-arcade-vault'] .cta::after { content: '→'; position: absolute; right: 18px; font-size: 25px; }
 html[data-theme='tokyo-arcade-vault'] .demo-link { font-family: var(--f-data); font-size: 9px; letter-spacing: 0.06em; }
-html[data-theme='tokyo-arcade-vault'] .trust { margin: 8px 20px 0; border-color: var(--tokyo-line); background: #090D16; }
-html[data-theme='tokyo-arcade-vault'] .trust div + div { border-color: var(--tokyo-line); }
-html[data-theme='tokyo-arcade-vault'] .trust b { font-family: var(--f-data); font-size: 9px; letter-spacing: 0.05em; }
+html[data-theme='tokyo-arcade-vault'] .trust { margin: 8px 12px 0; border-color: var(--line); background: var(--surface); }
+html[data-theme='tokyo-arcade-vault'] .trust div + div { border-color: var(--line); }
+html[data-theme='tokyo-arcade-vault'] .trust b { font-family: var(--f-display); font-size: 10px; letter-spacing: 0.02em; }
 html[data-theme='tokyo-arcade-vault'] .trust span { font-size: 8px; }
+html[data-theme='tokyo-arcade-vault'] .arcade-nav {
+  position: static; z-index: 20; display: grid; grid-template-columns: repeat(4,1fr); min-height: 72px;
+  color: var(--tokyo-ink); background: rgba(240,238,232,0.96); border-top: 1px solid var(--tokyo-steel);
+}
+html[data-theme='tokyo-arcade-vault'] .arcade-nav a {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  color: inherit; text-decoration: none; font-family: var(--f-display); font-size: 9px; font-weight: 700; letter-spacing: 0.03em;
+}
+html[data-theme='tokyo-arcade-vault'] .arcade-nav a.active { color: var(--tokyo-blue); }
+html[data-theme='tokyo-arcade-vault'] .arcade-nav a.active::after { content: ''; position: absolute; bottom: 4px; width: 5px; height: 5px; border-radius: 50%; background: var(--tokyo-blue); }
+html[data-theme='tokyo-arcade-vault'] .nav-glyph { width: 18px; height: 18px; border: 2px solid currentColor; border-radius: 4px; }
 html[data-theme='tokyo-arcade-vault'] .sec-head { padding: 28px 20px 0; }
-html[data-theme='tokyo-arcade-vault'] .sec-head h3 { font-family: var(--f-display); font-size: 23px; text-transform: uppercase; letter-spacing: 0.04em; }
+html[data-theme='tokyo-arcade-vault'] .sec-head h3 { font-family: var(--f-display); font-size: 23px; text-transform: uppercase; letter-spacing: -0.01em; }
 html[data-theme='tokyo-arcade-vault'] .jp-row { padding-left: 20px; padding-right: 20px; }
 html[data-theme='tokyo-arcade-vault'] .jp-card,
 html[data-theme='tokyo-arcade-vault'] .shelf-card,
-html[data-theme='tokyo-arcade-vault'] .fair-record { border-color: var(--tokyo-line); background: #0B101A; }
-html[data-theme='tokyo-arcade-vault'] .slab { border-color: #39465D; background: #0C111C; }
-html[data-theme='tokyo-arcade-vault'] .slab-label { border-left: 2px solid var(--tokyo-pink); }
+html[data-theme='tokyo-arcade-vault'] .fair-record { border-color: var(--tokyo-line); background: #0B0C0F; }
+html[data-theme='tokyo-arcade-vault'] .slab { border-color: #454952; background: #111318; }
+html[data-theme='tokyo-arcade-vault'] .slab-label { border-left: 2px solid var(--neon); }
 html[data-theme='tokyo-arcade-vault'] .shelf { padding-left: 20px; padding-right: 20px; gap: 12px; }
-html[data-theme='tokyo-arcade-vault'] .shelf-card .pack { background-color: #080A10; background-image: linear-gradient(rgba(50,217,234,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(50,217,234,0.04) 1px, transparent 1px); background-size: 14px 14px; }
-html[data-theme='tokyo-arcade-vault'] .shelf-card .pack-emblem { border-radius: 2px; }
+html[data-theme='tokyo-arcade-vault'] .shelf-card .pack { background: #090A0C; }
 html[data-theme='tokyo-arcade-vault'] .foot { border-color: var(--tokyo-line); }
-html[data-theme='tokyo-arcade-vault'] .foot-fair .shield { border-radius: 4px; color: var(--tokyo-cyan); }
+html[data-theme='tokyo-arcade-vault'] .foot-fair .shield { color: var(--success); }
 @media (max-width: 500px) {
   html[data-theme='tokyo-arcade-vault'] .phone { border-left: 0; border-right: 0; border-radius: 0; box-shadow: none; }
   html[data-theme='tokyo-arcade-vault'] .rd-wrap { padding-top: 24px; }
@@ -540,10 +576,10 @@ const MOCK_HERO = {
 };
 
 const MOCK_TIER_ODDS = [
-  { tier: 'MYTHIC', value: '0.5%' },
-  { tier: 'LEGENDARY', value: '2.0%' },
-  { tier: 'EPIC', value: '5.5%' },
   { tier: 'BASE', value: '92.0%' },
+  { tier: 'EPIC', value: '5.5%' },
+  { tier: 'LEGENDARY', value: '2.0%' },
+  { tier: 'MYTHIC', value: '0.5%' },
 ];
 
 const MOCK_PULLS = [
@@ -577,7 +613,7 @@ export default function RedesignTokenSheet() {
         <h1 className="rd-h1"><span className="theme-hide">Midnight Tokyo</span><span className="theme-only">Tokyo Arcade Vault</span></h1>
         <p className="rd-sub">
           <span className="theme-hide">漆黒の地+1px line の区切り+金=価値(CTA/価格/残高)+ネオン朱=瞬間のみ。既定テーマは N2。スキンは [data-theme] 差分で重ねる(?theme=)。下のモックはホーム 440×956。</span>
-          <span className="theme-only">Phygitals級の情報密度に、東京のアーケード機・パック開封導線・日本発のキュレーション記号を統合。金=価値、ピンク=開封の瞬間、シアン=機械状態。</span>
+          <span className="theme-only">競合研究で得た情報密度に、明るい透明カプセル筐体・角張った工業組版・日本発のキュレーション記号を統合。金=価値、朱=開封の瞬間、青/ミント=機械状態。</span>
         </p>
 
         {/* ═══ 1. Home mock ═══ */}
@@ -605,9 +641,16 @@ export default function RedesignTokenSheet() {
                 <div className="pack">
                   <div className="tear-line theme-only" />
                   <div className="pack-id theme-only"><span>TOKYO</span><b>01</b></div>
+                  <div className="pack-face theme-only">
+                    <div className="pack-wordmark">Pull<br />Hub</div>
+                    <div className="pack-title-panel"><b>Tokyo<br />Pack 01</b></div>
+                    <div className="pack-origin">デジタルパック<br />REAL CARD. YOURS.</div>
+                    <div className="pack-barcode" />
+                  </div>
                   <div className="pack-emblem"><span>PH</span></div>
                   <div className="pack-name-strip"><span className="theme-hide">KANTO ORIGINS</span><span className="theme-only">TOKYO PACK 01</span></div>
                 </div>
+                <div className="chamber-ribbon theme-only"><b>Pull<br />Hub</b><span>トウキョウ<br />NODE 01</span><i /></div>
                 <div className="pack-shadow" />
               </div>
               <h1 className="hero-title"><span className="theme-hide">Kanto Origins</span><span className="theme-only">Tokyo Pack 01</span></h1>
@@ -622,11 +665,11 @@ export default function RedesignTokenSheet() {
                 <div className="odds-head"><span>TIER ODDS / MOCK DATA</span><a href="#">FULL LEDGER</a></div>
                 <div className="odds-grid">
                   {MOCK_TIER_ODDS.map((item) => (
-                    <div key={item.tier}><span>{item.tier}</span><b className={item.tier === 'MYTHIC' ? 'mythic' : ''}>{item.value}</b></div>
+                    <div key={item.tier}><i className="tier-card-art" aria-hidden="true" /><span>{item.tier}</span><b className={item.tier === 'MYTHIC' ? 'mythic' : ''}>{item.value}</b></div>
                   ))}
                 </div>
               </div>
-              <button className="cta">Open Pack</button>
+              <button className="cta">Open Pack — {MOCK_HERO.packPrice}</button>
               <a className="demo-link" href="#">View opening preview</a>
             </div>
 
@@ -635,6 +678,13 @@ export default function RedesignTokenSheet() {
               <div><b>TRADE IN</b><span>100% of listed value, in Points</span></div>
               <div><b>FAIRNESS</b><span>View verification</span></div>
             </div>
+
+            <nav className="arcade-nav theme-only" aria-label="Primary navigation">
+              <a className="active" href="#"><i className="nav-glyph" /><span>PACKS</span></a>
+              <a href="#"><i className="nav-glyph" /><span>VAULT</span></a>
+              <a href="#"><i className="nav-glyph" /><span>MISSIONS</span></a>
+              <a href="#"><i className="nav-glyph" /><span>PROFILE</span></a>
+            </nav>
 
             <div className="sec-head">
               <h3>Just Pulled</h3>

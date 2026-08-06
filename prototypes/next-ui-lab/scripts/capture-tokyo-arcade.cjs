@@ -29,6 +29,8 @@ async function capture() {
       theme: document.documentElement.dataset.theme,
       cta: element.querySelector('.cta')?.textContent?.trim(),
       points: element.querySelector('.hero-meta .points')?.textContent?.trim(),
+      displayFont: getComputedStyle(element.querySelector('.pack-title-panel b')).fontFamily,
+      chamberBackground: getComputedStyle(element.querySelector('.hero-pack-zone')).backgroundImage,
     }));
 
     const desktop = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
@@ -37,6 +39,14 @@ async function capture() {
     });
     await desktop.goto(BASE_URL, { waitUntil: 'networkidle' });
     await desktop.screenshot({ path: path.join(OUTPUT_DIR, 'tokyo-arcade-vault-1280x900.png'), fullPage: false });
+
+    const fullMobile = await browser.newPage({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 1 });
+    await fullMobile.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await fullMobile.locator('.phone').evaluate((element) => {
+      element.style.height = `${element.scrollHeight}px`;
+      element.style.overflow = 'visible';
+    });
+    await fullMobile.locator('.phone').screenshot({ path: path.join(OUTPUT_DIR, 'tokyo-arcade-vault-full.png') });
 
     const defaultTheme = await browser.newPage({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 1 });
     await defaultTheme.goto(BASE_URL.replace('?theme=tokyo-arcade-vault', ''), { waitUntil: 'networkidle' });

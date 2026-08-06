@@ -10,7 +10,7 @@ The default `/redesign` route is unchanged. The skin is implemented only through
 
 ## Design synthesis
 
-- Base: Tokyo Arcade Vault — game-machine density and a pack-opening chamber.
+- Base: Tokyo Arcade Vault — game-machine density and a luminous acrylic pack-opening chamber.
 - Information structure: Japan Transit Precision — `SELECT / OPEN / REVEAL / VAULT` journey and compact data bands.
 - Moment accent: Matsuri Pop Arena — pink is limited to the tear line, MYTHIC, and LIVE moments.
 - Japan-origin signature: `TOKYO NODE`, `トウキョウ・パック`, direct-from-Tokyo copy, and Japan-curated labeling.
@@ -19,18 +19,32 @@ The default `/redesign` route is unchanged. The skin is implemented only through
 
 | Role | Value | Use |
 | --- | --- | --- |
-| Ground | `#080B12` | Arcade chamber and page surfaces |
-| Line | `#263147` | Machine frames and information dividers |
+| Ground | `#000000` | N2 trust chassis and page ground |
+| Light chrome | `#F0EEE8` | Header, instrument panels, and acrylic-chamber backing |
+| Machine blue | `#2058D5` | Node labels and navigation state; never the value CTA |
+| Machine mint | `#2ECDB2` | Pack-origin instrument label |
+| Line | `#30343B` | Dark machine frames and information dividers |
 | Value | `#D4AF37` | Points, prices, and the single primary CTA |
-| Moment | `#FF3E7F` | Tear line, MYTHIC, and LIVE only |
-| Machine state | `#32D9EA` | Rails, progress, and system indicators |
+| Moment | `#FF4A38` | Tear line, MYTHIC, and LIVE only |
 | Text | `#F0EEE8` | Primary copy; pure white is not used |
 
 ## Typography
 
-- Display: Barlow Condensed 600/700 — compressed arcade signage.
+- Display: Chakra Petch 500/600/700 — visibly squared industrial signage.
 - Body: Schibsted Grotesk — controls and explanatory copy.
 - Data: Spline Sans Mono — Points, stock, odds, hashes, and node codes.
+
+## Contrast checks
+
+- Ink `#08090B` on light chrome `#F0EEE8`: `17.17:1`.
+- Machine blue `#2058D5` on light chrome `#F0EEE8`: `5.30:1`.
+- Ink `#08090B` on machine mint `#2ECDB2`: `9.95:1`.
+- Neon moment `#FF4A38` on ink `#08090B`: `5.97:1`; MYTHIC data uses this dark backing.
+- Ink `#000000` on value gold `#D4AF37`: `9.99:1`.
+
+## Original material asset
+
+`public/assets/tokyo-arcade-vault/acrylic-chamber-v1.png` is an original generated empty display chamber. It contains no logo, product, card, or text. The pack, labels, tiers, odds, Points, and CTA remain HTML/CSS so they can be connected to real data later.
 
 ## Guardrails retained
 
