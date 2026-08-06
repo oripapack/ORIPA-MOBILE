@@ -145,9 +145,9 @@ const styles = StyleSheet.create({
     marginBottom: sg.space.sm,
     padding: sg.space.md,
     borderRadius: sg.radius.panel,
-    backgroundColor: 'rgba(111,191,143,0.12)',
+    backgroundColor: sg.successWash,
     borderWidth: 1,
-    borderColor: 'rgba(111,191,143,0.35)',
+    borderColor: sg.successLine,
   },
   activeBannerTitle: {
     fontSize: sg.type.xs,

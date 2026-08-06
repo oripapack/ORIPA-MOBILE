@@ -98,7 +98,7 @@ const tabBarDockStyles = StyleSheet.create({
   },
   slab: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.72)',
+    backgroundColor: 'rgba(252,251,247,0.94)',
   },
   topLine: {
     position: 'absolute',
@@ -111,18 +111,17 @@ const tabBarDockStyles = StyleSheet.create({
 });
 
 /**
- * Dock-style bar — N2 functional chrome (§9): translucent night slab
- * (rgba(0,0,0,.72) over blur), separated from content by a 1px `line`
- * border — dividers are lines, not shadows or highlights (§3).
+ * Dock-style bar — Tokyo Arcade Vault functional chrome: translucent acrylic
+ * over a light blur, separated from content by a 1px aluminum keyline.
  */
 function PremiumTabBarBackground() {
   return (
     <View style={tabBarDockStyles.root}>
       {Platform.OS === 'ios' ? (
-        <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
+        <BlurView intensity={24} tint="light" style={StyleSheet.absoluteFill} />
       ) : null}
 
-      {/* Night slab — §9 functional-chrome translucency */}
+      {/* Porcelain acrylic slab */}
       <View style={tabBarDockStyles.slab} />
 
       {/* Top divider line */}
@@ -159,7 +158,7 @@ function TabNavigatorInner() {
         headerShown: false,
         sceneContainerStyle: Platform.OS === 'web' ? { flex: 1, minHeight: 0 } : undefined,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: sg.text,
+        tabBarActiveTintColor: sg.gold,
         tabBarInactiveTintColor: sg.muted,
         tabBarStyle: styles.tabBar,
         tabBarBackground: PremiumTabBarBackground,
@@ -491,8 +490,9 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 11,
-    fontFamily: sg.font.bodyMedium,
-    letterSpacing: 0.15,
+    fontFamily: sg.font.bodyBold,
+    letterSpacing: 0.55,
+    textTransform: 'uppercase',
   },
   stackHeaderTitle: {
     fontSize: 17,

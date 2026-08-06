@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   cardSelected: { borderColor: sg.gold, borderWidth: 2, backgroundColor: sg.surface2 },
   popularRibbon: {
     alignSelf: 'center',
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.accentSoft,
     borderWidth: 1,
     borderColor: sg.line,
     paddingHorizontal: sg.space.md,

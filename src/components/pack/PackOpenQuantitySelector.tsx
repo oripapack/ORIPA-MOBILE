@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   segSelected: {
-    backgroundColor: 'rgba(212,175,55,0.20)',
+    backgroundColor: sg.accentMedium,
     borderWidth: 1,
     borderColor: sg.gold,
   },

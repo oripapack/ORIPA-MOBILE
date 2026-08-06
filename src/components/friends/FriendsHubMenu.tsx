@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: 'rgba(212,175,55,0.14)',
+    backgroundColor: sg.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(111,191,143,0.35)',
+    borderColor: sg.successLine,
   },
   rowLabel: {
     flex: 1,

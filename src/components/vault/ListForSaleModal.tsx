@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
     backgroundColor: sgVault.surface2,
   },
   presetOn: {
-    borderColor: 'rgba(212,175,55,0.38)',
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    borderColor: sgVault.accentLine,
+    backgroundColor: sgVault.accentWash,
   },
   presetText: {
     fontSize: 11,

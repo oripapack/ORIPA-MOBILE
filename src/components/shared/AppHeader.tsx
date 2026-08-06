@@ -14,9 +14,8 @@ interface Props {
 }
 
 /**
- * App chrome header — N2 "Neon Torii": translucent night slab (functional
- * chrome per §9). Gold budget is deliberately scarce here: wordmark accent +
- * balance number only (§4 — gold stops signalling value when it multiplies).
+ * Tokyo Arcade Vault chrome: a porcelain machine cap with black wordmark,
+ * cobalt balance control and a thin aluminum divider.
  * Logic (auth gate, PaymentPortal navigation) is unchanged.
  */
 export function AppHeader({ onSearch }: Props) {
@@ -37,7 +36,7 @@ export function AppHeader({ onSearch }: Props) {
     <View style={[styles.shell, { paddingTop: insets.top + sg.space.sm }]}>
       <BlurView
         intensity={Platform.OS === 'ios' ? 52 : 40}
-        tint="dark"
+        tint="light"
         style={StyleSheet.absoluteFill}
       />
       <View style={styles.scrim} pointerEvents="none" />
@@ -93,7 +92,7 @@ const styles = StyleSheet.create({
   },
   scrim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.72)', // §9 functional-chrome translucency
+    backgroundColor: 'rgba(245,242,234,0.92)',
   },
   row: {
     flexDirection: 'row',
@@ -107,32 +106,32 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   monogramRing: {
-    borderRadius: 12,
-    padding: 1.5,
-    backgroundColor: sg.line, // gold budget: wordmark accent + balance only
+    borderRadius: sg.radius.tag,
+    padding: 1,
+    backgroundColor: sg.text,
   },
   monogramInner: {
     minWidth: 36,
     height: 36,
     paddingHorizontal: 6,
-    borderRadius: 10,
-    backgroundColor: sg.surface,
+    borderRadius: 3,
+    backgroundColor: sg.text,
     alignItems: 'center',
     justifyContent: 'center',
   },
   monogramText: {
     fontSize: 13,
     fontFamily: sg.font.bodyBold,
-    color: sg.text,
-    letterSpacing: 0.5,
+    color: sg.onInk,
+    letterSpacing: 1,
   },
   wordmarkCol: {
     justifyContent: 'center',
     flexShrink: 1,
   },
   wordmarkLine: {
-    fontSize: 17,
-    letterSpacing: -0.2,
+    fontSize: 18,
+    letterSpacing: 0.5,
   },
   wordmarkLead: {
     color: sg.text,
@@ -160,5 +159,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
   },
 });

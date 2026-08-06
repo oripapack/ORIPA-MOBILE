@@ -5,14 +5,14 @@ import { sg } from '../../tokens/sg';
 interface Props {
   label: string;
   onPress: () => void;
-  /** @deprecated Prefer default gold CTA. `red` maps to line/secondary for N2. */
+  /** @deprecated Prefer the default cobalt CTA. `red` maps to line/secondary. */
   variant?: 'red' | 'black' | 'gold' | 'line';
   disabled?: boolean;
   loading?: boolean;
   style?: ViewStyle;
 }
 
-/** N2 primary CTA — gold fill, black label (§4). Prefer `SgButton` for new code. */
+/** Tokyo Arcade Vault primary CTA — cobalt fill and porcelain label. */
 export function PrimaryButton({ label, onPress, variant = 'gold', disabled, loading, style }: Props) {
   const isLine = variant === 'red' || variant === 'line';
 

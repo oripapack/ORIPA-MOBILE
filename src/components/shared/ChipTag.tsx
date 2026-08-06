@@ -4,16 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { ChipTagType } from '../../data/mockPacks';
 import { sg } from '../../tokens/sg';
 
-/** N2 chip skins — surface + line chassis; semantic accents without Phygitals green/purple washes. */
+/** Tokyo Arcade Vault chips — acrylic chassis with semantic transit-signal accents. */
 const chipStyle: Record<ChipTagType, { bg: string; text: string; border: string }> = {
   new: { bg: sg.surface2, text: sg.gold, border: sg.line },
   new_user: { bg: sg.surface2, text: sg.goldHi, border: sg.line },
   best_value: { bg: sg.surface2, text: sg.gold, border: sg.line },
   graded: { bg: sg.surface2, text: sg.muted, border: sg.line },
-  hot_drop: { bg: 'rgba(255,74,56,0.12)', text: sg.neon, border: 'rgba(255,74,56,0.35)' },
+  hot_drop: { bg: sg.signalWash, text: sg.neon, border: sg.signalLine },
   bonus_pack: { bg: sg.surface2, text: sg.gold, border: sg.line },
-  chase_boost: { bg: 'rgba(255,74,56,0.12)', text: sg.neon, border: 'rgba(255,74,56,0.35)' },
-  first_time: { bg: 'rgba(111,191,143,0.12)', text: sg.success, border: 'rgba(111,191,143,0.35)' },
+  chase_boost: { bg: sg.signalWash, text: sg.neon, border: sg.signalLine },
+  first_time: { bg: sg.successWash, text: sg.success, border: sg.successLine },
   low_cost: { bg: sg.surface2, text: sg.warning, border: sg.line },
   high_return: { bg: sg.surface2, text: sg.goldHi, border: sg.line },
   premium_pack: { bg: sg.surface2, text: sg.gold, border: sg.line },

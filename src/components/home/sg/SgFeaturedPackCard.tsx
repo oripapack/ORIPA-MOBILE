@@ -39,11 +39,22 @@ export function SgFeaturedPackCard({
   return (
     <View style={styles.card}>
       <View style={styles.visualZone}>
+        <View style={styles.halo} pointerEvents="none" />
+        <View style={[styles.bolt, styles.boltTopLeft]} pointerEvents="none" />
+        <View style={[styles.bolt, styles.boltTopRight]} pointerEvents="none" />
+        <View style={[styles.bolt, styles.boltBottomLeft]} pointerEvents="none" />
+        <View style={[styles.bolt, styles.boltBottomRight]} pointerEvents="none" />
+        <View style={styles.sideLane} pointerEvents="none">
+          <View style={styles.sideCobalt} />
+          <View style={styles.sideTeal} />
+          <View style={styles.sideSignal} />
+        </View>
+        <View style={styles.platform} pointerEvents="none" />
         <PackVisual
           name={pack.title}
           category={pack.tcgCategory ?? 'TCG'}
           rarityTier={pack.rarityTier ?? 'epic'}
-          size="md"
+          size="lg"
         />
       </View>
 
@@ -90,7 +101,66 @@ const styles = StyleSheet.create({
     // The single hero shadow on this screen (§3)
     ...sg.shadowHero,
   },
-  visualZone: { alignItems: 'center', justifyContent: 'center', marginTop: sg.space.sm },
+  visualZone: {
+    alignSelf: 'stretch',
+    height: 304,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: sg.space.md,
+    borderWidth: 2,
+    borderColor: sg.chrome,
+    borderRadius: sg.radius.panel,
+    backgroundColor: sg.surface2,
+    overflow: 'hidden',
+    shadowColor: sg.gold,
+    shadowOpacity: 0.13,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  halo: {
+    position: 'absolute',
+    top: 14,
+    width: 156,
+    height: 12,
+    borderRadius: sg.radius.btn,
+    borderWidth: 3,
+    borderColor: sg.gold,
+    backgroundColor: sg.surface,
+  },
+  platform: {
+    position: 'absolute',
+    bottom: 14,
+    width: 174,
+    height: 18,
+    borderRadius: sg.radius.btn,
+    borderWidth: 3,
+    borderColor: sg.chrome,
+    backgroundColor: sg.surface,
+  },
+  bolt: {
+    position: 'absolute',
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: sg.chrome,
+    borderWidth: 1,
+    borderColor: sg.surface,
+  },
+  boltTopLeft: { top: 12, left: 12 },
+  boltTopRight: { top: 12, right: 12 },
+  boltBottomLeft: { bottom: 12, left: 12 },
+  boltBottomRight: { bottom: 12, right: 12 },
+  sideLane: {
+    position: 'absolute',
+    right: 14,
+    top: 54,
+    width: 18,
+    height: 150,
+    gap: 4,
+  },
+  sideCobalt: { flex: 2, backgroundColor: sg.gold, borderRadius: 2 },
+  sideTeal: { flex: 2, backgroundColor: sg.teal, borderRadius: 2 },
+  sideSignal: { flex: 1, backgroundColor: sg.neon, borderRadius: 2 },
   title: {
     fontFamily: sg.font.display,
     fontSize: 22,

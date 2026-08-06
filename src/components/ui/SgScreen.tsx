@@ -7,13 +7,13 @@ type Skin = 'default' | 'vault';
 
 interface Props {
   children: React.ReactNode;
-  /** `vault` applies N2 §10 FINTECH VAULT chassis. */
+  /** `vault` applies the cooler Tokyo Arcade Vault inventory chassis. */
   skin?: Skin;
   style?: StyleProp<ViewStyle>;
 }
 
 /**
- * N2 screen shell — flat night chassis (no Phygitals green wash).
+ * Tokyo Arcade Vault screen shell — porcelain by default, cooler acrylic for Vault.
  * Replace `HomeBackground` + outer View with this on migrating screens.
  */
 export function SgScreen({ children, skin = 'default', style }: Props) {

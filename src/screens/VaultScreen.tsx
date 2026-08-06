@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   tileWrap: {},
   tileCard: { minHeight: 168 },
   tileCardVault: {
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.accentLine,
   },
   tileInner: {
     padding: sgVault.space.md,
@@ -395,12 +395,12 @@ const styles = StyleSheet.create({
     color: sgVault.text,
   },
   tileListedBadge: {
-    backgroundColor: 'rgba(61,220,151,0.12)',
+    backgroundColor: sgVault.successWash,
     borderRadius: sgVault.radius.tag,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderWidth: 1,
-    borderColor: 'rgba(61,220,151,0.35)',
+    borderColor: sgVault.successLine,
   },
   tileListedBadgeText: {
     fontSize: 8,

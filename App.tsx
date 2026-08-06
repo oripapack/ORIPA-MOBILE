@@ -16,11 +16,14 @@ import {
   Outfit_800ExtraBold,
   Outfit_900Black,
 } from '@expo-google-fonts/outfit';
-import { Fraunces_500Medium } from '@expo-google-fonts/fraunces';
+import {
+  ChakraPetch_400Regular,
+  ChakraPetch_500Medium,
+  ChakraPetch_700Bold,
+} from '@expo-google-fonts/chakra-petch';
 import {
   SchibstedGrotesk_400Regular,
   SchibstedGrotesk_500Medium,
-  SchibstedGrotesk_700Bold,
 } from '@expo-google-fonts/schibsted-grotesk';
 import { SplineSansMono_400Regular, SplineSansMono_500Medium } from '@expo-google-fonts/spline-sans-mono';
 import { ClerkProvider } from '@clerk/clerk-expo';
@@ -36,7 +39,7 @@ import { ClerkSessionBridge } from './src/components/account/ClerkSessionBridge'
 import { ClerkSsoCallbackHandler } from './src/components/account/ClerkSsoCallbackHandler';
 import { sg } from './src/tokens/sg';
 
-/** N2 default text. Explicit display/data roles still opt into `sg.font.*`. */
+/** Tokyo Arcade Vault default body. Display/data roles opt into `sg.font.*`. */
 const baseTextStyle = { fontFamily: sg.font.body, color: sg.text } as const;
 const T = Text as typeof Text & { defaultProps?: { style?: unknown } };
 const TI = TextInput as typeof TextInput & { defaultProps?: { style?: unknown } };
@@ -56,11 +59,12 @@ export default function App() {
     Outfit_700Bold,
     Outfit_800ExtraBold,
     Outfit_900Black,
-    // N2 "Neon Torii" faces (docs/design-system-n2.md §7)
-    Fraunces_500Medium,
+    // Tokyo Arcade Vault control faces.
+    ChakraPetch_400Regular,
+    ChakraPetch_500Medium,
+    ChakraPetch_700Bold,
     SchibstedGrotesk_400Regular,
     SchibstedGrotesk_500Medium,
-    SchibstedGrotesk_700Bold,
     SplineSansMono_400Regular,
     SplineSansMono_500Medium,
   });
@@ -124,7 +128,7 @@ export default function App() {
   const tree = (
     <PhysicalGoodsPaymentRoot>
       <SafeAreaProvider>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <View style={styles.root}>
           <SimulationDisclosure />
           <RootNavigator />

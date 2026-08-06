@@ -20,6 +20,7 @@ export function AssetBlockedCard({ label = 'CARD MEDIA PENDING', compact = false
       accessibilityRole="image"
       accessibilityLabel={label}
     >
+      <View style={styles.signalRail} pointerEvents="none" />
       <View style={[styles.labelRail, compact && styles.labelRailCompact]} />
       <View style={styles.cardField}>
         <View style={[styles.dummyCard, compact && styles.dummyCardCompact]} />
@@ -41,6 +42,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface2,
+  },
+  signalRail: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 3,
+    backgroundColor: sg.gold,
   },
   frameCompact: {
     minHeight: 52,

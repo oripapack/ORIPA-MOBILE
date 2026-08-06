@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     borderBottomColor: sg.line,
   },
   rowSelected: {
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: sg.accentWash,
   },
   rowLabel: {
     fontSize: sg.type.base,

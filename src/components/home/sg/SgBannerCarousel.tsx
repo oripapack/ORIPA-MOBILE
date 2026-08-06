@@ -81,6 +81,11 @@ export function SgBannerCarousel() {
     >
       <Animated.View style={[styles.slide, { opacity: fade }]}>
         <BannerArtwork variant={slide.art} />
+        <View style={styles.signalRail} pointerEvents="none">
+          <View style={styles.signalCobalt} />
+          <View style={styles.signalTeal} />
+          <View style={styles.signalRed} />
+        </View>
         {/* Overlay text — real UI, not baked into the artwork */}
         <View style={styles.textWrap}>
           <Text style={styles.title}>{slide.title}</Text>
@@ -185,7 +190,23 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   slide: { ...StyleSheet.absoluteFillObject },
-  textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md, maxWidth: '78%' },
+  signalRail: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 5,
+  },
+  signalCobalt: { flex: 3, backgroundColor: sg.gold },
+  signalTeal: { flex: 2, backgroundColor: sg.teal },
+  signalRed: { flex: 1, backgroundColor: sg.neon },
+  textWrap: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: sg.space.lg,
+    paddingRight: sg.space.md,
+    maxWidth: '78%',
+  },
   title: {
     fontFamily: sg.font.bodyBold,
     fontSize: 17,
@@ -217,7 +238,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 3,
-    backgroundColor: 'rgba(240,238,232,0.35)',
+    backgroundColor: sg.chrome,
   },
-  dotActive: { backgroundColor: sg.text },
+  dotActive: { backgroundColor: sg.gold },
 });

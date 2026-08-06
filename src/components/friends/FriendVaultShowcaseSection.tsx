@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   tileOuter: { marginBottom: sg.space.sm },
   tileCard: { minHeight: 168 },
   tileCardListed: {
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.accentLine,
     borderWidth: 1.5,
   },
   tileInner: { padding: sg.space.md, minHeight: 168 },
@@ -200,9 +200,9 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: sg.space.sm,
     borderRadius: sg.radius.tag,
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: sg.accentWash,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.55)',
+    borderColor: sg.accentStrongLine,
   },
   buyBadgeText: {
     fontSize: 9,

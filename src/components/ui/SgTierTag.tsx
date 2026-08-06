@@ -9,7 +9,7 @@ import type { N2TierState } from '../../lib/n2Rarity';
  *   mythic    — neon filled tag + glow (sg.glowNeon box shadow, the RN
  *               translation of --ph-glow-neon: a text shadow cannot render
  *               against the solid neon fill)
- *   legendary — gold filled tag, on-gold (black) label
+ *   legendary — cobalt filled tag, porcelain label
  *   epic      — gold outline only
  *   base      — context-dependent, see below
  * 'unknown' renders NOTHING in every context — absence of tier data must

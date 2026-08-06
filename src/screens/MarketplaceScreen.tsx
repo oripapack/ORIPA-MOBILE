@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
   tabBtnActive: {
     backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.30)',
+    borderColor: sg.accentLine,
   },
   tabLabelRow: {
     flexDirection: 'row',
@@ -690,8 +690,8 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   sortPillActive: {
-    backgroundColor: 'rgba(212,175,55,0.12)',
-    borderColor: 'rgba(212,175,55,0.38)',
+    backgroundColor: sg.accentSoft,
+    borderColor: sg.accentLine,
   },
   sortPillText: {
     fontSize: 12,
@@ -937,8 +937,8 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   sortChipActive: {
-    borderColor: 'rgba(212,175,55,0.38)',
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    borderColor: sg.accentLine,
+    backgroundColor: sg.accentSoft,
   },
   sortChipText: {
     fontSize: 11,
@@ -958,7 +958,7 @@ const styles = StyleSheet.create({
   },
   regionChipActive: {
     borderColor: sg.gold,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.accentSoft,
   },
   regionChipText: {
     fontSize: 11,
@@ -1095,8 +1095,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: sg.space.lg,
     borderRadius: sg.radius.btn,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    borderColor: sg.accentLine,
+    backgroundColor: sg.accentSoft,
   },
   emptyCtaText: {
     fontSize: sg.type.sm,
@@ -1154,8 +1154,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: sg.space.md,
     borderRadius: sg.radius.btn,
     borderWidth: 1,
-    borderColor: 'rgba(111,191,143,0.35)',
-    backgroundColor: 'rgba(111,191,143,0.12)',
+    borderColor: sg.successLine,
+    backgroundColor: sg.successWash,
   },
   demoNoteText: {
     fontSize: 10,

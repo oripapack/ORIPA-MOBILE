@@ -1,5 +1,5 @@
 /**
- * N2 "Neon Torii" shared UI (docs/design-system-n2.md).
+ * Tokyo Arcade Vault shared UI. Product semantics still follow design-system-n2.
  * New-generation primitives — screens migrate here one at a time.
  */
 export { SgButton } from './SgButton';

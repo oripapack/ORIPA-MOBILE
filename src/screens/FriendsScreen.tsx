@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   },
   headerBtnAdd: {
     backgroundColor: sg.gold,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.accentLine,
   },
   headerBtnPlaceholder: {
     width: 44,

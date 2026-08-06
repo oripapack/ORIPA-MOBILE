@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: sg.radius.tag,
     borderWidth: 1,
-    borderColor: 'rgba(255,74,56,0.42)',
+    borderColor: sg.signalLine,
     backgroundColor: sg.surface2,
   },
   justPulledText: {

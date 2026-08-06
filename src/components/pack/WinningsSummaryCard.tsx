@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pill: {
-    backgroundColor: 'rgba(212,175,55,0.15)',
+    backgroundColor: sg.accentSoft,
     borderColor: sg.gold,
     borderWidth: 1,
     paddingHorizontal: sg.space.sm,

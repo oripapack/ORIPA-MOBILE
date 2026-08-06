@@ -15,7 +15,7 @@ interface Props {
   live?: boolean;
 }
 
-/** Section titles use the body face (bold); Fraunces is heading-tier only. */
+/** Section titles use the angular control face for a consistent arcade hierarchy. */
 export function SgSectionHeader({ title, actionLabel, onAction, live }: Props) {
   const pulse = useRef(new Animated.Value(0.5)).current;
   const [reduceMotion, setReduceMotion] = useState(false);

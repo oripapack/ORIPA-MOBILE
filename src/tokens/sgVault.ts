@@ -1,15 +1,11 @@
-/**
- * N2 §10 FINTECH VAULT skin — Vault / trade-in surfaces only.
- * Trust chassis (gold = price/CTA, text hierarchy) stays; bg/surface/line/up differ.
- */
+/** Tokyo Arcade Vault's slightly cooler inventory chassis. */
 import { sg } from './sg';
 
 export const sgVault = {
   ...sg,
-  bg: '#0B0E11',
-  surface: '#14181D',
-  surface2: '#1A2026',
-  line: '#262E36',
-  /** Positive / holdings delta — Vault skin only; never as a CTA fill. */
-  up: '#3DDC97',
+  bg: '#EEF1F5',
+  surface: '#FCFBF7',
+  surface2: '#E2E7EE',
+  line: '#B9C1CC',
+  up: '#147B70',
 } as const;

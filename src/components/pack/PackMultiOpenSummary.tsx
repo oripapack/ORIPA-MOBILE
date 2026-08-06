@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   cardRush: {
     borderColor: sg.neon,
-    backgroundColor: 'rgba(255,74,56,0.10)',
+    backgroundColor: sg.signalWash,
   },
   title: {
     fontSize: sg.type.lg,

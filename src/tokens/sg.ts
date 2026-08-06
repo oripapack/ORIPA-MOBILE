@@ -1,7 +1,10 @@
 /**
- * N2 "Neon Torii" design tokens.
- * Single source of truth: docs/design-system-n2.md (§3) — values are copied
- * verbatim, do not tune them here.
+ * Tokyo Arcade Vault app skin.
+ *
+ * This branch deliberately overrides the N2 visual skin while preserving the
+ * same semantic token API and product trust surfaces. The user-approved art
+ * direction is a porcelain arcade shell, acrylic panels, black product bays,
+ * cobalt controls, teal status and signal-red moments.
  *
  * React Native translation notes:
  * - CSS variables become this typed object.
@@ -10,11 +13,9 @@
  *   per-component in later steps — this module carries colors, lines,
  *   radii, shadows and type only.
  *
- * Role rules that code can't enforce (§4):
- * - gold = VALUE: prices, the ONE primary CTA per screen (black label),
- *   Hit rank, balances, logo accent. Never body text or wide fills.
- * - neon = MOMENT: DROP LIVE / CHASE / countdowns / reveal only,
- *   ≤2% of screen area, always with glow. Never CTAs, body, nav.
+ * Compatibility note: the legacy `gold` key now resolves to cobalt. This lets
+ * existing value/CTA code adopt the new skin without changing product logic.
+ * `neon` resolves to signal red and remains reserved for short-lived moments.
  * - success = verification / stock / success only. Never decoration.
  * - Dividers are 1px `line` borders, not shadows. `shadowHero` is the only
  *   shadow, on at most ONE hero element per screen.
@@ -23,58 +24,70 @@
  */
 
 export const sg = {
-  // ── 基層 ──
-  bg: '#000000',
-  surface: '#101013',
-  surface2: '#17171C',
-  line: '#27272E',
+  // ── Acrylic chassis ──
+  bg: '#F5F2EA',
+  surface: '#FCFBF7',
+  surface2: '#E8ECF2',
+  line: '#C6CBD3',
 
-  // ── テキスト ──
-  text: '#F0EEE8', // #FFFFFF is banned app-wide
-  muted: '#8E8C85',
+  // ── Ink and interface copy ──
+  text: '#0A0C10',
+  muted: '#5F6670',
 
-  // ── ブランド ──
-  gold: '#D4AF37',
-  goldHi: '#E8CE7E',
-  onGold: '#000000',
-  neon: '#FF4A38',
-  neonGlow: 'rgba(255,74,56,0.32)',
+  // ── Tokyo transit signals ──
+  // Legacy key names are retained to avoid changing business components;
+  // their visual meaning in this skin is cobalt = value / primary control.
+  gold: '#165DFF',
+  goldHi: '#0E47D9',
+  onGold: '#F5F2EA',
+  accentWash: 'rgba(22,93,255,0.08)',
+  accentSoft: 'rgba(22,93,255,0.14)',
+  accentMedium: 'rgba(22,93,255,0.20)',
+  accentLine: 'rgba(22,93,255,0.38)',
+  accentStrongLine: 'rgba(22,93,255,0.55)',
+  neon: '#FF5148',
+  neonGlow: 'rgba(255,81,72,0.28)',
+  teal: '#22BFAE',
+  violet: '#7655E8',
+  ink: '#0A0C10',
+  onInk: '#F5F2EA',
+  chrome: '#AEB7C3',
 
   // ── セマンティック ──
-  success: '#6FBF8F',
-  error: '#E5484D', // flat — never glows
-  warning: '#FFB224',
+  success: '#147B70',
+  successWash: 'rgba(20,123,112,0.12)',
+  successLine: 'rgba(20,123,112,0.35)',
+  error: '#CC2D31',
+  signalWash: 'rgba(255,81,72,0.12)',
+  signalLine: 'rgba(255,81,72,0.42)',
+  warning: '#A95A00',
 
-  // ── 質感 ──
-  radius: { panel: 13, btn: 10, tag: 6 } as const,
-  /** 0 20px 48px rgba(0,0,0,.65) — at most ONE hero element per screen. */
+  // ── Industrial acrylic geometry ──
+  radius: { panel: 8, btn: 8, tag: 4 } as const,
   shadowHero: {
-    shadowColor: '#000000',
-    shadowOpacity: 0.65,
-    shadowRadius: 48,
-    shadowOffset: { width: 0, height: 20 },
-    elevation: 12,
+    shadowColor: '#243B61',
+    shadowOpacity: 0.18,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 8,
   },
-  /** 0 0 16px neonGlow — neon must glow (LIVE / CHASE moments only). */
   glowNeon: {
-    shadowColor: '#FF4A38',
-    shadowOpacity: 0.32,
-    shadowRadius: 16,
+    shadowColor: '#FF5148',
+    shadowOpacity: 0.28,
+    shadowRadius: 12,
     shadowOffset: { width: 0, height: 0 },
   },
 
-  // ── 型 (§7 — N2 brand set; optical sizing is a no-op in RN) ──
+  // ── Type: angular control face + ledger data ──
   font: {
-    /** Headings — Fraunces weight 500 (not 600). */
-    display: 'Fraunces_500Medium',
+    display: 'ChakraPetch_700Bold',
     body: 'SchibstedGrotesk_400Regular',
     bodyMedium: 'SchibstedGrotesk_500Medium',
-    bodyBold: 'SchibstedGrotesk_700Bold',
-    /** Data faces — Spline Sans Mono 400/500 per §7. */
+    bodyBold: 'ChakraPetch_700Bold',
     data: 'SplineSansMono_400Regular',
     dataBold: 'SplineSansMono_500Medium',
   },
-  /** Compact RN type scale used by all N2 screens. */
+  /** Compact RN type scale used by the Tokyo Arcade Vault screens. */
   type: {
     xs: 11,
     sm: 13,
@@ -88,6 +101,6 @@ export const sg = {
   /** fontVariant for every numeric display (price/odds/stock/cert/balance). */
   numeric: ['tabular-nums'] as const,
 
-  // ── spacing — N2 defines no spacing scale; the existing 8pt system stays ──
+  // ── 8pt spacing system ──
   space: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48, xxxl: 64 } as const,
 } as const;

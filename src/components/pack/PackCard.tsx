@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   badgeMainText: {
     fontSize: 10,
     fontFamily: sg.font.bodyMedium,
-    color: sg.text,
+    color: sg.onInk,
     letterSpacing: 0.8,
   },
   badgeSecondary: {
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
   badgeSecondaryText: {
     fontSize: 10,
     fontFamily: sg.font.bodyMedium,
-    color: sg.text,
+    color: sg.onInk,
     opacity: 0.9,
     letterSpacing: 0.6,
   },
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   memberLockPillText: {
     fontSize: 10,
     fontFamily: sg.font.bodyMedium,
-    color: sg.text,
+    color: sg.onInk,
     letterSpacing: 0.4,
   },
   meta: {
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     marginBottom: sg.space.lg,
   },
   topHitWrapChase: {
-    borderColor: 'rgba(212,175,55,0.35)',
+    borderColor: sg.accentLine,
   },
   topHitHeader: {
     flexDirection: 'row',
@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   rarityPillChase: {
-    borderColor: 'rgba(212,175,55,0.35)',
+    borderColor: sg.accentLine,
   },
   rarityText: {
     fontSize: 10,

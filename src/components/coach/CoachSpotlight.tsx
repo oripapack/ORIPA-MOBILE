@@ -38,10 +38,6 @@ type Props = {
   onSecondary?: () => void;
 };
 
-const GOLD_SOFT = 'rgba(212,175,55,0.10)';
-const GOLD_BORDER = 'rgba(212,175,55,0.38)';
-const GOLD_WASH = 'rgba(212,175,55,0.08)';
-
 /**
  * Bottom-anchored coach card — solid dim (no blur) so the tab behind stays readable.
  */
@@ -192,9 +188,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: sg.space.sm + 2,
     paddingVertical: 5,
     borderRadius: sg.radius.tag,
-    backgroundColor: GOLD_SOFT,
+    backgroundColor: sg.accentSoft,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: GOLD_BORDER,
+    borderColor: sg.accentLine,
     marginBottom: sg.space.md,
   },
   eyebrowDot: {
@@ -235,7 +231,7 @@ const styles = StyleSheet.create({
     paddingLeft: sg.space.md,
     paddingVertical: sg.space.md,
     marginLeft: 1,
-    backgroundColor: GOLD_SOFT,
+    backgroundColor: sg.accentSoft,
     borderRadius: sg.radius.btn,
   },
   comparePrimaryHeading: {
@@ -290,9 +286,9 @@ const styles = StyleSheet.create({
     paddingVertical: sg.space.sm + 2,
     paddingHorizontal: sg.space.sm,
     borderRadius: sg.radius.btn,
-    backgroundColor: GOLD_WASH,
+    backgroundColor: sg.accentWash,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: GOLD_BORDER,
+    borderColor: sg.accentLine,
   },
   flowStep: {
     fontSize: sg.type.xs,

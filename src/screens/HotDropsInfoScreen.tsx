@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: sg.radius.btn,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(212,175,55,0.09)',
+    backgroundColor: sg.accentWash,
   },
   stepText: {
     flex: 1,

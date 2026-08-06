@@ -78,12 +78,12 @@ const styles = StyleSheet.create({
   },
   pointPill: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(212,175,55,0.14)',
+    backgroundColor: sg.accentSoft,
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: sg.radius.tag,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.accentLine,
     marginBottom: 4,
   },
   pointPillText: {

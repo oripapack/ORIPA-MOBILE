@@ -88,7 +88,12 @@ export function HomeScreen() {
   const ListHeader = (
     <>
       <SgBannerCarousel />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.chipScroller}
+        contentContainerStyle={styles.chipRow}
+      >
         {FILTERS.map((f) => (
           <TouchableOpacity
             key={f.key}
@@ -158,6 +163,7 @@ function SgFeaturedRow({ pack }: { pack: Pack }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
   list: { paddingBottom: 100, flexGrow: 1 },
+  chipScroller: { flexGrow: 0, height: 52 },
   chipRow: { paddingHorizontal: sg.space.md, paddingVertical: sg.space.sm, gap: 8 },
   // Filter chips — btn radius (these are controls, not status tags)
   chip: {
@@ -168,9 +174,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: sg.line,
   },
-  chipActive: { backgroundColor: sg.surface2 },
-  chipText: { fontFamily: sg.font.bodyMedium, fontSize: 13, color: sg.muted },
-  chipTextActive: { color: sg.text, fontFamily: sg.font.bodyBold },
+  chipActive: { backgroundColor: sg.gold, borderColor: sg.gold },
+  chipText: {
+    fontFamily: sg.font.bodyBold,
+    fontSize: 12,
+    color: sg.muted,
+    letterSpacing: 0.55,
+    textTransform: 'uppercase',
+  },
+  chipTextActive: { color: sg.onGold },
   shelfSpacer: { height: sg.space.md },
   shelfRow: { paddingHorizontal: sg.space.md, gap: sg.space.sm, marginBottom: sg.space.sm },
   featuredRow: {

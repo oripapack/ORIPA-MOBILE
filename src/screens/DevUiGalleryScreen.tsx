@@ -5,7 +5,7 @@ import { sg } from '../tokens/sg';
 import { SgButton, SgCard, SgData, SgSectionHeader, SgTierTag } from '../components/ui';
 
 /**
- * Dev-only gallery for the N2 "Neon Torii" shared components.
+ * Dev-only gallery for the Tokyo Arcade Vault shared components.
  * Reachable via EXPO_PUBLIC_DEV_SCREEN=UiGallery (never linked in product nav).
  */
 export function DevUiGalleryScreen() {
@@ -15,7 +15,7 @@ export function DevUiGalleryScreen() {
       <ScrollView
         contentContainerStyle={{ paddingTop: insets.top + sg.space.lg, paddingBottom: sg.space.xxl }}
       >
-        <Text style={styles.pageTitle}>Sg components — N2 Neon Torii</Text>
+        <Text style={styles.pageTitle}>Tokyo Arcade Vault components</Text>
 
         <View style={styles.block}>
           <SgSectionHeader title="Just Pulled" actionLabel="LIVE ›" live onAction={() => {}} />
@@ -31,7 +31,7 @@ export function DevUiGalleryScreen() {
 
         <View style={styles.block}>
           <SgCard>
-            {/* Pack name — the one Fraunces use on this bench */}
+            {/* Pack name — Chakra Petch display role */}
             <Text style={styles.packName}>Kanto Origins</Text>
             <View style={styles.cardRow}>
               <SgData value="2,500" unit="Points" size="lg" tone="gold" />

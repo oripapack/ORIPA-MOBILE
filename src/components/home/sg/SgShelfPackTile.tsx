@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.bodyMedium,
     fontSize: 8.5,
     letterSpacing: 1.1,
-    color: sg.text,
+    color: sg.onInk,
   },
   name: {
     fontFamily: sg.font.bodyBold,

@@ -90,12 +90,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ownBadge: {
-    backgroundColor: 'rgba(212,175,55,0.14)',
+    backgroundColor: sg.accentSoft,
     borderRadius: sg.radius.tag,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.35)',
+    borderColor: sg.accentLine,
   },
   ownBadgeText: {
     fontSize: 9,
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   buyBtnOwn: {
     backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.accentLine,
   },
   buyBtnText: {
     fontSize: 11,

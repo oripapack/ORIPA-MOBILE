@@ -10,7 +10,7 @@ import { sg } from '../../../tokens/sg';
  * tier state is UNKNOWN — no tier chrome renders at all (§6 v2.2; the
  * legacy card-rarity text that sat here was removed with the old enum).
  * Pulled values are gold (value semantics). Card names use the body face —
- * Fraunces is heading-tier only.
+ * Chakra Petch carries the heading tier.
  */
 export function SgRecentPulls() {
   return (

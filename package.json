@@ -24,7 +24,7 @@
   "dependencies": {
     "@clerk/clerk-expo": "^2.19.31",
     "@clerk/expo-passkeys": "^1.0.6",
-    "@expo-google-fonts/fraunces": "^0.4.1",
+    "@expo-google-fonts/chakra-petch": "^0.4.1",
     "@expo-google-fonts/outfit": "^0.4.3",
     "@expo-google-fonts/schibsted-grotesk": "^0.4.2",
     "@expo-google-fonts/spline-sans-mono": "^0.4.2",

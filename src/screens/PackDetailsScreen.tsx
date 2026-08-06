@@ -300,8 +300,7 @@ export function PackDetailsScreen({ route }: Props) {
             </>
           ) : null}
 
-          {/* Primary CTA — the single gold CTA on this screen (§4: gold = value,
-              black label; neon never fills a CTA) */}
+          {/* Primary CTA — cobalt is reserved for this screen's value action. */}
           <TouchableOpacity
             style={[styles.cta, openBlocked && !membershipLocked ? styles.ctaDisabled : null]}
             activeOpacity={0.9}
@@ -526,11 +525,11 @@ const styles = StyleSheet.create({
   },
   ctaTextWrap: { flex: 1 },
   ctaText: { fontFamily: sg.font.bodyBold, fontSize: 16, color: sg.onGold, letterSpacing: 0.2 },
-  ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: 'rgba(0,0,0,0.7)', marginTop: 2 },
+  ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: sg.onGold, opacity: 0.78, marginTop: 2 },
   ctaSubNum: {
     fontFamily: sg.font.dataBold,
     fontSize: 11,
-    color: 'rgba(0,0,0,0.7)',
+    color: sg.onGold,
     fontVariant: ['tabular-nums'],
   },
   ctaArrow: { fontFamily: sg.font.bodyBold, fontSize: 20, color: sg.onGold, marginLeft: sg.space.sm },

@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   },
   itemCardVaultPick: {
     borderColor: sg.gold,
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: sg.accentWash,
   },
   checkbox: {
     width: 24,
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   intentVault: {
-    backgroundColor: 'rgba(212,175,55,0.15)',
+    backgroundColor: sg.accentSoft,
     borderColor: sg.gold,
   },
   intentConvert: {

@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   win: {
-    backgroundColor: 'rgba(111,191,143,0.10)',
-    borderColor: 'rgba(111,191,143,0.35)',
+    backgroundColor: sg.successWash,
+    borderColor: sg.successLine,
   },
   lose: {
     backgroundColor: sg.surface,

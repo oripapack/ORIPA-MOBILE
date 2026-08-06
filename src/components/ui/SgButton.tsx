@@ -14,8 +14,8 @@ interface Props {
   label: string;
   onPress: () => void;
   /**
-   * gold — the ONE primary CTA per screen (N2 §4: gold = value, black label).
-   *        Neon is a "moment" color and must never fill a CTA.
+   * gold — compatibility name for the cobalt primary/value action.
+   *        Signal red is a moment color and must never fill a CTA.
    * line — quiet secondary (1px line border, no fill).
    */
   variant?: 'gold' | 'line';
@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.bodyBold,
     fontSize: 16,
     color: sg.onGold,
-    letterSpacing: 0.2,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
   },
   labelLine: { color: sg.text },
 });

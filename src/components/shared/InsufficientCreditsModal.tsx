@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: sg.radius.tag,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: sg.space.md,
