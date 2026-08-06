@@ -1,196 +1,65 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Animated, AccessibilityInfo } from 'react-native';
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { sg } from '../../../tokens/sg';
 
-/**
- * Home banner strip (144px, panel radius). Crossfades every 3s, pauses while
- * touched, and never auto-advances under reduced motion (dots become the
- * manual control).
- *
- * Slide text is a real UI overlay — NEVER baked into the artwork. A thin
- * dark gradient sits behind the text zone only; the artwork itself is not
- * dimmed. Sources are WebP (originals kept as PNG in assets/home/banners/).
- *
- * KNOWN ISSUE: the torii / Fuji artwork violates N2 §5-8 (no traditional
- * Japan symbols). Kept until replacement art lands — see KNOWN_ISSUES.md.
- */
-const SLIDES = [
-  {
-    key: 'exclusives',
-    title: 'JAPANESE EXCLUSIVES',
-    sub: 'Direct from Tokyo.',
-    image: require('../../../../assets/home/banners/banner-01.webp'),
-  },
-  {
-    key: 'tradein',
-    title: '100% back in Coins.',
-    sub: 'Zero fees. Instantly.',
-    footnote: '*of listed value',
-    image: require('../../../../assets/home/banners/banner-02.webp'),
-    // Portrait art: y=75% (between center and bottom) keeps the torii gate
-    // shape in frame. Art is slated for a Shibuya-nightscape replacement.
-    contentPosition: { left: '50%', top: '75%' } as const,
-  },
-  {
-    key: 'fair',
-    title: 'Provably fair.',
-    sub: 'Verify every pull.',
-    image: require('../../../../assets/home/banners/banner-03.webp'),
-    // Bright sakura sky: stronger horizontal scrim.
-    scrim: { alpha: 0.55, stop: 0.55 } as const,
-  },
+const SIGNALS = [
+  { code: 'JP', label: 'TOKYO DESIGN', color: sg.goldHi },
+  { code: 'GM', label: 'GAME LOOP', color: sg.neon },
+  { code: 'RC', label: 'REAL CARDS', color: sg.success },
 ] as const;
 
-/** Shared legibility scrim defaults (slide1 stays exactly on these values). */
-const DEFAULT_SCRIM = { alpha: 0.45, stop: 0.6 } as const;
-
-const INTERVAL_MS = 3000;
-const FADE_MS = 450;
-
+/** Code-native dispatch board. No licensed imagery or unsupported offer copy. */
 export function SgBannerCarousel() {
-  const [index, setIndex] = useState(0);
-  const [reduceMotion, setReduceMotion] = useState(false);
-  const paused = useRef(false);
-  const fade = useRef(new Animated.Value(1)).current;
-  const indexRef = useRef(0);
-
-  useEffect(() => {
-    let mounted = true;
-    AccessibilityInfo.isReduceMotionEnabled().then((v) => { if (mounted) setReduceMotion(v); });
-    return () => { mounted = false; };
-  }, []);
-
-  useEffect(() => {
-    if (reduceMotion) return; // no auto-advance under reduced motion
-    const id = setInterval(() => {
-      if (paused.current) return;
-      const next = (indexRef.current + 1) % SLIDES.length;
-      // Crossfade: fade the top layer out, swap content, fade back in
-      Animated.timing(fade, { toValue: 0, duration: FADE_MS, useNativeDriver: true }).start(() => {
-        indexRef.current = next;
-        setIndex(next);
-        Animated.timing(fade, { toValue: 1, duration: FADE_MS, useNativeDriver: true }).start();
-      });
-    }, INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [reduceMotion, fade]);
-
-  const goTo = (i: number) => {
-    indexRef.current = i;
-    setIndex(i);
-  };
-
-  const slide = SLIDES[index]!;
-
   return (
-    <Pressable
-      style={styles.wrap}
-      onPressIn={() => { paused.current = true; }}
-      onPressOut={() => { paused.current = false; }}
-      accessibilityRole="none"
-    >
-      <Animated.View style={[styles.slide, { opacity: fade }]}>
-        <Image
-          source={slide.image}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          contentPosition={'contentPosition' in slide ? slide.contentPosition : 'center'}
-          transition={0}
-        />
-        {/* Legibility gradient — left-edge alpha fading to 0 by the stop
-            position (per-slide override for bright art); the right side of
-            the art stays fully bright */}
-        <LinearGradient
-          colors={[
-            `rgba(0,0,0,${('scrim' in slide ? slide.scrim : DEFAULT_SCRIM).alpha})`,
-            'rgba(0,0,0,0)',
-          ]}
-          locations={[0, ('scrim' in slide ? slide.scrim : DEFAULT_SCRIM).stop]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-        {/* Overlay text — real UI, not baked into the artwork */}
-        <View style={styles.textWrap}>
-          <Text style={styles.title}>{slide.title}</Text>
-          <Text style={styles.sub}>{slide.sub}</Text>
-          {'footnote' in slide && slide.footnote ? (
-            <Text style={styles.footnote}>{slide.footnote}</Text>
-          ) : null}
+    <View style={styles.board} accessibilityRole="summary">
+      <View style={styles.topRow}>
+        <Text style={styles.route}>JST / TERMINAL 01</Text>
+        <View style={styles.status}>
+          <View style={styles.statusDot} />
+          <Text style={styles.statusText}>ONLINE</Text>
         </View>
-      </Animated.View>
-      <View style={styles.dots}>
-        {SLIDES.map((s, i) => (
-          <Pressable
-            key={s.key}
-            onPress={() => goTo(i)}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={`Banner ${i + 1}`}
-          >
-            <View style={[styles.dot, i === index && styles.dotActive]} />
-          </Pressable>
+      </View>
+      <Text style={styles.kicker}>東京発 / BUILT IN JAPAN</Text>
+      <Text style={styles.title}>THE NIGHT SHIFT{`\n`}FOR COLLECTORS.</Text>
+      <View style={styles.signalRow}>
+        {SIGNALS.map((signal) => (
+          <View key={signal.code} style={styles.signalCell}>
+            <Text style={[styles.signalCode, { color: signal.color }]}>{signal.code}</Text>
+            <Text style={styles.signalLabel}>{signal.label}</Text>
+          </View>
         ))}
       </View>
-    </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    height: 144,
+  board: {
     marginHorizontal: sg.space.md,
     marginTop: sg.space.md,
+    padding: sg.space.md,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
     borderRadius: sg.radius.panel,
     overflow: 'hidden',
-    backgroundColor: sg.surface,
   },
-  slide: { ...StyleSheet.absoluteFillObject },
-  textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md, maxWidth: '78%' },
+  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  route: { fontFamily: sg.font.label, fontSize: 8, color: sg.chrome, letterSpacing: 1.1 },
+  status: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  statusDot: { width: 6, height: 6, backgroundColor: sg.success, borderRadius: 3 },
+  statusText: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.success, letterSpacing: 0.7 },
+  kicker: { fontFamily: sg.font.label, fontSize: 9, color: sg.goldHi, letterSpacing: 1.35, marginTop: 20 },
   title: {
-    fontFamily: sg.font.bodyBold,
-    fontSize: 17,
+    fontFamily: sg.font.display,
+    fontSize: 27,
+    lineHeight: 27,
+    letterSpacing: -0.9,
     color: sg.text,
-    letterSpacing: 0.3,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
+    marginTop: 5,
   },
-  sub: {
-    fontFamily: sg.font.body,
-    fontSize: 13,
-    color: sg.text,
-    marginTop: 3,
-    opacity: 0.9,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
-  },
-  footnote: {
-    fontFamily: sg.font.body,
-    fontSize: 9,
-    color: sg.text,
-    opacity: 0.7,
-    marginTop: 4,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
-  },
-  dots: {
-    position: 'absolute',
-    right: sg.space.md,
-    bottom: sg.space.sm,
-    flexDirection: 'row',
-    gap: 6,
-  },
-  dot: {
-    width: 5,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: 'rgba(240,238,232,0.35)',
-  },
-  dotActive: { backgroundColor: sg.text },
+  signalRow: { flexDirection: 'row', marginTop: 18, borderTopWidth: 1, borderTopColor: sg.line },
+  signalCell: { flex: 1, paddingTop: 10, paddingRight: 4 },
+  signalCode: { fontFamily: sg.font.dataBold, fontSize: 10, letterSpacing: 0.6 },
+  signalLabel: { fontFamily: sg.font.label, fontSize: 6.8, color: sg.muted, letterSpacing: 0.5, marginTop: 2 },
 });

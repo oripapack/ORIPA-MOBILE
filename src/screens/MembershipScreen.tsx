@@ -147,9 +147,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     padding: spacing.md,
     borderRadius: radius.lg,
-    backgroundColor: 'rgba(111,191,143,0.12)',
+    backgroundColor: sg.mintWash,
     borderWidth: 1,
-    borderColor: 'rgba(111,191,143,0.35)',
+    borderColor: sg.mintBorder,
   },
   activeBannerTitle: {
     fontSize: fontSize.xs,

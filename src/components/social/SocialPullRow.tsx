@@ -6,6 +6,7 @@ import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { formatRelativeTime, formatUsd } from '../../lib/socialFormat';
 import { rarityColor, rarityLabel } from './rarityStyles';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface Props {
   pull: SocialPullEvent;
@@ -19,7 +20,7 @@ export function SocialPullRow({ pull }: Props) {
         {pull.imageUrl ? (
           <Image source={{ uri: pull.imageUrl }} style={styles.artImg} resizeMode="cover" />
         ) : (
-          <Text style={styles.artEmoji}>🃏</Text>
+          <Ionicons name="albums-outline" size={26} color={sg.muted} />
         )}
       </View>
       <View style={styles.meta}>

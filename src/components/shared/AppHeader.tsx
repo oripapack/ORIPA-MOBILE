@@ -1,80 +1,42 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sg } from '../../tokens/sg';
-import { spacing, elevation } from '../../tokens/spacing';
+import { spacing } from '../../tokens/spacing';
 import { CreditsPill } from './CreditsPill';
-import { APP_DISPLAY_NAME, getLogoInitials, getLogoWordmarkParts } from '../../config/app';
+import { APP_DISPLAY_NAME } from '../../config/app';
 import { navigationRef } from '../../navigation/navigationRef';
 import { useRequireAuth } from '../../hooks/useRequireAuth';
 
-interface Props {
-  onSearch?: () => void;
-}
-
-/**
- * App chrome header — N2 "Neon Torii": translucent night slab (functional
- * chrome per §9). Gold budget is deliberately scarce here: wordmark accent +
- * balance number only (§4 — gold stops signalling value when it multiplies).
- * Logic (auth gate, PaymentPortal navigation) is unchanged.
- */
-export function AppHeader({ onSearch }: Props) {
+export function AppHeader({ onSearch }: { onSearch?: () => void }) {
   const insets = useSafeAreaInsets();
   const { requireAuth } = useRequireAuth();
-  const initials = getLogoInitials();
-  const wordmark = getLogoWordmarkParts();
-
-  const goCredits = () => {
+  const goPoints = () => {
     requireAuth(() => {
-      if (navigationRef.isReady()) {
-        navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
-      }
+      if (navigationRef.isReady()) navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
     });
   };
 
   return (
-    <View style={[styles.shell, { paddingTop: insets.top + spacing.sm }, elevation.chromeBar]}>
-      <BlurView
-        intensity={Platform.OS === 'ios' ? 52 : 40}
-        tint="dark"
-        style={StyleSheet.absoluteFill}
-      />
-      <View style={styles.scrim} pointerEvents="none" />
-
+    <View style={[styles.shell, { paddingTop: insets.top + spacing.sm }]}>
+      <View style={styles.signalLine} />
       <View style={styles.row}>
-        <View
-          style={styles.logo}
-          accessibilityRole="header"
-          accessibilityLabel={APP_DISPLAY_NAME}
-        >
-          {/* Monogram ring — line, not gold: the header gold budget is the wordmark accent + balance */}
-          <View style={styles.monogramRing}>
-            <View style={styles.monogramInner}>
-              <Text style={styles.monogramText} numberOfLines={1}>
-                {initials}
-              </Text>
-            </View>
+        <View style={styles.logo} accessibilityRole="header" accessibilityLabel={APP_DISPLAY_NAME}>
+          <View style={styles.monogram}>
+            <View style={styles.markTall} />
+            <View style={styles.markShort} />
+            <View style={styles.markDot} />
           </View>
-          <View style={styles.wordmarkCol}>
-            {wordmark ? (
-              <Text style={styles.wordmarkLine} numberOfLines={1}>
-                <Text style={styles.wordmarkLead}>{wordmark.lead}</Text>
-                <Text style={styles.wordmarkAccent}> {wordmark.accent}</Text>
-              </Text>
-            ) : (
-              <Text style={styles.wordmarkSingle} numberOfLines={1}>
-                {APP_DISPLAY_NAME}
-              </Text>
-            )}
+          <View>
+            <Text style={styles.wordmark}>PULL HUB</Text>
+            <Text style={styles.submark}>東京 / NIGHT TERMINAL</Text>
           </View>
         </View>
-
         <View style={styles.right}>
-          <CreditsPill onAdd={goCredits} />
-          <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75}>
-            <Ionicons name="search" size={20} color={sg.text} />
+          <CreditsPill onAdd={goPoints} />
+          <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75} accessibilityLabel="Search">
+            <Ionicons name="search" size={18} color={sg.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -86,80 +48,22 @@ const styles = StyleSheet.create({
   shell: {
     position: 'relative',
     overflow: 'hidden',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    backgroundColor: sg.component.dock.background,
+    borderBottomWidth: 1,
     borderBottomColor: sg.line,
     paddingHorizontal: spacing.base,
-    paddingBottom: spacing.md,
+    paddingBottom: 11,
     zIndex: 2,
   },
-  scrim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.72)', // §9 functional-chrome translucency
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  logo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    flexShrink: 1,
-  },
-  monogramRing: {
-    borderRadius: 12,
-    padding: 1.5,
-    backgroundColor: sg.line, // gold budget: wordmark accent + balance only
-  },
-  monogramInner: {
-    minWidth: 36,
-    height: 36,
-    paddingHorizontal: 6,
-    borderRadius: 10,
-    backgroundColor: sg.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  monogramText: {
-    fontSize: 13,
-    fontFamily: sg.font.bodyBold,
-    color: sg.text,
-    letterSpacing: 0.5,
-  },
-  wordmarkCol: {
-    justifyContent: 'center',
-    flexShrink: 1,
-  },
-  wordmarkLine: {
-    fontSize: 17,
-    letterSpacing: -0.2,
-  },
-  wordmarkLead: {
-    color: sg.text,
-    fontFamily: sg.font.bodyBold,
-  },
-  wordmarkAccent: {
-    color: sg.gold,
-    fontFamily: sg.font.bodyBold,
-  },
-  wordmarkSingle: {
-    fontSize: 17,
-    fontFamily: sg.font.bodyBold,
-    color: sg.text,
-    letterSpacing: -0.2,
-  },
-  right: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  iconBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: sg.radius.btn,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: sg.surface,
-  },
+  signalLine: { position: 'absolute', left: 0, top: 0, height: 2, width: 96, backgroundColor: sg.gold },
+  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  logo: { flexDirection: 'row', alignItems: 'center', gap: 9, flexShrink: 1 },
+  monogram: { width: 31, height: 34, position: 'relative' },
+  markTall: { position: 'absolute', left: 1, top: 2, bottom: 2, width: 7, backgroundColor: sg.text },
+  markShort: { position: 'absolute', left: 12, top: 2, height: 20, width: 7, backgroundColor: sg.text },
+  markDot: { position: 'absolute', right: 1, top: 2, width: 8, height: 8, borderRadius: 4, backgroundColor: sg.goldHi },
+  wordmark: { fontFamily: sg.font.display, fontSize: 17, lineHeight: 18, color: sg.text, letterSpacing: 0.15 },
+  submark: { fontFamily: sg.font.label, fontSize: 6.5, lineHeight: 9, color: sg.muted, letterSpacing: 0.65 },
+  right: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  iconBtn: { width: 34, height: 34, borderRadius: sg.radius.btn, borderWidth: 1, borderColor: sg.line, alignItems: 'center', justifyContent: 'center', backgroundColor: sg.surface },
 });

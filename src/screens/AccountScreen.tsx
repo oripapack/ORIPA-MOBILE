@@ -120,7 +120,7 @@ export function AccountScreen() {
       {/* 1 · Hero profile */}
       <VaultFramedCard style={styles.heroCard}>
         <View style={styles.heroTop}>
-          <Text style={styles.heroAvatar}>{socialProfile.avatarEmoji}</Text>
+          <Text style={styles.heroAvatar}>{socialProfile.displayName.trim().slice(0, 2).toUpperCase()}</Text>
           <View style={styles.heroMeta}>
             <Text style={styles.heroName} numberOfLines={1}>
               {socialProfile.displayName}
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   guestSignInEyebrow: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: sg.error,
+    color: sg.goldHi,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -334,7 +334,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   guestSignInBtn: {
-    backgroundColor: sg.error,
+    backgroundColor: sg.gold,
+    borderWidth: 1,
+    borderColor: sg.goldHi,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -344,7 +346,7 @@ const styles = StyleSheet.create({
   guestSignInBtnText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: sg.text,
+    color: sg.onGold,
   },
   heroCard: {
     marginBottom: spacing.lg,

@@ -7,7 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../tokens/sg';
 import { SgCard, SgData, SgSectionHeader, SgTierTag } from '../components/ui';
 import { SgFairnessRecord } from '../components/pack/sg/SgFairnessRecord';
-import { PackVisual } from '../components/ph/PackVisual';
+import { TerminalBackdrop, TerminalPackBay, TerminalStatusRail } from '../components/terminal';
 import { spacing } from '../tokens/spacing';
 import { screenRoot, screenScroll, screenFooter } from '../tokens/layout';
 import { navigationRef } from '../navigation/navigationRef';
@@ -119,6 +119,7 @@ export function PackDetailsScreen({ route }: Props) {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.sm }]}>
+      <TerminalBackdrop />
       <TouchableOpacity
         style={styles.backBtn}
         onPress={() => {
@@ -139,13 +140,20 @@ export function PackDetailsScreen({ route }: Props) {
       >
         {/* ── 1. Pack name / set ── */}
         <View style={styles.hero}>
+          <View style={styles.terminalLabelRow}>
+            <Text style={styles.terminalLabel}>PACK DETAIL / BAY A</Text>
+            <Text style={styles.terminalCode}>TOKYO 01</Text>
+          </View>
           <View style={styles.heroVisualWrap}>
-            <PackVisual
-              name={pack.title}
-              category={pack.tcgCategory ?? 'TCG'}
-              rarityTier={pack.rarityTier ?? 'epic'}
-              size="hero"
-            />
+            <View style={styles.heroBay}>
+              <TerminalPackBay
+                name={pack.title}
+                category={pack.tcgCategory ?? 'TCG'}
+                rarityTier={pack.rarityTier ?? 'epic'}
+                size="hero"
+              />
+            </View>
+            <TerminalStatusRail compact />
           </View>
           <View style={styles.heroBadges}>
             {pack.isFeatured ? (
@@ -178,7 +186,7 @@ export function PackDetailsScreen({ route }: Props) {
             <SgSectionHeader title={t('packDetails.specTitle')} />
             <View style={styles.specRow}>
               <Text style={styles.specLabel}>{t('packDetails.priceTitle')}</Text>
-              <SgData value={pack.creditPrice.toLocaleString()} unit={t('packCard.credits')} size="lg" tone="gold" />
+              <SgData value={pack.creditPrice.toLocaleString()} unit="Points" size="lg" tone="gold" />
             </View>
             <View style={styles.specRow}>
               <Text style={styles.specLabel}>{t('packDetails.specRemainingLabel')}</Text>
@@ -265,10 +273,9 @@ export function PackDetailsScreen({ route }: Props) {
           <SgCard>
             <View style={styles.shipRow}>
               <View style={styles.shipBody}>
-                <Text style={styles.shipTitle}>Ships from Tokyo</Text>
+                <Text style={styles.shipTitle}>Shipping workflow</Text>
                 <Text style={styles.sectionBody}>
-                  Japanese exclusives, packed and shipped direct. Free shipping on orders{' '}
-                  <Text style={styles.inlineNum}>$100+</Text>.
+                  Shipping options are shown at checkout. Track fulfillment status from your Vault.
                 </Text>
               </View>
             </View>
@@ -367,7 +374,11 @@ const styles = StyleSheet.create({
   scroll: { ...screenScroll },
   scrollContent: { paddingBottom: sg.space.xl },
   hero: { alignItems: 'center', paddingTop: sg.space.sm, paddingHorizontal: sg.space.md },
-  heroVisualWrap: { alignItems: 'center' },
+  terminalLabelRow: { alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 8 },
+  terminalLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.9 },
+  terminalCode: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.goldHi },
+  heroVisualWrap: { alignSelf: 'stretch', flexDirection: 'row', alignItems: 'stretch', gap: 7 },
+  heroBay: { flex: 1 },
   heroBadges: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -383,15 +394,16 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   featuredChipText: {
-    fontFamily: sg.font.bodyMedium,
+    fontFamily: sg.font.label,
     fontSize: 9,
     letterSpacing: 1.2,
     color: sg.text,
   },
   heroTitle: {
     fontFamily: sg.font.display,
-    fontSize: 28,
-    lineHeight: 34,
+    fontSize: 30,
+    lineHeight: 32,
+    letterSpacing: -0.9,
     color: sg.text,
     textAlign: 'center',
     marginTop: sg.space.sm,
@@ -431,7 +443,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.line,
     marginTop: sg.space.sm,
   },
-  slotsFill: { height: 2, borderRadius: 1, backgroundColor: sg.muted },
+  slotsFill: { height: 2, borderRadius: 1, backgroundColor: sg.success },
   oddsSummary: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -496,7 +508,10 @@ const styles = StyleSheet.create({
   cta: {
     borderRadius: sg.radius.btn,
     backgroundColor: sg.gold,
+    borderWidth: 1,
+    borderColor: sg.goldHi,
     overflow: 'hidden',
+    ...sg.glowCobalt,
   },
   ctaDisabled: { opacity: 0.4 },
   ctaInner: {
@@ -506,12 +521,12 @@ const styles = StyleSheet.create({
     paddingVertical: sg.space.md - 2,
   },
   ctaTextWrap: { flex: 1 },
-  ctaText: { fontFamily: sg.font.bodyBold, fontSize: 16, color: sg.onGold, letterSpacing: 0.2 },
-  ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: 'rgba(0,0,0,0.7)', marginTop: 2 },
+  ctaText: { fontFamily: sg.font.label, fontSize: 14, color: sg.onGold, letterSpacing: 0.9, textTransform: 'uppercase' },
+  ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: 'rgba(244,239,227,0.78)', marginTop: 2 },
   ctaSubNum: {
     fontFamily: sg.font.dataBold,
     fontSize: 11,
-    color: 'rgba(0,0,0,0.7)',
+    color: 'rgba(244,239,227,0.78)',
     fontVariant: ['tabular-nums'],
   },
   inlineNum: {

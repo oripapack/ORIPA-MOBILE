@@ -5,11 +5,12 @@ import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-const POINTS: { pointKey: '1' | '2' | '3'; icon: string }[] = [
-  { pointKey: '1', icon: '🚚' },
-  { pointKey: '2', icon: '💴' },
-  { pointKey: '3', icon: '🃏' },
+const POINTS: { pointKey: '1' | '2' | '3'; icon: keyof typeof Ionicons.glyphMap }[] = [
+  { pointKey: '1', icon: 'cube-outline' },
+  { pointKey: '2', icon: 'pricetag-outline' },
+  { pointKey: '3', icon: 'albums-outline' },
 ];
 
 /**
@@ -25,7 +26,7 @@ export function WhyChoosePullHub() {
       {POINTS.map(({ pointKey, icon }) => (
         <View key={pointKey} style={styles.row}>
           <View style={styles.iconCircle}>
-            <Text style={styles.iconEmoji}>{icon}</Text>
+            <Ionicons name={icon} size={18} color={sg.goldHi} />
           </View>
           <View style={styles.textCol}>
             <View style={styles.pointPill}>
@@ -82,12 +83,12 @@ const styles = StyleSheet.create({
   },
   pointPill: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(212,175,55,0.14)',
+    backgroundColor: sg.cobaltWash,
     paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.goldHi,
     marginBottom: 4,
   },
   pointPillText: {

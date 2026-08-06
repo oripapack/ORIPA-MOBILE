@@ -10,13 +10,12 @@ interface Props {
 }
 
 /**
- * N2 panel: surface fill, 1px `line` border (dividers are lines, not
- * shadows — §3), panel radius 13. No per-card shadows; `sg.shadowHero`
- * belongs to at most one hero element per screen, applied by the screen.
+ * Smoked terminal panel: sharp chassis, thin steel line, blue signal rail.
  */
 export function SgCard({ raised, style, children }: Props) {
   return (
     <View style={[styles.base, raised && styles.raised, style]}>
+      <View style={styles.signalRail} pointerEvents="none" />
       {children}
     </View>
   );
@@ -32,4 +31,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   raised: { backgroundColor: sg.surface2 },
+  signalRail: { position: 'absolute', left: 0, top: 0, width: 24, height: 2, backgroundColor: sg.gold },
 });

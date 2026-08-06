@@ -5,7 +5,7 @@ import { sg } from '../../tokens/sg';
 interface Props {
   /** The numeral string, e.g. "2,500" / "214 / 500" / "80.0%" / a cert hash. */
   value: string;
-  /** Unit label — REQUIRED by design rule for money-like numbers ("Coins", "listed value"). */
+  /** Unit label — REQUIRED by design rule for money-like numbers ("Points", "listed value"). */
   unit?: string;
   size?: 'sm' | 'md' | 'lg';
   /**

@@ -5,6 +5,7 @@ import { sgVault } from '../../tokens/sgVault';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { Pull, PullRarityTier } from '../../data/mockUser';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const COINS_PER_USD = 100;
 
@@ -26,9 +27,9 @@ function formatUsd(usd: number): string {
 
 const TIER_BAR_COLOR: Record<PullRarityTier, string> = {
   base: sgVault.muted,
-  epic: '#A855F7',
-  legendary: sgVault.gold,
-  mythic: '#FB7185',
+  epic: sgVault.goldHi,
+  legendary: sgVault.warning,
+  mythic: sgVault.neon,
 };
 
 interface Props {
@@ -86,7 +87,7 @@ export function PortfolioCard({ pulls }: Props) {
           </Text>
         </View>
         <View style={styles.trophyWrap}>
-          <Text style={styles.trophyEmoji}>🏆</Text>
+          <Ionicons name="trophy-outline" size={20} color={sgVault.warning} />
         </View>
       </View>
 
@@ -204,7 +205,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     marginBottom: spacing.md,
     borderWidth: 1.5,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.cobaltBorder,
     overflow: 'hidden',
     shadowColor: sgVault.gold,
     shadowOpacity: 0.15,
@@ -253,9 +254,9 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(212,175,55,0.10)',
+    backgroundColor: sgVault.cobaltWashSoft,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.cobaltBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -264,7 +265,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(212,175,55,0.25)',
+    backgroundColor: sgVault.cobaltWashStrong,
     marginBottom: spacing.md,
   },
   statsRow: {

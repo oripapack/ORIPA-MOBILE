@@ -8,6 +8,7 @@ import { SgButton, SgTierTag } from '../components/ui';
 import { navigationRef } from '../navigation/navigationRef';
 import { useAppStore } from '../store/useAppStore';
 import { MOCK_RESULT_PULLS, type ResultCard, type ResultPullData, type MockResultVariant } from '../data/mockResultPull';
+import { TerminalBackdrop } from '../components/terminal';
 
 /**
  * Result screen — task1-result-screen-spec.md on N2 v2.4 tokens.
@@ -20,7 +21,7 @@ import { MOCK_RESULT_PULLS, type ResultCard, type ResultPullData, type MockResul
  * Copy is intentionally hardcoded English per the spec ("英語ロケール・その
  * まま使う") — locale keys come later with the flow wiring.
  *
- * Leaving without choosing NEVER converts to Coins: no action is taken on
+ * Leaving without choosing NEVER converts to Points: no action is taken on
  * unmount, so pending pulls stay pending (vault-by-default is the flow-side
  * contract).
  */
@@ -57,8 +58,8 @@ function fmtUsd(v: number): string {
   return `$${groupThousands(int)}.${dec}`;
 }
 
-/** 100 Coins = $1.00 — same rate the rest of the app uses (VaultScreen etc.). */
-function usdToCoins(usd: number): number {
+/** Existing conversion rate, expressed with the app's canonical Points term. */
+function usdToPoints(usd: number): number {
   return Math.round(usd * 100);
 }
 
@@ -78,8 +79,8 @@ export function ResultScreen({ route }: Props) {
 
   const count = pull.cards.length;
   const multi = count > 1;
-  const coins = groupThousands(String(usdToCoins(pull.totalListedValueUsd)));
-  const ctaLabel = multi ? `Trade in all — ${coins} Coins` : `Trade in — ${coins} Coins`;
+  const points = groupThousands(String(usdToPoints(pull.totalListedValueUsd)));
+  const ctaLabel = multi ? `Trade in all — ${points} Points` : `Trade in — ${points} Points`;
 
   const goTabs = (screen?: 'Vault') => {
     if (!navigationRef.isReady()) return;
@@ -103,6 +104,7 @@ export function ResultScreen({ route }: Props) {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
+      <TerminalBackdrop />
       {/* ── 1. Header band ── */}
       <View style={styles.header}>
         <Text style={styles.headerLabel}>PULL RECORD</Text>
@@ -153,7 +155,7 @@ export function ResultScreen({ route }: Props) {
           </ScrollView>
           {/* Scroll fade into the panel ground (spec's "bg" read as the panel surface) */}
           <LinearGradient
-            colors={['rgba(16,16,19,0)', sg.surface]} // sg.surface with alpha 0 → 1
+            colors={[sg.surfaceTransparent, sg.surface]}
             style={styles.fade}
             pointerEvents="none"
           />
@@ -174,7 +176,7 @@ export function ResultScreen({ route }: Props) {
       {/* ── 4. Action bar ── */}
       <View style={styles.actionBar}>
         <SgButton label={ctaLabel} onPress={() => setSheetOpen(true)} style={styles.cta} />
-        <Text style={styles.disclaimer}>100% of listed value, in Coins.</Text>
+        <Text style={styles.disclaimer}>100% of listed value, in Points.</Text>
         <SgButton label="Keep in Vault" variant="line" onPress={onKeepInVault} style={styles.secondary} />
       </View>
 
@@ -191,12 +193,12 @@ export function ResultScreen({ route }: Props) {
           <View style={styles.sheet}>
             <View style={styles.grabber} />
             <Text style={styles.sheetTitle}>{multi ? `Trade in ${count} cards?` : 'Trade in 1 card?'}</Text>
-            <Text style={styles.sheetAmount}>{coins}</Text>
-            <Text style={styles.sheetAmountSub}>COINS · 100% OF LISTED VALUE</Text>
+            <Text style={styles.sheetAmount}>{points}</Text>
+            <Text style={styles.sheetAmountSub}>POINTS · 100% OF LISTED VALUE</Text>
             <Text style={styles.sheetBody}>
               {multi
-                ? `All ${count} cards will be traded in for Coins at their listed value.`
-                : 'This card will be traded in for Coins at its listed value.'}
+                ? `All ${count} cards will be traded in for Points at their listed value.`
+                : 'This card will be traded in for Points at its listed value.'}
             </Text>
             <SgButton label="Trade in" onPress={onConfirmTradeIn} style={styles.cta} />
             <SgButton label="Cancel" variant="line" onPress={() => setSheetOpen(false)} style={styles.sheetCancel} />
@@ -225,7 +227,7 @@ const styles = StyleSheet.create({
   // 1. Header band
   header: {
     height: 52,
-    backgroundColor: sg.surface,
+    backgroundColor: sg.component.dock.background,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
     flexDirection: 'row',
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headerLabel: {
-    fontFamily: sg.font.data,
+    fontFamily: sg.font.label,
     fontSize: 10.5,
     letterSpacing: 10.5 * 0.2,
     color: sg.muted,
@@ -250,9 +252,10 @@ const styles = StyleSheet.create({
   titleBlock: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16 },
   packName: {
     fontFamily: sg.font.display,
-    fontSize: 26,
-    lineHeight: 29, // 1.10
-    letterSpacing: 26 * -0.015,
+    fontSize: 30,
+    lineHeight: 32,
+    letterSpacing: -0.9,
+    textTransform: 'uppercase',
     color: sg.text,
   },
   stamp: {
@@ -285,7 +288,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     ...sg.shadowHero,
   },
-  heroImgClip: { flex: 1, borderRadius: 10, overflow: 'hidden' },
+  heroImgClip: { flex: 1, borderRadius: sg.radius.panel, overflow: 'hidden' },
   heroImg: { width: '100%', height: '100%' },
   heroName: {
     fontFamily: sg.font.bodyBold, // spec 600 — loaded weights are 400/500/700, 700 is the closest
@@ -305,7 +308,7 @@ const styles = StyleSheet.create({
   divider: { height: 1, backgroundColor: sg.line, marginTop: 20, marginBottom: 18 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
   cell: { width: 80 },
-  cellImgClip: { width: 80, height: 112, borderRadius: 10, overflow: 'hidden', backgroundColor: sg.surface2 },
+  cellImgClip: { width: 80, height: 112, borderRadius: sg.radius.panel, overflow: 'hidden', backgroundColor: sg.surface2 },
   cellImg: { width: '100%', height: '100%' },
   cellName: {
     fontFamily: sg.font.body,
@@ -388,7 +391,7 @@ const styles = StyleSheet.create({
   sheetOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.6)', // sinks the CTA behind the sheet
+    backgroundColor: sg.modalScrim,
   },
   sheet: {
     backgroundColor: sg.surface2,

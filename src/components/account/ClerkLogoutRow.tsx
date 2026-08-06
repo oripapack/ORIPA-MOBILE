@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useClerk } from '@clerk/clerk-expo';
 import { ListRow } from '../shared/ListRow';
 import { confirmUserAction } from '../../utils/showUserMessage';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { sg } from '../../tokens/sg';
 
 /**
  * Must only render under `ClerkProvider` when the user is signed in.
@@ -16,7 +17,7 @@ export function ClerkLogoutRow() {
   return (
     <ListRow
       label={t('account.logout')}
-      icon={<Text>🚪</Text>}
+      icon={<Ionicons name="log-out-outline" size={20} color={sg.error} />}
       destructive
       showChevron={false}
       onPress={() =>

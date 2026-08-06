@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { sg } from '../../tokens/sg';
 import { sgVault } from '../../tokens/sgVault';
+import { TerminalBackdrop } from '../terminal/TerminalBackdrop';
 
 type Skin = 'default' | 'vault';
 
@@ -20,6 +21,7 @@ export function SgScreen({ children, skin = 'default', style }: Props) {
   const t = skin === 'vault' ? sgVault : sg;
   return (
     <View style={[styles.root, { backgroundColor: t.bg }, style]}>
+      <TerminalBackdrop />
       {children}
     </View>
   );

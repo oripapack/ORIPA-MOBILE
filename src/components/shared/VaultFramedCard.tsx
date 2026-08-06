@@ -8,9 +8,9 @@ const BR = 10;
 
 const GRADIENTS = {
   /** Default — dark satin mat with gallery depth */
-  vault: ['rgba(36, 30, 58, 0.97)', 'rgba(22, 18, 42, 0.99)'] as const,
-  /** Featured — warmer plum panel */
-  felt: ['rgba(42, 34, 64, 0.99)', 'rgba(28, 24, 48, 0.98)'] as const,
+  vault: [sg.surface2, sg.surface] as const,
+  /** Featured — raised smoked-acrylic panel. */
+  felt: [sg.surfaceRaised, sg.surface2] as const,
 };
 
 export type VaultFill = keyof typeof GRADIENTS;
@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
     top: 14,
     bottom: 14,
     width: 3,
-    backgroundColor: sg.neon,
-    opacity: 0.45,
+    backgroundColor: sg.gold,
+    opacity: 0.8,
     zIndex: 2,
   },
   bracketTL: {

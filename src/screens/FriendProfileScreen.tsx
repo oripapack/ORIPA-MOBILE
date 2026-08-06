@@ -108,7 +108,7 @@ export function FriendProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.hero}>
-          <Text style={styles.avatar}>{profile.avatarEmoji}</Text>
+          <Text style={styles.avatar}>{profile.displayName.trim().slice(0, 2).toUpperCase()}</Text>
           <View style={styles.heroText}>
             <Text style={styles.dn}>{profile.displayName}</Text>
             <Text style={styles.un}>@{profile.username}</Text>

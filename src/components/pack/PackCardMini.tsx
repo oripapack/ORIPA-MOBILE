@@ -8,6 +8,7 @@ import type { Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { getMockPackTopHit } from '../../data/mockTopHits';
 import { navigationRef } from '../../navigation/navigationRef';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export function PackCardMini({ pack }: { pack: Pack }) {
   const { t } = useTranslation();
@@ -32,7 +33,7 @@ export function PackCardMini({ pack }: { pack: Pack }) {
           <Image source={{ uri: topHit.imageUrl }} style={StyleSheet.absoluteFillObject} contentFit="cover" />
         ) : null}
         <View style={styles.thumbOverlay} />
-        <Text style={styles.thumbEmoji}>🎴</Text>
+        <Ionicons name="albums-outline" size={27} color={sg.text} />
       </View>
 
       <View style={styles.body}>

@@ -21,13 +21,7 @@ import { SgTrustStrip } from '../components/home/sg/SgTrustStrip';
 import { SgSectionHeader } from '../components/ui';
 import { sg } from '../tokens/sg';
 import { navigationRef } from '../navigation/navigationRef';
-import {
-  mockPacks,
-  packBelongsToHomeNiche,
-  HOME_NICHE_CATEGORIES,
-  type Pack,
-  type HomeNicheCategory,
-} from '../data/mockPacks';
+import { mockPacks, type Pack } from '../data/mockPacks';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useAppStore } from '../store/useAppStore';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -63,7 +57,7 @@ export function HomeScreen() {
   const { requireAuth } = useRequireAuth();
   const openPack = useAppStore((s) => s.openPack);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [filter, setFilter] = useState<FilterKey>('all');
+  const [filter, setFilter] = useState<FilterKey>('featured');
 
   const featuredPack = useMemo(
     () => mockPacks.find((p) => p.isFeatured && p.id === 'platinum-legacy') ?? mockPacks.find((p) => p.isFeatured) ?? mockPacks[0]!,
@@ -158,19 +152,19 @@ function SgFeaturedRow({ pack }: { pack: Pack }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
   list: { paddingBottom: 100, flexGrow: 1 },
-  chipRow: { paddingHorizontal: sg.space.md, paddingVertical: sg.space.sm, gap: 8 },
+  chipRow: { paddingHorizontal: sg.space.md, paddingVertical: 11, gap: 7 },
   // Filter chips — btn radius (these are controls, not status tags)
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     borderRadius: sg.radius.btn,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
   },
-  chipActive: { backgroundColor: sg.surface2 },
-  chipText: { fontFamily: sg.font.bodyMedium, fontSize: 13, color: sg.muted },
-  chipTextActive: { color: sg.text, fontFamily: sg.font.bodyBold },
+  chipActive: { backgroundColor: sg.cobaltWash, borderColor: sg.goldHi },
+  chipText: { fontFamily: sg.font.label, fontSize: 9, letterSpacing: 0.6, color: sg.muted, textTransform: 'uppercase' },
+  chipTextActive: { color: sg.goldHi, fontFamily: sg.font.label },
   shelfSpacer: { height: sg.space.md },
   shelfRow: { paddingHorizontal: sg.space.md, gap: sg.space.sm, marginBottom: sg.space.sm },
   featuredRow: {

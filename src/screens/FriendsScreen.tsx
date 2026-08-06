@@ -47,10 +47,10 @@ import { PUBLIC_WEB_ORIGIN } from '../config/app';
 import { showUserMessage } from '../utils/showUserMessage';
 
 const RING_PALETTE = [
-  sg.error,
+  sg.neon,
   sg.gold,
-  '#60A5FA',
-  '#A855F7',
+  sg.goldHi,
+  sg.chrome,
   sg.success,
   sg.warning,
 ];
@@ -403,7 +403,7 @@ export function FriendsScreen() {
                     activeOpacity={0.88}
                   >
                     <Text style={styles.lbRank}>{e.rank}</Text>
-                    <Text style={styles.lbEmoji}>{e.avatarEmoji}</Text>
+                    <Text style={styles.lbEmoji}>{e.displayName.trim().slice(0, 2).toUpperCase()}</Text>
                     <View style={styles.lbMeta}>
                       <Text style={styles.lbName} numberOfLines={1}>
                         {e.displayName}
@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
   },
   headerBtnAdd: {
     backgroundColor: sg.gold,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.cobaltBorder,
   },
   headerBtnPlaceholder: {
     width: 44,
@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
     borderBottomColor: sg.line,
   },
   lbRowMe: {
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
   },
   lbRank: {
     width: 24,
@@ -678,7 +678,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     paddingVertical: spacing.sm + 2,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
   },
   seeAllText: {
     fontSize: fontSize.xs,
@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,

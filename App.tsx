@@ -16,7 +16,6 @@ import {
   Outfit_800ExtraBold,
   Outfit_900Black,
 } from '@expo-google-fonts/outfit';
-import { Fraunces_500Medium } from '@expo-google-fonts/fraunces';
 import {
   SchibstedGrotesk_400Regular,
   SchibstedGrotesk_500Medium,
@@ -37,7 +36,7 @@ import { ClerkSsoCallbackHandler } from './src/components/account/ClerkSsoCallba
 import { colors } from './src/tokens/colors';
 import { brandFont } from './src/tokens/typography';
 
-/** Default text: Outfit regular (weights use explicit `brandFont` faces in styles). */
+/** Default text: Tokyo Night Terminal body face. */
 const baseTextStyle = { fontFamily: brandFont.regular } as const;
 const T = Text as typeof Text & { defaultProps?: { style?: unknown } };
 const TI = TextInput as typeof TextInput & { defaultProps?: { style?: unknown } };
@@ -57,8 +56,7 @@ export default function App() {
     Outfit_700Bold,
     Outfit_800ExtraBold,
     Outfit_900Black,
-    // N2 "Neon Torii" faces (docs/design-system-n2.md §7)
-    Fraunces_500Medium,
+    // Tokyo Night Terminal: geometric display, grotesk body, mono data.
     SchibstedGrotesk_400Regular,
     SchibstedGrotesk_500Medium,
     SchibstedGrotesk_700Bold,

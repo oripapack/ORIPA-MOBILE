@@ -88,7 +88,7 @@ export function FriendsActivityCard({ item, cardWidth, onOpenProfile }: Props) {
       <AnimatedRarityBar color={rarityColor} />
       <View style={[styles.cardInner, { borderColor: `${rarityColor}28` }]}>
         <View style={styles.top}>
-          <Text style={styles.emoji}>{item.avatarEmoji}</Text>
+          <Text style={styles.emoji}>{item.username.trim().slice(0, 2).toUpperCase()}</Text>
           <View style={styles.topText}>
             <Text style={styles.user} numberOfLines={1}>
               @{item.username}

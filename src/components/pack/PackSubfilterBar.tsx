@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   chipActive: {
     borderColor: sg.gold,
-    backgroundColor: 'rgba(212,175,55,0.15)',
+    backgroundColor: sg.cobaltWash,
   },
   label: {
     fontSize: fontSize.xs,

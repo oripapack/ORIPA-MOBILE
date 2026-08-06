@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     padding: spacing.base,
     marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.cobaltBorder,
   },
   listedBannerText: {
     fontSize: fontSize.sm,
@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
     borderColor: sgVault.line,
   },
   timerCardUrgent: {
-    borderColor: 'rgba(212,175,55,0.55)',
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    borderColor: sgVault.cobaltBorderStrong,
+    backgroundColor: sgVault.cobaltWashSoft,
   },
   timerLabel: {
     fontSize: fontSize.xs,
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.sm,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.cobaltBorder,
     alignItems: 'center',
   },
   secondaryHalfText: {

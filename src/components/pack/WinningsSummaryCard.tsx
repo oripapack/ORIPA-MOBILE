@@ -7,7 +7,7 @@ import { radius, spacing } from '../../tokens/spacing';
 type Props = {
   label?: string;
   amount: number;
-  currencyLabel?: string; // "Coins" / "Points"
+  currencyLabel?: string;
   helperText?: string;
   style?: ViewStyle;
 };
@@ -15,7 +15,7 @@ type Props = {
 export function WinningsSummaryCard({
   label = 'Total Convert Value',
   amount,
-  currencyLabel = 'Coins',
+  currencyLabel = 'Points',
   helperText,
   style,
 }: Props) {
@@ -24,7 +24,7 @@ export function WinningsSummaryCard({
       <View style={styles.topRow}>
         <Text style={styles.label}>{label}</Text>
         <View style={styles.pill}>
-          <Text style={styles.pillText}>🪙 {currencyLabel}</Text>
+          <Text style={styles.pillText}>{currencyLabel}</Text>
         </View>
       </View>
 
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pill: {
-    backgroundColor: 'rgba(212,175,55,0.15)',
+    backgroundColor: sg.cobaltWash,
     borderColor: sg.gold,
     borderWidth: 1,
     paddingHorizontal: sg.space.sm,

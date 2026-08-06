@@ -3,9 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { sg } from '../../../tokens/sg';
 
 const ITEMS = [
-  { title: 'Zero-fee', sub: 'trade-in, always' },
-  { title: '100% listed value', sub: 'back in Coins' },
-  { title: 'Free shipping', sub: 'on orders ', subNum: '$100+' },
+  { code: '01', title: 'Odds', sub: 'available before opening' },
+  { code: '02', title: 'Trade in', sub: 'based on listed value' },
+  { code: '03', title: 'Shipping', sub: 'tracked in your Vault' },
 ] as const;
 
 /** Trust strip — dividers are 1px `line` borders (N2 §3). */
@@ -14,11 +14,9 @@ export function SgTrustStrip() {
     <View style={styles.row}>
       {ITEMS.map((item, i) => (
         <View key={item.title} style={[styles.cell, i > 0 && styles.cellDivider]}>
+          <Text style={styles.code}>{item.code}</Text>
           <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.sub}>
-            {item.sub}
-            {'subNum' in item && item.subNum ? <Text style={styles.subNum}>{item.subNum}</Text> : null}
-          </Text>
+          <Text style={styles.sub}>{item.sub}</Text>
         </View>
       ))}
     </View>
@@ -36,18 +34,13 @@ const styles = StyleSheet.create({
   },
   cell: { flex: 1, paddingVertical: 14, paddingHorizontal: 6, alignItems: 'center' },
   cellDivider: { borderLeftWidth: 1, borderLeftColor: sg.line },
-  title: { fontFamily: sg.font.bodyBold, fontSize: 12, color: sg.text },
+  code: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.goldHi, letterSpacing: 0.8 },
+  title: { fontFamily: sg.font.bodyBold, fontSize: 12, color: sg.text, marginTop: 3 },
   sub: {
     fontFamily: sg.font.body,
     fontSize: 10,
     color: sg.muted,
     marginTop: 3,
     textAlign: 'center',
-  },
-  subNum: {
-    fontFamily: sg.font.dataBold,
-    fontSize: 10,
-    color: sg.muted,
-    fontVariant: ['tabular-nums'],
   },
 });

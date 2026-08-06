@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
-import { BlurView } from 'expo-blur';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
@@ -68,7 +67,7 @@ const tabBarDockStyles = StyleSheet.create({
   },
   slab: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.72)',
+    backgroundColor: sg.component.dock.background,
   },
   topLine: {
     position: 'absolute',
@@ -88,11 +87,6 @@ const tabBarDockStyles = StyleSheet.create({
 function PremiumTabBarBackground() {
   return (
     <View style={tabBarDockStyles.root}>
-      {Platform.OS === 'ios' ? (
-        <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
-      ) : null}
-
-      {/* Night slab — §9 functional-chrome translucency */}
       <View style={tabBarDockStyles.slab} />
 
       {/* Top divider line */}
@@ -129,7 +123,7 @@ function TabNavigatorInner() {
         headerShown: false,
         sceneContainerStyle: Platform.OS === 'web' ? { flex: 1, minHeight: 0 } : undefined,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: sg.text,
+        tabBarActiveTintColor: sg.component.dock.active,
         tabBarInactiveTintColor: sg.muted,
         tabBarStyle: styles.tabBar,
         tabBarBackground: PremiumTabBarBackground,
@@ -414,13 +408,15 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: 'transparent',
     borderTopWidth: 0,
-    height: 82,
-    paddingBottom: 16,
-    paddingTop: 8,
+    height: 78,
+    paddingBottom: 13,
+    paddingTop: 9,
   },
   tabLabel: {
-    fontSize: 11,
-    fontFamily: sg.font.bodyMedium,
+    fontSize: 9,
+    fontFamily: sg.font.label,
+    letterSpacing: 0.35,
+    textTransform: 'uppercase',
   },
   stackHeaderTitle: {
     fontSize: 17,

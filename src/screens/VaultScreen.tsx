@@ -44,17 +44,17 @@ type VaultNav = CompositeNavigationProp<
 >;
 
 const TIER_ACCENT: Record<PullRarityTier, string> = {
-  base: '#94A3B8',
-  epic: '#A855F7',
-  legendary: '#FBBF24',
-  mythic: '#FB7185',
+  base: sgVault.chrome,
+  epic: sgVault.goldHi,
+  legendary: sgVault.warning,
+  mythic: sgVault.neon,
 };
 
 const TIER_GLOW: Record<PullRarityTier, string> = {
-  base: 'rgba(148, 163, 184, 0.08)',
-  epic: 'rgba(168, 85, 247, 0.12)',
-  legendary: 'rgba(251, 191, 36, 0.14)',
-  mythic: 'rgba(251, 113, 133, 0.14)',
+  base: sgVault.surface2,
+  epic: sgVault.cobaltWash,
+  legendary: sgVault.warningWash,
+  mythic: sgVault.vermilionWash,
 };
 
 function tierAccent(tier: PullRarityTier | undefined): string {
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
   tileWrap: {},
   tileCard: { minHeight: 168 },
   tileCardVault: {
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.cobaltBorder,
   },
   tileInner: {
     padding: spacing.md,
@@ -522,10 +522,10 @@ const styles = StyleSheet.create({
   },
   guestCta: {
     alignSelf: 'flex-start',
-    backgroundColor: sgVault.error,
+    backgroundColor: sgVault.gold,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    borderRadius: radius.lg,
+    borderRadius: sgVault.radius.btn,
   },
   guestCtaText: {
     fontSize: fontSize.sm,

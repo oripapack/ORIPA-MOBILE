@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { sg } from '../../tokens/sg';
 import { spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
@@ -10,17 +9,14 @@ interface Props {
 }
 
 /**
- * Coin balance chip — N2: the balance NUMBER is the gold value signal (§4);
- * the coin glyph stays muted so header gold stays scarce (wordmark accent +
- * balance only). Surface fill + 1px line border; tag radius. Gold never
- * fills the add button.
+ * Points balance rendered as a compact ticket-machine readout.
  */
 export function CreditsPill({ onAdd }: Props) {
   const credits = useAppStore((s) => s.user.credits);
 
   return (
     <View style={styles.pill}>
-      <FontAwesome5 name="coins" size={13} color={sg.muted} style={styles.coin} solid />
+      <Text style={styles.pointsLabel}>PTS</Text>
       <Text style={styles.amount}>{credits.toLocaleString()}</Text>
       <TouchableOpacity style={styles.addBtn} onPress={onAdd} activeOpacity={0.8}>
         <Text style={styles.addText}>+</Text>
@@ -43,9 +39,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     overflow: 'hidden',
   },
-  coin: {
-    marginRight: 2,
-  },
+  pointsLabel: { color: sg.muted, fontSize: 8, fontFamily: sg.font.label, letterSpacing: 0.8 },
   amount: {
     color: sg.gold,
     fontSize: 13,
@@ -54,14 +48,14 @@ const styles = StyleSheet.create({
     marginRight: spacing.xs,
   },
   addBtn: {
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.gold,
     width: 34,
     height: 34,
     alignItems: 'center',
     justifyContent: 'center',
   },
   addText: {
-    color: sg.text,
+    color: sg.onGold,
     fontSize: 16,
     fontFamily: sg.font.bodyBold,
     lineHeight: 20,

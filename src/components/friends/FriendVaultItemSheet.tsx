@@ -174,9 +174,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   badgeListed: {
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: sg.cobaltWashSoft,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.55)',
+    borderColor: sg.cobaltBorderStrong,
   },
   badgeRequest: {
     backgroundColor: sg.surface2,

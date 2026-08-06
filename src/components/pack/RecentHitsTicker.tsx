@@ -35,7 +35,7 @@ function rarityColors(r: HitRarity) {
   switch (r) {
     case 'Gold':
       return {
-        pill: { backgroundColor: 'rgba(212,175,55,0.15)', borderColor: 'rgba(212,175,55,0.35)' } as ViewStyle,
+        pill: { backgroundColor: sg.cobaltWash, borderColor: sg.cobaltBorder } as ViewStyle,
         text: sg.gold,
       };
     case 'PSA 10':
@@ -155,7 +155,7 @@ export function RecentHitsTicker() {
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>{initials(h.username)}</Text>
             </View>
-            <Text style={styles.fire}>🔥</Text>
+            <View style={styles.fire} />
             <Text style={styles.text} numberOfLines={1}>
               <Text style={styles.user}>{h.username}</Text>
               <Text style={styles.text}> {t('recentHits.pulled')} </Text>
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     backgroundColor: 'rgba(0,0,0,0.42)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(212,175,55,0.25)',
+    borderColor: sg.cobaltBorder,
     overflow: 'hidden',
   },
   labelRow: {
@@ -240,9 +240,9 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.cobaltBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -252,7 +252,9 @@ const styles = StyleSheet.create({
     color: sg.text,
   },
   fire: {
-    fontSize: 12,
+    width: 3,
+    height: 14,
+    backgroundColor: sg.neon,
   },
   text: {
     fontSize: fontSize.xs,
@@ -287,4 +289,3 @@ const styles = StyleSheet.create({
     color: sg.gold,
   },
 });
-

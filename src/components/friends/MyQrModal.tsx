@@ -7,6 +7,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface Props {
   visible: boolean;
@@ -83,7 +84,7 @@ export function MyQrModal({
               accessibilityRole="button"
               accessibilityLabel={t('myQr.scanAnother')}
             >
-              <Text style={styles.scanOtherEmoji}>📷</Text>
+              <Ionicons name="scan-outline" size={24} color={sg.goldHi} />
               <View style={styles.scanOtherTextCol}>
                 <Text style={styles.scanOtherTitle}>{t('myQr.scanAnother')}</Text>
                 <Text style={styles.scanOtherSub}>{t('myQr.scanAnotherSub')}</Text>
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface,
     borderRadius: radius.lg,
     borderWidth: 2,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.cobaltBorder,
     marginBottom: spacing.lg,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
@@ -251,10 +252,10 @@ const styles = StyleSheet.create({
   doneBtn: {
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: sg.error,
+    backgroundColor: sg.gold,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: sg.error,
+    shadowColor: sg.gold,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.25,
     shadowRadius: 10,

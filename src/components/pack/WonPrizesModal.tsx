@@ -21,6 +21,7 @@ import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import type { PullRarityTier } from '../../data/mockUser';
 import { WinningsSummaryCard } from './WinningsSummaryCard';
 import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TIER_BADGE: Record<PullRarityTier, string> = {
   base: 'Base',
@@ -30,7 +31,7 @@ const TIER_BADGE: Record<PullRarityTier, string> = {
 };
 
 /**
- * Post-opening fulfillment: convert to credits by default; optionally check rows to store in Vault.
+ * Post-opening fulfillment: Trade in for Points by default; optionally check rows to store in Vault.
  * Shipping is initiated later from the Vault.
  */
 export function WonPrizesModal() {
@@ -42,7 +43,7 @@ export function WonPrizesModal() {
   const user = useAppStore((s) => s.user);
   const finalizePendingFulfillment = useAppStore((s) => s.finalizePendingFulfillment);
 
-  /** When true, this pull is stored in the Vault; when false, it converts to credits (default). */
+  /** When true, this pull is stored in the Vault; when false, it trades in for Points (default). */
   const [vaultSelected, setVaultSelected] = useState<Record<string, boolean>>({});
   const [showConvertConfirm, setShowConvertConfirm] = useState(false);
 
@@ -194,9 +195,9 @@ export function WonPrizesModal() {
                 </TouchableOpacity>
 
                 <View style={styles.thumb}>
-                  <Text style={styles.thumbEmoji}>🎴</Text>
+                  <Ionicons name="albums-outline" size={25} color={sg.text} />
                   <View style={styles.thumbZoom}>
-                    <Text style={styles.thumbZoomIcon}>🔍</Text>
+                    <Ionicons name="search" size={11} color={sg.text} />
                   </View>
                 </View>
 
@@ -220,7 +221,7 @@ export function WonPrizesModal() {
                 </View>
 
                 <View style={styles.itemCoins}>
-                  <Text style={styles.coinIcon}>🪙</Text>
+                  <Text style={styles.coinIcon}>PTS</Text>
                   <Text style={styles.itemCoinValue}>{itemValue.toLocaleString()}</Text>
                 </View>
               </Pressable>
@@ -258,7 +259,7 @@ export function WonPrizesModal() {
             <View style={styles.confirmRow}>
               <Text style={styles.confirmLabel}>{t('wonPrizesModal.confirmCoinsLabel')}</Text>
               <View style={styles.confirmValue}>
-                <Text style={styles.coinIcon}>🪙</Text>
+                <Text style={styles.coinIcon}>PTS</Text>
                 <Text style={styles.confirmAmount}>{creditsToReceiveAmount.toLocaleString()}</Text>
               </View>
             </View>
@@ -332,7 +333,7 @@ const styles = StyleSheet.create({
   },
   itemCardVaultPick: {
     borderColor: sg.gold,
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: sg.cobaltWashSoft,
   },
   checkbox: {
     width: 24,
@@ -409,7 +410,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   intentVault: {
-    backgroundColor: 'rgba(212,175,55,0.15)',
+    backgroundColor: sg.cobaltWash,
     borderColor: sg.gold,
   },
   intentConvert: {

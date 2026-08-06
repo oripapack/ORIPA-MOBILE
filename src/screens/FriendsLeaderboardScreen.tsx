@@ -96,7 +96,7 @@ export function FriendsLeaderboardScreen() {
             style={[styles.row, e.isCurrentUser && styles.rowMe]}
           >
             <Text style={styles.rank}>{e.rank}</Text>
-            <Text style={styles.emoji}>{e.avatarEmoji}</Text>
+            <Text style={styles.emoji}>{e.displayName.trim().slice(0, 2).toUpperCase()}</Text>
             <View style={styles.rowMeta}>
               <Text style={styles.rowName} numberOfLines={1}>
                 {e.displayName}
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
   },
-  rowMe: { borderColor: sg.line, backgroundColor: 'rgba(255,74,56,0.10)' },
+  rowMe: { borderColor: sg.line, backgroundColor: sg.vermilionWash },
   rank: {
     fontSize: fontSize.md,
     fontFamily: sg.font.display,

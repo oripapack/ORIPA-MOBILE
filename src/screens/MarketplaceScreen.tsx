@@ -221,9 +221,7 @@ export function MarketplaceScreen() {
           accessibilityRole="tab"
           accessibilityState={{ selected: marketTab === 'packs' }}
         >
-          <Text style={[styles.tabBtnText, marketTab === 'packs' && styles.tabBtnTextActive]}>
-            🎴 Packs
-          </Text>
+          <Text style={[styles.tabBtnText, marketTab === 'packs' && styles.tabBtnTextActive]}>PACKS</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tabBtn, marketTab === 'cards' && styles.tabBtnActive]}
@@ -232,9 +230,7 @@ export function MarketplaceScreen() {
           accessibilityRole="tab"
           accessibilityState={{ selected: marketTab === 'cards' }}
         >
-          <Text style={[styles.tabBtnText, marketTab === 'cards' && styles.tabBtnTextActive]}>
-            💎 Cards
-          </Text>
+          <Text style={[styles.tabBtnText, marketTab === 'cards' && styles.tabBtnTextActive]}>CARDS</Text>
         </TouchableOpacity>
       </View>
 
@@ -301,7 +297,7 @@ export function MarketplaceScreen() {
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
               <View style={styles.cardEmptyWrap}>
-                <Text style={styles.cardEmptyEmoji}>🃏</Text>
+                <Ionicons name="albums-outline" size={30} color={sg.muted} />
                 <Text style={styles.cardEmptyTitle}>No cards found</Text>
                 <Text style={styles.cardEmptyBody}>
                   List your vault cards for sale to get them here.
@@ -648,7 +644,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     elevation: 2,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.30)',
+    borderColor: sg.cobaltBorder,
   },
   tabBtnText: {
     fontSize: fontSize.sm,
@@ -692,8 +688,8 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   sortPillActive: {
-    backgroundColor: 'rgba(212,175,55,0.12)',
-    borderColor: 'rgba(212,175,55,0.38)',
+    backgroundColor: sg.cobaltWash,
+    borderColor: sg.cobaltBorder,
   },
   sortPillText: {
     fontSize: 12,
@@ -945,8 +941,8 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   sortChipActive: {
-    borderColor: 'rgba(212,175,55,0.38)',
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    borderColor: sg.goldHi,
+    backgroundColor: sg.cobaltWash,
   },
   sortChipText: {
     fontSize: 11,
@@ -966,7 +962,7 @@ const styles = StyleSheet.create({
   },
   regionChipActive: {
     borderColor: sg.gold,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
   },
   regionChipText: {
     fontSize: 11,
@@ -992,7 +988,7 @@ const styles = StyleSheet.create({
     color: sg.text,
   },
   saleTag: {
-    backgroundColor: sg.error,
+    backgroundColor: sg.warning,
     paddingHorizontal: spacing.sm,
     paddingVertical: 3,
     borderRadius: radius.sm,
@@ -1000,7 +996,7 @@ const styles = StyleSheet.create({
   saleTagText: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: sg.text,
+    color: sg.ticketInk,
     letterSpacing: 0.5,
   },
   hRow: {
@@ -1103,8 +1099,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    borderColor: sg.cobaltBorder,
+    backgroundColor: sg.cobaltWash,
   },
   emptyCtaText: {
     fontSize: fontSize.sm,
@@ -1162,8 +1158,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: 'rgba(111,191,143,0.35)',
-    backgroundColor: 'rgba(111,191,143,0.12)',
+    borderColor: sg.success,
+    backgroundColor: sg.mintWash,
   },
   demoNoteText: {
     fontSize: 10,

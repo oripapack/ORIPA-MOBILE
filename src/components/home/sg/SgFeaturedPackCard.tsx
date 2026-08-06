@@ -2,62 +2,49 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Pack } from '../../../data/mockPacks';
-import { PackVisual } from '../../ph/PackVisual';
 import { SgButton, SgData } from '../../ui';
+import { TerminalPackBay, TerminalStatusRail } from '../../terminal';
 import { sg } from '../../../tokens/sg';
 import { usePackOdds } from '../../../hooks/usePackOdds';
 import { getLocalizedPackFields } from '../../../i18n/packCopy';
 import { navigationRef } from '../../../navigation/navigationRef';
 
-/**
- * Shelf-first featured pack card — the ONE hero element on Home, so it is
- * the screen's single `shadowHero` carrier (§3). The pack itself is the
- * existing PackVisual asset. Scarcity rules: real numbers always visible;
- * stock counts use `success` semantics when low (§4). No red, no blinking,
- * no fake timers.
- */
-export function SgFeaturedPackCard({
-  pack,
-  onOpen,
-}: {
-  pack: Pack;
-  onOpen: () => void;
-}) {
+export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () => void }) {
   const { t } = useTranslation();
   const loc = getLocalizedPackFields(pack, t);
   const { odds } = usePackOdds(pack);
   const topOddsRow = odds.rows[0];
   const fraction = pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1);
   const lowStock = fraction < 0.1;
-  const priceUsd = (pack.creditPrice / 100).toFixed(0);
-
-  // The featured card always shows the localized trade-in pitch (2026-07-29
-  // copy rule: 100% never appears without its "listed value" basis). The full
-  // per-pack guarantee text lives on the pack page.
-  const guaranteeLine = pack.packVersionId
-    ? t('home.guaranteeTradeInLive')
-    : t('home.guaranteeTradeIn');
 
   const goVerify = () => {
-    // Fairness record lives on the pack page — VERIFY deep-links there.
     if (navigationRef.isReady()) navigationRef.navigate('PackDetails', { packId: pack.id });
   };
 
   return (
     <View style={styles.card}>
-      <View style={styles.visualZone}>
-        <PackVisual
-          name={pack.title}
-          category={pack.tcgCategory ?? 'TCG'}
-          rarityTier={pack.rarityTier ?? 'epic'}
-          size="md"
-        />
+      <View style={styles.ticketHead}>
+        <View>
+          <Text style={styles.eyebrow}>DROP / TOKYO SERIES 01</Text>
+          <Text style={styles.title}>{loc.title}</Text>
+        </View>
+        <Text style={styles.bay}>BAY A</Text>
       </View>
 
-      <Text style={styles.title}>{loc.title}</Text>
+      <View style={styles.machineRow}>
+        <View style={styles.bayWrap}>
+          <TerminalPackBay
+            name={pack.title}
+            category={pack.tcgCategory ?? 'TCG'}
+            rarityTier={pack.rarityTier ?? 'epic'}
+            size="md"
+          />
+        </View>
+        <TerminalStatusRail compact />
+      </View>
 
-      <View style={styles.metaRow}>
-        <SgData value={`$${priceUsd}`} size="lg" tone="gold" />
+      <View style={styles.readout}>
+        <SgData value={pack.creditPrice.toLocaleString()} unit="Points" size="lg" tone="gold" />
         <SgData
           value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
           unit="left"
@@ -70,21 +57,18 @@ export function SgFeaturedPackCard({
       </View>
 
       {topOddsRow ? (
-        <Text style={styles.oddsLine}>
-          {topOddsRow.tier.toUpperCase()} odds <Text style={styles.oddsValue}>{topOddsRow.chance}</Text> — full table on pack page
-        </Text>
+        <View style={styles.oddsLine}>
+          <Text style={styles.oddsLabel}>{topOddsRow.tier.toUpperCase()} TIER ODDS</Text>
+          <Text style={styles.oddsValue}>{topOddsRow.chance}</Text>
+        </View>
       ) : null}
 
       <SgButton label={t('packDetails.multiOpen.ctaOpenPack')} onPress={onOpen} style={styles.cta} />
 
-      <View style={styles.trustRow}>
-        <Text style={styles.guarantee} numberOfLines={1}>
-          {guaranteeLine}
-        </Text>
-        <TouchableOpacity onPress={goVerify} hitSlop={8} accessibilityRole="button">
-          <Text style={styles.verify}>VERIFY →</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={goVerify} style={styles.verifyRow} accessibilityRole="button">
+        <Text style={styles.verifyLabel}>VIEW ODDS + VERIFICATION RECORD</Text>
+        <Text style={styles.verifyArrow}>›</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -96,67 +80,27 @@ const styles = StyleSheet.create({
     borderRadius: sg.radius.panel,
     backgroundColor: sg.surface,
     borderWidth: 1,
-    borderColor: sg.line,
-    paddingHorizontal: sg.space.md,
-    paddingBottom: sg.space.md,
-    alignItems: 'center',
-    // The single hero shadow on this screen (§3)
+    borderColor: sg.lineStrong,
+    padding: 10,
     ...sg.shadowHero,
   },
-  visualZone: { alignItems: 'center', justifyContent: 'center', marginTop: sg.space.sm },
-  title: {
-    fontFamily: sg.font.display,
-    fontSize: 22,
-    lineHeight: 27,
-    color: sg.text,
-    textAlign: 'center',
-    marginTop: sg.space.sm,
+  ticketHead: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
+    paddingHorizontal: 4, paddingBottom: 10,
   },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: sg.space.md,
-    marginTop: sg.space.sm,
-  },
-  slotsBar: {
-    alignSelf: 'stretch',
-    height: 2,
-    borderRadius: 1,
-    backgroundColor: sg.line,
-    marginTop: sg.space.sm,
-  },
-  slotsFill: { height: 2, borderRadius: 1, backgroundColor: sg.muted },
-  oddsLine: {
-    fontFamily: sg.font.body,
-    fontSize: 11,
-    color: sg.muted,
-    marginTop: sg.space.sm,
-  },
-  oddsValue: {
-    fontFamily: sg.font.dataBold,
-    fontSize: 12,
-    color: sg.text,
-    fontVariant: [...sg.numeric],
-  },
-  cta: { alignSelf: 'stretch', marginTop: sg.space.sm + 2 },
-  trustRow: {
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: sg.space.sm + 2,
-    gap: sg.space.md,
-  },
-  guarantee: {
-    flex: 1,
-    fontFamily: sg.font.body,
-    fontSize: 11,
-    color: sg.muted,
-  },
-  verify: {
-    fontFamily: sg.font.bodyBold,
-    fontSize: 11,
-    letterSpacing: 0.8,
-    color: sg.text,
-  },
+  eyebrow: { fontFamily: sg.font.label, fontSize: 8, letterSpacing: 1, color: sg.goldHi },
+  title: { fontFamily: sg.font.display, fontSize: 20, lineHeight: 22, letterSpacing: -0.6, color: sg.text, marginTop: 3 },
+  bay: { fontFamily: sg.font.dataBold, fontSize: 9, color: sg.muted, borderWidth: 1, borderColor: sg.line, padding: 5 },
+  machineRow: { flexDirection: 'row', gap: 7, alignItems: 'stretch' },
+  bayWrap: { flex: 1 },
+  readout: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 12, paddingHorizontal: 4 },
+  slotsBar: { height: 3, backgroundColor: sg.line, marginHorizontal: 4, marginTop: 8 },
+  slotsFill: { height: 3, backgroundColor: sg.success },
+  oddsLine: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, paddingHorizontal: 4 },
+  oddsLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.75 },
+  oddsValue: { fontFamily: sg.font.dataBold, fontSize: 10, color: sg.text, fontVariant: [...sg.numeric] },
+  cta: { alignSelf: 'stretch', marginTop: 12 },
+  verifyRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 4, paddingTop: 12, paddingBottom: 2 },
+  verifyLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.75 },
+  verifyArrow: { fontFamily: sg.font.bodyBold, fontSize: 17, color: sg.goldHi },
 });

@@ -633,8 +633,8 @@ const styles = StyleSheet.create({
   },
   modeChipOnSheet: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(212, 175, 55, 0.45)',
-    backgroundColor: 'rgba(212, 175, 55, 0.18)',
+    borderColor: sg.cobaltBorder,
+    backgroundColor: sg.cobaltWashStrong,
   },
   modeChipTextSheet: {
     fontSize: fontSize.md,
@@ -785,8 +785,8 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
   },
   modeChipOn: {
-    borderColor: 'rgba(212,175,55,0.38)',
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    borderColor: sg.cobaltBorder,
+    backgroundColor: sg.cobaltWash,
   },
   modeChipText: {
     fontSize: fontSize.sm,
@@ -860,7 +860,7 @@ const styles = StyleSheet.create({
   /** Full-screen auth on jewel background — no “light card on dark” clash */
   promoBannerOnArt: {
     backgroundColor: sg.surface,
-    borderColor: 'rgba(212,175,55,0.30)',
+    borderColor: sg.cobaltBorder,
     borderWidth: StyleSheet.hairlineWidth,
   },
   promoBannerTitleOnArt: {

@@ -30,10 +30,10 @@ type Props = {
 };
 
 const TIER_DOT: Record<PullRarityTier, string> = {
-  base: '#94A3B8',
-  epic: '#A855F7',
-  legendary: '#FBBF24',
-  mythic: '#FB7185',
+  base: sg.chrome,
+  epic: sg.goldHi,
+  legendary: sg.warning,
+  mythic: sg.neon,
 };
 
 export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry }: Props) {
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   tileOuter: { marginBottom: spacing.sm },
   tileCard: { minHeight: 168 },
   tileCardListed: {
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.cobaltBorder,
     borderWidth: 1.5,
   },
   tileInner: { padding: spacing.md, minHeight: 168 },
@@ -232,9 +232,9 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: sg.cobaltWashSoft,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.55)',
+    borderColor: sg.cobaltBorderStrong,
   },
   buyBadgeText: {
     fontSize: 9,
