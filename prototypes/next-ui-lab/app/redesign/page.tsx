@@ -1,4 +1,5 @@
 /**
+ * 実データ待ち。外部に見せないこと。
  * Pull Hub UI Redesign — N2 "Neon Torii" token sheet + Home static mock.
  * 既定テーマ = N2(docs/design-system-n2.md v3.0 CORE)。
  * スキン・派生テーマは [data-theme] 差分のみで重ねる(第4部 S-4)。
@@ -43,7 +44,7 @@ const NOISE_URI =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
 const css = `
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Schibsted+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
 
 :root {
   /* ── N2 基層(C-3 verbatim) ── */
@@ -76,6 +77,7 @@ const css = `
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
+.theme-only { display: none; }
 
 .rd-wrap { max-width: 1200px; margin: 0 auto; padding: 48px 24px 96px; }
 @media (max-width: 500px) {
@@ -127,13 +129,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
 /* Top bar */
 .tb { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 0; position: relative; }
 .tb-logo { font-family: var(--f-display); font-weight: 500; font-size: 18px; letter-spacing: 0.02em; }
-.tb-coins {
+.tb-points {
   display: flex; align-items: center; gap: 8px;
   background: var(--surface); border: 1px solid var(--line);
   border-radius: 999px; padding: 6px 14px 6px 8px; /* pill = ステータスチップのみ可 */
 }
-.tb-coin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); }
-.tb-coins span { font-family: var(--f-data); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tb-point-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); }
+.tb-points span { font-family: var(--f-data); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* Hero */
 .hero { position: relative; padding: 40px 24px 32px; overflow: hidden; }
@@ -171,7 +173,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
 .hero-title { text-align: center; font-family: var(--f-display); font-weight: 500; font-size: 32px; line-height: 1.15; margin-top: 32px; }
 .hero-set { text-align: center; font-size: 12px; color: var(--muted); margin-top: 6px; }
 .hero-meta { display: flex; justify-content: center; align-items: baseline; gap: 14px; margin-top: 12px; }
-.hero-meta .coins { font-family: var(--f-data); font-size: 15px; font-weight: 600; color: var(--gold); font-variant-numeric: tabular-nums; }
+.hero-meta .points { font-family: var(--f-data); font-size: 15px; font-weight: 600; color: var(--gold); font-variant-numeric: tabular-nums; }
 .hero-meta .slots { font-family: var(--f-data); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 /* 残口数: 極細ヘアライン + 中立色(赤・点滅禁止) */
 .slots-bar { width: 200px; height: 2px; background: var(--line); border-radius: 1px; margin: 10px auto 0; }
@@ -294,6 +296,202 @@ body { background: var(--bg); color: var(--text); font-family: var(--f-body); }
 /* ティア見本 — MYTHIC は neon + グロー(C-6) */
 .brass-rule { width: 220px; height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); margin-top: 8px; }
 .rarity-line { font-family: var(--f-data); font-size: 12px; font-weight: 600; color: var(--neon); letter-spacing: 0.14em; text-shadow: 0 0 16px var(--neon-glow); }
+
+/* ═══════════════ TOKYO ARCADE VAULT SKIN ═══════════════
+   Tokyo Arcade Vault = Phygitals-grade density + Japan-origin game grammar.
+   S-4: the route is unchanged; this block is enabled only by ?theme=tokyo-arcade-vault.
+   Trust chassis stays invariant: gold value/CTA, mono data, odds ledger, dark ground. */
+html[data-theme='tokyo-arcade-vault'] {
+  --tokyo-cyan: #32D9EA;
+  --tokyo-cyan-dim: rgba(50,217,234,0.16);
+  --tokyo-pink: #FF3E7F;
+  --tokyo-pink-glow: rgba(255,62,127,0.28);
+  --tokyo-indigo: #111828;
+  --tokyo-line: #263147;
+  --neon: var(--tokyo-pink);
+  --neon-glow: var(--tokyo-pink-glow);
+  --f-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --radius-panel: 10px;
+  --radius-btn: 8px;
+  --radius-tag: 4px;
+}
+html[data-theme='tokyo-arcade-vault'] body {
+  background: #05070B;
+  background-image: linear-gradient(rgba(50,217,234,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(50,217,234,0.025) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+html[data-theme='tokyo-arcade-vault'] .theme-only { display: flex; }
+html[data-theme='tokyo-arcade-vault'] .theme-hide { display: none; }
+html[data-theme='tokyo-arcade-vault'] .rd-label .theme-only,
+html[data-theme='tokyo-arcade-vault'] .rd-h1 .theme-only,
+html[data-theme='tokyo-arcade-vault'] .rd-sub .theme-only { display: block; }
+html[data-theme='tokyo-arcade-vault'] .rd-wrap { max-width: 1240px; }
+html[data-theme='tokyo-arcade-vault'] .rd-h1 {
+  font-family: var(--f-display); font-size: 38px; line-height: 0.95; letter-spacing: 0.035em; text-transform: uppercase;
+}
+html[data-theme='tokyo-arcade-vault'] .rd-label { color: var(--tokyo-cyan); }
+html[data-theme='tokyo-arcade-vault'] .phone {
+  border: 1px solid var(--tokyo-line); border-radius: 18px;
+  background: #080B12;
+  box-shadow: 0 0 0 4px #05070B, 0 26px 80px rgba(0,0,0,0.72);
+}
+html[data-theme='tokyo-arcade-vault'] .noise::after { opacity: 0.025; }
+html[data-theme='tokyo-arcade-vault'] .tb {
+  min-height: 78px; padding: 20px 20px 14px;
+  border-bottom: 1px solid var(--tokyo-line);
+  background: #080B12;
+}
+html[data-theme='tokyo-arcade-vault'] .tb::after {
+  content: ''; position: absolute; left: 20px; right: 20px; bottom: -1px; height: 1px;
+  background: linear-gradient(90deg, var(--tokyo-pink) 0 42px, transparent 42px 55px, var(--tokyo-cyan) 55px 108px, transparent 108px);
+}
+html[data-theme='tokyo-arcade-vault'] .tb-logo {
+  display: flex; align-items: center; gap: 10px; font-family: var(--f-display);
+  font-size: 24px; font-weight: 700; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase;
+}
+html[data-theme='tokyo-arcade-vault'] .tb-mark {
+  width: 22px; height: 22px; position: relative; flex: 0 0 22px;
+  background: linear-gradient(90deg, var(--text) 0 45%, transparent 45% 55%, var(--tokyo-pink) 55%);
+  clip-path: polygon(0 0, 72% 0, 72% 18%, 100% 18%, 100% 72%, 80% 72%, 80% 100%, 25% 100%, 25% 78%, 0 78%);
+}
+html[data-theme='tokyo-arcade-vault'] .tb-points {
+  border-radius: 4px; border-color: var(--tokyo-line); background: var(--tokyo-indigo);
+  padding: 9px 11px; gap: 8px;
+}
+html[data-theme='tokyo-arcade-vault'] .tb-points::before {
+  content: 'POINTS'; font-family: var(--f-data); font-size: 9px; color: var(--muted); letter-spacing: 0.12em;
+}
+html[data-theme='tokyo-arcade-vault'] .tb-point-dot {
+  width: 7px; height: 7px; border-radius: 2px; background: var(--tokyo-cyan); box-shadow: 0 0 10px rgba(50,217,234,0.8);
+}
+html[data-theme='tokyo-arcade-vault'] .tokyo-status {
+  align-items: center; justify-content: space-between; padding: 10px 20px 0;
+  color: var(--muted); font-family: var(--f-data); font-size: 9px; letter-spacing: 0.12em;
+}
+html[data-theme='tokyo-arcade-vault'] .tokyo-status b { color: var(--tokyo-cyan); font-weight: 500; }
+html[data-theme='tokyo-arcade-vault'] .status-ready { display: flex; align-items: center; gap: 7px; }
+html[data-theme='tokyo-arcade-vault'] .status-ready i {
+  width: 5px; height: 5px; background: var(--tokyo-cyan); box-shadow: 0 0 8px rgba(50,217,234,0.72);
+}
+html[data-theme='tokyo-arcade-vault'] .journey {
+  margin: 14px 20px 0; border: 1px solid var(--tokyo-line); background: #0B101B;
+  display: grid; grid-template-columns: repeat(4,1fr);
+}
+html[data-theme='tokyo-arcade-vault'] .journey span {
+  padding: 8px 3px 7px; text-align: center; font-family: var(--f-data); font-size: 8px; color: #636E81; letter-spacing: 0.09em;
+}
+html[data-theme='tokyo-arcade-vault'] .journey span + span { border-left: 1px solid var(--tokyo-line); }
+html[data-theme='tokyo-arcade-vault'] .journey .active { color: var(--tokyo-cyan); background: var(--tokyo-cyan-dim); }
+html[data-theme='tokyo-arcade-vault'] .hero { padding: 22px 20px 26px; }
+html[data-theme='tokyo-arcade-vault'] .hero-eyebrow {
+  color: var(--tokyo-pink); font-family: var(--f-data); font-size: 9px; letter-spacing: 0.18em;
+  text-shadow: 0 0 12px var(--tokyo-pink-glow);
+}
+html[data-theme='tokyo-arcade-vault'] .hero-pack-zone {
+  min-height: 244px; margin-top: 15px; align-items: center;
+  border: 1px solid var(--tokyo-line); border-radius: 8px;
+  background: linear-gradient(180deg, #0B1321 0%, #080B12 75%);
+  box-shadow: inset 0 0 0 4px #070A11, inset 0 0 34px rgba(50,217,234,0.065);
+}
+html[data-theme='tokyo-arcade-vault'] .hero-pack-zone::before,
+html[data-theme='tokyo-arcade-vault'] .hero-pack-zone::after {
+  content: ''; position: absolute; top: 22px; bottom: 22px; width: 3px; background: var(--tokyo-cyan);
+  box-shadow: 0 0 9px rgba(50,217,234,0.75);
+}
+html[data-theme='tokyo-arcade-vault'] .hero-pack-zone::before { left: 14px; }
+html[data-theme='tokyo-arcade-vault'] .hero-pack-zone::after { right: 14px; }
+html[data-theme='tokyo-arcade-vault'] .chamber-code {
+  position: absolute; top: 9px; left: 28px; right: 28px; justify-content: space-between;
+  font-family: var(--f-data); font-size: 7px; color: #667287; letter-spacing: 0.13em;
+}
+html[data-theme='tokyo-arcade-vault'] .hero-pack-zone > .pack {
+  width: 142px; height: 198px; border-radius: 4px;
+  background-color: #080A10;
+  background-image: linear-gradient(rgba(50,217,234,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(50,217,234,0.055) 1px, transparent 1px);
+  background-size: 18px 18px;
+  box-shadow: inset 0 0 0 1px #303A4C, 0 18px 28px rgba(0,0,0,0.72);
+  z-index: 2;
+}
+html[data-theme='tokyo-arcade-vault'] .hero-pack-zone > .pack::before {
+  left: 0; right: 0; top: 0; height: 8px; background: repeating-linear-gradient(90deg, #2B3444 0 2px, #070A10 2px 5px);
+}
+html[data-theme='tokyo-arcade-vault'] .hero-pack-zone > .pack::after {
+  background: linear-gradient(115deg, transparent 36%, rgba(240,238,232,0.055) 46%, transparent 55%);
+}
+html[data-theme='tokyo-arcade-vault'] .tear-line {
+  position: absolute; left: 0; right: 0; top: 50px; height: 2px; z-index: 5;
+  background: var(--tokyo-pink); box-shadow: 0 0 10px var(--tokyo-pink-glow);
+}
+html[data-theme='tokyo-arcade-vault'] .pack-id {
+  position: absolute; right: 10px; top: 28px; flex-direction: column; align-items: flex-end;
+  font-family: var(--f-data); color: var(--tokyo-pink); font-size: 8px; line-height: 1.1; z-index: 4;
+}
+html[data-theme='tokyo-arcade-vault'] .pack-id b { font-size: 18px; }
+html[data-theme='tokyo-arcade-vault'] .pack-emblem {
+  width: 54px; height: 54px; border-radius: 2px; border-color: #39465D; transform: translate(-50%, -42%) rotate(45deg);
+}
+html[data-theme='tokyo-arcade-vault'] .pack-emblem span {
+  font-family: var(--f-display); color: var(--text); font-size: 15px; font-weight: 700; transform: rotate(-45deg); letter-spacing: 0.08em;
+}
+html[data-theme='tokyo-arcade-vault'] .pack-name-strip {
+  bottom: 17px; font-family: var(--f-data); color: var(--text); font-size: 8px; letter-spacing: 0.15em;
+}
+html[data-theme='tokyo-arcade-vault'] .pack-name-strip .theme-only,
+html[data-theme='tokyo-arcade-vault'] .hero-title .theme-only,
+html[data-theme='tokyo-arcade-vault'] .hero-set .theme-only { display: block; text-align: center; }
+html[data-theme='tokyo-arcade-vault'] .pack-shadow {
+  width: 174px; bottom: 13px; z-index: 1; background: radial-gradient(closest-side, rgba(50,217,234,0.28), transparent);
+}
+html[data-theme='tokyo-arcade-vault'] .hero-title {
+  margin-top: 20px; font-size: 36px; line-height: 0.94; letter-spacing: 0.035em; text-transform: uppercase;
+}
+html[data-theme='tokyo-arcade-vault'] .hero-set { margin-top: 8px; font-family: var(--f-data); font-size: 9px; letter-spacing: 0.09em; }
+html[data-theme='tokyo-arcade-vault'] .hero-meta { margin-top: 14px; justify-content: space-between; }
+html[data-theme='tokyo-arcade-vault'] .hero-meta .points { font-size: 14px; }
+html[data-theme='tokyo-arcade-vault'] .hero-meta .slots { font-size: 10px; }
+html[data-theme='tokyo-arcade-vault'] .slots-bar { width: 100%; margin-top: 8px; }
+html[data-theme='tokyo-arcade-vault'] .slots-bar i { background: var(--tokyo-cyan); }
+html[data-theme='tokyo-arcade-vault'] .tokyo-odds {
+  margin-top: 12px; border: 1px solid var(--tokyo-line); background: #0B101B; flex-direction: column;
+}
+html[data-theme='tokyo-arcade-vault'] .odds-head {
+  display: flex; justify-content: space-between; gap: 16px; padding: 8px 9px 7px; border-bottom: 1px solid var(--tokyo-line);
+  font-family: var(--f-data); font-size: 8px; color: var(--muted); letter-spacing: 0.11em;
+}
+html[data-theme='tokyo-arcade-vault'] .odds-head a { color: var(--tokyo-cyan); text-decoration: none; margin-left: auto; white-space: nowrap; }
+html[data-theme='tokyo-arcade-vault'] .odds-grid { display: grid; grid-template-columns: repeat(4,1fr); }
+html[data-theme='tokyo-arcade-vault'] .odds-grid div { padding: 8px 4px; text-align: center; }
+html[data-theme='tokyo-arcade-vault'] .odds-grid div + div { border-left: 1px solid var(--tokyo-line); }
+html[data-theme='tokyo-arcade-vault'] .odds-grid span { display: block; font-size: 7px; color: var(--muted); letter-spacing: 0.06em; }
+html[data-theme='tokyo-arcade-vault'] .odds-grid b { display: block; margin-top: 4px; font-family: var(--f-data); font-size: 10px; }
+html[data-theme='tokyo-arcade-vault'] .odds-grid .mythic { color: var(--tokyo-pink); text-shadow: 0 0 8px var(--tokyo-pink-glow); }
+html[data-theme='tokyo-arcade-vault'] .cta {
+  margin-top: 14px; min-height: 54px; border: 1px solid var(--gold-hover); border-radius: 4px;
+  font-family: var(--f-display); font-size: 23px; letter-spacing: 0.08em; text-transform: uppercase;
+  box-shadow: 0 0 0 4px rgba(212,175,55,0.06);
+}
+html[data-theme='tokyo-arcade-vault'] .demo-link { font-family: var(--f-data); font-size: 9px; letter-spacing: 0.06em; }
+html[data-theme='tokyo-arcade-vault'] .trust { margin: 8px 20px 0; border-color: var(--tokyo-line); background: #090D16; }
+html[data-theme='tokyo-arcade-vault'] .trust div + div { border-color: var(--tokyo-line); }
+html[data-theme='tokyo-arcade-vault'] .trust b { font-family: var(--f-data); font-size: 9px; letter-spacing: 0.05em; }
+html[data-theme='tokyo-arcade-vault'] .trust span { font-size: 8px; }
+html[data-theme='tokyo-arcade-vault'] .sec-head { padding: 28px 20px 0; }
+html[data-theme='tokyo-arcade-vault'] .sec-head h3 { font-family: var(--f-display); font-size: 23px; text-transform: uppercase; letter-spacing: 0.04em; }
+html[data-theme='tokyo-arcade-vault'] .jp-row { padding-left: 20px; padding-right: 20px; }
+html[data-theme='tokyo-arcade-vault'] .jp-card,
+html[data-theme='tokyo-arcade-vault'] .shelf-card,
+html[data-theme='tokyo-arcade-vault'] .fair-record { border-color: var(--tokyo-line); background: #0B101A; }
+html[data-theme='tokyo-arcade-vault'] .slab { border-color: #39465D; background: #0C111C; }
+html[data-theme='tokyo-arcade-vault'] .slab-label { border-left: 2px solid var(--tokyo-pink); }
+html[data-theme='tokyo-arcade-vault'] .shelf { padding-left: 20px; padding-right: 20px; gap: 12px; }
+html[data-theme='tokyo-arcade-vault'] .shelf-card .pack { background-color: #080A10; background-image: linear-gradient(rgba(50,217,234,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(50,217,234,0.04) 1px, transparent 1px); background-size: 14px 14px; }
+html[data-theme='tokyo-arcade-vault'] .shelf-card .pack-emblem { border-radius: 2px; }
+html[data-theme='tokyo-arcade-vault'] .foot { border-color: var(--tokyo-line); }
+html[data-theme='tokyo-arcade-vault'] .foot-fair .shield { border-radius: 4px; color: var(--tokyo-cyan); }
+@media (max-width: 500px) {
+  html[data-theme='tokyo-arcade-vault'] .phone { border-left: 0; border-right: 0; border-radius: 0; box-shadow: none; }
+  html[data-theme='tokyo-arcade-vault'] .rd-wrap { padding-top: 24px; }
+}
 `.replace("${'NOISE_PLACEHOLDER'}", NOISE_URI);
 
 /* 浮世絵様式の波 — 退避中 (SHOW_JAPANESE_MOTIFS で復帰。和方針 J-1 では NG レジスター) */
@@ -334,14 +532,28 @@ const swatches = {
   ],
 };
 
-const pulls = [
+const MOCK_HERO = {
+  pointsBalance: '12,500',
+  packPrice: '2,500 Points',
+  slots: '214 / 500 left',
+  progress: '43%',
+};
+
+const MOCK_TIER_ODDS = [
+  { tier: 'MYTHIC', value: '0.5%' },
+  { tier: 'LEGENDARY', value: '2.0%' },
+  { tier: 'EPIC', value: '5.5%' },
+  { tier: 'BASE', value: '92.0%' },
+];
+
+const MOCK_PULLS = [
   { name: 'Umbreon Gold Star Holo', grade: 'GRADED · GEM 9.5', value: '$4,120', time: '3m ago', art: 'linear-gradient(160deg,#2E2A45,#57518A)' },
   { name: 'Charizard 1st Ed. Base', grade: 'GRADED · MINT 9', value: '$12,800', time: '11m ago', art: 'linear-gradient(160deg,#4A2B22,#8A4A31)' },
   { name: 'Rayquaza ★ Clash Blue Sky', grade: 'GRADED · NM-MT 8', value: '$15,742', time: '26m ago', art: 'linear-gradient(160deg,#1F3A32,#3E6E5A)' },
   { name: 'Pikachu Illustrator Promo', grade: 'GRADED · EX 5', value: '$38,000', time: '1h ago', art: 'linear-gradient(160deg,#4A4022,#8A7A31)' },
 ];
 
-const shelf = [
+const MOCK_SHELF = [
   { name: 'Neo Destiny Chase', price: '5,000', slots: '88 / 300' },
   { name: 'Trainer Vault', price: '1,000', slots: '412 / 800' },
   { name: 'EX Era Relics', price: '3,500', slots: '164 / 400' },
@@ -349,7 +561,7 @@ const shelf = [
 ];
 
 export default function RedesignTokenSheet() {
-  const assets = readSlabAssets(pulls.length);
+  const assets = readSlabAssets(MOCK_PULLS.length);
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
@@ -361,50 +573,67 @@ export default function RedesignTokenSheet() {
         }}
       />
       <div className="rd-wrap">
-        <div className="rd-label">Pull Hub UI Redesign — N2 Neon Torii (v3.0 CORE)</div>
-        <h1 className="rd-h1">Midnight Tokyo</h1>
+        <div className="rd-label"><span className="theme-hide">Pull Hub UI Redesign — N2 Neon Torii (v3.0 CORE)</span><span className="theme-only">Pull Hub Skin Study — Tokyo Arcade Vault</span></div>
+        <h1 className="rd-h1"><span className="theme-hide">Midnight Tokyo</span><span className="theme-only">Tokyo Arcade Vault</span></h1>
         <p className="rd-sub">
-          漆黒の地+1px line の区切り+金=価値(CTA/価格/残高)+ネオン朱=瞬間のみ。
-          既定テーマは N2。スキンは [data-theme] 差分で重ねる(?theme=)。
-          下のモックはホーム 440×956。
+          <span className="theme-hide">漆黒の地+1px line の区切り+金=価値(CTA/価格/残高)+ネオン朱=瞬間のみ。既定テーマは N2。スキンは [data-theme] 差分で重ねる(?theme=)。下のモックはホーム 440×956。</span>
+          <span className="theme-only">Phygitals級の情報密度に、東京のアーケード機・パック開封導線・日本発のキュレーション記号を統合。金=価値、ピンク=開封の瞬間、シアン=機械状態。</span>
         </p>
 
         {/* ═══ 1. Home mock ═══ */}
         <div className="rd-section">
-          <div className="rd-label">01 — Home Mock (N2 CORE, 440×956)</div>
+          <div className="rd-label"><span className="theme-hide">01 — Home Mock (N2 CORE, 440×956)</span><span className="theme-only">01 — Tokyo Arcade Vault Home (440×956)</span></div>
           <div className="phone">
             <div className="noise" />
             <div className="tb">
-              <div className="tb-logo">Pull Hub</div>
-              <div className="tb-coins"><i className="tb-coin-dot" /><span>12,500</span></div>
+              <div className="tb-logo"><i className="tb-mark theme-only" aria-hidden="true" /><span>Pull Hub</span></div>
+              <div className="tb-points"><i className="tb-point-dot" /><span>{MOCK_HERO.pointsBalance}</span></div>
+            </div>
+            <div className="tokyo-status theme-only">
+              <span>TOKYO NODE / <b>01</b></span>
+              <span className="status-ready"><i />SYSTEM READY</span>
+            </div>
+            <div className="journey theme-only" aria-label="Pack opening journey">
+              <span className="active">01 SELECT</span><span>02 OPEN</span><span>03 REVEAL</span><span>04 VAULT</span>
             </div>
 
             <div className="hero">
               {SHOW_JAPANESE_MOTIFS ? <div className="hero-wave"><Wave /></div> : null}
               <div className="hero-eyebrow">JAPANESE EXCLUSIVES — DIRECT FROM TOKYO</div>
               <div className="hero-pack-zone">
+                <div className="chamber-code theme-only"><span>PACK CHAMBER / TOKYO</span><span>PH-01-TKY</span></div>
                 <div className="pack">
+                  <div className="tear-line theme-only" />
+                  <div className="pack-id theme-only"><span>TOKYO</span><b>01</b></div>
                   <div className="pack-emblem"><span>PH</span></div>
-                  <div className="pack-name-strip">KANTO ORIGINS</div>
+                  <div className="pack-name-strip"><span className="theme-hide">KANTO ORIGINS</span><span className="theme-only">TOKYO PACK 01</span></div>
                 </div>
                 <div className="pack-shadow" />
               </div>
-              <h1 className="hero-title">Kanto Origins</h1>
-              <div className="hero-set">Base Set era · 1999 · Japanese</div>
+              <h1 className="hero-title"><span className="theme-hide">Kanto Origins</span><span className="theme-only">Tokyo Pack 01</span></h1>
+              <div className="hero-set"><span className="theme-hide">Base Set era · 1999 · Japanese</span><span className="theme-only">トウキョウ・パック / JAPAN CURATED / NODE 01</span></div>
               <div className="hero-meta">
-                <span className="coins">2,500 Coins</span>
-                <span className="slots">214 / 500 left</span>
+                <span className="points">{MOCK_HERO.packPrice}</span>
+                <span className="slots">{MOCK_HERO.slots}</span>
               </div>
-              <div className="slots-bar"><i /></div>
-              <div className="odds-line">Top hit odds: <b>1.2%</b> — full table on pack page</div>
+              <div className="slots-bar"><i style={{ width: MOCK_HERO.progress }} /></div>
+              <div className="odds-line theme-hide">Tier odds: <b>available</b> — full table on pack page</div>
+              <div className="tokyo-odds theme-only">
+                <div className="odds-head"><span>TIER ODDS / MOCK DATA</span><a href="#">FULL LEDGER</a></div>
+                <div className="odds-grid">
+                  {MOCK_TIER_ODDS.map((item) => (
+                    <div key={item.tier}><span>{item.tier}</span><b className={item.tier === 'MYTHIC' ? 'mythic' : ''}>{item.value}</b></div>
+                  ))}
+                </div>
+              </div>
               <button className="cta">Open Pack</button>
-              <a className="demo-link" href="#">Try a free demo pull — no coins needed</a>
+              <a className="demo-link" href="#">View opening preview</a>
             </div>
 
             <div className="trust">
-              <div><b>Zero-fee</b><span>trade-in, always</span></div>
-              <div><b>100% listed value</b><span>back in Coins</span></div>
-              <div><b>Free shipping</b><span>on orders $100+</span></div>
+              <div><b>VAULT</b><span>Hold your pulls</span></div>
+              <div><b>TRADE IN</b><span>100% of listed value, in Points</span></div>
+              <div><b>FAIRNESS</b><span>View verification</span></div>
             </div>
 
             <div className="sec-head">
@@ -412,7 +641,7 @@ export default function RedesignTokenSheet() {
               <a href="#"><i className="live-dot" />LIVE ›</a>
             </div>
             <div className="jp-row">
-              {pulls.map((p, i) => {
+              {MOCK_PULLS.map((p, i) => {
                 const slot = assets.slots[i];
                 return (
                 <div className="jp-card" key={p.name}>
@@ -443,13 +672,13 @@ export default function RedesignTokenSheet() {
               <a href="#">VIEW ALL ›</a>
             </div>
             <div className="shelf">
-              {shelf.map((s) => (
+              {MOCK_SHELF.map((s) => (
                 <div className="shelf-card" key={s.name}>
                   <div className="pack">
                     <div className="pack-emblem"><span>PH</span></div>
                   </div>
                   <div className="shelf-name">{s.name}</div>
-                  <div className="shelf-price">{s.price} Coins</div>
+                  <div className="shelf-price">{s.price} Points</div>
                   <div className="shelf-slots">{s.slots} left</div>
                 </div>
               ))}
@@ -472,7 +701,7 @@ export default function RedesignTokenSheet() {
               <p className="foot-legal">
                 18+. Pull Hub is not affiliated with, sponsored by, or endorsed by Nintendo,
                 Creatures Inc., GAME FREAK, or The Pokémon Company. Card values shown are listed
-                values in Coins, not cash amounts. Odds are published on every pack page.
+                values in Points, not cash amounts. Odds are published on every pack page.
               </p>
             </div>
           </div>
@@ -509,13 +738,13 @@ export default function RedesignTokenSheet() {
             <div className="spec-role">Body — Schibsted Grotesk(第一候補)。ナビ・セクション見出し・CTA・本文</div>
             <div style={{ fontSize: 15, marginTop: 8, maxWidth: 560 }}>
               <b style={{ fontWeight: 700 }}>Just Pulled</b> — Each pack contains one graded Japanese card.
-              Trade it back instantly for 100% of listed value, in Coins. · 3m ago
+              Trade it in for 100% of listed value, in Points. · 3m ago
             </div>
           </div>
           <div className="spec">
-            <div className="spec-role">Data — Spline Sans Mono + tabular-nums。価格・オッズ・在庫・コイン数・ハッシュのみ</div>
+            <div className="spec-role">Data — Spline Sans Mono + tabular-nums。価格・オッズ・在庫・Points残高・ハッシュのみ</div>
             <div style={{ fontFamily: 'var(--f-data)', fontSize: 18, fontWeight: 600, marginTop: 8, fontVariantNumeric: 'tabular-nums' }}>
-              2,500 Coins · 214/500 · 1.2% · a41f8c…9c2e
+              2,500 Points · 214/500 · 0.5% · a41f8c…9c2e
             </div>
           </div>
         </div>
@@ -534,9 +763,9 @@ export default function RedesignTokenSheet() {
               <h4>Your pull is in the vault</h4>
               <div className="gal-cardrow">
                 <div className="gal-choice">
-                  <small>CONVERT TO COINS</small>
+                  <small>TRADE IN</small>
                   <div className="v jade">14,483</div>
-                  <p>100% of listed value, in Coins. Instant.</p>
+                  <p>100% of listed value, in Points.</p>
                 </div>
                 <div className="gal-choice">
                   <small>SHIP TO ME</small>
