@@ -58,14 +58,6 @@ export function AccountScreen() {
 
   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
   const prog = progressionFromTotalXp(user.xp);
-  const tierColors: Record<string, string> = {
-    Starter: sg.gold,
-    Bronze: sg.gold,
-    Silver: '#60A5FA',
-    Gold: sg.gold,
-  };
-  const tierColor = tierColors[user.tier] ?? sg.muted;
-
   const previewQuests = useMemo(() => pickPreviewQuests(questProgress, PREVIEW_QUESTS), [questProgress]);
   const claimableCount = useMemo(() => countClaimableQuests(questProgress), [questProgress]);
 
@@ -199,7 +191,7 @@ export function AccountScreen() {
         </View>
         <View style={styles.barTrack}>
           <View
-            style={[styles.barFill, { width: `${prog.pctInLevel}%` as `${number}%`, backgroundColor: tierColor }]}
+            style={[styles.barFill, { width: `${prog.pctInLevel}%` as `${number}%` }]}
           />
         </View>
 
@@ -517,6 +509,7 @@ const styles = StyleSheet.create({
   barFill: {
     height: '100%',
     borderRadius: radius.full,
+    backgroundColor: sg.muted,
   },
   streakInline: {
     flexDirection: 'row',

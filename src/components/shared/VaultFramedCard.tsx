@@ -1,19 +1,15 @@
 import React, { type ReactNode } from 'react';
 import { sg } from '../../tokens/sg';
 import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { radius, spacing } from '../../tokens/spacing';
 
 const BR = 10;
 
-const GRADIENTS = {
-  /** Default — dark satin mat with gallery depth */
-  vault: ['rgba(36, 30, 58, 0.97)', 'rgba(22, 18, 42, 0.99)'] as const,
-  /** Featured — warmer plum panel */
-  felt: ['rgba(42, 34, 64, 0.99)', 'rgba(28, 24, 48, 0.98)'] as const,
+const FILLS = {
+  vault: sg.surface,
+  felt: sg.surface2,
 };
 
-export type VaultFill = keyof typeof GRADIENTS;
+export type VaultFill = keyof typeof FILLS;
 
 export type VaultFramedCardProps = {
   children: ReactNode;
@@ -23,14 +19,13 @@ export type VaultFramedCardProps = {
 };
 
 /**
- * Display-case frame: ink rail + corner brackets + soft paper fill.
+ * N2 collection frame: a flat trust surface with restrained inset keylines.
+ * No decorative gradient, permanent neon rail, or per-card shadow.
  */
 export function VaultFramedCard({ children, style, contentStyle, fill = 'vault' }: VaultFramedCardProps) {
-  const grad = GRADIENTS[fill];
   return (
-    <View style={[styles.outer, style]}>
-      <LinearGradient colors={[...grad]} style={StyleSheet.absoluteFillObject} />
-      <View style={styles.rail} />
+    <View style={[styles.outer, { backgroundColor: FILLS[fill] }, style]}>
+      <View style={styles.topKeyline} />
       <View style={styles.bracketTL} />
       <View style={styles.bracketBR} />
       <View style={[styles.inner, contentStyle]}>{children}</View>
@@ -40,25 +35,19 @@ export function VaultFramedCard({ children, style, contentStyle, fill = 'vault' 
 
 const styles = StyleSheet.create({
   outer: {
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: sg.line,
-    shadowColor: 'rgba(0,0,0,0.72)',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 18,
-    elevation: 6,
   },
-  rail: {
+  topKeyline: {
     position: 'absolute',
     left: 0,
-    top: 14,
-    bottom: 14,
-    width: 3,
-    backgroundColor: sg.neon,
-    opacity: 0.45,
-    zIndex: 2,
+    right: 0,
+    top: 0,
+    height: 1,
+    backgroundColor: sg.muted,
+    opacity: 0.2,
   },
   bracketTL: {
     position: 'absolute',
@@ -83,7 +72,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   inner: {
-    padding: spacing.lg,
-    paddingLeft: spacing.lg + 6,
+    padding: sg.space.md,
   },
 });

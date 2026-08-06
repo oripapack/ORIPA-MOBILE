@@ -650,11 +650,6 @@ const styles = StyleSheet.create({
   },
   tabBtnActive: {
     backgroundColor: sg.surface2,
-    shadowColor: sg.gold,
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 0 },
-    elevation: 2,
     borderWidth: 1,
     borderColor: 'rgba(212,175,55,0.30)',
   },
@@ -933,11 +928,6 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     borderWidth: 1.5,
     borderColor: sg.gold,
-    shadowColor: sg.gold,
-    shadowOpacity: 0.22,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 0 },
-    elevation: 3,
   },
   catChipText: {
     fontSize: fontSize.xs,

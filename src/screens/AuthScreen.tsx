@@ -250,7 +250,7 @@ export function AuthScreen({
           { paddingTop: isSheet ? 0 : insets.top },
         ]}
       >
-        <ActivityIndicator size="large" color={isSheet ? sg.error : sg.gold} />
+        <ActivityIndicator size="large" color={sg.gold} />
       </View>
     );
     if (isSheet) {
@@ -638,7 +638,7 @@ const styles = StyleSheet.create({
   },
   modeChipTextOnSheet: {
     color: sg.text,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.bodyBold,
   },
   modeRowSheet: {
     marginTop: spacing.xs,
@@ -650,13 +650,7 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
     borderWidth: StyleSheet.hairlineWidth,
   },
-  primaryBtnSheet: {
-    shadowColor: sg.gold,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.22,
-    shadowRadius: 10,
-    elevation: 6,
-  },
+  primaryBtnSheet: {},
   hintSheet: {
     color: sg.muted,
   },
@@ -862,7 +856,7 @@ const styles = StyleSheet.create({
   promoBannerTitleOnArt: {
     color: sg.gold,
     fontSize: fontSize.sm,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.bodyBold,
     marginBottom: spacing.sm,
     letterSpacing: 0.5,
   },
@@ -879,19 +873,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
     borderColor: sg.line,
     backgroundColor: sg.surface,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.12,
-        shadowRadius: 12,
-      },
-      android: { elevation: 4 },
-    }),
   },
   promoBannerTitle: {
     fontSize: fontSize.sm,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     marginBottom: spacing.sm,
     letterSpacing: 0.4,

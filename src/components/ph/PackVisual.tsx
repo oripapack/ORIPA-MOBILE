@@ -77,5 +77,5 @@ const styles = StyleSheet.create({
   },
   labelBlock: { alignItems: 'center' },
   category: { color: sg.muted, fontFamily: sg.font.bodyBold, letterSpacing: 1.4 },
-  name: { color: sg.text, fontFamily: sg.font.display, textAlign: 'center', marginTop: 4 },
+  name: { color: sg.text, fontFamily: sg.font.bodyBold, textAlign: 'center', marginTop: 4 },
 });

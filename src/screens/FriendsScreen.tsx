@@ -46,21 +46,6 @@ import { formatUsd } from '../lib/socialFormat';
 import { PUBLIC_WEB_ORIGIN } from '../config/app';
 import { showUserMessage } from '../utils/showUserMessage';
 
-const RING_PALETTE = [
-  sg.error,
-  sg.gold,
-  '#60A5FA',
-  '#A855F7',
-  sg.success,
-  sg.warning,
-];
-
-function accentForId(id: string): string {
-  let h = 0;
-  for (let i = 0; i < id.length; i += 1) h += id.charCodeAt(i);
-  return RING_PALETTE[h % RING_PALETTE.length];
-}
-
 const LB_PREVIEW = 3;
 
 const fontSize = { xs: 11, sm: 13, md: 17, lg: 20, xxl: 28 } as const;
@@ -297,11 +282,11 @@ export function FriendsScreen() {
           {!isGuest ? (
             <View style={styles.inboxActions}>
               <TouchableOpacity style={styles.inboxAction} onPress={openOffers} accessibilityRole="button">
-                <Ionicons name="swap-horizontal-outline" size={18} color={sg.gold} />
+                <Ionicons name="swap-horizontal-outline" size={18} color={sg.muted} />
                 <Text style={styles.inboxActionText}>{t('friends.offers')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.inboxAction} onPress={openMessages} accessibilityRole="button">
-                <Ionicons name="chatbubbles-outline" size={18} color={sg.gold} />
+                <Ionicons name="chatbubbles-outline" size={18} color={sg.muted} />
                 <Text style={styles.inboxActionText}>{t('friends.messages')}</Text>
               </TouchableOpacity>
             </View>
@@ -348,7 +333,6 @@ export function FriendsScreen() {
                 <PrimaryButton
                   label={t('friends.emptyCta')}
                   onPress={openAdd}
-                  variant="red"
                   style={styles.addFriendsBelowActivity}
                 />
               </>
@@ -386,7 +370,6 @@ export function FriendsScreen() {
               <Text style={styles.sectionEyebrowSm}>{t('friends.sectionFriends')}</Text>
               <View style={styles.squadBlock}>
                 {friendRows.map(({ entry, profile }) => {
-                  const ring = accentForId(entry.username);
                   return (
                     <TouchableOpacity
                       key={entry.username}
@@ -394,9 +377,8 @@ export function FriendsScreen() {
                       onPress={() => openFriendProfile(entry.username)}
                       activeOpacity={0.88}
                     >
-                      <View style={[styles.squadAccent, { backgroundColor: ring }]} />
-                      <View style={[styles.squadAvatar, { borderColor: ring }]}>
-                        <Text style={[styles.squadAvatarText, { color: ring }]}>
+                      <View style={styles.squadAvatar}>
+                        <Text style={styles.squadAvatarText}>
                           {entry.displayName.slice(0, 1).toUpperCase()}
                         </Text>
                       </View>
@@ -701,7 +683,7 @@ const styles = StyleSheet.create({
     borderBottomColor: sg.line,
   },
   lbRowMe: {
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.surface2,
   },
   lbRank: {
     width: 24,
@@ -751,7 +733,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     paddingVertical: spacing.sm + 2,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.surface2,
   },
   seeAllText: {
     fontSize: fontSize.xs,
@@ -774,19 +756,11 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
     overflow: 'hidden',
   },
-  squadAccent: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 3,
-    opacity: 0.75,
-  },
   squadAvatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
@@ -796,6 +770,7 @@ const styles = StyleSheet.create({
   squadAvatarText: {
     fontSize: fontSize.lg,
     fontFamily: brandFont.black,
+    color: sg.text,
   },
   squadMeta: {
     flex: 1,

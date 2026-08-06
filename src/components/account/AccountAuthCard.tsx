@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   guestEyebrow: {
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyBold,
-    color: sg.error,
+    color: sg.muted,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -131,15 +131,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
-    backgroundColor: sg.error,
-    borderRadius: radius.lg,
+    backgroundColor: sg.gold,
+    borderRadius: sg.radius.btn,
     paddingVertical: spacing.md,
     minHeight: 48,
   },
   signInBtnText: {
     fontSize: fontSize.md,
     fontFamily: sg.font.bodyBold,
-    color: sg.text,
+    color: sg.onGold,
   },
   identityRow: {
     flexDirection: 'row',
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   identityName: {
     fontSize: fontSize.md,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   identityEmail: {

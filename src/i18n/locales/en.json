@@ -7,16 +7,16 @@
     "account": "Player"
   },
   "vaultScreen": {
-    "eyebrow": "SECURED STORAGE",
+    "eyebrow": "SECURED VAULT",
     "title": "Vault",
     "lead": "Your pulls live here first — a private, premium hold where you trade in, list, or ship later. Traded-in hits stay in pull history only.",
     "benefitsTitle": "Why the Vault wins",
     "benefit1": "• Keep hits inside Pull Hub — build a real collection, not one-off shipments.",
     "benefit2": "• Vault Exchange: friends see your whole Vault — request anything; only your listings get Buy now (card checkout).",
     "benefit3": "• Request shipment on your schedule — fewer rushed labels, calmer fulfillment.",
-    "benefit4": "• Every secured item shows a clear storage timer so you always know what happens next.",
-    "benefit5": "• We’ll nudge you before time’s up — then unused items trade in for Points automatically.",
-    "benefitFine": "Complimentary hold: {{days}} days per item. You can trade in for Points anytime.",
+    "benefit4": "• Every secured item shows a clear Vault status so you always know the available next action.",
+    "benefit5": "• Trade in is always an explicit player action — the release app will not do it automatically.",
+    "benefitFine": "Preview timing is under product review. No automatic Trade in is approved for release.",
     "pullHistoryLink": "Full pull history →",
     "emptyTitle": "Your Vault is ready",
     "emptyBody": "Open packs on Packs — new hits land here secured, insured-feeling, and ready for what you do next.",
@@ -27,7 +27,7 @@
     "statusVaulted": "Secured in Vault",
     "statusShipped": "Shipment queued",
     "statusKept": "In collection",
-    "notifyBeforeConvert": "Final day — ship, trade, or convert",
+    "notifyBeforeConvert": "Preview timer — choose a Vault action",
     "timerDaysLeft": "{{count}}d left in Vault",
     "timerHoursLeft": "{{count}}h left in Vault",
     "timerEnded": "Hold ended",
@@ -52,8 +52,8 @@
     "ctaMixed": "Trade in · {{coins}} Points · Vault {{vaultCount}}",
     "footerAllVault": "{{count}} secured",
     "footerAllConvert": "Points added instantly",
-    "footerMixed": "{{convertCount}} convert · {{vaultCount}} vault",
-    "footerVaultLine": "{{days}}-day Vault hold · auto-convert if untouched",
+    "footerMixed": "{{convertCount}} trade in · {{vaultCount}} vault",
+    "footerVaultLine": "Preview timer only · release behavior pending",
     "footerCoinsOnly": "{{coins}} Points on confirm",
     "confirmTitle": "Confirm Trade in",
     "confirmBody": "We’ll add Points immediately for every row being traded in. Vault rows stay secured.",
@@ -64,9 +64,9 @@
   },
   "vaultAsset": {
     "sheetKicker": "VAULT ASSET",
-    "timerLabel": "Storage timer",
-    "timerUrgent": "Auto-convert soon",
-    "timerFine": "After the timer, Pull Hub adds the listed-value amount in Points automatically unless you ship or move the item. Hold length: {{days}} days.",
+    "timerLabel": "Preview timer",
+    "timerUrgent": "RELEASE RULE PENDING",
+    "timerFine": "This timer is a preview behavior under review. Release Vault items will not trade in automatically; Trade in requires your explicit confirmation.",
     "requestShipTitle": "Queue shipment?",
     "requestShipBody": "We’ll prepare this Vault item for fulfillment. You can track status from pull history once logistics are live.",
     "requestShipConfirm": "Queue shipment",
@@ -97,7 +97,7 @@
   },
   "friendVaultShop": {
     "sectionTitle": "Vault Exchange",
-    "sectionHint": "Cash listings only.",
+    "sectionHint": "Physical listings only.",
     "buy": "Buy now",
     "buyTitle": "Buy with card?",
     "buyBody": "{{price}} for {{card}} — moves to your Vault after payment.",
@@ -115,7 +115,7 @@
     "checkoutSimulateCta": "Checkout unavailable",
     "checkoutCancel": "Not now",
     "friendSectionTitle": "Their Vault",
-    "friendSectionHint": "Full collection is visible. Request, offer, or ask on anything. Only Vault Exchange listings show Buy now with a cash price.",
+    "friendSectionHint": "Full collection is visible. Request, offer, or ask on anything. Only Vault Exchange listings show Buy now with a fixed USD price.",
     "emptyVault": "No secured hits in the Vault yet. When they vault pulls, everything shows up here for discovery.",
     "badgeBuyNow": "BUY NOW",
     "badgeRequestable": "REQUESTABLE",
@@ -137,7 +137,7 @@
       "requestTitle": "Request (demo)",
       "requestBody": "Production: we’d route a structured request to {{handle}} so they can reply or list on Vault Exchange.",
       "offerTitle": "Offer (demo)",
-      "offerBody": "Production: send a trade or cash offer thread — separate from fixed-price Buy now.",
+      "offerBody": "Production: send a trade or purchase offer thread — separate from fixed-price Buy now.",
       "askTitle": "Ask availability (demo)",
       "askBody": "Production: a light nudge to {{handle}} — still not a purchase until they list or accept."
     }
@@ -178,7 +178,7 @@
       "desc": "Send two pulls to your Vault from the post-open sheet."
     },
     "weekly_convert": {
-      "title": "Convert one Vault hit",
+      "title": "Trade in one Vault hit",
       "desc": "Trade in a vaulted item for Points once this week."
     },
     "weekly_add_friend": {
@@ -187,7 +187,7 @@
     }
   },
   "splash": {
-    "frameLine": "Pull. Win. Repeat."
+    "frameLine": "Open. Reveal. Collect."
   },
   "coach": {
     "homeEyebrow": "PULL HUB TIP",
@@ -631,7 +631,7 @@
     "title": "Simulation notice",
     "body": "This preview uses simulated Points and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
     "titleJa": "シミュレーションについてのお知らせ",
-    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "bodyJa": "本プレビューではポイントおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
     "confirm": "I understand / 了解しました"
   },
   "home": {

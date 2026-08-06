@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   },
   cardName: {
     fontSize: fontSize.md,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     marginBottom: spacing.sm,
     lineHeight: 20,

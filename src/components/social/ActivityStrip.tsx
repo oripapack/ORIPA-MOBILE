@@ -16,7 +16,7 @@ export function ActivityStrip({ items }: { items: ActivityHighlight[] }) {
     >
       {items.map((item, index) => (
         <View key={item.id} style={styles.card}>
-          <Ionicons name={ACTIVITY_ICONS[index % ACTIVITY_ICONS.length]} size={20} color={sg.gold} />
+          <Ionicons name={ACTIVITY_ICONS[index % ACTIVITY_ICONS.length]} size={20} color={sg.muted} />
           <Text style={styles.text} numberOfLines={2}>
             {item.text}
           </Text>

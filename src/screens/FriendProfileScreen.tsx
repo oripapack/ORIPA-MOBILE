@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   status: {
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyBold,
-    color: sg.error,
+    color: sg.muted,
     marginTop: spacing.xs,
   },
   bio: {
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
+    borderColor: sg.line,
   },
   statVal: {
     fontSize: fontSize.lg,
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   statLab: { fontSize: 10, fontFamily: sg.font.bodyBold, color: sg.muted, marginTop: 4, letterSpacing: 0.5 },
   section: {
     fontSize: 10,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: sg.line,
   },
-  bestName: { fontSize: fontSize.lg, fontFamily: sg.font.display, color: sg.text, marginBottom: spacing.sm },
+  bestName: { fontSize: fontSize.lg, fontFamily: sg.font.bodyBold, color: sg.text, marginBottom: spacing.sm },
   bestVal: {
     fontSize: fontSize.hero - 4,
     fontFamily: sg.font.dataBold,
@@ -328,21 +328,21 @@ const styles = StyleSheet.create({
   actions: { gap: spacing.sm, marginTop: spacing.lg },
   btnDark: {
     height: 52,
-    borderRadius: radius.lg,
-    backgroundColor: sg.surface2,
+    borderRadius: sg.radius.btn,
+    backgroundColor: sg.gold,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnDarkText: { color: sg.text, fontFamily: sg.font.display, fontSize: fontSize.md },
+  btnDarkText: { color: sg.onGold, fontFamily: sg.font.bodyBold, fontSize: fontSize.md },
   btnOutline: {
     height: 52,
-    borderRadius: radius.lg,
-    borderWidth: 1.5,
+    borderRadius: sg.radius.btn,
+    borderWidth: 1,
     borderColor: sg.line,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnOutlineText: { color: sg.text, fontFamily: sg.font.display, fontSize: fontSize.md },
+  btnOutlineText: { color: sg.text, fontFamily: sg.font.bodyBold, fontSize: fontSize.md },
   btnGhost: { height: 48, alignItems: 'center', justifyContent: 'center' },
   btnGhostText: { color: sg.muted, fontFamily: sg.font.bodyMedium, fontSize: fontSize.sm },
   selfLb: { marginTop: spacing.md },

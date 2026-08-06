@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontSize: fontSize.base,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   sub: {

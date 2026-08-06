@@ -13,27 +13,14 @@ export interface MembershipTierCardProps {
   onSelect: () => void;
 }
 
-/** Visual tokens per metal tier — premium TCG, not casino. */
+/** Membership names stay legible without creating a second decorative color system. */
 const TIER_STYLES: Record<
   MembershipPlan['id'],
-  { border: string; accent: string; glow?: string; surface: string }
+  { accent: string }
 > = {
-  silver: {
-    border: 'rgba(180, 190, 200, 0.45)',
-    accent: '#C8D0D8',
-    surface: 'rgba(120, 130, 145, 0.08)',
-  },
-  gold: {
-    border: 'rgba(255, 203, 5, 0.55)',
-    accent: sg.gold,
-    glow: 'rgba(255, 203, 5, 0.12)',
-    surface: 'rgba(255, 203, 5, 0.06)',
-  },
-  black: {
-    border: 'rgba(90, 90, 100, 0.55)',
-    accent: '#E8E8EC',
-    surface: 'rgba(8, 10, 14, 0.92)',
-  },
+  silver: { accent: sg.text },
+  gold: { accent: sg.gold },
+  black: { accent: sg.text },
 };
 
 export function MembershipTierCard({ plan, selected, onSelect }: MembershipTierCardProps) {
@@ -44,9 +31,9 @@ export function MembershipTierCard({ plan, selected, onSelect }: MembershipTierC
     <TouchableOpacity
       style={[
         styles.card,
-        { borderColor: metal.border, backgroundColor: metal.surface },
+        { borderColor: sg.line, backgroundColor: sg.surface },
         plan.isPopular && styles.cardPopular,
-        selected && { borderColor: metal.accent, borderWidth: 2 },
+        selected && styles.cardSelected,
       ]}
       onPress={onSelect}
       activeOpacity={0.88}
@@ -101,12 +88,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cardPopular: {
-    shadowColor: sg.gold,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    elevation: 4,
+    borderTopColor: sg.gold,
   },
+  cardSelected: { borderColor: sg.gold, borderWidth: 2, backgroundColor: sg.surface2 },
   popularRibbon: {
     alignSelf: 'center',
     backgroundColor: 'rgba(212,175,55,0.12)',

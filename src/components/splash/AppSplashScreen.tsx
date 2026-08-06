@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   Easing,
   interpolate,
@@ -146,32 +145,9 @@ export function AppSplashScreen({ exitTrigger, onExitComplete, onExitStart }: Pr
     <Animated.View style={[styles.root, rootStyle]} pointerEvents="auto">
       <View style={styles.artLayer} pointerEvents="none" />
 
-      <Animated.View style={[styles.spotlight, spotlightStyle]} pointerEvents="none">
-        <LinearGradient
-          colors={[
-            'rgba(192,132,252,0.14)',
-            'rgba(56,189,248,0.06)',
-            'transparent',
-          ]}
-          start={{ x: 0.5, y: 0.4 }}
-          end={{ x: 0.5, y: 1 }}
-          style={StyleSheet.absoluteFillObject}
-        />
-      </Animated.View>
+      <Animated.View style={[styles.spotlight, spotlightStyle]} pointerEvents="none" />
 
-      <Animated.View style={[styles.shimmerBand, shimmerBandStyle]} pointerEvents="none">
-        <LinearGradient
-          colors={[
-            'transparent',
-            'rgba(255,255,255,0.1)',
-            'rgba(56,189,248,0.08)',
-            'transparent',
-          ]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={styles.shimmerGrad}
-        />
-      </Animated.View>
+      <Animated.View style={[styles.shimmerBand, shimmerBandStyle]} pointerEvents="none" />
 
       <Animated.View style={[styles.center, heroGroupStyle]}>
         <SplashCardFrame
@@ -209,21 +185,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: SW * 0.92,
     height: SW * 1.05,
-    borderRadius: SW * 0.5,
-    overflow: 'hidden',
+    borderRadius: sg.radius.panel,
+    borderWidth: 1,
+    borderColor: sg.line,
+    backgroundColor: sg.surface,
     top: '18%',
   },
   shimmerBand: {
     position: 'absolute',
-    width: SW * 0.55,
+    width: 1,
     height: '100%',
-    left: '22%',
+    left: '50%',
     opacity: 0.9,
-  },
-  shimmerGrad: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    backgroundColor: sg.muted,
   },
   center: {
     alignItems: 'center',

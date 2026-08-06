@@ -1,6 +1,5 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle } from 'react';
-import { Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -147,11 +146,7 @@ export const AuthBottomSheet = forwardRef<AuthBottomSheetRef, Props>(function Au
           ]}
           pointerEvents="auto"
         >
-          <LinearGradient
-            colors={['rgba(255,255,255,0.07)', 'rgba(255,255,255,0)']}
-            style={styles.sheetTopGlow}
-            pointerEvents="none"
-          />
+          <View style={styles.sheetTopKeyline} pointerEvents="none" />
           <View style={styles.handleWrap}>
             <View style={styles.handle} />
           </View>
@@ -175,7 +170,7 @@ const styles = StyleSheet.create({
   },
   dim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(5, 10, 22, 0.88)',
+    backgroundColor: 'rgba(0,0,0,0.82)',
   },
   /** Opaque panel so title, promo, and OAuth rows stay readable over a busy lobby. */
   sheet: {
@@ -191,28 +186,18 @@ const styles = StyleSheet.create({
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderRightWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.16)',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: -8 },
-        shadowOpacity: 0.22,
-        shadowRadius: 18,
-      },
-      android: {
-        // Avoid high elevation — it can add a gray “card” fill behind the view.
-        elevation: 3,
-      },
-    }),
+    borderColor: sg.line,
   },
-  sheetTopGlow: {
+  sheetTopKeyline: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: 48,
+    height: 1,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
+    backgroundColor: sg.muted,
+    opacity: 0.3,
   },
   handleWrap: {
     alignItems: 'center',
@@ -222,7 +207,8 @@ const styles = StyleSheet.create({
     width: 36,
     height: 3,
     borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    backgroundColor: sg.muted,
+    opacity: 0.55,
   },
   body: {
     flex: 1,

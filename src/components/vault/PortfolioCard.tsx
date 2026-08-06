@@ -1,9 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sgVault } from '../../tokens/sgVault';
-import { radius, spacing } from '../../tokens/spacing';
 import type { Pull } from '../../data/mockUser';
 
 const fontSize = { xs: 11, sm: 13 } as const;
@@ -26,7 +24,6 @@ export function PortfolioCard({ pulls }: Props) {
     const count = pulls.length;
     const totalPoints = pulls.reduce((acc, p) => acc + p.creditsWon, 0);
     const listedItems = pulls.filter((p) => (p.vaultExchangeListUsd ?? 0) >= 1);
-    const listedUsd = listedItems.reduce((acc, p) => acc + (p.vaultExchangeListUsd ?? 0), 0);
     const topCard = pulls.reduce<Pull | null>(
       (best, p) => (!best || p.creditsWon > best.creditsWon ? p : best),
       null,
@@ -41,7 +38,7 @@ export function PortfolioCard({ pulls }: Props) {
       else dist.sub1k++;
     });
 
-    return { count, totalPoints, listedUsd, listedCount: listedItems.length, topCard, dist };
+    return { count, totalPoints, listedCount: listedItems.length, topCard, dist };
   }, [pulls]);
 
   const maxBucket = Math.max(
@@ -54,14 +51,8 @@ export function PortfolioCard({ pulls }: Props) {
   const hasCards = stats.count > 0;
 
   return (
-    <LinearGradient
-      colors={[sgVault.surface2, sgVault.surface, sgVault.bg]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.card}
-    >
-      {/* Gold border rim */}
-      <View style={styles.goldRim} />
+    <View style={styles.card}>
+      <View style={styles.keyline} />
 
       <View style={styles.headerRow}>
         <View>
@@ -87,8 +78,7 @@ export function PortfolioCard({ pulls }: Props) {
         <View style={styles.statSep} />
         <StatBlock
           label="Listed"
-          value={stats.listedCount > 0 ? `$${stats.listedUsd.toLocaleString('en-US')}` : '—'}
-          accent={stats.listedCount > 0}
+          value={stats.listedCount > 0 ? `${stats.listedCount} active` : '—'}
         />
       </View>
 
@@ -125,7 +115,7 @@ export function PortfolioCard({ pulls }: Props) {
           </View>
         </>
       ) : null}
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -133,18 +123,16 @@ function StatBlock({
   label,
   value,
   truncate,
-  accent,
 }: {
   label: string;
   value: string;
   truncate?: boolean;
-  accent?: boolean;
 }) {
   return (
     <View style={styles.statBlock}>
       <Text style={styles.statLabel}>{label}</Text>
       <Text
-        style={[styles.statValue, accent && styles.statValueAccent]}
+        style={styles.statValue}
         numberOfLines={truncate ? 1 : undefined}
       >
         {value}
@@ -186,46 +174,40 @@ function DistBar({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radius.xl,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-    borderWidth: 1.5,
-    borderColor: 'rgba(212,175,55,0.38)',
+    backgroundColor: sgVault.surface,
+    borderRadius: sgVault.radius.panel,
+    padding: sgVault.space.lg,
+    marginBottom: sgVault.space.md,
+    borderWidth: 1,
+    borderColor: sgVault.line,
     overflow: 'hidden',
-    shadowColor: sgVault.gold,
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
   },
-  goldRim: {
+  keyline: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: 2,
+    height: 1,
     backgroundColor: sgVault.gold,
-    opacity: 0.5,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
+    opacity: 0.72,
   },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: spacing.md,
+    marginBottom: sgVault.space.md,
   },
   eyebrow: {
     fontSize: 10,
     fontFamily: vaultFont.bold,
-    color: sgVault.gold,
+    color: sgVault.muted,
     letterSpacing: 1.8,
     marginBottom: 4,
   },
   totalValue: {
     fontSize: 36,
     fontFamily: sgVault.font.dataBold,
-    color: sgVault.text,
+    color: sgVault.gold,
     letterSpacing: -1,
     lineHeight: 40,
     fontVariant: [...sgVault.numeric],
@@ -239,21 +221,21 @@ const styles = StyleSheet.create({
   trophyWrap: {
     width: 48,
     height: 48,
-    borderRadius: radius.full,
-    backgroundColor: 'rgba(212,175,55,0.10)',
+    borderRadius: 24,
+    backgroundColor: sgVault.surface2,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.line,
     alignItems: 'center',
     justifyContent: 'center',
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(212,175,55,0.25)',
-    marginBottom: spacing.md,
+    backgroundColor: sgVault.line,
+    marginBottom: sgVault.space.md,
   },
   statsRow: {
     flexDirection: 'row',
-    marginBottom: spacing.md,
+    marginBottom: sgVault.space.md,
   },
   statBlock: {
     flex: 1,
@@ -261,7 +243,7 @@ const styles = StyleSheet.create({
   statSep: {
     width: 1,
     backgroundColor: sgVault.line,
-    marginHorizontal: spacing.md,
+    marginHorizontal: sgVault.space.md,
   },
   statLabel: {
     fontSize: 10,
@@ -277,11 +259,8 @@ const styles = StyleSheet.create({
     color: sgVault.text,
     lineHeight: 20,
   },
-  statValueAccent: {
-    color: sgVault.up,
-  },
   distHeader: {
-    marginBottom: spacing.sm,
+    marginBottom: sgVault.space.sm,
   },
   distLabel: {
     fontSize: 9,
@@ -295,7 +274,7 @@ const styles = StyleSheet.create({
   distBarItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sgVault.space.sm,
   },
   distBarLabel: {
     fontSize: 10,
@@ -306,13 +285,13 @@ const styles = StyleSheet.create({
   distBarTrack: {
     flex: 1,
     height: 6,
-    borderRadius: radius.full,
+    borderRadius: 3,
     backgroundColor: sgVault.surface2,
     overflow: 'hidden',
   },
   distBarFill: {
     height: '100%',
-    borderRadius: radius.full,
+    borderRadius: 3,
     opacity: 0.85,
   },
   distBarCount: {

@@ -129,7 +129,7 @@ export function CoachSpotlight({
                 </View>
               ) : null}
               <View style={styles.actions}>
-                <PrimaryButton label={primaryLabel} variant="red" onPress={onPrimary} style={styles.primaryCta} />
+                <PrimaryButton label={primaryLabel} onPress={onPrimary} style={styles.primaryCta} />
                 <SecondaryButton label={secondaryLabel} onPress={onSecondary ?? onDismiss} />
               </View>
             </View>

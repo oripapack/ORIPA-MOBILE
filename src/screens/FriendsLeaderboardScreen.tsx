@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: sg.line,
   },
-  tabOn: { backgroundColor: sg.surface2, borderColor: sg.surface2 },
+  tabOn: { backgroundColor: sg.surface2, borderColor: sg.gold },
   tabText: { fontSize: fontSize.xs, fontFamily: sg.font.bodyBold, color: sg.muted },
   tabTextOn: { color: sg.text },
   lead: {
@@ -148,9 +148,9 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginBottom: spacing.sm,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
+    borderColor: sg.line,
   },
-  rowMe: { borderColor: sg.line, backgroundColor: 'rgba(255,74,56,0.10)' },
+  rowMe: { borderColor: sg.gold, backgroundColor: sg.surface2 },
   rank: {
     fontSize: fontSize.md,
     fontFamily: sg.font.dataBold,

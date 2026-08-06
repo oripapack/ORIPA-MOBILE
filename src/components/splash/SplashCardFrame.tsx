@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import Animated, {
   Extrapolation,
@@ -9,19 +8,12 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
 
-const FRAME_W = 236;
-const FRAME_H = 132;
-const OUTER = FRAME_W + 28;
-const OUTER_H = FRAME_H + 28;
-
+const FRAME_W = 248;
+const FRAME_H = 154;
 const TYPEWRITER_CHAR_MS = 38;
 const TYPEWRITER_START_DELAY_MS = 360;
 
-/**
- * Tagline types out with a soft blinking cursor; cursor hides after the line completes.
- */
 function SplashTypewriterLine({ text }: { text: string }) {
   const [visible, setVisible] = useState('');
   const [showCursor, setShowCursor] = useState(true);
@@ -30,7 +22,7 @@ function SplashTypewriterLine({ text }: { text: string }) {
 
   useEffect(() => {
     if (!showCursor) return;
-    const id = setInterval(() => setCursorLit((v) => !v), 400);
+    const id = setInterval(() => setCursorLit((value) => !value), 400);
     return () => clearInterval(id);
   }, [showCursor]);
 
@@ -40,47 +32,37 @@ function SplashTypewriterLine({ text }: { text: string }) {
       setShowCursor(false);
       return;
     }
+
     setVisible('');
     setShowCursor(true);
-    let startTimer: ReturnType<typeof setTimeout> | null = null;
     let endCursorTimer: ReturnType<typeof setTimeout> | null = null;
-
-    startTimer = setTimeout(() => {
-      let i = 0;
+    const startTimer = setTimeout(() => {
+      let index = 0;
       intervalRef.current = setInterval(() => {
-        i += 1;
-        setVisible(text.slice(0, i));
-        if (i >= text.length) {
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
+        index += 1;
+        setVisible(text.slice(0, index));
+        if (index >= text.length && intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
           endCursorTimer = setTimeout(() => setShowCursor(false), 340);
         }
       }, TYPEWRITER_CHAR_MS);
     }, TYPEWRITER_START_DELAY_MS);
 
     return () => {
-      if (startTimer) clearTimeout(startTimer);
+      clearTimeout(startTimer);
       if (endCursorTimer) clearTimeout(endCursorTimer);
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [text]);
 
   return (
-    <View
-      style={styles.typewriterRow}
-      accessibilityRole="text"
-      accessibilityLabel={text}
-    >
-      <Text style={styles.frameLine} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
+    <View style={styles.typewriterRow} accessibilityRole="text" accessibilityLabel={text}>
+      <Text style={styles.frameLine} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.82}>
         {visible}
       </Text>
       {showCursor ? (
-        <Text style={[styles.typewriterCursor, { opacity: cursorLit ? 1 : 0.22 }]} accessibilityElementsHidden>
+        <Text style={[styles.cursor, { opacity: cursorLit ? 1 : 0.2 }]} accessibilityElementsHidden>
           |
         </Text>
       ) : null}
@@ -96,11 +78,10 @@ type Props = {
   sweep2Progress: SharedValue<number>;
   cornerOpacity: SharedValue<number>;
   scanProgress: SharedValue<number>;
-  /** Optional: looped intensity for inner neon tube behind the frame */
   neonBreath?: SharedValue<number>;
 };
 
-/** Collectible frame + dual sweeps + corner ornaments + inner scan line. */
+/** Flat Tokyo wayfinding ticket — the one moment surface allowed to use neon glow. */
 export function SplashCardFrame({
   frameOpacity,
   frameScale,
@@ -117,222 +98,108 @@ export function SplashCardFrame({
     opacity: frameOpacity.value,
     transform: [{ scale: frameScale.value }],
   }));
-
-  const glowStyle = useAnimatedStyle(() => ({
-    opacity: frameGlow.value * 0.92,
+  const glowStyle = useAnimatedStyle(() => ({ opacity: frameGlow.value * 0.2 }));
+  const cornerStyle = useAnimatedStyle(() => ({ opacity: cornerOpacity.value }));
+  const scanStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(scanProgress.value, [0, 0.12, 0.72, 1], [0, 0.85, 0.45, 0], Extrapolation.CLAMP),
+    transform: [{ translateY: interpolate(scanProgress.value, [0, 1], [0, FRAME_H - 2]) }],
   }));
-
-  const cornerStyle = useAnimatedStyle(() => ({
-    opacity: cornerOpacity.value * 0.88,
+  const routeStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(sweepProgress.value, [0, 0.16, 0.8, 1], [0, 1, 1, 0], Extrapolation.CLAMP),
+    transform: [{ scaleX: interpolate(sweepProgress.value, [0, 1], [0.08, 1], Extrapolation.CLAMP) }],
   }));
-
-  const sweepStyle = useAnimatedStyle(() => {
-    const t = sweepProgress.value;
-    return {
-      opacity: interpolate(t, [0, 0.1, 0.45, 0.82, 1], [0, 0.42, 0.48, 0.38, 0], Extrapolation.CLAMP),
-      transform: [{ translateX: interpolate(t, [0, 1], [-175, 175]) }, { rotate: '-14deg' }],
-    };
-  });
-
-  const sweep2Style = useAnimatedStyle(() => {
-    const t = sweep2Progress.value;
-    return {
-      opacity: interpolate(t, [0, 0.15, 0.5, 0.85, 1], [0, 0.22, 0.28, 0.18, 0], Extrapolation.CLAMP),
-      transform: [{ translateY: interpolate(t, [0, 1], [130, -130]) }, { rotate: '11deg' }],
-    };
-  });
-
-  const scanStyle = useAnimatedStyle(() => {
-    const t = scanProgress.value;
-    return {
-      opacity: interpolate(t, [0, 0.08, 0.45, 0.92, 1], [0, 0.38, 0.48, 0.28, 0], Extrapolation.CLAMP),
-      transform: [{ translateY: interpolate(t, [0, 1], [-6, FRAME_H + 4]) }],
-    };
-  });
-
-  const neonTubeStyle = useAnimatedStyle(() => {
-    const b = neonBreath?.value ?? 0;
-    return {
-      opacity: 0.22 + b * 0.72,
-    };
-  });
-
-  const corner = (pos: 'tl' | 'tr' | 'bl' | 'br') => {
-    const base = { position: 'absolute' as const, width: 20, height: 20, borderColor: sg.line };
-    switch (pos) {
-      case 'tl':
-        return { ...base, left: 0, top: 0, borderTopWidth: 2, borderLeftWidth: 2 };
-      case 'tr':
-        return { ...base, right: 0, top: 0, borderTopWidth: 2, borderRightWidth: 2 };
-      case 'bl':
-        return { ...base, left: 0, bottom: 0, borderBottomWidth: 2, borderLeftWidth: 2 };
-      case 'br':
-        return { ...base, right: 0, bottom: 0, borderBottomWidth: 2, borderRightWidth: 2 };
-    }
-  };
+  const stationStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(sweep2Progress.value, [0, 0.25, 1], [0, 1, 1], Extrapolation.CLAMP),
+  }));
+  const neonStyle = useAnimatedStyle(() => ({
+    opacity: 0.45 + (neonBreath?.value ?? 0) * 0.55,
+  }));
 
   return (
     <View style={styles.halo}>
-      <Animated.View style={[styles.glowBlob, glowStyle]} pointerEvents="none" />
+      <Animated.View style={[styles.heroGlow, glowStyle]} pointerEvents="none" />
+      <Animated.View style={[styles.frame, frameStyle]}>
+        <View style={styles.ticketHeader}>
+          <Text style={styles.kicker}>TOKYO-BORN</Text>
+          <Text style={styles.serial}>PH / 01</Text>
+        </View>
 
-      <View style={styles.decorWrap}>
-        {neonBreath ? (
-          <Animated.View style={[styles.neonTube, neonTubeStyle]} pointerEvents="none">
-            <LinearGradient
-              colors={[
-                'rgba(56,189,248,0.22)',
-                'rgba(192,132,252,0.2)',
-                'rgba(232,197,71,0.16)',
-                'rgba(45,212,191,0.14)',
-              ]}
-              locations={[0, 0.35, 0.65, 1]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFillObject}
-            />
-          </Animated.View>
-        ) : null}
-        {neonBreath ? (
-          <Animated.View style={[styles.neonRim, neonTubeStyle]} pointerEvents="none" />
-        ) : null}
-        <Animated.View style={[corner('tl'), cornerStyle]} />
-        <Animated.View style={[corner('tr'), cornerStyle]} />
-        <Animated.View style={[corner('bl'), cornerStyle]} />
-        <Animated.View style={[corner('br'), cornerStyle]} />
+        <View style={styles.divider} />
 
-        <Animated.View style={[styles.sweepClip, sweepStyle]} pointerEvents="none">
-          <LinearGradient
-            colors={[
-              'transparent',
-              'rgba(255,255,255,0.12)',
-              'rgba(192,132,252,0.12)',
-              'rgba(232,197,71,0.06)',
-              'transparent',
-            ]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={styles.sweepGrad}
-          />
-        </Animated.View>
+        <View style={styles.copyBlock}>
+          <SplashTypewriterLine text={t('splash.frameLine')} />
+          <Text style={styles.subline}>REAL CARDS / DIGITAL OPEN</Text>
+        </View>
 
-        <Animated.View style={[styles.sweep2Clip, sweep2Style]} pointerEvents="none">
-          <LinearGradient
-            colors={['transparent', 'rgba(56,189,248,0.1)', 'rgba(255,255,255,0.08)', 'transparent']}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={styles.sweep2Grad}
-          />
-        </Animated.View>
-
-        <Animated.View style={[styles.frameOuter, frameStyle]}>
-          <View style={styles.frameInner}>
-            <LinearGradient
-              colors={['rgba(40,32,68,0.92)', 'rgba(22,18,42,0.97)', 'rgba(30,26,54,0.94)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFillObject}
-            />
+        <View style={styles.routeRow}>
+          <Animated.View style={[styles.station, styles.stationStart, stationStyle]} />
+          <View style={styles.routeTrack}>
+            <Animated.View style={[styles.routeFill, routeStyle]} />
           </View>
-          {/* One scannable line — keep short (read time vs INTRO_MS in AppSplashScreen). Easter egg / secret word: future hook. */}
-          <View style={styles.frameCopy} pointerEvents="none">
-            <SplashTypewriterLine text={t('splash.frameLine')} />
-          </View>
-          <View style={styles.frameEdge} />
-          <Animated.View style={[styles.scanLine, scanStyle]} pointerEvents="none">
-            <LinearGradient
-              colors={['transparent', 'rgba(192,132,252,0.25)', 'rgba(255,255,255,0.12)', 'transparent']}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={StyleSheet.absoluteFillObject}
-            />
-          </Animated.View>
-        </Animated.View>
-      </View>
+          <Animated.View style={[styles.station, styles.stationLive, stationStyle, neonStyle]} />
+          <Text style={styles.routeCode}>TYO 24/7</Text>
+        </View>
+
+        <Animated.View style={[styles.cornerTL, cornerStyle]} />
+        <Animated.View style={[styles.cornerBR, cornerStyle]} />
+        <Animated.View style={[styles.scanLine, scanStyle, neonStyle]} pointerEvents="none" />
+      </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   halo: {
-    width: OUTER + 40,
-    minHeight: OUTER_H + 16,
+    width: FRAME_W + 56,
+    height: FRAME_H + 56,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  decorWrap: {
-    width: OUTER,
-    height: OUTER_H,
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  neonTube: {
+  heroGlow: {
     position: 'absolute',
-    width: FRAME_W + 16,
-    height: FRAME_H + 16,
-    borderRadius: 18,
-    left: (OUTER - (FRAME_W + 16)) / 2,
-    top: (OUTER_H - (FRAME_H + 16)) / 2,
-    zIndex: 1,
-    overflow: 'hidden',
+    width: FRAME_W + 28,
+    height: FRAME_H + 28,
+    borderRadius: sg.radius.panel + 8,
+    backgroundColor: sg.neon,
+    ...sg.glowNeon,
   },
-  neonRim: {
-    position: 'absolute',
-    width: FRAME_W + 18,
-    height: FRAME_H + 18,
-    borderRadius: 18,
-    left: (OUTER - (FRAME_W + 18)) / 2,
-    top: (OUTER_H - (FRAME_H + 18)) / 2,
-    zIndex: 1,
-    borderWidth: 1.5,
-    borderColor: 'rgba(62, 92, 118, 0.22)',
-    backgroundColor: 'transparent',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.72,
-    shadowRadius: 14,
-    elevation: 8,
-  },
-  glowBlob: {
-    position: 'absolute',
-    width: FRAME_W + 92,
-    height: FRAME_H + 76,
-    borderRadius: 30,
-    backgroundColor: 'rgba(62,92,118,0.06)',
-  },
-  frameOuter: {
+  frame: {
     width: FRAME_W,
     height: FRAME_H,
-    borderRadius: 14,
-    padding: 1.5,
-    overflow: 'hidden',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.72,
-    shadowRadius: 18,
-    elevation: 10,
-    zIndex: 2,
-  },
-  frameInner: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 12,
-    overflow: 'hidden',
-    opacity: 0.26,
-  },
-  frameEdge: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 12,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
+    backgroundColor: sg.surface,
+    padding: sg.space.md,
+    overflow: 'hidden',
+    ...sg.shadowHero,
   },
-  frameCopy: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 12,
+  ticketHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  kicker: {
+    fontFamily: sg.font.bodyBold,
+    fontSize: 9,
+    letterSpacing: 1.7,
+    color: sg.muted,
+  },
+  serial: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 9,
+    color: sg.muted,
+    fontVariant: [...sg.numeric],
+  },
+  divider: {
+    height: 1,
+    backgroundColor: sg.line,
+    marginTop: sg.space.sm,
+  },
+  copyBlock: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    zIndex: 2,
   },
   typewriterRow: {
     flexDirection: 'row',
@@ -340,60 +207,94 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     maxWidth: '100%',
   },
-  typewriterCursor: {
-    fontSize: fontSize.xxl,
-    fontFamily: sg.font.display,
-    color: sg.gold,
-    marginLeft: 1,
-    marginTop: -2,
-    textShadowColor: 'rgba(62, 92, 118, 0.15)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 6,
-  },
   frameLine: {
-    fontSize: fontSize.xxl,
     fontFamily: sg.font.display,
+    fontSize: 24,
     color: sg.text,
     letterSpacing: -0.5,
     textAlign: 'center',
-    textShadowColor: 'rgba(192,132,252,0.45)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+  },
+  cursor: {
+    fontFamily: sg.font.data,
+    fontSize: 22,
+    color: sg.neon,
+    marginLeft: 2,
+  },
+  subline: {
+    marginTop: 5,
+    fontFamily: sg.font.data,
+    fontSize: 8,
+    letterSpacing: 1.25,
+    color: sg.muted,
+  },
+  routeRow: {
+    height: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  routeTrack: {
+    flex: 1,
+    height: 1,
+    marginHorizontal: 5,
+    backgroundColor: sg.line,
+  },
+  routeFill: {
+    width: '100%',
+    height: 1,
+    backgroundColor: sg.text,
+    transformOrigin: 'left',
+  },
+  station: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    borderWidth: 1,
+  },
+  stationStart: {
+    borderColor: sg.text,
+    backgroundColor: sg.surface,
+  },
+  stationLive: {
+    borderColor: sg.neon,
+    backgroundColor: sg.neon,
+    ...sg.glowNeon,
+  },
+  routeCode: {
+    width: 48,
+    marginLeft: 7,
+    fontFamily: sg.font.dataBold,
+    fontSize: 8,
+    color: sg.muted,
+    textAlign: 'right',
+    fontVariant: [...sg.numeric],
+  },
+  cornerTL: {
+    position: 'absolute',
+    left: 8,
+    top: 8,
+    width: 8,
+    height: 8,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderColor: sg.muted,
+  },
+  cornerBR: {
+    position: 'absolute',
+    right: 8,
+    bottom: 8,
+    width: 8,
+    height: 8,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: sg.muted,
   },
   scanLine: {
     position: 'absolute',
-    left: 8,
-    right: 8,
-    height: 3,
+    left: 1,
+    right: 1,
     top: 0,
-    borderRadius: 2,
-    overflow: 'hidden',
-    zIndex: 3,
-  },
-  sweepClip: {
-    position: 'absolute',
-    width: 130,
-    height: 240,
-    left: OUTER / 2 - 65,
-    top: OUTER_H / 2 - 120,
-    zIndex: 4,
-  },
-  sweepGrad: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  sweep2Clip: {
-    position: 'absolute',
-    width: 300,
-    height: 110,
-    left: OUTER / 2 - 150,
-    top: OUTER_H / 2 - 55,
-    zIndex: 3,
-  },
-  sweep2Grad: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    height: 1,
+    backgroundColor: sg.neon,
+    ...sg.glowNeon,
   },
 });

@@ -43,12 +43,11 @@ export function SignupPromptModal() {
             style={[styles.card, { paddingBottom: insets.bottom + spacing.lg }]}
             onPress={(e) => e.stopPropagation()}
           >
-            <View style={styles.accent} />
             <Text style={styles.eyebrow}>{t('onboarding.promptEyebrow')}</Text>
             <Text style={styles.title}>{t('onboarding.promptTitle')}</Text>
             <Text style={styles.body}>{t('onboarding.promptBody')}</Text>
             <View style={styles.row}>
-              <PrimaryButton label={t('onboarding.promptSignUp')} variant="red" onPress={() => openAuth('signup')} />
+              <PrimaryButton label={t('onboarding.promptSignUp')} onPress={() => openAuth('signup')} />
               <SecondaryButton label={t('onboarding.promptSignIn')} onPress={() => openAuth('signin')} />
             </View>
             <Pressable onPress={onMaybeLater} accessibilityRole="button">
@@ -83,19 +82,10 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
   },
-  accent: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 3,
-    backgroundColor: sg.gold,
-    opacity: 0.85,
-  },
   eyebrow: {
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyBold,
-    color: sg.gold,
+    color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: spacing.sm,

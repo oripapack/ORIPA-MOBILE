@@ -27,7 +27,9 @@ export function SocialPullRow({ pull }: Props) {
           </Text>
           {pull.badge ? (
             <View style={[styles.badge, pull.badge === 'chase' ? styles.badgeChase : styles.badgeHit]}>
-              <Text style={styles.badgeText}>{pull.badge === 'chase' ? 'Chase' : 'Hit'}</Text>
+              <Text style={[styles.badgeText, pull.badge === 'hit' && styles.badgeTextHit]}>
+                {pull.badge === 'chase' ? 'Chase' : 'Hit'}
+              </Text>
             </View>
           ) : null}
         </View>
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
   cardName: {
     flex: 1,
     fontSize: 17,
-    fontFamily: sg.font.display,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     lineHeight: 20,
   },
@@ -85,13 +87,21 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: radius.sm,
   },
-  badgeChase: { backgroundColor: 'rgba(225,29,46,0.12)' },
-  badgeHit: { backgroundColor: 'rgba(245,158,11,0.15)' },
+  badgeChase: {
+    backgroundColor: 'rgba(255,74,56,0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,74,56,0.34)',
+    ...sg.glowNeon,
+  },
+  badgeHit: { backgroundColor: sg.surface, borderWidth: 1, borderColor: sg.line },
   badgeText: {
     fontSize: 10,
-    fontFamily: sg.font.display,
-    color: sg.error,
+    fontFamily: sg.font.bodyBold,
+    color: sg.neon,
     letterSpacing: 0.5,
+  },
+  badgeTextHit: {
+    color: sg.muted,
   },
   pack: {
     fontSize: 11,
@@ -107,7 +117,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 13,
     fontFamily: sg.font.dataBold,
-    color: sg.text,
+    color: sg.gold,
     fontVariant: [...sg.numeric],
   },
   time: {
