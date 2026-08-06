@@ -20,8 +20,6 @@ import { getLocalizedPackFields } from '../i18n/packCopy';
 import { PackOddsModal } from '../components/pack/PackOddsModal';
 import { PackOpenQuantitySelector } from '../components/pack/PackOpenQuantitySelector';
 import { PackMultiOpenSummary } from '../components/pack/PackMultiOpenSummary';
-import { PackRushConfirmModal } from '../components/pack/PackRushConfirmModal';
-import { packOpenTotalCredits } from '../lib/packMultiOpen';
 import { EMPTY_PACK_ODDS, getMockPackOdds } from '../data/mockPackOdds';
 import { getMockPackTopHit } from '../data/mockTopHits';
 import { tierFromIsChase } from '../lib/n2Rarity';
@@ -41,7 +39,6 @@ export function PackDetailsScreen({ route }: Props) {
   const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
   const [oddsOpen, setOddsOpen] = useState(false);
   const [openQuantity, setOpenQuantity] = useState<PackOpenQuantity>(1);
-  const [rushConfirmOpen, setRushConfirmOpen] = useState(false);
 
   const pack = useMemo<Pack | undefined>(
     () => mockPacks.find((p) => String(p.id) === String(route.params.packId)),
@@ -58,7 +55,6 @@ export function PackDetailsScreen({ route }: Props) {
   const openBlocked = isPackOpening || awaitingFulfillment || soldOut;
   const bulkBusy = isPackOpening || awaitingFulfillment;
   const canBulk10 = !!(pack && !membershipLocked && !soldOut && pack.remainingInventory >= 10);
-  const canBulk100 = !!(pack && !membershipLocked && !soldOut && pack.remainingInventory >= 100);
 
   const odds = useMemo(() => (pack ? getMockPackOdds(pack) : EMPTY_PACK_ODDS), [pack]);
   const topHit = useMemo(() => (pack ? getMockPackTopHit(pack) : null), [pack]);
@@ -69,14 +65,12 @@ export function PackDetailsScreen({ route }: Props) {
 
   useEffect(() => {
     setOpenQuantity(1);
-    setRushConfirmOpen(false);
   }, [route.params.packId]);
 
   useEffect(() => {
     if (!pack) return;
     if (openQuantity === 10 && !canBulk10) setOpenQuantity(1);
-    else if (openQuantity === 100 && !canBulk100) setOpenQuantity(canBulk10 ? 10 : 1);
-  }, [pack, openQuantity, canBulk10, canBulk100]);
+  }, [pack, openQuantity, canBulk10]);
 
   if (!pack || !loc) {
     return (
@@ -118,10 +112,6 @@ export function PackDetailsScreen({ route }: Props) {
     if (openBlocked) return;
     if (openQuantity > 1 && pack.remainingInventory < openQuantity) {
       showUserMessage(t('packDetails.bulkStockTitle'), t('packDetails.bulkStockBody', { count: openQuantity }));
-      return;
-    }
-    if (openQuantity === 100) {
-      setRushConfirmOpen(true);
       return;
     }
     commitOpen(openQuantity);
@@ -295,7 +285,6 @@ export function PackDetailsScreen({ route }: Props) {
                 onChange={setOpenQuantity}
                 disabled={bulkBusy || soldOut}
                 disabled10={!canBulk10}
-                disabled100={!canBulk100}
               />
               <PackMultiOpenSummary quantity={openQuantity} creditPrice={pack.creditPrice} />
             </>
@@ -320,9 +309,7 @@ export function PackDetailsScreen({ route }: Props) {
                       ? t('packDetails.ctaDisabled')
                       : openQuantity === 1
                         ? t('packDetails.multiOpen.ctaOpenPack')
-                        : openQuantity === 10
-                          ? t('packDetails.multiOpen.ctaFastOpen')
-                          : t('packDetails.multiOpen.ctaRush')}
+                        : t('packDetails.multiOpen.ctaFastOpen')}
                 </Text>
                 <Text style={styles.ctaSub}>
                   {membershipLocked ? (
@@ -345,17 +332,6 @@ export function PackDetailsScreen({ route }: Props) {
           </TouchableOpacity>
         </View>
       </View>
-
-      <PackRushConfirmModal
-        visible={rushConfirmOpen}
-        packCount={100}
-        totalCredits={packOpenTotalCredits(pack.creditPrice, 100)}
-        onCancel={() => setRushConfirmOpen(false)}
-        onConfirm={() => {
-          setRushConfirmOpen(false);
-          commitOpen(100);
-        }}
-      />
 
       <PackOddsModal visible={oddsOpen} onClose={() => setOddsOpen(false)} packTitle={loc.title} odds={odds} />
     </View>

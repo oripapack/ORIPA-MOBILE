@@ -271,14 +271,6 @@ export function PackCard({ pack, onPress }: Props) {
                 <Text style={styles.quickCtaTitle}>Open 10</Text>
                 <Text style={styles.quickCtaSub}>{(pack.creditPrice * 10).toLocaleString()} credits</Text>
               </Pressable>
-              <Pressable
-                style={[styles.quickCta, (ctaBlocked || pack.remainingInventory < 100) && styles.quickCtaDisabled]}
-                onPress={() => openQty(100)}
-                disabled={ctaBlocked || pack.remainingInventory < 100}
-              >
-                <Text style={styles.quickCtaTitle}>Open 100</Text>
-                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 100).toLocaleString()} credits</Text>
-              </Pressable>
             </View>
           </View>
         )}

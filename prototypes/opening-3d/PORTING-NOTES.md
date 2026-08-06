@@ -2,6 +2,17 @@
 
 対象: `pullhub-pack-3d_13.html`(このディレクトリ、原文のまま・無改変)
 
+## 配線状況 (2026-08-01)
+
+**本番 x1 開封は WebView/iframe で HTML を載せる方針で配線済み。**
+
+- 出荷コピー: `pack-ring-server/opening-3d.html`（embed bridge / skip / N2 tier ラベル適用）
+- 入口: `RingPackOpenFlow` → `http(s)://{host}:3000/opening-3d.html?embed=1&tier=&card=`
+- 完了: flip 後 `postMessage({ type: 'revealDone' })` → `PackOpeningModal`
+- Skip: 親が `skip` message / `__PH_SKIP_OPEN__()` を呼ぶ
+
+原文 `prototypes/opening-3d/pullhub-pack-3d_13.html` は無改変のまま保持。
+
 ## 何か
 
 Three.js r128 (CDN) 製の開封アニメーション。ブラウザで単体動作する。

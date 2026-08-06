@@ -5,7 +5,7 @@ import { resolveRevealCardForTier } from '../mockRevealCards';
 import type { PackRollResult } from '../types';
 import type { BulkOpenViewModel, BulkPullItem } from './bulkOpenTypes';
 
-const BULK_QUANTITIES = new Set<PackOpenQuantity>([10, 100]);
+const BULK_QUANTITIES = new Set<PackOpenQuantity>([10]);
 
 function cardSaltForIndex(sessionId: number, index: number): number {
   return sessionId * 9973 + index * 7919 + 1337;
@@ -33,7 +33,7 @@ export function sortBulkRestItems(items: BulkPullItem[]): BulkPullItem[] {
 
 /**
  * Build the bulk open view model from resolved rolls.
- * Throws if quantity is not 10 or 100, or rolls length mismatches quantity.
+ * Throws if quantity is not 10, or rolls length mismatches quantity.
  */
 export function buildBulkOpenViewModel(
   rolls: PackRollResult[],
@@ -42,7 +42,7 @@ export function buildBulkOpenViewModel(
   category: PackCategory,
 ): BulkOpenViewModel {
   if (!BULK_QUANTITIES.has(quantity)) {
-    throw new Error(`buildBulkOpenViewModel: quantity must be 10 or 100, got ${quantity}`);
+    throw new Error(`buildBulkOpenViewModel: quantity must be 10, got ${quantity}`);
   }
   if (rolls.length !== quantity) {
     throw new Error(
@@ -71,7 +71,7 @@ export function buildBulkOpenViewModel(
   const totalCredits = rolls.reduce((sum, r) => sum + r.creditsWon, 0);
 
   return {
-    quantity: quantity as Extract<PackOpenQuantity, 10 | 100>,
+    quantity: quantity as Extract<PackOpenQuantity, 10>,
     best,
     bestIndex,
     rest,

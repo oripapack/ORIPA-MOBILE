@@ -9,9 +9,9 @@ export type BulkPullItem = {
   card: RevealCard;
 };
 
-/** View model for bulk cinematic + results (×10 Fast / ×100 Rush). */
+/** View model for bulk cinematic + results (×10 Fast). */
 export type BulkOpenViewModel = {
-  quantity: Extract<PackOpenQuantity, 10 | 100>;
+  quantity: Extract<PackOpenQuantity, 10>;
   best: BulkPullItem;
   bestIndex: number;
   /** All pulls except best, sorted by tier desc → credits desc → index asc. */

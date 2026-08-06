@@ -1,22 +1,25 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { WebView } from 'react-native-webview';
+import WebView from 'react-native-webview';
 import type { RingPackOpenFlowProps } from './ringTypes';
 import { tierToRingRarity } from './ringRarity';
 import { getPackRingWebBaseUrl } from '../../../../config/packRingWebUrl';
+import { appendPackOpeningSceneTweaks } from '../../../../config/packOpeningSceneTweaks';
 import { sg } from '../../../../tokens/sg';
 import { fontSize } from '../../../../tokens/typography';
 import { spacing } from '../../../../tokens/spacing';
 
 /**
- * Native iOS/Android — 3D ring scene in a WebView (served by the prototype dev server).
- * `npm start` runs Expo + the scene server together.
+ * Native iOS/Android — new opening-3d HTML scene in a WebView
+ * (`pack-ring-server/opening-3d.html`, co-started by `npm start` on :3000).
  */
 export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
   const [failed, setFailed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [reloadKey, setReloadKey] = useState(0);
   const revealedRef = useRef(false);
+  const webRef = useRef<WebView>(null);
+  const lastSkipRef = useRef(0);
 
   const baseUrl = getPackRingWebBaseUrl();
 
@@ -28,7 +31,9 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
       tier,
       card: props.revealCard.name.slice(0, 120),
     });
-    return `${baseUrl}?${qs.toString()}`;
+    appendPackOpeningSceneTweaks(qs);
+    const root = baseUrl.replace(/\/$/, '');
+    return `${root}/opening-3d.html?${qs.toString()}`;
   }, [baseUrl, props.revealCard.name, props.roll.tier]);
 
   const onRevealDone = useCallback(() => {
@@ -43,6 +48,15 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
     setReloadKey((k) => k + 1);
   }, []);
 
+  // Skip FAB in PackOpeningModal bumps skipNonce — tell the HTML scene to finish.
+  useEffect(() => {
+    if (!props.skipNonce || props.skipNonce === lastSkipRef.current) return;
+    lastSkipRef.current = props.skipNonce;
+    webRef.current?.injectJavaScript(
+      'try{window.__PH_SKIP_OPEN__&&window.__PH_SKIP_OPEN__();}catch(e){} true;',
+    );
+  }, [props.skipNonce]);
+
   if (!uri || failed) {
     return (
       <View style={styles.fill}>
@@ -50,7 +64,7 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
           <Text style={styles.errorTitle}>Pack scene unavailable</Text>
           <Text style={styles.errorBody}>
             {uri
-              ? 'The 3D ring could not load. Make sure `npm start` is running (it starts the scene server automatically).'
+              ? 'The 3D opening scene could not load. Make sure `npm start` is running (it starts the scene server automatically).'
               : 'Set EXPO_PUBLIC_PACK_RING_WEB_URL in .env to your Mac IP, e.g. http://192.168.11.14:3000'}
           </Text>
           {uri ? (
@@ -66,6 +80,7 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
   return (
     <View style={styles.fill}>
       <WebView
+        ref={webRef}
         key={reloadKey}
         source={{ uri }}
         style={styles.fill}

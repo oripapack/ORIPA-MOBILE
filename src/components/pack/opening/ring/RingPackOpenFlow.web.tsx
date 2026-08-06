@@ -2,19 +2,20 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import type { RingPackOpenFlowProps } from './ringTypes';
 import { tierToRingRarity } from './ringRarity';
+import { appendPackOpeningSceneTweaks } from '../../../../config/packOpeningSceneTweaks';
 import { sg } from '../../../../tokens/sg';
 import { fontSize } from '../../../../tokens/typography';
 import { spacing } from '../../../../tokens/spacing';
 
 /**
- * Expo web — load the 3D ring in an iframe from the Vite helper (:3000).
- * In-process R3F + createPortal was causing blank/white screens inside RN Modal.
- * Animation only appears when this component mounts (Open Pack).
+ * Expo web — load opening-3d.html in an iframe from the Vite helper (:3000).
  */
 export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const revealedRef = useRef(false);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const lastSkipRef = useRef(0);
 
   const src = useMemo(() => {
     const tier = tierToRingRarity(props.roll.tier);
@@ -23,11 +24,12 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
       tier,
       card: props.revealCard.name.slice(0, 120),
     });
+    appendPackOpeningSceneTweaks(qs);
     const origin =
       typeof window !== 'undefined' && window.location.hostname
         ? `${window.location.protocol}//${window.location.hostname}:3000`
         : 'http://127.0.0.1:3000';
-    return `${origin}/?${qs.toString()}`;
+    return `${origin}/opening-3d.html?${qs.toString()}`;
   }, [props.revealCard.name, props.roll.tier]);
 
   useEffect(() => {
@@ -48,7 +50,19 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
     return () => window.removeEventListener('message', onMessage);
   }, [props]);
 
-  // Also remove any leftover body overlays from earlier in-process attempts
+  useEffect(() => {
+    if (!props.skipNonce || props.skipNonce === lastSkipRef.current) return;
+    lastSkipRef.current = props.skipNonce;
+    try {
+      iframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ type: 'skip' }),
+        '*',
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [props.skipNonce]);
+
   useEffect(() => {
     document.querySelectorAll('[data-pack-ring-overlay]').forEach((n) => n.remove());
   }, []);
@@ -67,8 +81,8 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
 
   return (
     <View style={styles.fill}>
-      {/* iframe is valid on react-native-web */}
       <iframe
+        ref={iframeRef as unknown as React.RefObject<never>}
         title="Pack opening"
         src={src}
         style={styles.iframe}

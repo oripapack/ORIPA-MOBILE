@@ -40,8 +40,8 @@ import {
 import { COLLECTOR_QUESTS, initialQuestProgress } from '../data/collectorQuests';
 import { bumpQuestTrack } from './collectorGameHelpers';
 
-/** Bulk opens: 10 or 100 pulls in one session (credits only). */
-export type PackOpenQuantity = 1 | 10 | 100;
+/** Bulk opens: 10 pulls in one session (credits only). x100 removed for V1. */
+export type PackOpenQuantity = 1 | 10;
 
 interface ModalState {
   insufficientCredits: boolean;
@@ -88,7 +88,7 @@ interface AppStore {
   packOpenSessionId: number;
   /** Prevents rapid-tap double charges / double opens (async claim + state commit). */
   packOpenInFlight: boolean;
-  /** How many pulls this `packOpening` session represents (1 = animated reveal; 10/100 = summary flow). */
+  /** How many pulls this `packOpening` session represents (1 = 3D reveal; 10 = bulk cinematic). */
   packOpenQuantity: PackOpenQuantity;
   /**
    * User tried to open a pack but lacked credits — after buying credits we should return them to the flow
@@ -464,8 +464,9 @@ export const useAppStore = create<AppStore>((set, get) => {
     set({ resumePackOpenAfterCredits: false, resumePackOpenQuantity: 1 }),
 
   /**
-   * Opens one pack (free grant or credits) or a bulk session (10 / 100, credits only).
+   * Opens one pack (free grant or credits) or a bulk session (×10, credits only).
    * Credits deduct on commit; collector XP applies when pulls are recorded (`applyPackOpenResult` / bulk).
+   * ×10 always uses local rolls → BulkOpenCinematic until a live multi-pull API exists.
    */
   openPack: async (pack, options) => {
     const keepPack = options?.keepPackModalOnInsufficient ?? false;
@@ -552,15 +553,8 @@ export const useAppStore = create<AppStore>((set, get) => {
       const useLiveEngine =
         !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
 
-      if (quantity > 1 && useLiveEngine) {
-        showUserMessage(
-          'Bulk opens',
-          'Live bulk opens (10/100) are not available yet. Open one pack at a time.',
-        );
-        return false;
-      }
-
-      if (useLiveEngine && pack.packVersionId) {
+      // Live execute-pull is single-pull only. ×10 uses local rolls + BulkOpenCinematic.
+      if (useLiveEngine && pack.packVersionId && quantity === 1) {
         const totalCost = pack.creditPrice;
         if (user.credits < totalCost) {
           set((state) => ({
@@ -640,7 +634,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         return true;
       }
 
-      // No live `packVersionId` — local demo open (animation / catalog dev). Deducts device credits.
+      // Local / bulk open (animation + catalog). Deducts device credits × quantity.
       const totalCost = pack.creditPrice * quantity;
       if (user.credits < totalCost) {
         set((state) => ({

@@ -43,10 +43,7 @@ export type BulkResultsScreenProps = {
 function BulkResultsHeader({ viewModel }: { viewModel: BulkOpenViewModel }) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const modeLabel =
-    viewModel.quantity === 10
-      ? t('packDetails.multiOpen.fastTitle')
-      : t('packDetails.multiOpen.rushTitle');
+  const modeLabel = t('packDetails.multiOpen.fastTitle');
 
   return (
     <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>

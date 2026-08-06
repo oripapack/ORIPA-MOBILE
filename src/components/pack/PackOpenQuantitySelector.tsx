@@ -12,10 +12,9 @@ type Props = {
   onChange: (q: PackOpenQuantity) => void;
   disabled?: boolean;
   disabled10?: boolean;
-  disabled100?: boolean;
 };
 
-export function PackOpenQuantitySelector({ value, onChange, disabled, disabled10, disabled100 }: Props) {
+export function PackOpenQuantitySelector({ value, onChange, disabled, disabled10 }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -24,8 +23,7 @@ export function PackOpenQuantitySelector({ value, onChange, disabled, disabled10
       <View style={styles.row}>
         {PACK_OPEN_QUANTITIES.map((q) => {
           const isSelected = value === q;
-          const segDisabled =
-            disabled || (q === 10 && disabled10) || (q === 100 && disabled100);
+          const segDisabled = disabled || (q === 10 && disabled10);
           return (
             <TouchableOpacity
               key={q}

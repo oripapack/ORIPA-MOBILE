@@ -153,6 +153,8 @@ export function PackOpeningModal() {
     }
     setSkippedToEnd(true);
     setSkipNonce((n) => n + 1);
+    // Advance even if the WebView hasn't loaded / missed the skip message.
+    setEngineDone(true);
   }, [bulkPhase, isBulkOpen]);
 
   const onBulkCinematicComplete = useCallback(() => {

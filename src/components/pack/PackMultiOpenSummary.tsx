@@ -28,24 +28,11 @@ export function PackMultiOpenSummary({ quantity, creditPrice }: Props) {
     );
   }
 
-  if (quantity === 10) {
-    return (
-      <View style={styles.card}>
-        <Text style={styles.title}>{t('packDetails.multiOpen.fastTitle')}</Text>
-        <Text style={styles.lead}>{t('packDetails.multiOpen.fastLead')}</Text>
-        <Text style={styles.support}>{t('packDetails.multiOpen.fastTotal', { total: totalStr })}</Text>
-        <Text style={styles.supportMuted}>{t('packDetails.multiOpen.perPack', { each })}</Text>
-      </View>
-    );
-  }
-
   return (
-    <View style={[styles.card, styles.cardRush]}>
-      <Text style={styles.title}>{t('packDetails.multiOpen.rushTitle')}</Text>
-      <Text style={styles.lead}>{t('packDetails.multiOpen.rushLead1')}</Text>
-      <Text style={styles.lead}>{t('packDetails.multiOpen.rushLead2')}</Text>
-      <View style={styles.divider} />
-      <Text style={styles.support}>{t('packDetails.multiOpen.rushTotal', { total: totalStr })}</Text>
+    <View style={styles.card}>
+      <Text style={styles.title}>{t('packDetails.multiOpen.fastTitle')}</Text>
+      <Text style={styles.lead}>{t('packDetails.multiOpen.fastLead')}</Text>
+      <Text style={styles.support}>{t('packDetails.multiOpen.fastTotal', { total: totalStr })}</Text>
       <Text style={styles.supportMuted}>{t('packDetails.multiOpen.perPack', { each })}</Text>
     </View>
   );
@@ -59,10 +46,6 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     padding: spacing.md,
     gap: 6,
-  },
-  cardRush: {
-    borderColor: sg.neon,
-    backgroundColor: 'rgba(255,74,56,0.10)',
   },
   title: {
     fontSize: fontSize.lg,
@@ -79,20 +62,12 @@ const styles = StyleSheet.create({
   support: {
     marginTop: 2,
     fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyBold,
-    color: sg.muted,
-    letterSpacing: 0.15,
+    fontFamily: sg.font.dataBold,
+    color: sg.gold,
   },
   supportMuted: {
-    fontSize: 12,
-    fontFamily: sg.font.bodyBold,
+    fontSize: fontSize.xs,
+    fontFamily: sg.font.body,
     color: sg.muted,
-    opacity: 0.92,
-  },
-  divider: {
-    marginTop: sg.space.xs,
-    marginBottom: 2,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: sg.line,
   },
 });

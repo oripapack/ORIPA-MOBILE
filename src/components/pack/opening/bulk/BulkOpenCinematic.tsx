@@ -56,7 +56,7 @@ const easeOut = Easing.bezier(0.22, 1, 0.36, 1);
 const easeIn = Easing.bezier(0.55, 0, 0.9, 0.45);
 
 export type BulkOpenCinematicProps = {
-  quantity: Extract<PackOpenQuantity, 10 | 100>;
+  quantity: Extract<PackOpenQuantity, 10>;
   bestTier: RarityTier;
   onComplete: () => void;
   /** Optional — parent wires Skip FAB. */
@@ -129,10 +129,7 @@ export function BulkOpenCinematic({
   const onSkipRef = useRef(onSkip);
   onSkipRef.current = onSkip;
 
-  const quantityLabel = useMemo(
-    () => (quantity === 10 ? t('packDetails.multiOpen.fastTitle') : t('packDetails.multiOpen.rushTitle')),
-    [quantity, t],
-  );
+  const quantityLabel = useMemo(() => t('packDetails.multiOpen.fastTitle'), [t]);
 
   useEffect(() => {
     let cancelled = false;
