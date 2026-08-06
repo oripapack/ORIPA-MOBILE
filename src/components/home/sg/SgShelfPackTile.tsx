@@ -17,7 +17,6 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
   const foil = getCategoryFoil(pack.tcgCategory ?? 'Multi TCG');
   const fraction = pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1);
   const lowStock = fraction < 0.1;
-  const priceUsd = (pack.creditPrice / 100).toFixed(0);
 
   const goDetail = () => {
     if (navigationRef.isReady()) navigationRef.navigate('PackDetails', { packId: pack.id });
@@ -37,7 +36,7 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
       </View>
       <Text style={styles.name} numberOfLines={2}>{pack.title}</Text>
       <View style={styles.metaRow}>
-        <SgData value={`$${priceUsd}`} size="md" tone="gold" />
+        <SgData value={pack.creditPrice.toLocaleString()} unit="PTS" size="md" tone="gold" />
         <SgData
           value={pack.remainingInventory.toLocaleString()}
           unit="left"

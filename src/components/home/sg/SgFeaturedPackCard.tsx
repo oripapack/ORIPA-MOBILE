@@ -1,20 +1,18 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Pack } from '../../../data/mockPacks';
 import { PackVisual } from '../../ph/PackVisual';
 import { SgButton, SgData } from '../../ui';
 import { sg } from '../../../tokens/sg';
-import { getMockPackOdds } from '../../../data/mockPackOdds';
 import { getLocalizedPackFields } from '../../../i18n/packCopy';
 import { navigationRef } from '../../../navigation/navigationRef';
 
 /**
  * Shelf-first featured pack card — the ONE hero element on Home, so it is
  * the screen's single `shadowHero` carrier (§3). The pack itself is the
- * existing PackVisual asset. Scarcity rules: real numbers always visible;
- * stock counts use `success` semantics when low (§4). No red, no blinking,
- * no fake timers.
+ * existing PackVisual asset. Stock counts use `success` semantics when low
+ * (§4). No red, no blinking, no fake timers, and no unsupported odds callout.
  */
 export function SgFeaturedPackCard({
   pack,
@@ -25,11 +23,8 @@ export function SgFeaturedPackCard({
 }) {
   const { t } = useTranslation();
   const loc = getLocalizedPackFields(pack, t);
-  const odds = useMemo(() => getMockPackOdds(pack), [pack]);
-  const topOddsRow = odds.rows[0];
   const fraction = pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1);
   const lowStock = fraction < 0.1;
-  const priceUsd = (pack.creditPrice / 100).toFixed(0);
 
   // The featured card always shows the localized trade-in pitch (2026-07-29
   // copy rule: 100% never appears without its "listed value" basis). The full
@@ -55,7 +50,7 @@ export function SgFeaturedPackCard({
       <Text style={styles.title}>{loc.title}</Text>
 
       <View style={styles.metaRow}>
-        <SgData value={`$${priceUsd}`} size="lg" tone="gold" />
+        <SgData value={pack.creditPrice.toLocaleString()} unit="PTS" size="lg" tone="gold" />
         <SgData
           value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
           unit="left"
@@ -66,12 +61,6 @@ export function SgFeaturedPackCard({
       <View style={styles.slotsBar}>
         <View style={[styles.slotsFill, { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` }]} />
       </View>
-
-      {topOddsRow ? (
-        <Text style={styles.oddsLine}>
-          {topOddsRow.tier.toUpperCase()} odds <Text style={styles.oddsValue}>{topOddsRow.chance}</Text> — full table on pack page
-        </Text>
-      ) : null}
 
       <SgButton label={t('packDetails.multiOpen.ctaOpenPack')} onPress={onOpen} style={styles.cta} />
 
@@ -124,18 +113,6 @@ const styles = StyleSheet.create({
     marginTop: sg.space.sm,
   },
   slotsFill: { height: 2, borderRadius: 1, backgroundColor: sg.muted },
-  oddsLine: {
-    fontFamily: sg.font.body,
-    fontSize: 11,
-    color: sg.muted,
-    marginTop: sg.space.sm,
-  },
-  oddsValue: {
-    fontFamily: sg.font.dataBold,
-    fontSize: 12,
-    color: sg.text,
-    fontVariant: [...sg.numeric],
-  },
   cta: { alignSelf: 'stretch', marginTop: sg.space.sm + 2 },
   trustRow: {
     alignSelf: 'stretch',

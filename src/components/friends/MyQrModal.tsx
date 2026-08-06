@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface,
     borderRadius: radius.lg,
     borderWidth: 2,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.line,
     marginBottom: spacing.lg,
   },
   nameLabel: {

@@ -127,13 +127,15 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
   },
   barHit: {
-    backgroundColor: 'rgba(34, 197, 94, 0.85)',
+    backgroundColor: sg.success,
+    opacity: 0.85,
   },
   barMiss: {
-    backgroundColor: 'rgba(239, 68, 68, 0.45)',
+    backgroundColor: sg.error,
+    opacity: 0.45,
   },
   barEmpty: {
-    backgroundColor: 'rgba(148, 163, 184, 0.2)',
+    backgroundColor: sg.line,
   },
   legendRow: {
     flexDirection: 'row',
@@ -149,10 +151,10 @@ const styles = StyleSheet.create({
     fontVariant: [...sg.numeric],
   },
   tickHit: {
-    color: 'rgba(34, 197, 94, 0.95)',
+    color: sg.success,
   },
   tickMiss: {
-    color: 'rgba(248, 113, 113, 0.9)',
+    color: sg.error,
   },
   tickEmpty: {
     fontSize: 9,

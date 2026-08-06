@@ -85,8 +85,9 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: sg.surface2,
     borderWidth: 1,
+    borderColor: sg.line,
   },
   socialRow: {
     flexDirection: 'row',
@@ -105,13 +106,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: sg.line,
   },
   iconBubble: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   socialLabel: {
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyBold,
-    color: 'rgba(248,250,252,0.88)',
+    color: sg.text,
     letterSpacing: 0.2,
   },
 });

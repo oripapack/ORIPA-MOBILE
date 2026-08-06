@@ -16,6 +16,7 @@ Goal: upgrade and unify every user-facing screen at 440×956 in English without 
 ### Primary tabs
 
 - [x] Home — 440×956 verified
+- [x] Home pack cards — Points are shown directly; the former derived USD display and unsupported inline odds callout are removed.
 - [x] Marketplace — N2 type and icon pass; 440×956 verified
 - [x] Vault — N2 display/data type and icon pass; 440×956 verified
 - [x] Friends — shared header, display type, no emoji avatars; 440×956 verified
