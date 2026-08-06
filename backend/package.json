@@ -7,6 +7,10 @@
     "status": "npx supabase status",
     "db:reset": "npx supabase db reset",
     "db:push": "npx supabase db push",
+    "db:seed": "npx supabase db query --linked -f supabase/seed.sql",
+    "deploy:catalog": "npm run db:push && npm run db:seed",
+    "deploy:all": "bash scripts/deploy-all.sh",
+    "smoke:live-packs": "node ../scripts/smoke-live-packs.mjs",
     "link": "npx supabase link",
     "functions:deploy": "npx supabase functions deploy execute-pull && npx supabase functions deploy request-shipment && npx supabase functions deploy stripe-webhook && npx supabase functions deploy mint-retry",
     "secrets:setup": "echo 'Execute manual script to populate production secrets for Stripe, Base minting, and Cron'"

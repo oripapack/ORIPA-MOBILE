@@ -3,6 +3,13 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { bytesToHex, sha256HexUtf8 } from "../_shared/crypto.ts";
 import {
+  errorResponse,
+  jsonResponse,
+  optionsResponse,
+  parseUuid,
+  requireBearer,
+} from "../_shared/http.ts";
+import {
   type PoolItemRow,
   rollWeightedPool,
 } from "../_shared/weightedRoll.ts";
@@ -11,7 +18,6 @@ type ExecutePullBody = {
   client_seed: string;
   pack_version_id?: string | null;
   nonce?: number | null;
-  /** Client-generated UUID; debits credits and binds the pull atomically. */
   idempotency_key: string;
 };
 
@@ -19,21 +25,19 @@ type PoolRow = PoolItemRow & { should_mint: boolean };
 
 type AtomicPullRow = {
   status: string;
+  error_code?: string;
   pull_id?: string;
   mint_status?: string;
   credit_cost?: number;
   balance_after?: number;
+  transaction_id?: string;
+  vault_item_id?: string;
+  vault_item?: Record<string, unknown>;
   won_item_id?: string;
   card_name?: string;
   serial_number?: string;
   digest_hex?: string;
   roll_value?: number;
-};
-
-const corsHeaders: Record<string, string> = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
 };
 
 function randomServerSeedHex(): string {
@@ -48,10 +52,13 @@ function mapRpcError(error: { message?: string; details?: string }): {
   message: string;
 } {
   const raw = `${error.message ?? ""} ${error.details ?? ""}`;
-  if (raw.includes("INSUFFICIENT_CREDITS")) {
-    return { status: 402, code: "INSUFFICIENT_CREDITS", message: raw };
+  if (raw.includes("INSUFFICIENT_CREDITS") || raw.includes("INSUFFICIENT_FUNDS")) {
+    return { status: 402, code: "INSUFFICIENT_FUNDS", message: raw };
   }
-  if (raw.includes("UNAUTHORIZED")) {
+  if (raw.includes("DUPLICATE_TRANSACTION") || raw.includes("already_processed")) {
+    return { status: 409, code: "DUPLICATE_TRANSACTION", message: raw };
+  }
+  if (raw.includes("UNAUTHORIZED") || raw.includes("FORBIDDEN")) {
     return { status: 401, code: "UNAUTHORIZED", message: raw };
   }
   if (raw.includes("UNKNOWN_PACK_VERSION")) {
@@ -64,28 +71,25 @@ function mapRpcError(error: { message?: string; details?: string }): {
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return optionsResponse();
 
   if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(405, "METHOD_NOT_ALLOWED", "Method not allowed");
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    return new Response(
-      JSON.stringify({ error: "Server misconfigured (Supabase env)" }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+    return errorResponse(
+      500,
+      "SERVER_MISCONFIGURED",
+      "Server misconfigured (Supabase env)",
     );
+  }
+
+  if (!requireBearer(req)) {
+    return errorResponse(401, "UNAUTHORIZED", "Bearer token required");
   }
 
   const authHeader = req.headers.get("Authorization") ?? "";
@@ -100,10 +104,7 @@ Deno.serve(async (req: Request) => {
   } = await userClient.auth.getUser();
 
   if (userErr || !user?.id) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(401, "UNAUTHORIZED", "Sign in required");
   }
 
   const clerkUserId = user.id;
@@ -112,48 +113,36 @@ Deno.serve(async (req: Request) => {
   try {
     body = (await req.json()) as ExecutePullBody;
   } catch {
-    return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(400, "INVALID_JSON", "Invalid JSON body");
   }
 
   const clientSeed = String(body.client_seed ?? "").trim();
   if (!clientSeed || clientSeed.length > 512) {
-    return new Response(
-      JSON.stringify({ error: "client_seed is required (max 512 chars)" }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+    return errorResponse(
+      400,
+      "INVALID_CLIENT_SEED",
+      "client_seed is required (max 512 chars)",
     );
   }
 
-  const idempotencyKey = parseOptionalUuid(body.idempotency_key);
+  const idempotencyKey = parseUuid(body.idempotency_key);
   if (!idempotencyKey) {
-    return new Response(
-      JSON.stringify({ error: "idempotency_key (UUID) is required" }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+    return errorResponse(
+      400,
+      "INVALID_IDEMPOTENCY_KEY",
+      "idempotency_key (UUID) is required",
     );
   }
 
   const packVersionId =
-    parseOptionalUuid(body.pack_version_id) ??
-    parseOptionalUuid(Deno.env.get("DEFAULT_PACK_VERSION_ID"));
+    parseUuid(body.pack_version_id) ??
+    parseUuid(Deno.env.get("DEFAULT_PACK_VERSION_ID"));
 
   if (!packVersionId) {
-    return new Response(
-      JSON.stringify({
-        error:
-          "pack_version_id is required (or set DEFAULT_PACK_VERSION_ID for dev)",
-      }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+    return errorResponse(
+      400,
+      "PACK_VERSION_REQUIRED",
+      "pack_version_id is required (or set DEFAULT_PACK_VERSION_ID for dev)",
     );
   }
 
@@ -164,22 +153,14 @@ Deno.serve(async (req: Request) => {
     .maybeSingle();
 
   if (pvErr || !packVersion) {
-    return new Response(
-      JSON.stringify({ error: "Unknown pack_version_id" }),
-      {
-        status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
-    );
+    return errorResponse(404, "UNKNOWN_PACK_VERSION", "Unknown pack_version_id");
   }
 
   if (!packVersion.is_active) {
-    return new Response(
-      JSON.stringify({ error: "This pack version is not active" }),
-      {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+    return errorResponse(
+      400,
+      "PACK_VERSION_INACTIVE",
+      "This pack version is not active",
     );
   }
 
@@ -192,17 +173,11 @@ Deno.serve(async (req: Request) => {
 
   if (poolErr) {
     console.error(poolErr);
-    return new Response(JSON.stringify({ error: poolErr.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(500, "POOL_LOOKUP_FAILED", poolErr.message);
   }
 
   if (!poolRows?.length) {
-    return new Response(JSON.stringify({ error: "Pack pool has no items" }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(400, "EMPTY_POOL", "Pack pool has no items");
   }
 
   const pool: PoolRow[] = [];
@@ -218,10 +193,7 @@ Deno.serve(async (req: Request) => {
     }
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    return new Response(JSON.stringify({ error: msg }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(400, "INVALID_POOL_WEIGHT", msg);
   }
 
   const nonce =
@@ -244,10 +216,7 @@ Deno.serve(async (req: Request) => {
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    return new Response(JSON.stringify({ error: msg }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(400, "ROLL_FAILED", msg);
   }
 
   const wonLine = pool.find((p) => p.item_id === roll.won.item_id);
@@ -278,72 +247,71 @@ Deno.serve(async (req: Request) => {
 
   if (rpcErr) {
     const mapped = mapRpcError(rpcErr);
-    return new Response(
-      JSON.stringify({ error: mapped.code, message: mapped.message }),
-      {
-        status: mapped.status,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
-    );
+    return errorResponse(mapped.status, mapped.code, mapped.message);
   }
 
   const result = rpcData as AtomicPullRow;
   const pullId = result.pull_id;
   const mintStatus = result.mint_status ?? "mint_skipped_low_tier";
+  const rpcStatus = result.status;
 
   if (!pullId) {
-    return new Response(
-      JSON.stringify({ error: "PULL_FAILED", message: "No pull_id returned" }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
-    );
+    return errorResponse(500, "PULL_FAILED", "No pull_id returned");
   }
 
-  return new Response(
-    JSON.stringify({
+  // Idempotent replay: return prior result without re-rolling fairness fields
+  if (rpcStatus === "already_processed") {
+    return jsonResponse({
       pull_id: pullId,
-      status: result.status,
+      status: "already_processed",
+      error_code: "DUPLICATE_TRANSACTION",
       pack_version_id: packVersionId,
       credit_cost: result.credit_cost ?? packVersion.credit_cost,
       balance_after: result.balance_after,
-      hashed_server_seed: hashedServerSeed,
-      revealed_server_seed: serverSeedHex,
-      should_mint: shouldMint,
-      fairness: {
-        algo: "hmac_sha256_rejection_uint32_v1",
-        digest_hex: roll.digest_hex,
-        canonical_message: canonicalMessage,
-        accepted_uint32: roll.accepted_uint32,
-        slot_index: roll.slot_index,
-        total_weight: roll.total_weight,
-        stream_block: roll.stream_block,
-        stream_word_index: roll.stream_word_index,
-        rejection_limit: Math.floor(0x1_0000_0000 / roll.total_weight) *
-          roll.total_weight,
-      },
-      won_item_id: roll.won.item_id,
-      card_name: roll.won.card_name,
-      serial_number: serialNumber,
-      provenance_at: provenanceAt,
+      transaction_id: result.transaction_id,
+      won_item_id: result.won_item_id ?? roll.won.item_id,
+      card_name: result.card_name ?? roll.won.card_name,
+      serial_number: result.serial_number ?? serialNumber,
       mint_status: mintStatus,
       idempotency_key: idempotencyKey,
-    }),
-    {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    },
-  );
-});
+      vault_item_id: result.vault_item_id,
+      vault_item: result.vault_item,
+    });
+  }
 
-function parseOptionalUuid(value: string | null | undefined): string | null {
-  if (value == null || value === "") return null;
-  const s = String(value).trim();
-  const re =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  return re.test(s) ? s : null;
-}
+  return jsonResponse({
+    pull_id: pullId,
+    status: rpcStatus ?? "ok",
+    error_code: result.error_code,
+    pack_version_id: packVersionId,
+    credit_cost: result.credit_cost ?? packVersion.credit_cost,
+    balance_after: result.balance_after,
+    transaction_id: result.transaction_id,
+    hashed_server_seed: hashedServerSeed,
+    revealed_server_seed: serverSeedHex,
+    should_mint: shouldMint,
+    fairness: {
+      algo: "hmac_sha256_rejection_uint32_v1",
+      digest_hex: roll.digest_hex,
+      canonical_message: canonicalMessage,
+      accepted_uint32: roll.accepted_uint32,
+      slot_index: roll.slot_index,
+      total_weight: roll.total_weight,
+      stream_block: roll.stream_block,
+      stream_word_index: roll.stream_word_index,
+      rejection_limit: Math.floor(0x1_0000_0000 / roll.total_weight) *
+        roll.total_weight,
+    },
+    won_item_id: roll.won.item_id,
+    card_name: roll.won.card_name,
+    serial_number: serialNumber,
+    provenance_at: provenanceAt,
+    mint_status: mintStatus,
+    idempotency_key: idempotencyKey,
+    vault_item_id: result.vault_item_id,
+    vault_item: result.vault_item,
+  });
+});
 
 function normalizeWeight(raw: unknown): number {
   const n = typeof raw === "number"
