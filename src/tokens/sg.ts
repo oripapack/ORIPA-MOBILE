@@ -78,14 +78,16 @@ export const sg = {
     shadowOffset: { width: 0, height: 0 },
   },
 
-  // ── Type: angular control face + ledger data ──
+  // ── Type: one angular arcade/control family across the complete skin ──
+  // Chakra Petch's squared terminals are the strongest visible difference
+  // from the previous app. Numeric call sites still apply tabular-nums.
   font: {
     display: 'ChakraPetch_700Bold',
-    body: 'SchibstedGrotesk_400Regular',
-    bodyMedium: 'SchibstedGrotesk_500Medium',
+    body: 'ChakraPetch_400Regular',
+    bodyMedium: 'ChakraPetch_500Medium',
     bodyBold: 'ChakraPetch_700Bold',
-    data: 'SplineSansMono_400Regular',
-    dataBold: 'SplineSansMono_500Medium',
+    data: 'ChakraPetch_500Medium',
+    dataBold: 'ChakraPetch_700Bold',
   },
   /** Compact RN type scale used by the Tokyo Arcade Vault screens. */
   type: {

@@ -21,11 +21,6 @@ import {
   ChakraPetch_500Medium,
   ChakraPetch_700Bold,
 } from '@expo-google-fonts/chakra-petch';
-import {
-  SchibstedGrotesk_400Regular,
-  SchibstedGrotesk_500Medium,
-} from '@expo-google-fonts/schibsted-grotesk';
-import { SplineSansMono_400Regular, SplineSansMono_500Medium } from '@expo-google-fonts/spline-sans-mono';
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { hydrateLocaleFromStorage } from './src/i18n';
@@ -39,7 +34,7 @@ import { ClerkSessionBridge } from './src/components/account/ClerkSessionBridge'
 import { ClerkSsoCallbackHandler } from './src/components/account/ClerkSsoCallbackHandler';
 import { sg } from './src/tokens/sg';
 
-/** Tokyo Arcade Vault default body. Display/data roles opt into `sg.font.*`. */
+/** Tokyo Arcade Vault default body. Explicit roles opt into `sg.font.*` weights. */
 const baseTextStyle = { fontFamily: sg.font.body, color: sg.text } as const;
 const T = Text as typeof Text & { defaultProps?: { style?: unknown } };
 const TI = TextInput as typeof TextInput & { defaultProps?: { style?: unknown } };
@@ -63,10 +58,6 @@ export default function App() {
     ChakraPetch_400Regular,
     ChakraPetch_500Medium,
     ChakraPetch_700Bold,
-    SchibstedGrotesk_400Regular,
-    SchibstedGrotesk_500Medium,
-    SplineSansMono_400Regular,
-    SplineSansMono_500Medium,
   });
 
   useEffect(() => {

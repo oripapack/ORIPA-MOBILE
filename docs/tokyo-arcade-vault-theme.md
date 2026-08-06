@@ -38,8 +38,12 @@ The `sg.gold` compatibility key resolves to cobalt on this branch so existing va
 ## Typography
 
 - Display, buttons, navigation, and compact labels: Chakra Petch 700.
-- Paragraphs and supporting UI: Schibsted Grotesk 400/500.
-- Prices, balances, odds, stock, certification numbers, and dates: Spline Sans Mono 400/500 with tabular numerals.
+- Paragraphs and supporting UI: Chakra Petch 400/500.
+- Prices, balances, odds, stock, certification numbers, and dates: Chakra Petch 500/700 with tabular numerals.
+
+This full-family treatment is an explicit product-owner override of the N2 rule
+that normally limits a skin's type change to headings. It makes the arcade
+control-panel voice visible throughout the product instead of only in titles.
 
 The visual hierarchy comes from face choice, size, and spacing—not from simulated outlines, text shadows, or image-baked text.
 
