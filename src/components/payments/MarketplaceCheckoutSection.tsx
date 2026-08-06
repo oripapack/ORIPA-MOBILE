@@ -2,8 +2,6 @@ import React from 'react';
 import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { PAYMENT_ROUTING } from '../../payments/physicalGoodsPolicy';
 import { showUserMessage } from '../../utils/showUserMessage';
 
@@ -51,28 +49,28 @@ export function MarketplaceCheckoutSection({ listingTitle, listingPrice }: Props
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
     lineHeight: 20,
   },
   card: {
     borderWidth: 1,
     borderColor: sg.line,
-    borderRadius: radius.lg,
-    padding: spacing.base,
-    marginBottom: spacing.lg,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
+    marginBottom: sg.space.lg,
     backgroundColor: sg.surface2,
   },
   label: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     marginBottom: 4,
@@ -80,27 +78,27 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   value: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   policy: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   cta: {
     backgroundColor: sg.surface2,
-    paddingVertical: spacing.sm + 4,
-    borderRadius: radius.md,
+    paddingVertical: sg.space.sm + 4,
+    borderRadius: sg.radius.btn,
     alignItems: 'center',
   },
   ctaText: {
     color: sg.text,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
   },
 });

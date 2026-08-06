@@ -8,7 +8,6 @@ import { AssetBlockedCard } from '../components/shared/AssetBlockedCard';
 import { SgCard, SgData, SgSectionHeader, SgTierTag } from '../components/ui';
 import { SgFairnessRecord } from '../components/pack/sg/SgFairnessRecord';
 import { PackVisual } from '../components/ph/PackVisual';
-import { spacing } from '../tokens/spacing';
 import { screenRoot, screenScroll, screenFooter } from '../tokens/layout';
 import { navigationRef } from '../navigation/navigationRef';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -80,7 +79,7 @@ export function PackDetailsScreen({ route }: Props) {
 
   if (!pack || !loc) {
     return (
-      <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
+      <View style={[styles.root, { paddingTop: insets.top + sg.space.lg }]}>
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => {
@@ -128,7 +127,7 @@ export function PackDetailsScreen({ route }: Props) {
   };
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top + spacing.sm }]}>
+    <View style={[styles.root, { paddingTop: insets.top + sg.space.sm }]}>
       <TouchableOpacity
         style={styles.backBtn}
         onPress={() => {
@@ -163,9 +162,9 @@ export function PackDetailsScreen({ route }: Props) {
                 <Text style={styles.featuredChipText}>FEATURED</Text>
               </View>
             ) : null}
-            {/* Trade-in is structurally 100% of listed value (coin economy) —
+            {/* Trade in is structurally 100% of listed value, in Points —
                 there is no per-pack rate, so this is fixed copy, not data. */}
-            <SgData value="100%" unit="Trade in · listed value" size="sm" tone="gold" />
+            <SgData value="100%" unit="of listed value · in Points" size="sm" tone="gold" />
           </View>
           <Text style={styles.heroTitle}>{loc.title}</Text>
           <Text style={styles.heroSet}>{pack.tagline ?? loc.valueDescription}</Text>
@@ -286,7 +285,7 @@ export function PackDetailsScreen({ route }: Props) {
         </View>
       </ScrollView>
 
-      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, spacing.base) }]}>
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, sg.space.md) }]}>
         <View style={styles.footerStack}>
           {!membershipLocked ? (
             <>

@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { radius, spacing } from '../../tokens/spacing';
 import type { MarketplaceListing } from '../../data/marketplace';
 import { AssetBlockedCard } from '../shared/AssetBlockedCard';
 
@@ -79,12 +78,12 @@ export const LISTING_CARD_WIDTH = CARD_W;
 const styles = StyleSheet.create({
   card: {
     width: CARD_W,
-    marginRight: spacing.sm,
+    marginRight: sg.space.sm,
   },
   thumb: {
     width: '100%',
     aspectRatio: 1,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     marginBottom: 6,
     overflow: 'hidden',
     justifyContent: 'center',
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(10, 16, 12, 0.88)',
     paddingHorizontal: 6,
     paddingVertical: 3,
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
     borderColor: 'rgba(212,175,55,0.38)',
   },
@@ -123,7 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.error,
     paddingHorizontal: 5,
     paddingVertical: 2,
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     maxWidth: '88%',
   },
   badgePillWithRegion: {

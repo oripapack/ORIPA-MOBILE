@@ -115,7 +115,7 @@
     "checkoutSimulateCta": "Checkout unavailable",
     "checkoutCancel": "Not now",
     "friendSectionTitle": "Their Vault",
-    "friendSectionHint": "Full collection is visible. Request, offer, or ask on anything. Only Vault Exchange listings show Buy now with a fixed USD price.",
+    "friendSectionHint": "Demo Vault preview. Requests, offers, and fixed-price checkout remain unavailable until the marketplace service is connected.",
     "emptyVault": "No secured hits in the Vault yet. When they vault pulls, everything shows up here for discovery.",
     "badgeBuyNow": "BUY NOW",
     "badgeRequestable": "REQUESTABLE",
@@ -659,7 +659,7 @@
       "railGradedTitle": "Graded vault",
       "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
     },
-    "guaranteeTradeIn": "Instant Trade in at 100% of listed value"
+    "guaranteeTradeIn": "Instant Trade in at 100% of listed value, in Points"
   },
   "packs": {
     "browseTitle": "Pack floor",
@@ -784,7 +784,7 @@
     "joined": "Joined {{date}}",
     "statPacks": "Packs opened",
     "statValue": "Total listed value",
-    "statChase": "Chase hits",
+    "statChase": "Featured pulls",
     "statLuck": "Luck score",
     "bestPull": "Best pull",
     "estimatedValue": "Listed value",
@@ -809,7 +809,7 @@
       "totalValue": "Total listed value",
       "biggestPull": "Biggest pull",
       "packsOpened": "Packs opened",
-      "chaseHits": "Chase hits",
+      "chaseHits": "Featured pulls",
       "luckScore": "Luck score"
     },
     "you": "You",
@@ -1044,7 +1044,7 @@
   },
   "profileOnboarding": {
     "title": "Set up your profile",
-    "subtitle": "Choose a public username and how you’d like to appear. You can change this later when account settings are wired to the server.",
+    "subtitle": "Choose a public username and how you’d like to appear to other collectors.",
     "usernameLabel": "Username",
     "usernamePlaceholder": "Choose a username",
     "displayNameLabel": "Display name (optional)",

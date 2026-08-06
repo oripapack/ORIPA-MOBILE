@@ -1,9 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import type { RarityTier } from '../../../shared/types/pack';
-import { getCategoryFoil } from '../../lib/packFoil';
-import { ph } from '../../tokens/phTheme';
 import { sg } from '../../tokens/sg';
 /**
  * N2 §5-2/§6: the colored rarity foils (incl. purple) are removed. The ground
@@ -37,20 +34,14 @@ export function PackVisual({
   rarityTier?: RarityTier;
   size?: Size;
 }) {
-  const catFoil = getCategoryFoil(category);
-  const border = catFoil.accent; // UNKNOWN tier — neutral line, no tier chrome
   const d = DIMS[size];
 
   return (
-    <View style={[styles.wrap, { width: d.w, height: d.h, borderColor: border }]}>
-      <LinearGradient
-        colors={[catFoil.top, catFoil.mid, catFoil.bot]}
-        start={{ x: 0.2, y: 0 }}
-        end={{ x: 0.8, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+    <View style={[styles.wrap, { width: d.w, height: d.h }]}>
       <View style={[styles.seal, { width: '100%' }]} />
-      <View style={[styles.art, { height: d.artH, borderColor: border }]} />
+      <View style={[styles.art, { height: d.artH }]}>
+        <Text style={styles.pending}>PACK ART{`\n`}PENDING</Text>
+      </View>
       <View style={styles.labelBlock}>
         <Text style={[styles.category, { fontSize: d.fs2 }]}>{category.toUpperCase()}</Text>
         <Text style={[styles.name, { fontSize: d.fs1 }]} numberOfLines={2}>{name}</Text>
@@ -61,19 +52,32 @@ export function PackVisual({
 
 const styles = StyleSheet.create({
   wrap: {
-    borderRadius: ph.radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1, // 1px line rule (§3)
+    borderColor: sg.line,
+    backgroundColor: sg.surface2,
     overflow: 'hidden',
     padding: 12,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  seal: { height: 5, backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 1 },
+  seal: { height: 5, backgroundColor: sg.line, borderRadius: sg.radius.tag },
   art: {
     width: '82%',
-    backgroundColor: 'rgba(0,0,0,0.38)',
-    borderRadius: 6,
+    backgroundColor: sg.surface,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
+    borderColor: sg.line,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pending: {
+    color: sg.muted,
+    fontFamily: sg.font.dataBold,
+    fontSize: 8,
+    lineHeight: 11,
+    letterSpacing: 0.8,
+    textAlign: 'center',
   },
   labelBlock: { alignItems: 'center' },
   category: { color: sg.muted, fontFamily: sg.font.bodyBold, letterSpacing: 1.4 },

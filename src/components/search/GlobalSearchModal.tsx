@@ -13,8 +13,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { mockPacks, type Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { useRequireAuth } from '../../hooks/useRequireAuth';
@@ -94,7 +92,7 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
       animationType="slide"
       presentationStyle="fullScreen"
     >
-      <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
+      <View style={[styles.container, { paddingTop: insets.top + sg.space.sm }]}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{t('search.title')}</Text>
           <TouchableOpacity style={styles.closeBtn} onPress={close} activeOpacity={0.85}>
@@ -155,16 +153,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: sg.bg,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingBottom: spacing.sm,
+    paddingBottom: sg.space.sm,
   },
   headerTitle: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.display,
     color: sg.text,
   },
@@ -173,94 +171,94 @@ const styles = StyleSheet.create({
     height: 36,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: sg.space.md,
     minHeight: 48,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   searchIcon: {
-    marginRight: spacing.sm,
+    marginRight: sg.space.sm,
   },
   searchInput: {
     flex: 1,
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.body,
     color: sg.text,
-    paddingVertical: spacing.sm,
+    paddingVertical: sg.space.sm,
   },
   clearBtn: {
-    marginLeft: spacing.xs,
+    marginLeft: sg.space.xs,
     width: 28,
     height: 28,
     alignItems: 'center',
     justifyContent: 'center',
   },
   empty: {
-    paddingVertical: spacing.xl,
+    paddingVertical: sg.space.lg,
   },
   emptyTitle: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     marginBottom: 6,
   },
   emptyBody: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
   },
   row: {
-    padding: spacing.base,
-    borderRadius: radius.lg,
+    padding: sg.space.md,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface2,
     borderWidth: 1,
     borderColor: sg.line,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   rowTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     marginBottom: 6,
   },
   title: {
     flex: 1,
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   sub: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
     marginBottom: 6,
   },
   hint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.body,
     color: sg.muted,
   },
   pricePill: {
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: sg.space.sm,
     paddingVertical: 6,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
   },
   priceText: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.dataBold,
     color: sg.gold,
     fontVariant: [...sg.numeric],

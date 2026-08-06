@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
 
@@ -71,7 +69,7 @@ export function CoachSpotlight({
         </Pressable>
 
         <View
-          style={[styles.cardWrap, { paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.sm }]}
+          style={[styles.cardWrap, { paddingBottom: Math.max(insets.bottom, sg.space.md) + sg.space.sm }]}
           pointerEvents="box-none"
         >
           <View style={styles.cardRing}>
@@ -150,17 +148,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.74)',
   },
   cardWrap: {
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
     zIndex: 2,
   },
   cardRing: {
-    borderRadius: radius.xl,
+    borderRadius: sg.radius.panel,
     padding: 1.5,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
     ...Platform.select({
       ios: {
-        shadowColor: '#000000',
+        shadowColor: sg.bg,
         shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.35,
         shadowRadius: 24,
@@ -169,11 +167,11 @@ const styles = StyleSheet.create({
     }),
   },
   cardInner: {
-    borderRadius: radius.xl - 1,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface2,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.lg,
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.sm,
+    paddingBottom: sg.space.lg,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
     overflow: 'hidden',
@@ -182,50 +180,50 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 40,
     height: 4,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.line,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   eyebrowPill: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 6,
-    paddingHorizontal: spacing.sm + 2,
+    paddingHorizontal: sg.space.sm + 2,
     paddingVertical: 5,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: GOLD_SOFT,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: GOLD_BORDER,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   eyebrowDot: {
     width: 6,
     height: 6,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.gold,
   },
   eyebrow: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.gold,
     letterSpacing: 1.1,
     textTransform: 'uppercase',
   },
   title: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
     letterSpacing: -0.6,
     lineHeight: 32,
   },
   bodyLine: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   compareWrap: {
     marginTop: 0,
@@ -234,21 +232,21 @@ const styles = StyleSheet.create({
   comparePrimaryBlock: {
     borderLeftWidth: 3,
     borderLeftColor: sg.gold,
-    paddingLeft: spacing.md,
-    paddingVertical: spacing.md,
+    paddingLeft: sg.space.md,
+    paddingVertical: sg.space.md,
     marginLeft: 1,
     backgroundColor: GOLD_SOFT,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
   },
   comparePrimaryHeading: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.display,
     color: sg.gold,
     letterSpacing: -0.3,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   comparePrimaryLine: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
     lineHeight: 22,
@@ -257,25 +255,25 @@ const styles = StyleSheet.create({
   compareDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: sg.line,
-    marginVertical: spacing.sm + 2,
+    marginVertical: sg.space.sm + 2,
   },
   compareSecondaryBlock: {
     borderLeftWidth: 2,
     borderLeftColor: sg.line,
-    paddingLeft: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
+    paddingLeft: sg.space.md,
+    paddingVertical: sg.space.sm,
+    borderRadius: sg.radius.btn,
     backgroundColor: sg.surface,
   },
   compareSecondaryHeading: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     letterSpacing: -0.15,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   compareSecondaryLine: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 19,
@@ -288,36 +286,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    marginTop: spacing.md,
-    paddingVertical: spacing.sm + 2,
-    paddingHorizontal: spacing.sm,
-    borderRadius: radius.md,
+    marginTop: sg.space.md,
+    paddingVertical: sg.space.sm + 2,
+    paddingHorizontal: sg.space.sm,
+    borderRadius: sg.radius.btn,
     backgroundColor: GOLD_WASH,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: GOLD_BORDER,
   },
   flowStep: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },
   flowArrow: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.gold,
     fontFamily: sg.font.bodyBold,
   },
   actions: {
-    marginTop: spacing.md + 4,
-    gap: spacing.sm,
+    marginTop: sg.space.md + 4,
+    gap: sg.space.sm,
   },
   primaryCta: {
     minHeight: 56,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.btn,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: sg.bg,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.35,
         shadowRadius: 10,

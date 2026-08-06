@@ -22,11 +22,11 @@ export function DevUiGalleryScreen() {
         </View>
 
         <View style={styles.block}>
-          <SgButton label="Open a pack — $25.00" onPress={() => {}} />
+          <SgButton label="Open pack — 2,500 Points" onPress={() => {}} />
           <View style={styles.gap} />
           <SgButton label="Back to packs" variant="line" onPress={() => {}} />
           <View style={styles.gap} />
-          <SgButton label="Open a pack — $25.00" onPress={() => {}} disabled />
+          <SgButton label="Open pack — 2,500 Points" onPress={() => {}} disabled />
         </View>
 
         <View style={styles.block}>
@@ -91,7 +91,7 @@ export function DevUiGalleryScreen() {
             <SgSectionHeader title="Your pull is in the vault" />
             <View style={styles.cardRow}>
               <SgData value="14,483" unit="Points" tone="gold" size="lg" />
-              <SgData value="$0" unit="shipping" size="lg" />
+              <Text style={styles.pendingLabel}>Shipping quote pending</Text>
             </View>
           </SgCard>
         </View>
@@ -152,5 +152,13 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.body,
     fontSize: 13,
     color: sg.muted,
+  },
+  pendingLabel: {
+    maxWidth: 132,
+    color: sg.muted,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: sg.type.sm,
+    lineHeight: 20,
+    textAlign: 'right',
   },
 });

@@ -67,11 +67,11 @@ export function catalogToPack(catalog: CatalogPack): Pack {
     totalInventory,
     remainingInventory,
     valueDescription: catalog.description,
-    // 2026-07-29 copy rule: trade-in is 100% of listed value, in Coins — never
+    // 2026-07-29 copy rule: Trade in is 100% of listed value, in Points — never
     // "buyback" (implies cash), and the number never appears without its basis.
     // "· transparent odds" was removed while the odds are mock — restore it
     // when the odds table is wired to real data (KNOWN_ISSUES #4).
-    guaranteeText: 'Instant Trade in at 100% of listed value',
+    guaranteeText: 'Instant Trade in at 100% of listed value, in Points',
     maxPerUser: catalog.id === 'welcome-pack' ? 1 : null,
     isFirstTimePack: catalog.id === 'welcome-pack',
     packVersionId: packVersionIdForCatalogPackId(catalog.id),

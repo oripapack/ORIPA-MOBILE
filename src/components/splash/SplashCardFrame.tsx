@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: FRAME_W + 28,
     height: FRAME_H + 28,
-    borderRadius: sg.radius.panel + 8,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.neon,
     ...sg.glowNeon,
   },

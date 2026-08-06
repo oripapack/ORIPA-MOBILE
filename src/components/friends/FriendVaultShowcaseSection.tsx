@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 import { useAppStore } from '../../store/useAppStore';
 import { normalizeFriendUsername } from '../../data/friends';
@@ -28,12 +26,14 @@ type Props = {
   friendEntry?: FriendEntry | null;
 };
 
+const EMPTY_PUBLIC_LISTINGS: PublicVaultListing[] = [];
+
 export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry }: Props) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const user = useAppStore((s) => s.user);
   const key = useMemo(() => normalizeFriendUsername(sellerUsername), [sellerUsername]);
-  const listings = useAppStore((s) => s.friendVaultShopByUser[key] ?? []);
+  const listings = useAppStore((s) => s.friendVaultShopByUser[key] ?? EMPTY_PUBLIC_LISTINGS);
 
   const pulls = useMemo(
     () => getFriendVaultShowcasePulls({ username: key, isSelf, user, friendEntry: friendEntry ?? null }),
@@ -42,8 +42,8 @@ export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry
 
   const [sheetPull, setSheetPull] = useState<Pull | null>(null);
 
-  const horizontalPad = spacing.base;
-  const gap = spacing.sm;
+  const horizontalPad = sg.space.md;
+  const gap = sg.space.sm;
   const tileW = Math.max(148, (width - horizontalPad * 2 - gap) / 2);
 
   const openCheckout = useCallback((_listingId: string, priceUsd: number, title: string) => {
@@ -154,52 +154,52 @@ function VaultTile({
 }
 
 const styles = StyleSheet.create({
-  wrap: { marginBottom: spacing.lg },
+  wrap: { marginBottom: sg.space.lg },
   section: {
     fontSize: 10,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
-    marginTop: spacing.sm,
+    marginBottom: sg.space.xs,
+    marginTop: sg.space.sm,
   },
   hint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  tileOuter: { marginBottom: spacing.sm },
+  tileOuter: { marginBottom: sg.space.sm },
   tileCard: { minHeight: 168 },
   tileCardListed: {
     borderColor: 'rgba(212,175,55,0.38)',
     borderWidth: 1.5,
   },
-  tileInner: { padding: spacing.md, minHeight: 168 },
+  tileInner: { padding: sg.space.md, minHeight: 168 },
   tileResult: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     lineHeight: 20,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   tilePack: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
     flex: 1,
   },
   buyBadge: {
     alignSelf: 'flex-start',
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
     paddingVertical: 3,
-    paddingHorizontal: spacing.sm,
-    borderRadius: radius.full,
+    paddingHorizontal: sg.space.sm,
+    borderRadius: sg.radius.tag,
     backgroundColor: 'rgba(212,175,55,0.08)',
     borderWidth: 1,
     borderColor: 'rgba(212,175,55,0.55)',
@@ -212,17 +212,17 @@ const styles = StyleSheet.create({
   },
   tilePrice: {
     marginTop: 4,
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     color: sg.text,
   },
   reqBadge: {
     alignSelf: 'flex-start',
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
     paddingVertical: 3,
-    paddingHorizontal: spacing.sm,
-    borderRadius: radius.full,
+    paddingHorizontal: sg.space.sm,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.surface2,
     borderWidth: 1,
     borderColor: sg.line,
@@ -239,9 +239,9 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
   },
-  emptyInner: { padding: spacing.lg },
+  emptyInner: { padding: sg.space.lg },
   empty: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     textAlign: 'center',
     lineHeight: 20,

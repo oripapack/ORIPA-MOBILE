@@ -21,7 +21,6 @@ import { ListingCard } from '../components/marketplace/ListingCard';
 import { WhyChoosePullHub } from '../components/marketplace/WhyChoosePullHub';
 import { CardMarketListingRow } from '../components/marketplace/CardMarketListingRow';
 import { sg } from '../tokens/sg';
-import { radius, spacing } from '../tokens/spacing';
 import {
   marketplaceStores,
   marketplaceListings,
@@ -41,15 +40,6 @@ import { useAppStore } from '../store/useAppStore';
 import { getAllCardMarketListings } from '../lib/friendVaultShop';
 
 type MarketTab = 'packs' | 'cards';
-
-// Screen-local migration adapter: active marketplace UI uses the N2 faces.
-const fontSize = { xs: 11, sm: 13, base: 15, md: 17, lg: 20, xl: 24 } as const;
-const brandFont = {
-  medium: sg.font.bodyMedium,
-  semibold: sg.font.bodyMedium,
-  bold: sg.font.bodyBold,
-  black: sg.font.bodyBold,
-} as const;
 
 const CARD_SORT_OPTIONS = [
   { key: 'price_low', label: 'Price ↑' },
@@ -329,7 +319,7 @@ export function MarketplaceScreen() {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
       >
-        <Text style={[styles.pageTitle, { paddingTop: spacing.sm }]}>{t('marketplace.storeTitle')}</Text>
+        <Text style={[styles.pageTitle, { paddingTop: sg.space.sm }]}>{t('marketplace.storeTitle')}</Text>
         <Text style={styles.lead}>{t('marketplace.storeLead')}</Text>
 
         <View style={styles.searchShell}>
@@ -543,7 +533,7 @@ export function MarketplaceScreen() {
       >
         <View style={styles.modalRoot}>
           <Pressable style={styles.modalBackdrop} onPress={() => setFiltersOpen(false)} />
-          <View style={[styles.modalSheet, { paddingBottom: insets.bottom + spacing.lg }]}>
+          <View style={[styles.modalSheet, { paddingBottom: insets.bottom + sg.space.lg }]}>
             <View style={styles.modalGrabber} />
             <View style={styles.modalHeaderRow}>
               <Text style={styles.modalTitle}>{t('marketplace.filtersModalTitle')}</Text>
@@ -633,11 +623,11 @@ const styles = StyleSheet.create({
   // ── Tab switcher ──
   tabBar: {
     flexDirection: 'row',
-    marginHorizontal: spacing.base,
-    marginTop: spacing.sm,
-    marginBottom: spacing.xs,
+    marginHorizontal: sg.space.md,
+    marginTop: sg.space.sm,
+    marginBottom: sg.space.xs,
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     padding: 3,
     borderWidth: 1,
     borderColor: sg.line,
@@ -645,7 +635,7 @@ const styles = StyleSheet.create({
   tabBtn: {
     flex: 1,
     paddingVertical: 9,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     alignItems: 'center',
   },
   tabBtnActive: {
@@ -659,42 +649,42 @@ const styles = StyleSheet.create({
     gap: sg.space.sm,
   },
   tabBtnText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   tabBtnTextActive: {
     color: sg.text,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
   },
   // ── Card marketplace ──
   cardMarketRoot: {
     flex: 1,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   cardMarketTitle: {
     fontSize: 26,
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.3,
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
     marginBottom: 4,
   },
   cardMarketLead: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   cardSortRow: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
+    gap: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   sortPill: {
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: sg.space.md,
     paddingVertical: 7,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.surface2,
     borderWidth: 1,
     borderColor: sg.line,
@@ -705,30 +695,30 @@ const styles = StyleSheet.create({
   },
   sortPillText: {
     fontSize: 12,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   sortPillTextActive: {
     color: sg.gold,
   },
   cardListContent: {
-    paddingTop: spacing.xs,
+    paddingTop: sg.space.xs,
   },
   cardEmptyWrap: {
     alignItems: 'center',
-    paddingVertical: spacing.xxxl,
+    paddingVertical: sg.space.xxl,
   },
   cardEmptyIcon: {
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   cardEmptyTitle: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.md,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   cardEmptyBody: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     textAlign: 'center',
     lineHeight: 20,
@@ -745,52 +735,52 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontFamily: sg.font.display,
     color: sg.text,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
     marginBottom: 4,
     letterSpacing: -0.3,
   },
   lead: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    paddingHorizontal: spacing.base,
-    marginBottom: spacing.md,
+    paddingHorizontal: sg.space.md,
+    marginBottom: sg.space.md,
   },
   searchShell: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.sm,
-    paddingHorizontal: spacing.sm,
+    marginHorizontal: sg.space.md,
+    marginBottom: sg.space.sm,
+    paddingHorizontal: sg.space.sm,
     minHeight: 44,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
   },
   searchIcon: {
-    marginRight: spacing.xs,
+    marginRight: sg.space.xs,
   },
   searchInput: {
     flex: 1,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.text,
-    paddingVertical: spacing.sm,
+    paddingVertical: sg.space.sm,
     minWidth: 0,
   },
   resultsMeta: {
     fontSize: 11,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    paddingHorizontal: spacing.base,
-    marginBottom: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    marginBottom: sg.space.sm,
   },
   catRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
-    paddingLeft: spacing.base,
-    paddingRight: spacing.xs,
+    marginBottom: sg.space.sm,
+    paddingLeft: sg.space.md,
+    paddingRight: sg.space.xs,
   },
   catScrollFlex: {
     flex: 1,
@@ -798,17 +788,17 @@ const styles = StyleSheet.create({
   },
   catScroll: {
     gap: 8,
-    paddingRight: spacing.xs,
+    paddingRight: sg.space.xs,
     paddingVertical: 2,
   },
   filterFab: {
     position: 'relative',
     width: 44,
     height: 44,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.sm,
+    marginRight: sg.space.sm,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
@@ -829,7 +819,7 @@ const styles = StyleSheet.create({
   },
   filterBadgeText: {
     fontSize: 9,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.surface2,
   },
   modalRoot: {
@@ -842,10 +832,10 @@ const styles = StyleSheet.create({
   },
   modalSheet: {
     backgroundColor: sg.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.sm,
+    borderTopLeftRadius: sg.radius.panel,
+    borderTopRightRadius: sg.radius.panel,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.sm,
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderRightWidth: 1,
@@ -857,69 +847,69 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: sg.line,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   modalHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   modalTitle: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontSize: sg.type.lg,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     flex: 1,
-    paddingRight: spacing.sm,
+    paddingRight: sg.space.sm,
   },
   modalSectionLabel: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   modalSectionLabelSpaced: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
   },
   modalChipWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   modalFooter: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
-    marginTop: spacing.lg,
+    gap: sg.space.md,
+    marginTop: sg.space.lg,
   },
   modalResetBtn: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.xs,
+    paddingVertical: sg.space.sm,
+    paddingHorizontal: sg.space.xs,
   },
   modalResetText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   modalDoneBtn: {
     flex: 1,
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.panel,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
   },
   modalDoneText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   catChip: {
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: sg.space.md,
     paddingVertical: 9,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.surface2,
     borderWidth: 1,
     borderColor: sg.line,
@@ -930,18 +920,18 @@ const styles = StyleSheet.create({
     borderColor: sg.gold,
   },
   catChipText: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontSize: sg.type.xs,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   catChipTextActive: {
     color: sg.gold,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
   },
   sortChip: {
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: sg.space.sm,
     paddingVertical: 7,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
@@ -952,16 +942,16 @@ const styles = StyleSheet.create({
   },
   sortChipText: {
     fontSize: 11,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   sortChipTextActive: {
     color: sg.gold,
   },
   regionChip: {
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: sg.space.sm,
     paddingVertical: 7,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     backgroundColor: sg.surface2,
     borderWidth: 1,
     borderColor: sg.line,
@@ -972,21 +962,21 @@ const styles = StyleSheet.create({
   },
   regionChipText: {
     fontSize: 11,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   regionChipTextActive: {
     color: sg.gold,
   },
   section: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   sectionHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.base,
-    marginBottom: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    marginBottom: sg.space.sm,
   },
   sectionTitle: {
     fontSize: 20,
@@ -995,41 +985,41 @@ const styles = StyleSheet.create({
   },
   saleTag: {
     backgroundColor: sg.error,
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: sg.space.sm,
     paddingVertical: 3,
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
   },
   saleTagText: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     letterSpacing: 0.5,
   },
   hRow: {
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.xs,
+    paddingHorizontal: sg.space.md,
+    paddingBottom: sg.space.xs,
   },
   sectionEyebrow: {
     fontSize: 11,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.2,
-    paddingHorizontal: spacing.base,
-    marginBottom: spacing.sm,
-    marginTop: spacing.xs,
+    paddingHorizontal: sg.space.md,
+    marginBottom: sg.space.sm,
+    marginTop: sg.space.xs,
   },
   storeBlock: {
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.lg,
-    paddingBottom: spacing.sm,
+    marginHorizontal: sg.space.md,
+    marginBottom: sg.space.lg,
+    paddingBottom: sg.space.sm,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
   },
   storeHeader: {
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   hRowStore: {
-    paddingBottom: spacing.xs,
+    paddingBottom: sg.space.xs,
     marginHorizontal: -2,
   },
   storeTitleRow: {
@@ -1040,16 +1030,16 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   storeName: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontSize: sg.type.md,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   verifiedIcon: {
     marginTop: 1,
   },
   storeShipsFrom: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.xs,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     marginBottom: 2,
     letterSpacing: 0.2,
@@ -1063,7 +1053,7 @@ const styles = StyleSheet.create({
   storeMetaLine: {
     fontSize: 11,
     color: sg.muted,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     marginBottom: 2,
   },
   storeMetaDot: {
@@ -1073,63 +1063,63 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: sg.muted,
     marginBottom: 4,
-    fontFamily: brandFont.semibold,
+    fontFamily: sg.font.bodyMedium,
   },
   storeTagline: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     marginBottom: 2,
     lineHeight: 18,
   },
   emptyWrap: {
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.lg,
+    paddingHorizontal: sg.space.lg,
+    paddingVertical: sg.space.lg,
     alignItems: 'center',
   },
   emptyTitle: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.md,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
     textAlign: 'center',
   },
   emptyHint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     textAlign: 'center',
     lineHeight: 18,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   emptyCta: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.md,
+    paddingVertical: sg.space.sm,
+    paddingHorizontal: sg.space.lg,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: 'rgba(212,175,55,0.38)',
     backgroundColor: 'rgba(212,175,55,0.12)',
   },
   emptyCtaText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
   },
   promoCompact: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: spacing.base,
-    marginTop: spacing.md,
-    marginBottom: spacing.lg,
-    padding: spacing.sm,
-    borderRadius: radius.lg,
+    marginHorizontal: sg.space.md,
+    marginTop: sg.space.md,
+    marginBottom: sg.space.lg,
+    padding: sg.space.sm,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   promoThumb: {
     width: 52,
     height: 52,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     backgroundColor: sg.line,
   },
   promoCopy: {
@@ -1137,15 +1127,15 @@ const styles = StyleSheet.create({
   },
   promoEyebrow: {
     fontSize: 9,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     marginBottom: 2,
     textTransform: 'uppercase',
   },
   promoTitle: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
     marginBottom: 2,
   },
@@ -1155,14 +1145,14 @@ const styles = StyleSheet.create({
     lineHeight: 15,
   },
   demoNoteEmpty: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
   },
   demoNote: {
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.sm,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.md,
+    marginHorizontal: sg.space.md,
+    marginBottom: sg.space.sm,
+    paddingVertical: sg.space.sm,
+    paddingHorizontal: sg.space.md,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: 'rgba(111,191,143,0.35)',
     backgroundColor: 'rgba(111,191,143,0.12)',

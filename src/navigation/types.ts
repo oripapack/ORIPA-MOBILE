@@ -14,6 +14,8 @@ export type RootStackParamList = {
   Settings: undefined;
   /** Dev-only component gallery (EXPO_PUBLIC_DEV_SCREEN=UiGallery). */
   DevUiGallery: undefined;
+  /** Build-time-only visual audit route; never linked from product navigation. */
+  DevOnboardingPreview: undefined;
   PackDetails: { packId: string };
   /**
    * Post-opening pull record. Not wired to the opening flow yet — without

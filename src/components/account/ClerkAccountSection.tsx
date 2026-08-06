@@ -3,8 +3,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { AppUserUnsafeMetadata } from '../../lib/clerkProfile';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
@@ -69,41 +67,41 @@ function ClerkAccountSectionInner() {
 
 const styles = StyleSheet.create({
   sectionHeader: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginTop: spacing.sm,
-    marginBottom: spacing.xs,
-    paddingLeft: spacing.xs,
+    marginTop: sg.space.sm,
+    marginBottom: sg.space.xs,
+    paddingLeft: sg.space.xs,
   },
   wrap: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   cardInner: {
-    paddingTop: spacing.md,
-    paddingBottom: spacing.md,
+    paddingTop: sg.space.md,
+    paddingBottom: sg.space.md,
   },
   fieldBlock: {
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   fieldBlockLast: {
     marginBottom: 0,
   },
   contactLabel: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     marginBottom: 4,
   },
   contactValue: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   contactValueMuted: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },

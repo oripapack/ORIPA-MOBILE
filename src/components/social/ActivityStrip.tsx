@@ -3,7 +3,6 @@ import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import type { ActivityHighlight } from '../../data/socialMock';
-import { radius, spacing } from '../../tokens/spacing';
 
 const ACTIVITY_ICONS = ['trophy-outline', 'cube-outline', 'sparkles-outline'] as const;
 
@@ -27,16 +26,16 @@ export function ActivityStrip({ items }: { items: ActivityHighlight[] }) {
 }
 
 const styles = StyleSheet.create({
-  scroll: { gap: spacing.sm, paddingVertical: 2 },
+  scroll: { gap: sg.space.sm, paddingVertical: 2 },
   card: {
     width: 220,
-    padding: spacing.md,
-    borderRadius: radius.lg,
+    padding: sg.space.md,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
+    borderColor: sg.line,
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     alignItems: 'flex-start',
   },
   text: {

@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useMemo, useState } from 'react';
 import { sg } from '../tokens/sg';
 import {
+  Platform,
   View,
   Text,
   ScrollView,
@@ -11,8 +12,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
 import {
@@ -22,7 +21,7 @@ import {
   getSocialProfile,
   type SocialUserProfile,
 } from '../data/socialMock';
-import { formatUsd } from '../lib/socialFormat';
+import { formatPoints } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
 import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
@@ -46,7 +45,9 @@ export function FriendProfileScreen() {
 
   const normalized = username.trim().toLowerCase();
   const isSelf = user.username.trim().toLowerCase() === normalized;
-  const isFriend = friends.some((f) => f.username === normalized);
+  const isVisualPreview =
+    process.env.EXPO_PUBLIC_UI_PREVIEW === '1' && Platform.OS === 'web';
+  const isFriend = isVisualPreview || friends.some((f) => f.username === normalized);
 
   const profile: SocialUserProfile | null = useMemo(() => {
     if (isSelf) return deriveSocialProfileFromUser(user);
@@ -64,7 +65,11 @@ export function FriendProfileScreen() {
       headerTintColor: sg.text,
       headerTitleStyle: { fontFamily: sg.font.bodyBold },
       headerShadowVisible: false,
-      headerStyle: { backgroundColor: sg.surface2 },
+      headerStyle: {
+        backgroundColor: sg.bg,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: sg.line,
+      },
     });
   }, [navigation, profile, t]);
 
@@ -72,7 +77,7 @@ export function FriendProfileScreen() {
 
   if (!isSelf && !isFriend) {
     return (
-      <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
+      <View style={[styles.center, { paddingTop: insets.top + sg.space.lg }]}>
         <Text style={styles.errTitle}>{t('social.notFriendTitle')}</Text>
         <Text style={styles.errBody}>{t('social.notFriendBody')}</Text>
         <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
@@ -84,7 +89,7 @@ export function FriendProfileScreen() {
 
   if (!profile) {
     return (
-      <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
+      <View style={[styles.center, { paddingTop: insets.top + sg.space.lg }]}>
         <Text style={styles.errTitle}>{t('social.profileMissingTitle')}</Text>
         <Text style={styles.errBody}>{t('social.profileMissingBody')}</Text>
         <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
@@ -102,7 +107,7 @@ export function FriendProfileScreen() {
       <ScrollView
         contentContainerStyle={[
           styles.scroll,
-          { paddingBottom: insets.bottom + spacing.xxxl, paddingTop: spacing.md },
+          { paddingBottom: insets.bottom + sg.space.xxl, paddingTop: sg.space.md },
         ]}
         showsVerticalScrollIndicator={false}
       >
@@ -125,7 +130,7 @@ export function FriendProfileScreen() {
             <Text style={styles.statLab}>{t('social.statPacks')}</Text>
           </View>
           <View style={styles.statCell}>
-            <Text style={styles.statVal}>{formatUsd(s.totalEstimatedValue)}</Text>
+            <Text style={styles.statVal}>{formatPoints(s.totalEstimatedValue)}</Text>
             <Text style={styles.statLab}>{t('social.statValue')}</Text>
           </View>
           <View style={styles.statCell}>
@@ -149,7 +154,7 @@ export function FriendProfileScreen() {
           <Text style={styles.bestName} numberOfLines={2}>
             {s.bestPullCardName}
           </Text>
-          <Text style={styles.bestVal}>{formatUsd(s.bestPullValue)}</Text>
+          <Text style={styles.bestVal}>{formatPoints(s.bestPullValue)}</Text>
           <Text style={styles.bestSub}>{t('social.estimatedValue')}</Text>
         </View>
 
@@ -217,24 +222,24 @@ export function FriendProfileScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: sg.bg },
-  scroll: { paddingHorizontal: spacing.base },
-  center: { flex: 1, paddingHorizontal: spacing.lg, backgroundColor: sg.bg },
+  scroll: { paddingHorizontal: sg.space.md },
+  center: { flex: 1, paddingHorizontal: sg.space.lg, backgroundColor: sg.bg },
   errTitle: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
-  errBody: { fontSize: fontSize.sm, color: sg.muted, lineHeight: 20, marginBottom: spacing.lg },
+  errBody: { fontSize: sg.type.sm, color: sg.muted, lineHeight: 20, marginBottom: sg.space.lg },
   errBtn: {
     alignSelf: 'flex-start',
     backgroundColor: sg.surface2,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderRadius: radius.lg,
+    paddingHorizontal: sg.space.lg,
+    paddingVertical: sg.space.md,
+    borderRadius: sg.radius.panel,
   },
   errBtnText: { color: sg.text, fontFamily: sg.font.bodyBold },
-  hero: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md, alignItems: 'center' },
+  hero: { flexDirection: 'row', gap: sg.space.md, marginBottom: sg.space.md, alignItems: 'center' },
   avatar: {
     fontSize: 22,
     fontFamily: sg.font.bodyBold,
@@ -250,37 +255,37 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   heroText: { flex: 1, minWidth: 0 },
-  dn: { fontSize: fontSize.xl, fontFamily: sg.font.display, color: sg.text },
-  un: { fontSize: fontSize.sm, fontFamily: sg.font.bodyMedium, color: sg.muted, marginTop: 2 },
+  dn: { fontSize: sg.type.xl, fontFamily: sg.font.display, color: sg.text },
+  un: { fontSize: sg.type.sm, fontFamily: sg.font.bodyMedium, color: sg.muted, marginTop: 2 },
   status: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
-    marginTop: spacing.xs,
+    marginTop: sg.space.xs,
   },
   bio: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 21,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
-  joined: { fontSize: fontSize.xs, color: sg.muted, marginBottom: spacing.lg },
+  joined: { fontSize: sg.type.xs, color: sg.muted, marginBottom: sg.space.lg },
   statGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginBottom: spacing.lg,
+    gap: sg.space.sm,
+    marginBottom: sg.space.lg,
   },
   statCell: {
     width: '47%',
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    padding: spacing.md,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
     borderWidth: 1,
     borderColor: sg.line,
   },
   statVal: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     fontVariant: [...sg.numeric],
@@ -292,40 +297,40 @@ const styles = StyleSheet.create({
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: spacing.md,
-    marginTop: spacing.sm,
+    marginBottom: sg.space.md,
+    marginTop: sg.space.sm,
   },
   bestCard: {
     backgroundColor: sg.surface,
-    borderRadius: radius.xl,
-    padding: spacing.lg,
-    marginBottom: spacing.lg,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.lg,
+    marginBottom: sg.space.lg,
     borderWidth: 1,
     borderColor: sg.line,
   },
-  bestName: { fontSize: fontSize.lg, fontFamily: sg.font.bodyBold, color: sg.text, marginBottom: spacing.sm },
+  bestName: { fontSize: sg.type.lg, fontFamily: sg.font.bodyBold, color: sg.text, marginBottom: sg.space.sm },
   bestVal: {
-    fontSize: fontSize.hero - 4,
+    fontSize: sg.type.hero - 4,
     fontFamily: sg.font.dataBold,
     color: sg.gold,
     fontVariant: [...sg.numeric],
   },
-  bestSub: { fontSize: fontSize.xs, color: sg.muted, marginTop: 4 },
+  bestSub: { fontSize: sg.type.xs, color: sg.muted, marginTop: 4 },
   tierPendingCard: {
     backgroundColor: sg.surface,
     borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
-    padding: spacing.md,
-    marginBottom: spacing.lg,
+    padding: sg.space.md,
+    marginBottom: sg.space.lg,
   },
   tierPending: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
   },
-  actions: { gap: spacing.sm, marginTop: spacing.lg },
+  actions: { gap: sg.space.sm, marginTop: sg.space.lg },
   btnDark: {
     height: 52,
     borderRadius: sg.radius.btn,
@@ -333,7 +338,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnDarkText: { color: sg.onGold, fontFamily: sg.font.bodyBold, fontSize: fontSize.md },
+  btnDarkText: { color: sg.onGold, fontFamily: sg.font.bodyBold, fontSize: sg.type.md },
   btnOutline: {
     height: 52,
     borderRadius: sg.radius.btn,
@@ -342,13 +347,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnOutlineText: { color: sg.text, fontFamily: sg.font.bodyBold, fontSize: fontSize.md },
+  btnOutlineText: { color: sg.text, fontFamily: sg.font.bodyBold, fontSize: sg.type.md },
   btnGhost: { height: 48, alignItems: 'center', justifyContent: 'center' },
-  btnGhostText: { color: sg.muted, fontFamily: sg.font.bodyMedium, fontSize: fontSize.sm },
-  selfLb: { marginTop: spacing.md },
+  btnGhostText: { color: sg.muted, fontFamily: sg.font.bodyMedium, fontSize: sg.type.sm },
+  selfLb: { marginTop: sg.space.md },
   emptyPulls: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
 });

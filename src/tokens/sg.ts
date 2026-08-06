@@ -74,6 +74,17 @@ export const sg = {
     data: 'SplineSansMono_400Regular',
     dataBold: 'SplineSansMono_500Medium',
   },
+  /** Compact RN type scale used by all N2 screens. */
+  type: {
+    xs: 11,
+    sm: 13,
+    base: 15,
+    md: 17,
+    lg: 20,
+    xl: 24,
+    xxl: 28,
+    hero: 34,
+  } as const,
   /** fontVariant for every numeric display (price/odds/stock/cert/balance). */
   numeric: ['tabular-nums'] as const,
 

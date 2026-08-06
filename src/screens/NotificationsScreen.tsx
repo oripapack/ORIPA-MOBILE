@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Notifications'>;
@@ -40,7 +38,7 @@ export function NotificationsScreen() {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxl }]}
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.lead}>{t('notifications.lead')}</Text>
@@ -67,40 +65,40 @@ export function NotificationsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
-  content: { padding: spacing.base, paddingTop: spacing.md },
+  content: { padding: sg.space.md, paddingTop: sg.space.md },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: spacing.md,
+    gap: sg.space.md,
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    padding: spacing.base,
-    marginBottom: spacing.sm,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
+    marginBottom: sg.space.sm,
     borderWidth: 1,
     borderColor: sg.line,
   },
   rowText: { flex: 1, minWidth: 0 },
   rowTitle: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },
   rowSub: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     marginTop: 4,
     lineHeight: 18,
   },
   note: {
-    marginTop: spacing.md,
-    fontSize: fontSize.xs,
+    marginTop: sg.space.md,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
   },

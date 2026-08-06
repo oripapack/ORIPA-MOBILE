@@ -2,8 +2,6 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { SOCIAL_URLS } from '../../config/social';
 import { openExternalUrl } from '../../utils/openExternalUrl';
 
@@ -13,12 +11,11 @@ const SOCIAL_CONFIG: {
   id: SocialId;
   label: string;
   icon: 'instagram' | 'twitter' | 'youtube' | 'discord';
-  color: string;
 }[] = [
-  { id: 'instagram', label: 'Instagram', icon: 'instagram', color: '#E4405F' },
-  { id: 'x', label: 'X', icon: 'twitter', color: '#F8FAFC' },
-  { id: 'youtube', label: 'YouTube', icon: 'youtube', color: '#FF0000' },
-  { id: 'discord', label: 'Discord', icon: 'discord', color: '#5865F2' },
+  { id: 'instagram', label: 'Instagram', icon: 'instagram' },
+  { id: 'x', label: 'X', icon: 'twitter' },
+  { id: 'youtube', label: 'YouTube', icon: 'youtube' },
+  { id: 'discord', label: 'Discord', icon: 'discord' },
 ];
 
 type Props = {
@@ -37,13 +34,13 @@ export function SocialFollowRow({ compact = false }: Props) {
         {SOCIAL_CONFIG.map((item) => (
           <TouchableOpacity
             key={item.id}
-            style={[styles.compactBtn, { borderColor: `${item.color}44` }]}
+            style={styles.compactBtn}
             activeOpacity={0.82}
             onPress={() => void open(item.id)}
             accessibilityRole="link"
             accessibilityLabel={`Open ${item.label}`}
           >
-            <FontAwesome5 name={item.icon} size={20} color={item.color} brand />
+            <FontAwesome5 name={item.icon} size={20} color={sg.text} brand />
           </TouchableOpacity>
         ))}
       </View>
@@ -61,8 +58,8 @@ export function SocialFollowRow({ compact = false }: Props) {
           accessibilityRole="link"
           accessibilityLabel={`Open ${item.label}`}
         >
-          <View style={[styles.iconBubble, { borderColor: `${item.color}55` }]}>
-            <FontAwesome5 name={item.icon} size={22} color={item.color} brand />
+          <View style={styles.iconBubble}>
+            <FontAwesome5 name={item.icon} size={22} color={sg.text} brand />
           </View>
           <Text style={styles.socialLabel}>{item.label}</Text>
         </TouchableOpacity>
@@ -76,8 +73,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: spacing.md,
-    paddingVertical: spacing.xs,
+    gap: sg.space.md,
+    paddingVertical: sg.space.xs,
   },
   compactBtn: {
     width: 44,
@@ -92,7 +89,7 @@ const styles = StyleSheet.create({
   socialRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     justifyContent: 'space-between',
   },
   socialBtn: {
@@ -100,11 +97,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minWidth: '45%',
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.sm,
+    borderRadius: sg.radius.panel,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.sm,
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     borderWidth: 1,
     borderColor: sg.line,
   },
@@ -116,9 +113,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
+    borderColor: sg.line,
   },
   socialLabel: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     letterSpacing: 0.2,

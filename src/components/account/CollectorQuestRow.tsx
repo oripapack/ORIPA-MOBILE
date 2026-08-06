@@ -3,8 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { CollectorQuestDef } from '../../data/collectorQuests';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 type QuestProgress = { progress: number; claimed: boolean };
 
@@ -57,14 +55,14 @@ export function CollectorQuestRow({ def, row, onClaim, compact, isLast }: Props)
 
 const styles = StyleSheet.create({
   questRow: {
-    marginBottom: spacing.md,
-    paddingBottom: spacing.md,
+    marginBottom: sg.space.md,
+    paddingBottom: sg.space.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sg.line,
   },
   questRowCompact: {
-    marginBottom: spacing.sm,
-    paddingBottom: spacing.sm,
+    marginBottom: sg.space.sm,
+    paddingBottom: sg.space.sm,
   },
   questRowLast: {
     borderBottomWidth: 0,
@@ -75,7 +73,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     marginBottom: 4,
   },
   questTitleCol: {
@@ -92,16 +90,16 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   questTitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     lineHeight: 20,
   },
   questDesc: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   questMetaRow: { gap: 6 },
   miniTrack: {
@@ -125,8 +123,8 @@ const styles = StyleSheet.create({
   claimBtn: {
     backgroundColor: sg.surface2,
     paddingVertical: 6,
-    paddingHorizontal: spacing.sm,
-    borderRadius: radius.md,
+    paddingHorizontal: sg.space.sm,
+    borderRadius: sg.radius.btn,
   },
   claimBtnText: {
     color: sg.text,

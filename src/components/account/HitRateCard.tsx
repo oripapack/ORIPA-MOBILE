@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 import type { Pull } from '../../data/mockUser';
 import { buildHitRateWindow } from '../../lib/hitRate';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 
 const WINDOW = 10;
@@ -79,11 +77,11 @@ export function HitRateCard({ pullHistory }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   inner: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.md,
   },
   title: {
     fontSize: 10,
@@ -91,40 +89,40 @@ const styles = StyleSheet.create({
     color: sg.muted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   empty: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
   },
   pctRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
+    gap: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   pct: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     color: sg.text,
     letterSpacing: -0.5,
   },
   pctHint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     flex: 1,
   },
   bar: {
     flexDirection: 'row',
     gap: 4,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   barSeg: {
     flex: 1,
     height: 8,
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
   },
   barHit: {
     backgroundColor: sg.success,

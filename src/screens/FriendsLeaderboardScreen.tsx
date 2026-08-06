@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
 import {
@@ -14,7 +12,7 @@ import {
   deriveSocialProfileFromUser,
   type LeaderboardMetric,
 } from '../data/socialMock';
-import { formatUsd as fmt } from '../lib/socialFormat';
+import { formatPoints as fmt } from '../lib/socialFormat';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendsLeaderboard'>;
 
@@ -119,40 +117,40 @@ export function FriendsLeaderboardScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: sg.bg },
   tabBar: { maxHeight: 52, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: sg.line },
-  tabs: { paddingHorizontal: spacing.base, paddingVertical: spacing.sm, gap: spacing.sm, alignItems: 'center' },
+  tabs: { paddingHorizontal: sg.space.md, paddingVertical: sg.space.sm, gap: sg.space.sm, alignItems: 'center' },
   tab: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.full,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.sm,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
   },
   tabOn: { backgroundColor: sg.surface2, borderColor: sg.gold },
-  tabText: { fontSize: fontSize.xs, fontFamily: sg.font.bodyBold, color: sg.muted },
+  tabText: { fontSize: sg.type.xs, fontFamily: sg.font.bodyBold, color: sg.muted },
   tabTextOn: { color: sg.text },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.md,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.md,
     lineHeight: 20,
   },
-  list: { paddingHorizontal: spacing.base, paddingBottom: spacing.xl },
+  list: { paddingHorizontal: sg.space.md, paddingBottom: sg.space.lg },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
+    gap: sg.space.md,
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
+    marginBottom: sg.space.sm,
     borderWidth: 1,
     borderColor: sg.line,
   },
   rowMe: { borderColor: sg.gold, backgroundColor: sg.surface2 },
   rank: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.dataBold,
     color: sg.muted,
     width: 28,
@@ -170,10 +168,10 @@ const styles = StyleSheet.create({
   },
   avatarText: { fontSize: 11, fontFamily: sg.font.bodyBold, color: sg.gold },
   rowMeta: { flex: 1, minWidth: 0 },
-  rowName: { fontSize: fontSize.md, fontFamily: sg.font.bodyBold, color: sg.text },
-  rowUn: { fontSize: fontSize.xs, color: sg.muted, marginTop: 2 },
+  rowName: { fontSize: sg.type.md, fontFamily: sg.font.bodyBold, color: sg.text },
+  rowUn: { fontSize: sg.type.xs, color: sg.muted, marginTop: 2 },
   rowVal: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     fontVariant: [...sg.numeric],

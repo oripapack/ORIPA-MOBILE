@@ -2,10 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import type { FriendActivityFeedItem } from '../../data/socialMock';
-import { formatUsd, formatRelativeTime } from '../../lib/socialFormat';
+import { formatPoints, formatRelativeTime } from '../../lib/socialFormat';
 
 function isJustPulled(d: Date): boolean {
   const s = (Date.now() - d.getTime()) / 1000;
@@ -54,7 +52,7 @@ export function FriendsActivityCard({ item, cardWidth, onOpenProfile }: Props) {
         </Text>
         <View style={styles.bottom}>
           <View>
-            <Text style={styles.value}>{formatUsd(item.estimatedValue)}</Text>
+            <Text style={styles.value}>{formatPoints(item.estimatedValue)}</Text>
             <Text style={styles.valueBasis}>{t('friends.listedValue')}</Text>
           </View>
           <Text style={styles.pack} numberOfLines={1}>
@@ -70,15 +68,15 @@ export function FriendsActivityCard({ item, cardWidth, onOpenProfile }: Props) {
 const styles = StyleSheet.create({
   cardWrap: {
     marginVertical: 4,
-    marginRight: spacing.sm,
+    marginRight: sg.space.sm,
   },
   cardTouchable: {
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     overflow: 'hidden',
   },
   cardInner: {
-    borderRadius: radius.lg,
-    padding: spacing.md,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
@@ -87,8 +85,8 @@ const styles = StyleSheet.create({
   top: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
+    gap: sg.space.sm,
+    marginBottom: sg.space.sm,
   },
   avatar: {
     width: 30,
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   user: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
@@ -140,20 +138,20 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   cardName: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     lineHeight: 20,
   },
   bottom: {
     flexDirection: 'row',
     alignItems: 'baseline',
     justifyContent: 'space-between',
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   value: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.dataBold,
     color: sg.gold,
     fontVariant: [...sg.numeric],

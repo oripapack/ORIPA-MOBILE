@@ -4,8 +4,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as Clipboard from 'expo-clipboard';
 import { PUBLIC_WEB_ORIGIN } from '../../config/app';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
   username: string;
@@ -50,53 +48,53 @@ export function ReferralLinkCard({ username }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    padding: spacing.lg,
+    padding: sg.space.lg,
   },
   eyebrow: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   title: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   body: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   linkBox: {
     backgroundColor: sg.surface,
-    borderRadius: radius.md,
-    padding: spacing.base,
+    borderRadius: sg.radius.btn,
+    padding: sg.space.md,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   link: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.gold,
   },
   copyBtn: {
     alignSelf: 'flex-start',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.base,
-    borderRadius: radius.md,
+    paddingVertical: sg.space.sm,
+    paddingHorizontal: sg.space.md,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface2,
   },
   copyText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },

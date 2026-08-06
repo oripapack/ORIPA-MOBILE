@@ -49,10 +49,10 @@ const styles = StyleSheet.create({
   },
   labelRail: {
     height: 13,
-    borderRadius: 3,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
-    borderColor: '#55555D',
-    backgroundColor: '#24242A',
+    borderColor: sg.muted,
+    backgroundColor: sg.surface,
   },
   labelRailCompact: {
     height: 7,
@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
     maxHeight: '72%',
     borderRadius: sg.radius.tag,
     borderWidth: 1,
-    borderColor: '#55555D',
-    backgroundColor: '#1D1D22',
+    borderColor: sg.muted,
+    backgroundColor: sg.surface,
   },
   dummyCardCompact: {
     width: '54%',
-    borderRadius: 2,
+    borderRadius: sg.radius.tag,
   },
   label: {
     fontFamily: sg.font.dataBold,

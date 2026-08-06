@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 
 type Nav = StackNavigationProp<RootStackParamList, 'IdentityVerification'>;
@@ -30,7 +28,7 @@ export function IdentityVerificationScreen() {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxl }]}
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.body}>{t('identityVerification.body')}</Text>
@@ -49,47 +47,47 @@ export function IdentityVerificationScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
-  content: { padding: spacing.base, paddingTop: spacing.md },
+  content: { padding: sg.space.md, paddingTop: sg.space.md },
   body: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   section: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   para: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   card: {
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    padding: spacing.base,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
     borderWidth: 1,
     borderColor: sg.line,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   cardTitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   cardLine: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.text,
     lineHeight: 22,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   note: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
   },

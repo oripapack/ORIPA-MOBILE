@@ -10,8 +10,6 @@ import { useAppStore } from '../store/useAppStore';
 import { COLLECTOR_QUESTS } from '../data/collectorQuests';
 import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
-import { fontSize } from '../tokens/typography';
-import { spacing } from '../tokens/spacing';
 
 type Nav = StackNavigationProp<RootStackParamList, 'CollectorQuests'>;
 
@@ -25,7 +23,7 @@ export function CollectorQuestsScreen() {
       title: t('account.collectorQuestsTitle'),
       headerShown: true,
       headerTintColor: sg.text,
-      headerTitleStyle: { fontFamily: sg.font.bodyBold, fontSize: fontSize.md },
+      headerTitleStyle: { fontFamily: sg.font.bodyBold, fontSize: sg.type.md },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: sg.surface2 },
     });
@@ -48,7 +46,7 @@ export function CollectorQuestsScreen() {
   return (
     <ScrollView
       style={styles.root}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.lg }]}
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.lead}>{t('progression.questsResetHint')}</Text>
@@ -92,24 +90,24 @@ const styles = StyleSheet.create({
     backgroundColor: sg.bg,
   },
   content: {
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.sm,
   },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   card: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   cardInner: {
-    padding: spacing.lg,
+    padding: sg.space.lg,
   },
   questBlock: {
-    padding: spacing.lg,
-    paddingBottom: spacing.sm,
+    padding: sg.space.lg,
+    paddingBottom: sg.space.sm,
   },
   eyebrow: {
     fontSize: 10,
@@ -117,23 +115,23 @@ const styles = StyleSheet.create({
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   streakRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   streakMain: { flex: 1 },
   streakVal: {
-    fontSize: fontSize.hero,
+    fontSize: sg.type.hero,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     letterSpacing: -1,
     fontVariant: [...sg.numeric],
   },
   streakLab: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     marginTop: 2,
@@ -142,23 +140,23 @@ const styles = StyleSheet.create({
     width: StyleSheet.hairlineWidth,
     height: 44,
     backgroundColor: sg.line,
-    marginHorizontal: spacing.md,
+    marginHorizontal: sg.space.md,
   },
   streakSide: { alignItems: 'flex-end' },
   streakBestLab: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     fontFamily: sg.font.bodyMedium,
   },
   streakBestVal: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     marginTop: 2,
     fontVariant: [...sg.numeric],
   },
   streakFine: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
   },
@@ -168,7 +166,7 @@ const styles = StyleSheet.create({
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: spacing.md,
-    marginTop: spacing.xs,
+    marginBottom: sg.space.md,
+    marginTop: sg.space.xs,
   },
 });

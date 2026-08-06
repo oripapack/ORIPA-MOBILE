@@ -145,7 +145,7 @@
       "liveHitsKicker": "Live hits",
       "hotFloorChip": "Hot"
     },
-    "guaranteeTradeIn": "即時トレードイン 100%(表示価値)"
+    "guaranteeTradeIn": "表示価値の100%をPointsで即時トレードイン"
   },
   "packs": {
     "browseTitle": "パックを探す",

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pull Hub — UI audit</title>
+    <style>
+      :root { color-scheme: dark; font-family: ui-sans-serif, system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #070708; color: #f4f1ea; }
+      header { position: sticky; top: 0; z-index: 2; padding: 20px 24px; border-bottom: 1px solid #29272b; background: rgba(7,7,8,.94); backdrop-filter: blur(16px); }
+      h1 { margin: 0 0 6px; font-family: Georgia, serif; font-size: 28px; }
+      p { margin: 0; color: #a9a5a0; }
+      main { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; padding: 24px; }
+      figure { margin: 0; padding: 12px; border: 1px solid #29272b; border-radius: 16px; background: #111114; }
+      img { display: block; width: 100%; height: auto; border-radius: 10px; background: #000; }
+      figcaption { padding: 12px 2px 2px; color: #d8b94d; font: 600 13px ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Pull Hub — app quality unification</h1>
+      <p>440×956 · English · internal visual audit</p>
+    </header>
+    <main id="gallery"></main>
+    <script>
+      const screens = [
+        ['Home', 'home'], ['Marketplace', 'marketplace'], ['Vault', 'vault'], ['Friends', 'friends'], ['Player', 'account'],
+        ['Pack details', 'pack-details'], ['Result', 'result'], ['Payment portal', 'payment-portal'], ['Authentication', 'auth'],
+        ['Auth bottom sheet', 'auth-bottom-sheet'], ['Phone linking', 'phone-linking'], ['Profile onboarding', 'profile-onboarding'],
+        ['Friend profile', 'friend-profile'], ['Friends leaderboard', 'friends-leaderboard'], ['Settings', 'settings'],
+        ['Shipping address', 'shipping-address'], ['Payout method', 'payout-method'], ['Identity verification', 'identity-verification'],
+        ['Linked accounts', 'linked-accounts'], ['Wallet linking', 'wallet-linking'], ['Help center', 'help-center'], ['Offers', 'offers'],
+        ['Messages', 'messages'], ['Notifications', 'notifications'], ['Membership', 'membership'], ['Level progress', 'level-progress'],
+        ['Collector quests', 'collector-quests'], ['Promotions', 'promotions'], ['Promos info', 'promos-info'],
+        ['Hot drops info', 'hot-drops-info'], ['Pull history', 'pull-history']
+      ];
+      document.querySelector('#gallery').innerHTML = screens.map(([label, file]) =>
+        `<figure><img src="${file}-440x956.png" alt="${label}" loading="lazy"><figcaption>${label}</figcaption></figure>`
+      ).join('');
+    </script>
+  </body>
+</html>

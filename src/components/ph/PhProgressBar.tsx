@@ -1,7 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { ph } from '../../tokens/phTheme';
-import { fontSize } from '../../tokens/typography';
 import { sg } from '../../tokens/sg';
 
 export function PhProgressBar({ fraction }: { fraction: number }) {
@@ -13,11 +11,11 @@ export function PhProgressBar({ fraction }: { fraction: number }) {
         <View
           style={[
             styles.fill,
-            { width: `${Math.max(2, pct)}%`, backgroundColor: isLow ? ph.red : ph.green },
+            { width: `${Math.max(2, pct)}%` },
           ]}
         />
       </View>
-      <Text style={[styles.label, isLow && { color: ph.red, fontFamily: sg.font.dataBold }]}>
+      <Text style={[styles.label, isLow && styles.labelLow]}>
         {isLow ? `Low stock — ${pct}% left` : `${pct}% remaining`}
       </Text>
     </View>
@@ -27,10 +25,11 @@ export function PhProgressBar({ fraction }: { fraction: number }) {
 const styles = StyleSheet.create({
   track: {
     height: 2,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: sg.line,
     borderRadius: 1,
     overflow: 'hidden',
   },
-  fill: { height: '100%', borderRadius: 1 },
-  label: { marginTop: 4, fontSize: 10, fontFamily: sg.font.data, color: ph.textMuted },
+  fill: { height: '100%', borderRadius: 1, backgroundColor: sg.success },
+  label: { marginTop: 4, fontSize: 10, fontFamily: sg.font.data, color: sg.muted },
+  labelLow: { color: sg.success, fontFamily: sg.font.dataBold },
 });

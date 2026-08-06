@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import type { PublicVaultListing } from '../../lib/friendVaultShop';
 import { showUserMessage } from '../../utils/showUserMessage';
 import { navigationRef } from '../../navigation/navigationRef';
@@ -68,32 +66,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: sg.surface,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     overflow: 'hidden',
   },
   infoWrap: {
     flex: 1,
-    padding: spacing.md,
-    paddingRight: spacing.sm,
+    padding: sg.space.md,
+    paddingRight: sg.space.sm,
     gap: 4,
   },
   topLine: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
+    gap: sg.space.xs,
   },
   cardName: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     flex: 1,
   },
   ownBadge: {
     backgroundColor: 'rgba(212,175,55,0.14)',
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderWidth: 1,
@@ -106,7 +104,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   packName: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 16,
@@ -114,7 +112,7 @@ const styles = StyleSheet.create({
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
+    gap: sg.space.xs,
     marginTop: 2,
   },
   sellerText: {
@@ -124,12 +122,12 @@ const styles = StyleSheet.create({
   },
   rightWrap: {
     alignItems: 'flex-end',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    gap: spacing.xs,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.md,
+    gap: sg.space.xs,
   },
   price: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     color: sg.text,
@@ -144,9 +142,9 @@ const styles = StyleSheet.create({
   },
   buyBtn: {
     backgroundColor: sg.gold,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     paddingVertical: 6,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: sg.space.md,
   },
   buyBtnOwn: {
     backgroundColor: sg.surface2,

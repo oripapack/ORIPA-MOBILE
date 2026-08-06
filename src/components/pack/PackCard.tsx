@@ -1,16 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Animated } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { ChipTagType, Pack, packImageSource } from '../../data/mockPacks';
 import { getMockPackTopHit } from '../../data/mockTopHits';
 import { getMockPackOdds } from '../../data/mockPackOdds';
 import { sg } from '../../tokens/sg';
 import { AssetBlockedCard } from '../shared/AssetBlockedCard';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 import { useMembershipSimulationStore } from '../../store/membershipSimulationStore';
 import { membershipMeetsRequired } from '../../data/membershipPlans';
@@ -20,11 +17,8 @@ import { useRequireAuth } from '../../hooks/useRequireAuth';
 import { PackOddsModal } from './PackOddsModal';
 import type { PackOpenQuantity } from '../../store/useAppStore';
 
-const WIN_W = Dimensions.get('window').width;
-const CARD_GUTTER = spacing.base * 2;
-const CARD_W = WIN_W - CARD_GUTTER;
 const PACK_IMG_H = 184;
-const CARD_RADIUS = radius.lg;
+const CARD_RADIUS = sg.radius.panel;
 
 const TAG_PRIORITY: ChipTagType[] = [
   'first_time',
@@ -124,7 +118,7 @@ export function PackCard({ pack, onPress }: Props) {
         accessibilityRole="button"
         accessibilityLabel={loc.title}
       >
-        <View style={[styles.hero, { backgroundColor: pack.imageColor ?? sg.surface2 }]}>
+        <View style={styles.hero}>
           {pack.imageUrl != null ? (
             <>
               <Image
@@ -142,17 +136,9 @@ export function PackCard({ pack, onPress }: Props) {
               />
             </>
           ) : (
-            <View style={styles.heroFade} pointerEvents="none">
-              <Svg width={CARD_W} height={PACK_IMG_H}>
-                <Defs>
-                  <SvgLinearGradient id={`packImgFade-${pack.id}`} x1="0.5" y1="0" x2="0.5" y2="1">
-                    <Stop offset="0" stopColor="#000000" stopOpacity={0} />
-                    <Stop offset="0.7" stopColor="#000000" stopOpacity={0.06} />
-                    <Stop offset="1" stopColor="#000000" stopOpacity={0.2} />
-                  </SvgLinearGradient>
-                </Defs>
-                <Rect x={0} y={0} width={CARD_W} height={PACK_IMG_H} fill={`url(#packImgFade-${pack.id})`} />
-              </Svg>
+            <View style={styles.packArtPending} pointerEvents="none">
+              <View style={styles.packArtDummy} />
+              <Text style={styles.packArtPendingText}>PACK ART PENDING</Text>
             </View>
           )}
 
@@ -301,8 +287,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: sg.surface,
     borderRadius: CARD_RADIUS,
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.xl,
+    marginHorizontal: sg.space.md,
+    marginBottom: sg.space.lg,
     overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
@@ -317,6 +303,7 @@ const styles = StyleSheet.create({
     height: PACK_IMG_H,
     width: '100%',
     overflow: 'hidden',
+    backgroundColor: sg.surface2,
   },
   heroImage: {
     ...StyleSheet.absoluteFillObject,
@@ -326,10 +313,30 @@ const styles = StyleSheet.create({
   heroFade: {
     ...StyleSheet.absoluteFillObject,
   },
+  packArtPending: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: sg.space.sm,
+  },
+  packArtDummy: {
+    width: 56,
+    height: 80,
+    borderRadius: sg.radius.tag,
+    borderWidth: 1,
+    borderColor: sg.line,
+    backgroundColor: sg.surface,
+  },
+  packArtPendingText: {
+    fontFamily: sg.font.dataBold,
+    fontSize: 9,
+    letterSpacing: 0.9,
+    color: sg.muted,
+  },
   badgeCluster: {
     position: 'absolute',
-    top: spacing.md,
-    right: spacing.md,
+    top: sg.space.md,
+    right: sg.space.md,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
@@ -339,7 +346,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     backgroundColor: 'rgba(0,0,0,0.72)',
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.12)',
   },
@@ -353,7 +360,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     backgroundColor: 'rgba(0,0,0,0.55)',
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.1)',
   },
@@ -368,13 +375,13 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     zIndex: 3,
     justifyContent: 'flex-end',
-    padding: spacing.md,
+    padding: sg.space.md,
   },
   memberLockPill: {
     alignSelf: 'flex-start',
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: sg.space.sm,
     paddingVertical: 5,
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     backgroundColor: 'rgba(0,0,0,0.78)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
@@ -386,33 +393,33 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   meta: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.lg + 2,
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.lg,
+    paddingBottom: sg.space.lg + 2,
     backgroundColor: sg.surface,
   },
   productTitle: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
     lineHeight: 22,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     letterSpacing: -0.2,
   },
   productSubtitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   topHitWrap: {
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
     backgroundColor: sg.surface2,
-    padding: spacing.md,
-    marginBottom: spacing.lg,
+    padding: sg.space.md,
+    marginBottom: sg.space.lg,
   },
   topHitWrapChase: {
     borderColor: 'rgba(212,175,55,0.35)',
@@ -421,7 +428,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   topHitLabel: {
     fontSize: 10,
@@ -433,7 +440,7 @@ const styles = StyleSheet.create({
   chasePill: {
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.surface,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
@@ -447,12 +454,12 @@ const styles = StyleSheet.create({
   topHitRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
+    gap: sg.space.md,
   },
   topHitThumb: {
     width: 44,
     height: 56,
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.line,
   },
   topHitCopy: {
@@ -460,7 +467,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   topHitName: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
     marginBottom: 6,
@@ -469,12 +476,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   rarityPill: {
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.surface,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
@@ -491,33 +498,33 @@ const styles = StyleSheet.create({
     color: sg.gold,
   },
   topHitValue: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },
   metadataRow: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
     lineHeight: 20,
   },
   limitText: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.error,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   guaranteeText: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   primaryCta: {
     height: 48,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     backgroundColor: sg.gold,
     alignItems: 'center',
     justifyContent: 'center',
@@ -527,50 +534,50 @@ const styles = StyleSheet.create({
   },
   primaryCtaText: {
     color: sg.onGold,
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyMedium,
     letterSpacing: 0.2,
   },
   openOptionsWrap: {
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   quickRow: {
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   quickCta: {
     flex: 1,
     minHeight: 54,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
     backgroundColor: sg.surface2,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: sg.space.sm,
+    paddingVertical: sg.space.sm,
   },
   quickCtaDisabled: {
     opacity: 0.45,
   },
   quickCtaTitle: {
     color: sg.text,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
   },
   quickCtaSub: {
     color: sg.muted,
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     marginTop: 2,
   },
   oddsLinkHit: {
     alignSelf: 'center',
-    marginTop: spacing.md,
-    paddingVertical: spacing.xs,
+    marginTop: sg.space.md,
+    paddingVertical: sg.space.xs,
   },
   oddsLink: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.gold,
     textDecorationLine: 'underline',

@@ -7,8 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { spacing } from '../tokens/spacing';
 import { screenRoot, screenScroll, screenHeader } from '../tokens/layout';
 import { ListRow } from '../components/shared/ListRow';
 import { LegalDocumentModal } from '../components/legal/LegalDocumentModal';
@@ -96,7 +94,7 @@ export function SettingsScreen() {
 
   return (
     <SgScreen>
-      <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
+      <View style={[styles.header, { paddingTop: insets.top + sg.space.sm }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} style={styles.backBtn}>
           <Text style={styles.backChevron}>‹</Text>
         </TouchableOpacity>
@@ -106,7 +104,7 @@ export function SettingsScreen() {
 
       <ScrollView
         style={styles.container}
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl + 24 }]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxl + 24 }]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
@@ -235,8 +233,8 @@ const styles = StyleSheet.create({
     ...screenHeader,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    paddingBottom: sg.space.sm,
     backgroundColor: sg.bg,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
@@ -255,7 +253,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     textAlign: 'center',
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
@@ -267,21 +265,21 @@ const styles = StyleSheet.create({
     backgroundColor: sg.bg,
   },
   content: {
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.base,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.md,
   },
   sectionHeader: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginTop: spacing.xl,
-    marginBottom: spacing.xs,
-    paddingLeft: spacing.xs,
+    marginTop: sg.space.lg,
+    marginBottom: sg.space.xs,
+    paddingLeft: sg.space.xs,
   },
   listGroupWrap: {
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   listGroupInner: {
     paddingTop: 0,
@@ -290,7 +288,7 @@ const styles = StyleSheet.create({
     paddingLeft: 11,
   },
   localeValue: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     maxWidth: 160,
@@ -298,8 +296,8 @@ const styles = StyleSheet.create({
   },
   version: {
     textAlign: 'center',
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
-    marginTop: spacing.xl,
+    marginTop: sg.space.lg,
   },
 });

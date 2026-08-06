@@ -3,8 +3,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useClerk } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { confirmUserAction } from '../../utils/showUserMessage';
 
@@ -57,17 +55,17 @@ function AccountSignOutFooterInner({ visible }: { visible: boolean }) {
 const styles = StyleSheet.create({
   wrap: {
     alignItems: 'center',
-    marginTop: spacing.xl,
-    marginBottom: spacing.lg,
-    paddingHorizontal: spacing.base,
+    marginTop: sg.space.lg,
+    marginBottom: sg.space.lg,
+    paddingHorizontal: sg.space.md,
   },
   btn: {
     minWidth: 200,
     maxWidth: 320,
     width: '100%',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.lg,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface,
@@ -75,7 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btnText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },

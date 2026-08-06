@@ -4,8 +4,6 @@ import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from './PrimaryButton';
 import { SecondaryButton } from './SecondaryButton';
 import { useAppStore } from '../../store/useAppStore';
@@ -94,12 +92,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.55)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: spacing.xl,
+    padding: sg.space.lg,
   },
   modal: {
     backgroundColor: sg.surface,
-    borderRadius: radius.xxl,
-    padding: spacing.xl,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.lg,
     width: '100%',
     maxWidth: 380,
     borderWidth: 1,
@@ -109,47 +107,47 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 64,
     height: 64,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: 'rgba(212,175,55,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.base,
+    marginBottom: sg.space.md,
   },
   title: {
-    fontSize: fontSize.xl,
+    fontSize: sg.type.xl,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     textAlign: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   body: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     color: sg.muted,
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: spacing.base,
+    marginBottom: sg.space.md,
   },
   packInfo: {
     backgroundColor: sg.bg,
-    borderRadius: radius.lg,
-    padding: spacing.base,
-    marginBottom: spacing.base,
-    gap: spacing.xs,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
+    marginBottom: sg.space.md,
+    gap: sg.space.xs,
   },
   packInfoLabel: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     fontFamily: sg.font.bodyMedium,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   packInfoValue: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.text,
     fontFamily: sg.font.bodyMedium,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   primaryBtn: {
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
 });

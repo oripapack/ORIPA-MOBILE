@@ -15,8 +15,6 @@ import { MembershipTierCard } from '../components/membership/MembershipTierCard'
 import { MOCK_MEMBERSHIP_PLANS, type MembershipTierId } from '../data/membershipPlans';
 import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import type { RootStackParamList } from '../navigation/types';
 import { confirmUserAction, showUserMessage } from '../utils/showUserMessage';
 
@@ -39,7 +37,7 @@ export function MembershipScreen() {
       title: t('membership.navTitle'),
       headerShown: true,
       headerTintColor: sg.text,
-      headerTitleStyle: { fontFamily: sg.font.bodyBold, fontSize: fontSize.md },
+      headerTitleStyle: { fontFamily: sg.font.bodyBold, fontSize: sg.type.md },
       headerShadowVisible: false,
       headerStyle: { backgroundColor: sg.surface2 },
     });
@@ -119,7 +117,7 @@ export function MembershipScreen() {
         <Text style={styles.lockNote}>{t('membership.memberPackLockNote')}</Text>
       </ScrollView>
 
-      <View style={[styles.stickyCta, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
+      <View style={[styles.stickyCta, { paddingBottom: Math.max(insets.bottom, sg.space.md) }]}>
         <TouchableOpacity style={styles.ctaButton} onPress={onSubscribe} activeOpacity={0.88}>
           <Text style={styles.ctaText}>
             {simulatedTier === selectedId
@@ -142,17 +140,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   activeBanner: {
-    marginHorizontal: spacing.base,
-    marginTop: spacing.md,
-    marginBottom: spacing.sm,
-    padding: spacing.md,
-    borderRadius: radius.lg,
+    marginHorizontal: sg.space.md,
+    marginTop: sg.space.md,
+    marginBottom: sg.space.sm,
+    padding: sg.space.md,
+    borderRadius: sg.radius.panel,
     backgroundColor: 'rgba(111,191,143,0.12)',
     borderWidth: 1,
     borderColor: 'rgba(111,191,143,0.35)',
   },
   activeBannerTitle: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.success,
     letterSpacing: 0.6,
@@ -160,13 +158,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   activeBannerBody: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.text,
     lineHeight: 20,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   activeBannerLink: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     textDecorationLine: 'underline',
@@ -177,49 +175,49 @@ const styles = StyleSheet.create({
     color: sg.muted,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.md,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.md,
   },
   heroTitle: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
-    paddingHorizontal: spacing.base,
-    marginTop: spacing.xs,
+    paddingHorizontal: sg.space.md,
+    marginTop: sg.space.xs,
     letterSpacing: -0.5,
   },
   heroLead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 22,
-    paddingHorizontal: spacing.base,
-    marginTop: spacing.sm,
-    marginBottom: spacing.md,
+    paddingHorizontal: sg.space.md,
+    marginTop: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   valueCallout: {
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.lg,
-    padding: spacing.md,
-    borderRadius: radius.lg,
+    marginHorizontal: sg.space.md,
+    marginBottom: sg.space.lg,
+    padding: sg.space.md,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
   },
   valueTitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.gold,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   valueBody: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
   },
   trustBlock: {
-    paddingHorizontal: spacing.base,
-    marginTop: spacing.sm,
-    marginBottom: spacing.md,
+    paddingHorizontal: sg.space.md,
+    marginTop: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   trustLine: {
     fontSize: 11,
@@ -230,7 +228,7 @@ const styles = StyleSheet.create({
   lockNote: {
     fontSize: 10,
     color: sg.muted,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
     lineHeight: 16,
     fontStyle: 'italic',
   },
@@ -238,17 +236,17 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: sg.line,
     backgroundColor: sg.bg,
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.sm,
   },
   ctaButton: {
     backgroundColor: sg.gold,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.btn,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
   },
   ctaText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
     letterSpacing: 0.3,
@@ -257,6 +255,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: sg.muted,
     textAlign: 'center',
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
   },
 });

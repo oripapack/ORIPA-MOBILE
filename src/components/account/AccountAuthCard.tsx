@@ -4,8 +4,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useClerk, useUser } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { AppUserUnsafeMetadata } from '../../lib/clerkProfile';
 import { useGuestBrowseStore } from '../../store/guestBrowseStore';
@@ -103,49 +101,49 @@ function AccountAuthCardInner() {
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: spacing.base,
+    marginBottom: sg.space.md,
   },
   guestEyebrow: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   guestTitle: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   guestBody: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   signInBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     backgroundColor: sg.gold,
     borderRadius: sg.radius.btn,
-    paddingVertical: spacing.md,
+    paddingVertical: sg.space.md,
     minHeight: 48,
   },
   signInBtnText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
   },
   identityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
-    marginBottom: spacing.md,
+    gap: sg.space.md,
+    marginBottom: sg.space.md,
   },
   avatar: {
     width: 48,
@@ -170,13 +168,13 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   identityName: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   identityEmail: {
     marginTop: 2,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
@@ -184,16 +182,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
-    borderRadius: radius.lg,
+    gap: sg.space.sm,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface,
-    paddingVertical: spacing.md,
+    paddingVertical: sg.space.md,
     minHeight: 48,
   },
   signOutBtnText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
   },

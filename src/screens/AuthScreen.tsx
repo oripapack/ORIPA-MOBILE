@@ -16,8 +16,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useClerk, useSSO, useSignIn, useSignUp } from '@clerk/clerk-expo';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
 
@@ -272,9 +270,9 @@ export function AuthScreen({
           styles.scrollContent,
           isSheet && styles.scrollContentSheet,
           {
-            paddingTop: isSheet ? spacing.sm : insets.top + spacing.lg,
+            paddingTop: isSheet ? sg.space.sm : insets.top + sg.space.lg,
             /* Sheet shell already applies bottom safe area — extra scroll padding only */
-            paddingBottom: isSheet ? spacing.xl : insets.bottom + spacing.xl,
+            paddingBottom: isSheet ? sg.space.lg : insets.bottom + sg.space.lg,
           },
         ]}
         keyboardShouldPersistTaps="handled"
@@ -516,9 +514,7 @@ export function AuthScreen({
             </TouchableOpacity>
             <Text style={styles.hint}>{t('welcome.guestHint')}</Text>
           </>
-        ) : (
-          <Text style={[styles.hint, isSheet && styles.hintSheet]}>{t('auth.dashboardHint')}</Text>
-        )}
+        ) : null}
       </ScrollView>
       </KeyboardAvoidingView>
     </>
@@ -565,44 +561,44 @@ const styles = StyleSheet.create({
   },
   scrollContentSheet: {
     flexGrow: 0,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   logoRowSheet: {
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   logoPrimarySheet: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
   },
   logoSecondarySheet: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
   },
   titleSheet: {
-    fontSize: fontSize.xl,
-    marginBottom: spacing.sm,
+    fontSize: sg.type.xl,
+    marginBottom: sg.space.sm,
     color: sg.text,
     fontFamily: sg.font.display,
   },
   subtitleSheet: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
     lineHeight: 22,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   flowMapLine: {
     alignSelf: 'center',
     textAlign: 'center',
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.gold,
     letterSpacing: 0.2,
-    marginTop: -spacing.sm,
-    marginBottom: spacing.md,
-    paddingHorizontal: spacing.md,
+    marginTop: -sg.space.sm,
+    marginBottom: sg.space.md,
+    paddingHorizontal: sg.space.md,
     lineHeight: 17,
   },
   dividerRowSheet: {
-    marginVertical: spacing.lg,
+    marginVertical: sg.space.lg,
   },
   dividerLineSheet: {
     backgroundColor: sg.line,
@@ -624,7 +620,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    paddingVertical: spacing.md,
+    paddingVertical: sg.space.md,
     minHeight: 50,
   },
   modeChipOnSheet: {
@@ -633,7 +629,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212, 175, 55, 0.18)',
   },
   modeChipTextSheet: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
   },
   modeChipTextOnSheet: {
@@ -641,9 +637,9 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.bodyBold,
   },
   modeRowSheet: {
-    marginTop: spacing.xs,
-    marginBottom: spacing.lg,
-    gap: spacing.md,
+    marginTop: sg.space.xs,
+    marginBottom: sg.space.lg,
+    gap: sg.space.md,
   },
   inputSheet: {
     backgroundColor: sg.surface2,
@@ -651,9 +647,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   primaryBtnSheet: {},
-  hintSheet: {
-    color: sg.muted,
-  },
   centered: {
     flex: 1,
     justifyContent: 'center',
@@ -666,14 +659,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   scrollContent: {
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: sg.space.lg,
     flexGrow: 1,
   },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   modalHeaderSpacer: {
     flex: 1,
@@ -682,45 +675,45 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'baseline',
     gap: 4,
-    marginBottom: spacing.xl,
+    marginBottom: sg.space.lg,
   },
   logoPrimary: {
-    fontSize: fontSize.hero,
+    fontSize: sg.type.hero,
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
   },
   logoSecondary: {
-    fontSize: fontSize.hero,
+    fontSize: sg.type.hero,
     fontFamily: sg.font.display,
     color: sg.gold,
     letterSpacing: -0.5,
   },
   title: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   subtitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   oauthBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     backgroundColor: sg.surface2,
     borderWidth: 1.5,
     borderColor: sg.line,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.btn,
+    paddingVertical: sg.space.md,
     minHeight: 52,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   appleBtn: {
     backgroundColor: sg.surface2,
@@ -730,25 +723,25 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
   googleIcon: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
-    color: '#4285F4',
+    color: sg.text,
   },
   oauthText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },
   appleText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: spacing.lg,
-    gap: spacing.sm,
+    marginVertical: sg.space.lg,
+    gap: sg.space.sm,
   },
   dividerLine: {
     flex: 1,
@@ -756,19 +749,19 @@ const styles = StyleSheet.create({
     backgroundColor: sg.line,
   },
   dividerText: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   modeRow: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
+    gap: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   modeChip: {
     flex: 1,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
+    paddingVertical: sg.space.sm,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: sg.line,
     alignItems: 'center',
@@ -779,7 +772,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212,175,55,0.12)',
   },
   modeChipText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
@@ -789,63 +782,63 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: sg.line,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.base,
-    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
-    fontSize: fontSize.md,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: Platform.OS === 'ios' ? sg.space.md : sg.space.sm,
+    fontSize: sg.type.md,
     fontFamily: sg.font.body,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   primaryBtn: {
     backgroundColor: sg.gold,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.btn,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
     minHeight: 52,
     justifyContent: 'center',
-    marginTop: spacing.xs,
+    marginTop: sg.space.xs,
   },
   primaryBtnText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
   },
   verifyHint: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     lineHeight: 20,
   },
   link: {
-    marginTop: spacing.md,
-    fontSize: fontSize.sm,
+    marginTop: sg.space.md,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.gold,
     textAlign: 'center',
   },
   error: {
-    marginTop: spacing.md,
-    fontSize: fontSize.sm,
+    marginTop: sg.space.md,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.error,
     lineHeight: 20,
   },
   hint: {
-    marginTop: spacing.xl,
-    fontSize: fontSize.xs,
+    marginTop: sg.space.lg,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 18,
   },
   promoBanner: {
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    padding: spacing.base,
-    marginBottom: spacing.lg,
+    padding: sg.space.md,
+    marginBottom: sg.space.lg,
   },
   /** Full-screen auth on jewel background — no “light card on dark” clash */
   promoBannerOnArt: {
@@ -855,56 +848,56 @@ const styles = StyleSheet.create({
   },
   promoBannerTitleOnArt: {
     color: sg.gold,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     letterSpacing: 0.5,
   },
   promoBannerBodyOnArt: {
     color: sg.muted,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     lineHeight: 22,
   },
   /** Taller card, clearer separation from OAuth row on glass sheets */
   promoBannerSheet: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.xl,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.md,
+    marginBottom: sg.space.lg,
     borderColor: sg.line,
     backgroundColor: sg.surface,
   },
   promoBannerTitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     letterSpacing: 0.4,
   },
   promoBannerTitleSheet: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     letterSpacing: 0.8,
     color: sg.text,
   },
   promoBannerBody: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 22,
   },
   promoBannerBodySheet: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     lineHeight: 24,
     color: sg.muted,
     fontFamily: sg.font.bodyMedium,
   },
   skipBtn: {
-    marginTop: spacing.xl,
-    paddingVertical: spacing.md,
+    marginTop: sg.space.lg,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
   },
   skipBtnText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },

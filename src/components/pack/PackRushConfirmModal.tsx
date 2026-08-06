@@ -3,8 +3,6 @@ import { Modal, View, Text, StyleSheet, Pressable, TouchableOpacity } from 'reac
 import { useTranslation } from 'react-i18next';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
   visible: boolean;
@@ -52,7 +50,7 @@ const styles = StyleSheet.create({
   sheet: {
     width: '100%',
     maxWidth: 360,
-    borderRadius: radius.xxl,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface,
@@ -68,14 +66,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   title: {
-    fontSize: fontSize.xl,
+    fontSize: sg.type.xl,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     textAlign: 'center',
     marginBottom: sg.space.sm,
   },
   body: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     textAlign: 'center',
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
     marginBottom: sg.space.sm,
   },
   primaryLabel: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
   },
@@ -107,7 +105,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryLabel: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
   },

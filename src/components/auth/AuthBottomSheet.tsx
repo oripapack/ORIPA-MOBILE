@@ -9,7 +9,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sg } from '../../tokens/sg';
-import { spacing } from '../../tokens/spacing';
 import { BOOT_ENTRANCE_SPRING } from '../splash/AppBootEntrance';
 
 const { height: SH } = Dimensions.get('window');
@@ -141,7 +140,7 @@ export const AuthBottomSheet = forwardRef<AuthBottomSheetRef, Props>(function Au
             sheetStyle,
             {
               height: AUTH_SHEET_HEIGHT,
-              paddingBottom: Math.max(insets.bottom, spacing.sm),
+              paddingBottom: Math.max(insets.bottom, sg.space.sm),
             },
           ]}
           pointerEvents="auto"
@@ -177,8 +176,8 @@ const styles = StyleSheet.create({
     zIndex: 2,
     width: '100%',
     alignSelf: 'stretch',
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.sm,
     backgroundColor: sg.surface,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
   },
   handleWrap: {
     alignItems: 'center',
-    paddingVertical: spacing.sm,
+    paddingVertical: sg.space.sm,
   },
   handle: {
     width: 36,

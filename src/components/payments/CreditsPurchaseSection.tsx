@@ -14,8 +14,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { fontSize } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 import { MOCK_POINT_BUNDLES } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
 import { CREDITS_ARE_MOCK } from '../../config/app';
@@ -145,71 +143,71 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   subtitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     lineHeight: 20,
   },
   mockNote: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     backgroundColor: sg.surface,
-    padding: spacing.sm,
+    padding: sg.space.sm,
     borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: sg.line,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
     lineHeight: 18,
   },
   probabilityLink: {
     alignSelf: 'flex-start',
-    marginBottom: spacing.md,
-    paddingVertical: spacing.xs,
+    marginBottom: sg.space.md,
+    paddingVertical: sg.space.xs,
   },
   probabilityLinkText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.gold,
     textDecorationLine: 'underline',
   },
   scroll: {},
   scrollContent: {
-    paddingBottom: spacing.md,
+    paddingBottom: sg.space.md,
   },
   bundleWrap: {
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   bundleCard: {
     position: 'relative',
     backgroundColor: sg.surface,
     borderRadius: sg.radius.panel,
-    padding: spacing.base,
+    padding: sg.space.md,
     borderWidth: 1,
     borderColor: sg.line,
   },
   bundleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    marginTop: spacing.lg,
+    gap: sg.space.sm,
+    marginTop: sg.space.lg,
   },
   bundleRowNoBadge: {
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
   },
   discountBadge: {
     position: 'absolute',
     top: 8,
     left: 8,
     backgroundColor: sg.gold,
-    paddingHorizontal: spacing.sm,
+    paddingHorizontal: sg.space.sm,
     paddingVertical: 3,
     borderRadius: sg.radius.tag,
     zIndex: 2,
@@ -242,7 +240,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   pointsLine: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     marginBottom: 2,
@@ -255,41 +253,41 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   priceNow: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.dataBold,
     color: sg.gold,
     fontVariant: [...sg.numeric],
   },
   priceList: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     fontVariant: [...sg.numeric],
   },
   priceWas: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.data,
     color: sg.muted,
     textDecorationLine: 'line-through',
     fontVariant: [...sg.numeric],
   },
   bundleBonus: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.success,
     fontFamily: sg.font.bodyMedium,
     marginTop: 6,
   },
   buyBtn: {
     backgroundColor: sg.gold,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 2,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.sm + 2,
     borderRadius: sg.radius.btn,
     justifyContent: 'center',
     minWidth: 72,
     alignItems: 'center',
   },
   buyBtnText: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
     letterSpacing: 0.3,
@@ -299,21 +297,21 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 15,
-    marginTop: spacing.sm,
-    marginBottom: spacing.sm,
+    marginTop: sg.space.sm,
+    marginBottom: sg.space.sm,
   },
   routingNote: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   trustRow: {
     alignItems: 'center',
   },
   trustText: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.body,
     color: sg.muted,
     textAlign: 'center',

@@ -15,8 +15,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useClerk, useUser } from '@clerk/clerk-expo';
 import { isClerkAPIResponseError } from '@clerk/clerk-expo';
 import { sg } from '../tokens/sg';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import { AppUserUnsafeMetadata, isValidAppUsername, normalizeDisplayName } from '../lib/clerkProfile';
 import { SgScreen } from '../components/ui';
@@ -36,7 +34,7 @@ function mergeUnsafeMetadata(
  * After phone verification: choose a public username and optional display name.
  * Persisted on Clerk `unsafeMetadata` (sync to Supabase profiles later).
  */
-export function ProfileOnboardingScreen() {
+export function ProfileOnboardingScreen({ previewMode = false }: { previewMode?: boolean } = {}) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { signOut } = useClerk();
@@ -50,6 +48,7 @@ export function ProfileOnboardingScreen() {
   const { primary, secondary } = getAppLogoParts();
 
   const onSubmit = useCallback(async () => {
+    if (previewMode) return;
     if (!user) return;
     setError(null);
 
@@ -81,13 +80,14 @@ export function ProfileOnboardingScreen() {
     } finally {
       setBusy(false);
     }
-  }, [displayName, t, user, username]);
+  }, [displayName, previewMode, t, user, username]);
 
   const onSignOut = useCallback(() => {
+    if (previewMode) return;
     void signOut();
-  }, [signOut]);
+  }, [previewMode, signOut]);
 
-  if (!isLoaded || !user) {
+  if (!previewMode && (!isLoaded || !user)) {
     return (
       <SgScreen style={styles.centered}>
         <ActivityIndicator size="large" color={sg.gold} />
@@ -107,7 +107,7 @@ export function ProfileOnboardingScreen() {
         style={styles.flexOverBg}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: insets.top + spacing.lg, paddingBottom: insets.bottom + spacing.xl },
+          { paddingTop: insets.top + sg.space.lg, paddingBottom: insets.bottom + sg.space.lg },
         ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -179,45 +179,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: sg.space.lg,
     flexGrow: 1,
   },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
     gap: 4,
-    marginBottom: spacing.xl,
+    marginBottom: sg.space.lg,
   },
   logoPrimary: {
-    fontSize: fontSize.hero,
+    fontSize: sg.type.hero,
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
   },
   logoSecondary: {
-    fontSize: fontSize.hero,
+    fontSize: sg.type.hero,
     fontFamily: sg.font.display,
     color: sg.gold,
     letterSpacing: -0.5,
   },
   title: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   subtitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   label: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
@@ -225,38 +225,38 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
     backgroundColor: sg.surface2,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.base,
-    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
-    fontSize: fontSize.md,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: Platform.OS === 'ios' ? sg.space.md : sg.space.sm,
+    fontSize: sg.type.md,
     fontFamily: sg.font.body,
     color: sg.text,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   hintInline: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   primaryBtnWrap: {
-    marginTop: spacing.xs,
+    marginTop: sg.space.xs,
   },
   error: {
-    marginTop: spacing.md,
-    fontSize: fontSize.sm,
+    marginTop: sg.space.md,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.error,
     lineHeight: 20,
   },
   linkMuted: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   signOutWrap: {
-    marginTop: spacing.xl,
+    marginTop: sg.space.lg,
     alignItems: 'center',
   },
 });

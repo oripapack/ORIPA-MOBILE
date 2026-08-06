@@ -1,10 +1,12 @@
-export function formatUsd(n: number): string {
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 10_000) return `$${Math.round(n / 1000)}k`;
-  if (n >= 1000) return `$${(n / 1000).toFixed(1)}k`;
-  if (Number.isInteger(n)) return `$${n.toLocaleString()}`;
-  return `$${n.toFixed(2)}`;
+export function formatPoints(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M Points`;
+  if (n >= 10_000) return `${Math.round(n / 1000)}k Points`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k Points`;
+  return `${Math.round(n).toLocaleString()} Points`;
 }
+
+/** @deprecated Active UI uses Points; retained only for archived imports. */
+export const formatUsd = formatPoints;
 
 export function formatRelativeTime(d: Date): string {
   const s = Math.floor((Date.now() - d.getTime()) / 1000);

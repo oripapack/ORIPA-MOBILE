@@ -12,8 +12,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 type Action = 'showQr' | 'shareInvite' | 'promo';
 
@@ -42,7 +40,7 @@ export function FriendsHubMenu({ visible, onClose, onSelect }: Props) {
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable
-          style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.sm }]}
+          style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, sg.space.md) + sg.space.sm }]}
           onPress={(e) => e.stopPropagation()}
         >
           <View style={styles.grab} />
@@ -80,17 +78,17 @@ const styles = StyleSheet.create({
   },
   sheet: {
     backgroundColor: sg.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.sm,
+    borderTopLeftRadius: sg.radius.panel,
+    borderTopRightRadius: sg.radius.panel,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.sm,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderRightWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: sg.bg,
         shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.2,
         shadowRadius: 12,
@@ -104,22 +102,22 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: 'rgba(255,255,255,0.12)',
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   sheetTitle: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
     textAlign: 'center',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
+    gap: sg.space.md,
+    paddingVertical: sg.space.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sg.line,
   },
@@ -135,17 +133,17 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     flex: 1,
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   cancel: {
-    marginTop: spacing.sm,
-    paddingVertical: spacing.md,
+    marginTop: sg.space.sm,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
   },
   cancelText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
   },

@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -34,7 +32,7 @@ export function PromosInfoScreen() {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxl }]}
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.eyebrow}>{t('promosInfo.eyebrow')}</Text>
@@ -60,41 +58,41 @@ export function PromosInfoScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
-  content: { padding: spacing.base, paddingTop: spacing.md },
+  content: { padding: sg.space.md, paddingTop: sg.space.md },
   eyebrow: {
     fontSize: 10,
     fontFamily: sg.font.bodyBold,
     color: sg.gold,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   title: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   body: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   stepsCard: {
     borderWidth: 1,
     borderColor: sg.line,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface2,
     overflow: 'hidden',
   },
   stepRow: {
     minHeight: 70,
-    padding: spacing.md,
+    padding: sg.space.md,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
+    gap: sg.space.md,
   },
   stepBorder: {
     borderBottomWidth: 1,
@@ -103,33 +101,33 @@ const styles = StyleSheet.create({
   iconWell: {
     width: 36,
     height: 36,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(212,175,55,0.09)',
   },
   stepText: {
     flex: 1,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.text,
     lineHeight: 20,
   },
   callout: {
-    marginTop: spacing.lg,
+    marginTop: sg.space.lg,
     backgroundColor: sg.surface,
-    borderRadius: radius.lg,
-    padding: spacing.base,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
     borderWidth: 1,
     borderColor: sg.line,
   },
   calloutTitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   calloutText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
   },

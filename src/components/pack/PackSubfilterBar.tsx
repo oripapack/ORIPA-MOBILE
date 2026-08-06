@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { HOME_SUBFILTER_KEYS } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
 
 export function PackSubfilterBar() {
   const { t } = useTranslation();
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212,175,55,0.15)',
   },
   label: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },

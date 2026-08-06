@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 import type { PackOpenQuantity } from '../../store/useAppStore';
 import { packOpenTotalCredits } from '../../lib/packMultiOpen';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
   quantity: PackOpenQuantity;
@@ -53,11 +51,11 @@ export function PackMultiOpenSummary({ quantity, creditPrice }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface2,
-    padding: spacing.md,
+    padding: sg.space.md,
     gap: 6,
   },
   cardRush: {
@@ -65,20 +63,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,74,56,0.10)',
   },
   title: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     letterSpacing: 0.2,
   },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 20,
   },
   support: {
     marginTop: 2,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.15,

@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 import type { PackOpenQuantity } from '../../store/useAppStore';
 import { PACK_OPEN_QUANTITIES } from '../../lib/packMultiOpen';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius } from '../../tokens/spacing';
 
 type Props = {
   value: PackOpenQuantity;
@@ -56,7 +54,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.surface2,
     borderWidth: 1,
     borderColor: sg.line,
@@ -66,7 +64,7 @@ const styles = StyleSheet.create({
   seg: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -79,7 +77,7 @@ const styles = StyleSheet.create({
     opacity: 0.35,
   },
   segText: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.4,

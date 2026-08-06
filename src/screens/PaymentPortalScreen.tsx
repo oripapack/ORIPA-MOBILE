@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { LootBoxDisclosure } from '../components/payments/LootBoxDisclosure';
 import { CreditsPurchaseSection } from '../components/payments/CreditsPurchaseSection';
@@ -66,7 +64,7 @@ export function PaymentPortalScreen() {
     <View style={styles.root}>
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.lg }]}
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.eyebrow}>{t('paymentPortal.eyebrow')}</Text>
@@ -111,26 +109,26 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   content: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.md,
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.md,
   },
   eyebrow: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
   tabs: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.lg,
+    gap: sg.space.sm,
+    marginBottom: sg.space.lg,
   },
   tab: {
     flex: 1,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
+    paddingVertical: sg.space.sm,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: sg.line,
     alignItems: 'center',
@@ -141,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface,
   },
   tabText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },

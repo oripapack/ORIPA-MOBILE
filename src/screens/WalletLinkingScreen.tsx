@@ -14,8 +14,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '@clerk/clerk-expo';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { createClerkAuthedClient } from '../lib/supabaseAuthed';
 import { isSupabaseConfigured } from '../lib/supabase';
@@ -149,7 +147,7 @@ function WalletLinkingClerkContent() {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxl }]}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
@@ -222,49 +220,49 @@ const styles = StyleSheet.create({
     color: sg.muted,
   },
   container: { flex: 1, backgroundColor: sg.bg },
-  content: { padding: spacing.base, paddingTop: spacing.md },
+  content: { padding: sg.space.md, paddingTop: sg.space.md },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
-  field: { marginBottom: spacing.sm },
+  field: { marginBottom: sg.space.sm },
   label: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   input: {
     backgroundColor: sg.surface2,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: sg.line,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.sm,
-    fontSize: fontSize.base,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.sm,
+    fontSize: sg.type.base,
     color: sg.text,
     minHeight: 48,
     fontFamily: sg.font.bodyMedium,
   },
   hint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   saveBtn: {
     backgroundColor: sg.gold,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.panel,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
     minHeight: 48,
     justifyContent: 'center',
   },
   saveBtnDisabled: { opacity: 0.7 },
   saveBtnText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
   },

@@ -3,11 +3,11 @@ import type { SocialRarity } from '../../data/socialMock';
 
 export function rarityColor(r: SocialRarity): string {
   const map: Record<SocialRarity, string> = {
-    common: '#6B7280',
-    uncommon: '#22C55E',
-    rare: '#3B82F6',
-    epic: '#A855F7',
-    legendary: '#F59E0B',
+    common: sg.muted,
+    uncommon: sg.muted,
+    rare: sg.text,
+    epic: sg.gold,
+    legendary: sg.goldHi,
     mythic: sg.neon,
   };
   return map[r];

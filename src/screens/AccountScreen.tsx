@@ -6,7 +6,6 @@ import { CompositeNavigationProp, useNavigation } from '@react-navigation/native
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { sg } from '../tokens/sg';
-import { radius, spacing } from '../tokens/spacing';
 import { screenScroll } from '../tokens/layout';
 import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
@@ -15,7 +14,7 @@ import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { AccountAuthCard } from '../components/account/AccountAuthCard';
 import { deriveSocialProfileFromUser } from '../data/socialMock';
-import { formatUsd } from '../lib/socialFormat';
+import { formatPoints } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
 import { SgScreen } from '../components/ui';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
@@ -27,15 +26,6 @@ import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 
 const PREVIEW_PULLS = 2;
 const PREVIEW_QUESTS = 3;
-
-const fontSize = { xs: 11, sm: 13, md: 17, lg: 20, xxl: 28, hero: 34 } as const;
-const brandFont = {
-  regular: sg.font.body,
-  medium: sg.font.bodyMedium,
-  semibold: sg.font.bodyMedium,
-  bold: sg.font.bodyBold,
-  black: sg.font.bodyBold,
-} as const;
 
 type AccountNav = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Account'>,
@@ -170,7 +160,7 @@ export function AccountScreen() {
           <View style={styles.heroMetricDivider} />
           <View style={styles.heroMetric}>
             <Text style={styles.heroMetricVal} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
-              {formatUsd(socialProfile.stats.totalEstimatedValue)}
+              {formatPoints(socialProfile.stats.totalEstimatedValue)}
             </Text>
             <Text style={styles.heroMetricLab}>{t('account.heroVaultValue')}</Text>
           </View>
@@ -241,7 +231,7 @@ export function AccountScreen() {
         <Text style={styles.bestName} numberOfLines={2}>
           {socialProfile.stats.bestPullCardName}
         </Text>
-        <Text style={styles.bestVal}>{formatUsd(socialProfile.stats.bestPullValue)}</Text>
+        <Text style={styles.bestVal}>{formatPoints(socialProfile.stats.bestPullValue)}</Text>
         <Text style={styles.bestSub}>{t('social.estimatedValue')}</Text>
       </VaultFramedCard>
 
@@ -303,8 +293,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   content: {
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.md,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.md,
     paddingBottom: 120,
   },
   pageTitle: {
@@ -312,53 +302,53 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
-    marginBottom: spacing.base,
+    marginBottom: sg.space.md,
   },
   guestSignInCard: {
-    marginBottom: spacing.base,
+    marginBottom: sg.space.md,
   },
   guestSignInEyebrow: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.xs,
+    fontFamily: sg.font.bodyBold,
     color: sg.error,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   guestSignInTitle: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontSize: sg.type.lg,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   guestSignInBody: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   guestSignInBtn: {
     backgroundColor: sg.error,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.panel,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
     minHeight: 48,
     justifyContent: 'center',
   },
   guestSignInBtnText: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.md,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   heroCard: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   heroTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
+    gap: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   heroAvatar: {
     width: 56,
@@ -379,32 +369,32 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   heroName: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontSize: sg.type.lg,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   heroUsername: {
     marginTop: 2,
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   membershipRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.sm,
-    marginBottom: spacing.sm,
+    paddingVertical: sg.space.sm,
+    paddingHorizontal: sg.space.sm,
+    marginBottom: sg.space.sm,
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
   },
   membershipRowLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     flex: 1,
     minWidth: 0,
   },
@@ -414,27 +404,27 @@ const styles = StyleSheet.create({
   },
   membershipLabel: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
   },
   membershipValue: {
     marginTop: 2,
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   levelLine: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   heroMetrics: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     overflow: 'hidden',
     backgroundColor: sg.surface,
     borderWidth: 1,
@@ -442,8 +432,8 @@ const styles = StyleSheet.create({
   },
   heroMetric: {
     flex: 1,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.sm,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.sm,
     alignItems: 'center',
   },
   heroMetricDivider: {
@@ -452,7 +442,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.line,
   },
   heroMetricVal: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     maxWidth: '100%',
@@ -461,40 +451,40 @@ const styles = StyleSheet.create({
   heroMetricLab: {
     marginTop: 4,
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },
   sectionEyebrow: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: spacing.md,
-    marginTop: spacing.xs,
+    marginBottom: sg.space.md,
+    marginTop: sg.space.xs,
   },
   blockCard: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   blockInner: {
-    padding: spacing.lg,
+    padding: sg.space.lg,
   },
   xpRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   xpText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
     flex: 1,
-    paddingRight: spacing.sm,
+    paddingRight: sg.space.sm,
   },
   xpPct: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
@@ -502,138 +492,138 @@ const styles = StyleSheet.create({
   barTrack: {
     height: 8,
     backgroundColor: sg.line,
-    borderRadius: radius.full,
-    marginBottom: spacing.md,
+    borderRadius: sg.radius.tag,
+    marginBottom: sg.space.md,
     overflow: 'hidden',
   },
   barFill: {
     height: '100%',
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     backgroundColor: sg.muted,
   },
   streakInline: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.md,
-    paddingBottom: spacing.md,
+    marginBottom: sg.space.md,
+    paddingBottom: sg.space.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sg.line,
   },
   streakInlineVal: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     fontVariant: [...sg.numeric],
   },
   streakInlineLab: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     marginTop: 2,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
   },
   streakInlineRight: {
     alignItems: 'flex-end',
   },
   streakInlineBestLab: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
   },
   streakInlineBestVal: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     marginTop: 2,
     fontVariant: [...sg.numeric],
   },
   claimCta: {
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.panel,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
   },
   claimCtaText: {
     color: sg.text,
-    fontFamily: brandFont.bold,
-    fontSize: fontSize.sm,
+    fontFamily: sg.font.bodyBold,
+    fontSize: sg.type.sm,
   },
   viewAllQuestsBtn: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
     alignItems: 'center',
   },
   viewAllQuestsText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyMedium,
     color: sg.gold,
   },
   tierLink: {
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
     alignItems: 'center',
   },
   tierLinkText: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontSize: sg.type.xs,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   bestCard: {
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   bestInner: {
-    padding: spacing.lg,
+    padding: sg.space.lg,
   },
   bestKicker: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   bestName: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontSize: sg.type.lg,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   bestVal: {
-    fontSize: fontSize.hero - 4,
+    fontSize: sg.type.hero - 4,
     fontFamily: sg.font.dataBold,
     color: sg.gold,
     fontVariant: [...sg.numeric],
   },
   bestSub: {
     marginTop: 4,
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
   },
   subsection: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
-    marginBottom: spacing.sm,
-    marginTop: spacing.xs,
+    marginBottom: sg.space.sm,
+    marginTop: sg.space.xs,
   },
   subsectionInCard: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   emptyPulls: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   rarityCard: {
-    marginTop: spacing.md,
-    marginBottom: spacing.lg,
+    marginTop: sg.space.md,
+    marginBottom: sg.space.lg,
   },
   rarityInner: {
-    padding: spacing.lg,
+    padding: sg.space.lg,
   },
   tierPending: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
@@ -642,19 +632,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: spacing.sm,
-    marginBottom: spacing.xl,
+    gap: sg.space.sm,
+    marginBottom: sg.space.lg,
   },
   quickCell: {
     width: '48%',
     backgroundColor: sg.surface,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.sm,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.sm,
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   quickIconWrap: {
     width: 44,
@@ -665,8 +655,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   quickLabel: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
     textAlign: 'center',
   },

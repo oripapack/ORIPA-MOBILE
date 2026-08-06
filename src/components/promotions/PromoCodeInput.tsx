@@ -10,8 +10,6 @@ import {
   Keyboard,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
   onSubmit: (code: string) => Promise<void>;
@@ -73,38 +71,38 @@ export function PromoCodeInput({ onSubmit, disabled }: Props) {
 
 const styles = StyleSheet.create({
   wrap: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
   },
   label: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 0.6,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     textTransform: 'uppercase',
   },
   row: {
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     alignItems: 'center',
   },
   input: {
     flex: 1,
     borderWidth: 1,
     borderColor: sg.line,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.md,
-    fontSize: fontSize.md,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
     backgroundColor: sg.surface,
   },
   btn: {
     backgroundColor: sg.gold,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.lg,
+    paddingVertical: sg.space.md,
     minWidth: 96,
     alignItems: 'center',
     justifyContent: 'center',
@@ -114,7 +112,7 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   btnText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
   },

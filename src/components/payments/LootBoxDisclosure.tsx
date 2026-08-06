@@ -11,8 +11,6 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { fontSize } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 import { MOCK_PACK_OPENING_TIER_ODDS } from '../../data/lootBoxOdds';
 import { SgButton } from '../ui';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
@@ -40,7 +38,7 @@ export function LootBoxDisclosure({ visible, onClose }: Props) {
       statusBarTranslucent
     >
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityRole="button" />
-      <View style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.sheet, { paddingBottom: insets.bottom + sg.space.lg }]}>
         <Text style={styles.title}>{t('lootBox.title')}</Text>
         <Text style={styles.lead}>{t('lootBox.lead')}</Text>
 
@@ -73,66 +71,66 @@ const styles = StyleSheet.create({
   },
   sheet: {
     position: 'absolute',
-    left: spacing.lg,
-    right: spacing.lg,
+    left: sg.space.lg,
+    right: sg.space.lg,
     top: '18%',
     maxHeight: '72%',
     backgroundColor: sg.surface2,
     borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
-    padding: spacing.lg,
-    shadowColor: '#000',
+    padding: sg.space.lg,
+    shadowColor: sg.bg,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.15,
     shadowRadius: 16,
     elevation: 8,
   },
   title: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
     lineHeight: 20,
   },
   scroll: { maxHeight: 320 },
-  scrollContent: { paddingBottom: spacing.sm },
+  scrollContent: { paddingBottom: sg.space.sm },
   tableHead: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.dataBold,
     color: sg.muted,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
+    paddingVertical: sg.space.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sg.line,
   },
   tier: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     letterSpacing: 0.8,
   },
   pct: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.dataBold,
     color: sg.gold,
     fontVariant: [...sg.numeric],
   },
   footnote: {
-    marginTop: spacing.md,
-    fontSize: fontSize.xs,
+    marginTop: sg.space.md,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 18,

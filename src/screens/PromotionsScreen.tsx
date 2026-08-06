@@ -6,8 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
 import { usePromotionStore } from '../store/promotionStore';
@@ -52,7 +50,7 @@ export function PromotionsScreen() {
 
   return (
     <SgScreen>
-      <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
+      <View style={[styles.header, { paddingTop: insets.top + sg.space.sm }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} style={styles.backBtn}>
           <Text style={styles.backChevron}>‹</Text>
         </TouchableOpacity>
@@ -62,7 +60,7 @@ export function PromotionsScreen() {
 
       <ScrollView
         style={styles.container}
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxl }]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
@@ -101,8 +99,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    paddingBottom: sg.space.sm,
     backgroundColor: sg.bg,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     textAlign: 'center',
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
@@ -133,39 +131,39 @@ const styles = StyleSheet.create({
     backgroundColor: sg.bg,
   },
   content: {
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.lg,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.lg,
   },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   sectionHeader: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
-    paddingLeft: spacing.xs,
+    marginBottom: sg.space.xs,
+    paddingLeft: sg.space.xs,
   },
   card: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   codeInner: {
-    padding: spacing.lg,
+    padding: sg.space.lg,
   },
   codeExplainer: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   error: {
-    marginTop: spacing.md,
-    fontSize: fontSize.sm,
+    marginTop: sg.space.md,
+    fontSize: sg.type.sm,
     color: sg.muted,
   },
 });

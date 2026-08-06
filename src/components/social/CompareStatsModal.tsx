@@ -13,9 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SocialUserProfile } from '../../data/socialMock';
 import { buildCompareRows } from '../../data/socialMock';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
-import { formatUsd } from '../../lib/socialFormat';
+import { formatPoints } from '../../lib/socialFormat';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 
 interface Props {
@@ -27,7 +25,7 @@ interface Props {
 
 function fmtVal(v: number | string): string {
   if (typeof v === 'string') return v;
-  if (v >= 1000) return formatUsd(v);
+  if (v >= 1000) return formatPoints(v);
   return v.toLocaleString();
 }
 
@@ -42,7 +40,7 @@ export function CompareStatsModal({ visible, onClose, me, friend }: Props) {
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.backTap} />
         </TouchableWithoutFeedback>
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]}>
+        <View style={[styles.sheet, { paddingBottom: insets.bottom + sg.space.lg }]}>
           <View style={styles.handle} />
           <Text style={styles.title}>{t('social.compareTitle')}</Text>
           <Text style={styles.sub}>{t('social.compareSub')}</Text>
@@ -97,10 +95,10 @@ const styles = StyleSheet.create({
   backTap: { ...StyleSheet.absoluteFillObject },
   sheet: {
     backgroundColor: sg.surface2,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
+    borderTopLeftRadius: sg.radius.panel,
+    borderTopRightRadius: sg.radius.panel,
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.sm,
     maxHeight: '88%',
   },
   handle: {
@@ -109,27 +107,27 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: sg.line,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   title: {
-    fontSize: fontSize.xl,
+    fontSize: sg.type.xl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   sub: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
     lineHeight: 20,
   },
   heads: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.md,
-    gap: spacing.sm,
+    marginBottom: sg.space.md,
+    gap: sg.space.sm,
   },
-  headName: { flex: 1, fontSize: fontSize.sm, fontFamily: sg.font.bodyBold, color: sg.text },
+  headName: { flex: 1, fontSize: sg.type.sm, fontFamily: sg.font.bodyBold, color: sg.text },
   headYou: { textAlign: 'left' },
   headThem: { textAlign: 'right' },
   vs: {
@@ -139,20 +137,20 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   scroll: { maxHeight: 360 },
-  row: { marginBottom: spacing.md },
+  row: { marginBottom: sg.space.md },
   rowLabel: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
-  rowVals: { flexDirection: 'row', gap: spacing.sm },
+  rowVals: { flexDirection: 'row', gap: sg.space.sm },
   cell: {
     flex: 1,
-    paddingVertical: spacing.md,
-    borderRadius: radius.md,
+    paddingVertical: sg.space.md,
+    borderRadius: sg.radius.btn,
     alignItems: 'center',
     borderWidth: 1,
   },
@@ -169,13 +167,13 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   cellText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     color: sg.text,
   },
   done: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
     height: 52,
     borderRadius: sg.radius.btn,
     backgroundColor: sg.surface,
@@ -184,5 +182,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  doneText: { color: sg.text, fontFamily: sg.font.bodyBold, fontSize: fontSize.md },
+  doneText: { color: sg.text, fontFamily: sg.font.bodyBold, fontSize: sg.type.md },
 });

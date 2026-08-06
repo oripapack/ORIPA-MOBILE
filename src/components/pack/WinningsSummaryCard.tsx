@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 type Props = {
   label?: string;
@@ -56,7 +54,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: sg.muted,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     letterSpacing: 0.6,
     textTransform: 'uppercase',
@@ -68,11 +66,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: sg.space.sm,
     paddingVertical: 6,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
   },
   pillText: {
     color: sg.gold,
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     letterSpacing: 0.2,
   },
@@ -94,13 +92,13 @@ const styles = StyleSheet.create({
   },
   amountUnit: {
     color: sg.muted,
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
     paddingBottom: 6,
   },
   helper: {
     color: sg.muted,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     lineHeight: 20,
   },
 });

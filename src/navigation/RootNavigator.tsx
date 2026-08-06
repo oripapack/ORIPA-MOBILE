@@ -45,6 +45,7 @@ import { RootStackParamList } from './types';
 import { GuestAuthWallModal } from '../components/auth/GuestAuthWallModal';
 import { LinkPhoneScreen } from '../screens/LinkPhoneScreen';
 import { ProfileOnboardingScreen } from '../screens/ProfileOnboardingScreen';
+import { AuthScreen } from '../screens/AuthScreen';
 import { ClerkProfileSync } from '../components/account/ClerkProfileSync';
 import { isClerkEnabled, requirePhoneVerification } from '../config/clerk';
 import { hasVerifiedPhone } from '../lib/clerkPhone';
@@ -62,6 +63,33 @@ import { PromotionSync } from '../components/promotions/PromotionSync';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
+const DEV_FRIEND_PARAMS: RootStackParamList['FriendProfile'] = { username: 'jordan' };
+const DEV_ROUTE_BY_QUERY: Record<string, keyof RootStackParamList> = {
+  auth: 'DevOnboardingPreview',
+  phone: 'DevOnboardingPreview',
+  profile: 'DevOnboardingPreview',
+  friend: 'FriendProfile',
+  result: 'Result',
+  payment: 'PaymentPortal',
+  help: 'HelpCenter',
+  shipping: 'ShippingAddress',
+  level: 'TierBenefits',
+  membership: 'Membership',
+  quests: 'CollectorQuests',
+  notifications: 'Notifications',
+  hotDrops: 'HotDropsInfo',
+  promosInfo: 'PromosInfo',
+  pullHistory: 'PullHistory',
+  leaderboard: 'FriendsLeaderboard',
+  offers: 'Offers',
+  messages: 'Messages',
+  linkedAccounts: 'LinkedAccounts',
+  wallet: 'WalletLinking',
+  identity: 'IdentityVerification',
+  payout: 'PayoutMethod',
+  promotions: 'Promotions',
+  settings: 'Settings',
+};
 
 const tabBarDockStyles = StyleSheet.create({
   root: {
@@ -195,7 +223,17 @@ function TabNavigatorInner() {
 }
 
 function RootStack() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const devPreview =
+    process.env.EXPO_PUBLIC_UI_PREVIEW === '1' &&
+    Platform.OS === 'web' &&
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('devScreen')
+      : null;
+  useEffect(() => {
+    if (devPreview) void i18n.changeLanguage('en');
+  }, [devPreview, i18n]);
+  const devInitialRoute = devPreview ? DEV_ROUTE_BY_QUERY[devPreview] : undefined;
   const stackHeader = {
     headerShown: true as const,
     headerTintColor: sg.text,
@@ -215,7 +253,9 @@ function RootStack() {
       <Stack.Navigator
         // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery | Result. No effect in normal runs.
         initialRouteName={
-          process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
+          devInitialRoute
+            ? devInitialRoute
+            : process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
             ? 'DevUiGallery'
             : process.env.EXPO_PUBLIC_DEV_SCREEN === 'Result'
               ? 'Result'
@@ -228,6 +268,7 @@ function RootStack() {
       >
         <Stack.Screen name="MainTabs" component={TabNavigatorInner} />
         <Stack.Screen name="DevUiGallery" component={DevUiGalleryScreen} />
+        <Stack.Screen name="DevOnboardingPreview" component={DevOnboardingPreviewScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen
           name="PackDetails"
@@ -259,7 +300,12 @@ function RootStack() {
         <Stack.Screen name="HotDropsInfo" component={HotDropsInfoScreen} options={stackHeader} />
         <Stack.Screen name="PromosInfo" component={PromosInfoScreen} options={stackHeader} />
         <Stack.Screen name="PullHistory" component={PullHistoryScreen} options={stackHeader} />
-        <Stack.Screen name="FriendProfile" component={FriendProfileScreen} options={stackHeader} />
+        <Stack.Screen
+          name="FriendProfile"
+          component={FriendProfileScreen}
+          options={stackHeader}
+          initialParams={devPreview === 'friend' ? DEV_FRIEND_PARAMS : undefined}
+        />
         <Stack.Screen name="FriendsLeaderboard" component={FriendsLeaderboardScreen} options={stackHeader} />
         <Stack.Screen name="Offers" component={OffersScreen} options={{ ...stackHeader, title: t('offersScreen.navTitle') }} />
         <Stack.Screen name="Messages" component={MessagesScreen} options={{ ...stackHeader, title: t('messagesScreen.navTitle') }} />
@@ -278,6 +324,21 @@ function RootStack() {
       <GlobalPackModals />
     </>
   );
+}
+
+/**
+ * UI-audit surface compiled only when EXPO_PUBLIC_UI_PREVIEW=1.
+ * It renders the production components but never submits auth/profile actions.
+ */
+function DevOnboardingPreviewScreen() {
+  const preview =
+    Platform.OS === 'web' && typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('devScreen')
+      : 'auth';
+
+  if (preview === 'phone') return <LinkPhoneScreen previewMode />;
+  if (preview === 'profile') return <ProfileOnboardingScreen previewMode />;
+  return <AuthScreen presentation="full" />;
 }
 
 function GuestHydration() {

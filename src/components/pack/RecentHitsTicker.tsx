@@ -1,11 +1,10 @@
+// 実データ待ち。外部に見せないこと。
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, StyleSheet, Text, View, ScrollView } from 'react-native';
 import type { ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 type HitRarity = 'Gold' | 'Rainbow' | 'PSA 10' | 'Legendary' | 'Secret Rare';
 
@@ -36,39 +35,27 @@ function rarityColors(r: HitRarity) {
   switch (r) {
     case 'Gold':
       return {
-        pill: { backgroundColor: 'rgba(212,175,55,0.15)', borderColor: 'rgba(212,175,55,0.35)' } as ViewStyle,
+        pill: { backgroundColor: sg.surface2, borderColor: sg.gold } as ViewStyle,
         text: sg.gold,
       };
     case 'PSA 10':
-      return {
-        pill: { backgroundColor: 'rgba(59, 130, 246, 0.14)', borderColor: 'rgba(96, 165, 250, 0.35)' } as ViewStyle,
-        text: '#93C5FD',
-      };
     case 'Rainbow':
-      return {
-        pill: { backgroundColor: 'rgba(168, 85, 247, 0.14)', borderColor: 'rgba(192, 132, 252, 0.32)' } as ViewStyle,
-        text: '#D8B4FE',
-      };
     case 'Legendary':
-      return {
-        pill: { backgroundColor: 'rgba(196, 30, 58, 0.12)', borderColor: 'rgba(196, 30, 58, 0.4)' } as ViewStyle,
-        text: sg.error,
-      };
     case 'Secret Rare':
       return {
-        pill: { backgroundColor: 'rgba(34, 197, 94, 0.12)', borderColor: 'rgba(74, 222, 128, 0.3)' } as ViewStyle,
-        text: '#86EFAC',
+        pill: { backgroundColor: sg.surface2, borderColor: sg.line } as ViewStyle,
+        text: sg.muted,
       };
     default:
       return {
-        pill: { backgroundColor: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.14)' } as ViewStyle,
+        pill: { backgroundColor: sg.surface2, borderColor: sg.line } as ViewStyle,
         text: sg.muted,
       };
   }
 }
 
-function formatUsd(n: number) {
-  return `$${n.toLocaleString()}`;
+function formatPoints(n: number) {
+  return `${n.toLocaleString()} Points`;
 }
 
 export function RecentHitsTicker() {
@@ -172,7 +159,7 @@ export function RecentHitsTicker() {
                 </View>
               );
             })()}
-            <Text style={styles.value}>{formatUsd(h.valueUsd)}</Text>
+            <Text style={styles.value}>{formatPoints(h.valueUsd)}</Text>
           </View>
         ))}
       </ScrollView>
@@ -182,10 +169,10 @@ export function RecentHitsTicker() {
 
 const styles = StyleSheet.create({
   wrap: {
-    marginTop: spacing.sm,
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.sm,
-    borderRadius: radius.lg,
+    marginTop: sg.space.sm,
+    marginHorizontal: sg.space.md,
+    marginBottom: sg.space.sm,
+    borderRadius: sg.radius.panel,
     backgroundColor: 'rgba(0,0,0,0.42)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(212,175,55,0.25)',
@@ -195,7 +182,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
     paddingTop: 10,
     paddingBottom: 6,
   },
@@ -221,18 +208,18 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   scrollContent: {
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
     paddingBottom: 10,
-    gap: spacing.sm,
+    gap: sg.space.sm,
     alignItems: 'center',
   },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: spacing.sm + 2,
+    paddingHorizontal: sg.space.sm + 2,
     paddingVertical: 8,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     backgroundColor: 'rgba(10, 16, 12, 0.55)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,255,255,0.12)',
@@ -253,7 +240,7 @@ const styles = StyleSheet.create({
     color: sg.text,
   },
   text: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     maxWidth: 210,
   },
@@ -268,7 +255,7 @@ const styles = StyleSheet.create({
   rarityPill: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',

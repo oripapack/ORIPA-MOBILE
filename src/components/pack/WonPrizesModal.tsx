@@ -12,8 +12,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
 import { useAppStore } from '../../store/useAppStore';
@@ -151,9 +149,9 @@ export function WonPrizesModal() {
       {...transparentModalIOSProps}
       onRequestClose={() => {}}
     >
-      <View style={[styles.screen, { paddingTop: insets.top + spacing.sm }]}>
+      <View style={[styles.screen, { paddingTop: insets.top + sg.space.sm }]}>
         <ScrollView
-          contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + spacing.xl }]}
+          contentContainerStyle={[styles.scroll, { paddingBottom: insets.bottom + sg.space.lg }]}
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.topBar}>
@@ -231,7 +229,7 @@ export function WonPrizesModal() {
           <Text style={styles.hint}>{t('wonPrizesModal.checkboxHint')}</Text>
         </ScrollView>
 
-        <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
+        <View style={[styles.footer, { paddingBottom: insets.bottom + sg.space.md }]}>
           <PrimaryButton
             label={primaryCtaLabel}
             onPress={onPrimaryPress}
@@ -290,15 +288,15 @@ const styles = StyleSheet.create({
     marginBottom: sg.space.sm,
   },
   pageTitle: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
   },
   instructions: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -306,16 +304,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: sg.space.xl,
     marginBottom: sg.space.sm,
-    gap: spacing.md,
+    gap: sg.space.md,
   },
   sectionTitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     flex: 1,
   },
   sectionHint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     fontFamily: sg.font.bodyMedium,
   },
@@ -324,7 +322,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: sg.surface2,
     borderRadius: sg.radius.panel,
-    padding: spacing.md,
+    padding: sg.space.md,
     borderWidth: 2,
     borderColor: sg.line,
     gap: sg.space.sm,
@@ -387,14 +385,14 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: sg.text,
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
   },
   intentPill: {
     alignSelf: 'flex-start',
     paddingHorizontal: sg.space.sm,
     paddingVertical: 4,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
   },
   intentVault: {
@@ -407,17 +405,17 @@ const styles = StyleSheet.create({
   },
   intentText: {
     color: sg.text,
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     letterSpacing: 0.2,
   },
   itemName: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },
   itemMeta: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     marginTop: 2,
   },
@@ -425,7 +423,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   itemCoinValue: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     fontVariant: [...sg.numeric],
@@ -437,16 +435,16 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   hint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
     lineHeight: 18,
   },
   footer: {
     paddingHorizontal: sg.space.md,
     borderTopWidth: 1,
     borderTopColor: sg.line,
-    paddingTop: spacing.md,
+    paddingTop: sg.space.md,
     backgroundColor: sg.surface,
   },
   footerBtn: {
@@ -454,7 +452,7 @@ const styles = StyleSheet.create({
   },
   footerSub: {
     textAlign: 'center',
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     lineHeight: 18,
@@ -472,20 +470,20 @@ const styles = StyleSheet.create({
   },
   confirmClose: {
     position: 'absolute',
-    top: spacing.md,
-    right: spacing.md,
+    top: sg.space.md,
+    right: sg.space.md,
     zIndex: 2,
     padding: sg.space.xs,
   },
   confirmTitle: {
-    fontSize: fontSize.xl,
+    fontSize: sg.type.xl,
     fontFamily: sg.font.display,
     color: sg.text,
     marginBottom: sg.space.sm,
     paddingRight: sg.space.xl,
   },
   confirmBody: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     marginBottom: sg.space.lg,
     lineHeight: 20,
@@ -497,10 +495,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   confirmLabel: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     fontFamily: sg.font.bodyMedium,
   },
@@ -510,13 +508,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   confirmAmount: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     fontVariant: [...sg.numeric],
   },
   confirmVaultNote: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     marginBottom: sg.space.lg,

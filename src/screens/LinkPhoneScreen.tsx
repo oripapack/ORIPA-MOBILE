@@ -15,8 +15,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { isClerkAPIResponseError, useClerk, useUser } from '@clerk/clerk-expo';
 import { sg } from '../tokens/sg';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { getAppLogoParts } from '../config/app';
 import {
   hasVerifiedPhone,
@@ -45,7 +43,7 @@ function formatNanpDisplay(digits: string): string {
  * After OAuth/email sign-in: collect & verify a phone number on the Clerk user.
  * Dashboard: User & authentication → Phone → enable SMS; add a test number or SMS provider for dev.
  */
-export function LinkPhoneScreen() {
+export function LinkPhoneScreen({ previewMode = false }: { previewMode?: boolean } = {}) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { signOut } = useClerk();
@@ -81,6 +79,7 @@ export function LinkPhoneScreen() {
   );
 
   const onSubmitPhone = useCallback(async () => {
+    if (previewMode) return;
     if (!user) return;
     setError(null);
 
@@ -115,9 +114,10 @@ export function LinkPhoneScreen() {
     } finally {
       setBusy(false);
     }
-  }, [isNanp, nationalDigits, selectedCountry.dial, t, user]);
+  }, [isNanp, nationalDigits, previewMode, selectedCountry.dial, t, user]);
 
   const onVerifyCode = useCallback(async () => {
+    if (previewMode) return;
     if (!user || !pendingPhoneId) return;
     setError(null);
     setBusy(true);
@@ -146,9 +146,10 @@ export function LinkPhoneScreen() {
     } finally {
       setBusy(false);
     }
-  }, [code, pendingPhoneId, t, user]);
+  }, [code, pendingPhoneId, previewMode, t, user]);
 
   const onResend = useCallback(async () => {
+    if (previewMode) return;
     if (!user || !pendingPhoneId) return;
     setError(null);
     setBusy(true);
@@ -160,13 +161,14 @@ export function LinkPhoneScreen() {
     } finally {
       setBusy(false);
     }
-  }, [pendingPhoneId, t, user]);
+  }, [pendingPhoneId, previewMode, t, user]);
 
   const onSignOut = useCallback(() => {
+    if (previewMode) return;
     void signOut();
-  }, [signOut]);
+  }, [previewMode, signOut]);
 
-  if (!isLoaded || !user) {
+  if (!previewMode && (!isLoaded || !user)) {
     return (
       <SgScreen style={styles.centered}>
         <ActivityIndicator size="large" color={sg.gold} />
@@ -174,7 +176,7 @@ export function LinkPhoneScreen() {
     );
   }
 
-  if (hasVerifiedPhone(user)) {
+  if (!previewMode && hasVerifiedPhone(user)) {
     return null;
   }
 
@@ -201,7 +203,7 @@ export function LinkPhoneScreen() {
         style={styles.flexOverBg}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: insets.top + spacing.lg, paddingBottom: insets.bottom + spacing.xl },
+          { paddingTop: insets.top + sg.space.lg, paddingBottom: insets.bottom + sg.space.lg },
         ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -291,9 +293,6 @@ export function LinkPhoneScreen() {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <Text style={styles.hint}>{t('linkPhone.dashboardHint')}</Text>
-        <Text style={styles.hintSecondary}>{t('linkPhone.smsDevHint')}</Text>
-
         <TouchableOpacity onPress={onSignOut} style={styles.signOutWrap} disabled={busy}>
           <Text style={styles.linkMuted}>{t('linkPhone.signOut')}</Text>
         </TouchableOpacity>
@@ -317,53 +316,53 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContent: {
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: sg.space.lg,
     flexGrow: 1,
   },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
     gap: 4,
-    marginBottom: spacing.xl,
+    marginBottom: sg.space.lg,
   },
   logoPrimary: {
-    fontSize: fontSize.hero,
+    fontSize: sg.type.hero,
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
   },
   logoSecondary: {
-    fontSize: fontSize.hero,
+    fontSize: sg.type.hero,
     fontFamily: sg.font.display,
     color: sg.gold,
     letterSpacing: -0.5,
   },
   title: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   subtitle: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   fieldLabel: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
   phoneRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
+    gap: sg.space.sm,
+    marginBottom: sg.space.sm,
   },
   countryBtn: {
     flexDirection: 'row',
@@ -371,9 +370,9 @@ const styles = StyleSheet.create({
     gap: 4,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.sm,
+    paddingVertical: Platform.OS === 'ios' ? sg.space.md : sg.space.sm,
     minHeight: 50,
     backgroundColor: sg.surface2,
   },
@@ -385,7 +384,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
   },
   countryDial: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },
@@ -393,10 +392,10 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.base,
-    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
-    fontSize: fontSize.md,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: Platform.OS === 'ios' ? sg.space.md : sg.space.sm,
+    fontSize: sg.type.md,
     fontFamily: sg.font.body,
     color: sg.text,
     backgroundColor: sg.surface2,
@@ -405,62 +404,48 @@ const styles = StyleSheet.create({
   inputFull: {
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.base,
-    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
-    fontSize: fontSize.md,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: Platform.OS === 'ios' ? sg.space.md : sg.space.sm,
+    fontSize: sg.type.md,
     fontFamily: sg.font.body,
     color: sg.text,
     backgroundColor: sg.surface2,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   primaryBtnWrap: {
-    marginTop: spacing.xs,
+    marginTop: sg.space.xs,
   },
   verifyHint: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     lineHeight: 20,
   },
   linkWrap: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
     alignItems: 'center',
   },
   link: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.gold,
   },
   linkMuted: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   error: {
-    marginTop: spacing.md,
-    fontSize: fontSize.sm,
+    marginTop: sg.space.md,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.error,
     lineHeight: 20,
   },
-  hint: {
-    marginTop: spacing.xl,
-    fontSize: fontSize.xs,
-    fontFamily: sg.font.body,
-    color: sg.muted,
-    lineHeight: 18,
-  },
-  hintSecondary: {
-    marginTop: spacing.sm,
-    fontSize: fontSize.xs,
-    fontFamily: sg.font.body,
-    color: sg.muted,
-    lineHeight: 18,
-  },
   signOutWrap: {
-    marginTop: spacing.lg,
+    marginTop: sg.space.lg,
     alignItems: 'center',
   },
 });

@@ -4,13 +4,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { sgVault } from '../../tokens/sgVault';
 import type { Pull } from '../../data/mockUser';
 
-const fontSize = { xs: 11, sm: 13 } as const;
-const vaultFont = {
-  medium: sgVault.font.bodyMedium,
-  semibold: sgVault.font.bodyMedium,
-  bold: sgVault.font.bodyBold,
-} as const;
-
 function formatPoints(points: number): string {
   return `${Math.max(0, points).toLocaleString('en-US')} pts`;
 }
@@ -199,7 +192,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: 10,
-    fontFamily: vaultFont.bold,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.muted,
     letterSpacing: 1.8,
     marginBottom: 4,
@@ -213,8 +206,8 @@ const styles = StyleSheet.create({
     fontVariant: [...sgVault.numeric],
   },
   totalLabel: {
-    fontSize: fontSize.xs,
-    fontFamily: vaultFont.medium,
+    fontSize: sgVault.type.xs,
+    fontFamily: sgVault.font.bodyMedium,
     color: sgVault.muted,
     marginTop: 2,
   },
@@ -247,15 +240,15 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 10,
-    fontFamily: vaultFont.bold,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.muted,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
   statValue: {
-    fontSize: fontSize.sm,
-    fontFamily: vaultFont.bold,
+    fontSize: sgVault.type.sm,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.text,
     lineHeight: 20,
   },
@@ -264,7 +257,7 @@ const styles = StyleSheet.create({
   },
   distLabel: {
     fontSize: 9,
-    fontFamily: vaultFont.bold,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.muted,
     letterSpacing: 1.2,
   },
@@ -278,7 +271,7 @@ const styles = StyleSheet.create({
   },
   distBarLabel: {
     fontSize: 10,
-    fontFamily: vaultFont.semibold,
+    fontFamily: sgVault.font.bodyMedium,
     color: sgVault.muted,
     width: 44,
   },

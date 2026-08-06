@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { SUPPORT_EMAIL } from '../config/app';
@@ -35,7 +33,7 @@ export function HelpCenterScreen() {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxl }]}
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.lead}>{t('helpCenter.lead')}</Text>
@@ -97,80 +95,80 @@ export function HelpCenterScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
-  content: { padding: spacing.base, paddingTop: spacing.md },
+  content: { padding: sg.space.md, paddingTop: sg.space.md },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   faqCard: {
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    padding: spacing.base,
-    marginBottom: spacing.sm,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
+    marginBottom: sg.space.sm,
     borderWidth: 1,
     borderColor: sg.line,
   },
   faqQ: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   faqA: {
-    marginTop: spacing.sm,
-    fontSize: fontSize.sm,
+    marginTop: sg.space.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
   },
   sectionLabel: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginTop: spacing.lg,
-    marginBottom: spacing.sm,
+    marginTop: sg.space.lg,
+    marginBottom: sg.space.sm,
   },
   guidesCard: {
     borderWidth: 1,
     borderColor: sg.line,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface2,
     overflow: 'hidden',
   },
   guideRow: {
     minHeight: 54,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   guideTitle: {
     flex: 1,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   guideDivider: {
     height: 1,
-    marginLeft: spacing.base + 20 + spacing.sm,
+    marginLeft: sg.space.md + 20 + sg.space.sm,
     backgroundColor: sg.line,
   },
   contactBtn: {
     backgroundColor: sg.gold,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.panel,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
   },
   contactBtnText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
   },
   footnote: {
-    marginTop: spacing.sm,
-    fontSize: fontSize.xs,
+    marginTop: sg.space.sm,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
   },

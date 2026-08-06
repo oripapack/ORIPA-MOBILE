@@ -1,10 +1,9 @@
 import React from 'react';
 import { sg } from '../../tokens/sg';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { View, Text, StyleSheet } from 'react-native';
 import type { SocialPullEvent } from '../../data/socialMock';
-import { radius, spacing } from '../../tokens/spacing';
-import { formatRelativeTime, formatUsd } from '../../lib/socialFormat';
+import { formatRelativeTime, formatPoints } from '../../lib/socialFormat';
+import { AssetBlockedCard } from '../shared/AssetBlockedCard';
 
 interface Props {
   pull: SocialPullEvent;
@@ -14,30 +13,19 @@ export function SocialPullRow({ pull }: Props) {
   return (
     <View style={styles.row}>
       <View style={styles.art}>
-        {pull.imageUrl ? (
-          <Image source={{ uri: pull.imageUrl }} style={styles.artImg} resizeMode="cover" />
-        ) : (
-          <Ionicons name="albums-outline" size={27} color={sg.muted} />
-        )}
+        <AssetBlockedCard compact label="MEDIA PENDING" />
       </View>
       <View style={styles.meta}>
         <View style={styles.titleRow}>
           <Text style={styles.cardName} numberOfLines={2}>
             {pull.cardName}
           </Text>
-          {pull.badge ? (
-            <View style={[styles.badge, pull.badge === 'chase' ? styles.badgeChase : styles.badgeHit]}>
-              <Text style={[styles.badgeText, pull.badge === 'hit' && styles.badgeTextHit]}>
-                {pull.badge === 'chase' ? 'Chase' : 'Hit'}
-              </Text>
-            </View>
-          ) : null}
         </View>
         <Text style={styles.pack} numberOfLines={1}>
           {pull.packTitle}
         </Text>
         <View style={styles.bottom}>
-          <Text style={styles.value}>{formatUsd(pull.estimatedValue)}</Text>
+          <Text style={styles.value}>{formatPoints(pull.estimatedValue)}</Text>
           <Text style={styles.time}>{formatRelativeTime(pull.timestamp)}</Text>
         </View>
       </View>
@@ -48,18 +36,18 @@ export function SocialPullRow({ pull }: Props) {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: sg.space.md,
     backgroundColor: sg.surface2,
-    borderRadius: radius.lg,
-    padding: spacing.md,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.md,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
-    marginBottom: spacing.sm,
+    borderColor: sg.line,
+    marginBottom: sg.space.sm,
   },
   art: {
     width: 56,
     height: 78,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
@@ -67,12 +55,11 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
     overflow: 'hidden',
   },
-  artImg: { width: '100%', height: '100%' },
   meta: { flex: 1, minWidth: 0 },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     marginBottom: 4,
   },
   cardName: {
@@ -82,37 +69,16 @@ const styles = StyleSheet.create({
     color: sg.text,
     lineHeight: 20,
   },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: radius.sm,
-  },
-  badgeChase: {
-    backgroundColor: 'rgba(255,74,56,0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,74,56,0.34)',
-    ...sg.glowNeon,
-  },
-  badgeHit: { backgroundColor: sg.surface, borderWidth: 1, borderColor: sg.line },
-  badgeText: {
-    fontSize: 10,
-    fontFamily: sg.font.bodyBold,
-    color: sg.neon,
-    letterSpacing: 0.5,
-  },
-  badgeTextHit: {
-    color: sg.muted,
-  },
   pack: {
     fontSize: 11,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   bottom: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   value: {
     fontSize: 13,

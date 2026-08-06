@@ -3,8 +3,6 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
 import { useGuestBrowseStore } from '../../store/guestBrowseStore';
@@ -40,7 +38,7 @@ export function SignupPromptModal() {
       <Modal visible={visible} transparent animationType="fade" {...transparentModalIOSProps}>
         <Pressable style={styles.backdrop} onPress={onMaybeLater} accessibilityRole="button">
           <Pressable
-            style={[styles.card, { paddingBottom: insets.bottom + spacing.lg }]}
+            style={[styles.card, { paddingBottom: insets.bottom + sg.space.lg }]}
             onPress={(e) => e.stopPropagation()}
           >
             <Text style={styles.eyebrow}>{t('onboarding.promptEyebrow')}</Text>
@@ -71,44 +69,44 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.55)',
     justifyContent: 'center',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: sg.space.lg,
   },
   card: {
-    borderRadius: radius.xxl,
+    borderRadius: sg.radius.panel,
     overflow: 'hidden',
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.xl,
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.lg,
     backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
   },
   eyebrow: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   title: {
-    fontSize: fontSize.xl,
+    fontSize: sg.type.xl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   body: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   row: {
-    gap: spacing.sm,
+    gap: sg.space.sm,
   },
   later: {
-    marginTop: spacing.lg,
-    fontSize: fontSize.sm,
+    marginTop: sg.space.lg,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     textAlign: 'center',

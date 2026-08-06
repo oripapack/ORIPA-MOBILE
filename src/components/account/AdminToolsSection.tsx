@@ -3,8 +3,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useUser } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { isAdminUser } from '../../config/admin';
 import { useAppStore } from '../../store/useAppStore';
@@ -77,35 +75,35 @@ function AdminToolsCard() {
 
 const styles = StyleSheet.create({
   sectionHeader: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.gold,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginTop: spacing.xl,
-    marginBottom: spacing.xs,
-    paddingLeft: spacing.xs,
+    marginTop: sg.space.lg,
+    marginBottom: sg.space.xs,
+    paddingLeft: sg.space.xs,
   },
   wrap: {
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   inner: {
-    padding: spacing.lg,
+    padding: sg.space.lg,
   },
   balanceRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
+    gap: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   balanceLabel: {
     flex: 1,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   balanceValue: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     color: sg.text,
@@ -114,15 +112,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     backgroundColor: sg.gold,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.panel,
+    paddingVertical: sg.space.md,
     minHeight: 48,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   primaryActionText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
@@ -130,22 +128,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
-    borderRadius: radius.lg,
+    gap: sg.space.sm,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface,
-    paddingVertical: spacing.md,
+    paddingVertical: sg.space.md,
     minHeight: 48,
   },
   secondaryActionText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
   },
   note: {
-    marginTop: spacing.md,
-    fontSize: fontSize.xs,
+    marginTop: sg.space.md,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 16,

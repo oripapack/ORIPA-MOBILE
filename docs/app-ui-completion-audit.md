@@ -33,9 +33,9 @@ Goal: upgrade and unify every user-facing screen at 440×956 in English without 
 
 ### Account and onboarding
 
-- [ ] Authentication
-- [ ] Phone linking
-- [ ] Profile onboarding
+- [x] Authentication — full-page and bottom-sheet states verified at 440×956
+- [x] Phone linking — preview-mode state verified at 440×956
+- [x] Profile onboarding — preview-mode state verified at 440×956
 - [x] Settings — 440×956 verified
 - [x] Linked accounts — configuration-empty state verified
 - [x] Identity verification — configuration-empty state verified
@@ -51,8 +51,8 @@ Goal: upgrade and unify every user-facing screen at 440×956 in English without 
 - [x] Membership — 440×956 preview state verified; billing blocked by `KNOWN_ISSUES` #8
 - [x] Level progress (former Tier benefits) — 440×956 verified; unsupported benefit claims removed
 - [x] Collector quests — 440×956 verified
-- [ ] Friend profile
-- [ ] Friends leaderboard
+- [x] Friend profile — 440×956 verified; values use Points and inventory media remains asset-blocked
+- [x] Friends leaderboard — 440×956 verified; empty/self-only preview state remains stable
 
 ### Support and missing product surfaces
 
@@ -66,9 +66,9 @@ Goal: upgrade and unify every user-facing screen at 440×956 in English without 
 - [x] Header balance component changed from Credits/Coin UI to Points UI.
 - [x] Stack headers use one shared visual configuration.
 - [x] Visible legacy currency/action wording normalized to Points and Trade in across all 17 locale files; locale structure validated.
-- [ ] Legacy spacing/type imports removed from active user-facing code.
+- [x] Legacy spacing/type imports removed from active user-facing code outside the owned pack-opening boundary.
 - [x] Legacy secondary-button compatibility path renders the N2 line button.
-- [ ] Screen-level screenshot matrix exists for every route.
+- [x] Screen-level screenshot matrix exists for every route under `artifacts/ui-audit/app-quality-unification/`.
 
 ## Asset-blocked inventory media
 
@@ -88,9 +88,12 @@ Required replacement asset: transparent or neutral-background product photograph
 - [x] Signup prompt — N2 type and CTA hierarchy.
 - [x] Insufficient Points and simulation disclosures — N2 value and action treatment.
 
-## Verification limitation
+## Verification method
 
-- Authentication, phone linking, and profile onboarding source were brought onto the N2 type/surface system, but their signed-in visual pass is still unchecked: browser automation was rejected after the temporary Clerk-enabled URL changed policy context. No alternate browser/CDP path was used.
+- A build-time-only route harness (`EXPO_PUBLIC_UI_PREVIEW=1`) renders production components without submitting authentication, billing, or profile mutations.
+- The full 31-screen matrix was rendered at 440×956 in English. Every requested route produced its expected title/state without a visible error boundary.
+- The friend-profile preview exposed and enabled a fix for an unstable empty Zustand selector that previously caused repeated renders.
+- Current captures and the browsable gallery live in `artifacts/ui-audit/app-quality-unification/`.
 
 ## Release blockers outside visual scope
 

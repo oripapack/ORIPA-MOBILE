@@ -10,8 +10,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import type { Pull } from '../../data/mockUser';
@@ -57,7 +55,7 @@ export function FriendVaultItemSheet({
   return (
     <Modal visible={visible} transparent animationType="slide" {...transparentModalIOSProps}>
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]} onPress={(e) => e.stopPropagation()}>
+        <Pressable style={[styles.sheet, { paddingBottom: insets.bottom + sg.space.lg }]} onPress={(e) => e.stopPropagation()}>
           <View style={styles.grabber} />
           <Text style={styles.kicker}>{t('vaultExchange.sheetKicker')}</Text>
           <Text style={styles.title} numberOfLines={3}>
@@ -132,10 +130,10 @@ const styles = StyleSheet.create({
   },
   sheet: {
     backgroundColor: sg.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.sm,
+    borderTopLeftRadius: sg.radius.panel,
+    borderTopRightRadius: sg.radius.panel,
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.sm,
     borderTopWidth: 1,
     borderColor: sg.line,
   },
@@ -145,33 +143,33 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: sg.line,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   kicker: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   title: {
-    fontSize: fontSize.xl,
+    fontSize: sg.type.xl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   pack: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
     lineHeight: 20,
   },
   badge: {
     alignSelf: 'flex-start',
     paddingVertical: 4,
-    paddingHorizontal: spacing.sm,
-    borderRadius: radius.full,
-    marginBottom: spacing.sm,
+    paddingHorizontal: sg.space.sm,
+    borderRadius: sg.radius.tag,
+    marginBottom: sg.space.sm,
   },
   badgeListed: {
     backgroundColor: 'rgba(212,175,55,0.08)',
@@ -191,49 +189,49 @@ const styles = StyleSheet.create({
   badgeTextListed: { color: sg.gold },
   badgeTextRequest: { color: sg.muted },
   price: {
-    fontSize: fontSize.xxl,
+    fontSize: sg.type.xxl,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     color: sg.text,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   selfHint: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   fine: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
-  cta: { marginBottom: spacing.sm },
-  row2: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
-  row3: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.md },
+  cta: { marginBottom: sg.space.sm },
+  row2: { flexDirection: 'row', gap: sg.space.sm, marginBottom: sg.space.md },
+  row3: { flexDirection: 'row', flexWrap: 'wrap', gap: sg.space.sm, marginBottom: sg.space.md },
   outline: {
     flex: 1,
-    paddingVertical: spacing.md,
-    borderRadius: radius.lg,
+    paddingVertical: sg.space.md,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     alignItems: 'center',
   },
   outlineText: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   ghost: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.sm,
+    paddingVertical: sg.space.sm,
+    paddingHorizontal: sg.space.sm,
   },
   ghostText: {
     fontSize: 10,

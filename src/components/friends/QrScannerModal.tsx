@@ -15,8 +15,6 @@ import { useTranslation } from 'react-i18next';
 import { parseFriendInviteFromQr } from '../../lib/friendQr';
 import { showUserMessage } from '../../utils/showUserMessage';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 interface Props {
   visible: boolean;
@@ -149,50 +147,50 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    paddingBottom: sg.space.sm,
   },
   cancel: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     width: 56,
   },
   headerTitle: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   permBody: {
     flex: 1,
-    padding: spacing.xl,
+    padding: sg.space.lg,
     justifyContent: 'center',
   },
   permText: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     color: sg.text,
     textAlign: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
     lineHeight: 22,
   },
   permBtn: {
     alignSelf: 'center',
     backgroundColor: sg.gold,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: radius.lg,
+    paddingHorizontal: sg.space.lg,
+    paddingVertical: sg.space.md,
+    borderRadius: sg.radius.panel,
   },
   permBtnText: {
     color: sg.onGold,
     fontFamily: sg.font.bodyBold,
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
   },
   webPasteBlock: {
-    marginTop: spacing.xxl,
-    gap: spacing.sm,
+    marginTop: sg.space.xl,
+    gap: sg.space.sm,
   },
   webPasteLabel: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     textAlign: 'center',
@@ -200,17 +198,17 @@ const styles = StyleSheet.create({
   webPasteInput: {
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.md,
-    fontSize: fontSize.md,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.body,
     color: sg.text,
     backgroundColor: sg.surface2,
   },
   cameraContainer: {
     flex: 1,
-    marginBottom: spacing.xl,
+    marginBottom: sg.space.lg,
   },
   frameOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -220,19 +218,19 @@ const styles = StyleSheet.create({
   frameBox: {
     width: 260,
     height: 260,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 3,
     borderColor: sg.gold,
     backgroundColor: 'transparent',
   },
   hint: {
     position: 'absolute',
-    bottom: spacing.xl,
+    bottom: sg.space.lg,
     left: 0,
     right: 0,
     textAlign: 'center',
     color: sg.text,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
   },
 });

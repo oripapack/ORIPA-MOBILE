@@ -124,7 +124,7 @@ export function pullToSocialEvent(p: Pull, idx: number): SocialPullEvent {
     id: p.id,
     cardName: p.result,
     rarity,
-    estimatedValue: p.creditsWon / 100,
+    estimatedValue: p.creditsWon,
     packTitle: p.packTitle,
     timestamp: p.timestamp instanceof Date ? p.timestamp : new Date(p.timestamp),
     badge,
@@ -168,7 +168,7 @@ export function deriveSocialProfileFromUser(user: UserState): SocialUserProfile 
   };
 }
 
-const JORDAN: SocialUserProfile = {
+const MOCK_JORDAN: SocialUserProfile = {
   username: 'jordan',
   displayName: 'Jordan K.',
   bio: 'Full-art hunter · JP promos · late-night rips.',
@@ -217,7 +217,7 @@ const JORDAN: SocialUserProfile = {
   luckScore: 88,
 };
 
-const SAM: SocialUserProfile = {
+const MOCK_SAM: SocialUserProfile = {
   username: 'sam_r',
   displayName: 'Sam R.',
   bio: 'Budget rips · best hit: $4k · always chasing.',
@@ -258,7 +258,7 @@ const SAM: SocialUserProfile = {
   luckScore: 72,
 };
 
-const CASEY: SocialUserProfile = {
+const MOCK_CASEY: SocialUserProfile = {
   username: 'casey_m',
   displayName: 'Casey M.',
   bio: 'Sealed sometimes · mostly singles · luck goblin.',
@@ -299,9 +299,9 @@ const CASEY: SocialUserProfile = {
 };
 
 export const MOCK_SOCIAL_PROFILES: Record<string, SocialUserProfile> = {
-  jordan: JORDAN,
-  sam_r: SAM,
-  casey_m: CASEY,
+  jordan: MOCK_JORDAN,
+  sam_r: MOCK_SAM,
+  casey_m: MOCK_CASEY,
 };
 
 export function getSocialProfile(username: string): SocialUserProfile | null {
@@ -349,7 +349,7 @@ export function getActivityHighlights(profile: SocialUserProfile): ActivityHighl
     {
       id: 'a1',
       emoji: 'target',
-      text: `${profile.displayName.split(' ')[0]}’s best hit: ${best}`,
+      text: `${profile.displayName.split(' ')[0]}’s best pull: ${best}`,
     },
     {
       id: 'a2',
@@ -359,15 +359,14 @@ export function getActivityHighlights(profile: SocialUserProfile): ActivityHighl
     {
       id: 'a3',
       emoji: 'luck',
-      text: `Luck score ${profile.luckScore} · ${profile.stats.chaseHits} chase pulls`,
+      text: `Luck score ${profile.luckScore} · ${profile.stats.chaseHits} featured pulls`,
     },
   ];
 }
 
 function formatSocialValue(value: number): string {
-  if (value >= 1000) return `$${(value / 1000).toFixed(1)}k`;
-  if (Number.isInteger(value)) return `$${value.toLocaleString()}`;
-  return `$${value.toFixed(2)}`;
+  if (value >= 1000) return `${(value / 1000).toFixed(1)}k Points`;
+  return `${Math.round(value).toLocaleString()} Points`;
 }
 
 export function metricValue(profile: SocialUserProfile, metric: LeaderboardMetric): number {
@@ -500,7 +499,7 @@ export function buildCompareRows(me: SocialUserProfile, them: SocialUserProfile)
     },
     {
       key: 'chase',
-      label: 'Chase hits',
+      label: 'Featured pulls',
       me: a.chaseHits,
       them: b.chaseHits,
       winner: num(a.chaseHits, b.chaseHits),
@@ -526,5 +525,5 @@ export function buildCompareRows(me: SocialUserProfile, them: SocialUserProfile)
 export const DEMO_DISCOVERABLE_USERS: { username: string; displayName: string; blurb: string }[] = [
   { username: 'jordan', displayName: 'Jordan K.', blurb: 'Alt-art hunter' },
   { username: 'sam_r', displayName: 'Sam R.', blurb: 'Budget rips' },
-  { username: 'casey_m', displayName: 'Casey M.', blurb: 'Biggest single hit' },
+  { username: 'casey_m', displayName: 'Casey M.', blurb: 'Biggest single pull' },
 ];

@@ -5,8 +5,6 @@ import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PackOdds } from '../../data/mockPackOdds';
 import { SgTierTag } from '../ui';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 
 type Props = {
   visible: boolean;
@@ -66,7 +64,7 @@ const styles = StyleSheet.create({
     padding: sg.space.lg,
   },
   kicker: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     textTransform: 'uppercase',
@@ -74,10 +72,10 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 4,
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   table: {
     gap: sg.space.sm,
@@ -91,33 +89,33 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
   },
   chance: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   examples: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 17,
   },
   note: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
     fontSize: 11,
     color: sg.muted,
     lineHeight: 16,
   },
   closeBtn: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
     alignSelf: 'flex-end',
     borderWidth: 1,
     borderColor: sg.line,
     borderRadius: sg.radius.btn,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: sg.space.md,
     paddingVertical: sg.space.xs + 2,
     backgroundColor: sg.surface2,
   },
   closeText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },

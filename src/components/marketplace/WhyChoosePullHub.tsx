@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { radius, spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 
 const POINTS = [
@@ -42,27 +41,27 @@ export function WhyChoosePullHub() {
 
 const styles = StyleSheet.create({
   outer: {
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.md,
+    marginHorizontal: sg.space.md,
+    marginBottom: sg.space.md,
   },
   inner: {
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.xs,
-    paddingHorizontal: spacing.md,
+    paddingTop: sg.space.sm,
+    paddingBottom: sg.space.xs,
+    paddingHorizontal: sg.space.md,
   },
   sectionTitle: {
     fontSize: 19,
     fontFamily: sg.font.display,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     textAlign: 'left',
     letterSpacing: 0.2,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
+    gap: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   iconCircle: {
     width: 40,
@@ -82,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212,175,55,0.14)',
     paddingHorizontal: 7,
     paddingVertical: 2,
-    borderRadius: radius.sm,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
     borderColor: 'rgba(212,175,55,0.38)',
     marginBottom: 4,

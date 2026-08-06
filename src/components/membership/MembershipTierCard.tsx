@@ -4,8 +4,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import type { MembershipPlan } from '../../data/membershipPlans';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 
 export interface MembershipTierCardProps {
   plan: MembershipPlan;
@@ -80,11 +78,11 @@ export function MembershipTierCard({ plan, selected, onSelect }: MembershipTierC
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
-    padding: spacing.md,
-    marginHorizontal: spacing.base,
-    marginBottom: spacing.md,
+    padding: sg.space.md,
+    marginHorizontal: sg.space.md,
+    marginBottom: sg.space.md,
     overflow: 'hidden',
   },
   cardPopular: {
@@ -96,10 +94,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212,175,55,0.12)',
     borderWidth: 1,
     borderColor: sg.line,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: sg.space.md,
     paddingVertical: 5,
-    borderRadius: radius.full,
-    marginBottom: spacing.sm,
+    borderRadius: sg.radius.tag,
+    marginBottom: sg.space.sm,
   },
   popularRibbonText: {
     fontSize: 10,
@@ -112,10 +110,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   tierName: {
-    fontSize: fontSize.xl,
+    fontSize: sg.type.xl,
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.3,
@@ -143,13 +141,13 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   priceLine: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.data,
     color: sg.text,
-    marginTop: spacing.sm,
+    marginTop: sg.space.sm,
   },
   pointsLine: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.data,
     fontVariant: ['tabular-nums'],
     color: sg.muted,
@@ -158,20 +156,20 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: sg.line,
-    marginVertical: spacing.sm,
+    marginVertical: sg.space.sm,
   },
   bulletRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
+    gap: sg.space.sm,
+    marginBottom: sg.space.sm,
   },
   bulletIcon: {
     marginTop: 2,
   },
   bulletText: {
     flex: 1,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
   },

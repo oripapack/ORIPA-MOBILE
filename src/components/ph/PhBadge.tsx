@@ -1,27 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import type { RarityTier } from '../../../shared/types/pack';
-import { ph } from '../../tokens/phTheme';
-import { fontSize } from '../../tokens/typography';
 import { sg } from '../../tokens/sg';
+import { SgTierTag } from '../ui/SgTierTag';
+import type { N2TierState } from '../../lib/n2Rarity';
 
-const RARITY_LABEL: Record<RarityTier, string> = {
-  common: 'Common',
-  rare: 'Rare',
-  epic: 'Epic',
-  legendary: 'Legendary',
-  mythic: 'Mythic',
+const LEGACY_TIER: Record<RarityTier, N2TierState> = {
+  common: 'base',
+  rare: 'unknown',
+  epic: 'epic',
+  legendary: 'legendary',
+  mythic: 'mythic',
 };
 
-export function RarityBadge({ rarity, small }: { rarity: RarityTier; small?: boolean }) {
-  return (
-    <View style={[styles.badge, { backgroundColor: ph.rarityBg[rarity], borderColor: ph.rarityBorder[rarity] }, small && styles.small]}>
-      <View style={[styles.dot, { backgroundColor: ph.rarity[rarity] }]} />
-      <Text style={[styles.text, { color: ph.rarity[rarity] }, small && styles.textSmall]}>
-        {RARITY_LABEL[rarity]}
-      </Text>
-    </View>
-  );
+/** @deprecated Use SgTierTag with an explicit N2 tier at the call site. */
+export function RarityBadge({ rarity, small: _small }: { rarity: RarityTier; small?: boolean }) {
+  return <SgTierTag tier={LEGACY_TIER[rarity]} context="badge" />;
 }
 
 export function StatusBadge({
@@ -38,7 +32,7 @@ export function StatusBadge({
     : styles.neutral;
   return (
     <View style={[styles.badge, variantStyle]}>
-      <Text style={[styles.statusText, variant === 'success' && { color: ph.green }]}>{children}</Text>
+      <Text style={[styles.statusText, variant === 'success' && styles.successText, variant === 'warning' && styles.warningText]}>{children}</Text>
     </View>
   );
 }
@@ -48,23 +42,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    borderRadius: ph.radius.pill,
+    borderRadius: sg.radius.tag,
     borderWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 3,
   },
-  small: { paddingHorizontal: 8, paddingVertical: 2 },
-  dot: { width: 6, height: 6, borderRadius: 3 },
-  text: {
-    fontSize: 10,
-    fontFamily: sg.font.bodyBold,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-  },
-  textSmall: { fontSize: 9 },
-  statusText: { fontSize: 10, fontFamily: sg.font.bodyBold, color: ph.textSec, textTransform: 'uppercase' },
-  success: { backgroundColor: ph.greenSoft, borderColor: ph.greenBorder },
-  warning: { backgroundColor: ph.redSoft, borderColor: ph.redBorder },
-  featured: { backgroundColor: ph.rarityBg.epic, borderColor: ph.rarityBorder.epic },
-  neutral: { backgroundColor: ph.surface, borderColor: ph.border },
+  statusText: { fontSize: 10, fontFamily: sg.font.bodyBold, color: sg.muted, textTransform: 'uppercase' },
+  successText: { color: sg.success },
+  warningText: { color: sg.warning },
+  success: { backgroundColor: sg.surface2, borderColor: sg.success },
+  warning: { backgroundColor: sg.surface2, borderColor: sg.warning },
+  featured: { backgroundColor: sg.surface2, borderColor: sg.gold },
+  neutral: { backgroundColor: sg.surface, borderColor: sg.line },
 });

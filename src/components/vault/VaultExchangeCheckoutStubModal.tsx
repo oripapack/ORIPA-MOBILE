@@ -3,8 +3,6 @@ import { Modal, View, Text, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sgVault } from '../../tokens/sgVault';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
@@ -31,7 +29,7 @@ export function VaultExchangeCheckoutStubModal({
     <Modal visible={visible} transparent animationType="fade" {...transparentModalIOSProps}>
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={[styles.card, { paddingBottom: insets.bottom + spacing.lg }]}>
+        <View style={[styles.card, { paddingBottom: insets.bottom + sgVault.space.lg }]}>
           <Text style={styles.kicker}>{t('vaultExchange.checkoutKicker')}</Text>
           <Text style={styles.title}>{t('vaultExchange.checkoutTitle')}</Text>
           <Text style={styles.item} numberOfLines={2}>
@@ -57,43 +55,43 @@ const styles = StyleSheet.create({
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' },
   card: {
     backgroundColor: sgVault.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    padding: spacing.xl,
+    borderTopLeftRadius: sgVault.radius.panel,
+    borderTopRightRadius: sgVault.radius.panel,
+    padding: sgVault.space.lg,
     borderTopWidth: 1,
     borderColor: sgVault.line,
   },
   kicker: {
-    fontSize: fontSize.xs,
+    fontSize: sgVault.type.xs,
     fontFamily: sgVault.font.bodyBold,
     color: sgVault.gold,
     letterSpacing: 1.1,
-    marginBottom: spacing.xs,
+    marginBottom: sgVault.space.xs,
   },
   title: {
-    fontSize: fontSize.xl,
+    fontSize: sgVault.type.xl,
     fontFamily: sgVault.font.display,
     color: sgVault.text,
-    marginBottom: spacing.sm,
+    marginBottom: sgVault.space.sm,
   },
   item: {
-    fontSize: fontSize.sm,
+    fontSize: sgVault.type.sm,
     fontFamily: sgVault.font.bodyMedium,
     color: sgVault.muted,
-    marginBottom: spacing.xs,
+    marginBottom: sgVault.space.xs,
   },
   price: {
-    fontSize: fontSize.xxl,
+    fontSize: sgVault.type.xxl,
     fontFamily: sgVault.font.dataBold,
     fontVariant: ['tabular-nums'],
     color: sgVault.text,
-    marginBottom: spacing.md,
+    marginBottom: sgVault.space.md,
   },
   body: {
-    fontSize: fontSize.sm,
+    fontSize: sgVault.type.sm,
     color: sgVault.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sgVault.space.lg,
   },
-  primary: { marginBottom: spacing.sm },
+  primary: { marginBottom: sgVault.space.sm },
 });

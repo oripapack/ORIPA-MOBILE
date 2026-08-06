@@ -1,8 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 import type { Pack } from '../../data/mockPacks';
 import { PackCardMini } from './PackCardMini';
 
@@ -36,14 +34,14 @@ const styles = StyleSheet.create({
     marginBottom: sg.space.sm,
   },
   title: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     letterSpacing: -0.2,
   },
   sub: {
     marginTop: 2,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 18,
   },

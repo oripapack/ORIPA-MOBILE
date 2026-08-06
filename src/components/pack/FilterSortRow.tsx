@@ -3,8 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, Pressable } from 'reac
 import { useTranslation } from 'react-i18next';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 
@@ -88,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingHorizontal: sg.space.md,
-    paddingVertical: spacing.md,
+    paddingVertical: sg.space.md,
     backgroundColor: sg.bg,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sg.line,
@@ -99,11 +97,11 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   sortLabel: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
   },
   sortValue: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
     paddingBottom: sg.space.xxxl,
   },
   dropdownTitle: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
     marginBottom: sg.space.md,
@@ -129,13 +127,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: spacing.md,
+    paddingVertical: sg.space.md,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
   },
   dropdownItemActive: {},
   dropdownText: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     color: sg.text,
   },
   dropdownTextActive: {

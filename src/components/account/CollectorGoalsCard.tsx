@@ -2,8 +2,6 @@ import React, { useCallback } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 import { VaultFramedCard } from '../shared/VaultFramedCard';
 import { COLLECTOR_QUESTS } from '../../data/collectorQuests';
 import { useAppStore } from '../../store/useAppStore';
@@ -60,32 +58,32 @@ export function CollectorGoalsCard() {
 }
 
 const styles = StyleSheet.create({
-  card: { marginBottom: spacing.base },
-  inner: { padding: spacing.lg, gap: 0 },
+  card: { marginBottom: sg.space.md },
+  inner: { padding: sg.space.lg, gap: 0 },
   sectionEyebrow: {
     fontSize: 10,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
-  questsEyebrow: { marginTop: spacing.lg },
+  questsEyebrow: { marginTop: sg.space.lg },
   streakRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   streakMain: { flex: 1 },
   streakVal: {
-    fontSize: fontSize.hero,
+    fontSize: sg.type.hero,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     color: sg.text,
     letterSpacing: -1,
   },
   streakLab: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     marginTop: 2,
@@ -94,31 +92,31 @@ const styles = StyleSheet.create({
     width: StyleSheet.hairlineWidth,
     height: 44,
     backgroundColor: sg.line,
-    marginHorizontal: spacing.md,
+    marginHorizontal: sg.space.md,
   },
   streakSide: { alignItems: 'flex-end' },
   streakBestLab: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     fontFamily: sg.font.bodyMedium,
   },
   streakBestVal: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     color: sg.text,
     marginTop: 2,
   },
   streakFine: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   questsHint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     lineHeight: 18,
   },
 });

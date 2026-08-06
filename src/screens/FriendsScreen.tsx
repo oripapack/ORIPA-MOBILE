@@ -16,7 +16,6 @@ import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../tokens/sg';
-import { radius, spacing } from '../tokens/spacing';
 import { SgScreen } from '../components/ui';
 import { AppHeader } from '../components/shared/AppHeader';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
@@ -42,20 +41,11 @@ import {
   getSocialProfile,
   type LeaderboardEntry,
 } from '../data/socialMock';
-import { formatUsd } from '../lib/socialFormat';
+import { formatPoints } from '../lib/socialFormat';
 import { PUBLIC_WEB_ORIGIN } from '../config/app';
 import { showUserMessage } from '../utils/showUserMessage';
 
 const LB_PREVIEW = 3;
-
-const fontSize = { xs: 11, sm: 13, md: 17, lg: 20, xxl: 28 } as const;
-const brandFont = {
-  regular: sg.font.body,
-  medium: sg.font.bodyMedium,
-  semibold: sg.font.bodyMedium,
-  bold: sg.font.bodyBold,
-  black: sg.font.bodyBold,
-} as const;
 
 /** Seconds between auto-advance steps; keep slow so it feels ambient, not flashy */
 const ACTIVITY_AUTO_SCROLL_INTERVAL_MS = 4200;
@@ -128,7 +118,7 @@ export function FriendsScreen() {
     };
   }, []);
 
-  const activityCardStride = activityCardWidth + spacing.sm;
+  const activityCardStride = activityCardWidth + sg.space.sm;
 
   useEffect(() => {
     if (!isFocused || reduceMotion || activityFeed.length < 2) return;
@@ -392,7 +382,7 @@ export function FriendsScreen() {
                         <Text style={styles.squadStat} numberOfLines={1}>
                           {t('social.bestPull')}: {profile.stats.bestPullCardName}
                         </Text>
-                        <Text style={styles.squadStatMuted}>{formatUsd(profile.stats.totalEstimatedValue)} total</Text>
+                        <Text style={styles.squadStatMuted}>{formatPoints(profile.stats.totalEstimatedValue)} total</Text>
                       </View>
                       <Ionicons name="chevron-forward" size={18} color={sg.muted} />
                     </TouchableOpacity>
@@ -430,7 +420,7 @@ export function FriendsScreen() {
                         @{e.username}
                       </Text>
                     </View>
-                    <Text style={styles.lbVal}>{formatUsd(e.value)}</Text>
+                    <Text style={styles.lbVal}>{formatPoints(e.value)}</Text>
                   </TouchableOpacity>
                 ))}
                 <TouchableOpacity style={styles.seeAllBtn} onPress={openLeaderboard} activeOpacity={0.85}>
@@ -492,23 +482,23 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   scroll: {
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.md,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.md,
     paddingBottom: 120,
   },
   guestBanner: {
-    marginBottom: spacing.lg,
-    paddingVertical: spacing.md,
+    marginBottom: sg.space.lg,
+    paddingVertical: sg.space.md,
   },
   guestBannerTitle: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   guestBannerBody: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.regular,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.body,
     color: sg.muted,
     lineHeight: 20,
   },
@@ -516,7 +506,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   pageTitle: {
     fontSize: 30,
@@ -544,9 +534,9 @@ const styles = StyleSheet.create({
   },
   inboxActions: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginTop: -spacing.sm,
-    marginBottom: spacing.lg,
+    gap: sg.space.sm,
+    marginTop: -sg.space.sm,
+    marginBottom: sg.space.lg,
   },
   inboxAction: {
     flex: 1,
@@ -554,58 +544,58 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface,
   },
   inboxActionText: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   requestsBlock: {
-    marginBottom: spacing.xl,
-    gap: spacing.md,
+    marginBottom: sg.space.lg,
+    gap: sg.space.md,
   },
   requestCardInner: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.base,
-    gap: spacing.xs,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.md,
+    gap: sg.space.xs,
   },
   requestName: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.md,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   requestHandle: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   requestHint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   requestActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    marginTop: spacing.xs,
+    gap: sg.space.sm,
+    marginTop: sg.space.xs,
   },
   requestDecline: {
     flex: 1,
-    paddingVertical: spacing.sm,
+    paddingVertical: sg.space.sm,
     alignItems: 'center',
     justifyContent: 'center',
   },
   requestDeclineText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   requestAcceptBtn: {
@@ -614,71 +604,71 @@ const styles = StyleSheet.create({
   },
   sectionEyebrow: {
     fontSize: 11,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 2.2,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   sectionEyebrowSm: {
     fontSize: 10,
-    fontFamily: brandFont.black,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.6,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     opacity: 0.92,
   },
   sectionActivity: {
-    marginBottom: spacing.xl + spacing.sm,
+    marginBottom: sg.space.lg + sg.space.sm,
   },
   sectionLeaderboard: {
-    marginBottom: spacing.lg + spacing.xs,
+    marginBottom: sg.space.lg + sg.space.xs,
   },
   sectionFriends: {
-    marginBottom: spacing.lg + spacing.xs,
+    marginBottom: sg.space.lg + sg.space.xs,
   },
   sectionHintCompact: {
     fontSize: 10,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     opacity: 0.75,
     lineHeight: 14,
   },
   activityCarouselBleed: {
-    marginHorizontal: -spacing.base,
+    marginHorizontal: -sg.space.md,
   },
   activityCarousel: {
-    paddingLeft: spacing.base,
-    paddingRight: spacing.base,
-    paddingBottom: spacing.xs,
+    paddingLeft: sg.space.md,
+    paddingRight: sg.space.md,
+    paddingBottom: sg.space.xs,
   },
   inlineEmpty: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    paddingVertical: spacing.sm,
+    paddingVertical: sg.space.sm,
     opacity: 0.85,
   },
   inlineEmptySm: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    paddingVertical: spacing.xs,
+    paddingVertical: sg.space.xs,
     opacity: 0.8,
   },
   leaderboardBlock: {
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     backgroundColor: sg.surface,
     overflow: 'hidden',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   lbRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.sm + 2,
-    paddingHorizontal: spacing.md,
+    gap: sg.space.sm,
+    paddingVertical: sg.space.sm + 2,
+    paddingHorizontal: sg.space.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: sg.line,
   },
@@ -687,8 +677,8 @@ const styles = StyleSheet.create({
   },
   lbRank: {
     width: 24,
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.black,
+    fontSize: sg.type.sm,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
     textAlign: 'center',
   },
@@ -712,8 +702,8 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   lbName: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.xs,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   lbUn: {
@@ -722,7 +712,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   lbVal: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.dataBold,
     color: sg.text,
     fontVariant: [...sg.numeric],
@@ -732,26 +722,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
-    paddingVertical: spacing.sm + 2,
+    paddingVertical: sg.space.sm + 2,
     backgroundColor: sg.surface2,
   },
   seeAllText: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.xs,
+    fontFamily: sg.font.bodyBold,
     color: sg.gold,
   },
   squadBlock: {
-    gap: spacing.sm,
-    marginBottom: spacing.md,
+    gap: sg.space.sm,
+    marginBottom: sg.space.md,
   },
   squadRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     backgroundColor: sg.surface2,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
+    borderRadius: sg.radius.btn,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.md,
     borderWidth: 1,
     borderColor: sg.line,
     overflow: 'hidden',
@@ -768,8 +758,8 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   squadAvatarText: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    fontSize: sg.type.lg,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   squadMeta: {
@@ -777,20 +767,20 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   squadName: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.md,
+    fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   squadHandle: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontSize: sg.type.xs,
+    fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     marginTop: 2,
   },
   squadStat: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
-    marginTop: spacing.xs,
+    marginTop: sg.space.xs,
   },
   squadStatMuted: {
     fontSize: 10,
@@ -798,32 +788,32 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   addFriendsBelowActivity: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
     minWidth: 200,
     alignSelf: 'stretch',
   },
   socialFooter: {
-    marginTop: spacing.xl,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
+    marginTop: sg.space.lg,
+    paddingTop: sg.space.lg,
+    paddingBottom: sg.space.md,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: sg.line,
     alignItems: 'center',
   },
   socialFooterTitle: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.black,
+    fontSize: sg.type.xs,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
     textAlign: 'center',
   },
   socialFooterSub: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
     lineHeight: 18,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     textAlign: 'center',
     maxWidth: 320,
     opacity: 0.9,

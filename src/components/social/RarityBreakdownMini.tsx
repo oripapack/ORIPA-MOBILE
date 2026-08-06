@@ -2,8 +2,6 @@ import React from 'react';
 import { sg } from '../../tokens/sg';
 import { View, Text, StyleSheet } from 'react-native';
 import type { RarityBreakdown } from '../../data/socialMock';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { rarityColor } from './rarityStyles';
 import type { SocialRarity } from '../../data/socialMock';
 
@@ -40,17 +38,17 @@ export function RarityBreakdownMini({ breakdown }: { breakdown: RarityBreakdown 
 }
 
 const styles = StyleSheet.create({
-  wrap: { gap: spacing.sm },
+  wrap: { gap: sg.space.sm },
   bar: {
     flexDirection: 'row',
     height: 8,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     overflow: 'hidden',
     backgroundColor: sg.line,
   },
   seg: { height: '100%' },
-  legend: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  legend: { flexDirection: 'row', flexWrap: 'wrap', gap: sg.space.sm },
   legRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   dot: { width: 6, height: 6, borderRadius: 3 },
-  legText: { fontSize: fontSize.xs, color: sg.muted, fontFamily: sg.font.bodyMedium },
+  legText: { fontSize: sg.type.xs, color: sg.muted, fontFamily: sg.font.bodyMedium },
 });

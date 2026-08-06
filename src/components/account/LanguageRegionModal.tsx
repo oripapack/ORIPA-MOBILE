@@ -10,8 +10,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { useTranslation } from 'react-i18next';
 import {
   LANGUAGE_OPTIONS,
@@ -54,7 +52,7 @@ export function LanguageRegionModal({
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <View style={[styles.root, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom + spacing.base }]}>
+      <View style={[styles.root, { paddingTop: insets.top + sg.space.sm, paddingBottom: insets.bottom + sg.space.md }]}>
         <View style={styles.header}>
           <Text style={styles.title}>{t('locale.title')}</Text>
           <TouchableOpacity onPress={onClose} hitSlop={12}>
@@ -117,55 +115,55 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.sm,
+    paddingHorizontal: sg.space.md,
+    paddingBottom: sg.space.sm,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
     backgroundColor: sg.surface,
   },
   title: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.display,
     color: sg.text,
   },
   cancel: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
   },
   scroll: {
-    padding: spacing.base,
-    paddingBottom: spacing.xl,
+    padding: sg.space.md,
+    paddingBottom: sg.space.lg,
   },
   sectionLabel: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.dataBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: spacing.sm,
-    marginTop: spacing.sm,
+    marginBottom: sg.space.sm,
+    marginTop: sg.space.sm,
   },
   sectionHint: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     lineHeight: 18,
   },
   group: {
     backgroundColor: sg.surface,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     overflow: 'hidden',
-    marginBottom: spacing.base,
+    marginBottom: sg.space.md,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.base,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.md,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
   },
@@ -173,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(212,175,55,0.08)',
   },
   rowLabel: {
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     color: sg.text,
     fontFamily: sg.font.bodyMedium,
   },
@@ -182,16 +180,16 @@ const styles = StyleSheet.create({
     color: sg.text,
   },
   doneBtn: {
-    marginHorizontal: spacing.base,
+    marginHorizontal: sg.space.md,
     height: 52,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.gold,
     alignItems: 'center',
     justifyContent: 'center',
   },
   doneText: {
     color: sg.onGold,
-    fontSize: fontSize.base,
+    fontSize: sg.type.base,
     fontFamily: sg.font.bodyBold,
   },
 });

@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { PullHistoryRow, useCompletedPullsSorted } from '../components/account/PullHistoryRow';
 
@@ -34,7 +32,7 @@ export function PullHistoryScreen() {
       style={styles.container}
       contentContainerStyle={[
         styles.content,
-        { paddingBottom: insets.bottom + spacing.xxxl, paddingTop: spacing.md },
+        { paddingBottom: insets.bottom + sg.space.xxl, paddingTop: sg.space.md },
       ]}
       data={pulls}
       keyExtractor={(item) => item.id}
@@ -55,25 +53,25 @@ export function PullHistoryScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
-  content: { paddingHorizontal: spacing.base },
+  content: { paddingHorizontal: sg.space.md },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
   empty: {
-    paddingVertical: spacing.xl,
+    paddingVertical: sg.space.lg,
     alignItems: 'center',
   },
   emptyTitle: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   emptyBody: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     textAlign: 'center',
     lineHeight: 20,

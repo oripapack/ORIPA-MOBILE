@@ -34,17 +34,7 @@ import { useAppStore } from '../store/useAppStore';
 import { RootStackParamList, RootTabParamList } from '../navigation/types';
 import { getLocalizedPackTitle } from '../i18n/packCopy';
 import { sgVault } from '../tokens/sgVault';
-import { radius, spacing } from '../tokens/spacing';
 import type { Pull } from '../data/mockUser';
-
-const fontSize = { xs: 11, sm: 13, md: 17, xxl: 28 } as const;
-const brandFont = {
-  regular: sgVault.font.body,
-  medium: sgVault.font.bodyMedium,
-  semibold: sgVault.font.bodyMedium,
-  bold: sgVault.font.bodyBold,
-  black: sgVault.font.bodyBold,
-} as const;
 
 type VaultNav = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Vault'>,
@@ -88,8 +78,8 @@ export function VaultScreen() {
     navigation.navigate('Home' as never);
   }, [navigation]);
 
-  const horizontalPad = spacing.base;
-  const gap = spacing.sm;
+  const horizontalPad = sgVault.space.md;
+  const gap = sgVault.space.sm;
   const tileWidth = useMemo(
     () => Math.max(140, (width - horizontalPad * 2 - gap) / 2),
     [width],
@@ -174,7 +164,7 @@ export function VaultScreen() {
             styles.listContent,
             {
               paddingHorizontal: horizontalPad,
-              paddingBottom: insets.bottom + spacing.xxxl,
+              paddingBottom: insets.bottom + sgVault.space.xxl,
             },
           ]}
           refreshControl={refreshControl}
@@ -207,7 +197,7 @@ export function VaultScreen() {
           styles.listContent,
           {
             paddingHorizontal: horizontalPad,
-            paddingBottom: insets.bottom + spacing.xxxl,
+            paddingBottom: insets.bottom + sgVault.space.xxl,
           },
         ]}
         refreshControl={refreshControl}
@@ -322,34 +312,34 @@ function VaultTile({
 }
 
 const styles = StyleSheet.create({
-  listContent: { paddingTop: spacing.sm, flexGrow: 1 },
-  headerBlock: { marginBottom: spacing.md },
+  listContent: { paddingTop: sgVault.space.sm, flexGrow: 1 },
+  headerBlock: { marginBottom: sgVault.space.md },
   pageEyebrow: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: sgVault.type.xs,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.gold,
     letterSpacing: 1.4,
-    marginBottom: spacing.xs,
+    marginBottom: sgVault.space.xs,
   },
   pageTitle: {
     fontSize: 30,
     fontFamily: sgVault.font.display,
     color: sgVault.text,
     letterSpacing: -0.5,
-    marginBottom: spacing.md,
+    marginBottom: sgVault.space.md,
   },
   historyLinkWrap: {
-    marginTop: spacing.xs,
+    marginTop: sgVault.space.xs,
   },
   historyLink: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.semibold,
+    fontSize: sgVault.type.sm,
+    fontFamily: sgVault.font.bodyMedium,
     color: sgVault.gold,
   },
   row: {
     justifyContent: 'space-between',
-    marginBottom: spacing.sm,
-    gap: spacing.sm,
+    marginBottom: sgVault.space.sm,
+    gap: sgVault.space.sm,
   },
   tileWrap: {},
   tileCard: { minHeight: 168 },
@@ -357,33 +347,33 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(212,175,55,0.38)',
   },
   tileInner: {
-    padding: spacing.md,
+    padding: sgVault.space.md,
     minHeight: 168,
   },
   tileResult: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sgVault.type.sm,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.text,
     lineHeight: 20,
-    marginBottom: spacing.xs,
+    marginBottom: sgVault.space.xs,
   },
   tilePack: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
+    fontSize: sgVault.type.xs,
+    fontFamily: sgVault.font.bodyMedium,
     color: sgVault.muted,
     lineHeight: 18,
     flex: 1,
   },
   tileMeta: {
-    fontSize: fontSize.xs,
+    fontSize: sgVault.type.xs,
     fontFamily: sgVault.font.data,
     color: sgVault.muted,
-    marginTop: spacing.sm,
+    marginTop: sgVault.space.sm,
     fontVariant: [...sgVault.numeric],
   },
   tileTimer: {
     fontSize: 10,
-    fontFamily: brandFont.bold,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.muted,
     marginTop: 6,
     letterSpacing: 0.3,
@@ -394,11 +384,11 @@ const styles = StyleSheet.create({
   tileValueRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
-    marginTop: spacing.sm,
+    gap: sgVault.space.xs,
+    marginTop: sgVault.space.sm,
   },
   tileValue: {
-    fontSize: fontSize.sm,
+    fontSize: sgVault.type.sm,
     fontFamily: sgVault.font.dataBold,
     letterSpacing: -0.2,
     fontVariant: [...sgVault.numeric],
@@ -406,7 +396,7 @@ const styles = StyleSheet.create({
   },
   tileListedBadge: {
     backgroundColor: 'rgba(61,220,151,0.12)',
-    borderRadius: radius.sm,
+    borderRadius: sgVault.radius.tag,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderWidth: 1,
@@ -414,13 +404,13 @@ const styles = StyleSheet.create({
   },
   tileListedBadgeText: {
     fontSize: 8,
-    fontFamily: brandFont.black,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.up,
     letterSpacing: 0.5,
   },
   tileStatus: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.semibold,
+    fontSize: sgVault.type.xs,
+    fontFamily: sgVault.font.bodyMedium,
     color: sgVault.muted,
     marginTop: 2,
   },
@@ -432,68 +422,68 @@ const styles = StyleSheet.create({
   },
   // Empty state
   emptyWrap: {
-    marginTop: spacing.lg,
+    marginTop: sgVault.space.lg,
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.xl,
+    paddingHorizontal: sgVault.space.lg,
+    paddingVertical: sgVault.space.lg,
     backgroundColor: sgVault.surface,
-    borderRadius: radius.xl,
+    borderRadius: sgVault.radius.panel,
     borderWidth: 1,
     borderColor: sgVault.line,
   },
   emptyTitle: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.bold,
+    fontSize: sgVault.type.md,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.text,
-    marginBottom: spacing.sm,
+    marginBottom: sgVault.space.sm,
     textAlign: 'center',
   },
   emptyBody: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontSize: sgVault.type.sm,
+    fontFamily: sgVault.font.bodyMedium,
     color: sgVault.muted,
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sgVault.space.lg,
   },
   emptyCta: {
     backgroundColor: sgVault.gold,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xl,
-    borderRadius: radius.lg,
+    paddingVertical: sgVault.space.md,
+    paddingHorizontal: sgVault.space.lg,
+    borderRadius: sgVault.radius.panel,
   },
   emptyCtaText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
+    fontSize: sgVault.type.sm,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.onGold,
     letterSpacing: 0.3,
   },
   // Guest gate
-  guestCard: { marginTop: spacing.md },
-  guestInner: { padding: spacing.xl },
+  guestCard: { marginTop: sgVault.space.md },
+  guestInner: { padding: sgVault.space.lg },
   guestTitle: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.black,
+    fontSize: sgVault.type.md,
+    fontFamily: sgVault.font.bodyBold,
     color: sgVault.text,
-    marginBottom: spacing.sm,
+    marginBottom: sgVault.space.sm,
   },
   guestBody: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.medium,
+    fontSize: sgVault.type.sm,
+    fontFamily: sgVault.font.bodyMedium,
     color: sgVault.muted,
     lineHeight: 22,
-    marginBottom: spacing.lg,
+    marginBottom: sgVault.space.lg,
   },
   guestCta: {
     alignSelf: 'flex-start',
-    backgroundColor: sgVault.error,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.lg,
+    backgroundColor: sgVault.gold,
+    paddingVertical: sgVault.space.md,
+    paddingHorizontal: sgVault.space.lg,
+    borderRadius: sgVault.radius.panel,
   },
   guestCtaText: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: sgVault.text,
+    fontSize: sgVault.type.sm,
+    fontFamily: sgVault.font.bodyBold,
+    color: sgVault.onGold,
   },
 });

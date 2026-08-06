@@ -5,8 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { SHOW_SIMULATION_DISCLOSURE } from '../../config/app';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from './PrimaryButton';
 
 const STORAGE_KEY = 'pullhub_simulation_disclosure_ack_v1';
@@ -54,7 +52,7 @@ export function SimulationDisclosure() {
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={() => {}} statusBarTranslucent>
-      <View style={[styles.overlay, { paddingTop: insets.top + spacing.md, paddingBottom: insets.bottom + spacing.lg }]}>
+      <View style={[styles.overlay, { paddingTop: insets.top + sg.space.md, paddingBottom: insets.bottom + sg.space.lg }]}>
         <View style={styles.sheet} accessibilityRole="none">
           <ScrollView
             style={[styles.scroll, { maxHeight: windowHeight * 0.62 }]}
@@ -87,12 +85,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.72)',
     justifyContent: 'center',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: sg.space.lg,
   },
   sheet: {
     backgroundColor: sg.surface2,
-    borderRadius: radius.xl,
-    padding: spacing.xl,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.lg,
     borderWidth: 1,
     borderColor: sg.line,
     maxWidth: 400,
@@ -100,21 +98,21 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   scroll: {
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
   },
   scrollContent: {
-    paddingBottom: spacing.xs,
+    paddingBottom: sg.space.xs,
   },
   title: {
-    fontSize: fontSize.xl,
+    fontSize: sg.type.xl,
     fontFamily: sg.font.display,
     color: sg.text,
-    marginBottom: spacing.md,
+    marginBottom: sg.space.md,
     textAlign: 'center',
     letterSpacing: 0.3,
   },
   body: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 22,
@@ -122,20 +120,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   jaBlock: {
-    marginTop: spacing.lg,
-    paddingTop: spacing.lg,
+    marginTop: sg.space.lg,
+    paddingTop: sg.space.lg,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: sg.line,
   },
   titleJa: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     textAlign: 'center',
   },
   bodyJa: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     lineHeight: 24,

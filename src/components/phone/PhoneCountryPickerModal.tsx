@@ -14,8 +14,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { DialCodeOption, PHONE_DIAL_CODES } from '../../constants/phoneDialCodes';
 
@@ -51,8 +49,8 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
       {...transparentModalIOSProps}
     >
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { paddingBottom: insets.bottom + spacing.md }]} onPress={(e) => e.stopPropagation()}>
-          <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
+        <Pressable style={[styles.sheet, { paddingBottom: insets.bottom + sg.space.md }]} onPress={(e) => e.stopPropagation()}>
+          <View style={[styles.header, { paddingTop: insets.top + sg.space.sm }]}>
             <Text style={styles.headerTitle}>{t('phonePicker.title')}</Text>
             <TouchableOpacity
               onPress={onClose}
@@ -123,45 +121,45 @@ const styles = StyleSheet.create({
   },
   sheet: {
     backgroundColor: sg.surface2,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
+    borderTopLeftRadius: sg.radius.panel,
+    borderTopRightRadius: sg.radius.panel,
     maxHeight: '88%',
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
   },
   headerTitle: {
-    fontSize: fontSize.lg,
+    fontSize: sg.type.lg,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
   },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: sg.space.sm,
     borderWidth: 1,
     borderColor: sg.line,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.sm,
-    marginBottom: spacing.sm,
+    borderRadius: sg.radius.btn,
+    paddingHorizontal: sg.space.sm,
+    marginBottom: sg.space.sm,
   },
   searchInput: {
     flex: 1,
-    paddingVertical: Platform.OS === 'ios' ? spacing.md : spacing.sm,
-    fontSize: fontSize.md,
+    paddingVertical: Platform.OS === 'ios' ? sg.space.md : sg.space.sm,
+    fontSize: sg.type.md,
     color: sg.text,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xs,
-    borderRadius: radius.md,
+    gap: sg.space.sm,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.xs,
+    borderRadius: sg.radius.btn,
   },
   rowOn: {
     backgroundColor: sg.surface,
@@ -176,24 +174,24 @@ const styles = StyleSheet.create({
   },
   rowName: {
     flex: 1,
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyMedium,
     color: sg.text,
   },
   rowDial: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    marginRight: spacing.xs,
+    marginRight: sg.space.xs,
   },
   checkSpacer: {
     width: 22,
   },
   empty: {
     textAlign: 'center',
-    paddingVertical: spacing.xl,
+    paddingVertical: sg.space.lg,
     color: sg.muted,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
   },
   list: {
     maxHeight: 340,

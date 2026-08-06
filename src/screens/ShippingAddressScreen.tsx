@@ -13,8 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { fontSize } from '../tokens/typography';
-import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { SHIPPING_ADDRESS_STORAGE_KEY } from '../lib/shippingAddress';
 import { showUserMessage } from '../utils/showUserMessage';
@@ -112,7 +110,7 @@ export function ShippingAddressScreen() {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + sg.space.xxl }]}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
@@ -135,43 +133,43 @@ export function ShippingAddressScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
-  content: { padding: spacing.base, paddingTop: spacing.md },
+  content: { padding: sg.space.md, paddingTop: sg.space.md },
   lead: {
-    fontSize: fontSize.sm,
+    fontSize: sg.type.sm,
     color: sg.muted,
     lineHeight: 20,
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.lg,
   },
-  field: { marginBottom: spacing.md },
+  field: { marginBottom: sg.space.md },
   label: {
-    fontSize: fontSize.xs,
+    fontSize: sg.type.xs,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
-    marginBottom: spacing.xs,
+    marginBottom: sg.space.xs,
   },
   input: {
     backgroundColor: sg.surface2,
-    borderRadius: radius.md,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: sg.line,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.sm,
-    fontSize: fontSize.base,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.sm,
+    fontSize: sg.type.base,
     color: sg.text,
     minHeight: 48,
   },
-  inputMulti: { minHeight: 72, paddingTop: spacing.sm },
-  row2: { flexDirection: 'row', gap: spacing.sm },
+  inputMulti: { minHeight: 72, paddingTop: sg.space.sm },
+  row2: { flexDirection: 'row', gap: sg.space.sm },
   col: { flex: 1 },
   saveBtn: {
-    marginTop: spacing.md,
+    marginTop: sg.space.md,
     backgroundColor: sg.gold,
-    borderRadius: radius.lg,
-    paddingVertical: spacing.md,
+    borderRadius: sg.radius.panel,
+    paddingVertical: sg.space.md,
     alignItems: 'center',
   },
   saveBtnText: {
-    fontSize: fontSize.md,
+    fontSize: sg.type.md,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
   },
