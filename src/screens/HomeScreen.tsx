@@ -16,7 +16,6 @@ import { SgShowroomBackground } from '../components/home/sg/SgShowroomBackground
 import { SgBannerCarousel } from '../components/home/sg/SgBannerCarousel';
 import { SgFeaturedPackCard } from '../components/home/sg/SgFeaturedPackCard';
 import { SgShelfPackTile } from '../components/home/sg/SgShelfPackTile';
-import { SgRecentPulls } from '../components/home/sg/SgRecentPulls';
 import { SgTrustStrip } from '../components/home/sg/SgTrustStrip';
 import { SgSectionHeader } from '../components/ui';
 import { sg } from '../tokens/sg';
@@ -100,7 +99,6 @@ export function HomeScreen() {
 
   const ListFooter = (
     <>
-      <SgRecentPulls />
       <SgTrustStrip />
     </>
   );

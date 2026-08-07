@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import { useAppStore } from '../../store/useAppStore';
@@ -16,7 +17,9 @@ export function PullHistoryRow({ pull }: Props) {
   return (
     <View style={styles.pullCard}>
       <View style={styles.pullLeft}>
-        <Text style={styles.pullEmoji}>✨</Text>
+        <View style={styles.pullIcon}>
+          <Ionicons name="albums-outline" size={20} color={sg.text} />
+        </View>
         <View style={styles.pullTextCol}>
           <Text style={styles.pullResult} numberOfLines={2}>
             {pull.result}
@@ -32,7 +35,7 @@ export function PullHistoryRow({ pull }: Props) {
             ? t('rewards.shipped')
             : pull.fulfillment === 'vaulted'
               ? t('rewards.inVault')
-              : `+${pull.creditsWon.toLocaleString()}`}
+              : `+${pull.creditsWon.toLocaleString()} ${t('packCard.credits')}`}
         </Text>
         <Text style={styles.pullDate}>
           {pull.timestamp.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
@@ -74,8 +77,13 @@ const styles = StyleSheet.create({
     minWidth: 0,
     overflow: 'hidden',
   },
-  pullEmoji: {
-    fontSize: 24,
+  pullIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: sg.surface2,
     marginTop: 2,
   },
   pullResult: {

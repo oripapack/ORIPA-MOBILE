@@ -107,13 +107,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const sweep = () => useAppStore.getState().processVaultExpiries();
-    sweep();
-    const id = setInterval(sweep, 60_000);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
     const sub = AppState.addEventListener('change', (next) => {
       if (next === 'active') useAppStore.getState().recordCollectorActivity();
     });

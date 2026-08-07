@@ -6,6 +6,7 @@ import { packImageSource } from '../../../../data/mockPacks';
 import type { Pack } from '../../../../data/mockPacks';
 import type { GestureResponderHandlers } from 'react-native';
 import type { PokePokeAnimValues } from './usePokePokeGesture';
+import { sg } from '../../../../tokens/sg';
 
 const PACK_W = 200;
 const PACK_H = 270;
@@ -13,9 +14,9 @@ const HALF_H = PACK_H / 2;
 
 /** Category → energy seam color */
 const SEAM_COLOR: Record<string, string> = {
-  onboarding: '#4ADE80',
-  micro:      '#FCD34D',
-  premium:    '#C084FC',
+  onboarding: sg.success,
+  micro: sg.warning,
+  premium: sg.gold,
 };
 
 interface Props {
@@ -26,7 +27,7 @@ interface Props {
 }
 
 export function PokePokePackTear({ pack, av, panHandlers, hintVisible: _ }: Props) {
-  const seam = SEAM_COLOR[pack.category] ?? '#FFFFFF';
+  const seam = SEAM_COLOR[pack.category] ?? sg.text;
   const imgSrc = packImageSource(pack.imageUrl);
 
   return (

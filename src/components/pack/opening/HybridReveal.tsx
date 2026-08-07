@@ -284,7 +284,7 @@ export function HybridReveal({
             }}
           >
             <View style={[packArtBase, { backgroundColor: packTint }]}>
-              <Text style={styles.packEmoji}>🎴</Text>
+              <Text style={styles.packEmoji}>PH</Text>
               <Text style={styles.packArtTitle}>{PACK_OPENING_BRAND.primary.toUpperCase()}</Text>
               {PACK_OPENING_BRAND.secondary ? (
                 <Text style={styles.packArtSub}>{PACK_OPENING_BRAND.secondary.toUpperCase()}</Text>
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   },
   burstLayer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: sg.text,
     zIndex: 20,
   },
   csgoWrap: {

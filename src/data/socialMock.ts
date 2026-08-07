@@ -1,4 +1,5 @@
 /**
+ * 実データ待ち。外部に見せないこと。
  * Demo-only social / collector profiles. Replace with API later.
  * Kept separate from gameplay `Pull` types for clarity.
  */
@@ -112,8 +113,6 @@ export function computeLuckScore(stats: ProfileStats): number {
 
 export function pullToSocialEvent(p: Pull, idx: number): SocialPullEvent {
   const rarity = tierToSocial(p.tier);
-  const badge: 'hit' | 'chase' | undefined =
-    p.creditsWon >= 600 ? 'chase' : p.creditsWon >= 300 ? 'hit' : undefined;
   return {
     id: p.id,
     cardName: p.result,
@@ -121,7 +120,6 @@ export function pullToSocialEvent(p: Pull, idx: number): SocialPullEvent {
     estimatedValue: p.creditsWon,
     packTitle: p.packTitle,
     timestamp: p.timestamp instanceof Date ? p.timestamp : new Date(p.timestamp),
-    badge,
   };
 }
 
@@ -130,7 +128,7 @@ export function deriveSocialProfileFromUser(user: UserState): SocialUserProfile 
   const total = pulls.reduce((s, p) => s + p.estimatedValue, 0);
   const packsOpened = pulls.length;
   const best = pulls.reduce((a, b) => (a.estimatedValue >= b.estimatedValue ? a : b), pulls[0]);
-  const chaseHits = pulls.filter((p) => p.badge === 'chase').length;
+  const chaseHits = 0;
   const avg = packsOpened ? Math.round(total / packsOpened) : 0;
   const packCounts: Record<string, number> = {};
   for (const p of pulls) {
@@ -152,10 +150,9 @@ export function deriveSocialProfileFromUser(user: UserState): SocialUserProfile 
   return {
     username: user.username,
     displayName: user.displayName,
-    bio: 'Chasing hits & building the binder. PullHub demo profile.',
-    avatarEmoji: '🎴',
-    joinDateIso: '2025-11-01T12:00:00.000Z',
-    status: 'Opening packs',
+    bio: '',
+    avatarEmoji: 'PH',
+    joinDateIso: '',
     stats,
     recentPulls: pulls.slice(0, 8),
     luckScore,
@@ -166,7 +163,7 @@ const JORDAN: SocialUserProfile = {
   username: 'jordan',
   displayName: 'Jordan K.',
   bio: 'Full-art hunter · JP promos · late-night rips.',
-  avatarEmoji: '🔥',
+  avatarEmoji: 'JK',
   joinDateIso: '2025-08-12T10:00:00.000Z',
   status: 'Hunting Charizards',
   stats: {
@@ -215,7 +212,7 @@ const SAM: SocialUserProfile = {
   username: 'sam_r',
   displayName: 'Sam R.',
   bio: 'Budget rips · best hit: $4k · always chasing.',
-  avatarEmoji: '⚡',
+  avatarEmoji: 'SR',
   joinDateIso: '2025-09-01T15:30:00.000Z',
   status: 'In queue for drops',
   stats: {
@@ -256,7 +253,7 @@ const CASEY: SocialUserProfile = {
   username: 'casey_m',
   displayName: 'Casey M.',
   bio: 'Sealed sometimes · mostly singles · luck goblin.',
-  avatarEmoji: '✨',
+  avatarEmoji: 'CM',
   joinDateIso: '2025-10-05T08:00:00.000Z',
   status: 'AFK — grading',
   stats: {
@@ -299,8 +296,8 @@ export const MOCK_SOCIAL_PROFILES: Record<string, SocialUserProfile> = {
 };
 
 export function getSocialProfile(username: string): SocialUserProfile | null {
-  const u = username.trim().toLowerCase();
-  return MOCK_SOCIAL_PROFILES[u] ?? null;
+  void username;
+  return null;
 }
 
 /** When a friend exists but has no rich mock row yet (demo fallback). */
@@ -308,54 +305,41 @@ export function buildMinimalSocialProfile(entry: FriendEntry): SocialUserProfile
   return {
     username: entry.username,
     displayName: entry.displayName,
-    bio: 'Demo profile — connect the API to sync full stats.',
-    avatarEmoji: '🎴',
+    bio: 'Profile data will appear after server sync.',
+    avatarEmoji: entry.displayName.trim().slice(0, 2).toUpperCase(),
     joinDateIso: new Date(entry.addedAt).toISOString(),
-    status: 'Collector',
     stats: {
-      packsOpened: 24,
-      totalEstimatedValue: 8200,
-      bestPullValue: 1200,
-      bestPullCardName: 'Placeholder hit',
-      chaseHits: 1,
-      averagePullValue: 340,
-      favoritePackTitle: 'Demo pack',
-      mostOpenedPackTitle: 'Demo pack',
-      rarityBreakdown: { common: 4, uncommon: 6, rare: 8, epic: 4, legendary: 2, mythic: 0 },
+      packsOpened: 0,
+      totalEstimatedValue: 0,
+      bestPullValue: 0,
+      bestPullCardName: '—',
+      chaseHits: 0,
+      averagePullValue: 0,
+      favoritePackTitle: '—',
+      mostOpenedPackTitle: '—',
+      rarityBreakdown: { common: 0, uncommon: 0, rare: 0, epic: 0, legendary: 0, mythic: 0 },
     },
-    recentPulls: [
-      {
-        id: `ph_${entry.username}`,
-        cardName: 'Placeholder rare',
-        rarity: 'rare',
-        estimatedValue: 180,
-        packTitle: 'Demo pack',
-        timestamp: new Date(entry.addedAt),
-      },
-    ],
-    luckScore: 58,
+    recentPulls: [],
+    luckScore: 0,
   };
 }
 
 export function getActivityHighlights(profile: SocialUserProfile): ActivityHighlight[] {
+  if (profile.stats.packsOpened <= 0) return [];
   const best = profile.stats.bestPullCardName;
-  return [
+  const items: ActivityHighlight[] = [
     {
       id: 'a1',
-      emoji: '🎯',
-      text: `${profile.displayName.split(' ')[0]}’s best hit: ${best}`,
+      emoji: '01',
+      text: `${profile.displayName.split(' ')[0]}’s best pull: ${best}`,
     },
     {
       id: 'a2',
-      emoji: '📦',
+      emoji: '02',
       text: `${profile.stats.packsOpened} packs opened · $${(profile.stats.totalEstimatedValue / 1000).toFixed(0)}k est. value`,
     },
-    {
-      id: 'a3',
-      emoji: '🍀',
-      text: `Luck score ${profile.luckScore} · ${profile.stats.chaseHits} chase pulls`,
-    },
   ];
+  return items;
 }
 
 export function metricValue(profile: SocialUserProfile, metric: LeaderboardMetric): number {
@@ -487,32 +471,14 @@ export function buildCompareRows(me: SocialUserProfile, them: SocialUserProfile)
       winner: num(a.bestPullValue, b.bestPullValue),
     },
     {
-      key: 'chase',
-      label: 'Chase hits',
-      me: a.chaseHits,
-      them: b.chaseHits,
-      winner: num(a.chaseHits, b.chaseHits),
-    },
-    {
       key: 'avg',
       label: 'Avg pull value',
       me: a.averagePullValue,
       them: b.averagePullValue,
       winner: num(a.averagePullValue, b.averagePullValue),
     },
-    {
-      key: 'luck',
-      label: 'Luck score',
-      me: me.luckScore,
-      them: them.luckScore,
-      winner: num(me.luckScore, them.luckScore),
-    },
   ];
 }
 
 /** Demo accounts shown in “browse” add flow (subset of profiles + display). */
-export const DEMO_DISCOVERABLE_USERS: { username: string; displayName: string; blurb: string }[] = [
-  { username: 'jordan', displayName: 'Jordan K.', blurb: 'Alt-art hunter' },
-  { username: 'sam_r', displayName: 'Sam R.', blurb: 'Budget rips' },
-  { username: 'casey_m', displayName: 'Casey M.', blurb: 'Biggest single hit' },
-];
+export const DEMO_DISCOVERABLE_USERS: { username: string; displayName: string; blurb: string }[] = [];

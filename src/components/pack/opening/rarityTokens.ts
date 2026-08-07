@@ -2,7 +2,6 @@ import type { RevealRarity } from './types';
 
 export type RevealRarityVisual = {
   label: string;
-  emoji: string;
   accent: string;
   glow: string;
   border: string;
@@ -18,8 +17,7 @@ export type RevealRarityVisual = {
 
 export const REVEAL_RARITY_VISUAL: Record<RevealRarity, RevealRarityVisual> = {
   common: {
-    label: 'COMMON',
-    emoji: '●',
+    label: 'BASE',
     accent: '#94A3B8',
     glow: 'rgba(148, 163, 184, 0.5)',
     border: 'rgba(148, 163, 184, 0.9)',
@@ -32,8 +30,7 @@ export const REVEAL_RARITY_VISUAL: Record<RevealRarity, RevealRarityVisual> = {
     beamSoft: 'rgba(148, 163, 184, 0.12)',
   },
   rare: {
-    label: 'RARE',
-    emoji: '✦',
+    label: 'EPIC',
     accent: '#60A5FA',
     glow: 'rgba(59, 130, 246, 0.65)',
     border: 'rgba(96, 165, 250, 1)',
@@ -46,8 +43,7 @@ export const REVEAL_RARITY_VISUAL: Record<RevealRarity, RevealRarityVisual> = {
     beamSoft: 'rgba(59, 130, 246, 0.15)',
   },
   ultra_rare: {
-    label: 'ULTRA RARE',
-    emoji: '✧',
+    label: 'LEGENDARY',
     /** Sapphire / indigo — separates from purple-magenta chase lane */
     accent: '#7DD3FC',
     glow: 'rgba(56, 189, 248, 0.45)',
@@ -61,8 +57,7 @@ export const REVEAL_RARITY_VISUAL: Record<RevealRarity, RevealRarityVisual> = {
     beamSoft: 'rgba(56, 189, 248, 0.14)',
   },
   chase: {
-    label: 'CHASE',
-    emoji: '★',
+    label: 'MYTHIC',
     accent: '#FB7185',
     glow: 'rgba(244, 63, 94, 0.82)',
     border: 'rgba(251, 113, 133, 1)',

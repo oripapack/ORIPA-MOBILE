@@ -27,6 +27,7 @@ const S = {
   // CSS backgrounds — near-pure black, phygitals style
   bgGrad:   'linear-gradient(to bottom, #060606 0%, #000000 100%)',
   bgZoomed: '#000000',
+  textColor: '#F8FAFC',
 
   // Floor — sharper reflection, darker base. mixStrength kept moderate so the
   // reflection reads as a pool under the pack, not a bright grazing horizon band.
@@ -544,7 +545,7 @@ const TEAR = {
 // In production, rarity is determined server-side before the pack is opened.
 // Client only receives and displays the result.
 // ─────────────────────────────────────────────────────────────────
-type RarityKey = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+type RarityKey = 'base' | 'epic' | 'legendary' | 'mythic';
 
 export type PackRingSceneProps = {
   /** Outcome tier from the server / roll — drives tear glow + banner colors. */
@@ -557,8 +558,7 @@ export type PackRingSceneProps = {
 };
 
 const RARITY: Record<RarityKey, { color: string; label: string }> = {
-  common:    { color: '#9CA3AF', label: 'COMMON'          },
-  rare:      { color: '#3B82F6', label: 'RARE'            },
+  base:      { color: '#9CA3AF', label: 'BASE'            },
   epic:      { color: '#A855F7', label: 'EPIC PULL'       },
   legendary: { color: '#F59E0B', label: 'LEGENDARY PULL'  },
   mythic:    { color: '#EF4444', label: 'MYTHIC PULL'     },
@@ -566,8 +566,7 @@ const RARITY: Record<RarityKey, { color: string; label: string }> = {
 
 /** Phase E — warm→rarity bleed strength by tier (0 = pure warm, 1 = pure rarity). */
 const RARITY_TINT: Record<RarityKey, number> = {
-  common:    0.15,
-  rare:      0.30,
+  base:      0.15,
   epic:      0.48,
   legendary: 0.62,
   mythic:    0.78,
@@ -1117,7 +1116,7 @@ function Scene({ ringAngleRef, zoomT, resultT, packFadeT, selectedPackIdx, mode,
 // Root — event handling + Canvas + HTML overlay
 // ─────────────────────────────────────────────────────────────────
 export default function PackRingScene({
-  rollRarity = 'rare',
+  rollRarity = 'base',
   cardLabel,
   embed = false,
   onRevealDone,
@@ -1495,7 +1494,7 @@ export default function PackRingScene({
       >
         <span
           style={{
-            color: '#ffffff',
+            color: S.textColor,
             fontWeight: 900,
             fontSize: 15,
             letterSpacing: '0.32em',
@@ -1516,7 +1515,7 @@ export default function PackRingScene({
             left: '50%',
             transform: 'translateX(-50%)',
             backgroundColor: RARITY[rarity].color,
-            color: '#ffffff',
+            color: S.textColor,
             fontWeight: 700,
             fontSize: 11,
             letterSpacing: '0.22em',

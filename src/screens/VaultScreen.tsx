@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   CompositeNavigationProp,
-  useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -23,8 +22,6 @@ import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { VaultAssetSheet } from '../components/vault/VaultAssetSheet';
 import { PortfolioCard } from '../components/vault/PortfolioCard';
 import { useVaultPullsSorted } from '../lib/vaultPulls';
-import { formatVaultTimeLeft, vaultExpiryNoticeActive, vaultMillisRemaining } from '../lib/vaultTime';
-import { VAULT_HOLD_DAYS } from '../lib/vaultConstants';
 import { formatVaultExchangeUsd } from '../lib/vaultExchange';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -67,18 +64,8 @@ function tierGlow(tier: PullRarityTier | undefined): string {
   return TIER_GLOW[tier];
 }
 
-function coinsToUsdText(coins: number): string {
-  const usd = coins / 100;
-  if (usd >= 1000) return `$${(usd / 1000).toFixed(1)}K`;
-  if (usd >= 1) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(usd);
-  }
-  return `$${usd.toFixed(2)}`;
+function pointsText(points: number): string {
+  return `${Math.max(0, Math.round(points)).toLocaleString()} Points`;
 }
 
 export function VaultScreen() {
@@ -93,16 +80,9 @@ export function VaultScreen() {
   const openModal = useAppStore((s) => s.openModal);
   const requestVaultShipment = useAppStore((s) => s.requestVaultShipment);
   const convertVaultPullToCoins = useAppStore((s) => s.convertVaultPullToCoins);
-  const processVaultExpiries = useAppStore((s) => s.processVaultExpiries);
   const pulls = useVaultPullsSorted();
   const [searchOpen, setSearchOpen] = useState(false);
   const [sheetPull, setSheetPull] = useState<Pull | null>(null);
-
-  useFocusEffect(
-    useCallback(() => {
-      processVaultExpiries();
-    }, [processVaultExpiries]),
-  );
 
   const showGuestGate = isClerkEnabled && !clerkSignedIn;
 
@@ -266,10 +246,6 @@ function VaultTile({
 
   const isListed = (pull.vaultExchangeListUsd ?? 0) >= 1;
   const isVaulted = pull.fulfillment === 'vaulted';
-  const urgent = isVaulted && vaultExpiryNoticeActive(pull);
-  const timerMs = isVaulted ? vaultMillisRemaining(pull) : null;
-  const timerLabel =
-    timerMs != null && timerMs > 0 ? formatVaultTimeLeft(timerMs, t) : null;
 
   const pressable =
     pull.fulfillment === 'pending' ||
@@ -285,7 +261,7 @@ function VaultTile({
           ? 'vaultScreen.statusVaulted'
           : 'vaultScreen.statusKept';
 
-  const valueText = coinsToUsdText(pull.creditsWon);
+  const valueText = pointsText(pull.creditsWon);
 
   return (
     <TouchableOpacity
@@ -322,13 +298,6 @@ function VaultTile({
           {pull.timestamp.toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' })}
         </Text>
 
-        {/* Timer */}
-        {timerLabel ? (
-          <Text style={[styles.tileTimer, urgent && styles.tileTimerUrgent]} numberOfLines={1}>
-            {urgent ? t('vaultScreen.notifyBeforeConvert') : timerLabel}
-          </Text>
-        ) : null}
-
         {/* Value + Listed badge row */}
         <View style={styles.tileValueRow}>
           <Text style={[styles.tileValue, { color: accent }]}>{valueText}</Text>
@@ -344,7 +313,6 @@ function VaultTile({
           style={[
             styles.tileStatus,
             pull.fulfillment === 'pending' && styles.tileStatusPending,
-            urgent && styles.tileStatusUrgent,
           ]}
         >
           {t(statusKey)}
@@ -419,16 +387,6 @@ const styles = StyleSheet.create({
     color: sgVault.muted,
     marginTop: spacing.sm,
   },
-  tileTimer: {
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: sgVault.muted,
-    marginTop: 6,
-    letterSpacing: 0.3,
-  },
-  tileTimerUrgent: {
-    color: sgVault.gold,
-  },
   tileValueRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -461,9 +419,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   tileStatusPending: {
-    color: sgVault.gold,
-  },
-  tileStatusUrgent: {
     color: sgVault.gold,
   },
   // Empty state

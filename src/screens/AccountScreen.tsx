@@ -18,7 +18,6 @@ import { AccountAuthCard } from '../components/account/AccountAuthCard';
 import { deriveSocialProfileFromUser } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
-import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { SgScreen } from '../components/ui';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
@@ -254,11 +253,6 @@ export function AccountScreen() {
       ) : (
         recentPulls.map((pull) => <SocialPullRow key={pull.id} pull={pull} />)
       )}
-
-      <VaultFramedCard style={styles.rarityCard} contentStyle={styles.rarityInner}>
-        <Text style={styles.subsectionInCard}>{t('social.rarityMix')}</Text>
-        <RarityBreakdownMini breakdown={socialProfile.stats.rarityBreakdown} />
-      </VaultFramedCard>
 
       {/* 4 · Quick actions */}
       <Text style={styles.sectionEyebrow}>{t('account.sectionQuickActions')}</Text>
@@ -610,23 +604,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     marginTop: spacing.xs,
   },
-  subsectionInCard: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: sg.muted,
-    marginBottom: spacing.sm,
-  },
   emptyPulls: {
     fontSize: fontSize.sm,
     color: sg.muted,
     marginBottom: spacing.md,
-  },
-  rarityCard: {
-    marginTop: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  rarityInner: {
-    padding: spacing.lg,
   },
   quickGrid: {
     flexDirection: 'row',

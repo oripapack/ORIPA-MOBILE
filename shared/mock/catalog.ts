@@ -1,13 +1,14 @@
 import type { CatalogPack } from '../types/pack';
 
 /**
+ * 実データ待ち。外部に見せないこと。
  * Single source of truth for pack catalog — web lab + Expo app.
  *
  * このカタログの説明文(tagline / description / topCard)は仮。実在するパックの
  * 中身を反映していない。実データ接続まで外部に見せないこと。実データ接続時に
  * 全パックの説明文を実際の中身に基づいて書き直す必要がある(KNOWN_ISSUES 参照)。
  */
-export const CATALOG_PACKS: CatalogPack[] = [
+export const MOCK_CATALOG_PACKS: CatalogPack[] = [
   {
     id: 'welcome-pack',
     name: 'Welcome Pack',
@@ -207,11 +208,11 @@ export const CATALOG_PACKS: CatalogPack[] = [
 ];
 
 export function getCatalogPack(id: string): CatalogPack | undefined {
-  return CATALOG_PACKS.find((p) => p.id === id);
+  return MOCK_CATALOG_PACKS.find((p) => p.id === id);
 }
 
 export function getFeaturedPack(): CatalogPack {
-  return CATALOG_PACKS.find((p) => p.isFeatured && p.id === 'platinum-legacy')
-    ?? CATALOG_PACKS.find((p) => p.isFeatured)
-    ?? CATALOG_PACKS[0]!;
+  return MOCK_CATALOG_PACKS.find((p) => p.isFeatured && p.id === 'platinum-legacy')
+    ?? MOCK_CATALOG_PACKS.find((p) => p.isFeatured)
+    ?? MOCK_CATALOG_PACKS[0]!;
 }

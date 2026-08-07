@@ -1,5 +1,5 @@
 import type { CatalogPack, TcgCategory } from '../../shared/types/pack';
-import { CATALOG_PACKS } from '../../shared/mock/catalog';
+import { MOCK_CATALOG_PACKS } from '../../shared/mock/catalog';
 import { tcgCategoryToSlug } from '../../shared/utils/foil';
 import type {
   ChipTagType,
@@ -99,10 +99,10 @@ export function catalogToPack(catalog: CatalogPack): Pack {
 }
 
 export function catalogPacksToMobile(): Pack[] {
-  return CATALOG_PACKS.map(catalogToPack);
+  return MOCK_CATALOG_PACKS.map(catalogToPack);
 }
 
 export function getCatalogPackForMobile(id: string): Pack | undefined {
-  const catalog = CATALOG_PACKS.find((p) => p.id === id);
+  const catalog = MOCK_CATALOG_PACKS.find((p) => p.id === id);
   return catalog ? catalogToPack(catalog) : undefined;
 }

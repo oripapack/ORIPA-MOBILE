@@ -23,13 +23,10 @@ const METRICS: LeaderboardMetric[] = [
   'totalValue',
   'biggestPull',
   'packsOpened',
-  'chaseHits',
-  'luckScore',
 ];
 
 function formatMetricValue(metric: LeaderboardMetric, v: number): string {
-  if (metric === 'luckScore') return `${Math.round(v)}`;
-  if (metric === 'packsOpened' || metric === 'chaseHits') return `${Math.round(v)}`;
+  if (metric === 'packsOpened') return `${Math.round(v)}`;
   return fmt(v);
 }
 

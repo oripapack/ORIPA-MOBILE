@@ -24,11 +24,9 @@ import {
 } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
-import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
 import { FriendVaultShowcaseSection } from '../components/friends/FriendVaultShowcaseSection';
-import { showUserMessage } from '../utils/showUserMessage';
 import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendProfile'>;
@@ -122,9 +120,11 @@ export function FriendProfileScreen() {
           </View>
         </View>
         <Text style={styles.bio}>{profile.bio}</Text>
-        <Text style={styles.joined}>
-          {t('social.joined', { date: new Date(profile.joinDateIso).toLocaleDateString() })}
-        </Text>
+        {profile.joinDateIso ? (
+          <Text style={styles.joined}>
+            {t('social.joined', { date: new Date(profile.joinDateIso).toLocaleDateString() })}
+          </Text>
+        ) : null}
 
         <View style={styles.statGrid}>
           <View style={styles.statCell}>
@@ -134,14 +134,6 @@ export function FriendProfileScreen() {
           <View style={styles.statCell}>
             <Text style={styles.statVal}>{formatUsd(s.totalEstimatedValue)}</Text>
             <Text style={styles.statLab}>{t('social.statValue')}</Text>
-          </View>
-          <View style={styles.statCell}>
-            <Text style={styles.statVal}>{s.chaseHits}</Text>
-            <Text style={styles.statLab}>{t('social.statChase')}</Text>
-          </View>
-          <View style={styles.statCell}>
-            <Text style={styles.statVal}>{profile.luckScore}</Text>
-            <Text style={styles.statLab}>{t('social.statLuck')}</Text>
           </View>
         </View>
 
@@ -160,11 +152,12 @@ export function FriendProfileScreen() {
           <Text style={styles.bestSub}>{t('social.estimatedValue')}</Text>
         </View>
 
-        <Text style={styles.section}>{t('social.rarityMix')}</Text>
-        <RarityBreakdownMini breakdown={s.rarityBreakdown} />
-
-        <Text style={styles.section}>{t('social.highlights')}</Text>
-        <ActivityStrip items={highlights} />
+        {highlights.length > 0 ? (
+          <>
+            <Text style={styles.section}>{t('social.highlights')}</Text>
+            <ActivityStrip items={highlights} />
+          </>
+        ) : null}
 
         <Text style={styles.section}>{t('social.recentPulls')}</Text>
         {profile.recentPulls.length === 0 ? (
@@ -175,26 +168,21 @@ export function FriendProfileScreen() {
 
         {!isSelf ? (
           <View style={styles.actions}>
-            <TouchableOpacity
-              style={styles.btnDark}
-              onPress={() => setCompareOpen(true)}
-              activeOpacity={0.88}
-            >
-              <Text style={styles.btnDarkText}>{t('social.compare')}</Text>
-            </TouchableOpacity>
+            {profile.stats.packsOpened > 0 ? (
+              <TouchableOpacity
+                style={styles.btnDark}
+                onPress={() => setCompareOpen(true)}
+                activeOpacity={0.88}
+              >
+                <Text style={styles.btnDarkText}>{t('social.compare')}</Text>
+              </TouchableOpacity>
+            ) : null}
             <TouchableOpacity
               style={styles.btnOutline}
               onPress={() => navigation.navigate('FriendsLeaderboard')}
               activeOpacity={0.88}
             >
               <Text style={styles.btnOutlineText}>{t('social.openLeaderboard')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btnGhost}
-              onPress={() => showUserMessage(t('social.giftTitle'), t('social.giftBody'))}
-              activeOpacity={0.88}
-            >
-              <Text style={styles.btnGhostText}>{t('social.sendDemoPack')}</Text>
             </TouchableOpacity>
           </View>
         ) : (

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   View,
@@ -17,8 +17,6 @@ import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
 import type { Pull } from '../../data/mockUser';
-import { formatVaultTimeLeft, vaultExpiryNoticeActive, vaultMillisRemaining } from '../../lib/vaultTime';
-import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
 import { ListForSaleModal } from './ListForSaleModal';
 import { useAppStore } from '../../store/useAppStore';
 import { formatVaultExchangeUsd } from '../../lib/vaultExchange';
@@ -50,15 +48,6 @@ export function VaultAssetSheet({
   const isShipped = pull?.fulfillment === 'shipped';
   const listedUsd = pull?.vaultExchangeListUsd;
   const suggestedListUsd = Math.max(5, Math.round(coinValue / 20));
-
-  const timerLine = useMemo(() => {
-    if (!pull || !isVaulted || !pull.vaultExpiresAt) return null;
-    const ms = vaultMillisRemaining(pull);
-    if (ms == null) return null;
-    return formatVaultTimeLeft(ms, t);
-  }, [pull, isVaulted, t]);
-
-  const showExpiryNotice = pull ? vaultExpiryNoticeActive(pull) : false;
 
   if (!pull) return null;
 
@@ -147,18 +136,6 @@ export function VaultAssetSheet({
               <View style={styles.listedBanner}>
                 <Text style={styles.listedBannerText}>
                   {t('vaultAsset.listedLine', { price: formatVaultExchangeUsd(listedUsd) })}
-                </Text>
-              </View>
-            ) : null}
-
-            {isVaulted && timerLine ? (
-              <View style={[styles.timerCard, showExpiryNotice && styles.timerCardUrgent]}>
-                <Text style={[styles.timerLabel, showExpiryNotice && styles.timerLabelUrgent]}>
-                  {showExpiryNotice ? t('vaultAsset.timerUrgent') : t('vaultAsset.timerLabel')}
-                </Text>
-                <Text style={styles.timerValue}>{timerLine}</Text>
-                <Text style={styles.timerFine}>
-                  {t('vaultAsset.timerFine', { days: pull.vaultHoldDays ?? VAULT_HOLD_DAYS })}
                 </Text>
               </View>
             ) : null}
@@ -278,39 +255,6 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.semibold,
     color: sgVault.gold,
     lineHeight: 20,
-  },
-  timerCard: {
-    backgroundColor: sgVault.bg,
-    borderRadius: radius.lg,
-    padding: spacing.base,
-    marginBottom: spacing.lg,
-    borderWidth: 1,
-    borderColor: sgVault.line,
-  },
-  timerCardUrgent: {
-    borderColor: sgVault.cobaltBorderStrong,
-    backgroundColor: sgVault.cobaltWashSoft,
-  },
-  timerLabel: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
-    color: sgVault.muted,
-    marginBottom: 4,
-  },
-  timerLabelUrgent: {
-    color: sgVault.gold,
-  },
-  timerValue: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
-    color: sgVault.text,
-  },
-  timerFine: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.medium,
-    color: sgVault.muted,
-    marginTop: spacing.xs,
-    lineHeight: 18,
   },
   statusBanner: {
     backgroundColor: sgVault.surface2,

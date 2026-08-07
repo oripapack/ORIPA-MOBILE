@@ -3,21 +3,12 @@ import type { UserState } from '../data/mockUser';
 import { normalizeFriendUsername } from '../data/friends';
 import { getSocialProfile, buildMinimalSocialProfile } from '../data/socialMock';
 import type { FriendEntry } from '../data/friends';
-import { VAULT_HOLD_DAYS } from './vaultConstants';
 import { legacyTierToN2 } from './n2Rarity';
 
-function vaultExpiry(): Date {
-  const exp = new Date();
-  exp.setDate(exp.getDate() + VAULT_HOLD_DAYS);
-  return exp;
-}
-
-function makeVaultPull(p: Omit<Pull, 'fulfillment' | 'vaultExpiresAt' | 'vaultHoldDays'>): Pull {
+function makeVaultPull(p: Omit<Pull, 'fulfillment'>): Pull {
   return {
     ...p,
     fulfillment: 'vaulted',
-    vaultExpiresAt: vaultExpiry(),
-    vaultHoldDays: VAULT_HOLD_DAYS,
   };
 }
 

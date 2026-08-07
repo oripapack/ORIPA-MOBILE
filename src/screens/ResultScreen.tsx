@@ -52,14 +52,8 @@ function groupThousands(intStr: string): string {
   return intStr.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-function fmtUsd(v: number): string {
-  const [int, dec] = v.toFixed(2).split('.');
-  return `$${groupThousands(int)}.${dec}`;
-}
-
-/** Existing conversion rate, expressed with the app's canonical Points term. */
-function usdToPoints(usd: number): number {
-  return Math.round(usd * 100);
+function fmtPoints(value: number): string {
+  return `${groupThousands(String(Math.max(0, Math.round(value))))} Points`;
 }
 
 export function ResultScreen({ route }: Props) {
@@ -73,13 +67,16 @@ export function ResultScreen({ route }: Props) {
   const pullIds = params?.pullIds;
 
   const { hero, rest } = useMemo(() => {
-    const best = pull.cards.reduce((a, c) => (c.listedValueUsd > a.listedValueUsd ? c : a), pull.cards[0]);
+    const best = pull.cards.reduce(
+      (a, c) => (c.tradeInValuePoints > a.tradeInValuePoints ? c : a),
+      pull.cards[0],
+    );
     return { hero: best, rest: pull.cards.filter((c) => c !== best) };
   }, [pull.cards]);
 
   const count = pull.cards.length;
   const multi = count > 1;
-  const points = groupThousands(String(usdToPoints(pull.totalListedValueUsd)));
+  const points = groupThousands(String(Math.max(0, Math.round(pull.totalTradeInValuePoints))));
   const ctaLabel = multi ? `Trade in all — ${points} Points` : `Trade in — ${points} Points`;
 
   const goTabs = (screen?: 'Vault') => {
@@ -158,7 +155,7 @@ export function ResultScreen({ route }: Props) {
               <View style={styles.heroTag}>
                 <SgTierTag tier={hero.tier} context="badge" />
               </View>
-              <Text style={styles.heroValue}>{fmtUsd(hero.listedValueUsd)}</Text>
+              <Text style={styles.heroValue}>{fmtPoints(hero.tradeInValuePoints)}</Text>
             </View>
 
             {multi ? (
@@ -187,10 +184,10 @@ export function ResultScreen({ route }: Props) {
         {multi ? (
           <View style={styles.totalRow}>
             <View>
-              <Text style={styles.totalLabel}>TOTAL LISTED VALUE</Text>
+              <Text style={styles.totalLabel}>TOTAL TRADE IN VALUE</Text>
               <Text style={styles.totalCount}>{count} CARDS</Text>
             </View>
-            <Text style={styles.totalValue}>{fmtUsd(pull.totalListedValueUsd)}</Text>
+            <Text style={styles.totalValue}>{fmtPoints(pull.totalTradeInValuePoints)}</Text>
           </View>
         ) : null}
       </View>
@@ -259,7 +256,7 @@ function GridCell({ card }: { card: ResultCard }) {
         )}
       </View>
       <Text style={styles.cellName} numberOfLines={2}>{card.name}</Text>
-      <Text style={styles.cellValue}>{fmtUsd(card.listedValueUsd)}</Text>
+      <Text style={styles.cellValue}>{fmtPoints(card.tradeInValuePoints)}</Text>
     </View>
   );
 }

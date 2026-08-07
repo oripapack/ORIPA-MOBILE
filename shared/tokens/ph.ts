@@ -12,7 +12,7 @@ export const ph = {
   borderMd: 'rgba(255,255,255,0.11)',
   borderHigh: 'rgba(255,255,255,0.18)',
 
-  text: '#FFFFFF',
+  text: '#F4EFE3',
   textSec: '#9CA3AF',
   textMuted: '#6B7280',
 

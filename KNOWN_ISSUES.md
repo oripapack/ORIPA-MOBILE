@@ -54,21 +54,27 @@
 - 実際に PSA 鑑定済みのカードを扱うのか、生カードなのかが未確認。生カードの場合、上記の表現は全て誤りであり、開封アニメーションのスラブ演出も成立しない。**確認が取れるまで、鑑定に関する表現を新規に増やさないこと。**
 - **担当**: 事業判断(要確認)。
 
+### 7. 【ブロッカー】Points の App Store 課金接続と商品審査が未完了
+- **記録日**: 2026-08-07
+- **内容**: 旧実装は仮バンドル価格を表示し、決済なしでローカル残高を増やしていたため公開不可。CreditsPurchaseSection は仮価格を全撤去し、課金接続完了まで安全な購入停止画面に変更済み。Production build ではライブ在庫に接続されていないパックのローカル抽選も拒否する。
+- **リリース条件**: App Store Connect の Points 商品定義、StoreKit/IAP 実装、サーバー側レシート検証、返金/復元方針、商品価格の実データ接続を完了すること。完了まで購入導線を有効化しない。
+- **担当**: 決済/バックエンド/ストア申請。
+
 ## タスク登録(2026-07-31 デザインルール棚卸し docs/design-rules-inventory.md の選別結果)
 
 コード挙動を変えるタスクは登録のみで未実行。R-xxx は inventory の ID。
 
 - **T1** Coins→Points の全面移行(アプリ文言・コード・17ロケール)(R-001/R-078)
-- **T2** Vault 実装をルール(C-13)に整合: `VAULT_HOLD_DAYS`/`processVaultExpiries` の期限・自動変換廃止、WonPrizesModal を Vault 既定化(R-011/R-081/R-082)。**人間決定済み — ルールが正、実装が誤り**
+- **T2** Vault 実装をルール(C-13)に整合: `VAULT_HOLD_DAYS`/`processVaultExpiries` の期限・自動変換廃止、WonPrizesModal を Vault 既定化(R-011/R-081/R-082)。**2026-08-07 実施済み(本ブランチ)**
 - **T3** 旧5値 rarity enum(common〜mythic ほか)→ 4段ティアへの統一(R-080。上記 #5 と統合して扱う)
 - **T4** legacy トークン(ph/colors.ts・Outfit/brandFont・spacing.ts)の移行完了と撤去(R-021/R-039/R-062)。**新規実装での使用は 2026-07-31 付で禁止**(C-10 収録済み)
-- **T5** 【開封担当への申し送り】開封領域の掃除: 絵文字モックカード(mockRevealCards の 🌟🔮👑)と PSA 表現の除去(R-044/R-083。上記 #6 関連)
+- **T5** 開封領域の掃除: 絵文字モックカードと PSA/実在商品モックを中立コードへ置換(R-044/R-083。上記 #6 関連)。**2026-08-07 実施済み(本ブランチ)**
 - **T6** sgVault.ts コメント「buyback surfaces」→「trade-in surfaces」— **2026-07-31 実施済み**
 - **T7** バナー再調理(上記 #3 を再定義済み。和方針 J-1)(R-073)
 - **T8** lab /redesign 既定テーマの N2 化+Urushi 実装の退避(R-030/R-056)— **2026-07-31 前倒しで実施済み**(Urushi 露出事故を受け人間承認。既定=N2、原本は docs/archive/next-ui-lab-redesign-urushi-DEPRECATED.tsx へ退避。スキンブランチは rebase で追従)
 - **T9** P-1(旧§9 物理)+C-7 組版詳細の RN 換算表作成 — PLANNED 着手時の最初のタスク(R-037/R-048〜052)
 - **T10** 「docs/opening-spec 2.md」(複製ファイル)の削除 — **2026-07-31 実施済み**
-- **T11** C-5/C-12 チェックの grep スクリプト化(R-098)
+- **T11** C-5/C-12 チェックの grep スクリプト化(R-098)。**2026-08-07 `npm run audit:release-copy` として実施済み(本ブランチ)**
 - **T12** 【T8後続】lab 旧世代ページ(`/`・`/packs`・`/pack-detail`)の掃除または削除(2026-08-03 登録)。buybackRate 削除起因の既存 tsc エラー10件を含む — **修理不要と決定済み**(参照・流用禁止対象のため。CLAUDE.md)。掃除時は /vault・/lp・/opening の扱いも同時に判断
 - **T13** /redesign 実寸監査(2026-08-03 登録・**実行は別途指示**)。master study の換算知見(`docs/design-notes-master-study.md`)に基づき、タイポスケール・余白・コントロール寸法を実機基準(402pt・実測)で校正する。**ただし 1px line 文法・radius 体系(13/10/6)・書体は N2 のまま変更しない**
 

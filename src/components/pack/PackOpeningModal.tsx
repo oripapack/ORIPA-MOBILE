@@ -51,7 +51,7 @@ function buildResultPull(
   const cards = rolls.map((roll) => ({
     name: roll.result,
     tier: 'unknown' as const,
-    listedValueUsd: roll.creditsWon / 100,
+    tradeInValuePoints: roll.creditsWon,
   }));
 
   return {
@@ -59,7 +59,10 @@ function buildResultPull(
     pulledAt: new Date().toISOString(),
     packName,
     cards,
-    totalListedValueUsd: cards.reduce((total, card) => total + card.listedValueUsd, 0),
+    totalTradeInValuePoints: cards.reduce(
+      (total, card) => total + card.tradeInValuePoints,
+      0,
+    ),
   };
 }
 

@@ -22,9 +22,9 @@ export interface Pull {
    * New pulls start as `pending` until post-open fulfillment completes.
    */
   fulfillment?: PullFulfillment;
-  /** Set when `fulfillment === 'vaulted'` — auto-converts to coins after this instant. */
+  /** Legacy persisted expiry field. Retained for storage compatibility; current Vault items do not expire. */
   vaultExpiresAt?: Date;
-  /** Hold length granted when the item entered the Vault (e.g. 14). */
+  /** Legacy persisted hold length. Retained for storage compatibility only. */
   vaultHoldDays?: number;
   /** Credits added to wallet if user taps “Convert to points” (matches reveal `creditsWon`). */
   convertCreditValue?: number;

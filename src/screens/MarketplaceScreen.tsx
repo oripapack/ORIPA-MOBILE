@@ -47,7 +47,7 @@ type MarketTab = 'packs' | 'cards';
 const CARD_SORT_OPTIONS = [
   { key: 'price_low', label: 'Price ↑' },
   { key: 'price_high', label: 'Price ↓' },
-  { key: 'rarity', label: 'Rarity' },
+  { key: 'rarity', label: 'Tier' },
 ] as const;
 type CardSortKey = (typeof CARD_SORT_OPTIONS)[number]['key'];
 

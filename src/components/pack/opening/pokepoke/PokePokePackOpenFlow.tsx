@@ -52,7 +52,7 @@ export function PokePokePackOpenFlow({
     onRevealSettled: onRevealDone,
   });
 
-  const valueText = `🪙 ${roll.creditsWon.toLocaleString()}`;
+  const valueText = `${roll.creditsWon.toLocaleString()} Points`;
   const showPack = phase === 'float' || phase === 'tearing' || phase === 'burst';
   const showCard = phase === 'reveal' || phase === 'result';
   const showHint = phase === 'float' || phase === 'tearing';
@@ -125,7 +125,7 @@ export function PokePokePackOpenFlow({
       {/* Rarity badge overlay (shown during reveal/result) */}
       {phase === 'result' ? (
         <Animated.View style={[styles.rarityBadge, { opacity: av.cardOpacity }]}>
-          <Text style={[styles.rarityEmoji]}>{tv.emoji}</Text>
+          <View style={[styles.tierDot, { backgroundColor: tv.accent }]} />
           <Text style={[styles.rarityLabel, { color: tv.accent }]}>{tv.label}</Text>
         </Animated.View>
       ) : null}
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   burstOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: sg.text,
     zIndex: 10,
   },
   stage: {
@@ -177,8 +177,10 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingBottom: spacing.lg,
   },
-  rarityEmoji: {
-    fontSize: 18,
+  tierDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   rarityLabel: {
     fontSize: fontSize.sm,

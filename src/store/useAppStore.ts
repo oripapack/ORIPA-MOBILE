@@ -8,7 +8,6 @@ import {
   normalizeFriendUsername,
 } from '../data/friends';
 import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
-import { VAULT_HOLD_DAYS } from '../lib/vaultConstants';
 import {
   createInitialFriendVaultShop,
   listingIdForPull,
@@ -16,7 +15,12 @@ import {
   type PublicVaultListing,
 } from '../lib/friendVaultShop';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
-import { CREDITS_ARE_MOCK, DEV_STARTER_CREDITS, SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
+import {
+  CREDITS_ARE_MOCK,
+  DEV_STARTER_CREDITS,
+  ENABLE_LOCAL_PACK_SIMULATION,
+  SHOW_DEMO_INCOMING_FRIEND_REQUEST,
+} from '../config/app';
 import type { PackRollResult } from '../components/pack/opening/types';
 import {
   executeBulkPullLive,
@@ -175,8 +179,6 @@ interface AppStore {
   requestVaultShipment: (pullId: string) => Promise<boolean>;
   /** Instant coin conversion for a vaulted item. */
   convertVaultPullToCoins: (pullId: string) => Promise<boolean>;
-  /** Auto-convert vaulted items past `vaultExpiresAt` (call on interval / resume). */
-  processVaultExpiries: () => void;
   /**
    * Records that the user has consumed a first-time pack.
    * Called inside `openPack` automatically — no need to call manually.
@@ -532,6 +534,8 @@ export const useAppStore = create<AppStore>((set, get) => {
     const keepPack = options?.keepPackModalOnInsufficient ?? false;
     const quantity: PackOpenQuantity = options?.quantity ?? 1;
     const { user, usedFirstTimePackIds, packOpenInFlight } = get();
+    const useLiveEngine =
+      !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
 
     if (packOpenInFlight) return false;
     set({ packOpenInFlight: true });
@@ -549,6 +553,22 @@ export const useAppStore = create<AppStore>((set, get) => {
     };
 
     try {
+      if (!useLiveEngine && !ENABLE_LOCAL_PACK_SIMULATION) {
+        showUserMessage(
+          'Pack unavailable',
+          'This pack is waiting for its live inventory connection.',
+        );
+        return false;
+      }
+
+      if (pack.isFirstTimePack && !ENABLE_LOCAL_PACK_SIMULATION) {
+        showUserMessage(
+          'Welcome pack unavailable',
+          'The welcome pack is waiting for its live fulfillment connection.',
+        );
+        return false;
+      }
+
       if (pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id)) {
         showUserMessage(
           'Welcome pack used',
@@ -557,7 +577,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         return false;
       }
 
-      if (pack.isFirstTimePack && quantity === 1) {
+      if (pack.isFirstTimePack && quantity === 1 && ENABLE_LOCAL_PACK_SIMULATION) {
         const eligible = await canClaimFirstTimePack(user.id, pack.id);
         if (!eligible.allowed) {
           showUserMessage(
@@ -591,7 +611,7 @@ export const useAppStore = create<AppStore>((set, get) => {
       }
 
       const grants = user.freePackGrants ?? 0;
-      const useFreeGrant = quantity === 1 && grants > 0;
+      const useFreeGrant = ENABLE_LOCAL_PACK_SIMULATION && quantity === 1 && grants > 0;
       if (useFreeGrant) {
         set((state) => ({
           selectedPack: pack,
@@ -609,9 +629,6 @@ export const useAppStore = create<AppStore>((set, get) => {
         }));
         return true;
       }
-
-      const useLiveEngine =
-        !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
 
       const isInsufficientFunds = (code: string, status?: number) =>
         code === 'INSUFFICIENT_FUNDS' ||
@@ -1035,8 +1052,6 @@ export const useAppStore = create<AppStore>((set, get) => {
             .reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0);
 
       const clearedIds = new Set([...vaultIds, ...convertIds]);
-      const now = new Date();
-
       const xpAdd = vaultIds.length * 28 + convertIds.length * 14;
       let qp = state.collectorQuestProgress;
       if (vaultIds.length) qp = bumpQuestTrack(qp, 'vault_secured', vaultIds.length);
@@ -1060,13 +1075,11 @@ export const useAppStore = create<AppStore>((set, get) => {
               return { ...p, fulfillment: 'converted' as const };
             }
             if (vSet.has(p.id)) {
-              const vaultExpiresAt = new Date(now);
-              vaultExpiresAt.setDate(vaultExpiresAt.getDate() + VAULT_HOLD_DAYS);
               return {
                 ...p,
                 fulfillment: 'vaulted' as const,
-                vaultExpiresAt,
-                vaultHoldDays: VAULT_HOLD_DAYS,
+                vaultExpiresAt: undefined,
+                vaultHoldDays: undefined,
               };
             }
             return p;
@@ -1118,7 +1131,7 @@ export const useAppStore = create<AppStore>((set, get) => {
 
       if (!result.ok) {
         if (result.code === 'INSUFFICIENT_FUNDS') {
-          showUserMessage('Insufficient credits', result.message);
+          showUserMessage('Insufficient Points', result.message);
           return false;
         }
         const label =
@@ -1278,47 +1291,6 @@ export const useAppStore = create<AppStore>((set, get) => {
     return did;
   },
 
-  processVaultExpiries: () => {
-    const now = Date.now();
-    set((state) => {
-      let creditsToAdd = 0;
-      const seller = normalizeFriendUsername(state.user.username);
-      const nextHistory = state.user.pullHistory.map((p) => {
-        if (p.fulfillment !== 'vaulted' || !p.vaultExpiresAt) return p;
-        if (p.vaultExpiresAt.getTime() > now) return p;
-        creditsToAdd += p.creditsWon ?? p.convertCreditValue ?? 0;
-        return {
-          ...p,
-          fulfillment: 'converted' as const,
-          vaultExpiresAt: undefined,
-          vaultHoldDays: undefined,
-          vaultExchangeListUsd: undefined,
-        };
-      });
-      if (creditsToAdd === 0) return state;
-      const expiredIds = state.user.pullHistory
-        .filter(
-          (p) =>
-            p.fulfillment === 'vaulted' &&
-            p.vaultExpiresAt &&
-            p.vaultExpiresAt.getTime() <= now,
-        )
-        .map((p) => p.id);
-      let shop = state.friendVaultShopByUser;
-      for (const id of expiredIds) {
-        shop = removeListingsForPullId(shop, seller, id);
-      }
-      return {
-        friendVaultShopByUser: shop,
-        user: {
-          ...state.user,
-          credits: state.user.credits + creditsToAdd,
-          pullHistory: nextHistory,
-        },
-      };
-    });
-  },
-
   listVaultPullForSale: (pullId, priceUsd) => {
     const price = Math.floor(priceUsd);
     if (price < 1) return false;
@@ -1381,8 +1353,6 @@ export const useAppStore = create<AppStore>((set, get) => {
 
     const priceUsd = listing.listPriceUsd;
     const notionalCredits = Math.max(100, Math.round(priceUsd * 10));
-    const exp = new Date();
-    exp.setDate(exp.getDate() + VAULT_HOLD_DAYS);
     const newPull: Pull = {
       id: `pull_${Date.now()}_${Math.random().toString(16).slice(2)}`,
       packId: listing.packId,
@@ -1393,8 +1363,6 @@ export const useAppStore = create<AppStore>((set, get) => {
       fulfillment: 'vaulted',
       convertCreditValue: notionalCredits,
       tier: listing.tier ?? 'base',
-      vaultExpiresAt: exp,
-      vaultHoldDays: VAULT_HOLD_DAYS,
     };
 
     set((state) => {

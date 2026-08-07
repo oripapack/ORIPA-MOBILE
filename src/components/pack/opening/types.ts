@@ -27,7 +27,7 @@ export type RevealRarity = 'common' | 'rare' | 'ultra_rare' | 'chase';
 export interface RevealCard {
   id: string;
   name: string;
-  /** Demo: emoji or short glyph for card art */
+  /** Short neutral code used only when catalog artwork is unavailable. */
   image: string;
   /** Optional slab artwork (`require(...)` or `{ uri }`). When absent, a monogram fallback is shown. */
   artwork?: ImageSourcePropType;

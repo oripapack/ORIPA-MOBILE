@@ -39,7 +39,7 @@ export function HeroCardView({
             pointerEvents="none"
           />
           <View style={[styles.artField, { backgroundColor: card.color }]}>
-            <Text style={styles.artEmoji}>{card.image}</Text>
+            <Text style={styles.artCode}>{card.image}</Text>
           </View>
         </View>
 
@@ -129,8 +129,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  artEmoji: {
-    fontSize: 56,
+  artCode: {
+    fontSize: 28,
+    fontFamily: brandFont.black,
+    color: HERO_CARD_STOCK.nameplate,
+    letterSpacing: 2,
   },
   nameBlock: {
     gap: 4,
