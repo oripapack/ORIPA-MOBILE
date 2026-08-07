@@ -14,7 +14,6 @@ import { useIsFocused } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../tokens/sg';
 import { fontSize, brandFont } from '../tokens/typography';
@@ -45,6 +44,8 @@ import {
 import { formatUsd } from '../lib/socialFormat';
 import { PUBLIC_WEB_ORIGIN } from '../config/app';
 import { showUserMessage } from '../utils/showUserMessage';
+import { AppHeader } from '../components/shared/AppHeader';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 
 const RING_PALETTE = [
   sg.neon,
@@ -70,7 +71,6 @@ const ACTIVITY_AUTO_SCROLL_PAUSE_AFTER_DRAG_MS = 14_000;
 
 export function FriendsScreen() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
@@ -84,6 +84,7 @@ export function FriendsScreen() {
   const [qrOpen, setQrOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [friendScannerOpen, setFriendScannerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   /** Re-open Add friends sheet after QR / scanner sub-modals (pageSheet blocks stacked modals). */
   const reopenAddSheetRef = useRef(false);
 
@@ -242,7 +243,8 @@ export function FriendsScreen() {
 
   return (
     <SgScreen>
-      <View style={[styles.safeTop, { paddingTop: insets.top + spacing.md }]}>
+      <AppHeader onSearch={() => setSearchOpen(true)} />
+      <View style={styles.safeTop}>
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
@@ -464,6 +466,7 @@ export function FriendsScreen() {
           reopenAddSheetIfNeeded();
         }}
       />
+      <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </SgScreen>
   );
 }

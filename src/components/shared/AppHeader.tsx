@@ -35,7 +35,13 @@ export function AppHeader({ onSearch }: { onSearch?: () => void }) {
         </View>
         <View style={styles.right}>
           <CreditsPill onAdd={goPoints} />
-          <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75} accessibilityLabel="Search">
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={onSearch}
+            activeOpacity={0.75}
+            accessibilityRole="button"
+            accessibilityLabel="Search"
+          >
             <Ionicons name="search" size={18} color={sg.text} />
           </TouchableOpacity>
         </View>

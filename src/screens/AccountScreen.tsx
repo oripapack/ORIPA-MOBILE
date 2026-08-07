@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -25,6 +24,8 @@ import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
 import { progressionFromTotalXp } from '../lib/collectorProgression';
 import { countClaimableQuests, pickPreviewQuests } from '../lib/collectorQuestPreview';
+import { AppHeader } from '../components/shared/AppHeader';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 
 const PREVIEW_PULLS = 2;
 const PREVIEW_QUESTS = 3;
@@ -36,7 +37,6 @@ type AccountNav = CompositeNavigationProp<
 
 export function AccountScreen() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation<AccountNav>();
   const user = useAppStore((s) => s.user);
   const coinBalance = useAppStore((s) => s.user.credits);
@@ -47,6 +47,7 @@ export function AccountScreen() {
   const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
   const simulatedMemberTier = useMembershipSimulationStore((s) => s.simulatedTier);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
   const prog = progressionFromTotalXp(user.xp);
@@ -107,9 +108,10 @@ export function AccountScreen() {
 
   return (
     <SgScreen>
+      <AppHeader onSearch={() => setSearchOpen(true)} />
       <ScrollView
         style={styles.container}
-        contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
+        contentContainerStyle={[styles.content, { paddingTop: spacing.lg }]}
         showsVerticalScrollIndicator={false}
         refreshControl={refreshControl}
       >
@@ -289,6 +291,7 @@ export function AccountScreen() {
         </TouchableOpacity>
       </View>
       </ScrollView>
+      <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </SgScreen>
   );
 }

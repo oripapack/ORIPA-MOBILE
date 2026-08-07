@@ -40,7 +40,9 @@ screen-local accent colors.
 
 ## Rebuilt surfaces
 
-- Global header, points readout, search control, and five-tab navigation dock
+- Global header, Points readout, search control, and five-tab navigation dock.
+  Every primary tab now keeps this same top chrome so switching between Packs,
+  Shop, Vault, Friends, and Player feels like one continuous terminal.
 - Packs home: terminal dispatch board, featured pack bay, inventory readouts,
   pack shelf, recent pulls, and trust strip
 - Pack details: full-height pack bay, status rail, pack data, quantity selection,
