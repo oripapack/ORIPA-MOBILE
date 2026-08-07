@@ -24,6 +24,8 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
 
   return (
     <View style={styles.card}>
+      <View style={styles.innerFrame} pointerEvents="none" />
+      <View style={styles.chromeTop} pointerEvents="none" />
       <View style={styles.ticketHead}>
         <View>
           <Text style={styles.eyebrow}>DROP / TOKYO SERIES 01</Text>
@@ -104,8 +106,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: sg.lineStrong,
     padding: 10,
+    borderTopColor: sg.ivoryLightSoft,
     ...sg.shadowHero,
   },
+  innerFrame: {
+    position: 'absolute', top: 4, right: 4, bottom: 4, left: 4,
+    borderWidth: 1, borderColor: sg.cobaltBorder, borderRadius: sg.radius.tag,
+  },
+  chromeTop: { position: 'absolute', top: 0, left: sg.space.lg, right: sg.space.lg, height: 1, backgroundColor: sg.ivoryLight },
   ticketHead: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
     paddingHorizontal: 4, paddingBottom: 10,

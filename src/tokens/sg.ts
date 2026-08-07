@@ -70,6 +70,8 @@ const semantic = {
   backdropGrid: 'rgba(167,176,188,0.04)',
   modalScrim: 'rgba(0,0,0,0.60)',
   functionalScrim: 'rgba(8,13,24,0.88)',
+  /** Lower-density veil reserved for the single illuminated exhibit image. */
+  exhibitScrim: 'rgba(8,13,24,0.36)',
   onPrimarySoft: 'rgba(244,239,227,0.68)',
   cardShine: 'rgba(244,239,227,0.14)',
 } as const;
