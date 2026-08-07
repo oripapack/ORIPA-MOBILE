@@ -24,6 +24,7 @@ import { usePackOdds } from '../hooks/usePackOdds';
 import { getMockPackTopHit } from '../data/mockTopHits';
 import { tierFromIsChase } from '../lib/n2Rarity';
 import { showUserMessage } from '../utils/showUserMessage';
+import { ChipTag } from '../components/shared/ChipTag';
 
 type Props = {
   route: { params: { packId: string } };
@@ -200,11 +201,13 @@ export function PackDetailsScreen({ route }: Props) {
             <View style={styles.slotsBar}>
               <View style={[styles.slotsFill, { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` }]} />
             </View>
-            <View style={styles.specRow}>
+            <View style={styles.tagsRow}>
               <Text style={styles.specLabel}>{t('packDetails.specTagsLabel')}</Text>
-              <Text style={styles.specValue} numberOfLines={1}>
-                {(pack.tags ?? []).slice(0, 3).join(' · ') || '—'}
-              </Text>
+              <View style={styles.tagsWrap}>
+                {(pack.tags ?? []).slice(0, 3).map((tag) => (
+                  <ChipTag key={tag} type={tag} />
+                ))}
+              </View>
             </View>
 
             {/* Odds summary line — ALWAYS visible; detail table stays in the modal */}
@@ -436,6 +439,15 @@ const styles = StyleSheet.create({
     color: sg.text,
     maxWidth: '60%',
     textAlign: 'right',
+  },
+  tagsRow: {
+    marginTop: sg.space.md,
+    gap: sg.space.sm,
+  },
+  tagsWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: sg.space.xs,
   },
   slotsBar: {
     height: 2,

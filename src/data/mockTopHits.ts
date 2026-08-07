@@ -22,7 +22,7 @@ const TOP_HIT_TABLE: Record<PackCategory, PackTopHit> = {
     imageUrl: IMG.tcg,
     name: 'Welcome Bonus Card',
     rarity: 'Rare',
-    estValue: '~500 coins',
+    estValue: '~500 Points',
     isChase: false,
   },
   micro: {
