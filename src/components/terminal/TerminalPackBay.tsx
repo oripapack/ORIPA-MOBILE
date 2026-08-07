@@ -5,8 +5,8 @@ import { sg } from '../../tokens/sg';
 
 type PackSize = 'sm' | 'md' | 'lg' | 'hero';
 
-const PRODUCT_EXHIBIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-wide.jpg');
-const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-portrait.jpg');
+const PRODUCT_EXHIBIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-cobalt-v1-wide.png');
+const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-cobalt-v1-portrait.png');
 
 export function TerminalPackBay({
   name,

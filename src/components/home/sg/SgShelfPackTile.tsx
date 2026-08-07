@@ -6,7 +6,7 @@ import { SgData } from '../../ui';
 import { navigationRef } from '../../../navigation/navigationRef';
 import { usePackOdds } from '../../../hooks/usePackOdds';
 
-const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-wide.jpg');
+const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-cobalt-v1-wide.png');
 
 export function SgShelfPackTile({ pack }: { pack: Pack }) {
   const { width } = useWindowDimensions();
