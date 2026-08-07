@@ -104,7 +104,7 @@
     "unavailableEyebrow": "SHOP / RELEASE STATUS",
     "unavailableTitle": "Verified inventory comes first.",
     "unavailableBody": "Marketplace browsing will open after seller inventory, shipping regions, and checkout are connected and verified.",
-    "unavailableStatusBody": "No demo listings or estimated prices are shown in the release build.",
+    "unavailableStatusBody": "Only verified listings and provider-sourced prices will appear here.",
     "unavailableCta": "Explore packs"
   },
   "common": {
@@ -117,7 +117,7 @@
   },
   "helpCenter": {
     "navTitle": "सहायता केंद्र",
-    "lead": "क्रेडिट, शिपिंग और ड्रॉप्स के लिए त्वरित उत्तर। यह नमूना सामग्री है - लॉन्च से पहले इसे अपने वास्तविक सहायता लेखों से बदलें।",
+    "lead": "Current availability for Points, fulfillment, and pack releases.",
     "faq": {
       "credits": {
         "q": "How do Points work?",
@@ -125,24 +125,28 @@
       },
       "shipping": {
         "q": "आप भौतिक कार्ड कहाँ भेजते हैं?",
-        "a": "मार्केटप्लेस ऑर्डर पार्टनर स्टोर्स से भेजे जाते हैं। कटऑफ, वाहक और शुल्क लिस्टिंग के अनुसार अलग-अलग होते हैं। खाते में एक शिपिंग पता जोड़ें ताकि भुगतान लाइव होने पर चेकआउट तेज़ हो।"
+        "a": "Shipping stays unavailable until fulfillment regions, carriers, fees, and address handling are verified."
       },
       "drops": {
         "q": "गर्म बूंद क्या है?",
-        "a": "हॉट ड्रॉप्स सीमित समय या उच्च-मांग वाले पैक रिलीज़ हैं। वे खाता प्रोमो (बोनस और कूपन) से भिन्न हैं। संक्षिप्त व्याख्या के लिए अकाउंट पर हॉट ड्रॉप्स टैप करें।"
+        "a": "Hot drops will be limited pack releases. No active drop is shown unless it is backed by live inventory."
       }
     },
     "contactSection": "अभी भी अटके हुए हैं?",
     "emailCta": "ईमेल{{email}}",
     "emailUs": "ई - मेल समर्थन",
-    "responseTime": "हमारा लक्ष्य 1-2 व्यावसायिक दिनों के भीतर उत्तर देना है (डेमो - मॉनिटर नहीं किया गया)।"
+    "responseTime": "Response times are shown only while the monitored support channel is active.",
+    "contactUnavailableEyebrow": "SUPPORT / CONNECTION STATUS",
+    "contactUnavailableTitle": "Contact support is not active yet.",
+    "contactUnavailableBody": "A monitored contact channel will appear here after ownership and response procedures are verified.",
+    "contactStatusSection": "Contact status"
   },
   "shippingAddress": {
     "navTitle": "शिपिंग पता",
-    "lead": "पूर्ति लाइव होने पर मार्केटप्लेस ऑर्डर और पुरस्कार शिपिंग के लिए उपयोग किया जाता है। पूर्वावलोकन बिल्ड में केवल इस डिवाइस पर सहेजा गया।",
+    "lead": "Used only for verified physical fulfillment.",
     "save": "पता सहेजें",
     "savedTitle": "सहेजा गया",
-    "savedBody": "आपका शिपिंग पता इस डिवाइस पर सहेजा गया था।",
+    "savedBody": "Your shipping address was saved to your account.",
     "saveFailed": "सहेजा नहीं जा सका. पुनः प्रयास करें।",
     "missingTitle": "गुम फ़ील्ड",
     "missingBody": "कम से कम नाम, सड़क लाइन 1, शहर और देश दर्ज करें।",
@@ -163,7 +167,12 @@
       "region": "सी.ए",
       "postal": "94102",
       "country": "संयुक्त राज्य अमेरिका"
-    }
+    },
+    "releaseEyebrow": "SHIPPING / RELEASE STATUS",
+    "releaseTitle": "Address collection is paused.",
+    "releaseBody": "No address is collected until storage, supported regions, and the fulfillment workflow are connected and verified.",
+    "releaseStatus": "WAITING FOR VERIFIED FULFILLMENT",
+    "loading": "Loading address"
   },
   "tierBenefits": {
     "navTitle": "स्तरीय लाभ",
@@ -223,35 +232,35 @@
     "body": "लिंक करने से आप एक ही पुल हब प्रोफ़ाइल में एक से अधिक तरीकों (उदाहरण के लिए Google और Apple) के साथ साइन इन कर सकते हैं, ताकि आप एक ही लॉगिन पर लॉक न हों।",
     "whatTitle": "इसका क्या अर्थ है",
     "whatBody": "यह दो अलग-अलग ऐप खातों के विलय के बारे में नहीं है। यह सुविधा और पुनर्प्राप्ति के लिए साइन-इन प्रदाताओं को एक खाते से जोड़ने के बारे में है।",
-    "futureTitle": "बाद में आ रहा हूँ",
+    "futureTitle": "Not active yet",
     "futureGoogle": "गूगल अकाउंट लिंक",
     "futureApple": "एप्पल आईडी लिंक",
     "futureEmail": "ईमेल + पासवर्ड लिंक",
-    "note": "प्रदाता लिंकिंग उत्पादन में आपकी ऑथ सेटिंग्स (जैसे क्लर्क) का उपयोग करेगा।"
+    "note": "This screen remains hidden until provider linking is connected and verified."
   },
   "identityVerification": {
     "navTitle": "पहचान सत्यापन",
     "body": "पहचान सत्यापन (जिसे कभी-कभी केवाईसी भी कहा जाता है) पुष्टि करता है कि आप एक वास्तविक व्यक्ति हैं और उच्च-मूल्य भुगतान, कुछ प्रोमो या विनियमित सुविधाओं से पहले आयु या अनुपालन नियमों को पूरा करते हैं।",
     "whyTitle": "ऐप्स इसकी मांग क्यों करते हैं?",
     "whyBody": "यह धोखाधड़ी को कम करता है, नाबालिगों की सुरक्षा करता है, और जब धन या मूल्यवान पुरस्कार उपयोगकर्ताओं और प्लेटफार्मों के बीच स्थानांतरित होते हैं तो वित्तीय या बाज़ार नियमों को पूरा करता है।",
-    "previewTitle": "पूर्वावलोकन प्रवाह (सक्रिय नहीं)",
+    "previewTitle": "Verification is not active",
     "step1": "सरकारी आईडी या दस्तावेज़ की जाँच",
     "step2": "सेल्फी या जीवंतता जांच (यदि आवश्यक हो)",
     "step3": "समीक्षा - आमतौर पर मिनट, कभी-कभी अधिक समय तक",
-    "note": "यह निर्माण केवल अवधारणा की व्याख्या करता है। सत्यापन की आवश्यकता से पहले अपने विक्रेता (जैसे पर्सोना, स्ट्राइप आइडेंटिटी) को तार दें।"
+    "note": "This screen remains hidden until a verification provider and policy are connected."
   },
   "payoutMethod": {
     "navTitle": "भुगतान विधि",
-    "body": "जब आप कार्ड बेचते हैं या कैश-आउट प्राप्त करते हैं, तो भुगतान लिंक किए गए बैंक या डेबिट कार्ड में जाता है। यह पूर्वावलोकन वास्तविक बैंकिंग से नहीं जुड़ता है.",
-    "line1": "क्षेत्र के आधार पर एक बैंक खाता (एसीएच/स्थानीय रेल) ​​या डेबिट कार्ड जोड़ें।",
-    "line2": "जब आपके प्रोसेसर को इसकी आवश्यकता हो तो छोटी जमा राशि या तत्काल माइक्रो-चार्ज को सत्यापित करें।",
-    "line3": "भुगतान का समय और शुल्क बाज़ार के नियमों का पालन करते हैं - लॉन्च से पहले शर्तें देखें।",
-    "note": "स्ट्राइप कनेक्ट या आपका पीएसपी एकीकृत होने पर इस प्लेसहोल्डर को वास्तविक पेआउट ऑनबोर्डिंग से बदलें।"
+    "body": "Payouts are not part of the current release. No bank or debit-card data is collected.",
+    "line1": "A verified payout provider is required before this feature can open.",
+    "line2": "Supported regions, timing, and fees must come from the live provider.",
+    "line3": "Any required identity or tax steps will be disclosed in the live flow.",
+    "note": "This screen remains hidden until payout onboarding is connected and verified."
   },
   "settings": {
     "title": "सेटिंग्स",
     "sectionProfile": "Your account",
-    "sectionWallet": "Wallet & verification",
+    "sectionWallet": "Account services",
     "devSection": "डेवलपर",
     "devResetLocalOnboarding": "लोकल ऑनबोर्डिंग रीसेट करें",
     "devResetAlertTitle": "लोकल ऑनबोर्डिंग रीसेट करें?",
@@ -379,7 +388,7 @@
     "releaseTitle": "Real collectors. No stand-ins.",
     "releaseBody": "Friends will open after verified profiles, privacy controls, and server-ranked activity are connected.",
     "releaseCta": "Explore packs",
-    "releasePointProfiles": "Verified profiles replace demo accounts.",
+    "releasePointProfiles": "Only verified profiles appear here.",
     "releasePointActivity": "Activity is sourced from completed live openings.",
     "releasePointSafety": "Blocking, reporting, and privacy controls are required."
   },
@@ -484,7 +493,7 @@
     "language": "भाषा",
     "region": "क्षेत्र",
     "regionHint": "दिनांक, मुद्रा प्रदर्शन और भविष्य के शिपिंग डिफ़ॉल्ट के लिए उपयोग किया जाता है।",
-    "fallbackNote": "जापानी, कोरियाई, चीनी (सरल/पारंपरिक) और स्पैनिश में समर्पित अनुवाद हैं। अन्य भाषाएँ अभी अंग्रेजी का उपयोग करती हैं - कोई भी विकल्प चुनें और ऐप लोकेल अपडेट हो जाता है (जैसा कि हम अनुवाद करते हैं, तार अनुसरण करते हैं)।",
+    "fallbackNote": "Choose the language used throughout the app. Some release-status messages may remain in English.",
     "save": "बचाना",
     "cancel": "रद्द करना"
   },
@@ -837,7 +846,7 @@
   "packDetails": {
     "back": "वापस",
     "missingTitle": "पैक नहीं मिला",
-    "missingBody": "यह पैक खत्म हो गया है या उपलब्ध नहीं है।",
+    "missingBody": "We could not find this pack in the current catalog.",
     "guaranteeTitle": "गारंटी",
     "priceTitle": "कीमत",
     "remaining": "{{total}} में से {{left}} बाकी",
@@ -1246,5 +1255,11 @@
   },
   "credits": {
     "abbrev": "PTS"
+  },
+  "serviceAvailability": {
+    "eyebrow": "Account service",
+    "title": "Not available in this release",
+    "body": "This connection stays disabled until its provider, data handling, and recovery flow are verified for production.",
+    "status": "CONNECTION / INACTIVE"
   }
 }

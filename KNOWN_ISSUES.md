@@ -84,6 +84,12 @@
 - **リリース条件**: Clerk production instance を作成し、production publishable/secret key、OAuth redirect、Apple/Google設定、許可オリジン、メール配信を本番環境で検証すること。
 - **担当**: Auth / インフラ。
 
+### 12. 【ブロッカー】配送・問い合わせ・高度なアカウントサービスの本番接続が未完了
+- **記録日**: 2026-08-07
+- **内容**: 配送先、問い合わせ、外部ウォレット、本人確認、支払先、外部アカウント連携は、提供地域・データ保持・復旧・監視を含む本番運用が未検証。本番ビルドでは未監視の連絡先やローカル保存フォームを表示せず、設定導線と直接遷移先を接続待ち状態にした。
+- **リリース条件**: 配送業者/API、地域別住所と料金、PII 保持方針、監視済みサポート窓口、本人確認/支払先/外部アカウントの各プロバイダーと復旧手順を接続・検証すること。完了した面だけ `EXPO_PUBLIC_SHIPPING_LIVE=1` / `EXPO_PUBLIC_SUPPORT_LIVE=1` / `EXPO_PUBLIC_ADVANCED_ACCOUNT_SERVICES_LIVE=1` を設定する。
+- **担当**: Fulfillment / Support / Compliance / Backend。
+
 ## タスク登録(2026-07-31 デザインルール棚卸し docs/design-rules-inventory.md の選別結果)
 
 コード挙動を変えるタスクは登録のみで未実行。R-xxx は inventory の ID。

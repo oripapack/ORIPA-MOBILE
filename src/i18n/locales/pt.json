@@ -104,7 +104,7 @@
     "unavailableEyebrow": "SHOP / RELEASE STATUS",
     "unavailableTitle": "Verified inventory comes first.",
     "unavailableBody": "Marketplace browsing will open after seller inventory, shipping regions, and checkout are connected and verified.",
-    "unavailableStatusBody": "No demo listings or estimated prices are shown in the release build.",
+    "unavailableStatusBody": "Only verified listings and provider-sourced prices will appear here.",
     "unavailableCta": "Explore packs"
   },
   "common": {
@@ -117,7 +117,7 @@
   },
   "helpCenter": {
     "navTitle": "Central de ajuda",
-    "lead": "Respostas rápidas sobre Points, envio e drops. Conteúdo de exemplo — substitua por artigos reais antes do lançamento.",
+    "lead": "Current availability for Points, fulfillment, and pack releases.",
     "faq": {
       "credits": {
         "q": "How do Points work?",
@@ -125,24 +125,28 @@
       },
       "shipping": {
         "q": "Para onde enviam cartas físicas?",
-        "a": "Pedidos do marketplace saem das lojas parceiras. Prazos, transportadoras e taxas variam por anúncio. Adicione um endereço em Conta para agilizar o checkout quando estiver ativo."
+        "a": "Shipping stays unavailable until fulfillment regions, carriers, fees, and address handling are verified."
       },
       "drops": {
         "q": "O que é um hot drop?",
-        "a": "Hot drops são lançamentos de boosters por tempo limitado ou muito procurados. É diferente de promoções de conta (bônus, cupons). Toque em Hot drops em Conta para uma explicação curta."
+        "a": "Hot drops will be limited pack releases. No active drop is shown unless it is backed by live inventory."
       }
     },
     "contactSection": "Ainda travado?",
     "emailCta": "Enviar e-mail para {{email}}",
     "emailUs": "Falar com o suporte",
-    "responseTime": "Pretendemos responder em 1–2 dias úteis (demo — não monitorado)."
+    "responseTime": "Response times are shown only while the monitored support channel is active.",
+    "contactUnavailableEyebrow": "SUPPORT / CONNECTION STATUS",
+    "contactUnavailableTitle": "Contact support is not active yet.",
+    "contactUnavailableBody": "A monitored contact channel will appear here after ownership and response procedures are verified.",
+    "contactStatusSection": "Contact status"
   },
   "shippingAddress": {
     "navTitle": "Endereço de entrega",
-    "lead": "Usado para pedidos do marketplace e envio de prêmios quando o fulfillment estiver no ar. Na prévia salvo só neste dispositivo.",
+    "lead": "Used only for verified physical fulfillment.",
     "save": "Salvar endereço",
     "savedTitle": "Salvo",
-    "savedBody": "Seu endereço foi salvo neste dispositivo.",
+    "savedBody": "Your shipping address was saved to your account.",
     "saveFailed": "Não foi possível salvar. Tente de novo.",
     "missingTitle": "Campos faltando",
     "missingBody": "Informe pelo menos nome, linha 1 do endereço, cidade e país.",
@@ -163,7 +167,12 @@
       "region": "SP",
       "postal": "01310-100",
       "country": "Brasil"
-    }
+    },
+    "releaseEyebrow": "SHIPPING / RELEASE STATUS",
+    "releaseTitle": "Address collection is paused.",
+    "releaseBody": "No address is collected until storage, supported regions, and the fulfillment workflow are connected and verified.",
+    "releaseStatus": "WAITING FOR VERIFIED FULFILLMENT",
+    "loading": "Loading address"
   },
   "tierBenefits": {
     "navTitle": "Benefícios por nível",
@@ -223,35 +232,35 @@
     "body": "Vincular permite entrar no mesmo perfil Pull Hub com mais de um método (Google, Apple, e-mail), sem ficar preso a um único login.",
     "whatTitle": "O que isso significa",
     "whatBody": "Não é fundir duas contas do app. É associar provedores de login a uma conta para conveniência e recuperação.",
-    "futureTitle": "Em breve",
+    "futureTitle": "Not active yet",
     "futureGoogle": "Vincular conta Google",
     "futureApple": "Vincular Apple ID",
     "futureEmail": "Vincular e-mail + senha",
-    "note": "O vínculo de provedores usará suas configurações de auth (ex.: Clerk) em produção."
+    "note": "This screen remains hidden until provider linking is connected and verified."
   },
   "identityVerification": {
     "navTitle": "Verificação de identidade",
     "body": "Verificação de identidade (às vezes chamada KYC) confirma que você é uma pessoa real e atende regras de idade ou conformidade antes de pagamentos altos, certas promos ou recursos regulados.",
     "whyTitle": "Por que apps pedem isso",
     "whyBody": "Reduz fraude, protege menores e atende regras financeiras ou de marketplace quando dinheiro ou prêmios valiosos circulam.",
-    "previewTitle": "Fluxo de prévia (inativo)",
+    "previewTitle": "Verification is not active",
     "step1": "Documento oficial ou checagem de documento",
     "step2": "Selfie ou prova de vivacidade (se exigido)",
     "step3": "Análise — em geral minutos, às vezes mais",
-    "note": "Este build só explica o conceito. Integre seu fornecedor (ex.: Persona, Stripe Identity) antes de exigir verificação."
+    "note": "This screen remains hidden until a verification provider and policy are connected."
   },
   "payoutMethod": {
     "navTitle": "Método de recebimento",
-    "body": "Ao vender cartas ou sacar, os pagamentos vão para conta bancária ou cartão vinculado. Esta prévia não conecta a bancos reais.",
-    "line1": "Adicione conta bancária (ACH / rede local) ou cartão de débito conforme a região.",
-    "line2": "Verifique microdepósitos ou microcobranças se o processador exigir.",
-    "line3": "Prazos e taxas seguem regras do marketplace — veja os Termos antes do lançamento.",
-    "note": "Substitua este texto por onboarding real quando Stripe Connect ou seu PSP estiver integrado."
+    "body": "Payouts are not part of the current release. No bank or debit-card data is collected.",
+    "line1": "A verified payout provider is required before this feature can open.",
+    "line2": "Supported regions, timing, and fees must come from the live provider.",
+    "line3": "Any required identity or tax steps will be disclosed in the live flow.",
+    "note": "This screen remains hidden until payout onboarding is connected and verified."
   },
   "settings": {
     "title": "Configurações",
     "sectionProfile": "Your account",
-    "sectionWallet": "Wallet & verification",
+    "sectionWallet": "Account services",
     "devSection": "Desenvolvedor",
     "devResetLocalOnboarding": "Redefinir onboarding local",
     "devResetAlertTitle": "Redefinir onboarding local?",
@@ -379,7 +388,7 @@
     "releaseTitle": "Real collectors. No stand-ins.",
     "releaseBody": "Friends will open after verified profiles, privacy controls, and server-ranked activity are connected.",
     "releaseCta": "Explore packs",
-    "releasePointProfiles": "Verified profiles replace demo accounts.",
+    "releasePointProfiles": "Only verified profiles appear here.",
     "releasePointActivity": "Activity is sourced from completed live openings.",
     "releasePointSafety": "Blocking, reporting, and privacy controls are required."
   },
@@ -484,7 +493,7 @@
     "language": "Idioma",
     "region": "Região",
     "regionHint": "Usado para datas, moeda e padrões futuros de envio.",
-    "fallbackNote": "Todos os idiomas da lista têm tradução completa da interface. A região ainda controla datas e moeda.",
+    "fallbackNote": "Choose the language used throughout the app. Some release-status messages may remain in English.",
     "save": "Salvar",
     "cancel": "Cancelar"
   },
@@ -837,7 +846,7 @@
   "packDetails": {
     "back": "Voltar",
     "missingTitle": "Pacote não encontrado",
-    "missingBody": "Este pacote pode ter terminado ou não estar disponível.",
+    "missingBody": "We could not find this pack in the current catalog.",
     "guaranteeTitle": "Garantido",
     "priceTitle": "Preço",
     "remaining": "Restam {{left}} de {{total}}",
@@ -1246,5 +1255,11 @@
   },
   "credits": {
     "abbrev": "PTS"
+  },
+  "serviceAvailability": {
+    "eyebrow": "Account service",
+    "title": "Not available in this release",
+    "body": "This connection stays disabled until its provider, data handling, and recovery flow are verified for production.",
+    "status": "CONNECTION / INACTIVE"
   }
 }

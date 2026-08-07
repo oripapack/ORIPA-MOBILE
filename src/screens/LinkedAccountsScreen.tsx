@@ -9,6 +9,8 @@ import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { SgScreen } from '../components/ui/SgScreen';
+import { SgUnavailableService } from '../components/ui';
+import { ADVANCED_ACCOUNT_SERVICES_ARE_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'LinkedAccounts'>;
 
@@ -27,6 +29,10 @@ export function LinkedAccountsScreen() {
       headerStyle: { backgroundColor: sg.surface2 },
     });
   }, [navigation, t]);
+
+  if (!ADVANCED_ACCOUNT_SERVICES_ARE_LIVE) {
+    return <SgUnavailableService code="ACCOUNT / PROVIDERS" />;
+  }
 
   return (
     <SgScreen>

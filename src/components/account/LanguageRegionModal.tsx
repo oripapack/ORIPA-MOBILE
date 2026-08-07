@@ -52,7 +52,12 @@ export function LanguageRegionModal({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={onClose}
+    >
       <View style={[styles.root, { paddingTop: insets.top + sg.space.sm, paddingBottom: insets.bottom + sg.space.md }]}>
         <TerminalBackdrop />
         <View style={styles.header}>
@@ -65,7 +70,13 @@ export function LanguageRegionModal({
               <Text style={styles.title}>{t('locale.title')}</Text>
             </View>
           </View>
-          <TouchableOpacity onPress={onClose} hitSlop={12} style={styles.cancelBtn}>
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={12}
+            style={styles.cancelBtn}
+            accessibilityRole="button"
+            accessibilityLabel={t('locale.cancel')}
+          >
             <Text style={styles.cancel}>{t('locale.cancel')}</Text>
           </TouchableOpacity>
         </View>
@@ -80,6 +91,13 @@ export function LanguageRegionModal({
                 style={[styles.row, draftLang === opt.code && styles.rowSelected]}
                 onPress={() => setDraftLang(opt.code)}
                 activeOpacity={0.7}
+                accessibilityRole="radio"
+                accessibilityLabel={opt.label}
+                accessibilityState={{
+                  checked: draftLang === opt.code,
+                  selected: draftLang === opt.code,
+                }}
+                aria-checked={draftLang === opt.code}
               >
                 <Text style={[styles.rowLabel, draftLang === opt.code && styles.rowLabelSelected]}>
                   {opt.label}
@@ -100,6 +118,13 @@ export function LanguageRegionModal({
                 style={[styles.row, draftRegion === opt.code && styles.rowSelected]}
                 onPress={() => setDraftRegion(opt.code)}
                 activeOpacity={0.7}
+                accessibilityRole="radio"
+                accessibilityLabel={t(`regions.${opt.code}`)}
+                accessibilityState={{
+                  checked: draftRegion === opt.code,
+                  selected: draftRegion === opt.code,
+                }}
+                aria-checked={draftRegion === opt.code}
               >
                 <Text style={[styles.rowLabel, draftRegion === opt.code && styles.rowLabelSelected]}>
                   {t(`regions.${opt.code}`)}
@@ -112,7 +137,13 @@ export function LanguageRegionModal({
           </View>
         </ScrollView>
 
-        <TouchableOpacity style={styles.doneBtn} onPress={apply} activeOpacity={0.85}>
+        <TouchableOpacity
+          style={styles.doneBtn}
+          onPress={apply}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel={t('locale.save')}
+        >
           <Text style={styles.doneText}>{t('locale.save')}</Text>
           <Ionicons name="arrow-forward" size={18} color={sg.onGold} />
         </TouchableOpacity>

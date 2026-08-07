@@ -13,7 +13,15 @@ interface Props {
 
 export function ListRow({ label, onPress, icon, rightContent, showChevron = true, destructive }: Props) {
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.6}>
+    <TouchableOpacity
+      style={styles.row}
+      onPress={onPress}
+      activeOpacity={0.6}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: !onPress }}
+    >
       {icon && <View style={styles.icon}>{icon}</View>}
       <Text style={[styles.label, destructive && styles.destructive]}>{label}</Text>
       <View style={styles.right}>

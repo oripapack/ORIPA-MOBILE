@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/types';
 import { openExternalUrl } from '../utils/openExternalUrl';
-import { SUPPORT_EMAIL } from '../config/app';
+import { SUPPORT_EMAIL, SUPPORT_IS_LIVE } from '../config/app';
 import { SgScreen } from '../components/ui/SgScreen';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 
@@ -68,6 +68,7 @@ export function HelpCenterScreen() {
               onPress={() => setOpenId(expanded ? null : id)}
               activeOpacity={0.75}
               accessibilityRole="button"
+              accessibilityLabel={t(`helpCenter.faq.${id}.q`)}
               accessibilityState={{ expanded }}
             >
               <View style={styles.faqHeader}>
@@ -94,24 +95,37 @@ export function HelpCenterScreen() {
 
         <View style={styles.sectionHeading}>
           <Text style={styles.sectionIndex}>B</Text>
-          <Text style={styles.sectionLabel}>{t('helpCenter.contactSection')}</Text>
+          <Text style={styles.sectionLabel}>
+            {t(SUPPORT_IS_LIVE ? 'helpCenter.contactSection' : 'helpCenter.contactStatusSection')}
+          </Text>
           <View style={styles.sectionLine} />
         </View>
 
         <VaultFramedCard fill="felt" contentStyle={styles.contactCard}>
-          <View style={styles.contactIcon}>
-            <Ionicons name="mail-outline" size={22} color={sg.goldHi} />
-          </View>
-          <TouchableOpacity
-            style={styles.contactBtn}
-            onPress={() => void openExternalUrl(`mailto:${SUPPORT_EMAIL}`, t('helpCenter.emailUs'))}
-            activeOpacity={0.85}
-            accessibilityRole="button"
-          >
-            <Text style={styles.contactBtnText}>{t('helpCenter.emailCta', { email: SUPPORT_EMAIL })}</Text>
-            <Ionicons name="arrow-forward" size={18} color={sg.onGold} />
-          </TouchableOpacity>
-          <Text style={styles.footnote}>{t('helpCenter.responseTime')}</Text>
+          {SUPPORT_IS_LIVE ? (
+            <>
+              <View style={styles.contactIcon}>
+                <Ionicons name="mail-outline" size={22} color={sg.goldHi} />
+              </View>
+              <TouchableOpacity
+                style={styles.contactBtn}
+                onPress={() => void openExternalUrl(`mailto:${SUPPORT_EMAIL}`, t('helpCenter.emailUs'))}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={t('helpCenter.emailCta', { email: SUPPORT_EMAIL })}
+              >
+                <Text style={styles.contactBtnText}>{t('helpCenter.emailCta', { email: SUPPORT_EMAIL })}</Text>
+                <Ionicons name="arrow-forward" size={18} color={sg.onGold} />
+              </TouchableOpacity>
+              <Text style={styles.footnote}>{t('helpCenter.responseTime')}</Text>
+            </>
+          ) : (
+            <View accessibilityRole="summary">
+              <Text style={styles.contactStatus}>{t('helpCenter.contactUnavailableEyebrow')}</Text>
+              <Text style={styles.contactUnavailableTitle}>{t('helpCenter.contactUnavailableTitle')}</Text>
+              <Text style={styles.contactUnavailableBody}>{t('helpCenter.contactUnavailableBody')}</Text>
+            </View>
+          )}
         </VaultFramedCard>
       </ScrollView>
     </SgScreen>
@@ -272,5 +286,27 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: sg.muted,
     lineHeight: 16,
+  },
+  contactStatus: {
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.warning,
+    marginBottom: sg.space.sm,
+  },
+  contactUnavailableTitle: {
+    fontFamily: sg.font.display,
+    fontSize: sg.type.title.fontSize,
+    lineHeight: sg.type.title.lineHeight,
+    letterSpacing: sg.type.title.letterSpacing,
+    color: sg.text,
+    marginBottom: sg.space.sm,
+  },
+  contactUnavailableBody: {
+    fontFamily: sg.font.body,
+    fontSize: sg.type.body.fontSize,
+    lineHeight: sg.type.body.lineHeight,
+    color: sg.muted,
   },
 });

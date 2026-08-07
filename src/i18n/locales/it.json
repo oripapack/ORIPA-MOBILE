@@ -104,7 +104,7 @@
     "unavailableEyebrow": "SHOP / RELEASE STATUS",
     "unavailableTitle": "Verified inventory comes first.",
     "unavailableBody": "Marketplace browsing will open after seller inventory, shipping regions, and checkout are connected and verified.",
-    "unavailableStatusBody": "No demo listings or estimated prices are shown in the release build.",
+    "unavailableStatusBody": "Only verified listings and provider-sourced prices will appear here.",
     "unavailableCta": "Explore packs"
   },
   "common": {
@@ -117,7 +117,7 @@
   },
   "helpCenter": {
     "navTitle": "Centro assistenza",
-    "lead": "Risposte rapide su Points, spedizione e drop. Contenuto di esempio — sostituisci con articoli veri prima del lancio.",
+    "lead": "Current availability for Points, fulfillment, and pack releases.",
     "faq": {
       "credits": {
         "q": "How do Points work?",
@@ -125,24 +125,28 @@
       },
       "shipping": {
         "q": "Dove spedite le carte fisiche?",
-        "a": "Gli ordini marketplace partono dai negozi partner. Orari, corrieri e costi variano per annuncio. Aggiungi un indirizzo in Account per velocizzare il checkout quando sarà attivo."
+        "a": "Shipping stays unavailable until fulfillment regions, carriers, fees, and address handling are verified."
       },
       "drops": {
         "q": "Cos'è un hot drop?",
-        "a": "I hot drop sono uscite di buste a tempo o molto richieste. Sono diversi dalle promo account (bonus, coupon). Tocca Hot drop in Account per una breve spiegazione."
+        "a": "Hot drops will be limited pack releases. No active drop is shown unless it is backed by live inventory."
       }
     },
     "contactSection": "Ancora bloccato?",
     "emailCta": "Scrivi a {{email}}",
     "emailUs": "Contatta il supporto",
-    "responseTime": "Cerchiamo di rispondere entro 1–2 giorni lavorativi (demo — non monitorato)."
+    "responseTime": "Response times are shown only while the monitored support channel is active.",
+    "contactUnavailableEyebrow": "SUPPORT / CONNECTION STATUS",
+    "contactUnavailableTitle": "Contact support is not active yet.",
+    "contactUnavailableBody": "A monitored contact channel will appear here after ownership and response procedures are verified.",
+    "contactStatusSection": "Contact status"
   },
   "shippingAddress": {
     "navTitle": "Indirizzo di spedizione",
-    "lead": "Usato per ordini marketplace e spedizione premi quando il fulfillment sarà live. Nell'anteprima salvato solo su questo dispositivo.",
+    "lead": "Used only for verified physical fulfillment.",
     "save": "Salva indirizzo",
     "savedTitle": "Salvato",
-    "savedBody": "L'indirizzo è stato salvato su questo dispositivo.",
+    "savedBody": "Your shipping address was saved to your account.",
     "saveFailed": "Impossibile salvare. Riprova.",
     "missingTitle": "Campi mancanti",
     "missingBody": "Inserisci almeno nome, riga indirizzo 1, città e paese.",
@@ -163,7 +167,12 @@
       "region": "MI",
       "postal": "20100",
       "country": "Italia"
-    }
+    },
+    "releaseEyebrow": "SHIPPING / RELEASE STATUS",
+    "releaseTitle": "Address collection is paused.",
+    "releaseBody": "No address is collected until storage, supported regions, and the fulfillment workflow are connected and verified.",
+    "releaseStatus": "WAITING FOR VERIFIED FULFILLMENT",
+    "loading": "Loading address"
   },
   "tierBenefits": {
     "navTitle": "Vantaggi livello",
@@ -223,35 +232,35 @@
     "body": "Collegare più metodi di accesso (Google, Apple, email) allo stesso profilo Pull Hub così non dipendi da un solo login.",
     "whatTitle": "Cosa significa",
     "whatBody": "Non si tratta di unire due account app separati, ma di associare provider a un unico account per comodità e recupero.",
-    "futureTitle": "In arrivo",
+    "futureTitle": "Not active yet",
     "futureGoogle": "Collega account Google",
     "futureApple": "Collega Apple ID",
     "futureEmail": "Collega email + password",
-    "note": "Il collegamento provider userà le tue impostazioni auth (es. Clerk) in produzione."
+    "note": "This screen remains hidden until provider linking is connected and verified."
   },
   "identityVerification": {
     "navTitle": "Verifica identità",
     "body": "La verifica identità (spesso KYC) conferma che sei una persona reale e rispetta regole d'età o di conformità prima di pagamenti elevati, certe promo o funzioni regolate.",
     "whyTitle": "Perché le app lo chiedono",
     "whyBody": "Riduce frodi, tutela i minori e rispetta regole finanziarie o di marketplace quando circolano soldi o premi di valore.",
-    "previewTitle": "Flusso anteprima (non attivo)",
+    "previewTitle": "Verification is not active",
     "step1": "Documento d'identità o controllo documenti",
     "step2": "Selfie o prova di vivacità (se richiesto)",
     "step3": "Revisione — di solito minuti, a volte più lunga",
-    "note": "Questa build spiega solo il concetto. Collega il tuo provider (es. Persona, Stripe Identity) prima di richiedere la verifica."
+    "note": "This screen remains hidden until a verification provider and policy are connected."
   },
   "payoutMethod": {
     "navTitle": "Metodo di pagamento uscite",
-    "body": "Quando vendi carte o incassi, i pagamenti vanno a un conto bancario o carta collegata. Questa anteprima non è collegata a banche reali.",
-    "line1": "Aggiungi conto bancario (ACH / circuiti locali) o carta di debito a seconda della regione.",
-    "line2": "Verifica micro-accrediti o addebiti se il processore lo richiede.",
-    "line3": "Tempi e commissioni seguono le regole marketplace — vedi Termini prima del lancio.",
-    "note": "Sostituisci questo testo con onboarding reale quando Stripe Connect o il PSP sarà integrato."
+    "body": "Payouts are not part of the current release. No bank or debit-card data is collected.",
+    "line1": "A verified payout provider is required before this feature can open.",
+    "line2": "Supported regions, timing, and fees must come from the live provider.",
+    "line3": "Any required identity or tax steps will be disclosed in the live flow.",
+    "note": "This screen remains hidden until payout onboarding is connected and verified."
   },
   "settings": {
     "title": "Impostazioni",
     "sectionProfile": "Your account",
-    "sectionWallet": "Wallet & verification",
+    "sectionWallet": "Account services",
     "devSection": "Sviluppatore",
     "devResetLocalOnboarding": "Reimposta onboarding locale",
     "devResetAlertTitle": "Reimpostare onboarding locale?",
@@ -379,7 +388,7 @@
     "releaseTitle": "Real collectors. No stand-ins.",
     "releaseBody": "Friends will open after verified profiles, privacy controls, and server-ranked activity are connected.",
     "releaseCta": "Explore packs",
-    "releasePointProfiles": "Verified profiles replace demo accounts.",
+    "releasePointProfiles": "Only verified profiles appear here.",
     "releasePointActivity": "Activity is sourced from completed live openings.",
     "releasePointSafety": "Blocking, reporting, and privacy controls are required."
   },
@@ -484,7 +493,7 @@
     "language": "Lingua",
     "region": "Regione",
     "regionHint": "Usato per date, valuta e futuri default di spedizione.",
-    "fallbackNote": "Tutte le lingue nella lista hanno traduzione UI completa. La regione continua a controllare date e valuta.",
+    "fallbackNote": "Choose the language used throughout the app. Some release-status messages may remain in English.",
     "save": "Salva",
     "cancel": "Annulla"
   },
@@ -837,7 +846,7 @@
   "packDetails": {
     "back": "Indietro",
     "missingTitle": "Pacchetto non trovato",
-    "missingBody": "Questo pacchetto potrebbe essere terminato o non disponibile.",
+    "missingBody": "We could not find this pack in the current catalog.",
     "guaranteeTitle": "Garantito",
     "priceTitle": "Prezzo",
     "remaining": "{{left}} di {{total}} disponibili",
@@ -1246,5 +1255,11 @@
   },
   "credits": {
     "abbrev": "PTS"
+  },
+  "serviceAvailability": {
+    "eyebrow": "Account service",
+    "title": "Not available in this release",
+    "body": "This connection stays disabled until its provider, data handling, and recovery flow are verified for production.",
+    "status": "CONNECTION / INACTIVE"
   }
 }

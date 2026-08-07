@@ -26,7 +26,12 @@ export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
   const insets = useSafeAreaInsets();
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={onClose}
+    >
       <View style={[styles.root, { paddingTop: insets.top + sg.space.sm, paddingBottom: insets.bottom + sg.space.sm }]}>
         <TerminalBackdrop />
         <View style={styles.header}>
@@ -39,7 +44,13 @@ export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
               <Text style={styles.title}>{title}</Text>
             </View>
           </View>
-          <TouchableOpacity onPress={onClose} hitSlop={12} style={styles.closeBtn} accessibilityRole="button">
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={12}
+            style={styles.closeBtn}
+            accessibilityRole="button"
+            accessibilityLabel={t('legalModal.done')}
+          >
             <Text style={styles.closeLabel}>{t('legalModal.done')}</Text>
             <Ionicons name="close" size={17} color={sg.text} />
           </TouchableOpacity>

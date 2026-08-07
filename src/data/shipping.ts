@@ -16,7 +16,7 @@ import {
 } from '../../shared/api/shipping';
 import { newIdempotencyKey } from '../../shared/api/idempotency';
 import type { SupabaseQueryClient } from '../../shared/api/types';
-import { CREDITS_ARE_MOCK } from '../config/app';
+import { CREDITS_ARE_MOCK, SHIPPING_IS_LIVE } from '../config/app';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { createClerkAuthedClient } from '../lib/supabaseAuthed';
 import {
@@ -29,7 +29,7 @@ export type { FulfillmentResponse, ShippingAddress, ShippingOrder };
 export { addressToPayload };
 
 export function isLiveShippingEnabled(): boolean {
-  return !CREDITS_ARE_MOCK && isSupabaseConfigured;
+  return SHIPPING_IS_LIVE && !CREDITS_ARE_MOCK && isSupabaseConfigured;
 }
 
 export async function getUserShippingAddressesLive(): Promise<ShippingAddress[]> {
@@ -47,6 +47,13 @@ export async function createShippingAddressLive(
   | { ok: false; code: string; message: string }
 > {
   if (!isLiveShippingEnabled()) {
+    if (!__DEV__) {
+      return {
+        ok: false,
+        code: 'SHIPPING_OFFLINE',
+        message: 'Live shipping is not configured',
+      };
+    }
     try {
       await AsyncStorage.setItem(
         SHIPPING_ADDRESS_STORAGE_KEY,
@@ -180,6 +187,14 @@ export async function ensureShippingAddressId(
     const created = await createShippingAddressLive(userId, local);
     if (!created.ok) return created;
     return { ok: true, addressId: created.address.id };
+  }
+
+  if (!__DEV__) {
+    return {
+      ok: false,
+      code: 'SHIPPING_OFFLINE',
+      message: 'Live shipping is not configured',
+    };
   }
 
   const local = await loadShippingAddress();

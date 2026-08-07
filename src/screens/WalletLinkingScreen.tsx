@@ -21,6 +21,8 @@ import { createClerkAuthedClient } from '../lib/supabaseAuthed';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { showUserMessage } from '../utils/showUserMessage';
 import { SgScreen } from '../components/ui/SgScreen';
+import { SgUnavailableService } from '../components/ui';
+import { ADVANCED_ACCOUNT_SERVICES_ARE_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'WalletLinking'>;
 
@@ -48,6 +50,10 @@ export function WalletLinkingScreen() {
 
   React.useEffect(() => {
     if (!isLoaded) return;
+    if (!ADVANCED_ACCOUNT_SERVICES_ARE_LIVE) {
+      setLoaded(true);
+      return;
+    }
 
     void (async () => {
       if (!userId || !isSupabaseConfigured) {
@@ -123,6 +129,10 @@ export function WalletLinkingScreen() {
       setSaving(false);
     }
   }, [address, t, userId]);
+
+  if (!ADVANCED_ACCOUNT_SERVICES_ARE_LIVE) {
+    return <SgUnavailableService code="ACCOUNT / WALLET" />;
+  }
 
   if (!loaded) {
     return (

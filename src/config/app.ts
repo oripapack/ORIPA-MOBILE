@@ -79,6 +79,16 @@ export const MEMBERSHIP_IS_LIVE = process.env.EXPO_PUBLIC_MEMBERSHIP_LIVE === '1
 /** Friends, activity, and leaderboards stay hidden until profiles come from a verified service. */
 export const SOCIAL_IS_LIVE = process.env.EXPO_PUBLIC_SOCIAL_LIVE === '1';
 
+/** Shipping address collection stays off until storage, regions, and fulfillment are verified. */
+export const SHIPPING_IS_LIVE = process.env.EXPO_PUBLIC_SHIPPING_LIVE === '1';
+
+/** Wallet, payout, identity, and provider-linking rows are hidden until their services ship. */
+export const ADVANCED_ACCOUNT_SERVICES_ARE_LIVE =
+  process.env.EXPO_PUBLIC_ADVANCED_ACCOUNT_SERVICES_LIVE === '1';
+
+/** Contact details are shown only when the inbox and response process are actively monitored. */
+export const SUPPORT_IS_LIVE = process.env.EXPO_PUBLIC_SUPPORT_LIVE === '1';
+
 /**
  * When true, seeds one sample incoming friend request so the Friends tab badge + requests UI
  * can be exercised without a backend. Turn off for production (or when `CREDITS_ARE_MOCK` is false).
