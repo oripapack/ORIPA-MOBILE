@@ -3,6 +3,7 @@ import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native
 import { sg } from '../../../tokens/sg';
 
 const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-wide.jpg');
+const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-portrait.jpg');
 
 const JOURNEY = [
   { code: '01', label: 'SELECT' },
@@ -22,12 +23,14 @@ export function SgBannerCarousel() {
 
   return (
     <View style={[styles.board, isWide && styles.boardWide]} accessibilityRole="summary">
-      <Image
-        source={PRODUCT_EXHIBIT_IMAGE}
-        style={styles.productPhoto}
-        resizeMode="cover"
-        accessible={false}
-      />
+      <View style={[styles.productPane, isWide && styles.productPaneWide]}>
+        <Image
+          source={isWide ? PRODUCT_EXHIBIT_IMAGE : PRODUCT_EXHIBIT_PORTRAIT_IMAGE}
+          style={styles.productPhoto}
+          resizeMode="cover"
+          accessible={false}
+        />
+      </View>
 
       <View style={[styles.copyPanel, isWide && styles.copyPanelWide]}>
         <View style={styles.topRow}>
@@ -35,7 +38,7 @@ export function SgBannerCarousel() {
           <View style={styles.status}>
             <View style={[styles.statusDot, isReleasePreview && styles.statusDotPending]} />
             <Text style={[styles.statusText, isReleasePreview && styles.statusTextPending]}>
-              {isReleasePreview ? 'CATALOG SYNC' : 'PREVIEW'}
+              {isReleasePreview ? 'CATALOG PREVIEW' : 'PREVIEW'}
             </Text>
           </View>
         </View>
@@ -59,10 +62,6 @@ export function SgBannerCarousel() {
       <View style={styles.exhibitPlate} pointerEvents="none">
         <Text style={styles.exhibitPlateText}>CASE / 01</Text>
       </View>
-
-      <View style={styles.innerFrame} pointerEvents="none" />
-      <View style={styles.chromeTop} pointerEvents="none" />
-      <View style={styles.chromeBottom} pointerEvents="none" />
     </View>
   );
 }
@@ -74,11 +73,24 @@ const styles = StyleSheet.create({
     marginTop: sg.space.md,
     backgroundColor: sg.bayShell,
     borderWidth: 1,
-    borderColor: sg.ivoryLightSoft,
+    borderColor: sg.lineStrong,
     borderRadius: sg.radius.panel,
     overflow: 'hidden',
   },
-  boardWide: { height: 320 },
+  boardWide: { height: 300 },
+  productPane: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: '36%',
+    overflow: 'hidden',
+    borderLeftWidth: 1,
+    borderLeftColor: sg.lineStrong,
+  },
+  productPaneWide: {
+    width: '48%',
+  },
   productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   copyPanel: {
     width: '64%',
@@ -88,11 +100,17 @@ const styles = StyleSheet.create({
     paddingTop: sg.space.md,
     paddingBottom: 12,
     justifyContent: 'space-between',
-    backgroundColor: sg.functionalScrim,
+    backgroundColor: sg.bg,
     borderRightWidth: 1,
-    borderRightColor: sg.cobaltBorder,
+    borderRightColor: sg.lineStrong,
   },
-  copyPanelWide: { width: '54%', paddingHorizontal: sg.space.lg, paddingTop: sg.space.lg, paddingBottom: sg.space.md },
+  copyPanelWide: {
+    width: '52%',
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.lg,
+    paddingBottom: sg.space.md,
+    borderRightWidth: 0,
+  },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: sg.space.sm },
   route: { flexShrink: 1, fontFamily: sg.font.label, fontSize: 7.5, color: sg.chrome, letterSpacing: 0.95 },
   status: { flexDirection: 'row', alignItems: 'center', gap: 5 },
@@ -134,16 +152,4 @@ const styles = StyleSheet.create({
     borderRadius: sg.radius.tag,
   },
   exhibitPlateText: { fontFamily: sg.font.dataBold, fontSize: 6.5, color: sg.text, letterSpacing: 0.55 },
-  innerFrame: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    bottom: 4,
-    left: 4,
-    borderWidth: 1,
-    borderColor: sg.cobaltBorder,
-    borderRadius: sg.radius.tag,
-  },
-  chromeTop: { position: 'absolute', top: 0, left: 18, right: 18, height: 1, backgroundColor: sg.ivoryLight },
-  chromeBottom: { position: 'absolute', bottom: 0, left: 24, right: 24, height: 1, backgroundColor: sg.cobaltLightStrong },
 });

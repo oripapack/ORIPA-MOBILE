@@ -27,8 +27,6 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
 
   return (
     <View style={styles.card}>
-      <View style={styles.innerFrame} pointerEvents="none" />
-      <View style={styles.chromeTop} pointerEvents="none" />
       <View style={styles.ticketHead}>
         <View>
           <Text style={styles.eyebrow}>DROP / TOKYO SERIES 01</Text>
@@ -37,67 +35,69 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
         <Text style={styles.bay}>BAY A</Text>
       </View>
 
-      <View style={[styles.productStage, isWide && styles.productStageWide]}>
-        <Image
-          source={PRODUCT_EXHIBIT_IMAGE}
-          style={styles.productPhoto}
-          resizeMode="cover"
-          accessible={false}
-        />
-        <View style={styles.photoInnerFrame} pointerEvents="none" />
-        <View style={styles.photoCaption} pointerEvents="none">
-          <Text style={styles.photoCaptionCode}>PH-01</Text>
-          <Text style={styles.photoCaptionText}>PHYSICAL DISPLAY / TOKYO CASE</Text>
+      <View style={[styles.productBody, isWide && styles.productBodyWide]}>
+        <View style={[styles.productStage, isWide && styles.productStageWide]}>
+          <Image
+            source={PRODUCT_EXHIBIT_IMAGE}
+            style={styles.productPhoto}
+            resizeMode="contain"
+            accessible={false}
+          />
+          <View style={styles.photoCaption} pointerEvents="none">
+            <Text style={styles.photoCaptionCode}>PH-01</Text>
+            <Text style={styles.photoCaptionText}>PHYSICAL DISPLAY / TOKYO CASE</Text>
+          </View>
+        </View>
+
+        <View style={[styles.productDetails, isWide && styles.productDetailsWide]}>
+          {releaseBlocked ? (
+            <View style={styles.releaseStatus}>
+              <View style={styles.releaseStatusDot} />
+              <View style={styles.releaseStatusCopy}>
+                <Text style={styles.releaseStatusTitle}>
+                  {loading ? t('packDetails.liveChecking') : t('packDetails.liveUnavailableTitle')}
+                </Text>
+                <Text style={styles.releaseStatusBody}>{t('packDetails.liveUnavailableShort')}</Text>
+              </View>
+            </View>
+          ) : (
+            <>
+              <View style={styles.readout}>
+                <SgData value={pack.creditPrice.toLocaleString()} unit="Points" size="lg" tone="gold" />
+                <SgData
+                  value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
+                  unit="left"
+                  size="sm"
+                  tone={lowStock ? 'success' : 'default'}
+                />
+              </View>
+              <View style={styles.slotsBar}>
+                <View style={[styles.slotsFill, { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` }]} />
+              </View>
+            </>
+          )}
+
+          {topOddsRow ? (
+            <View style={styles.oddsLine}>
+              <Text style={styles.oddsLabel}>{topOddsRow.tier.toUpperCase()} TIER ODDS</Text>
+              <Text style={styles.oddsValue}>{topOddsRow.chance}</Text>
+            </View>
+          ) : null}
+
+          <SgButton
+            label={releaseBlocked ? 'VIEW PACK DETAILS' : t('packDetails.multiOpen.ctaOpenPack')}
+            onPress={releaseBlocked ? goVerify : onOpen}
+            style={styles.cta}
+          />
+
+          {!releaseBlocked ? (
+            <TouchableOpacity onPress={goVerify} style={styles.verifyRow} accessibilityRole="button">
+              <Text style={styles.verifyLabel}>VIEW ODDS + VERIFICATION RECORD</Text>
+              <Text style={styles.verifyArrow}>›</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
-
-      {releaseBlocked ? (
-        <View style={styles.releaseStatus}>
-          <View style={styles.releaseStatusDot} />
-          <View style={styles.releaseStatusCopy}>
-            <Text style={styles.releaseStatusTitle}>
-              {loading ? t('packDetails.liveChecking') : t('packDetails.liveUnavailableTitle')}
-            </Text>
-            <Text style={styles.releaseStatusBody}>{t('packDetails.liveUnavailableShort')}</Text>
-          </View>
-        </View>
-      ) : (
-        <>
-          <View style={styles.readout}>
-            <SgData value={pack.creditPrice.toLocaleString()} unit="Points" size="lg" tone="gold" />
-            <SgData
-              value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
-              unit="left"
-              size="sm"
-              tone={lowStock ? 'success' : 'default'}
-            />
-          </View>
-          <View style={styles.slotsBar}>
-            <View style={[styles.slotsFill, { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` }]} />
-          </View>
-        </>
-      )}
-
-      {topOddsRow ? (
-        <View style={styles.oddsLine}>
-          <Text style={styles.oddsLabel}>{topOddsRow.tier.toUpperCase()} TIER ODDS</Text>
-          <Text style={styles.oddsValue}>{topOddsRow.chance}</Text>
-        </View>
-      ) : null}
-
-      <SgButton
-        label={releaseBlocked ? t('packDetails.ctaDisabled') : t('packDetails.multiOpen.ctaOpenPack')}
-        onPress={onOpen}
-        disabled={releaseBlocked}
-        style={styles.cta}
-      />
-
-      <TouchableOpacity onPress={goVerify} style={styles.verifyRow} accessibilityRole="button">
-        <Text style={styles.verifyLabel}>
-          {releaseBlocked ? 'VIEW PACK STATUS + DETAILS' : 'VIEW ODDS + VERIFICATION RECORD'}
-        </Text>
-        <Text style={styles.verifyArrow}>›</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -110,22 +110,18 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.lineStrong,
-    padding: 10,
-    borderTopColor: sg.ivoryLightSoft,
+    padding: 12,
     ...sg.shadowHero,
   },
-  innerFrame: {
-    position: 'absolute', top: 4, right: 4, bottom: 4, left: 4,
-    borderWidth: 1, borderColor: sg.cobaltBorder, borderRadius: sg.radius.tag,
-  },
-  chromeTop: { position: 'absolute', top: 0, left: sg.space.lg, right: sg.space.lg, height: 1, backgroundColor: sg.ivoryLight },
   ticketHead: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
-    paddingHorizontal: 4, paddingBottom: 10,
+    paddingHorizontal: 2, paddingBottom: 12,
   },
   eyebrow: { fontFamily: sg.font.label, fontSize: 8, letterSpacing: 1, color: sg.goldHi },
   title: { fontFamily: sg.font.display, fontSize: 20, lineHeight: 22, letterSpacing: -0.6, color: sg.text, marginTop: 3 },
   bay: { fontFamily: sg.font.dataBold, fontSize: 9, color: sg.muted, borderWidth: 1, borderColor: sg.line, padding: 5 },
+  productBody: { gap: 12 },
+  productBodyWide: { flexDirection: 'row', alignItems: 'stretch' },
   productStage: {
     height: 216,
     backgroundColor: sg.bg,
@@ -134,12 +130,8 @@ const styles = StyleSheet.create({
     borderRadius: sg.radius.tag,
     overflow: 'hidden',
   },
-  productStageWide: { height: 390 },
+  productStageWide: { flex: 1.6, height: 310 },
   productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
-  photoInnerFrame: {
-    position: 'absolute', top: 5, right: 5, bottom: 5, left: 5,
-    borderWidth: 1, borderColor: sg.ivoryLightSoft, borderRadius: sg.radius.tag,
-  },
   photoCaption: {
     position: 'absolute', left: 12, bottom: 12,
     paddingHorizontal: 8, paddingVertical: 6,
@@ -149,6 +141,16 @@ const styles = StyleSheet.create({
   },
   photoCaptionCode: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.goldHi, fontVariant: [...sg.numeric] },
   photoCaptionText: { marginTop: 2, fontFamily: sg.font.label, fontSize: 6.5, color: sg.text, letterSpacing: 0.55 },
+  productDetails: { gap: 0 },
+  productDetailsWide: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 12,
+    backgroundColor: sg.surface2,
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: sg.radius.tag,
+  },
   readout: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 12, paddingHorizontal: 4 },
   slotsBar: { height: 3, backgroundColor: sg.line, marginHorizontal: 4, marginTop: 8 },
   slotsFill: { height: 3, backgroundColor: sg.success },

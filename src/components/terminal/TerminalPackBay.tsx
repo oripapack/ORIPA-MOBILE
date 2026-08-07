@@ -1,11 +1,12 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import type { RarityTier } from '../../../shared/types/pack';
 import { sg } from '../../tokens/sg';
 
 type PackSize = 'sm' | 'md' | 'lg' | 'hero';
 
 const PRODUCT_EXHIBIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-wide.jpg');
+const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-portrait.jpg');
 
 export function TerminalPackBay({
   name,
@@ -20,6 +21,9 @@ export function TerminalPackBay({
   size?: PackSize;
   showRail?: boolean;
 }) {
+  const { width } = useWindowDimensions();
+  const isWide = width >= 760;
+
   return (
     <View
       style={[styles.shell, size === 'sm' && styles.shellSmall]}
@@ -39,12 +43,11 @@ export function TerminalPackBay({
         ]}
       >
         <Image
-          source={PRODUCT_EXHIBIT_IMAGE}
+          source={isWide ? PRODUCT_EXHIBIT_IMAGE : PRODUCT_EXHIBIT_PORTRAIT_IMAGE}
           style={styles.productPhoto}
-          resizeMode="cover"
+          resizeMode="contain"
           accessible={false}
         />
-        <View style={styles.innerFrame} pointerEvents="none" />
         {showRail ? (
           <View style={styles.casePlate} pointerEvents="none">
             <Text style={styles.casePlateCode}>CASE / 01</Text>
@@ -87,10 +90,6 @@ const styles = StyleSheet.create({
   innerLarge: { minHeight: 320 },
   innerHero: { minHeight: 360 },
   productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
-  innerFrame: {
-    position: 'absolute', top: 5, right: 5, bottom: 5, left: 5,
-    borderWidth: 1, borderColor: sg.ivoryLightSoft, borderRadius: sg.radius.tag,
-  },
   casePlate: {
     position: 'absolute', left: sg.space.sm, bottom: sg.space.sm,
     paddingHorizontal: sg.space.sm, paddingVertical: 6,

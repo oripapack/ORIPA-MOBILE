@@ -85,17 +85,19 @@ export function HomeScreen() {
   const ListHeader = (
     <>
       <SgBannerCarousel />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-        {VISIBLE_FILTERS.map((f) => (
-          <TouchableOpacity
-            key={f.key}
-            style={[styles.chip, filter === f.key && styles.chipActive]}
-            onPress={() => setFilter(f.key)}
-          >
-            <Text style={[styles.chipText, filter === f.key && styles.chipTextActive]}>{f.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      {VISIBLE_FILTERS.length > 1 ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+          {VISIBLE_FILTERS.map((f) => (
+            <TouchableOpacity
+              key={f.key}
+              style={[styles.chip, filter === f.key && styles.chipActive]}
+              onPress={() => setFilter(f.key)}
+            >
+              <Text style={[styles.chipText, filter === f.key && styles.chipTextActive]}>{f.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      ) : null}
       <SgFeaturedPackCard pack={featuredPack} onOpen={onOpenFeatured} />
       <View style={styles.shelfSpacer} />
     </>

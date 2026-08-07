@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View, Text, Pressable, StyleSheet } from 'react-native';
+import { Image, View, Text, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import type { Pack } from '../../../data/mockPacks';
 import { sg } from '../../../tokens/sg';
 import { SgData } from '../../ui';
@@ -9,6 +9,8 @@ import { usePackOdds } from '../../../hooks/usePackOdds';
 const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-wide.jpg');
 
 export function SgShelfPackTile({ pack }: { pack: Pack }) {
+  const { width } = useWindowDimensions();
+  const isWide = width >= 760;
   const { odds, loading } = usePackOdds(pack);
   const releaseBlocked = !__DEV__ && !odds.isLive;
   const fraction = pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1);
@@ -34,20 +36,19 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
           <Text style={styles.online}>READY</Text>
         )}
       </View>
-      <View style={styles.visual}>
+      <View style={[styles.visual, isWide && styles.visualWide]}>
         <Image
           source={PRODUCT_EXHIBIT_IMAGE}
           style={styles.productPhoto}
           resizeMode="cover"
           accessible={false}
         />
-        <View style={styles.visualFrame} pointerEvents="none" />
       </View>
       <Text style={styles.name} numberOfLines={2}>{pack.title}</Text>
       {releaseBlocked ? (
         <View style={styles.syncRow}>
           <View style={styles.syncDot} />
-          <Text style={styles.syncText}>{loading ? 'CHECKING LIVE DATA' : 'PACK DATA UNAVAILABLE'}</Text>
+          <Text style={styles.syncText}>{loading ? 'CHECKING AVAILABILITY' : 'OPENING UNAVAILABLE'}</Text>
         </View>
       ) : (
         <View style={styles.metaRow}>
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
   online: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.success, letterSpacing: 0.55 },
   waiting: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.warning, letterSpacing: 0.55 },
   visual: { height: 162, marginTop: 6, backgroundColor: sg.bayShell, borderWidth: 1, borderColor: sg.lineStrong, overflow: 'hidden' },
+  visualWide: { height: 260 },
   productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
-  visualFrame: { position: 'absolute', top: 4, right: 4, bottom: 4, left: 4, borderWidth: 1, borderColor: sg.ivoryLightSoft, borderRadius: sg.radius.tag },
   name: { fontFamily: sg.font.bodyBold, fontSize: 13, lineHeight: 16, color: sg.text, marginTop: 9, minHeight: 32 },
   metaRow: { gap: 3, marginTop: 6 },
   syncRow: {

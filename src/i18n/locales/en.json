@@ -293,8 +293,8 @@
     "bulkStockTitle": "Not enough stock",
     "bulkStockBody": "This pack doesn’t have {{count}} pulls left in the demo catalog.",
     "liveChecking": "Checking",
-    "liveUnavailableShort": "Live data required",
-    "liveUnavailableTitle": "Pack temporarily unavailable",
+    "liveUnavailableShort": "This pack can't be opened right now.",
+    "liveUnavailableTitle": "Opening unavailable",
     "liveUnavailableBody": "Opening stays disabled until current inventory and disclosed odds can be verified."
   },
   "phonePicker": {
