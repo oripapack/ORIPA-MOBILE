@@ -426,7 +426,12 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
   scroll: { ...screenScroll },
-  scrollContent: { paddingBottom: sg.space.xl },
+  scrollContent: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingBottom: sg.space.xl,
+  },
   hero: { alignItems: 'center', paddingTop: sg.space.sm, paddingHorizontal: sg.space.md },
   terminalLabelRow: { alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 8 },
   terminalLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.9 },
@@ -587,7 +592,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: sg.line,
   },
-  footerStack: { gap: sg.space.sm },
+  footerStack: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    gap: sg.space.sm,
+  },
   cta: {
     borderRadius: sg.radius.btn,
     backgroundColor: sg.gold,
