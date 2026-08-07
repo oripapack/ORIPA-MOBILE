@@ -147,7 +147,11 @@ export function AccountScreen() {
               <Text style={styles.membershipValue} numberOfLines={1}>
                 {simulatedMemberTier
                   ? t(`membership.badge_${simulatedMemberTier}`)
-                  : t('membership.navTitle')}
+                  : [
+                      t('membership.tierName_silver'),
+                      t('membership.tierName_gold'),
+                      t('membership.tierName_black'),
+                    ].join(' / ')}
               </Text>
             </View>
           </View>

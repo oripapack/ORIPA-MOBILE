@@ -7,11 +7,11 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { useTranslation } from 'react-i18next';
+import { TerminalBackdrop } from '../terminal/TerminalBackdrop';
 import {
   LANGUAGE_OPTIONS,
   REGION_OPTIONS,
@@ -53,10 +53,19 @@ export function LanguageRegionModal({
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <View style={[styles.root, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom + spacing.base }]}>
+      <View style={[styles.root, { paddingTop: insets.top + sg.space.sm, paddingBottom: insets.bottom + sg.space.md }]}>
+        <TerminalBackdrop />
         <View style={styles.header}>
-          <Text style={styles.title}>{t('locale.title')}</Text>
-          <TouchableOpacity onPress={onClose} hitSlop={12}>
+          <View style={styles.headerTitleRow}>
+            <View style={styles.headerIcon}>
+              <Ionicons name="globe-outline" size={19} color={sg.goldHi} />
+            </View>
+            <View>
+              <Text style={styles.headerKicker}>TOKYO TERMINAL / REGION</Text>
+              <Text style={styles.title}>{t('locale.title')}</Text>
+            </View>
+          </View>
+          <TouchableOpacity onPress={onClose} hitSlop={12} style={styles.cancelBtn}>
             <Text style={styles.cancel}>{t('locale.cancel')}</Text>
           </TouchableOpacity>
         </View>
@@ -75,7 +84,9 @@ export function LanguageRegionModal({
                 <Text style={[styles.rowLabel, draftLang === opt.code && styles.rowLabelSelected]}>
                   {opt.label}
                 </Text>
-                {draftLang === opt.code ? <Text style={styles.check}>✓</Text> : null}
+                {draftLang === opt.code ? (
+                  <Ionicons name="checkmark" size={18} color={sg.goldHi} />
+                ) : null}
               </TouchableOpacity>
             ))}
           </View>
@@ -93,7 +104,9 @@ export function LanguageRegionModal({
                 <Text style={[styles.rowLabel, draftRegion === opt.code && styles.rowLabelSelected]}>
                   {t(`regions.${opt.code}`)}
                 </Text>
-                {draftRegion === opt.code ? <Text style={styles.check}>✓</Text> : null}
+                {draftRegion === opt.code ? (
+                  <Ionicons name="checkmark" size={18} color={sg.goldHi} />
+                ) : null}
               </TouchableOpacity>
             ))}
           </View>
@@ -101,6 +114,7 @@ export function LanguageRegionModal({
 
         <TouchableOpacity style={styles.doneBtn} onPress={apply} activeOpacity={0.85}>
           <Text style={styles.doneText}>{t('locale.save')}</Text>
+          <Ionicons name="arrow-forward" size={18} color={sg.onGold} />
         </TouchableOpacity>
       </View>
     </Modal>
@@ -116,86 +130,132 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.sm,
+    gap: sg.space.sm,
+    minHeight: 68,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.sm,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
     backgroundColor: sg.surface,
   },
+  headerTitleRow: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: sg.space.sm,
+  },
+  headerIcon: {
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: sg.cobaltWash,
+    borderWidth: 1,
+    borderColor: sg.cobaltBorder,
+  },
+  headerKicker: {
+    fontFamily: sg.font.label,
+    fontSize: 8,
+    lineHeight: 11,
+    letterSpacing: 0.9,
+    color: sg.muted,
+  },
   title: {
-    fontSize: fontSize.lg,
-    fontFamily: brandFont.black,
+    marginTop: 1,
+    fontSize: 19,
+    lineHeight: 22,
+    fontFamily: sg.font.display,
     color: sg.text,
   },
+  cancelBtn: {
+    minHeight: 38,
+    justifyContent: 'center',
+    paddingHorizontal: 11,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    backgroundColor: sg.surface2,
+  },
   cancel: {
-    fontSize: fontSize.base,
-    fontFamily: brandFont.semibold,
-    color: sg.muted,
+    fontSize: 13,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   scroll: {
-    padding: spacing.base,
-    paddingBottom: spacing.xl,
+    width: '100%',
+    maxWidth: 720,
+    alignSelf: 'center',
+    padding: sg.space.md,
+    paddingBottom: sg.space.xl,
   },
   sectionLabel: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    fontFamily: sg.font.label,
     color: sg.muted,
-    letterSpacing: 1,
+    letterSpacing: sg.type.label.letterSpacing,
     textTransform: 'uppercase',
-    marginBottom: spacing.sm,
-    marginTop: spacing.sm,
+    marginBottom: sg.space.sm,
+    marginTop: sg.space.sm,
   },
   sectionHint: {
-    fontSize: fontSize.xs,
+    fontSize: 12,
+    fontFamily: sg.font.body,
     color: sg.muted,
-    marginBottom: spacing.sm,
+    marginBottom: sg.space.sm,
     lineHeight: 18,
   },
   group: {
     backgroundColor: sg.surface,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.panel,
     borderWidth: 1,
     borderColor: sg.line,
     overflow: 'hidden',
-    marginBottom: spacing.base,
+    marginBottom: sg.space.md,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.base,
+    minHeight: 52,
+    paddingVertical: 12,
+    paddingHorizontal: sg.space.md,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
   },
   rowSelected: {
-    backgroundColor: '#FFF1F2',
+    backgroundColor: sg.cobaltWashStrong,
+    borderLeftWidth: 3,
+    borderLeftColor: sg.gold,
+    paddingLeft: sg.space.md - 3,
   },
   rowLabel: {
-    fontSize: fontSize.base,
+    fontSize: 15,
     color: sg.text,
-    fontFamily: brandFont.medium,
+    fontFamily: sg.font.bodyMedium,
   },
   rowLabelSelected: {
-    fontFamily: brandFont.bold,
-    color: sg.error,
-  },
-  check: {
-    fontSize: fontSize.lg,
-    color: sg.error,
-    fontFamily: brandFont.bold,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
   },
   doneBtn: {
-    marginHorizontal: spacing.base,
-    height: 52,
-    borderRadius: radius.lg,
+    width: 'auto',
+    maxWidth: 688,
+    alignSelf: 'stretch',
+    marginHorizontal: sg.space.md,
+    minHeight: sg.component.buttonPrimary.height,
+    borderRadius: sg.radius.btn,
     backgroundColor: sg.gold,
+    borderWidth: 1,
+    borderColor: sg.goldHi,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: sg.space.sm,
   },
   doneText: {
-    color: sg.text,
-    fontSize: fontSize.base,
-    fontFamily: brandFont.bold,
+    color: sg.onGold,
+    fontSize: 15,
+    fontFamily: sg.font.bodyBold,
   },
 });

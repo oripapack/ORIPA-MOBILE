@@ -51,8 +51,9 @@ screen-local accent colors.
   and Vault action
 - Opening: interactive 3D `TOKYO PACK 01`, code-native safety fallback, skip,
   reveal record, and direct Result handoff
-- Shop, Vault, Friends, Player, auth, membership, and supporting sheets inherit
-  the same palette, typography, panel geometry, and action hierarchy
+- Shop, Vault, Friends, Player, auth, membership, Help Center, legal documents,
+  locale selection, and supporting sheets inherit the same palette, typography,
+  panel geometry, and action hierarchy
 
 ## Asset and behavior boundaries
 
