@@ -3,17 +3,36 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { sg } from '../../../tokens/sg';
 import { SgCard, SgData, SgSectionHeader } from '../../ui';
 
-/**
- * Fairness record block (docs/design-system-n2.md — odds ledger / audit
- * exposure is part of the trust chassis, §10/§12):
- * Server commitment (hash prefix) / Client seed / Opening # / Verify →,
- * plus the draw-method statement. Hashes are data-face numerals (§4).
- *
- * Values are MOCK placeholders until the provably-fair backend lands
- * (shared/api commit–reveal flow) — the UI frame ships first so the trust
- * architecture is visible and the wiring point is obvious.
- */
-export function SgFairnessRecord({ onVerify }: { onVerify?: () => void }) {
+export type FairnessRecordData = {
+  serverCommitment: string;
+  clientSeed: string;
+  openingNumber: string;
+};
+
+/** Trust chassis with no fabricated identifiers. A record appears only when
+ * the live opening response supplies all commit–reveal fields. */
+export function SgFairnessRecord({
+  record,
+  onVerify,
+}: {
+  record?: FairnessRecordData;
+  onVerify?: () => void;
+}) {
+  if (!record) {
+    return (
+      <SgCard>
+        <SgSectionHeader title="Verification record" />
+        <View style={styles.pendingHeader}>
+          <View style={styles.pendingDot} />
+          <Text style={styles.pendingLabel}>CREATED AFTER A LIVE OPENING</Text>
+        </View>
+        <Text style={styles.method}>
+          The commitment, seed, and opening number will appear here with a completed live pull.
+        </Text>
+      </SgCard>
+    );
+  }
+
   return (
     <SgCard>
       <SgSectionHeader title="Fairness record" />
@@ -21,9 +40,9 @@ export function SgFairnessRecord({ onVerify }: { onVerify?: () => void }) {
         Draw method: provably-fair commit–reveal. The server commits to a hash
         before you open; verify any pull afterwards.
       </Text>
-      <Row label="Server commitment" value="a41f8c…9c2e" />
-      <Row label="Client seed" value="7b03aa…d114" />
-      <Row label="Opening #" value="287" />
+      <Row label="Server commitment" value={record.serverCommitment} />
+      <Row label="Client seed" value={record.clientSeed} />
+      <Row label="Opening #" value={record.openingNumber} />
       <TouchableOpacity onPress={onVerify} style={styles.verify} accessibilityRole="button">
         <Text style={styles.verifyText}>VERIFY →</Text>
       </TouchableOpacity>
@@ -48,6 +67,25 @@ const styles = StyleSheet.create({
     color: sg.muted,
     marginTop: sg.space.sm,
     marginBottom: sg.space.xs,
+  },
+  pendingHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: sg.space.sm,
+    marginTop: sg.space.md,
+  },
+  pendingDot: {
+    width: 7,
+    height: 7,
+    borderRadius: sg.radius.pill,
+    backgroundColor: sg.warning,
+  },
+  pendingLabel: {
+    flex: 1,
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 0.9,
+    color: sg.warning,
   },
   row: {
     flexDirection: 'row',

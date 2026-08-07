@@ -43,6 +43,10 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: 'all', label: 'All' },
 ];
 
+const VISIBLE_FILTERS: { key: FilterKey; label: string }[] = __DEV__
+  ? FILTERS
+  : [{ key: 'all', label: 'All packs' }];
+
 /** Filter threshold — broader than the 10% stock promotion so the chip is useful. */
 const LOW_STOCK_FILTER_FRACTION = 0.25;
 
@@ -56,7 +60,7 @@ export function HomeScreen() {
   const { requireAuth } = useRequireAuth();
   const openPack = useAppStore((s) => s.openPack);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [filter, setFilter] = useState<FilterKey>('featured');
+  const [filter, setFilter] = useState<FilterKey>(__DEV__ ? 'featured' : 'all');
 
   const featuredPack = useMemo(
     () => mockPacks.find((p) => p.isFeatured && p.id === 'platinum-legacy') ?? mockPacks.find((p) => p.isFeatured) ?? mockPacks[0]!,
@@ -82,7 +86,7 @@ export function HomeScreen() {
     <>
       <SgBannerCarousel />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-        {FILTERS.map((f) => (
+        {VISIBLE_FILTERS.map((f) => (
           <TouchableOpacity
             key={f.key}
             style={[styles.chip, filter === f.key && styles.chipActive]}

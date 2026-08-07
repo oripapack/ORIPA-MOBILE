@@ -42,7 +42,7 @@ import {
   type LeaderboardEntry,
 } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
-import { PUBLIC_WEB_ORIGIN } from '../config/app';
+import { PUBLIC_WEB_ORIGIN, SOCIAL_IS_LIVE } from '../config/app';
 import { showUserMessage } from '../utils/showUserMessage';
 import { AppHeader } from '../components/shared/AppHeader';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
@@ -240,6 +240,83 @@ export function FriendsScreen() {
     setQrOpen(false);
     reopenAddSheetIfNeeded();
   }, [reopenAddSheetIfNeeded]);
+
+  if (!__DEV__ && !SOCIAL_IS_LIVE) {
+    return (
+      <SgScreen>
+        <AppHeader onSearch={() => setSearchOpen(true)} />
+        <View style={styles.safeTop}>
+          <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+            <Text style={styles.pageTitle}>{t('friends.title')}</Text>
+            <VaultFramedCard style={styles.guestAccessCard} contentStyle={styles.guestAccessInner}>
+              <Text style={styles.guestBannerTitle}>{t('friends.releaseEyebrow')}</Text>
+              <Text style={styles.guestAccessTitle}>{t('friends.releaseTitle')}</Text>
+              <Text style={styles.guestBannerBody}>{t('friends.releaseBody')}</Text>
+              <PrimaryButton
+                label={t('friends.releaseCta')}
+                onPress={() => {
+                  if (navigationRef.isReady()) {
+                    navigationRef.navigate('MainTabs', { screen: 'Home' });
+                  }
+                }}
+              />
+            </VaultFramedCard>
+
+            <View style={styles.guestFeatureList}>
+              <GuestFriendFeature code="01" text={t('friends.releasePointProfiles')} />
+              <GuestFriendFeature code="02" text={t('friends.releasePointActivity')} />
+              <GuestFriendFeature code="03" text={t('friends.releasePointSafety')} isLast />
+            </View>
+          </ScrollView>
+        </View>
+        <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
+      </SgScreen>
+    );
+  }
+
+  if (isGuest) {
+    return (
+      <SgScreen>
+        <AppHeader onSearch={() => setSearchOpen(true)} />
+        <View style={styles.safeTop}>
+          <ScrollView
+            contentContainerStyle={styles.scroll}
+            showsVerticalScrollIndicator={false}
+            refreshControl={refreshControl}
+          >
+            <Text style={styles.pageTitle}>{t('friends.title')}</Text>
+            <VaultFramedCard style={styles.guestAccessCard} contentStyle={styles.guestAccessInner}>
+              <Text style={styles.guestBannerTitle}>{t('onboarding.friendsGuestTitle')}</Text>
+              <Text style={styles.guestAccessTitle}>{t('friends.guestAccessTitle')}</Text>
+              <Text style={styles.guestBannerBody}>{t('friends.guestAccessBody')}</Text>
+              <TouchableOpacity
+                style={styles.guestSignInCta}
+                onPress={openAdd}
+                accessibilityRole="button"
+                accessibilityLabel={t('account.guestSignInCta')}
+              >
+                <Text style={styles.guestSignInCtaText}>{t('account.guestSignInCta')}</Text>
+                <Ionicons name="arrow-forward" size={19} color={sg.onGold} />
+              </TouchableOpacity>
+            </VaultFramedCard>
+
+            <View style={styles.guestFeatureList}>
+              <GuestFriendFeature code="01" text={t('friends.guestFeatureActivity')} />
+              <GuestFriendFeature code="02" text={t('friends.guestFeatureQr')} />
+              <GuestFriendFeature code="03" text={t('friends.guestFeatureLeaderboard')} isLast />
+            </View>
+
+            <View style={styles.socialFooter}>
+              <Text style={styles.socialFooterTitle}>{t('friends.followFooterTitle')}</Text>
+              <Text style={styles.socialFooterSub}>{t('friends.followFooterSub')}</Text>
+              <SocialFollowRow compact />
+            </View>
+          </ScrollView>
+        </View>
+        <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
+      </SgScreen>
+    );
+  }
 
   return (
     <SgScreen>
@@ -471,6 +548,15 @@ export function FriendsScreen() {
   );
 }
 
+function GuestFriendFeature({ code, text, isLast = false }: { code: string; text: string; isLast?: boolean }) {
+  return (
+    <View style={[styles.guestFeatureRow, !isLast && styles.guestFeatureDivider]}>
+      <Text style={styles.guestFeatureCode}>{code}</Text>
+      <Text style={styles.guestFeatureText}>{text}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   safeTop: {
     flex: 1,
@@ -495,6 +581,69 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.regular,
     color: sg.muted,
     lineHeight: 20,
+  },
+  guestAccessCard: {
+    marginTop: spacing.lg,
+    marginBottom: spacing.lg,
+  },
+  guestAccessInner: {
+    padding: spacing.lg,
+  },
+  guestAccessTitle: {
+    fontSize: fontSize.lg,
+    lineHeight: 24,
+    fontFamily: sg.font.display,
+    color: sg.text,
+    marginBottom: spacing.sm,
+  },
+  guestSignInCta: {
+    minHeight: 52,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.base,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: sg.gold,
+    borderWidth: 1,
+    borderColor: sg.goldHi,
+    borderRadius: sg.radius.btn,
+  },
+  guestSignInCtaText: {
+    fontSize: fontSize.sm,
+    fontFamily: sg.font.label,
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
+    color: sg.onGold,
+  },
+  guestFeatureList: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: sg.line,
+    marginBottom: spacing.xl,
+  },
+  guestFeatureRow: {
+    minHeight: 58,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  guestFeatureDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: sg.line,
+  },
+  guestFeatureCode: {
+    width: 28,
+    fontFamily: sg.font.dataBold,
+    fontSize: 10,
+    color: sg.goldHi,
+    letterSpacing: 0.7,
+  },
+  guestFeatureText: {
+    flex: 1,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: fontSize.sm,
+    lineHeight: 20,
+    color: sg.text,
   },
   headerRow: {
     flexDirection: 'row',

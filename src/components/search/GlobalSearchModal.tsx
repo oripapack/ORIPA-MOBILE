@@ -17,7 +17,6 @@ import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { mockPacks, type Pack } from '../../data/mockPacks';
 import { getLocalizedPackFields } from '../../i18n/packCopy';
-import { useRequireAuth } from '../../hooks/useRequireAuth';
 import { navigationRef } from '../../navigation/navigationRef';
 
 type Props = {
@@ -28,7 +27,7 @@ type Props = {
 export function GlobalSearchModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const { requireAuth } = useRequireAuth();
+  const catalogIsPreview = !__DEV__;
 
   const inputRef = useRef<TextInput>(null);
   const [query, setQuery] = useState('');
@@ -38,11 +37,12 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
     if (!q) return [];
     return mockPacks.filter((p) => {
       const loc = getLocalizedPackFields(p, t);
-      const hay =
-        `${loc.title} ${loc.valueDescription} ${loc.guaranteeText} ${p.tags.join(' ')}`.toLowerCase();
+      const hay = catalogIsPreview
+        ? `${loc.title} ${p.tcgCategory ?? ''} ${p.category}`.toLowerCase()
+        : `${loc.title} ${loc.valueDescription} ${loc.guaranteeText} ${p.tags.join(' ')}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [query, t]);
+  }, [catalogIsPreview, query, t]);
 
   const close = () => {
     Keyboard.dismiss();
@@ -57,15 +57,15 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
     return (
       <TouchableOpacity
         style={styles.row}
-        onPress={() =>
-          requireAuth(() => {
-            close();
-            if (navigationRef.isReady()) {
-              navigationRef.navigate('PackDetails', { packId: String(item.id) });
-            }
-          })
-        }
+        onPress={() => {
+          close();
+          if (navigationRef.isReady()) {
+            navigationRef.navigate('PackDetails', { packId: String(item.id) });
+          }
+        }}
         activeOpacity={0.9}
+        accessibilityRole="button"
+        accessibilityLabel={t('search.resultA11y', { title: loc.title })}
       >
         <View style={styles.rowTop}>
           <Text style={styles.title} numberOfLines={1}>
@@ -73,15 +73,17 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
           </Text>
           <View style={styles.pricePill}>
             <Text style={styles.priceText}>
-              {item.creditPrice} {t('packCard.credits')}
+              {catalogIsPreview
+                ? t('search.releaseSyncLabel')
+                : `${item.creditPrice} ${t('packCard.credits')}`}
             </Text>
           </View>
         </View>
         <Text style={styles.sub} numberOfLines={2}>
-          {loc.valueDescription}
+          {catalogIsPreview ? t('search.releaseSyncBody') : loc.valueDescription}
         </Text>
         <Text style={styles.hint} numberOfLines={1}>
-          {loc.guaranteeText}
+          {catalogIsPreview ? t('search.releaseSyncHint') : loc.guaranteeText}
         </Text>
       </TouchableOpacity>
     );
@@ -97,7 +99,13 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
       <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{t('search.title')}</Text>
-          <TouchableOpacity style={styles.closeBtn} onPress={close} activeOpacity={0.85}>
+          <TouchableOpacity
+            style={styles.closeBtn}
+            onPress={close}
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.close')}
+          >
             <Ionicons name="close" size={22} color={sg.text} />
           </TouchableOpacity>
         </View>
@@ -117,9 +125,16 @@ export function GlobalSearchModal({ visible, onClose }: Props) {
             clearButtonMode="never"
             autoCorrect={false}
             autoCapitalize="none"
+            accessibilityLabel={t('search.placeholder')}
           />
           {query.trim().length > 0 ? (
-            <TouchableOpacity onPress={clear} style={styles.clearBtn} activeOpacity={0.85}>
+            <TouchableOpacity
+              onPress={clear}
+              style={styles.clearBtn}
+              activeOpacity={0.85}
+              accessibilityRole="button"
+              accessibilityLabel={t('marketplace.clearSearchA11y')}
+            >
               <Ionicons name="close-circle" size={18} color={sg.muted} />
             </TouchableOpacity>
           ) : null}

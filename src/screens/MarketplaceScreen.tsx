@@ -16,6 +16,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader } from '../components/shared/AppHeader';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 import { SgScreen } from '../components/ui';
 import { ListingCard } from '../components/marketplace/ListingCard';
 import { WhyChoosePullHub } from '../components/marketplace/WhyChoosePullHub';
@@ -41,6 +42,7 @@ import { ShopCoach } from '../components/coach/ShopCoach';
 import { useAppStore } from '../store/useAppStore';
 import { getAllCardMarketListings } from '../lib/friendVaultShop';
 import type { PullRarityTier } from '../data/mockUser';
+import { MARKETPLACE_IS_LIVE } from '../config/app';
 
 type MarketTab = 'packs' | 'cards';
 
@@ -77,6 +79,51 @@ const SORT_IDS: MarketplaceSortId[] = [
 const REGION_FILTER_IDS: MarketplaceRegionFilterId[] = ['all', 'us', 'japan', 'europe'];
 
 export function MarketplaceScreen() {
+  if (MARKETPLACE_IS_LIVE || __DEV__) return <MarketplaceExperience />;
+  return <MarketplaceUnavailable />;
+}
+
+function MarketplaceUnavailable() {
+  const { t } = useTranslation();
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const goPacks = () => {
+    if (navigationRef.isReady()) navigationRef.navigate('MainTabs', { screen: 'Home' });
+  };
+
+  return (
+    <SgScreen>
+      <AppHeader onSearch={() => setSearchOpen(true)} />
+      <ScrollView contentContainerStyle={styles.unavailablePage} showsVerticalScrollIndicator={false}>
+        <Text style={styles.unavailableEyebrow}>{t('marketplace.unavailableEyebrow')}</Text>
+        <Text style={styles.unavailableTitle}>{t('marketplace.unavailableTitle')}</Text>
+        <Text style={styles.unavailableBody}>{t('marketplace.unavailableBody')}</Text>
+
+        <View style={styles.unavailableTerminal}>
+          <View style={styles.unavailableStatusRow}>
+            <Text style={styles.unavailableStatusCode}>SHOP / INVENTORY</Text>
+            <Text style={styles.unavailableStatus}>VERIFYING</Text>
+          </View>
+          <View style={styles.unavailableRail} />
+          <Text style={styles.unavailableTerminalCopy}>{t('marketplace.unavailableStatusBody')}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.unavailableCta}
+          onPress={goPacks}
+          accessibilityRole="button"
+          accessibilityLabel={t('marketplace.unavailableCta')}
+        >
+          <Text style={styles.unavailableCtaText}>{t('marketplace.unavailableCta')}</Text>
+          <Ionicons name="arrow-forward" size={20} color={sg.onGold} />
+        </TouchableOpacity>
+      </ScrollView>
+      <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
+    </SgScreen>
+  );
+}
+
+function MarketplaceExperience() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { requireAuth } = useRequireAuth();
@@ -614,6 +661,95 @@ export function MarketplaceScreen() {
 }
 
 const styles = StyleSheet.create({
+  unavailablePage: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.xxl,
+    paddingBottom: 120,
+  },
+  unavailableEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1.25,
+    color: sg.goldHi,
+    marginBottom: spacing.sm,
+  },
+  unavailableTitle: {
+    maxWidth: 360,
+    fontFamily: sg.font.display,
+    fontSize: 32,
+    lineHeight: 34,
+    letterSpacing: -0.9,
+    color: sg.text,
+    marginBottom: spacing.md,
+  },
+  unavailableBody: {
+    maxWidth: 380,
+    fontFamily: sg.font.body,
+    fontSize: fontSize.base,
+    lineHeight: 23,
+    color: sg.muted,
+  },
+  unavailableTerminal: {
+    marginTop: spacing.xxl,
+    padding: spacing.base,
+    minHeight: 150,
+    justifyContent: 'space-between',
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    borderRadius: sg.radius.panel,
+  },
+  unavailableStatusRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  unavailableStatusCode: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 0.9,
+    color: sg.chrome,
+  },
+  unavailableStatus: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 0.9,
+    color: sg.warning,
+  },
+  unavailableRail: {
+    height: 3,
+    marginVertical: spacing.lg,
+    backgroundColor: sg.line,
+    borderLeftWidth: 72,
+    borderLeftColor: sg.warning,
+  },
+  unavailableTerminalCopy: {
+    fontFamily: sg.font.bodyMedium,
+    fontSize: fontSize.sm,
+    lineHeight: 20,
+    color: sg.text,
+  },
+  unavailableCta: {
+    minHeight: 54,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.base,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: sg.gold,
+    borderWidth: 1,
+    borderColor: sg.goldHi,
+    borderRadius: sg.radius.btn,
+    ...sg.glowCobalt,
+  },
+  unavailableCtaText: {
+    fontFamily: sg.font.label,
+    fontSize: 13,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    color: sg.onGold,
+  },
   root: {
     flex: 1,
     backgroundColor: sg.bg,

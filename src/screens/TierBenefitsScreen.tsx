@@ -11,14 +11,15 @@ import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
 import { TIER_BENEFITS } from '../data/tierBenefits';
 import { SgScreen } from '../components/ui/SgScreen';
+import { MEMBERSHIP_IS_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'TierBenefits'>;
 
 const tierAccent: Record<string, string> = {
-  Starter: '#6B7280',
-  Bronze: '#92400E',
-  Silver: '#6B7280',
-  Gold: '#B45309',
+  Starter: sg.chrome,
+  Bronze: sg.warning,
+  Silver: sg.chrome,
+  Gold: sg.goldHi,
 };
 
 export function TierBenefitsScreen() {
@@ -45,6 +46,18 @@ export function TierBenefitsScreen() {
     if (idx < 0 || idx >= TIER_BENEFITS.length - 1) return null;
     return TIER_BENEFITS[idx + 1]?.minXp ?? null;
   }, [userTier]);
+
+  if (!MEMBERSHIP_IS_LIVE && !__DEV__) {
+    return (
+      <SgScreen>
+        <View style={styles.releasePage}>
+          <Text style={styles.releaseEyebrow}>{t('membership.releaseEyebrow')}</Text>
+          <Text style={styles.releaseTitle}>{t('membership.releaseTitle')}</Text>
+          <Text style={styles.releaseBody}>{t('membership.releaseBody')}</Text>
+        </View>
+      </SgScreen>
+    );
+  }
 
   return (
     <SgScreen>
@@ -100,6 +113,31 @@ export function TierBenefitsScreen() {
 }
 
 const styles = StyleSheet.create({
+  releasePage: {
+    flex: 1,
+    padding: spacing.xl,
+    paddingTop: spacing.xxl,
+  },
+  releaseEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1.1,
+    color: sg.warning,
+    marginBottom: spacing.sm,
+  },
+  releaseTitle: {
+    fontFamily: sg.font.display,
+    fontSize: fontSize.xl,
+    lineHeight: 29,
+    color: sg.text,
+    marginBottom: spacing.md,
+  },
+  releaseBody: {
+    fontFamily: sg.font.body,
+    fontSize: fontSize.sm,
+    lineHeight: 21,
+    color: sg.muted,
+  },
   container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {

@@ -51,14 +51,17 @@ export function PackDetailsScreen({ route }: Props) {
   const soldOut = !!(pack && pack.remainingInventory <= 0);
   const requiredTier = pack?.requiredMembershipTier;
   const tierGate = !!(requiredTier && pack && !membershipMeetsRequired(simulatedTier, requiredTier));
-  /** Member-only packs show unlock CTA unless inventory is gone. */
-  const membershipLocked = !!(pack && tierGate && !soldOut);
-  const openBlocked = isPackOpening || awaitingFulfillment || soldOut;
-  const bulkBusy = isPackOpening || awaitingFulfillment;
-  const canBulk10 = !!(pack && !membershipLocked && !soldOut && pack.remainingInventory >= 10);
 
-  const { odds } = usePackOdds(pack);
-  const topHit = useMemo(() => (pack ? getMockPackTopHit(pack) : null), [pack]);
+  const { odds, loading: oddsLoading } = usePackOdds(pack);
+  const liveOpeningBlocked = !__DEV__ && !odds.isLive;
+  /** Membership cannot supersede the live-data gate in a release build. */
+  const membershipLocked = !!(pack && tierGate && !soldOut && !liveOpeningBlocked);
+  const openBlocked = isPackOpening || awaitingFulfillment || soldOut || liveOpeningBlocked;
+  const bulkBusy = isPackOpening || awaitingFulfillment || liveOpeningBlocked;
+  const canBulk10 = !!(
+    pack && !membershipLocked && !soldOut && !liveOpeningBlocked && pack.remainingInventory >= 10
+  );
+  const topHit = useMemo(() => (__DEV__ && pack ? getMockPackTopHit(pack) : null), [pack]);
   const fraction = pack
     ? pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1)
     : 0;
@@ -83,6 +86,8 @@ export function PackDetailsScreen({ route }: Props) {
             if (navigationRef.canGoBack()) navigationRef.goBack();
           }}
           activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel={t('packDetails.back')}
         >
           <Ionicons name="chevron-back" size={20} color={sg.text} />
           <Text style={styles.backText}>{t('packDetails.back')}</Text>
@@ -128,6 +133,8 @@ export function PackDetailsScreen({ route }: Props) {
           if (navigationRef.canGoBack()) navigationRef.goBack();
         }}
         activeOpacity={0.85}
+        accessibilityRole="button"
+        accessibilityLabel={t('packDetails.back')}
       >
         <Ionicons name="chevron-back" size={20} color={sg.text} />
         <Text style={styles.backText}>{t('packDetails.back')}</Text>
@@ -157,17 +164,19 @@ export function PackDetailsScreen({ route }: Props) {
             <TerminalStatusRail compact />
           </View>
           <View style={styles.heroBadges}>
-            {pack.isFeatured ? (
+            {__DEV__ && pack.isFeatured ? (
               <View style={styles.featuredChip}>
                 <Text style={styles.featuredChipText}>FEATURED</Text>
               </View>
             ) : null}
             {/* Trade-in is structurally 100% of listed value (coin economy) —
                 there is no per-pack rate, so this is fixed copy, not data. */}
-            <SgData value="100%" unit="trade-in · listed value" size="sm" tone="gold" />
+            <SgData value="100%" unit="of listed value, in Points" size="sm" tone="gold" />
           </View>
           <Text style={styles.heroTitle}>{loc.title}</Text>
-          <Text style={styles.heroSet}>{pack.tagline ?? loc.valueDescription}</Text>
+          <Text style={styles.heroSet}>
+            {__DEV__ ? pack.tagline ?? loc.valueDescription : pack.tcgCategory ?? loc.valueDescription}
+          </Text>
         </View>
 
         <View style={styles.body}>
@@ -187,28 +196,44 @@ export function PackDetailsScreen({ route }: Props) {
             <SgSectionHeader title={t('packDetails.specTitle')} />
             <View style={styles.specRow}>
               <Text style={styles.specLabel}>{t('packDetails.priceTitle')}</Text>
-              <SgData value={pack.creditPrice.toLocaleString()} unit="Points" size="lg" tone="gold" />
+              {odds.isLive || __DEV__ ? (
+                <SgData value={pack.creditPrice.toLocaleString()} unit="Points" size="lg" tone="gold" />
+              ) : (
+                <SgData value="—" unit={t('packDetails.liveUnavailableShort')} size="sm" />
+              )}
             </View>
             <View style={styles.specRow}>
               <Text style={styles.specLabel}>{t('packDetails.specRemainingLabel')}</Text>
-              <SgData
-                value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
-                unit="left"
-                size="sm"
-              />
+              {odds.isLive || __DEV__ ? (
+                <SgData
+                  value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
+                  unit="left"
+                  size="sm"
+                />
+              ) : (
+                <SgData
+                  value={oddsLoading ? t('packDetails.liveChecking') : '—'}
+                  unit={t('packDetails.liveUnavailableShort')}
+                  size="sm"
+                />
+              )}
             </View>
             {/* Slots hairline — neutral (no red, no blinking) */}
-            <View style={styles.slotsBar}>
-              <View style={[styles.slotsFill, { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` }]} />
-            </View>
-            <View style={styles.tagsRow}>
-              <Text style={styles.specLabel}>{t('packDetails.specTagsLabel')}</Text>
-              <View style={styles.tagsWrap}>
-                {(pack.tags ?? []).slice(0, 3).map((tag) => (
-                  <ChipTag key={tag} type={tag} />
-                ))}
-              </View>
-            </View>
+            {odds.isLive || __DEV__ ? (
+              <>
+                <View style={styles.slotsBar}>
+                  <View style={[styles.slotsFill, { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` }]} />
+                </View>
+                <View style={styles.tagsRow}>
+                  <Text style={styles.specLabel}>{t('packDetails.specTagsLabel')}</Text>
+                  <View style={styles.tagsWrap}>
+                    {(pack.tags ?? []).slice(0, 3).map((tag) => (
+                      <ChipTag key={tag} type={tag} />
+                    ))}
+                  </View>
+                </View>
+              </>
+            ) : null}
 
             {/* Odds summary line — ALWAYS visible; detail table stays in the modal */}
             {topOddsRow ? (
@@ -248,23 +273,34 @@ export function PackDetailsScreen({ route }: Props) {
           ) : null}
 
           {/* ── 6. What you can pull (odds tiers) ── */}
-          <SgCard>
-            <SgSectionHeader title={t('packDetails.whatYouCanPullTitle')} />
-            <View style={styles.pullsGrid}>
-              {odds.rows.map((r) => (
-                <View key={r.tier} style={styles.pullsCell}>
-                  <SgTierTag tier={r.tier} context="disclosure" />
-                  <SgData value={r.chance} size="md" />
-                  <Text style={styles.pullsExamples} numberOfLines={2}>
-                    {r.examples.join(' / ')}
-                  </Text>
-                </View>
-              ))}
-            </View>
-            {odds.isLive ? (
-              <Text style={styles.finePrint}>{t('packDetails.oddsLiveDisclaimer')}</Text>
-            ) : null}
-          </SgCard>
+          {odds.rows.length > 0 ? (
+            <SgCard>
+              <SgSectionHeader title={t('packDetails.whatYouCanPullTitle')} />
+              <View style={styles.pullsGrid}>
+                {odds.rows.map((r) => (
+                  <View key={r.tier} style={styles.pullsCell}>
+                    <SgTierTag tier={r.tier} context="disclosure" />
+                    <SgData value={r.chance} size="md" />
+                    <Text style={styles.pullsExamples} numberOfLines={2}>
+                      {r.examples.join(' / ')}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+              {odds.isLive ? (
+                <Text style={styles.finePrint}>{t('packDetails.oddsLiveDisclaimer')}</Text>
+              ) : null}
+            </SgCard>
+          ) : (
+            <SgCard>
+              <SgSectionHeader title={t('packDetails.whatYouCanPullTitle')} />
+              <View style={styles.liveUnavailableRow}>
+                <View style={styles.liveUnavailableDot} />
+                <Text style={styles.liveUnavailableTitle}>{t('packDetails.liveUnavailableTitle')}</Text>
+              </View>
+              <Text style={styles.sectionBody}>{t('packDetails.liveUnavailableBody')}</Text>
+            </SgCard>
+          )}
 
           {/* ── 7. Trade-in policy ── */}
           <SgCard>
@@ -278,20 +314,22 @@ export function PackDetailsScreen({ route }: Props) {
               <View style={styles.shipBody}>
                 <Text style={styles.shipTitle}>Shipping workflow</Text>
                 <Text style={styles.sectionBody}>
-                  Shipping options are shown at checkout. Track fulfillment status from your Vault.
+                  {liveOpeningBlocked
+                    ? 'Shipping becomes available only after a completed live opening and verified fulfillment data.'
+                    : 'Shipping options are shown after opening. Track fulfillment status from your Vault.'}
                 </Text>
               </View>
             </View>
           </SgCard>
 
-          {/* ── 9. Fairness record (mock values until provably-fair wiring) ── */}
+          {/* ── 9. Fairness record — empty until a live opening supplies identifiers ── */}
           <SgFairnessRecord />
         </View>
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, spacing.base) }]}>
         <View style={styles.footerStack}>
-          {!membershipLocked ? (
+          {!membershipLocked && !liveOpeningBlocked ? (
             <>
               <PackOpenQuantitySelector
                 value={openQuantity}
@@ -310,11 +348,22 @@ export function PackDetailsScreen({ route }: Props) {
             activeOpacity={0.9}
             disabled={membershipLocked ? isPackOpening || awaitingFulfillment : openBlocked}
             onPress={onPressPrimaryCta}
+            accessibilityRole="button"
+            accessibilityLabel={
+              liveOpeningBlocked
+                ? t('packDetails.liveUnavailableTitle')
+                : membershipLocked
+                  ? t('packDetails.ctaUnlockMembership', { tier: t(`membership.tierName_${requiredTier}`) })
+                  : t('packDetails.multiOpen.ctaOpenPack')
+            }
+            accessibilityState={{ disabled: membershipLocked ? isPackOpening || awaitingFulfillment : openBlocked }}
           >
             <View style={styles.ctaInner}>
               <View style={styles.ctaTextWrap}>
                 <Text style={styles.ctaText}>
-                  {membershipLocked
+                  {liveOpeningBlocked
+                    ? t('packDetails.liveUnavailableTitle')
+                    : membershipLocked
                     ? t('packDetails.ctaUnlockMembership', {
                         tier: t(`membership.tierName_${requiredTier}`),
                       })
@@ -325,7 +374,9 @@ export function PackDetailsScreen({ route }: Props) {
                         : t('packDetails.multiOpen.ctaFastOpen')}
                 </Text>
                 <Text style={styles.ctaSub}>
-                  {membershipLocked ? (
+                  {liveOpeningBlocked ? (
+                    t('packDetails.liveUnavailableShort')
+                  ) : membershipLocked ? (
                     t('packDetails.ctaUnlockMembershipSub')
                   ) : openBlocked ? (
                     t('packDetails.ctaDisabled')
@@ -425,6 +476,26 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: sg.muted,
     marginTop: sg.space.sm,
+  },
+  liveUnavailableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: sg.space.sm,
+    marginTop: sg.space.md,
+  },
+  liveUnavailableDot: {
+    width: 7,
+    height: 7,
+    borderRadius: sg.radius.pill,
+    backgroundColor: sg.warning,
+  },
+  liveUnavailableTitle: {
+    flex: 1,
+    fontFamily: sg.font.label,
+    fontSize: 10,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    color: sg.warning,
   },
   specRow: {
     flexDirection: 'row',

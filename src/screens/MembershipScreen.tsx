@@ -20,6 +20,7 @@ import { radius, spacing } from '../tokens/spacing';
 import type { RootStackParamList } from '../navigation/types';
 import { confirmUserAction, showUserMessage } from '../utils/showUserMessage';
 import { SgScreen } from '../components/ui/SgScreen';
+import { MEMBERSHIP_IS_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Membership'>;
 
@@ -74,6 +75,26 @@ export function MembershipScreen() {
       onConfirm: () => setSimulatedTier(null),
     });
   }, [setSimulatedTier, t]);
+
+  if (!MEMBERSHIP_IS_LIVE && !__DEV__) {
+    return (
+      <SgScreen>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={[styles.releasePage, { paddingBottom: insets.bottom + spacing.xxxl }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.releaseEyebrow}>{t('membership.releaseEyebrow')}</Text>
+          <Text style={styles.releaseTitle}>{t('membership.releaseTitle')}</Text>
+          <Text style={styles.releaseBody}>{t('membership.releaseBody')}</Text>
+          <View style={styles.releasePanel}>
+            <Text style={styles.releasePanelCode}>MEMBERSHIP / ENTITLEMENTS</Text>
+            <Text style={styles.releasePanelStatus}>{t('membership.releaseStatus')}</Text>
+          </View>
+        </ScrollView>
+      </SgScreen>
+    );
+  }
 
   return (
     <SgScreen>
@@ -137,6 +158,53 @@ export function MembershipScreen() {
 }
 
 const styles = StyleSheet.create({
+  releasePage: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.xxl,
+  },
+  releaseEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1.1,
+    color: sg.warning,
+    marginBottom: spacing.sm,
+  },
+  releaseTitle: {
+    fontFamily: sg.font.display,
+    fontSize: fontSize.xxl,
+    lineHeight: 32,
+    color: sg.text,
+    marginBottom: spacing.md,
+  },
+  releaseBody: {
+    fontFamily: sg.font.body,
+    fontSize: fontSize.sm,
+    lineHeight: 22,
+    color: sg.muted,
+  },
+  releasePanel: {
+    minHeight: 116,
+    marginTop: spacing.xxl,
+    padding: spacing.base,
+    justifyContent: 'space-between',
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    borderRadius: sg.radius.panel,
+  },
+  releasePanelCode: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 0.8,
+    color: sg.chrome,
+  },
+  releasePanelStatus: {
+    fontFamily: sg.font.label,
+    fontSize: 11,
+    letterSpacing: 0.8,
+    color: sg.warning,
+  },
   root: {
     flex: 1,
     backgroundColor: 'transparent',

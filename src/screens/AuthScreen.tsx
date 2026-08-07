@@ -19,7 +19,6 @@ import { useClerk, useSSO, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
-import { SIGNUP_PROMO_BONUS_CREDITS, SIGNUP_PROMO_BONUS_USD } from '../data/promotions.mock';
 
 /** Narrow types for Clerk’s email/password + verification helpers (see Clerk custom-flow docs). */
 type ClerkSignInPwd = {
@@ -337,10 +336,7 @@ export function AuthScreen({
                 !isSheet && styles.promoBannerBodyOnArt,
               ]}
             >
-              {t('welcome.signupPromoBody', {
-                credits: SIGNUP_PROMO_BONUS_CREDITS,
-                usd: SIGNUP_PROMO_BONUS_USD,
-              })}
+              {t('welcome.signupPromoBody')}
             </Text>
           </View>
         ) : null}

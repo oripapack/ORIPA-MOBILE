@@ -117,6 +117,20 @@ export function ResultScreen({ route }: Props) {
     }
   };
 
+  if (!params?.pull && !__DEV__) {
+    return (
+      <View style={[styles.root, styles.unavailableRoot, { paddingTop: insets.top }]}>
+        <TerminalBackdrop />
+        <Text style={styles.unavailableEyebrow}>PULL RECORD / STATUS</Text>
+        <Text style={styles.unavailableTitle}>No live pull record was provided.</Text>
+        <Text style={styles.unavailableBody}>
+          Return to Packs and open a live pack. Result details appear only after a verified opening response.
+        </Text>
+        <SgButton label="Return to Packs" onPress={() => goTabs()} style={styles.unavailableCta} />
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
       <TerminalBackdrop />
@@ -275,6 +289,34 @@ function ResultArtPlaceholder({ compact = false }: { compact?: boolean }) {
 }
 
 const styles = StyleSheet.create({
+  unavailableRoot: {
+    paddingHorizontal: sg.space.lg,
+    justifyContent: 'center',
+  },
+  unavailableEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1.1,
+    color: sg.warning,
+    marginBottom: sg.space.sm,
+  },
+  unavailableTitle: {
+    fontFamily: sg.font.display,
+    fontSize: 30,
+    lineHeight: 33,
+    color: sg.text,
+    marginBottom: sg.space.md,
+  },
+  unavailableBody: {
+    fontFamily: sg.font.body,
+    fontSize: 14,
+    lineHeight: 22,
+    color: sg.muted,
+  },
+  unavailableCta: {
+    alignSelf: 'stretch',
+    marginTop: sg.space.xl,
+  },
   root: { flex: 1, backgroundColor: sg.bg },
 
   // 1. Header band

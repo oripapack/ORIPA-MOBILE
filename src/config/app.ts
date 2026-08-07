@@ -64,6 +64,22 @@ export const DEV_STARTER_CREDITS = __DEV__ ? 50_000 : 0;
 export const ENABLE_LOCAL_PACK_SIMULATION = __DEV__;
 
 /**
+ * Marketplace listings and checkout must come from verified seller inventory.
+ * The current local listing catalog is a design fixture, so production keeps
+ * the marketplace in a polished unavailable state until the live feed ships.
+ */
+export const MARKETPLACE_IS_LIVE = process.env.EXPO_PUBLIC_MARKETPLACE_LIVE === '1';
+
+/** Promotion grants stay off until codes and referral rewards are server-owned. */
+export const PROMOTIONS_ARE_LIVE = process.env.EXPO_PUBLIC_PROMOTIONS_LIVE === '1';
+
+/** Paid membership stays informational until StoreKit and server entitlements are connected. */
+export const MEMBERSHIP_IS_LIVE = process.env.EXPO_PUBLIC_MEMBERSHIP_LIVE === '1';
+
+/** Friends, activity, and leaderboards stay hidden until profiles come from a verified service. */
+export const SOCIAL_IS_LIVE = process.env.EXPO_PUBLIC_SOCIAL_LIVE === '1';
+
+/**
  * When true, seeds one sample incoming friend request so the Friends tab badge + requests UI
  * can be exercised without a backend. Turn off for production (or when `CREDITS_ARE_MOCK` is false).
  */

@@ -12,7 +12,8 @@ import { navigationRef } from '../../../navigation/navigationRef';
 export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () => void }) {
   const { t } = useTranslation();
   const loc = getLocalizedPackFields(pack, t);
-  const { odds } = usePackOdds(pack);
+  const { odds, loading } = usePackOdds(pack);
+  const releaseBlocked = !__DEV__ && !odds.isLive;
   const topOddsRow = odds.rows[0];
   const fraction = pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1);
   const lowStock = fraction < 0.1;
@@ -43,18 +44,32 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
         <TerminalStatusRail compact />
       </View>
 
-      <View style={styles.readout}>
-        <SgData value={pack.creditPrice.toLocaleString()} unit="Points" size="lg" tone="gold" />
-        <SgData
-          value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
-          unit="left"
-          size="sm"
-          tone={lowStock ? 'success' : 'default'}
-        />
-      </View>
-      <View style={styles.slotsBar}>
-        <View style={[styles.slotsFill, { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` }]} />
-      </View>
+      {releaseBlocked ? (
+        <View style={styles.releaseStatus}>
+          <View style={styles.releaseStatusDot} />
+          <View style={styles.releaseStatusCopy}>
+            <Text style={styles.releaseStatusTitle}>
+              {loading ? t('packDetails.liveChecking') : t('packDetails.liveUnavailableTitle')}
+            </Text>
+            <Text style={styles.releaseStatusBody}>{t('packDetails.liveUnavailableShort')}</Text>
+          </View>
+        </View>
+      ) : (
+        <>
+          <View style={styles.readout}>
+            <SgData value={pack.creditPrice.toLocaleString()} unit="Points" size="lg" tone="gold" />
+            <SgData
+              value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
+              unit="left"
+              size="sm"
+              tone={lowStock ? 'success' : 'default'}
+            />
+          </View>
+          <View style={styles.slotsBar}>
+            <View style={[styles.slotsFill, { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` }]} />
+          </View>
+        </>
+      )}
 
       {topOddsRow ? (
         <View style={styles.oddsLine}>
@@ -63,10 +78,17 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
         </View>
       ) : null}
 
-      <SgButton label={t('packDetails.multiOpen.ctaOpenPack')} onPress={onOpen} style={styles.cta} />
+      <SgButton
+        label={releaseBlocked ? t('packDetails.ctaDisabled') : t('packDetails.multiOpen.ctaOpenPack')}
+        onPress={onOpen}
+        disabled={releaseBlocked}
+        style={styles.cta}
+      />
 
       <TouchableOpacity onPress={goVerify} style={styles.verifyRow} accessibilityRole="button">
-        <Text style={styles.verifyLabel}>VIEW ODDS + VERIFICATION RECORD</Text>
+        <Text style={styles.verifyLabel}>
+          {releaseBlocked ? 'VIEW PACK STATUS + DETAILS' : 'VIEW ODDS + VERIFICATION RECORD'}
+        </Text>
         <Text style={styles.verifyArrow}>›</Text>
       </TouchableOpacity>
     </View>
@@ -99,6 +121,38 @@ const styles = StyleSheet.create({
   oddsLine: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, paddingHorizontal: 4 },
   oddsLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.75 },
   oddsValue: { fontFamily: sg.font.dataBold, fontSize: 10, color: sg.text, fontVariant: [...sg.numeric] },
+  releaseStatus: {
+    minHeight: 52,
+    marginTop: 12,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: sg.warningWash,
+    borderWidth: 1,
+    borderColor: sg.warningBorder,
+    borderRadius: sg.radius.btn,
+  },
+  releaseStatusDot: {
+    width: 7,
+    height: 7,
+    borderRadius: sg.radius.pill,
+    backgroundColor: sg.warning,
+  },
+  releaseStatusCopy: { flex: 1 },
+  releaseStatusTitle: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
+    color: sg.warning,
+  },
+  releaseStatusBody: {
+    marginTop: 3,
+    fontFamily: sg.font.body,
+    fontSize: 11,
+    color: sg.muted,
+  },
   cta: { alignSelf: 'stretch', marginTop: 12 },
   verifyRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 4, paddingTop: 12, paddingBottom: 2 },
   verifyLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.75 },

@@ -60,6 +60,30 @@
 - **リリース条件**: App Store Connect の Points 商品定義、StoreKit/IAP 実装、サーバー側レシート検証、返金/復元方針、商品価格の実データ接続を完了すること。完了まで購入導線を有効化しない。
 - **担当**: 決済/バックエンド/ストア申請。
 
+### 8. 【ブロッカー】Marketplace の実在庫・販売者・配送・決済データが未接続
+- **記録日**: 2026-08-07
+- **内容**: 現行の listing / seller / price / shipping 文言はローカルUI fixtureで、実在の販売者在庫ではない。本番ビルドでは fixture を表示せず、検証済み在庫の接続待ち画面に切り替えた。`EXPO_PUBLIC_MARKETPLACE_LIVE=1` は販売者在庫、配送地域、在庫更新、server-created checkout が接続・検証されるまで設定しない。
+- **リリース条件**: Marketplace API、販売者審査、地域別配送条件、在庫競合制御、Stripe server PaymentIntent と注文台帳を接続すること。
+- **担当**: Marketplace / 決済 / バックエンド。
+
+### 9. 【ブロッカー】Membership と Promotions のサーバー権利台帳が未接続
+- **記録日**: 2026-08-07
+- **内容**: 旧実装は端末内シミュレーションで会員Tier・Points・free packを付与できた。本番ビルドでは Membership / Tier Benefits / Promo code / Referral reward を接続待ち状態にし、ローカル付与を停止した。
+- **リリース条件**: App Store商品、レシート検証、membership entitlement、promo/referral grant のサーバー台帳、取消・返金時の権利更新を実装すること。完了後のみ `EXPO_PUBLIC_MEMBERSHIP_LIVE=1` / `EXPO_PUBLIC_PROMOTIONS_LIVE=1` を設定する。
+- **担当**: Membership / Promotions / 決済 / バックエンド。
+
+### 10. Friends / activity / leaderboard の検証済みソーシャルデータが未接続
+- **記録日**: 2026-08-07
+- **内容**: 現行の友達候補・アクティビティ・ランキングはUI fixtureで、実在アカウントのデータではない。本番ビルドではソーシャル面を接続待ち画面に切り替え、fixture のプロフィールやランキングを表示しない。
+- **リリース条件**: ユーザー公開範囲、友達承認、ブロック/通報、アクティビティの出典、ランキング集計と不正対策をサーバー側で接続・検証すること。完了後のみ `EXPO_PUBLIC_SOCIAL_LIVE=1` を設定する。
+- **担当**: Social / Trust & Safety / バックエンド。
+
+### 11. 【ブロッカー】Clerk 認証が development instance のまま
+- **記録日**: 2026-08-07
+- **内容**: 440×956 の本番相当Web export検証で、Clerkから development key の使用警告を確認した。UIのサインインウォールと導線は動作確認済みだが、このキーには利用制限があり公開用ではない。
+- **リリース条件**: Clerk production instance を作成し、production publishable/secret key、OAuth redirect、Apple/Google設定、許可オリジン、メール配信を本番環境で検証すること。
+- **担当**: Auth / インフラ。
+
 ## タスク登録(2026-07-31 デザインルール棚卸し docs/design-rules-inventory.md の選別結果)
 
 コード挙動を変えるタスクは登録のみで未実行。R-xxx は inventory の ID。

@@ -27,6 +27,9 @@ export function PrimaryButton({ label, onPress, variant = 'gold', disabled, load
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.88}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled || !!loading, busy: !!loading }}
     >
       <View style={styles.labelWrap} pointerEvents="none">
         {loading ? (

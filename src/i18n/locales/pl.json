@@ -100,7 +100,12 @@
     "resultsCount_one": "{{count}} listing",
     "resultsCount_other": "{{count}} listings",
     "searchA11yLabel": "Search the shop",
-    "clearSearchA11y": "Clear search text"
+    "clearSearchA11y": "Clear search text",
+    "unavailableEyebrow": "SHOP / RELEASE STATUS",
+    "unavailableTitle": "Verified inventory comes first.",
+    "unavailableBody": "Marketplace browsing will open after seller inventory, shipping regions, and checkout are connected and verified.",
+    "unavailableStatusBody": "No demo listings or estimated prices are shown in the release build.",
+    "unavailableCta": "Explore packs"
   },
   "common": {
     "copied": "Skopiowano",
@@ -364,7 +369,19 @@
     "sectionRequests": "Friend requests",
     "requestHint": "Wants to connect — accept to add them to your squad.",
     "acceptRequest": "Accept",
-    "declineRequest": "Decline"
+    "declineRequest": "Decline",
+    "guestAccessTitle": "Your collector circle starts here.",
+    "guestAccessBody": "Sign in to add friends and keep activity linked to your account.",
+    "guestFeatureActivity": "See activity only from collectors you add.",
+    "guestFeatureQr": "Share a personal QR and invite link.",
+    "guestFeatureLeaderboard": "Join leaderboards backed by saved pulls.",
+    "releaseEyebrow": "FRIENDS / RELEASE STATUS",
+    "releaseTitle": "Real collectors. No stand-ins.",
+    "releaseBody": "Friends will open after verified profiles, privacy controls, and server-ranked activity are connected.",
+    "releaseCta": "Explore packs",
+    "releasePointProfiles": "Verified profiles replace demo accounts.",
+    "releasePointActivity": "Activity is sourced from completed live openings.",
+    "releasePointSafety": "Blocking, reporting, and privacy controls are required."
   },
   "rewards": {
     "title": "Nagrody",
@@ -396,7 +413,7 @@
     "version": "{{name}}w{{version}}",
     "guestSignInEyebrow": "Przeglądanie jako gość",
     "guestSignInTitle": "Zaloguj się, aby cokolwiek tutaj zrobić",
-    "guestSignInBody": "Goście mogą tylko przeglądać. Zaloguj się za pomocą Google, Apple lub e-maila, aby otwierać pakiety, kupować kredyty, płacić i korzystać ze znajomych.",
+    "guestSignInBody": "Guests can browse the catalog. Sign in to save live activity, access Points, and use account services as they become available.",
     "guestSignInCta": "Zaloguj się lub utwórz konto",
     "playerDeskEyebrow": "BIURKO GRACZY",
     "pullHistoryCta": "Pełna historia zabaw",
@@ -434,7 +451,11 @@
     "quickPullHistory": "Pull history",
     "quickLeaderboard": "Leaderboard",
     "quickPromotions": "Rewards",
-    "quickSettings": "Settings"
+    "quickSettings": "Settings",
+    "guestBenefitsTitle": "With an account",
+    "guestBenefitVault": "Keep Vault items synced across devices.",
+    "guestBenefitHistory": "Save every live opening and fulfillment decision.",
+    "guestBenefitFriends": "Friends and leaderboards appear after verified social access is available."
   },
   "shortcuts": {
     "notif": "Alerty",
@@ -497,8 +518,8 @@
     "done": "Rozumiem"
   },
   "welcome": {
-    "signupPromoTitle": "Bonus dla nowych graczy",
-    "signupPromoBody": "Załóż konto przy pierwszej wizycie — po zalogowaniu dodamy {{credits}} bonusowych kredytów (około ${{usd}} wartości w otwarciach).",
+    "signupPromoTitle": "Keep your collection",
+    "signupPromoBody": "Create an account to save live pulls, fulfillment choices, and your Vault across devices.",
     "skip": "Przeglądaj bez logowania",
     "guestHint": "Możesz przeglądać katalog. Zaloguj się, aby otwierać pakiety, kupować kredyty, płacić i korzystać ze znajomych.",
     "flowMapLine": "Packs tab = mystery pulls in-app · Shop tab = pick cards & ship"
@@ -800,7 +821,11 @@
     "emptyTitle": "Zacznij wyszukiwać",
     "emptyBody": "Wyszukaj pakiety, zestawy lub karty.",
     "noResultsTitle": "Brak wyników",
-    "noResultsBody": "Spróbuj innego hasła."
+    "noResultsBody": "Spróbuj innego hasła.",
+    "resultA11y": "View status for {{title}}",
+    "releaseSyncLabel": "SYNCING",
+    "releaseSyncBody": "Live inventory and pack details are not available yet.",
+    "releaseSyncHint": "View release status"
   },
   "demoSimulation": {
     "title": "Simulation notice",
@@ -859,7 +884,11 @@
     "viewOdds": "Zobacz szanse",
     "topHitPreviewTitle": "Podgląd top hita",
     "topHitPreviewFinePrint": "Tylko podgląd. Media i wartości demo mogą się zmienić przed premierą.",
-    "whatYouCanPullTitle": "Co możesz trafić"
+    "whatYouCanPullTitle": "Co możesz trafić",
+    "liveChecking": "Checking",
+    "liveUnavailableShort": "Live data required",
+    "liveUnavailableTitle": "Pack temporarily unavailable",
+    "liveUnavailableBody": "Opening stays disabled until current inventory and disclosed odds can be verified."
   },
   "splash": {
     "frameKicker": "COLLECTOR VAULT",
@@ -869,20 +898,20 @@
   },
   "onboarding": {
     "welcomeTitle": "Witamy w Pull Hub",
-    "welcomeSubtitle": "Pierwsza wizyta obejmuje bonus rejestracyjny — załóż konto teraz lub najpierw zajrzyj do lobby.",
-    "firstLaunchPromoPill": "{{credits}} bonusowych kredytów · ~${{usd}} wartości",
+    "welcomeSubtitle": "Create an account to save your collection, or preview the catalog first.",
+    "firstLaunchPromoPill": "Save pulls and Vault activity",
     "signUpCta": "Zarejestruj się za darmo",
     "signInCta": "Zaloguj się",
     "continueGuest": "Kontynuuj jako gość",
-    "sheetHint": "Przeciągnij panel w dół lub dotknij rozmytego tła za nim. Przed pominięciem oferty rejestracji zapytamy o potwierdzenie.",
+    "sheetHint": "Swipe down or tap outside the sheet — we will confirm before continuing as a guest.",
     "dismissConfirmTitle": "Pominąć rejestrację?",
-    "dismissConfirmMessage": "Zawsze możesz utworzyć konto później, ale bonus z tej wizyty (około ${{usd}} w kredytach) przysługuje tylko przy rejestracji teraz.",
-    "dismissConfirmStay": "Zachowaj ofertę — rejestruję się",
+    "dismissConfirmMessage": "You can keep browsing without an account. Live openings, saved Vault access, checkout, and Friends require sign-in.",
+    "dismissConfirmStay": "Stay and sign in",
     "dismissConfirmLeave": "Kontynuuj bez konta",
     "promptEyebrow": "Świetny pull",
     "promptTitle": "Zarejestruj się, by zachować",
-    "promptBody": "Załóż konto, by zapisywać pull-e w skarbcu, odbierać nagrody i odblokować pakiet powitalny.",
-    "promptSignUp": "Odbierz darmowy pakiet",
+    "promptBody": "Create an account to save live pulls and fulfillment choices to your Vault.",
+    "promptSignUp": "Create account",
     "promptSignIn": "Mam już konto",
     "promptLater": "Może później",
     "guestClaimTitle": "Zaloguj się, by odebrać",
@@ -943,29 +972,37 @@
     "simActiveBody": "{{tier}} is active — your tier’s member packs are unlocked.",
     "simClearLink": "Clear demo membership",
     "ctaSimSameTier": "Grant monthly Points again",
-    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet."
+    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet.",
+    "releaseUnavailableShort": "Not available",
+    "releaseEyebrow": "MEMBERSHIP / RELEASE STATUS",
+    "releaseTitle": "Membership is not available yet.",
+    "releaseBody": "Plans stay unavailable until App Store products, receipt validation, and server entitlements are connected.",
+    "releaseStatus": "WAITING FOR VERIFIED ENTITLEMENTS"
   },
   "promotions": {
     "enterFromAccount": "Rewards & promo code",
     "screenTitle": "Rewards",
-    "screenLead": "Invite friends or enter a code. Rewards apply to your wallet right away in this preview.",
+    "screenLead": "Verified rewards will appear here when available.",
     "sectionReferral": "Invite friends",
     "sectionCode": "Promo code",
-    "codeExplainer": "One use per account. Try WELCOME, FREEPACK, or LAUNCH.",
+    "codeExplainer": "Enter a promotion code issued by Pull Hub.",
     "codeLabel": "Code",
     "codePlaceholder": "e.g. WELCOME",
     "apply": "Apply",
     "applyCode": "Apply promo code",
     "referralEyebrow": "Your link",
     "referralTitle": "Share Pull Hub",
-    "referralBody": "When a friend creates an account from your link, you both can earn rewards. Full referral payouts will use a server ledger at launch.",
+    "referralBody": "Referral status and rewards will appear here once the live rewards ledger is connected.",
     "copyLink": "Copy link",
     "copied": "Copied",
     "successEyebrow": "Applied",
     "successCta": "Done",
     "errorInvalid": "That code isn’t valid.",
     "errorRedeemed": "You’ve already used this code.",
-    "errorInactive": "This promotion isn’t available."
+    "errorInactive": "This promotion isn’t available.",
+    "releaseEyebrow": "REWARDS / RELEASE STATUS",
+    "releaseTitle": "Rewards are being verified.",
+    "releaseBody": "Promo codes and referrals stay unavailable until grants are issued and recorded by the live server."
   },
   "coach": {
     "homeEyebrow": "Pull Hub tip",
@@ -1006,7 +1043,7 @@
     "emptyTitle": "Nothing in your vault yet",
     "emptyBody": "Open packs on Packs — new pulls arrive here and stay until you choose what happens next.",
     "guestTitle": "Sign in to use your vault",
-    "guestBody": "Guest pulls aren’t saved. Create an account to build your collection.",
+    "guestBody": "Sign in is required to save and manage Vault items across devices.",
     "guestCta": "Sign in",
     "statusPending": "Choose Vault or Trade in",
     "statusShipped": "Shipping",

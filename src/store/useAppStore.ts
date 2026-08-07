@@ -7,7 +7,7 @@ import {
   lookupFriendDisplayName,
   normalizeFriendUsername,
 } from '../data/friends';
-import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
+import { mockUser, releaseUserSeed, Pull, PullRarityTier, UserState } from '../data/mockUser';
 import {
   createInitialFriendVaultShop,
   listingIdForPull,
@@ -241,10 +241,10 @@ function initialIncomingFriendRequests(): IncomingFriendRequest[] {
   return [buildDemoIncomingFriendRequest()];
 }
 
-const seededUser = userWithSyncedProgression(
-  { ...mockUser, credits: Math.max(mockUser.credits, DEV_STARTER_CREDITS) },
-  mockUser.xp,
-);
+const seedSource = __DEV__
+  ? { ...mockUser, credits: Math.max(mockUser.credits, DEV_STARTER_CREDITS) }
+  : releaseUserSeed;
+const seededUser = userWithSyncedProgression(seedSource, seedSource.xp);
 
 export const useAppStore = create<AppStore>((set, get) => {
   const persistCollector = () => {

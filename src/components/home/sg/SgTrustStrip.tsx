@@ -3,9 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { sg } from '../../../tokens/sg';
 
 const ITEMS = [
-  { code: '01', title: 'Odds', sub: 'available before opening' },
-  { code: '02', title: 'Trade in', sub: 'based on listed value' },
-  { code: '03', title: 'Shipping', sub: 'tracked in your Vault' },
+  { code: '01', title: 'Odds', sub: 'live data required to open' },
+  { code: '02', title: 'Trade in', sub: 'uses listed value' },
+  { code: '03', title: 'Fulfillment', sub: 'recorded in your Vault' },
 ] as const;
 
 /** Trust strip — dividers are 1px `line` borders (N2 §3). */

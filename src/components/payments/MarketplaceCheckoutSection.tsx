@@ -6,6 +6,7 @@ import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PAYMENT_ROUTING } from '../../payments/physicalGoodsPolicy';
 import { showUserMessage } from '../../utils/showUserMessage';
+import { MARKETPLACE_IS_LIVE } from '../../config/app';
 
 interface Props {
   listingTitle: string;
@@ -18,6 +19,19 @@ interface Props {
  */
 export function MarketplaceCheckoutSection({ listingTitle, listingPrice }: Props) {
   const { t } = useTranslation();
+
+  if (!__DEV__ && !MARKETPLACE_IS_LIVE) {
+    return (
+      <View>
+        <Text style={styles.title}>{t('paymentPortal.marketplaceTitle')}</Text>
+        <View style={styles.unavailableCard}>
+          <Text style={styles.unavailableEyebrow}>{t('marketplace.unavailableEyebrow')}</Text>
+          <Text style={styles.unavailableTitle}>{t('marketplace.unavailableTitle')}</Text>
+          <Text style={styles.unavailableBody}>{t('marketplace.unavailableBody')}</Text>
+        </View>
+      </View>
+    );
+  }
 
   const onContinue = () => {
     showUserMessage(
@@ -42,7 +56,12 @@ export function MarketplaceCheckoutSection({ listingTitle, listingPrice }: Props
 
       <Text style={styles.policy}>{t('paymentPortal.physicalPolicy', { mode: PAYMENT_ROUTING.physicalMarketplace })}</Text>
 
-      <TouchableOpacity style={styles.cta} onPress={onContinue} activeOpacity={0.88}>
+      <TouchableOpacity
+        style={styles.cta}
+        onPress={onContinue}
+        activeOpacity={0.88}
+        accessibilityRole="button"
+      >
         <Text style={styles.ctaText}>{t('paymentPortal.continueCheckout')}</Text>
       </TouchableOpacity>
     </View>
@@ -91,6 +110,33 @@ const styles = StyleSheet.create({
     color: sg.muted,
     lineHeight: 18,
     marginBottom: spacing.lg,
+  },
+  unavailableCard: {
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    borderRadius: sg.radius.panel,
+    padding: sg.space.lg,
+    backgroundColor: sg.surface,
+  },
+  unavailableEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    color: sg.warning,
+    letterSpacing: 1,
+    marginBottom: sg.space.sm,
+  },
+  unavailableTitle: {
+    fontFamily: sg.font.display,
+    fontSize: 24,
+    lineHeight: 25,
+    color: sg.text,
+    marginBottom: sg.space.sm,
+  },
+  unavailableBody: {
+    fontFamily: sg.font.body,
+    fontSize: 14,
+    lineHeight: 21,
+    color: sg.muted,
   },
   cta: {
     backgroundColor: sg.surface2,

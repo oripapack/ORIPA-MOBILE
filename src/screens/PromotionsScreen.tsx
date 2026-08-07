@@ -16,6 +16,7 @@ import { ReferralLinkCard } from '../components/promotions/ReferralLinkCard';
 import { PromoCodeInput } from '../components/promotions/PromoCodeInput';
 import { PromoSuccessModal } from '../components/promotions/PromoSuccessModal';
 import { formatGrantSummary } from '../components/promotions/formatGrant';
+import { PROMOTIONS_ARE_LIVE } from '../config/app';
 
 export function PromotionsScreen() {
   const { t } = useTranslation();
@@ -53,7 +54,13 @@ export function PromotionsScreen() {
   return (
     <SgScreen>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} style={styles.backBtn}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          hitSlop={12}
+          style={styles.backBtn}
+          accessibilityRole="button"
+          accessibilityLabel={t('packDetails.back')}
+        >
           <Text style={styles.backChevron}>‹</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('promotions.screenTitle')}</Text>
@@ -66,25 +73,35 @@ export function PromotionsScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.lead}>{t('promotions.screenLead')}</Text>
+        {!PROMOTIONS_ARE_LIVE && !__DEV__ ? (
+          <VaultFramedCard style={styles.card} contentStyle={styles.releaseInner}>
+            <Text style={styles.releaseEyebrow}>{t('promotions.releaseEyebrow')}</Text>
+            <Text style={styles.releaseTitle}>{t('promotions.releaseTitle')}</Text>
+            <Text style={styles.releaseBody}>{t('promotions.releaseBody')}</Text>
+          </VaultFramedCard>
+        ) : (
+          <>
+            <Text style={styles.lead}>{t('promotions.screenLead')}</Text>
 
-        <Text style={styles.sectionHeader}>{t('promotions.sectionReferral')}</Text>
-        <VaultFramedCard style={styles.card}>
-          <ReferralLinkCard username={username} />
-        </VaultFramedCard>
+            <Text style={styles.sectionHeader}>{t('promotions.sectionReferral')}</Text>
+            <VaultFramedCard style={styles.card}>
+              <ReferralLinkCard username={username} />
+            </VaultFramedCard>
 
-        <Text style={styles.sectionHeader}>{t('promotions.sectionCode')}</Text>
-        <VaultFramedCard style={styles.card}>
-          <View style={styles.codeInner}>
-            <Text style={styles.codeExplainer}>{t('promotions.codeExplainer')}</Text>
-            <PromoCodeInput onSubmit={onSubmitCode} />
-            {error ? (
-              <Text style={styles.error} accessibilityLiveRegion="polite">
-                {error}
-              </Text>
-            ) : null}
-          </View>
-        </VaultFramedCard>
+            <Text style={styles.sectionHeader}>{t('promotions.sectionCode')}</Text>
+            <VaultFramedCard style={styles.card}>
+              <View style={styles.codeInner}>
+                <Text style={styles.codeExplainer}>{t('promotions.codeExplainer')}</Text>
+                <PromoCodeInput onSubmit={onSubmitCode} />
+                {error ? (
+                  <Text style={styles.error} accessibilityLiveRegion="polite">
+                    {error}
+                  </Text>
+                ) : null}
+              </View>
+            </VaultFramedCard>
+          </>
+        )}
       </ScrollView>
 
       <PromoSuccessModal
@@ -166,6 +183,29 @@ const styles = StyleSheet.create({
   error: {
     marginTop: spacing.md,
     fontSize: fontSize.sm,
+    color: sg.muted,
+  },
+  releaseInner: {
+    padding: spacing.xl,
+  },
+  releaseEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1,
+    color: sg.warning,
+    marginBottom: spacing.sm,
+  },
+  releaseTitle: {
+    fontFamily: sg.font.display,
+    fontSize: fontSize.xl,
+    lineHeight: 28,
+    color: sg.text,
+    marginBottom: spacing.sm,
+  },
+  releaseBody: {
+    fontFamily: sg.font.body,
+    fontSize: fontSize.sm,
+    lineHeight: 21,
     color: sg.muted,
   },
 });

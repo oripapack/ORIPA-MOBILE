@@ -5,7 +5,6 @@ import { useAuth } from '@clerk/clerk-expo';
 import { useGuestBrowseStore } from '../../store/guestBrowseStore';
 import { AuthBottomSheet, type AuthBottomSheetRef } from '../auth/AuthBottomSheet';
 import { AuthScreen } from '../../screens/AuthScreen';
-import { SIGNUP_PROMO_BONUS_USD } from '../../data/promotions.mock';
 import { confirmUserAction } from '../../utils/showUserMessage';
 import { canOpenPackWithoutSignIn } from '../../config/demo';
 
@@ -30,7 +29,7 @@ export function OnboardingGate() {
     ({ confirm, cancel }: { confirm: () => void; cancel: () => void }) => {
       confirmUserAction({
         title: t('onboarding.dismissConfirmTitle'),
-        message: t('onboarding.dismissConfirmMessage', { usd: SIGNUP_PROMO_BONUS_USD }),
+        message: t('onboarding.dismissConfirmMessage'),
         cancelLabel: t('onboarding.dismissConfirmStay'),
         confirmLabel: t('onboarding.dismissConfirmLeave'),
         destructive: true,
@@ -48,7 +47,7 @@ export function OnboardingGate() {
     }
   }, [isSignedIn, dismissOnboardingSheet, markWelcomePromoSeen]);
 
-  // Web / __DEV__: skip signup sheet so pack opening is reachable without OAuth.
+  // Development web builds may skip the sheet so animation review stays fast.
   useEffect(() => {
     if (!canOpenPackWithoutSignIn) return;
     if (Platform.OS !== 'web') return;

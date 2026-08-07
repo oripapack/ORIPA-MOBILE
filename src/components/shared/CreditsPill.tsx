@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { sg } from '../../tokens/sg';
 import { spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
+import { useGuestBrowseStore } from '../../store/guestBrowseStore';
+import { isClerkEnabled } from '../../config/clerk';
 
 interface Props {
   onAdd: () => void;
@@ -13,12 +15,23 @@ interface Props {
  */
 export function CreditsPill({ onAdd }: Props) {
   const credits = useAppStore((s) => s.user.credits);
+  const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
+  const showBalance = !isClerkEnabled || clerkSignedIn;
 
   return (
-    <View style={styles.pill}>
-      <Text style={styles.pointsLabel}>PTS</Text>
-      <Text style={styles.amount}>{credits.toLocaleString()}</Text>
-      <TouchableOpacity style={styles.addBtn} onPress={onAdd} activeOpacity={0.8}>
+    <View
+      style={styles.pill}
+      accessibilityLabel={showBalance ? `${credits.toLocaleString()} Points` : 'Points balance requires sign in'}
+    >
+      <Text style={styles.pointsLabel}>POINTS</Text>
+      <Text style={styles.amount}>{showBalance ? credits.toLocaleString() : '—'}</Text>
+      <TouchableOpacity
+        style={styles.addBtn}
+        onPress={onAdd}
+        activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel={showBalance ? 'Buy Points' : 'Sign in to access Points'}
+      >
         <Text style={styles.addText}>+</Text>
       </TouchableOpacity>
     </View>
@@ -39,7 +52,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     overflow: 'hidden',
   },
-  pointsLabel: { color: sg.muted, fontSize: 8, fontFamily: sg.font.label, letterSpacing: 0.8 },
+  pointsLabel: { color: sg.muted, fontSize: 7, fontFamily: sg.font.label, letterSpacing: 0.55 },
   amount: {
     color: sg.gold,
     fontSize: 13,

@@ -29,6 +29,7 @@ export function SgButton({ label, onPress, variant = 'gold', disabled, loading, 
       disabled={disabled || loading}
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled || !!loading, busy: !!loading }}
     >
       <View style={styles.labelWrap} pointerEvents="none">
         {loading ? (

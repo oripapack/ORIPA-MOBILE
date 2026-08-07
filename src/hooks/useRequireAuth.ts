@@ -5,7 +5,7 @@ import { useGuestBrowseStore } from '../store/guestBrowseStore';
 
 /**
  * Gate protected actions behind sign-in.
- * Pack opens can bypass auth when `canOpenPackWithoutSignIn` is true (web / __DEV__).
+ * Pack opens can bypass auth only when `canOpenPackWithoutSignIn` is true in development.
  */
 export function useRequireAuth() {
   const hydrated = useGuestBrowseStore((s) => s.hydrated);
@@ -23,7 +23,7 @@ export function useRequireAuth() {
         fn();
         return;
       }
-      // Web / dev: allow opening packs without signing in (animation demo).
+      // Development-only: allow animation review without a persistent account.
       if (options?.allowUnauthenticatedPackOpen && canOpenPackWithoutSignIn) {
         fn();
         return;

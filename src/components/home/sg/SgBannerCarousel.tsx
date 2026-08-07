@@ -10,13 +10,17 @@ const SIGNALS = [
 
 /** Code-native dispatch board. No licensed imagery or unsupported offer copy. */
 export function SgBannerCarousel() {
+  const isReleasePreview = !__DEV__;
+
   return (
     <View style={styles.board} accessibilityRole="summary">
       <View style={styles.topRow}>
         <Text style={styles.route}>JST / TERMINAL 01</Text>
         <View style={styles.status}>
-          <View style={styles.statusDot} />
-          <Text style={styles.statusText}>ONLINE</Text>
+          <View style={[styles.statusDot, isReleasePreview && styles.statusDotPending]} />
+          <Text style={[styles.statusText, isReleasePreview && styles.statusTextPending]}>
+            {isReleasePreview ? 'CATALOG SYNC' : 'PREVIEW'}
+          </Text>
         </View>
       </View>
       <Text style={styles.kicker}>東京発 / BUILT IN JAPAN</Text>
@@ -48,7 +52,9 @@ const styles = StyleSheet.create({
   route: { fontFamily: sg.font.label, fontSize: 8, color: sg.chrome, letterSpacing: 1.1 },
   status: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   statusDot: { width: 6, height: 6, backgroundColor: sg.success, borderRadius: 3 },
+  statusDotPending: { backgroundColor: sg.warning },
   statusText: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.success, letterSpacing: 0.7 },
+  statusTextPending: { color: sg.warning },
   kicker: { fontFamily: sg.font.label, fontSize: 9, color: sg.goldHi, letterSpacing: 1.35, marginTop: 20 },
   title: {
     fontFamily: sg.font.display,

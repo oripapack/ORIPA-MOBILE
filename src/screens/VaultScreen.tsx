@@ -161,8 +161,9 @@ export function VaultScreen() {
           keyExtractor={() => 'guest'}
           renderItem={() => null}
           ListHeaderComponent={
-            <>
-              {ListHeader}
+            <View style={styles.headerBlock}>
+              <Text style={styles.pageEyebrow}>{t('vaultScreen.eyebrow')}</Text>
+              <Text style={styles.pageTitle}>{t('vaultScreen.title')}</Text>
               <VaultFramedCard style={styles.guestCard} contentStyle={styles.guestInner}>
                 <Text style={styles.guestTitle}>{t('vaultScreen.guestTitle')}</Text>
                 <Text style={styles.guestBody}>{t('vaultScreen.guestBody')}</Text>
@@ -174,7 +175,12 @@ export function VaultScreen() {
                   <Text style={styles.guestCtaText}>{t('vaultScreen.guestCta')}</Text>
                 </TouchableOpacity>
               </VaultFramedCard>
-            </>
+              <View style={styles.guestTrustBlock}>
+                <Text style={styles.guestTrustTitle}>{t('vaultScreen.benefitsTitle')}</Text>
+                <Text style={styles.guestTrustBody}>{t('vaultScreen.benefit4')}</Text>
+                <Text style={styles.guestTrustBody}>{t('vaultScreen.benefit5')}</Text>
+              </View>
+            </View>
           }
           contentContainerStyle={[
             styles.listContent,
@@ -486,5 +492,26 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
     color: sgVault.text,
+  },
+  guestTrustBlock: {
+    marginTop: spacing.xl,
+    paddingTop: spacing.lg,
+    borderTopWidth: 1,
+    borderTopColor: sgVault.line,
+    gap: spacing.sm,
+  },
+  guestTrustTitle: {
+    fontSize: 10,
+    fontFamily: brandFont.bold,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    color: sgVault.chrome,
+    marginBottom: spacing.xs,
+  },
+  guestTrustBody: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.regular,
+    color: sgVault.muted,
+    lineHeight: 21,
   },
 });

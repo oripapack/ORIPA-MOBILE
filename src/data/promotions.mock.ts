@@ -1,3 +1,7 @@
+/**
+ * 実データ待ち。外部に見せないこと。
+ * Development-only promotion fixtures.
+ */
 import type {
   PromoCodeDefinition,
   ReferralProgramDefinition,
@@ -30,6 +34,6 @@ export const SIGNUP_PROMO_BONUS_CREDITS = SIGNUP_PROMO_BONUS_USD * SIGNUP_PROMO_
  * First signup reward — applied once per user id in `promotionStore.syncSessionRewards`.
  */
 export const MOCK_SIGNUP_PROMOTION: SignupPromotionConfig = {
-  enabled: true,
+  enabled: __DEV__,
   grant: { freePacks: 1 },
 };

@@ -1,4 +1,6 @@
 /**
+ * 実データ待ち。外部に見せないこと。
+ *
  * After a pack opens, user chooses Vault vs convert — until then, `pending`.
  * `vaulted`: secured hold with optional ship / trade / resale from Vault.
  */
@@ -101,4 +103,18 @@ export const mockUser: UserState = {
       timestamp: new Date('2026-03-16T12:00:00'),
     },
   ],
+};
+
+/** Empty release seed. Clerk and Supabase hydrate real identity and balances. */
+export const releaseUserSeed: UserState = {
+  id: '',
+  displayName: 'Collector',
+  username: '',
+  freePackGrants: 0,
+  credits: 0,
+  tier: 'Starter',
+  xp: 0,
+  xpToNextTier: 100000,
+  isVerified: false,
+  pullHistory: [],
 };

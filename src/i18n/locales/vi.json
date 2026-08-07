@@ -100,7 +100,12 @@
     "resultsCount_one": "{{count}} listing",
     "resultsCount_other": "{{count}} listings",
     "searchA11yLabel": "Search the shop",
-    "clearSearchA11y": "Clear search text"
+    "clearSearchA11y": "Clear search text",
+    "unavailableEyebrow": "SHOP / RELEASE STATUS",
+    "unavailableTitle": "Verified inventory comes first.",
+    "unavailableBody": "Marketplace browsing will open after seller inventory, shipping regions, and checkout are connected and verified.",
+    "unavailableStatusBody": "No demo listings or estimated prices are shown in the release build.",
+    "unavailableCta": "Explore packs"
   },
   "common": {
     "error": "Lỗi",
@@ -364,7 +369,19 @@
     "sectionRequests": "Friend requests",
     "requestHint": "Wants to connect — accept to add them to your squad.",
     "acceptRequest": "Accept",
-    "declineRequest": "Decline"
+    "declineRequest": "Decline",
+    "guestAccessTitle": "Your collector circle starts here.",
+    "guestAccessBody": "Sign in to add friends and keep activity linked to your account.",
+    "guestFeatureActivity": "See activity only from collectors you add.",
+    "guestFeatureQr": "Share a personal QR and invite link.",
+    "guestFeatureLeaderboard": "Join leaderboards backed by saved pulls.",
+    "releaseEyebrow": "FRIENDS / RELEASE STATUS",
+    "releaseTitle": "Real collectors. No stand-ins.",
+    "releaseBody": "Friends will open after verified profiles, privacy controls, and server-ranked activity are connected.",
+    "releaseCta": "Explore packs",
+    "releasePointProfiles": "Verified profiles replace demo accounts.",
+    "releasePointActivity": "Activity is sourced from completed live openings.",
+    "releasePointSafety": "Blocking, reporting, and privacy controls are required."
   },
   "rewards": {
     "title": "Phần thưởng",
@@ -396,7 +413,7 @@
     "version": "{{name}} v{{version}}",
     "guestSignInEyebrow": "Duyệt với tư cách khách",
     "guestSignInTitle": "Đăng nhập để dùng đầy đủ tính năng",
-    "guestSignInBody": "Khách chỉ xem được catalog. Đăng nhập bằng Google, Apple hoặc email để mở gói, mua Points, thanh toán và dùng Bạn bè.",
+    "guestSignInBody": "Guests can browse the catalog. Sign in to save live activity, access Points, and use account services as they become available.",
     "guestSignInCta": "Đăng nhập hoặc tạo tài khoản",
     "playerDeskEyebrow": "BÀN CHƠI",
     "pullHistoryCta": "Toàn bộ lịch sử mở gói",
@@ -434,7 +451,11 @@
     "quickPullHistory": "Pull history",
     "quickLeaderboard": "Leaderboard",
     "quickPromotions": "Rewards",
-    "quickSettings": "Settings"
+    "quickSettings": "Settings",
+    "guestBenefitsTitle": "With an account",
+    "guestBenefitVault": "Keep Vault items synced across devices.",
+    "guestBenefitHistory": "Save every live opening and fulfillment decision.",
+    "guestBenefitFriends": "Friends and leaderboards appear after verified social access is available."
   },
   "shortcuts": {
     "notif": "Thông báo",
@@ -497,8 +518,8 @@
     "done": "Hiểu rồi"
   },
   "welcome": {
-    "signupPromoTitle": "Thưởng người chơi mới",
-    "signupPromoBody": "Tạo tài khoản trong lần đầu ghé thăm: sau khi đăng nhập, chúng tôi tặng {{credits}} Points thưởng (khoảng ${{usd}} giá trị mở gói).",
+    "signupPromoTitle": "Keep your collection",
+    "signupPromoBody": "Create an account to save live pulls, fulfillment choices, and your Vault across devices.",
     "skip": "Duyệt mà không cần đăng nhập",
     "guestHint": "Bạn có thể xem catalog. Đăng nhập để mở gói, mua Points, thanh toán và dùng Bạn bè.",
     "flowMapLine": "Packs tab = mystery pulls in-app · Shop tab = pick cards & ship"
@@ -800,7 +821,11 @@
     "emptyTitle": "Bắt đầu tìm kiếm",
     "emptyBody": "Tìm pack, set hoặc thẻ.",
     "noResultsTitle": "Không có kết quả",
-    "noResultsBody": "Thử từ khóa khác."
+    "noResultsBody": "Thử từ khóa khác.",
+    "resultA11y": "View status for {{title}}",
+    "releaseSyncLabel": "SYNCING",
+    "releaseSyncBody": "Live inventory and pack details are not available yet.",
+    "releaseSyncHint": "View release status"
   },
   "demoSimulation": {
     "title": "Simulation notice",
@@ -859,7 +884,11 @@
     "viewOdds": "Xem tỷ lệ",
     "topHitPreviewTitle": "Xem trước hit lớn",
     "topHitPreviewFinePrint": "Chỉ xem trước. Nội dung và giá trị demo có thể thay đổi trước khi ra mắt.",
-    "whatYouCanPullTitle": "Bạn có thể kéo được gì"
+    "whatYouCanPullTitle": "Bạn có thể kéo được gì",
+    "liveChecking": "Checking",
+    "liveUnavailableShort": "Live data required",
+    "liveUnavailableTitle": "Pack temporarily unavailable",
+    "liveUnavailableBody": "Opening stays disabled until current inventory and disclosed odds can be verified."
   },
   "splash": {
     "frameKicker": "COLLECTOR VAULT",
@@ -869,20 +898,20 @@
   },
   "onboarding": {
     "welcomeTitle": "Chào mừng đến Pull Hub",
-    "welcomeSubtitle": "Lần đầu ghé thăm có thưởng đăng ký — tạo tài khoản ngay hoặc xem sảnh trước.",
-    "firstLaunchPromoPill": "{{credits}} Points thưởng · ~${{usd}} giá trị",
+    "welcomeSubtitle": "Create an account to save your collection, or preview the catalog first.",
+    "firstLaunchPromoPill": "Save pulls and Vault activity",
     "signUpCta": "Đăng ký miễn phí",
     "signInCta": "Đăng nhập",
     "continueGuest": "Tiếp tục với tư cách khách",
-    "sheetHint": "Vuốt bảng xuống hoặc chạm vùng mờ phía sau. Chúng tôi sẽ xác nhận trước khi bạn bỏ qua ưu đãi đăng ký.",
+    "sheetHint": "Swipe down or tap outside the sheet — we will confirm before continuing as a guest.",
     "dismissConfirmTitle": "Bỏ qua đăng ký?",
-    "dismissConfirmMessage": "Bạn luôn có thể tạo tài khoản sau, nhưng thưởng chuyến thăm này (khoảng ${{usd}} Points) chỉ có khi đăng ký ngay.",
-    "dismissConfirmStay": "Giữ ưu đãi — tôi sẽ đăng ký",
+    "dismissConfirmMessage": "You can keep browsing without an account. Live openings, saved Vault access, checkout, and Friends require sign-in.",
+    "dismissConfirmStay": "Stay and sign in",
     "dismissConfirmLeave": "Tiếp tục không có tài khoản",
     "promptEyebrow": "Mở đẹp đấy",
     "promptTitle": "Đăng ký để giữ",
-    "promptBody": "Tạo tài khoản để lưu kết quả mở vào kho, nhận thưởng và mở khóa gói chào mừng.",
-    "promptSignUp": "Nhận gói miễn phí",
+    "promptBody": "Create an account to save live pulls and fulfillment choices to your Vault.",
+    "promptSignUp": "Create account",
     "promptSignIn": "Tôi đã có tài khoản",
     "promptLater": "Để sau",
     "guestClaimTitle": "Đăng nhập để nhận",
@@ -943,29 +972,37 @@
     "simActiveBody": "{{tier}} is active — your tier’s member packs are unlocked.",
     "simClearLink": "Clear demo membership",
     "ctaSimSameTier": "Grant monthly Points again",
-    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet."
+    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet.",
+    "releaseUnavailableShort": "Not available",
+    "releaseEyebrow": "MEMBERSHIP / RELEASE STATUS",
+    "releaseTitle": "Membership is not available yet.",
+    "releaseBody": "Plans stay unavailable until App Store products, receipt validation, and server entitlements are connected.",
+    "releaseStatus": "WAITING FOR VERIFIED ENTITLEMENTS"
   },
   "promotions": {
     "enterFromAccount": "Rewards & promo code",
     "screenTitle": "Rewards",
-    "screenLead": "Invite friends or enter a code. Rewards apply to your wallet right away in this preview.",
+    "screenLead": "Verified rewards will appear here when available.",
     "sectionReferral": "Invite friends",
     "sectionCode": "Promo code",
-    "codeExplainer": "One use per account. Try WELCOME, FREEPACK, or LAUNCH.",
+    "codeExplainer": "Enter a promotion code issued by Pull Hub.",
     "codeLabel": "Code",
     "codePlaceholder": "e.g. WELCOME",
     "apply": "Apply",
     "applyCode": "Apply promo code",
     "referralEyebrow": "Your link",
     "referralTitle": "Share Pull Hub",
-    "referralBody": "When a friend creates an account from your link, you both can earn rewards. Full referral payouts will use a server ledger at launch.",
+    "referralBody": "Referral status and rewards will appear here once the live rewards ledger is connected.",
     "copyLink": "Copy link",
     "copied": "Copied",
     "successEyebrow": "Applied",
     "successCta": "Done",
     "errorInvalid": "That code isn’t valid.",
     "errorRedeemed": "You’ve already used this code.",
-    "errorInactive": "This promotion isn’t available."
+    "errorInactive": "This promotion isn’t available.",
+    "releaseEyebrow": "REWARDS / RELEASE STATUS",
+    "releaseTitle": "Rewards are being verified.",
+    "releaseBody": "Promo codes and referrals stay unavailable until grants are issued and recorded by the live server."
   },
   "coach": {
     "homeEyebrow": "Pull Hub tip",
@@ -1006,7 +1043,7 @@
     "emptyTitle": "Nothing in your vault yet",
     "emptyBody": "Open packs on Packs — new pulls arrive here and stay until you choose what happens next.",
     "guestTitle": "Sign in to use your vault",
-    "guestBody": "Guest pulls aren’t saved. Create an account to build your collection.",
+    "guestBody": "Sign in is required to save and manage Vault items across devices.",
     "guestCta": "Sign in",
     "statusPending": "Choose Vault or Trade in",
     "statusShipped": "Shipping",

@@ -25,6 +25,7 @@ import { progressionFromTotalXp } from '../lib/collectorProgression';
 import { countClaimableQuests, pickPreviewQuests } from '../lib/collectorQuestPreview';
 import { AppHeader } from '../components/shared/AppHeader';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
+import { MEMBERSHIP_IS_LIVE, SOCIAL_IS_LIVE } from '../config/app';
 
 const PREVIEW_PULLS = 2;
 const PREVIEW_QUESTS = 3;
@@ -44,7 +45,7 @@ export function AccountScreen() {
   const streak = useAppStore((s) => s.collectorStreakDays);
   const streakBest = useAppStore((s) => s.collectorStreakBest);
   const { refreshControl } = usePullToRefresh();
-  const { requireAuth } = useRequireAuth();
+  const { requireAuth, canUseAccountFeatures } = useRequireAuth();
   const simulatedMemberTier = useMembershipSimulationStore((s) => s.simulatedTier);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -53,7 +54,7 @@ export function AccountScreen() {
   const tierColors: Record<string, string> = {
     Starter: sg.gold,
     Bronze: sg.gold,
-    Silver: '#60A5FA',
+    Silver: sg.chrome,
     Gold: sg.gold,
   };
   const tierColor = tierColors[user.tier] ?? sg.muted;
@@ -77,6 +78,10 @@ export function AccountScreen() {
   }, [navigation, requireAuth]);
 
   const goLeaderboard = useCallback(() => {
+    if (!__DEV__ && !SOCIAL_IS_LIVE) {
+      navigation.navigate('Friends');
+      return;
+    }
     navigation.navigate('FriendsLeaderboard');
   }, [navigation]);
 
@@ -104,6 +109,41 @@ export function AccountScreen() {
     () => socialProfile.recentPulls.slice(0, PREVIEW_PULLS),
     [socialProfile.recentPulls],
   );
+
+  if (!canUseAccountFeatures) {
+    return (
+      <SgScreen>
+        <AppHeader onSearch={() => setSearchOpen(true)} />
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={[styles.content, { paddingTop: spacing.lg }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.pageTitle}>{t('account.title')}</Text>
+          <AccountAuthCard />
+
+          <Text style={styles.sectionEyebrow}>{t('account.guestBenefitsTitle')}</Text>
+          <VaultFramedCard style={styles.guestBenefitsCard} contentStyle={styles.guestBenefitsInner}>
+            <GuestBenefitRow icon="file-tray-stacked-outline" text={t('account.guestBenefitVault')} />
+            <GuestBenefitRow icon="time-outline" text={t('account.guestBenefitHistory')} />
+            <GuestBenefitRow icon="people-outline" text={t('account.guestBenefitFriends')} isLast />
+          </VaultFramedCard>
+
+          <TouchableOpacity
+            style={styles.guestSettingsButton}
+            onPress={goSettings}
+            accessibilityRole="button"
+            accessibilityLabel={t('account.quickSettings')}
+          >
+            <Ionicons name="settings-outline" size={20} color={sg.muted} />
+            <Text style={styles.guestSettingsText}>{t('account.quickSettings')}</Text>
+            <Ionicons name="chevron-forward" size={18} color={sg.muted} />
+          </TouchableOpacity>
+        </ScrollView>
+        <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
+      </SgScreen>
+    );
+  }
 
   return (
     <SgScreen>
@@ -144,7 +184,9 @@ export function AccountScreen() {
             <View style={styles.membershipCopy}>
               <Text style={styles.membershipLabel}>{t('account.heroMembership')}</Text>
               <Text style={styles.membershipValue} numberOfLines={1}>
-                {simulatedMemberTier
+                {!MEMBERSHIP_IS_LIVE && !__DEV__
+                  ? t('membership.releaseUnavailableShort')
+                  : simulatedMemberTier
                   ? t(`membership.badge_${simulatedMemberTier}`)
                   : [
                       t('membership.tierName_silver'),
@@ -294,6 +336,25 @@ export function AccountScreen() {
   );
 }
 
+function GuestBenefitRow({
+  icon,
+  text,
+  isLast = false,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  text: string;
+  isLast?: boolean;
+}) {
+  return (
+    <View style={[styles.guestBenefitRow, !isLast && styles.guestBenefitDivider]}>
+      <View style={styles.guestBenefitIcon}>
+        <Ionicons name={icon} size={19} color={sg.goldHi} />
+      </View>
+      <Text style={styles.guestBenefitText}>{text}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     ...screenScroll,
@@ -309,6 +370,57 @@ const styles = StyleSheet.create({
     color: sg.text,
     letterSpacing: -0.5,
     marginBottom: spacing.base,
+  },
+  guestBenefitsCard: {
+    marginBottom: spacing.base,
+  },
+  guestBenefitsInner: {
+    paddingVertical: spacing.xs,
+  },
+  guestBenefitRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    minHeight: 58,
+    paddingVertical: spacing.sm,
+  },
+  guestBenefitDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: sg.line,
+  },
+  guestBenefitIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: sg.radius.btn,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: sg.cobaltWash,
+    borderWidth: 1,
+    borderColor: sg.cobaltBorder,
+  },
+  guestBenefitText: {
+    flex: 1,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 14,
+    lineHeight: 20,
+    color: sg.text,
+  },
+  guestSettingsButton: {
+    minHeight: 52,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.base,
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: sg.radius.btn,
+    backgroundColor: sg.surface,
+  },
+  guestSettingsText: {
+    flex: 1,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 14,
+    color: sg.text,
   },
   guestSignInCard: {
     marginBottom: spacing.base,
