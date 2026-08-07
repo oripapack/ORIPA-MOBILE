@@ -6,7 +6,7 @@ interface Props {
   label: string;
   onPress: () => void;
   /**
-   * gold — the ONE cobalt primary CTA per screen (legacy variant name).
+   * gold — the one value/primary CTA per screen.
    * line — quiet secondary (1px line border, no fill).
    */
   variant?: 'gold' | 'line';
@@ -33,7 +33,7 @@ export function SgButton({ label, onPress, variant = 'gold', disabled, loading, 
     >
       <View style={styles.labelWrap} pointerEvents="none">
         {loading ? (
-          <ActivityIndicator color={isGold ? sg.onGold : sg.text} size="small" />
+          <ActivityIndicator color={isGold ? sg.onValue : sg.text} size="small" />
         ) : (
           <>
             <Text style={[styles.label, !isGold && styles.labelLine]}>{label}</Text>
@@ -56,12 +56,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   gold: {
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderWidth: 1,
-    borderColor: sg.goldHi,
-    ...sg.glowCobalt,
+    borderColor: sg.valueHi,
+    ...sg.glowValue,
   },
-  goldPressed: { backgroundColor: sg.goldHi },
+  goldPressed: { backgroundColor: sg.valueHi },
   line: {
     backgroundColor: 'transparent',
     borderWidth: 1,
@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: sg.font.label,
     fontSize: 14,
-    color: sg.onGold,
+    color: sg.onValue,
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
   labelLine: { color: sg.text },
-  arrow: { fontFamily: sg.font.bodyBold, fontSize: 20, lineHeight: 22, color: sg.onGold },
+  arrow: { fontFamily: sg.font.bodyBold, fontSize: 20, lineHeight: 22, color: sg.onValue },
 });

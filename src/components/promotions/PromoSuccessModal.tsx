@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   btn: {
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -77,6 +77,6 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: fontSize.md,
     fontFamily: sg.font.bodyBold,
-    color: sg.onGold,
+    color: sg.onValue,
   },
 });

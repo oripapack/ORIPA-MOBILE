@@ -832,7 +832,7 @@
     "noResultsTitle": "无结果",
     "noResultsBody": "试试其他关键词。",
     "resultA11y": "View status for {{title}}",
-    "releaseSyncLabel": "SYNCING",
+    "releaseSyncLabel": "WAITING",
     "releaseSyncBody": "Live inventory and pack details are not available yet.",
     "releaseSyncHint": "View release status"
   },

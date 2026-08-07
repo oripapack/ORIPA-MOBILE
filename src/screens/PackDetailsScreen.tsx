@@ -123,6 +123,8 @@ export function PackDetailsScreen({ route }: Props) {
     commitOpen(openQuantity);
   };
 
+  const ctaUnavailable = openBlocked && !membershipLocked;
+
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.sm }]}>
       <TerminalBackdrop />
@@ -344,7 +346,7 @@ export function PackDetailsScreen({ route }: Props) {
           {/* Primary CTA — the single gold CTA on this screen (§4: gold = value,
               black label; neon never fills a CTA) */}
           <TouchableOpacity
-            style={[styles.cta, openBlocked && !membershipLocked ? styles.ctaDisabled : null]}
+            style={[styles.cta, ctaUnavailable ? styles.ctaUnavailable : null]}
             activeOpacity={0.9}
             disabled={membershipLocked ? isPackOpening || awaitingFulfillment : openBlocked}
             onPress={onPressPrimaryCta}
@@ -360,7 +362,7 @@ export function PackDetailsScreen({ route }: Props) {
           >
             <View style={styles.ctaInner}>
               <View style={styles.ctaTextWrap}>
-                <Text style={styles.ctaText}>
+                <Text style={[styles.ctaText, ctaUnavailable ? styles.ctaTextUnavailable : null]}>
                   {liveOpeningBlocked
                     ? t('packDetails.liveUnavailableTitle')
                     : membershipLocked
@@ -373,7 +375,7 @@ export function PackDetailsScreen({ route }: Props) {
                         ? t('packDetails.multiOpen.ctaOpenPack')
                         : t('packDetails.multiOpen.ctaFastOpen')}
                 </Text>
-                <Text style={styles.ctaSub}>
+                <Text style={[styles.ctaSub, ctaUnavailable ? styles.ctaTextUnavailable : null]}>
                   {liveOpeningBlocked ? (
                     t('packDetails.liveUnavailableShort')
                   ) : membershipLocked ? (
@@ -391,7 +393,7 @@ export function PackDetailsScreen({ route }: Props) {
                   )}
                 </Text>
               </View>
-              <Text style={styles.ctaArrow}>›</Text>
+              <Text style={[styles.ctaArrow, ctaUnavailable ? styles.ctaTextUnavailable : null]}>›</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -600,13 +602,18 @@ const styles = StyleSheet.create({
   },
   cta: {
     borderRadius: sg.radius.btn,
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderWidth: 1,
-    borderColor: sg.goldHi,
+    borderColor: sg.valueHi,
     overflow: 'hidden',
-    ...sg.glowCobalt,
+    ...sg.glowValue,
   },
-  ctaDisabled: { opacity: 0.4 },
+  ctaUnavailable: {
+    backgroundColor: sg.surfaceRaised,
+    borderColor: sg.lineStrong,
+    shadowOpacity: 0,
+    elevation: 0,
+  },
   ctaInner: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -614,19 +621,21 @@ const styles = StyleSheet.create({
     paddingVertical: sg.space.md - 2,
   },
   ctaTextWrap: { flex: 1 },
-  ctaText: { fontFamily: sg.font.label, fontSize: 14, color: sg.onGold, letterSpacing: 0.9, textTransform: 'uppercase' },
-  ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: 'rgba(244,239,227,0.78)', marginTop: 2 },
+  ctaText: { fontFamily: sg.font.label, fontSize: 14, color: sg.onValue, letterSpacing: 0.9, textTransform: 'uppercase' },
+  ctaSub: { fontFamily: sg.font.body, fontSize: 11, color: sg.onValue, opacity: 0.72, marginTop: 2 },
   ctaSubNum: {
     fontFamily: sg.font.dataBold,
     fontSize: 11,
-    color: 'rgba(244,239,227,0.78)',
+    color: sg.onValue,
+    opacity: 0.72,
     fontVariant: ['tabular-nums'],
   },
+  ctaTextUnavailable: { color: sg.muted, opacity: 0.72 },
   inlineNum: {
     fontFamily: sg.font.dataBold,
     fontSize: 13,
     color: sg.muted,
     fontVariant: ['tabular-nums'],
   },
-  ctaArrow: { fontFamily: sg.font.bodyBold, fontSize: 20, color: sg.onGold, marginLeft: sg.space.sm },
+  ctaArrow: { fontFamily: sg.font.bodyBold, fontSize: 20, color: sg.onValue, marginLeft: sg.space.sm },
 });

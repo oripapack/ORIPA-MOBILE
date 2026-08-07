@@ -241,7 +241,7 @@
     "noResultsTitle": "No results",
     "noResultsBody": "Try a different keyword.",
     "resultA11y": "View status for {{title}}",
-    "releaseSyncLabel": "SYNCING",
+    "releaseSyncLabel": "WAITING",
     "releaseSyncBody": "Live inventory and pack details are not available yet.",
     "releaseSyncHint": "View release status"
   },

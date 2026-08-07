@@ -131,9 +131,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderWidth: 1,
-    borderColor: sg.goldHi,
+    borderColor: sg.valueHi,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     minHeight: 48,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   signInBtnText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: sg.onGold,
+    color: sg.onValue,
   },
   identityRow: {
     flexDirection: 'row',

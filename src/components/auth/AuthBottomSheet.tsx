@@ -17,7 +17,7 @@ const { height: SH } = Dimensions.get('window');
  * Fixed panel height (most of the screen) — inner `ScrollView` scrolls. Using explicit `height`
  * avoids RN flex collapse where the sheet looked ~25% tall with content clipped.
  */
-export const AUTH_SHEET_HEIGHT = Math.min(SH * 0.78, 600);
+export const AUTH_SHEET_HEIGHT = Math.min(SH * 0.86, 720);
 const OFFSCREEN = AUTH_SHEET_HEIGHT + 56;
 const DISMISS_THRESHOLD = 88;
 
@@ -176,7 +176,8 @@ const styles = StyleSheet.create({
   sheet: {
     zIndex: 2,
     width: '100%',
-    alignSelf: 'stretch',
+    maxWidth: 720,
+    alignSelf: 'center',
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     backgroundColor: sg.surface,

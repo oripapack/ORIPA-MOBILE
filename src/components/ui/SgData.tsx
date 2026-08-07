@@ -26,7 +26,7 @@ const SIZES = { sm: 12, md: 15, lg: 20 } as const;
  * balances — product names and dates use the body face.
  */
 export function SgData({ value, unit, size = 'md', tone = 'default', style }: Props) {
-  const valueColor = tone === 'gold' ? sg.gold : tone === 'success' ? sg.success : sg.text;
+  const valueColor = tone === 'gold' ? sg.value : tone === 'success' ? sg.success : sg.text;
 
   return (
     <View style={styles.row}>

@@ -22,11 +22,11 @@ export function DevUiGalleryScreen() {
         </View>
 
         <View style={styles.block}>
-          <SgButton label="Open a pack — $25.00" onPress={() => {}} />
+          <SgButton label="Open a pack — Points required" onPress={() => {}} />
           <View style={styles.gap} />
           <SgButton label="Back to packs" variant="line" onPress={() => {}} />
           <View style={styles.gap} />
-          <SgButton label="Open a pack — $25.00" onPress={() => {}} disabled />
+          <SgButton label="Open a pack — Points required" onPress={() => {}} disabled />
         </View>
 
         <View style={styles.block}>

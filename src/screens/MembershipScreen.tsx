@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm,
   },
   ctaButton: {
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderRadius: radius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   ctaText: {
     fontSize: fontSize.md,
     fontFamily: sg.font.bodyBold,
-    color: sg.onGold,
+    color: sg.onValue,
     letterSpacing: 0.3,
   },
   ctaHint: {

@@ -134,7 +134,13 @@ export function HelpCenterScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'transparent' },
-  content: { paddingHorizontal: sg.space.md, paddingTop: sg.space.md },
+  content: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.md,
+  },
   routeRail: {
     minHeight: 88,
     flexDirection: 'row',

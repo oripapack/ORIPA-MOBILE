@@ -832,7 +832,7 @@
     "noResultsTitle": "Aucun résultat",
     "noResultsBody": "Essayez un autre terme.",
     "resultA11y": "View status for {{title}}",
-    "releaseSyncLabel": "SYNCING",
+    "releaseSyncLabel": "WAITING",
     "releaseSyncBody": "Live inventory and pack details are not available yet.",
     "releaseSyncHint": "View release status"
   },

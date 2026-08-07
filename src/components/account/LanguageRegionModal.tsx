@@ -145,7 +145,7 @@ export function LanguageRegionModal({
           accessibilityLabel={t('locale.save')}
         >
           <Text style={styles.doneText}>{t('locale.save')}</Text>
-          <Ionicons name="arrow-forward" size={18} color={sg.onGold} />
+          <Ionicons name="arrow-forward" size={18} color={sg.onValue} />
         </TouchableOpacity>
       </View>
     </Modal>
@@ -276,16 +276,16 @@ const styles = StyleSheet.create({
     marginHorizontal: sg.space.md,
     minHeight: sg.component.buttonPrimary.height,
     borderRadius: sg.radius.btn,
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderWidth: 1,
-    borderColor: sg.goldHi,
+    borderColor: sg.valueHi,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: sg.space.sm,
   },
   doneText: {
-    color: sg.onGold,
+    color: sg.onValue,
     fontSize: 15,
     fontFamily: sg.font.bodyBold,
   },

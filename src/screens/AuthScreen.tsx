@@ -277,6 +277,7 @@ export function AuthScreen({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
+        stickyHeaderIndices={isSheet && onRequestClose ? [0] : undefined}
       >
         {onRequestClose ? (
           <View style={styles.modalHeader}>
@@ -444,7 +445,7 @@ export function AuthScreen({
               disabled={emailDisabled}
             >
               {emailBusy ? (
-                <ActivityIndicator color={sg.onGold} />
+                <ActivityIndicator color={sg.onValue} />
               ) : (
                 <Text style={styles.primaryBtnText}>{t('auth.verifyCode')}</Text>
               )}
@@ -481,7 +482,7 @@ export function AuthScreen({
               disabled={emailDisabled}
             >
               {emailBusy ? (
-                <ActivityIndicator color={sg.onGold} />
+                <ActivityIndicator color={sg.onValue} />
               ) : (
                 <Text style={styles.primaryBtnText}>
                   {emailMode === 'signin' ? t('auth.emailSignIn') : t('auth.emailContinue')}
@@ -558,7 +559,7 @@ const styles = StyleSheet.create({
   },
   scrollContentSheet: {
     flexGrow: 0,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   logoRowSheet: {
     marginBottom: spacing.sm,
@@ -576,7 +577,7 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.display,
   },
   subtitleSheet: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.md,
     lineHeight: 22,
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyMedium,
@@ -595,7 +596,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   dividerRowSheet: {
-    marginVertical: spacing.lg,
+    marginVertical: sg.space.md,
   },
   dividerLineSheet: {
     backgroundColor: sg.line,
@@ -607,6 +608,8 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
+    minHeight: 48,
+    paddingVertical: 12,
   },
   appleBtnSheet: {
     backgroundColor: sg.bg,
@@ -617,8 +620,8 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    paddingVertical: spacing.md,
-    minHeight: 50,
+    paddingVertical: 12,
+    minHeight: 46,
   },
   modeChipOnSheet: {
     borderWidth: StyleSheet.hairlineWidth,
@@ -635,8 +638,8 @@ const styles = StyleSheet.create({
   },
   modeRowSheet: {
     marginTop: spacing.xs,
-    marginBottom: spacing.lg,
-    gap: spacing.md,
+    marginBottom: sg.space.md,
+    gap: sg.space.sm,
   },
   inputSheet: {
     backgroundColor: sg.surface2,
@@ -644,7 +647,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   primaryBtnSheet: {
-    shadowColor: sg.gold,
+    shadowColor: sg.value,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.22,
     shadowRadius: 10,
@@ -672,7 +675,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginBottom: spacing.sm,
+    minHeight: 36,
+    marginBottom: sg.space.sm,
+    paddingVertical: sg.space.xs,
+    backgroundColor: sg.surface,
+    zIndex: 2,
   },
   modalHeaderSpacer: {
     flex: 1,
@@ -803,7 +810,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   primaryBtn: {
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -814,7 +821,7 @@ const styles = StyleSheet.create({
   primaryBtnText: {
     fontSize: fontSize.md,
     fontFamily: sg.font.bodyBold,
-    color: sg.onGold,
+    color: sg.onValue,
   },
   verifyHint: {
     fontSize: fontSize.sm,

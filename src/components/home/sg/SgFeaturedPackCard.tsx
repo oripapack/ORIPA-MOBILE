@@ -87,6 +87,7 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
           <SgButton
             label={releaseBlocked ? 'VIEW PACK DETAILS' : t('packDetails.multiOpen.ctaOpenPack')}
             onPress={releaseBlocked ? goVerify : onOpen}
+            variant={releaseBlocked ? 'line' : 'gold'}
             style={styles.cta}
           />
 

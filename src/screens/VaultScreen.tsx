@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
   },
   guestCta: {
     alignSelf: 'flex-start',
-    backgroundColor: sgVault.gold,
+    backgroundColor: sgVault.value,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
     borderRadius: sgVault.radius.btn,
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
   guestCtaText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: sgVault.text,
+    color: sgVault.onValue,
   },
   guestTrustBlock: {
     marginTop: spacing.xl,

@@ -287,6 +287,9 @@ const styles = StyleSheet.create({
     backgroundColor: sg.bg,
   },
   content: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
     paddingHorizontal: spacing.base,
     paddingTop: spacing.base,
   },

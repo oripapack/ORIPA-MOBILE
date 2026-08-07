@@ -121,12 +121,14 @@ export function ResultScreen({ route }: Props) {
     return (
       <View style={[styles.root, styles.unavailableRoot, { paddingTop: insets.top }]}>
         <TerminalBackdrop />
-        <Text style={styles.unavailableEyebrow}>PULL RECORD / STATUS</Text>
-        <Text style={styles.unavailableTitle}>No live pull record was provided.</Text>
-        <Text style={styles.unavailableBody}>
-          Return to Packs and open a live pack. Result details appear only after a verified opening response.
-        </Text>
-        <SgButton label="Return to Packs" onPress={() => goTabs()} style={styles.unavailableCta} />
+        <View style={styles.unavailableContent}>
+          <Text style={styles.unavailableEyebrow}>PULL RECORD / STATUS</Text>
+          <Text style={styles.unavailableTitle}>No live pull record was provided.</Text>
+          <Text style={styles.unavailableBody}>
+            Return to Packs and open a live pack. Result details appear only after a verified opening response.
+          </Text>
+          <SgButton label="Return to Packs" variant="line" onPress={() => goTabs()} style={styles.unavailableCta} />
+        </View>
       </View>
     );
   }
@@ -290,8 +292,13 @@ function ResultArtPlaceholder({ compact = false }: { compact?: boolean }) {
 
 const styles = StyleSheet.create({
   unavailableRoot: {
-    paddingHorizontal: sg.space.lg,
     justifyContent: 'center',
+  },
+  unavailableContent: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingHorizontal: sg.space.lg,
   },
   unavailableEyebrow: {
     fontFamily: sg.font.label,
@@ -436,7 +443,7 @@ const styles = StyleSheet.create({
   heroValue: {
     fontFamily: sg.font.dataBold,
     fontSize: 19,
-    color: sg.gold,
+    color: sg.value,
     marginTop: 11,
     fontVariant: [...sg.numeric],
   },
@@ -455,7 +462,7 @@ const styles = StyleSheet.create({
   cellValue: {
     fontFamily: sg.font.dataBold,
     fontSize: 11.5,
-    color: sg.gold,
+    color: sg.value,
     marginTop: 2,
     fontVariant: [...sg.numeric],
   },
@@ -486,7 +493,7 @@ const styles = StyleSheet.create({
   totalValue: {
     fontFamily: sg.font.dataBold,
     fontSize: 24,
-    color: sg.gold,
+    color: sg.value,
     fontVariant: [...sg.numeric],
   },
 
@@ -554,7 +561,7 @@ const styles = StyleSheet.create({
   sheetAmount: {
     fontFamily: sg.font.dataBold,
     fontSize: 34,
-    color: sg.gold,
+    color: sg.value,
     marginTop: 14,
     fontVariant: [...sg.numeric],
   },

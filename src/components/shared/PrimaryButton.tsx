@@ -12,7 +12,7 @@ interface Props {
   style?: ViewStyle;
 }
 
-/** N2 primary CTA — gold fill, black label (§4). Prefer `SgButton` for new code. */
+/** Legacy structural action. Prefer `SgButton` for new true-primary/value actions. */
 export function PrimaryButton({ label, onPress, variant = 'gold', disabled, loading, style }: Props) {
   const isLine = variant === 'red' || variant === 'line';
 

@@ -833,7 +833,7 @@
     "noResultsTitle": "結果がありません",
     "noResultsBody": "別のキーワードで試してください。",
     "resultA11y": "View status for {{title}}",
-    "releaseSyncLabel": "SYNCING",
+    "releaseSyncLabel": "WAITING",
     "releaseSyncBody": "Live inventory and pack details are not available yet.",
     "releaseSyncHint": "View release status"
   },
