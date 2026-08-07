@@ -29,6 +29,7 @@ import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
 import { FriendVaultShowcaseSection } from '../components/friends/FriendVaultShowcaseSection';
 import { showUserMessage } from '../utils/showUserMessage';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendProfile'>;
 type Rt = RouteProp<RootStackParamList, 'FriendProfile'>;
@@ -73,25 +74,29 @@ export function FriendProfileScreen() {
 
   if (!isSelf && !isFriend) {
     return (
-      <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
-        <Text style={styles.errTitle}>{t('social.notFriendTitle')}</Text>
-        <Text style={styles.errBody}>{t('social.notFriendBody')}</Text>
-        <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.errBtnText}>{t('social.goBack')}</Text>
-        </TouchableOpacity>
-      </View>
+      <SgScreen>
+        <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
+          <Text style={styles.errTitle}>{t('social.notFriendTitle')}</Text>
+          <Text style={styles.errBody}>{t('social.notFriendBody')}</Text>
+          <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
+            <Text style={styles.errBtnText}>{t('social.goBack')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SgScreen>
     );
   }
 
   if (!profile) {
     return (
-      <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
-        <Text style={styles.errTitle}>{t('social.profileMissingTitle')}</Text>
-        <Text style={styles.errBody}>{t('social.profileMissingBody')}</Text>
-        <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.errBtnText}>{t('social.goBack')}</Text>
-        </TouchableOpacity>
-      </View>
+      <SgScreen>
+        <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
+          <Text style={styles.errTitle}>{t('social.profileMissingTitle')}</Text>
+          <Text style={styles.errBody}>{t('social.profileMissingBody')}</Text>
+          <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
+            <Text style={styles.errBtnText}>{t('social.goBack')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SgScreen>
     );
   }
 
@@ -99,7 +104,8 @@ export function FriendProfileScreen() {
   const highlights = getActivityHighlights(profile);
 
   return (
-    <View style={styles.root}>
+    <SgScreen>
+      <View style={styles.root}>
       <ScrollView
         contentContainerStyle={[
           styles.scroll,
@@ -210,14 +216,15 @@ export function FriendProfileScreen() {
           friend={profile}
         />
       ) : null}
-    </View>
+      </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: sg.bg },
+  root: { flex: 1, backgroundColor: 'transparent' },
   scroll: { paddingHorizontal: spacing.base },
-  center: { flex: 1, paddingHorizontal: spacing.lg, backgroundColor: sg.bg },
+  center: { flex: 1, paddingHorizontal: spacing.lg, backgroundColor: 'transparent' },
   errTitle: {
     fontSize: fontSize.lg,
     fontFamily: sg.font.display,

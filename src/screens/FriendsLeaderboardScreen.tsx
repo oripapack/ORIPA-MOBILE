@@ -15,6 +15,7 @@ import {
   type LeaderboardMetric,
 } from '../data/socialMock';
 import { formatUsd as fmt } from '../lib/socialFormat';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendsLeaderboard'>;
 
@@ -60,7 +61,8 @@ export function FriendsLeaderboardScreen() {
   }, [navigation, t]);
 
   return (
-    <View style={[styles.root, { paddingBottom: insets.bottom }]}>
+    <SgScreen>
+      <View style={[styles.root, { paddingBottom: insets.bottom }]}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -110,12 +112,13 @@ export function FriendsLeaderboardScreen() {
           </View>
         ))}
       </ScrollView>
-    </View>
+      </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: sg.bg },
+  root: { flex: 1, backgroundColor: 'transparent' },
   tabBar: { maxHeight: 52, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: sg.line },
   tabs: { paddingHorizontal: spacing.base, paddingVertical: spacing.sm, gap: spacing.sm, alignItems: 'center' },
   tab: {

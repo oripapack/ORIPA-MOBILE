@@ -20,6 +20,7 @@ import { RootStackParamList } from '../navigation/types';
 import { createClerkAuthedClient } from '../lib/supabaseAuthed';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { showUserMessage } from '../utils/showUserMessage';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'WalletLinking'>;
 
@@ -124,16 +125,21 @@ export function WalletLinkingScreen() {
   }, [address, t, userId]);
 
   if (!loaded) {
-    return <View style={[styles.container, { backgroundColor: sg.bg }]} />;
+    return (
+      <SgScreen>
+        <View style={styles.container} />
+      </SgScreen>
+    );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.lead}>{t('walletLinking.lead')}</Text>
 
       <View style={styles.field}>
@@ -165,12 +171,13 @@ export function WalletLinkingScreen() {
           <Text style={styles.saveBtnText}>{t('walletLinking.save')}</Text>
         )}
       </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,

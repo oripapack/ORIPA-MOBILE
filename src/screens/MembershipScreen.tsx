@@ -19,6 +19,7 @@ import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { RootStackParamList } from '../navigation/types';
 import { confirmUserAction, showUserMessage } from '../utils/showUserMessage';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Membership'>;
 
@@ -75,7 +76,8 @@ export function MembershipScreen() {
   }, [setSimulatedTier, t]);
 
   return (
-    <View style={styles.root}>
+    <SgScreen>
+      <View style={styles.root}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
@@ -129,14 +131,15 @@ export function MembershipScreen() {
         </TouchableOpacity>
         <Text style={styles.ctaHint}>{t('membership.ctaSimHint')}</Text>
       </View>
-    </View>
+      </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: sg.bg,
+    backgroundColor: 'transparent',
   },
   scroll: {
     flex: 1,

@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Notifications'>;
 
@@ -38,11 +39,12 @@ export function NotificationsScreen() {
   const keys: ToggleKey[] = ['order', 'drops', 'promos', 'social'];
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.lead}>{t('notifications.lead')}</Text>
 
       {keys.map((key) => (
@@ -61,12 +63,13 @@ export function NotificationsScreen() {
       ))}
 
       <Text style={styles.note}>{t('notifications.note')}</Text>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,

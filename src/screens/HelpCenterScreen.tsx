@@ -10,6 +10,7 @@ import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { openExternalUrl } from '../utils/openExternalUrl';
 import { SUPPORT_EMAIL } from '../config/app';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'HelpCenter'>;
 
@@ -32,11 +33,12 @@ export function HelpCenterScreen() {
   }, [navigation, t]);
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.lead}>{t('helpCenter.lead')}</Text>
 
       {faqIds.map((id) => {
@@ -65,12 +67,13 @@ export function HelpCenterScreen() {
         <Text style={styles.contactBtnText}>{t('helpCenter.emailCta', { email: SUPPORT_EMAIL })}</Text>
       </TouchableOpacity>
       <Text style={styles.footnote}>{t('helpCenter.responseTime')}</Text>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,

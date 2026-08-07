@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'IdentityVerification'>;
 
@@ -28,11 +29,12 @@ export function IdentityVerificationScreen() {
   }, [navigation, t]);
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.body}>{t('identityVerification.body')}</Text>
       <Text style={styles.section}>{t('identityVerification.whyTitle')}</Text>
       <Text style={styles.para}>{t('identityVerification.whyBody')}</Text>
@@ -43,12 +45,13 @@ export function IdentityVerificationScreen() {
         <Text style={styles.cardLine}>• {t('identityVerification.step3')}</Text>
       </View>
       <Text style={styles.note}>{t('identityVerification.note')}</Text>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   body: {
     fontSize: fontSize.sm,

@@ -10,6 +10,7 @@ import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
 import { TIER_BENEFITS } from '../data/tierBenefits';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'TierBenefits'>;
 
@@ -46,11 +47,12 @@ export function TierBenefitsScreen() {
   }, [userTier]);
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.lead}>{t('tierBenefits.lead')}</Text>
       {nextTierXp != null ? (
         <Text style={styles.progressHint}>
@@ -92,12 +94,13 @@ export function TierBenefitsScreen() {
       })}
 
       <Text style={styles.disclaimer}>{t('tierBenefits.disclaimer')}</Text>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,

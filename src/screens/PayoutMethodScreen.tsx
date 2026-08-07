@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'PayoutMethod'>;
 
@@ -28,11 +29,12 @@ export function PayoutMethodScreen() {
   }, [navigation, t]);
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.body}>{t('payoutMethod.body')}</Text>
       <View style={styles.card}>
         <Text style={styles.cardLine}>• {t('payoutMethod.line1')}</Text>
@@ -40,12 +42,13 @@ export function PayoutMethodScreen() {
         <Text style={styles.cardLine}>• {t('payoutMethod.line3')}</Text>
       </View>
       <Text style={styles.note}>{t('payoutMethod.note')}</Text>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   body: {
     fontSize: fontSize.sm,

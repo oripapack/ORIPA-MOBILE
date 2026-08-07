@@ -12,6 +12,7 @@ import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { fontSize } from '../tokens/typography';
 import { spacing } from '../tokens/spacing';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'CollectorQuests'>;
 
@@ -46,11 +47,12 @@ export function CollectorQuestsScreen() {
   const weeklies = COLLECTOR_QUESTS.filter((q) => q.kind === 'weekly');
 
   return (
-    <ScrollView
-      style={styles.root}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen>
+      <ScrollView
+        style={styles.root}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.lead}>{t('progression.questsResetHint')}</Text>
 
       <VaultFramedCard style={styles.card} contentStyle={styles.cardInner}>
@@ -82,14 +84,15 @@ export function CollectorQuestsScreen() {
           <CollectorQuestRow key={q.id} def={q} row={questProgress[q.id]} onClaim={onClaim} />
         ))}
       </VaultFramedCard>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: sg.bg,
+    backgroundColor: 'transparent',
   },
   content: {
     paddingHorizontal: spacing.base,
