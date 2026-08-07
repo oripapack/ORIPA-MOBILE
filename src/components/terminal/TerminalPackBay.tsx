@@ -1,12 +1,11 @@
 import React from 'react';
-import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import type { RarityTier } from '../../../shared/types/pack';
 import { sg } from '../../tokens/sg';
 
 type PackSize = 'sm' | 'md' | 'lg' | 'hero';
 
-const PRODUCT_EXHIBIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-cobalt-v1-wide.png');
-const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-cobalt-v1-portrait.png');
+const PRODUCT_EXHIBIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-clear-v2-portrait.jpg');
 
 export function TerminalPackBay({
   name,
@@ -21,9 +20,6 @@ export function TerminalPackBay({
   size?: PackSize;
   showRail?: boolean;
 }) {
-  const { width } = useWindowDimensions();
-  const isWide = width >= 760;
-
   return (
     <View
       style={[styles.shell, size === 'sm' && styles.shellSmall]}
@@ -43,7 +39,7 @@ export function TerminalPackBay({
         ]}
       >
         <Image
-          source={isWide ? PRODUCT_EXHIBIT_IMAGE : PRODUCT_EXHIBIT_PORTRAIT_IMAGE}
+          source={PRODUCT_EXHIBIT_IMAGE}
           style={styles.productPhoto}
           resizeMode="contain"
           accessible={false}

@@ -8,7 +8,7 @@ import { usePackOdds } from '../../../hooks/usePackOdds';
 import { getLocalizedPackFields } from '../../../i18n/packCopy';
 import { navigationRef } from '../../../navigation/navigationRef';
 
-const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-cobalt-v1-wide.png');
+const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-wide.jpg');
 
 export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () => void }) {
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
           <Image
             source={PRODUCT_EXHIBIT_IMAGE}
             style={styles.productPhoto}
-            resizeMode="contain"
+            resizeMode="cover"
             accessible={false}
           />
           <View style={styles.photoCaption} pointerEvents="none">

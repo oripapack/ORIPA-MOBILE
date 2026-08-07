@@ -2,8 +2,8 @@ import React from 'react';
 import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { sg } from '../../../tokens/sg';
 
-const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-cobalt-v1-wide.png');
-const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-cobalt-v1-portrait.png');
+const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-wide.jpg');
+const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-portrait.jpg');
 
 const JOURNEY = [
   { code: '01', label: 'SELECT' },
