@@ -662,6 +662,9 @@ function MarketplaceExperience() {
 
 const styles = StyleSheet.create({
   unavailablePage: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
     flexGrow: 1,
     paddingHorizontal: spacing.base,
     paddingTop: spacing.xxl,

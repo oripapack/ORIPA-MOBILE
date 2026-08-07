@@ -96,9 +96,10 @@ export function VaultScreen() {
 
   const horizontalPad = spacing.base;
   const gap = spacing.sm;
+  const contentWidth = Math.min(width, 1040);
   const tileWidth = useMemo(
-    () => Math.max(140, (width - horizontalPad * 2 - gap) / 2),
-    [width],
+    () => Math.max(140, (contentWidth - horizontalPad * 2 - gap) / 2),
+    [contentWidth],
   );
 
   const onTilePress = useCallback(
@@ -329,7 +330,13 @@ function VaultTile({
 }
 
 const styles = StyleSheet.create({
-  listContent: { paddingTop: spacing.sm, flexGrow: 1 },
+  listContent: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingTop: spacing.sm,
+    flexGrow: 1,
+  },
   headerBlock: { marginBottom: spacing.md },
   pageEyebrow: {
     fontSize: fontSize.xs,
