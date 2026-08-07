@@ -69,6 +69,9 @@ const semantic = {
   backdropRail: 'rgba(62,114,240,0.10)',
   backdropGrid: 'rgba(167,176,188,0.04)',
   modalScrim: 'rgba(0,0,0,0.60)',
+  functionalScrim: 'rgba(8,13,24,0.88)',
+  onPrimarySoft: 'rgba(244,239,227,0.68)',
+  cardShine: 'rgba(244,239,227,0.14)',
 } as const;
 
 const component = {
@@ -105,7 +108,7 @@ export const sg = {
   primitive,
   component,
 
-  radius: { panel: 6, btn: 4, tag: 3 } as const,
+  radius: { panel: 6, btn: 4, tag: 3, pill: 999 } as const,
   /** One focal object per screen: smoked acrylic depth, not a soft card shadow. */
   shadowHero: {
     shadowColor: '#020611',

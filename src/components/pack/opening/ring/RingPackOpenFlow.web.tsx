@@ -4,18 +4,25 @@ import type { RingPackOpenFlowProps } from './ringTypes';
 import { tierToRingRarity } from './ringRarity';
 import { appendPackOpeningSceneTweaks } from '../../../../config/packOpeningSceneTweaks';
 import { sg } from '../../../../tokens/sg';
-import { fontSize } from '../../../../tokens/typography';
-import { spacing } from '../../../../tokens/spacing';
+import { TerminalOpeningFallback } from '../TerminalOpeningFallback';
 
 /**
  * Expo web — load opening-3d.html in an iframe from the Vite helper (:3000).
  */
 export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
   const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
+  const [sceneState, setSceneState] = useState<'checking' | 'ready' | 'failed'>('checking');
   const revealedRef = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const lastSkipRef = useRef(0);
+
+  const origin = useMemo(
+    () =>
+      typeof window !== 'undefined' && window.location.hostname
+        ? `${window.location.protocol}//${window.location.hostname}:3000`
+        : 'http://127.0.0.1:3000',
+    [],
+  );
 
   const src = useMemo(() => {
     const tier = tierToRingRarity(props.roll.tier);
@@ -25,12 +32,29 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
       card: props.revealCard.name.slice(0, 120),
     });
     appendPackOpeningSceneTweaks(qs);
-    const origin =
-      typeof window !== 'undefined' && window.location.hostname
-        ? `${window.location.protocol}//${window.location.hostname}:3000`
-        : 'http://127.0.0.1:3000';
     return `${origin}/opening-3d.html?${qs.toString()}`;
-  }, [props.revealCard.name, props.roll.tier]);
+  }, [origin, props.revealCard.name, props.roll.tier]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2600);
+    setSceneState('checking');
+    setLoading(true);
+
+    void fetch(`${origin}/opening-3d.html`, {
+      cache: 'no-store',
+      mode: 'no-cors',
+      signal: controller.signal,
+    })
+      .then(() => setSceneState('ready'))
+      .catch(() => setSceneState('failed'))
+      .finally(() => clearTimeout(timeout));
+
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [origin]);
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
@@ -67,14 +91,15 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
     document.querySelectorAll('[data-pack-ring-overlay]').forEach((n) => n.remove());
   }, []);
 
-  if (failed) {
+  if (sceneState === 'failed') {
+    return <TerminalOpeningFallback {...props} />;
+  }
+
+  if (sceneState === 'checking') {
     return (
-      <View style={styles.fill}>
-        <Text style={styles.errorTitle}>Pack scene unavailable</Text>
-        <Text style={styles.errorBody}>
-          Make sure `npm start` is running (it starts the scene server on port 3000).
-          Then refresh and open a pack again.
-        </Text>
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={sg.gold} />
+        <Text style={styles.loadingText}>Checking reveal lane…</Text>
       </View>
     );
   }
@@ -89,7 +114,7 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
         allow="autoplay; fullscreen"
         onLoad={() => setLoading(false)}
         onError={() => {
-          setFailed(true);
+          setSceneState('failed');
           setLoading(false);
         }}
       />
@@ -123,28 +148,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: sg.bg,
-    gap: spacing.md,
+    gap: sg.space.md,
   },
   loadingText: {
     color: sg.muted,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.data.fontSize,
     fontFamily: sg.font.bodyMedium,
-  },
-  errorTitle: {
-    color: sg.text,
-    fontSize: fontSize.lg,
-    fontFamily: sg.font.bodyBold,
-    textAlign: 'center',
-    marginTop: 80,
-    paddingHorizontal: 24,
-  },
-  errorBody: {
-    color: sg.muted,
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.body,
-    textAlign: 'center',
-    marginTop: 12,
-    paddingHorizontal: 32,
-    lineHeight: 22,
   },
 });

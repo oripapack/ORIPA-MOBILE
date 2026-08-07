@@ -2,8 +2,8 @@ import type { N2TierState } from '../lib/n2Rarity';
 
 /**
  * MOCK RESULT DATA — 実データ待ち。外部に見せないこと。
- * The Result screen is not wired to the opening flow yet (Yutaka domain);
- * these pulls exist only so the screen can be reviewed (KNOWN_ISSUES).
+ * The opening flow passes its real runtime payload to Result; these pulls
+ * remain only for isolated Result-screen review (KNOWN_ISSUES).
  * Card names/values are fabricated placeholders, not content claims (§5-9).
  *
  * Every card ships with tier 'unknown': no card↔tier data structure exists
@@ -15,7 +15,8 @@ import type { N2TierState } from '../lib/n2Rarity';
 export type ResultCard = {
   name: string;
   tier: N2TierState;
-  imageUrl: string;
+  /** Real card art when supplied by the pull payload; omitted renders a neutral placeholder. */
+  imageUrl?: string;
   listedValueUsd: number;
 };
 

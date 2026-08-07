@@ -16,8 +16,8 @@ export type RootStackParamList = {
   DevUiGallery: undefined;
   PackDetails: { packId: string };
   /**
-   * Post-opening pull record. Not wired to the opening flow yet — without
-   * params it renders MOCK data for review; `pullIds` enables finalize actions.
+   * Post-opening pull record. The opening flow supplies `pull` + `pullIds`;
+   * without params it renders MOCK data for isolated UI review.
    */
   Result:
     | {

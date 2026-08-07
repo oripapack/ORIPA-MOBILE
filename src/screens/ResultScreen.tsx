@@ -14,9 +14,8 @@ import { TerminalBackdrop } from '../components/terminal';
  * Result screen — task1-result-screen-spec.md on N2 v2.4 tokens.
  *
  * Entered after the opening sequence has faded to black; no entry transition
- * of its own. Not yet wired to the opening flow (Yutaka domain): callers pass
- * `pull` (+ optional store `pullIds` for real finalize actions); without
- * params the screen renders MOCK data for review.
+ * of its own. The opening flow passes `pull` plus store `pullIds` for real
+ * finalize actions; without params the screen renders MOCK data for review.
  *
  * Copy is intentionally hardcoded English per the spec ("英語ロケール・その
  * まま使う") — locale keys come later with the flow wiring.
@@ -29,7 +28,7 @@ import { TerminalBackdrop } from '../components/terminal';
 type Props = {
   route: {
     params?: {
-      /** Real payload from the opening flow (not wired yet). */
+      /** Runtime payload from the opening flow. */
       pull?: ResultPullData;
       /** Store pull ids — when present, CTA/vault call finalizePendingFulfillment. */
       pullIds?: string[];
@@ -67,6 +66,7 @@ export function ResultScreen({ route }: Props) {
   const insets = useSafeAreaInsets();
   const finalize = useAppStore((s) => s.finalizePendingFulfillment);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [finalizing, setFinalizing] = useState(false);
 
   const params = route.params;
   const pull = params?.pull ?? MOCK_RESULT_PULLS[params?.mock ?? '5'];
@@ -88,18 +88,36 @@ export function ResultScreen({ route }: Props) {
     else navigationRef.navigate('MainTabs');
   };
 
-  const onConfirmTradeIn = () => {
-    setSheetOpen(false);
-    // Real wiring: convert every pull of this opening. With mock data there is
-    // nothing to finalize — state stays untouched.
-    if (pullIds?.length) void finalize({ vaultIds: [], convertIds: pullIds });
-    goTabs();
+  const onConfirmTradeIn = async () => {
+    if (finalizing) return;
+    setFinalizing(true);
+    try {
+      // With isolated mock data there is nothing to finalize; runtime pulls
+      // wait for the store/API result before leaving this record.
+      if (pullIds?.length) {
+        const ok = await finalize({ vaultIds: [], convertIds: pullIds });
+        if (!ok) return;
+      }
+      setSheetOpen(false);
+      goTabs();
+    } finally {
+      setFinalizing(false);
+    }
   };
 
-  const onKeepInVault = () => {
-    // Spec: no confirmation for the Vault path.
-    if (pullIds?.length) void finalize({ vaultIds: pullIds, convertIds: [] });
-    goTabs('Vault');
+  const onKeepInVault = async () => {
+    if (finalizing) return;
+    setFinalizing(true);
+    try {
+      // Spec: no confirmation for the Vault path.
+      if (pullIds?.length) {
+        const ok = await finalize({ vaultIds: pullIds, convertIds: [] });
+        if (!ok) return;
+      }
+      goTabs('Vault');
+    } finally {
+      setFinalizing(false);
+    }
   };
 
   return (
@@ -128,7 +146,11 @@ export function ResultScreen({ route }: Props) {
             <View style={styles.heroBlock}>
               <View style={styles.heroShadow}>
                 <View style={styles.heroImgClip}>
-                  <Image source={{ uri: hero.imageUrl }} style={styles.heroImg} contentFit="cover" />
+                  {hero.imageUrl ? (
+                    <Image source={{ uri: hero.imageUrl }} style={styles.heroImg} contentFit="cover" />
+                  ) : (
+                    <ResultArtPlaceholder />
+                  )}
                 </View>
               </View>
               <Text style={styles.heroName} numberOfLines={2}>{hero.name}</Text>
@@ -177,7 +199,13 @@ export function ResultScreen({ route }: Props) {
       <View style={styles.actionBar}>
         <SgButton label={ctaLabel} onPress={() => setSheetOpen(true)} style={styles.cta} />
         <Text style={styles.disclaimer}>100% of listed value, in Points.</Text>
-        <SgButton label="Keep in Vault" variant="line" onPress={onKeepInVault} style={styles.secondary} />
+        <SgButton
+          label="Keep in Vault"
+          variant="line"
+          onPress={() => void onKeepInVault()}
+          loading={finalizing && !sheetOpen}
+          style={styles.secondary}
+        />
       </View>
 
       {/* ── 5. Footer ── */}
@@ -200,8 +228,19 @@ export function ResultScreen({ route }: Props) {
                 ? `All ${count} cards will be traded in for Points at their listed value.`
                 : 'This card will be traded in for Points at its listed value.'}
             </Text>
-            <SgButton label="Trade in" onPress={onConfirmTradeIn} style={styles.cta} />
-            <SgButton label="Cancel" variant="line" onPress={() => setSheetOpen(false)} style={styles.sheetCancel} />
+            <SgButton
+              label="Trade in"
+              onPress={() => void onConfirmTradeIn()}
+              loading={finalizing}
+              style={styles.cta}
+            />
+            <SgButton
+              label="Cancel"
+              variant="line"
+              onPress={() => setSheetOpen(false)}
+              disabled={finalizing}
+              style={styles.sheetCancel}
+            />
           </View>
         </View>
       </Modal>
@@ -213,10 +252,27 @@ function GridCell({ card }: { card: ResultCard }) {
   return (
     <View style={styles.cell}>
       <View style={styles.cellImgClip}>
-        <Image source={{ uri: card.imageUrl }} style={styles.cellImg} contentFit="cover" />
+        {card.imageUrl ? (
+          <Image source={{ uri: card.imageUrl }} style={styles.cellImg} contentFit="cover" />
+        ) : (
+          <ResultArtPlaceholder compact />
+        )}
       </View>
       <Text style={styles.cellName} numberOfLines={2}>{card.name}</Text>
       <Text style={styles.cellValue}>{fmtUsd(card.listedValueUsd)}</Text>
+    </View>
+  );
+}
+
+function ResultArtPlaceholder({ compact = false }: { compact?: boolean }) {
+  return (
+    <View style={styles.artPlaceholder}>
+      <View style={styles.artTopRail} />
+      <View style={[styles.artFrame, compact && styles.artFrameCompact]}>
+        <Text style={[styles.artCode, compact && styles.artCodeCompact]}>CARD ART</Text>
+        <Text style={styles.artStatus}>PENDING</Text>
+      </View>
+      <View style={styles.artBottomRail} />
     </View>
   );
 }
@@ -290,6 +346,46 @@ const styles = StyleSheet.create({
   },
   heroImgClip: { flex: 1, borderRadius: sg.radius.panel, overflow: 'hidden' },
   heroImg: { width: '100%', height: '100%' },
+  artPlaceholder: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: sg.space.sm,
+    backgroundColor: sg.bayShell,
+  },
+  artTopRail: { width: '72%', height: 2, backgroundColor: sg.ivoryLightSoft },
+  artFrame: {
+    width: '72%',
+    aspectRatio: 0.72,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: sg.cobaltBorderStrong,
+    backgroundColor: sg.surface2,
+  },
+  artFrameCompact: { width: '78%' },
+  artCode: {
+    fontFamily: sg.font.display,
+    fontSize: 16,
+    color: sg.text,
+    textAlign: 'center',
+  },
+  artCodeCompact: { fontSize: 9 },
+  artStatus: {
+    marginTop: sg.space.xs,
+    fontFamily: sg.font.label,
+    fontSize: 7,
+    letterSpacing: 0.8,
+    color: sg.muted,
+  },
+  artBottomRail: {
+    width: '60%',
+    height: 5,
+    borderWidth: 1,
+    borderColor: sg.cobaltBorder,
+    borderRadius: sg.radius.pill,
+  },
   heroName: {
     fontFamily: sg.font.bodyBold, // spec 600 — loaded weights are 400/500/700, 700 is the closest
     fontSize: 16,

@@ -20,6 +20,7 @@ import { SHIPPING_ADDRESS_STORAGE_KEY } from '../lib/shippingAddress';
 import { createShippingAddressLive, getUserShippingAddressesLive } from '../data/shipping';
 import { useAppStore } from '../store/useAppStore';
 import { showUserMessage } from '../utils/showUserMessage';
+import { SgScreen } from '../components/ui';
 
 const STORAGE_KEY = SHIPPING_ADDRESS_STORAGE_KEY;
 
@@ -139,40 +140,46 @@ export function ShippingAddressScreen() {
   );
 
   if (!loaded) {
-    return <View style={[styles.container, { backgroundColor: sg.bg }]} />;
+    return (
+      <SgScreen>
+        <View />
+      </SgScreen>
+    );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
-      <Text style={styles.lead}>{t('shippingAddress.lead')}</Text>
-      {field('fullName')}
-      {field('line1')}
-      {field('line2', true)}
-      {field('city')}
-      <View style={styles.row2}>
-        <View style={styles.col}>{field('region')}</View>
-        <View style={styles.col}>{field('postal')}</View>
-      </View>
-      {field('country')}
-      <TouchableOpacity
-        style={[styles.saveBtn, saving ? styles.saveBtnDisabled : null]}
-        onPress={() => void onSave()}
-        activeOpacity={0.88}
-        disabled={saving}
+    <SgScreen>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.saveBtnText}>{t('shippingAddress.save')}</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <Text style={styles.lead}>{t('shippingAddress.lead')}</Text>
+        {field('fullName')}
+        {field('line1')}
+        {field('line2', true)}
+        {field('city')}
+        <View style={styles.row2}>
+          <View style={styles.col}>{field('region')}</View>
+          <View style={styles.col}>{field('postal')}</View>
+        </View>
+        {field('country')}
+        <TouchableOpacity
+          style={[styles.saveBtn, saving ? styles.saveBtnDisabled : null]}
+          onPress={() => void onSave()}
+          activeOpacity={0.88}
+          disabled={saving}
+        >
+          <Text style={styles.saveBtnText}>{t('shippingAddress.save')}</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,

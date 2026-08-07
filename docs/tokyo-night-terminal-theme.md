@@ -47,6 +47,8 @@ screen-local accent colors.
   odds access, and open CTA
 - Result: record header, card panel, listed-value summary, Trade in confirmation,
   and Vault action
+- Opening: interactive 3D `TOKYO PACK 01`, code-native safety fallback, skip,
+  reveal record, and direct Result handoff
 - Shop, Vault, Friends, Player, auth, membership, and supporting sheets inherit
   the same palette, typography, panel geometry, and action hierarchy
 
@@ -56,9 +58,14 @@ screen-local accent colors.
 - Existing real-card and marketplace demo data were not rewritten.
 - Existing routes, auth, checkout, store shape, and mock business logic were
   preserved.
-- `src/components/pack/opening/` remains outside this visual pass per the
-  repository ownership rule. Its entry/exit surfaces inherit shared tokens where
-  already supported, but its animation internals were not modified.
+- The user explicitly expanded this branch to the complete product UI, including
+  opening. The active 3D scene was re-skinned in `pack-ring-server/`; the
+  interaction physics and draw result remain unchanged.
+- If the 3D helper is unavailable, the app now uses a code-native terminal
+  opening instead of showing a browser connection error or blank screen.
+- Real card art and grading data are still asset/data-blocked. Result and safety
+  opening screens use explicit neutral placeholders rather than fabricated card
+  photography or grade claims.
 - User-facing English uses Points, Trade in, listed value, and TIER terminology.
   Legacy locale parity is tracked separately by KNOWN_ISSUES T1.
 
@@ -74,3 +81,6 @@ Saved captures:
 - `docs/screenshots/tokyo-night-terminal/vault-440x956.jpg`
 - `docs/screenshots/tokyo-night-terminal/friends-440x956.jpg`
 - `docs/screenshots/tokyo-night-terminal/player-440x956.jpg`
+- `docs/screenshots/tokyo-night-terminal/flow-home-440x956.png`
+- `docs/screenshots/tokyo-night-terminal/flow-opening-440x956.png`
+- `docs/screenshots/tokyo-night-terminal/flow-result-440x956.png`

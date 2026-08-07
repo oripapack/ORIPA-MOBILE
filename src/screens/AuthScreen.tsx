@@ -18,7 +18,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useClerk, useSSO, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
-import { getAppLogoParts } from '../config/app';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { SIGNUP_PROMO_BONUS_CREDITS, SIGNUP_PROMO_BONUS_USD } from '../data/promotions.mock';
 
@@ -86,8 +85,6 @@ export function AuthScreen({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
-
-  const { primary, secondary } = getAppLogoParts();
 
   const setMode = (m: EmailMode) => {
     setEmailMode(m);
@@ -297,10 +294,8 @@ export function AuthScreen({
         ) : null}
 
         <View style={[styles.logoRow, isSheet && styles.logoRowSheet]}>
-          <Text style={[styles.logoPrimary, isSheet && styles.logoPrimarySheet]}>{primary}</Text>
-          {secondary ? (
-            <Text style={[styles.logoSecondary, isSheet && styles.logoSecondarySheet]}>{secondary}</Text>
-          ) : null}
+          <Text style={[styles.logoPrimary, isSheet && styles.logoPrimarySheet]}>PULL.HUB</Text>
+          <Text style={styles.accessLabel}>TOKYO TERMINAL / ACCESS</Text>
         </View>
 
         <Text style={[styles.title, isSheet && styles.titleSheet]}>{t('auth.title')}</Text>
@@ -520,9 +515,7 @@ export function AuthScreen({
             </TouchableOpacity>
             <Text style={styles.hint}>{t('welcome.guestHint')}</Text>
           </>
-        ) : (
-          <Text style={[styles.hint, isSheet && styles.hintSheet]}>{t('auth.dashboardHint')}</Text>
-        )}
+        ) : null}
       </ScrollView>
       </KeyboardAvoidingView>
     </>
@@ -689,9 +682,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logoRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 4,
+    alignItems: 'flex-start',
     marginBottom: spacing.xl,
   },
   logoPrimary: {
@@ -699,6 +690,14 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
+  },
+  accessLabel: {
+    marginTop: 2,
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.muted,
   },
   logoSecondary: {
     fontSize: fontSize.hero,
