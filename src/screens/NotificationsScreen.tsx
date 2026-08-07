@@ -39,7 +39,7 @@ export function NotificationsScreen() {
   const keys: ToggleKey[] = ['order', 'drops', 'promos', 'social'];
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <ScrollView
         style={styles.container}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}

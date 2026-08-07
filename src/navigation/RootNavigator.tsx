@@ -60,6 +60,42 @@ import { PromotionSync } from '../components/promotions/PromotionSync';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
+const RELEASE_AUDIT_ROUTES = [
+  'MainTabs',
+  'DevUiGallery',
+  'Settings',
+  'PackDetails',
+  'Result',
+  'PaymentPortal',
+  'HelpCenter',
+  'ShippingAddress',
+  'TierBenefits',
+  'Membership',
+  'CollectorQuests',
+  'Notifications',
+  'HotDropsInfo',
+  'PromosInfo',
+  'PullHistory',
+  'FriendProfile',
+  'FriendsLeaderboard',
+  'LinkedAccounts',
+  'WalletLinking',
+  'IdentityVerification',
+  'PayoutMethod',
+  'Promotions',
+] as const satisfies readonly (keyof RootStackParamList)[];
+
+type ReleaseAuditRoute = (typeof RELEASE_AUDIT_ROUTES)[number];
+
+/** Local web QA only: opens one registered route without exposing it in normal builds. */
+function getReleaseAuditRoute(): ReleaseAuditRoute | null {
+  if (process.env.EXPO_PUBLIC_RELEASE_AUDIT !== '1' || Platform.OS !== 'web' || typeof window === 'undefined') {
+    return null;
+  }
+  const requested = new URLSearchParams(window.location.search).get('screen');
+  return RELEASE_AUDIT_ROUTES.find((route) => route === requested) ?? null;
+}
+
 const tabBarDockStyles = StyleSheet.create({
   root: {
     ...StyleSheet.absoluteFillObject,
@@ -187,6 +223,7 @@ function TabNavigatorInner() {
 }
 
 function RootStack() {
+  const releaseAuditRoute = getReleaseAuditRoute();
   const stackHeader = {
     headerShown: true as const,
     headerTintColor: sg.text,
@@ -201,11 +238,11 @@ function RootStack() {
       <Stack.Navigator
         // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery | Result. No effect in normal runs.
         initialRouteName={
-          process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
+          releaseAuditRoute ?? (process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
             ? 'DevUiGallery'
             : process.env.EXPO_PUBLIC_DEV_SCREEN === 'Result'
               ? 'Result'
-              : 'MainTabs'
+              : 'MainTabs')
         }
         screenOptions={{
           headerShown: false,
@@ -218,6 +255,7 @@ function RootStack() {
         <Stack.Screen
           name="PackDetails"
           component={PackDetailsScreen}
+          initialParams={releaseAuditRoute === 'PackDetails' ? { packId: 'welcome-pack' } : undefined}
           options={{
             headerShown: false,
           }}
@@ -245,7 +283,12 @@ function RootStack() {
         <Stack.Screen name="HotDropsInfo" component={HotDropsInfoScreen} options={stackHeader} />
         <Stack.Screen name="PromosInfo" component={PromosInfoScreen} options={stackHeader} />
         <Stack.Screen name="PullHistory" component={PullHistoryScreen} options={stackHeader} />
-        <Stack.Screen name="FriendProfile" component={FriendProfileScreen} options={stackHeader} />
+        <Stack.Screen
+          name="FriendProfile"
+          component={FriendProfileScreen}
+          initialParams={releaseAuditRoute === 'FriendProfile' ? { username: 'maya.cards' } : undefined}
+          options={stackHeader}
+        />
         <Stack.Screen name="FriendsLeaderboard" component={FriendsLeaderboardScreen} options={stackHeader} />
         <Stack.Screen name="LinkedAccounts" component={LinkedAccountsScreen} options={stackHeader} />
         <Stack.Screen name="WalletLinking" component={WalletLinkingScreen} options={stackHeader} />

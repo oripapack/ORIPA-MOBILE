@@ -6,21 +6,25 @@ import { SgScreen } from './SgScreen';
 
 interface Props {
   code: string;
+  eyebrow?: string;
+  title?: string;
+  body?: string;
+  status?: string;
 }
 
 /** Release-safe destination for account services without a verified provider connection. */
-export function SgUnavailableService({ code }: Props) {
+export function SgUnavailableService({ code, eyebrow, title, body, status }: Props) {
   const { t } = useTranslation();
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <View style={styles.page} accessibilityRole="summary">
-        <Text style={styles.eyebrow}>{t('serviceAvailability.eyebrow')}</Text>
-        <Text style={styles.title}>{t('serviceAvailability.title')}</Text>
-        <Text style={styles.body}>{t('serviceAvailability.body')}</Text>
+        <Text style={styles.eyebrow}>{eyebrow ?? t('serviceAvailability.eyebrow')}</Text>
+        <Text style={styles.title}>{title ?? t('serviceAvailability.title')}</Text>
+        <Text style={styles.body}>{body ?? t('serviceAvailability.body')}</Text>
         <View style={styles.panel}>
           <Text style={styles.code}>{code}</Text>
-          <Text style={styles.status}>{t('serviceAvailability.status')}</Text>
+          <Text style={styles.status}>{status ?? t('serviceAvailability.status')}</Text>
         </View>
       </View>
     </SgScreen>

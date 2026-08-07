@@ -298,7 +298,9 @@ export function AuthScreen({
           <Text style={styles.accessLabel}>TOKYO TERMINAL / ACCESS</Text>
         </View>
 
-        <Text style={[styles.title, isSheet && styles.titleSheet]}>{t('auth.title')}</Text>
+        <Text style={[styles.title, isSheet && styles.titleSheet]}>
+          {t(emailMode === 'signup' ? 'auth.modeSignUp' : 'auth.title')}
+        </Text>
         <Text
           style={[styles.subtitle, isSheet && styles.subtitleSheet]}
           numberOfLines={isSheet ? 3 : undefined}

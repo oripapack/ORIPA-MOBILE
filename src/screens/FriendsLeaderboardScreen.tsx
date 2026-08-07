@@ -16,6 +16,8 @@ import {
 } from '../data/socialMock';
 import { formatUsd as fmt } from '../lib/socialFormat';
 import { SgScreen } from '../components/ui/SgScreen';
+import { SgUnavailableService } from '../components/ui';
+import { SOCIAL_IS_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendsLeaderboard'>;
 
@@ -57,8 +59,19 @@ export function FriendsLeaderboardScreen() {
     });
   }, [navigation, t]);
 
+  if (!__DEV__ && !SOCIAL_IS_LIVE) {
+    return (
+      <SgUnavailableService
+        code="SOCIAL / LEADERBOARD"
+        eyebrow={t('friends.releaseEyebrow')}
+        title={t('friends.releaseTitle')}
+        body={t('friends.releaseBody')}
+      />
+    );
+  }
+
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <View style={[styles.root, { paddingBottom: insets.bottom }]}>
       <ScrollView
         horizontal
@@ -105,7 +118,11 @@ export function FriendsLeaderboardScreen() {
                 @{e.username}
               </Text>
             </View>
-            <Text style={styles.rowVal}>{formatMetricValue(metric, e.value)}</Text>
+            <Text
+              style={[styles.rowVal, metric !== 'packsOpened' && styles.rowValFinancial]}
+            >
+              {formatMetricValue(metric, e.value)}
+            </Text>
           </View>
         ))}
       </ScrollView>
@@ -148,7 +165,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
   },
-  rowMe: { borderColor: sg.line, backgroundColor: sg.vermilionWash },
+  rowMe: { borderColor: sg.cobaltBorder, backgroundColor: sg.cobaltWash },
   rank: {
     fontSize: fontSize.md,
     fontFamily: sg.font.display,
@@ -159,5 +176,6 @@ const styles = StyleSheet.create({
   rowMeta: { flex: 1, minWidth: 0 },
   rowName: { fontSize: fontSize.md, fontFamily: sg.font.bodyBold, color: sg.text },
   rowUn: { fontSize: fontSize.xs, color: sg.muted, marginTop: 2 },
-  rowVal: { fontSize: fontSize.md, fontFamily: sg.font.display, color: sg.surface2 },
+  rowVal: { fontSize: fontSize.md, fontFamily: sg.font.display, color: sg.text },
+  rowValFinancial: { color: sg.valueHi },
 });

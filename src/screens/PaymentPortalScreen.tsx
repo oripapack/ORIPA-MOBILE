@@ -64,7 +64,7 @@ export function PaymentPortalScreen() {
   );
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}

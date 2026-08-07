@@ -78,7 +78,7 @@ export function MembershipScreen() {
 
   if (!MEMBERSHIP_IS_LIVE && !__DEV__) {
     return (
-      <SgScreen>
+      <SgScreen constrainContent>
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={[styles.releasePage, { paddingBottom: insets.bottom + spacing.xxxl }]}
@@ -97,7 +97,7 @@ export function MembershipScreen() {
   }
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <View style={styles.root}>
       <ScrollView
         style={styles.scroll}

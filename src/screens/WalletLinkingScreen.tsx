@@ -143,7 +143,7 @@ export function WalletLinkingScreen() {
   }
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <ScrollView
         style={styles.container}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}

@@ -47,7 +47,7 @@ export function CollectorQuestsScreen() {
   const weeklies = COLLECTOR_QUESTS.filter((q) => q.kind === 'weekly');
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <ScrollView
         style={styles.root}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}

@@ -361,6 +361,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   content: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
     paddingHorizontal: spacing.base,
     paddingBottom: 120,
   },

@@ -4,17 +4,14 @@ import {
   Modal,
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   StyleSheet,
   Pressable,
-  Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
-import { PACK_OPENING_TIER_ODDS } from '../../data/lootBoxOdds';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 
 interface Props {
@@ -42,23 +39,13 @@ export function LootBoxDisclosure({ visible, onClose }: Props) {
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityRole="button" />
       <View style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]}>
         <Text style={styles.title}>{t('lootBox.title')}</Text>
-        <Text style={styles.lead}>{t('lootBox.lead')}</Text>
+        <Text style={styles.lead}>{t('packDetails.liveUnavailableBody')}</Text>
 
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator
-          bounces={Platform.OS !== 'android'}
-        >
-          <Text style={styles.tableHead}>{t('lootBox.columnTier')}</Text>
-          {PACK_OPENING_TIER_ODDS.map((row) => (
-            <View key={row.tier} style={styles.row}>
-              <Text style={styles.tier}>{row.tier}</Text>
-              <Text style={styles.pct}>~{row.probabilityPct}%</Text>
-            </View>
-          ))}
-          <Text style={styles.footnote}>{t('lootBox.footnote')}</Text>
-        </ScrollView>
+        <View style={styles.statusPanel} accessibilityRole="summary">
+          <Text style={styles.statusCode}>LIVE ODDS / STATUS</Text>
+          <Text style={styles.statusTitle}>{t('packDetails.liveUnavailableTitle')}</Text>
+          <Text style={styles.statusBody}>{t('packDetails.liveUnavailableShort')}</Text>
+        </View>
 
         <TouchableOpacity style={styles.doneBtn} onPress={onClose} activeOpacity={0.88}>
           <Text style={styles.doneText}>{t('lootBox.done')}</Text>
@@ -101,39 +88,34 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     lineHeight: 20,
   },
-  scroll: { maxHeight: 320 },
-  scrollContent: { paddingBottom: spacing.sm },
-  tableHead: {
-    fontSize: fontSize.xs,
-    fontFamily: sg.font.bodyBold,
-    color: sg.muted,
-    marginBottom: spacing.xs,
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
-  },
-  row: {
-    flexDirection: 'row',
+  statusPanel: {
+    minHeight: 136,
+    padding: sg.space.md,
     justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: sg.line,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    borderLeftWidth: 3,
+    borderLeftColor: sg.gold,
   },
-  tier: {
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
+  statusCode: {
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.chrome,
+  },
+  statusTitle: {
+    fontFamily: sg.font.display,
+    fontSize: sg.type.title.fontSize,
+    lineHeight: sg.type.title.lineHeight,
     color: sg.text,
   },
-  pct: {
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
-    color: sg.muted,
-  },
-  footnote: {
-    marginTop: spacing.md,
-    fontSize: fontSize.xs,
+  statusBody: {
     fontFamily: sg.font.body,
-    color: sg.muted,
-    lineHeight: 18,
+    fontSize: sg.type.body.fontSize,
+    lineHeight: sg.type.body.lineHeight,
+    color: sg.warning,
   },
   doneBtn: {
     marginTop: spacing.md,

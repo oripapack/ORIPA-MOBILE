@@ -149,7 +149,7 @@ export function ShippingAddressScreen() {
 
   if (releaseBlocked) {
     return (
-      <SgScreen>
+      <SgScreen constrainContent>
         <View style={styles.releasePage} accessibilityRole="summary">
           <Text style={styles.releaseEyebrow}>{t('shippingAddress.releaseEyebrow')}</Text>
           <Text style={styles.releaseTitle}>{t('shippingAddress.releaseTitle')}</Text>
@@ -179,7 +179,7 @@ export function ShippingAddressScreen() {
   }
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <ScrollView
         style={styles.container}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}

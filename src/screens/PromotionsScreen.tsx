@@ -52,7 +52,7 @@ export function PromotionsScreen() {
   );
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}

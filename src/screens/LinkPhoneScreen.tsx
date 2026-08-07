@@ -179,7 +179,7 @@ export function LinkPhoneScreen() {
   }
 
   return (
-    <SgScreen style={styles.screenRoot}>
+    <SgScreen style={styles.screenRoot} constrainContent>
       
       <KeyboardAvoidingView
         style={styles.flexOverBg}

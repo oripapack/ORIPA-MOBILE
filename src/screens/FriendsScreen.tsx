@@ -563,6 +563,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   scroll: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
     paddingHorizontal: spacing.base,
     paddingBottom: 120,
   },

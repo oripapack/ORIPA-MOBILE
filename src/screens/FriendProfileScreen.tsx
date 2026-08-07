@@ -28,6 +28,8 @@ import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
 import { FriendVaultShowcaseSection } from '../components/friends/FriendVaultShowcaseSection';
 import { SgScreen } from '../components/ui/SgScreen';
+import { SgUnavailableService } from '../components/ui';
+import { SOCIAL_IS_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendProfile'>;
 type Rt = RouteProp<RootStackParamList, 'FriendProfile'>;
@@ -70,9 +72,20 @@ export function FriendProfileScreen() {
 
   const meProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
 
+  if (!__DEV__ && !SOCIAL_IS_LIVE) {
+    return (
+      <SgUnavailableService
+        code="SOCIAL / PROFILE"
+        eyebrow={t('friends.releaseEyebrow')}
+        title={t('friends.releaseTitle')}
+        body={t('friends.releaseBody')}
+      />
+    );
+  }
+
   if (!isSelf && !isFriend) {
     return (
-      <SgScreen>
+      <SgScreen constrainContent>
         <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
           <Text style={styles.errTitle}>{t('social.notFriendTitle')}</Text>
           <Text style={styles.errBody}>{t('social.notFriendBody')}</Text>
@@ -86,7 +99,7 @@ export function FriendProfileScreen() {
 
   if (!profile) {
     return (
-      <SgScreen>
+      <SgScreen constrainContent>
         <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
           <Text style={styles.errTitle}>{t('social.profileMissingTitle')}</Text>
           <Text style={styles.errBody}>{t('social.profileMissingBody')}</Text>
@@ -102,7 +115,7 @@ export function FriendProfileScreen() {
   const highlights = getActivityHighlights(profile);
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <View style={styles.root}>
       <ScrollView
         contentContainerStyle={[

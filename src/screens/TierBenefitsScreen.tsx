@@ -49,7 +49,7 @@ export function TierBenefitsScreen() {
 
   if (!MEMBERSHIP_IS_LIVE && !__DEV__) {
     return (
-      <SgScreen>
+      <SgScreen constrainContent>
         <View style={styles.releasePage}>
           <Text style={styles.releaseEyebrow}>{t('membership.releaseEyebrow')}</Text>
           <Text style={styles.releaseTitle}>{t('membership.releaseTitle')}</Text>
@@ -60,7 +60,7 @@ export function TierBenefitsScreen() {
   }
 
   return (
-    <SgScreen>
+    <SgScreen constrainContent>
       <ScrollView
         style={styles.container}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
