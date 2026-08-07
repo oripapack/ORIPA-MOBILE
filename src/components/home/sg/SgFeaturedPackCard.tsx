@@ -1,16 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Pack } from '../../../data/mockPacks';
 import { SgButton, SgData } from '../../ui';
-import { TerminalPackBay, TerminalStatusRail } from '../../terminal';
 import { sg } from '../../../tokens/sg';
 import { usePackOdds } from '../../../hooks/usePackOdds';
 import { getLocalizedPackFields } from '../../../i18n/packCopy';
 import { navigationRef } from '../../../navigation/navigationRef';
 
+const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-wide.jpg');
+
 export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () => void }) {
   const { t } = useTranslation();
+  const { width } = useWindowDimensions();
+  const isWide = width >= 760;
   const loc = getLocalizedPackFields(pack, t);
   const { odds, loading } = usePackOdds(pack);
   const releaseBlocked = !__DEV__ && !odds.isLive;
@@ -34,16 +37,18 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
         <Text style={styles.bay}>BAY A</Text>
       </View>
 
-      <View style={styles.machineRow}>
-        <View style={styles.bayWrap}>
-          <TerminalPackBay
-            name={pack.title}
-            category={pack.tcgCategory ?? 'TCG'}
-            rarityTier={pack.rarityTier ?? 'epic'}
-            size="md"
-          />
+      <View style={[styles.productStage, isWide && styles.productStageWide]}>
+        <Image
+          source={PRODUCT_EXHIBIT_IMAGE}
+          style={styles.productPhoto}
+          resizeMode="cover"
+          accessible={false}
+        />
+        <View style={styles.photoInnerFrame} pointerEvents="none" />
+        <View style={styles.photoCaption} pointerEvents="none">
+          <Text style={styles.photoCaptionCode}>PH-01</Text>
+          <Text style={styles.photoCaptionText}>PHYSICAL DISPLAY / TOKYO CASE</Text>
         </View>
-        <TerminalStatusRail compact />
       </View>
 
       {releaseBlocked ? (
@@ -121,8 +126,29 @@ const styles = StyleSheet.create({
   eyebrow: { fontFamily: sg.font.label, fontSize: 8, letterSpacing: 1, color: sg.goldHi },
   title: { fontFamily: sg.font.display, fontSize: 20, lineHeight: 22, letterSpacing: -0.6, color: sg.text, marginTop: 3 },
   bay: { fontFamily: sg.font.dataBold, fontSize: 9, color: sg.muted, borderWidth: 1, borderColor: sg.line, padding: 5 },
-  machineRow: { flexDirection: 'row', gap: 7, alignItems: 'stretch' },
-  bayWrap: { flex: 1 },
+  productStage: {
+    height: 216,
+    backgroundColor: sg.bg,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    borderRadius: sg.radius.tag,
+    overflow: 'hidden',
+  },
+  productStageWide: { height: 390 },
+  productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
+  photoInnerFrame: {
+    position: 'absolute', top: 5, right: 5, bottom: 5, left: 5,
+    borderWidth: 1, borderColor: sg.ivoryLightSoft, borderRadius: sg.radius.tag,
+  },
+  photoCaption: {
+    position: 'absolute', left: 12, bottom: 12,
+    paddingHorizontal: 8, paddingVertical: 6,
+    backgroundColor: sg.functionalScrim,
+    borderWidth: 1, borderColor: sg.lineStrong,
+    borderRadius: sg.radius.tag,
+  },
+  photoCaptionCode: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.goldHi, fontVariant: [...sg.numeric] },
+  photoCaptionText: { marginTop: 2, fontFamily: sg.font.label, fontSize: 6.5, color: sg.text, letterSpacing: 0.55 },
   readout: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 12, paddingHorizontal: 4 },
   slotsBar: { height: 3, backgroundColor: sg.line, marginHorizontal: 4, marginTop: 8 },
   slotsFill: { height: 3, backgroundColor: sg.success },

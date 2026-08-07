@@ -153,7 +153,13 @@ function SgFeaturedRow({ pack }: { pack: Pack }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
-  list: { paddingBottom: 100, flexGrow: 1 },
+  list: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingBottom: 100,
+    flexGrow: 1,
+  },
   chipRow: { paddingHorizontal: sg.space.md, paddingVertical: 11, gap: 7 },
   // Filter chips — btn radius (these are controls, not status tags)
   chip: {

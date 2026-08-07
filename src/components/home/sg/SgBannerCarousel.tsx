@@ -1,9 +1,8 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { sg } from '../../../tokens/sg';
 
-const EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-chamber.jpg');
-const PACK_IMAGE = require('../../../../assets/home/tokyo-pack-01.png');
+const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-wide.jpg');
 
 const JOURNEY = [
   { code: '01', label: 'SELECT' },
@@ -18,20 +17,19 @@ const JOURNEY = [
  */
 export function SgBannerCarousel() {
   const isReleasePreview = !__DEV__;
+  const { width } = useWindowDimensions();
+  const isWide = width >= 760;
 
   return (
-    <View style={styles.board} accessibilityRole="summary">
-      <View style={styles.exhibit} pointerEvents="none">
-        <Image source={EXHIBIT_IMAGE} style={styles.exhibitImage} resizeMode="contain" accessible={false} />
-        <View style={styles.exhibitDim} />
-        <View style={styles.exhibitHalo} />
-        <Image source={PACK_IMAGE} style={styles.exhibitPack} resizeMode="contain" accessible={false} />
-        <View style={styles.exhibitPlate}>
-          <Text style={styles.exhibitPlateText}>CASE / 01</Text>
-        </View>
-      </View>
+    <View style={[styles.board, isWide && styles.boardWide]} accessibilityRole="summary">
+      <Image
+        source={PRODUCT_EXHIBIT_IMAGE}
+        style={styles.productPhoto}
+        resizeMode="cover"
+        accessible={false}
+      />
 
-      <View style={styles.copyPanel}>
+      <View style={[styles.copyPanel, isWide && styles.copyPanelWide]}>
         <View style={styles.topRow}>
           <Text style={styles.route}>JST / SHOWCASE 01</Text>
           <View style={styles.status}>
@@ -58,6 +56,10 @@ export function SgBannerCarousel() {
         </View>
       </View>
 
+      <View style={styles.exhibitPlate} pointerEvents="none">
+        <Text style={styles.exhibitPlateText}>CASE / 01</Text>
+      </View>
+
       <View style={styles.innerFrame} pointerEvents="none" />
       <View style={styles.chromeTop} pointerEvents="none" />
       <View style={styles.chromeBottom} pointerEvents="none" />
@@ -67,7 +69,7 @@ export function SgBannerCarousel() {
 
 const styles = StyleSheet.create({
   board: {
-    minHeight: 220,
+    height: 220,
     marginHorizontal: sg.space.md,
     marginTop: sg.space.md,
     backgroundColor: sg.bayShell,
@@ -76,9 +78,11 @@ const styles = StyleSheet.create({
     borderRadius: sg.radius.panel,
     overflow: 'hidden',
   },
+  boardWide: { height: 320 },
+  productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   copyPanel: {
-    width: '69%',
-    minHeight: 218,
+    width: '64%',
+    height: '100%',
     zIndex: 2,
     paddingHorizontal: sg.space.md,
     paddingTop: sg.space.md,
@@ -88,6 +92,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: sg.cobaltBorder,
   },
+  copyPanelWide: { width: '54%', paddingHorizontal: sg.space.lg, paddingTop: sg.space.lg, paddingBottom: sg.space.md },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: sg.space.sm },
   route: { flexShrink: 1, fontFamily: sg.font.label, fontSize: 7.5, color: sg.chrome, letterSpacing: 0.95 },
   status: { flexDirection: 'row', alignItems: 'center', gap: 5 },
@@ -117,41 +122,6 @@ const styles = StyleSheet.create({
   journeyCell: { flex: 1, paddingTop: 9 },
   journeyCode: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.goldHi, fontVariant: [...sg.numeric] },
   journeyLabel: { marginTop: 2, fontFamily: sg.font.label, fontSize: 6.4, color: sg.muted, letterSpacing: 0.45 },
-  exhibit: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    width: '38%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: sg.surface2,
-  },
-  exhibitImage: { position: 'absolute', top: -4, bottom: -4, width: 110, height: 232 },
-  exhibitDim: { ...StyleSheet.absoluteFillObject, backgroundColor: sg.exhibitScrim },
-  exhibitHalo: {
-    position: 'absolute',
-    top: 26,
-    width: 84,
-    height: 16,
-    borderRadius: sg.radius.pill,
-    borderWidth: 2,
-    borderColor: sg.ivoryLight,
-    shadowColor: sg.text,
-    shadowOpacity: 0.48,
-    shadowRadius: 11,
-    shadowOffset: { width: 0, height: 0 },
-  },
-  exhibitPack: {
-    position: 'absolute',
-    top: 63,
-    width: 53,
-    height: 90,
-    shadowColor: sg.bg,
-    shadowOpacity: 0.86,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 8 },
-  },
   exhibitPlate: {
     position: 'absolute',
     right: sg.space.sm,
