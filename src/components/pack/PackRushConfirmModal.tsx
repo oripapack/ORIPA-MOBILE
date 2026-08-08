@@ -44,7 +44,7 @@ export function PackRushConfirmModal({ visible, packCount, totalCredits, onCance
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.58)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'center',
     alignItems: 'center',
     padding: sg.space.xl,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   primary: {
     height: 50,
     borderRadius: sg.radius.btn,
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: sg.space.sm,
@@ -100,9 +100,10 @@ const styles = StyleSheet.create({
   primaryLabel: {
     fontSize: fontSize.base,
     fontFamily: sg.font.bodyBold,
-    color: sg.onGold,
+    color: sg.onValue,
   },
   secondary: {
+    minHeight: 44,
     paddingVertical: sg.space.sm,
     alignItems: 'center',
   },

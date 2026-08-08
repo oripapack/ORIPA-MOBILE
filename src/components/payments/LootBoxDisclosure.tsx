@@ -58,7 +58,7 @@ export function LootBoxDisclosure({ visible, onClose }: Props) {
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: sg.modalScrim,
   },
   sheet: {
     position: 'absolute',
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     borderRadius: radius.xl,
     padding: spacing.lg,
-    shadowColor: '#000',
+    shadowColor: sg.shadowHero.shadowColor,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.15,
     shadowRadius: 16,
@@ -119,10 +119,13 @@ const styles = StyleSheet.create({
   },
   doneBtn: {
     marginTop: spacing.md,
+    minHeight: 48,
     alignSelf: 'stretch',
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.surface,
     paddingVertical: spacing.sm + 2,
     borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
     alignItems: 'center',
   },
   doneText: {

@@ -59,7 +59,7 @@ export function PackOddsModal({ visible, onClose, packTitle, odds }: Props) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.56)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'center',
     paddingHorizontal: sg.space.md,
   },
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     marginTop: spacing.md,
+    minHeight: 44,
     alignSelf: 'flex-end',
     borderWidth: 1,
     borderColor: sg.line,
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: sg.space.xs + 2,
     backgroundColor: sg.surface2,
+    justifyContent: 'center',
   },
   closeText: {
     fontSize: fontSize.sm,

@@ -415,8 +415,8 @@ const styles = StyleSheet.create({
     borderColor: sg.gold,
   },
   intentConvert: {
-    backgroundColor: 'rgba(229,72,77,0.14)',
-    borderColor: 'rgba(229,72,77,0.45)',
+    backgroundColor: sg.vermilionWash,
+    borderColor: sg.neonBorder,
   },
   intentText: {
     color: sg.text,
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
   },
   confirmOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'center',
     padding: sg.space.xl,
   },

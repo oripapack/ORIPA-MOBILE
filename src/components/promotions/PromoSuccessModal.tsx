@@ -36,7 +36,7 @@ export function PromoSuccessModal({ visible, title, body, onDismiss }: Props) {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'center',
     paddingHorizontal: spacing.xl,
   },
@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   btn: {
+    minHeight: 48,
     backgroundColor: sg.value,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,

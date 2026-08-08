@@ -55,6 +55,7 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
           <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
             <Text style={styles.headerTitle}>{t('phonePicker.title')}</Text>
             <TouchableOpacity
+              style={styles.closeButton}
               onPress={onClose}
               hitSlop={12}
               accessibilityRole="button"
@@ -96,12 +97,12 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
                   }}
                   activeOpacity={0.7}
                 >
-                  <Text style={styles.flag}>{item.flag}</Text>
+                  <Text style={styles.countryCode}>{item.id.toUpperCase()}</Text>
                   <Text style={styles.rowName} numberOfLines={1}>
                     {item.name}
                   </Text>
                   <Text style={styles.rowDial}>{item.dial}</Text>
-                  {isOn ? <Ionicons name="checkmark" size={22} color={sg.error} /> : <View style={styles.checkSpacer} />}
+                  {isOn ? <Ionicons name="checkmark" size={22} color={sg.accentText} /> : <View style={styles.checkSpacer} />}
                 </TouchableOpacity>
               );
             }}
@@ -118,7 +119,7 @@ export function PhoneCountryPickerModal({ visible, selected, onClose, onSelect }
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'flex-end',
   },
   sheet: {
@@ -138,6 +139,12 @@ const styles = StyleSheet.create({
     fontSize: fontSize.lg,
     fontFamily: sg.font.bodyBold,
     color: sg.text,
+  },
+  closeButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   searchRow: {
     flexDirection: 'row',
@@ -166,10 +173,13 @@ const styles = StyleSheet.create({
   rowOn: {
     backgroundColor: sg.surface,
   },
-  flag: {
-    fontSize: 22,
+  countryCode: {
+    fontSize: 10,
+    fontFamily: sg.font.label,
+    color: sg.accentText,
     width: 32,
     textAlign: 'center',
+    letterSpacing: 0.8,
   },
   rowName: {
     flex: 1,

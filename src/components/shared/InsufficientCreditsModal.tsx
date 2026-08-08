@@ -37,7 +37,7 @@ export function InsufficientCreditsModal() {
       <Pressable style={styles.overlay} onPress={dismiss}>
         <Pressable style={styles.modal} onPress={() => {}}>
           <View style={styles.iconWrap}>
-            <MaterialCommunityIcons name="wallet" size={32} color="#EA580C" />
+            <MaterialCommunityIcons name="wallet" size={32} color={sg.warning} />
           </View>
 
           <Text style={styles.title}>{t('insufficientCredits.title')}</Text>
@@ -70,7 +70,6 @@ export function InsufficientCreditsModal() {
 
           <PrimaryButton
             label={t('insufficientCredits.buyCredits')}
-            variant="red"
             style={styles.primaryBtn}
             onPress={() => {
               closeModal('insufficientCredits');
@@ -92,7 +91,7 @@ export function InsufficientCreditsModal() {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.xl,
@@ -103,6 +102,8 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     width: '100%',
     maxWidth: 380,
+    borderWidth: 1,
+    borderColor: sg.line,
   },
   iconWrap: {
     alignSelf: 'center',

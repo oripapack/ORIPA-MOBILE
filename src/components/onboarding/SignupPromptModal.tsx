@@ -48,10 +48,10 @@ export function SignupPromptModal() {
             <Text style={styles.title}>{t('onboarding.promptTitle')}</Text>
             <Text style={styles.body}>{t('onboarding.promptBody')}</Text>
             <View style={styles.row}>
-              <PrimaryButton label={t('onboarding.promptSignUp')} variant="red" onPress={() => openAuth('signup')} />
+              <PrimaryButton label={t('onboarding.promptSignUp')} onPress={() => openAuth('signup')} />
               <SecondaryButton label={t('onboarding.promptSignIn')} onPress={() => openAuth('signin')} />
             </View>
-            <Pressable onPress={onMaybeLater} accessibilityRole="button">
+            <Pressable style={styles.laterButton} onPress={onMaybeLater} accessibilityRole="button">
               <Text style={styles.later}>{t('onboarding.promptLater')}</Text>
             </Pressable>
           </Pressable>
@@ -70,7 +70,7 @@ export function SignupPromptModal() {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'center',
     paddingHorizontal: spacing.lg,
   },
@@ -117,10 +117,15 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   later: {
-    marginTop: spacing.lg,
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyMedium,
     color: sg.muted,
     textAlign: 'center',
+  },
+  laterButton: {
+    minHeight: 44,
+    marginTop: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

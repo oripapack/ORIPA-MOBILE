@@ -69,7 +69,7 @@ export function SimulationDisclosure() {
               <Text style={styles.bodyJa}>{t('demoSimulation.bodyJa')}</Text>
             </View>
           </ScrollView>
-          <PrimaryButton label={t('demoSimulation.confirm')} variant="red" onPress={onConfirm} style={styles.btn} />
+          <PrimaryButton label={t('demoSimulation.confirm')} onPress={onConfirm} style={styles.btn} />
         </View>
       </View>
     </Modal>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.72)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'center',
     paddingHorizontal: spacing.lg,
   },
