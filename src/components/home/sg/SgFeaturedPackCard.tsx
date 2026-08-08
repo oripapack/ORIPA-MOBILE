@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Pack } from '../../../data/mockPacks';
 import { SgButton, SgData } from '../../ui';
@@ -7,8 +7,7 @@ import { sg } from '../../../tokens/sg';
 import { usePackOdds } from '../../../hooks/usePackOdds';
 import { getLocalizedPackFields } from '../../../i18n/packCopy';
 import { navigationRef } from '../../../navigation/navigationRef';
-
-const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-wide.jpg');
+import { PackProductExhibit } from '../../terminal';
 
 export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () => void }) {
   const { t } = useTranslation();
@@ -37,11 +36,11 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
 
       <View style={[styles.productBody, isWide && styles.productBodyWide]}>
         <View style={[styles.productStage, isWide && styles.productStageWide]}>
-          <Image
-            source={PRODUCT_EXHIBIT_IMAGE}
-            style={styles.productPhoto}
-            resizeMode="cover"
-            accessible={false}
+          <PackProductExhibit
+            name={pack.title}
+            category={pack.tcgCategory}
+            packId={pack.id}
+            layout="wide"
           />
           <View style={styles.photoCaption} pointerEvents="none">
             <Text style={styles.photoCaptionCode}>PH-01</Text>
@@ -132,7 +131,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   productStageWide: { flex: 1.6, height: 310 },
-  productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   photoCaption: {
     position: 'absolute', left: 12, bottom: 12,
     paddingHorizontal: 8, paddingVertical: 6,

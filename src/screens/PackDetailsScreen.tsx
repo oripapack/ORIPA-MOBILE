@@ -159,6 +159,7 @@ export function PackDetailsScreen({ route }: Props) {
               <TerminalPackBay
                 name={pack.title}
                 category={pack.tcgCategory ?? 'TCG'}
+                packId={pack.id}
                 rarityTier={pack.rarityTier ?? 'epic'}
                 size="hero"
               />

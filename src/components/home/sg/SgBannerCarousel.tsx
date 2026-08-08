@@ -1,9 +1,7 @@
 import React from 'react';
-import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { sg } from '../../../tokens/sg';
-
-const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-wide.jpg');
-const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-portrait.jpg');
+import { PackProductExhibit } from '../../terminal';
 
 const JOURNEY = [
   { code: '01', label: 'SELECT' },
@@ -24,11 +22,11 @@ export function SgBannerCarousel() {
   return (
     <View style={[styles.board, isWide && styles.boardWide]} accessibilityRole="summary">
       <View style={[styles.productPane, isWide && styles.productPaneWide]}>
-        <Image
-          source={isWide ? PRODUCT_EXHIBIT_IMAGE : PRODUCT_EXHIBIT_PORTRAIT_IMAGE}
-          style={styles.productPhoto}
-          resizeMode="cover"
-          accessible={false}
+        <PackProductExhibit
+          name="Tokyo Pack 01"
+          category="Multi TCG"
+          packId="showcase-01"
+          layout={isWide ? 'wide' : 'portrait'}
         />
       </View>
 
@@ -91,7 +89,6 @@ const styles = StyleSheet.create({
   productPaneWide: {
     width: '48%',
   },
-  productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   copyPanel: {
     width: '64%',
     height: '100%',

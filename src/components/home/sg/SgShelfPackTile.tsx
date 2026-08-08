@@ -1,12 +1,11 @@
 import React from 'react';
-import { Image, View, Text, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import type { Pack } from '../../../data/mockPacks';
 import { sg } from '../../../tokens/sg';
 import { SgData } from '../../ui';
 import { navigationRef } from '../../../navigation/navigationRef';
 import { usePackOdds } from '../../../hooks/usePackOdds';
-
-const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-wide.jpg');
+import { PackProductExhibit } from '../../terminal';
 
 export function SgShelfPackTile({ pack }: { pack: Pack }) {
   const { width } = useWindowDimensions();
@@ -37,11 +36,11 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
         )}
       </View>
       <View style={[styles.visual, isWide && styles.visualWide]}>
-        <Image
-          source={PRODUCT_EXHIBIT_IMAGE}
-          style={styles.productPhoto}
-          resizeMode="cover"
-          accessible={false}
+        <PackProductExhibit
+          name={pack.title}
+          category={pack.tcgCategory}
+          packId={pack.id}
+          layout="wide"
         />
       </View>
       <Text style={styles.name} numberOfLines={2}>{pack.title}</Text>
@@ -70,7 +69,6 @@ const styles = StyleSheet.create({
   waiting: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.warning, letterSpacing: 0.55 },
   visual: { height: 162, marginTop: 6, backgroundColor: sg.bayShell, borderWidth: 1, borderColor: sg.lineStrong, overflow: 'hidden' },
   visualWide: { height: 260 },
-  productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   name: { fontFamily: sg.font.bodyBold, fontSize: 13, lineHeight: 16, color: sg.text, marginTop: 9, minHeight: 32 },
   metaRow: { gap: 3, marginTop: 6 },
   syncRow: {

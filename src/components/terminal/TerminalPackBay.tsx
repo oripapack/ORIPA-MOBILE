@@ -1,21 +1,22 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import type { RarityTier } from '../../../shared/types/pack';
 import { sg } from '../../tokens/sg';
+import { PackProductExhibit } from './PackProductExhibit';
 
 type PackSize = 'sm' | 'md' | 'lg' | 'hero';
-
-const PRODUCT_EXHIBIT_IMAGE = require('../../../assets/home/tokyo-exhibit-product-clear-v2-portrait.jpg');
 
 export function TerminalPackBay({
   name,
   category,
+  packId,
   rarityTier,
   size = 'md',
   showRail = true,
 }: {
   name: string;
   category: string;
+  packId?: string;
   rarityTier?: RarityTier;
   size?: PackSize;
   showRail?: boolean;
@@ -38,12 +39,7 @@ export function TerminalPackBay({
           size === 'hero' && styles.innerHero,
         ]}
       >
-        <Image
-          source={PRODUCT_EXHIBIT_IMAGE}
-          style={styles.productPhoto}
-          resizeMode="contain"
-          accessible={false}
-        />
+        <PackProductExhibit name={name} category={category} packId={packId} layout="portrait" />
         {showRail ? (
           <View style={styles.casePlate} pointerEvents="none">
             <Text style={styles.casePlateCode}>CASE / 01</Text>
@@ -85,7 +81,6 @@ const styles = StyleSheet.create({
   innerSmall: { minHeight: 180 },
   innerLarge: { minHeight: 320 },
   innerHero: { minHeight: 360 },
-  productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   casePlate: {
     position: 'absolute', left: sg.space.sm, bottom: sg.space.sm,
     paddingHorizontal: sg.space.sm, paddingVertical: 6,
