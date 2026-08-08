@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     width: 24,
     fontFamily: sg.font.data,
     fontSize: 11,
-    color: sg.chrome,
+    color: sg.muted,
     fontVariant: ['tabular-nums'],
   },
   faqIndexActive: { color: sg.goldHi },

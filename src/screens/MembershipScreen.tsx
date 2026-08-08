@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.label,
     fontSize: 9,
     letterSpacing: 0.8,
-    color: sg.chrome,
+    color: sg.muted,
   },
   releasePanelStatus: {
     fontFamily: sg.font.label,

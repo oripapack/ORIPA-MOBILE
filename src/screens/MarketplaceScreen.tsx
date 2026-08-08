@@ -712,7 +712,7 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.label,
     fontSize: 9,
     letterSpacing: 0.9,
-    color: sg.chrome,
+    color: sg.muted,
   },
   unavailableStatus: {
     fontFamily: sg.font.label,

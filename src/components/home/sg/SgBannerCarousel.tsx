@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
   },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: sg.space.sm },
-  route: { flexShrink: 1, fontFamily: sg.font.label, fontSize: 7.5, color: sg.chrome, letterSpacing: 0.95 },
+  route: { flexShrink: 1, fontFamily: sg.font.label, fontSize: 7.5, color: sg.muted, letterSpacing: 0.95 },
   status: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   statusDot: { width: 5, height: 5, backgroundColor: sg.success, borderRadius: sg.radius.pill },
   statusDotPending: { backgroundColor: sg.warning },

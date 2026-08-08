@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   tile: { flex: 1, backgroundColor: sg.surface, borderWidth: 1, borderColor: sg.line, borderRadius: sg.radius.panel, padding: 9, overflow: 'hidden' },
   pressed: { opacity: 0.9, transform: [{ scale: 0.985 }] },
   routeRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  route: { fontFamily: sg.font.data, fontSize: 7.5, color: sg.chrome, letterSpacing: 0.7 },
+  route: { fontFamily: sg.font.data, fontSize: 7.5, color: sg.muted, letterSpacing: 0.7 },
   newText: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.neon, letterSpacing: 0.7 },
   online: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.success, letterSpacing: 0.55 },
   waiting: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.warning, letterSpacing: 0.55 },

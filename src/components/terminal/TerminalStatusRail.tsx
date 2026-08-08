@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   signal: { width: 16, height: 3, backgroundColor: sg.gold, marginBottom: 6 },
   signalMint: { backgroundColor: sg.success },
   signalRed: { backgroundColor: sg.neon },
-  code: { fontFamily: sg.font.data, fontSize: 8, color: sg.chrome, letterSpacing: 0.8 },
+  code: { fontFamily: sg.font.data, fontSize: 8, color: sg.muted, letterSpacing: 0.8 },
   label: { fontFamily: sg.font.label, fontSize: 8, color: sg.text, letterSpacing: 0.4, marginTop: 2 },
   sub: { fontFamily: sg.font.data, fontSize: 6.5, color: sg.muted, letterSpacing: 0.25, marginTop: 1 },
 });

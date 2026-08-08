@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     fontSize: sg.type.label.fontSize,
     lineHeight: sg.type.label.lineHeight,
     letterSpacing: sg.type.label.letterSpacing,
-    color: sg.chrome,
+    color: sg.muted,
   },
   statusTitle: {
     fontFamily: sg.font.display,
