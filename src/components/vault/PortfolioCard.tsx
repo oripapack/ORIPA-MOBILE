@@ -4,13 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { sgVault } from '../../tokens/sgVault';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
-import type { Pull, PullRarityTier } from '../../data/mockUser';
-
-const COINS_PER_USD = 100;
-
-function coinsToUsd(coins: number): number {
-  return coins / COINS_PER_USD;
-}
+import type { Pull } from '../../data/mockUser';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 function formatUsd(usd: number): string {
   if (usd >= 1000) {
@@ -24,13 +19,6 @@ function formatUsd(usd: number): string {
   }).format(Math.max(0, usd));
 }
 
-const TIER_BAR_COLOR: Record<PullRarityTier, string> = {
-  base: sgVault.muted,
-  epic: '#A855F7',
-  legendary: sgVault.gold,
-  mythic: '#FB7185',
-};
-
 interface Props {
   pulls: Pull[];
 }
@@ -38,7 +26,7 @@ interface Props {
 export function PortfolioCard({ pulls }: Props) {
   const stats = useMemo(() => {
     const count = pulls.length;
-    const totalUsd = pulls.reduce((acc, p) => acc + coinsToUsd(p.creditsWon), 0);
+    const totalPoints = pulls.reduce((acc, p) => acc + p.creditsWon, 0);
     const listedItems = pulls.filter((p) => (p.vaultExchangeListUsd ?? 0) >= 1);
     const listedUsd = listedItems.reduce((acc, p) => acc + (p.vaultExchangeListUsd ?? 0), 0);
     const topCard = pulls.reduce<Pull | null>(
@@ -46,26 +34,8 @@ export function PortfolioCard({ pulls }: Props) {
       null,
     );
 
-    const dist = { sub10: 0, ten50: 0, fifty100: 0, over100: 0 };
-    pulls.forEach((p) => {
-      const usd = coinsToUsd(p.creditsWon);
-      if (usd >= 100) dist.over100++;
-      else if (usd >= 50) dist.fifty100++;
-      else if (usd >= 10) dist.ten50++;
-      else dist.sub10++;
-    });
-
-    return { count, totalUsd, listedUsd, listedCount: listedItems.length, topCard, dist };
+    return { count, totalPoints, listedUsd, listedCount: listedItems.length, topCard };
   }, [pulls]);
-
-  const maxBucket = Math.max(
-    stats.dist.sub10,
-    stats.dist.ten50,
-    stats.dist.fifty100,
-    stats.dist.over100,
-    1,
-  );
-  const hasCards = stats.count > 0;
 
   return (
     <LinearGradient
@@ -80,13 +50,13 @@ export function PortfolioCard({ pulls }: Props) {
       <View style={styles.headerRow}>
         <View>
           <Text style={styles.eyebrow}>PORTFOLIO</Text>
-          <Text style={styles.totalValue}>{formatUsd(stats.totalUsd)}</Text>
+          <Text style={styles.totalValue}>{stats.totalPoints.toLocaleString()} Points</Text>
           <Text style={styles.totalLabel}>
-            Total Value · {stats.count} {stats.count === 1 ? 'Card' : 'Cards'}
+            Total Trade in value · {stats.count} {stats.count === 1 ? 'Card' : 'Cards'}
           </Text>
         </View>
         <View style={styles.trophyWrap}>
-          <Text style={styles.trophyEmoji}>🏆</Text>
+          <Ionicons name="trophy-outline" size={20} color={sgVault.warning} />
         </View>
       </View>
 
@@ -94,7 +64,7 @@ export function PortfolioCard({ pulls }: Props) {
 
       <View style={styles.statsRow}>
         <StatBlock
-          label="Top Card"
+          label="Top pull"
           value={stats.topCard ? stats.topCard.result : '—'}
           truncate
         />
@@ -106,39 +76,6 @@ export function PortfolioCard({ pulls }: Props) {
         />
       </View>
 
-      {hasCards ? (
-        <>
-          <View style={styles.distHeader}>
-            <Text style={styles.distLabel}>VALUE DISTRIBUTION</Text>
-          </View>
-          <View style={styles.distBars}>
-            <DistBar
-              label="<$10"
-              count={stats.dist.sub10}
-              max={maxBucket}
-              color={TIER_BAR_COLOR.base}
-            />
-            <DistBar
-              label="$10–50"
-              count={stats.dist.ten50}
-              max={maxBucket}
-              color={TIER_BAR_COLOR.epic}
-            />
-            <DistBar
-              label="$50–100"
-              count={stats.dist.fifty100}
-              max={maxBucket}
-              color={TIER_BAR_COLOR.epic}
-            />
-            <DistBar
-              label="$100+"
-              count={stats.dist.over100}
-              max={maxBucket}
-              color={TIER_BAR_COLOR.legendary}
-            />
-          </View>
-        </>
-      ) : null}
     </LinearGradient>
   );
 }
@@ -167,44 +104,13 @@ function StatBlock({
   );
 }
 
-function DistBar({
-  label,
-  count,
-  max,
-  color,
-}: {
-  label: string;
-  count: number;
-  max: number;
-  color: string;
-}) {
-  const pct = max > 0 ? count / max : 0;
-  return (
-    <View style={styles.distBarItem}>
-      <Text style={styles.distBarLabel}>{label}</Text>
-      <View style={styles.distBarTrack}>
-        <View
-          style={[
-            styles.distBarFill,
-            {
-              width: `${Math.max(count > 0 ? 8 : 0, pct * 100)}%`,
-              backgroundColor: color,
-            },
-          ]}
-        />
-      </View>
-      <Text style={styles.distBarCount}>{count}</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   card: {
     borderRadius: radius.xl,
     padding: spacing.lg,
     marginBottom: spacing.md,
     borderWidth: 1.5,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.cobaltBorder,
     overflow: 'hidden',
     shadowColor: sgVault.gold,
     shadowOpacity: 0.15,
@@ -253,18 +159,15 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(212,175,55,0.10)',
+    backgroundColor: sgVault.cobaltWashSoft,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.cobaltBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  trophyEmoji: {
-    fontSize: 22,
-  },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(212,175,55,0.25)',
+    backgroundColor: sgVault.cobaltWashStrong,
     marginBottom: spacing.md,
   },
   statsRow: {
@@ -295,47 +198,5 @@ const styles = StyleSheet.create({
   },
   statValueAccent: {
     color: sgVault.up,
-  },
-  distHeader: {
-    marginBottom: spacing.sm,
-  },
-  distLabel: {
-    fontSize: 9,
-    fontFamily: brandFont.bold,
-    color: sgVault.muted,
-    letterSpacing: 1.2,
-  },
-  distBars: {
-    gap: 8,
-  },
-  distBarItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  distBarLabel: {
-    fontSize: 10,
-    fontFamily: brandFont.semibold,
-    color: sgVault.muted,
-    width: 44,
-  },
-  distBarTrack: {
-    flex: 1,
-    height: 6,
-    borderRadius: radius.full,
-    backgroundColor: sgVault.surface2,
-    overflow: 'hidden',
-  },
-  distBarFill: {
-    height: '100%',
-    borderRadius: radius.full,
-    opacity: 0.85,
-  },
-  distBarCount: {
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    color: sgVault.muted,
-    width: 20,
-    textAlign: 'right',
   },
 });

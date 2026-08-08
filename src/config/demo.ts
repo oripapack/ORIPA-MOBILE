@@ -1,10 +1,8 @@
-import { Platform } from 'react-native';
-
 /**
  * When true, Open Pack does not require Clerk sign-in.
- * - Web: always (so demos aren't blocked by OAuth white-screen)
- * - Native: only in __DEV__
+ * Development builds only. Production web and native builds use the same
+ * account gate so users never enter an opening they cannot save or fulfill.
  *
  * Guests still don't persist pulls to vault; signup prompt can still show after.
  */
-export const canOpenPackWithoutSignIn = Platform.OS === 'web' || __DEV__;
+export const canOpenPackWithoutSignIn = __DEV__;

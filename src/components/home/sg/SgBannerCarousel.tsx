@@ -1,196 +1,155 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Animated, AccessibilityInfo } from 'react-native';
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { sg } from '../../../tokens/sg';
 
-/**
- * Home banner strip (144px, panel radius). Crossfades every 3s, pauses while
- * touched, and never auto-advances under reduced motion (dots become the
- * manual control).
- *
- * Slide text is a real UI overlay — NEVER baked into the artwork. A thin
- * dark gradient sits behind the text zone only; the artwork itself is not
- * dimmed. Sources are WebP (originals kept as PNG in assets/home/banners/).
- *
- * KNOWN ISSUE: the torii / Fuji artwork violates N2 §5-8 (no traditional
- * Japan symbols). Kept until replacement art lands — see KNOWN_ISSUES.md.
- */
-const SLIDES = [
-  {
-    key: 'exclusives',
-    title: 'JAPANESE EXCLUSIVES',
-    sub: 'Direct from Tokyo.',
-    image: require('../../../../assets/home/banners/banner-01.webp'),
-  },
-  {
-    key: 'tradein',
-    title: '100% back in Coins.',
-    sub: 'Zero fees. Instantly.',
-    footnote: '*of listed value',
-    image: require('../../../../assets/home/banners/banner-02.webp'),
-    // Portrait art: y=75% (between center and bottom) keeps the torii gate
-    // shape in frame. Art is slated for a Shibuya-nightscape replacement.
-    contentPosition: { left: '50%', top: '75%' } as const,
-  },
-  {
-    key: 'fair',
-    title: 'Provably fair.',
-    sub: 'Verify every pull.',
-    image: require('../../../../assets/home/banners/banner-03.webp'),
-    // Bright sakura sky: stronger horizontal scrim.
-    scrim: { alpha: 0.55, stop: 0.55 } as const,
-  },
+const PRODUCT_EXHIBIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-wide.jpg');
+const PRODUCT_EXHIBIT_PORTRAIT_IMAGE = require('../../../../assets/home/tokyo-exhibit-product-clear-v2-portrait.jpg');
+
+const JOURNEY = [
+  { code: '01', label: 'SELECT' },
+  { code: '02', label: 'REVEAL' },
+  { code: '03', label: 'VAULT' },
 ] as const;
 
-/** Shared legibility scrim defaults (slide1 stays exactly on these values). */
-const DEFAULT_SCRIM = { alpha: 0.45, stop: 0.6 } as const;
-
-const INTERVAL_MS = 3000;
-const FADE_MS = 450;
-
+/**
+ * Signature exhibit window for the Tokyo Night Terminal skin.
+ * The supplied acrylic chamber is confined to this single focal banner; the
+ * rest of the interface inherits its light and frame language in code.
+ */
 export function SgBannerCarousel() {
-  const [index, setIndex] = useState(0);
-  const [reduceMotion, setReduceMotion] = useState(false);
-  const paused = useRef(false);
-  const fade = useRef(new Animated.Value(1)).current;
-  const indexRef = useRef(0);
-
-  useEffect(() => {
-    let mounted = true;
-    AccessibilityInfo.isReduceMotionEnabled().then((v) => { if (mounted) setReduceMotion(v); });
-    return () => { mounted = false; };
-  }, []);
-
-  useEffect(() => {
-    if (reduceMotion) return; // no auto-advance under reduced motion
-    const id = setInterval(() => {
-      if (paused.current) return;
-      const next = (indexRef.current + 1) % SLIDES.length;
-      // Crossfade: fade the top layer out, swap content, fade back in
-      Animated.timing(fade, { toValue: 0, duration: FADE_MS, useNativeDriver: true }).start(() => {
-        indexRef.current = next;
-        setIndex(next);
-        Animated.timing(fade, { toValue: 1, duration: FADE_MS, useNativeDriver: true }).start();
-      });
-    }, INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [reduceMotion, fade]);
-
-  const goTo = (i: number) => {
-    indexRef.current = i;
-    setIndex(i);
-  };
-
-  const slide = SLIDES[index]!;
+  const isReleasePreview = !__DEV__;
+  const { width } = useWindowDimensions();
+  const isWide = width >= 760;
 
   return (
-    <Pressable
-      style={styles.wrap}
-      onPressIn={() => { paused.current = true; }}
-      onPressOut={() => { paused.current = false; }}
-      accessibilityRole="none"
-    >
-      <Animated.View style={[styles.slide, { opacity: fade }]}>
+    <View style={[styles.board, isWide && styles.boardWide]} accessibilityRole="summary">
+      <View style={[styles.productPane, isWide && styles.productPaneWide]}>
         <Image
-          source={slide.image}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          contentPosition={'contentPosition' in slide ? slide.contentPosition : 'center'}
-          transition={0}
+          source={isWide ? PRODUCT_EXHIBIT_IMAGE : PRODUCT_EXHIBIT_PORTRAIT_IMAGE}
+          style={styles.productPhoto}
+          resizeMode="cover"
+          accessible={false}
         />
-        {/* Legibility gradient — left-edge alpha fading to 0 by the stop
-            position (per-slide override for bright art); the right side of
-            the art stays fully bright */}
-        <LinearGradient
-          colors={[
-            `rgba(0,0,0,${('scrim' in slide ? slide.scrim : DEFAULT_SCRIM).alpha})`,
-            'rgba(0,0,0,0)',
-          ]}
-          locations={[0, ('scrim' in slide ? slide.scrim : DEFAULT_SCRIM).stop]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-        {/* Overlay text — real UI, not baked into the artwork */}
-        <View style={styles.textWrap}>
-          <Text style={styles.title}>{slide.title}</Text>
-          <Text style={styles.sub}>{slide.sub}</Text>
-          {'footnote' in slide && slide.footnote ? (
-            <Text style={styles.footnote}>{slide.footnote}</Text>
-          ) : null}
-        </View>
-      </Animated.View>
-      <View style={styles.dots}>
-        {SLIDES.map((s, i) => (
-          <Pressable
-            key={s.key}
-            onPress={() => goTo(i)}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={`Banner ${i + 1}`}
-          >
-            <View style={[styles.dot, i === index && styles.dotActive]} />
-          </Pressable>
-        ))}
       </View>
-    </Pressable>
+
+      <View style={[styles.copyPanel, isWide && styles.copyPanelWide]}>
+        <View style={styles.topRow}>
+          <Text style={styles.route}>JST / SHOWCASE 01</Text>
+          <View style={styles.status}>
+            <View style={[styles.statusDot, isReleasePreview && styles.statusDotPending]} />
+            <Text style={[styles.statusText, isReleasePreview && styles.statusTextPending]}>
+              {isReleasePreview ? 'CATALOG PREVIEW' : 'PREVIEW'}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.message}>
+          <Text style={styles.kicker}>東京発 / NIGHT DISPLAY</Text>
+          <Text style={styles.title}>PACKS IN LIGHT.{`\n`}CARDS IN HAND.</Text>
+          <Text style={styles.subtitle}>DIGITAL REVEAL / PHYSICAL COLLECTION</Text>
+        </View>
+
+        <View style={styles.journeyRow}>
+          {JOURNEY.map((step) => (
+            <View key={step.code} style={styles.journeyCell}>
+              <Text style={styles.journeyCode}>{step.code}</Text>
+              <Text style={styles.journeyLabel}>{step.label}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.exhibitPlate} pointerEvents="none">
+        <Text style={styles.exhibitPlateText}>CASE / 01</Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    height: 144,
+  board: {
+    height: 220,
     marginHorizontal: sg.space.md,
     marginTop: sg.space.md,
+    backgroundColor: sg.bayShell,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
     borderRadius: sg.radius.panel,
     overflow: 'hidden',
-    backgroundColor: sg.surface,
   },
-  slide: { ...StyleSheet.absoluteFillObject },
-  textWrap: { flex: 1, justifyContent: 'center', paddingHorizontal: sg.space.md, maxWidth: '78%' },
-  title: {
-    fontFamily: sg.font.bodyBold,
-    fontSize: 17,
-    color: sg.text,
-    letterSpacing: 0.3,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
-  },
-  sub: {
-    fontFamily: sg.font.body,
-    fontSize: 13,
-    color: sg.text,
-    marginTop: 3,
-    opacity: 0.9,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
-  },
-  footnote: {
-    fontFamily: sg.font.body,
-    fontSize: 9,
-    color: sg.text,
-    opacity: 0.7,
-    marginTop: 4,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 8,
-  },
-  dots: {
+  boardWide: { height: 300 },
+  productPane: {
     position: 'absolute',
-    right: sg.space.md,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: '36%',
+    overflow: 'hidden',
+    borderLeftWidth: 1,
+    borderLeftColor: sg.lineStrong,
+  },
+  productPaneWide: {
+    width: '48%',
+  },
+  productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
+  copyPanel: {
+    width: '64%',
+    height: '100%',
+    zIndex: 2,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.md,
+    paddingBottom: 12,
+    justifyContent: 'space-between',
+    backgroundColor: sg.bg,
+    borderRightWidth: 1,
+    borderRightColor: sg.lineStrong,
+  },
+  copyPanelWide: {
+    width: '52%',
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.lg,
+    paddingBottom: sg.space.md,
+    borderRightWidth: 0,
+  },
+  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: sg.space.sm },
+  route: { flexShrink: 1, fontFamily: sg.font.label, fontSize: 7.5, color: sg.chrome, letterSpacing: 0.95 },
+  status: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  statusDot: { width: 5, height: 5, backgroundColor: sg.success, borderRadius: sg.radius.pill },
+  statusDotPending: { backgroundColor: sg.warning },
+  statusText: { fontFamily: sg.font.dataBold, fontSize: 7, color: sg.success, letterSpacing: 0.55 },
+  statusTextPending: { color: sg.warning },
+  message: { paddingVertical: sg.space.sm },
+  kicker: { fontFamily: sg.font.japaneseBold, fontSize: 8, color: sg.goldHi, letterSpacing: 0.85 },
+  title: {
+    marginTop: 6,
+    fontFamily: sg.font.display,
+    fontSize: 25,
+    lineHeight: 25,
+    letterSpacing: -0.8,
+    color: sg.text,
+  },
+  subtitle: {
+    marginTop: 8,
+    fontFamily: sg.font.label,
+    fontSize: 6.8,
+    lineHeight: 10,
+    letterSpacing: 0.72,
+    color: sg.muted,
+  },
+  journeyRow: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: sg.line },
+  journeyCell: { flex: 1, paddingTop: 9 },
+  journeyCode: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.goldHi, fontVariant: [...sg.numeric] },
+  journeyLabel: { marginTop: 2, fontFamily: sg.font.label, fontSize: 6.4, color: sg.muted, letterSpacing: 0.45 },
+  exhibitPlate: {
+    position: 'absolute',
+    right: sg.space.sm,
     bottom: sg.space.sm,
-    flexDirection: 'row',
-    gap: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.ivoryLightSoft,
+    borderRadius: sg.radius.tag,
   },
-  dot: {
-    width: 5,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: 'rgba(240,238,232,0.35)',
-  },
-  dotActive: { backgroundColor: sg.text },
+  exhibitPlateText: { fontFamily: sg.font.dataBold, fontSize: 6.5, color: sg.text, letterSpacing: 0.55 },
 });

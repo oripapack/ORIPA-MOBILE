@@ -1,6 +1,5 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle } from 'react';
 import { Dimensions, Platform, Pressable, StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -18,7 +17,7 @@ const { height: SH } = Dimensions.get('window');
  * Fixed panel height (most of the screen) — inner `ScrollView` scrolls. Using explicit `height`
  * avoids RN flex collapse where the sheet looked ~25% tall with content clipped.
  */
-export const AUTH_SHEET_HEIGHT = Math.min(SH * 0.78, 600);
+export const AUTH_SHEET_HEIGHT = Math.min(SH * 0.86, 720);
 const OFFSCREEN = AUTH_SHEET_HEIGHT + 56;
 const DISMISS_THRESHOLD = 88;
 
@@ -147,11 +146,7 @@ export const AuthBottomSheet = forwardRef<AuthBottomSheetRef, Props>(function Au
           ]}
           pointerEvents="auto"
         >
-          <LinearGradient
-            colors={['rgba(255,255,255,0.07)', 'rgba(255,255,255,0)']}
-            style={styles.sheetTopGlow}
-            pointerEvents="none"
-          />
+          <View style={styles.sheetTopRail} pointerEvents="none" />
           <View style={styles.handleWrap}>
             <View style={styles.handle} />
           </View>
@@ -181,17 +176,18 @@ const styles = StyleSheet.create({
   sheet: {
     zIndex: 2,
     width: '100%',
-    alignSelf: 'stretch',
+    maxWidth: 720,
+    alignSelf: 'center',
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     backgroundColor: sg.surface,
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
+    borderTopLeftRadius: sg.radius.panel,
+    borderTopRightRadius: sg.radius.panel,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderRightWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.16)',
+    borderColor: sg.lineStrong,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -205,14 +201,14 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  sheetTopGlow: {
+  sheetTopRail: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: 48,
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
+    height: 2,
+    backgroundColor: sg.gold,
+    ...sg.glowCobalt,
   },
   handleWrap: {
     alignItems: 'center',
@@ -221,8 +217,8 @@ const styles = StyleSheet.create({
   handle: {
     width: 36,
     height: 3,
-    borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderRadius: sg.radius.tag,
+    backgroundColor: sg.lineStrong,
   },
   body: {
     flex: 1,

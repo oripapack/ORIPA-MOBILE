@@ -1,10 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { fontSize, brandFont } from '../../../tokens/typography';
-import { spacing } from '../../../tokens/spacing';
-import { REVEAL_RARITY_VISUAL } from './rarityTokens';
+import { sg } from '../../../tokens/sg';
+import { SgTierTag } from '../../ui';
 import type { RevealRarity } from './types';
+import type { N2Tier } from '../../../lib/n2Rarity';
+
+const TIER_BY_REVEAL: Record<RevealRarity, N2Tier> = {
+  common: 'base',
+  rare: 'epic',
+  ultra_rare: 'legendary',
+  chase: 'mythic',
+};
 
 type Props = {
   creditsWon: number;
@@ -29,7 +36,7 @@ export function RevealResultCard({
   style,
 }: Props) {
   const { t } = useTranslation();
-  const tv = REVEAL_RARITY_VISUAL[revealRarity];
+  const tier = TIER_BY_REVEAL[revealRarity];
 
   const shineX =
     cardShine?.interpolate({
@@ -43,10 +50,8 @@ export function RevealResultCard({
   return (
     <Animated.View
       style={[
-        styles.fifaCardOuter,
+        styles.cardOuter,
         {
-          borderColor: tv.border,
-          shadowColor: tv.glow,
           transform: hasWalkoutMotion
             ? [{ translateY: walkoutY! }, { scale: walkoutScale! }, { rotate: walkoutRotate! }]
             : undefined,
@@ -54,25 +59,30 @@ export function RevealResultCard({
         style,
       ]}
     >
-      <View style={[styles.fifaCardTop, { backgroundColor: tv.cardTop }]}>
-        <View style={[styles.ovrCircle, { backgroundColor: tv.ovrBg }]}>
-          <Text style={styles.ovrNum} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.45}>
+      <View style={styles.headerRail}>
+        <Text style={styles.headerLabel}>PULL RESULT / TERMINAL 01</Text>
+        <Text style={styles.headerStatus}>RECORDED</Text>
+      </View>
+      <View style={styles.cardTop}>
+        <View style={styles.valueBlock}>
+          <Text style={styles.value} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.55}>
             {creditsWon.toLocaleString()}
           </Text>
-          <Text style={styles.ovrLbl}>{t('credits.abbrev')}</Text>
+          <Text style={styles.valueUnit}>POINTS</Text>
         </View>
-        <View style={styles.fifaCardMeta}>
-          <Text style={[styles.fifaTierLbl, { color: tv.accent }]}>
-            {tv.emoji} {tv.label}
-          </Text>
-          <Text style={styles.fifaHead}>{t('packOpening.youPulled')}</Text>
-          <Text style={styles.fifaName} numberOfLines={3}>
+        <View style={styles.cardMeta}>
+          <View style={styles.tierRow}>
+            <Text style={styles.tierLabel}>TIER</Text>
+            <SgTierTag tier={tier} context="badge" />
+          </View>
+          <Text style={styles.resultLabel}>{t('packOpening.youPulled')}</Text>
+          <Text style={styles.resultName} numberOfLines={3}>
             {resultText}
           </Text>
         </View>
       </View>
-      <View style={styles.fifaCardBar}>
-        <Text style={[styles.fifaCreditsBig, { color: tv.accent }]}>
+      <View style={styles.cardBar}>
+        <Text style={styles.pointsLine}>
           {t('packOpening.creditsLabel', {
             amount: creditsWon.toLocaleString(),
           })}
@@ -151,86 +161,113 @@ export function RevealCtaFade({
 }
 
 const styles = StyleSheet.create({
-  fifaCardOuter: {
+  cardOuter: {
     width: '100%',
     maxWidth: 340,
-    borderRadius: 16,
-    borderWidth: 3,
+    borderRadius: sg.radius.panel,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
     overflow: 'hidden',
-    backgroundColor: '#0f172a',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 32,
-    elevation: 16,
+    backgroundColor: sg.surface,
+    ...sg.shadowHero,
   },
-  fifaCardTop: {
+  headerRail: {
+    minHeight: 30,
+    paddingHorizontal: sg.space.sm,
     flexDirection: 'row',
-    padding: spacing.lg,
-    gap: spacing.md,
-    minHeight: 168,
-  },
-  ovrCircle: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: sg.surface2,
+    borderBottomWidth: 1,
+    borderBottomColor: sg.line,
+  },
+  headerLabel: {
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.muted,
+  },
+  headerStatus: {
+    fontFamily: sg.font.dataBold,
+    fontSize: sg.type.label.fontSize,
+    color: sg.success,
+  },
+  cardTop: {
+    flexDirection: 'row',
+    padding: sg.space.lg,
+    gap: sg.space.md,
+    minHeight: 168,
+    backgroundColor: sg.surface,
+  },
+  valueBlock: {
+    width: 92,
+    minHeight: 84,
     justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: 'rgba(255,255,255,0.35)',
-    shadowColor: '#000',
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
+    paddingHorizontal: sg.space.sm,
+    backgroundColor: sg.cobaltWash,
+    borderLeftWidth: 3,
+    borderLeftColor: sg.goldHi,
   },
-  ovrNum: {
-    color: '#fff',
-    fontSize: 20,
-    fontFamily: brandFont.black,
+  value: {
+    color: sg.text,
+    fontSize: 22,
+    fontFamily: sg.font.dataBold,
     letterSpacing: -0.5,
+    fontVariant: [...sg.numeric],
   },
-  ovrLbl: {
-    color: 'rgba(255,255,255,0.75)',
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    marginTop: 2,
-    letterSpacing: 2,
+  valueUnit: {
+    color: sg.muted,
+    fontSize: sg.type.label.fontSize,
+    fontFamily: sg.font.label,
+    marginTop: sg.space.xs,
+    letterSpacing: sg.type.label.letterSpacing,
   },
-  fifaCardMeta: {
+  cardMeta: {
     flex: 1,
     justifyContent: 'center',
     minWidth: 0,
   },
-  fifaTierLbl: {
-    fontSize: 11,
-    fontFamily: brandFont.black,
-    letterSpacing: 2,
-    marginBottom: 6,
+  tierRow: {
+    minHeight: 22,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: sg.space.sm,
+    marginBottom: sg.space.sm,
   },
-  fifaHead: {
-    color: 'rgba(248,250,252,0.55)',
-    fontSize: 10,
-    fontFamily: brandFont.bold,
-    letterSpacing: 2,
+  tierLabel: {
+    color: sg.muted,
+    fontSize: sg.type.label.fontSize,
+    fontFamily: sg.font.label,
+    letterSpacing: sg.type.label.letterSpacing,
+  },
+  resultLabel: {
+    color: sg.muted,
+    fontSize: sg.type.label.fontSize,
+    fontFamily: sg.font.label,
+    letterSpacing: sg.type.label.letterSpacing,
     textTransform: 'uppercase',
-    marginBottom: 4,
+    marginBottom: sg.space.xs,
   },
-  fifaName: {
-    color: '#F8FAFC',
-    fontSize: fontSize.md,
-    fontFamily: brandFont.black,
-    lineHeight: 22,
+  resultName: {
+    color: sg.text,
+    fontSize: 18,
+    fontFamily: sg.font.display,
+    lineHeight: 21,
   },
-  fifaCardBar: {
-    backgroundColor: 'rgba(0,0,0,0.55)',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
+  cardBar: {
+    backgroundColor: sg.surface2,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.lg,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.08)',
+    borderTopColor: sg.line,
   },
-  fifaCreditsBig: {
-    fontSize: fontSize.xl,
-    fontFamily: brandFont.black,
+  pointsLine: {
+    color: sg.goldHi,
+    fontSize: 20,
+    fontFamily: sg.font.dataBold,
     textAlign: 'center',
     letterSpacing: 0.5,
+    fontVariant: [...sg.numeric],
   },
   cardShine: {
     position: 'absolute',
@@ -238,7 +275,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: 72,
     marginLeft: -36,
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    backgroundColor: sg.cardShine,
     transform: [{ skewX: '-18deg' }],
   },
 });

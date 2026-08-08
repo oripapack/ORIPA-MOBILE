@@ -19,11 +19,15 @@ import {
   PAYMENT_DISCLOSURES,
 } from '../legal/inAppLegalCopy';
 import { LanguageRegionModal } from '../components/account/LanguageRegionModal';
-import { PreferenceSwitchRow } from '../components/account/PreferenceSwitchRow';
-import { DeleteAccountSection } from '../components/account/DeleteAccountSection';
 import { useLocalePreferences, LANGUAGE_OPTIONS } from '../hooks/useLocalePreferences';
-import { usePreferencesStore } from '../store/preferencesStore';
-import { APP_DISPLAY_NAME, APP_VERSION, SUPPORT_EMAIL } from '../config/app';
+import {
+  ADVANCED_ACCOUNT_SERVICES_ARE_LIVE,
+  APP_DISPLAY_NAME,
+  APP_VERSION,
+  SHIPPING_IS_LIVE,
+  SUPPORT_EMAIL,
+  SUPPORT_IS_LIVE,
+} from '../config/app';
 import { RootStackParamList } from '../navigation/types';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { openExternalUrl } from '../utils/openExternalUrl';
@@ -47,7 +51,7 @@ const LEGAL_BODY: Record<'terms' | 'privacy' | 'promo' | 'payment', string> = {
 
 const ROW_ICON_SIZE = 22;
 
-const accountRowKeys = [
+const ALL_ACCOUNT_ROW_KEYS = [
   'creditHistory',
   'wallet',
   'shipping',
@@ -56,7 +60,8 @@ const accountRowKeys = [
   'identity',
   'linked',
 ] as const;
-const accountIcons: Record<(typeof accountRowKeys)[number], keyof typeof Ionicons.glyphMap> = {
+type AccountRowKey = (typeof ALL_ACCOUNT_ROW_KEYS)[number];
+const accountIcons: Record<AccountRowKey, keyof typeof Ionicons.glyphMap> = {
   creditHistory: 'list-outline',
   wallet: 'diamond-outline',
   shipping: 'cube-outline',
@@ -66,11 +71,11 @@ const accountIcons: Record<(typeof accountRowKeys)[number], keyof typeof Ionicon
   linked: 'link-outline',
 };
 
-const supportRowKeys = ['help', 'contact', 'faq'] as const;
-const supportIcons: Record<(typeof supportRowKeys)[number], keyof typeof Ionicons.glyphMap> = {
+const ALL_SUPPORT_ROW_KEYS = ['help', 'contact'] as const;
+type SupportRowKey = (typeof ALL_SUPPORT_ROW_KEYS)[number];
+const supportIcons: Record<SupportRowKey, keyof typeof Ionicons.glyphMap> = {
   help: 'help-circle-outline',
   contact: 'mail-outline',
-  faq: 'book-outline',
 };
 
 export function SettingsScreen() {
@@ -82,10 +87,14 @@ export function SettingsScreen() {
   const { language, region, saveLocale } = useLocalePreferences();
   const { requireAuth } = useRequireAuth();
   const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
-  const soundEnabled = usePreferencesStore((s) => s.soundEnabled);
-  const hapticsEnabled = usePreferencesStore((s) => s.hapticsEnabled);
-  const setSoundEnabled = usePreferencesStore((s) => s.setSoundEnabled);
-  const setHapticsEnabled = usePreferencesStore((s) => s.setHapticsEnabled);
+  const accountRowKeys: AccountRowKey[] = [
+    'creditHistory',
+    ...(SHIPPING_IS_LIVE ? (['shipping', 'shippingOrders'] as const) : []),
+    ...(ADVANCED_ACCOUNT_SERVICES_ARE_LIVE
+      ? (['wallet', 'payout', 'identity', 'linked'] as const)
+      : []),
+  ];
+  const supportRowKeys: SupportRowKey[] = SUPPORT_IS_LIVE ? ['help', 'contact'] : ['help'];
 
   const localeSummary = useMemo(() => {
     const langLabel = LANGUAGE_OPTIONS.find((l) => l.code === language)?.label ?? language;
@@ -93,7 +102,7 @@ export function SettingsScreen() {
     return `${langLabel} · ${regionLabel}`;
   }, [language, region, t]);
 
-  const onAccountRow = (key: (typeof accountRowKeys)[number]) => {
+  const onAccountRow = (key: AccountRowKey) => {
     requireAuth(() => {
       if (key === 'creditHistory') navigation.navigate('CreditHistory');
       if (key === 'wallet') navigation.navigate('WalletLinking');
@@ -105,8 +114,8 @@ export function SettingsScreen() {
     });
   };
 
-  const onSupportRow = (key: (typeof supportRowKeys)[number]) => {
-    if (key === 'help' || key === 'faq') {
+  const onSupportRow = (key: SupportRowKey) => {
+    if (key === 'help') {
       navigation.navigate('HelpCenter');
       return;
     }
@@ -116,7 +125,13 @@ export function SettingsScreen() {
   return (
     <SgScreen>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} style={styles.backBtn}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          hitSlop={12}
+          style={styles.backBtn}
+          accessibilityRole="button"
+          accessibilityLabel={t('packDetails.back')}
+        >
           <Text style={styles.backChevron}>‹</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('settings.title')}</Text>
@@ -131,19 +146,23 @@ export function SettingsScreen() {
       >
         <ClerkAccountSection />
 
-        <Text style={styles.sectionHeader}>{t('settings.sectionWallet')}</Text>
-        <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
-          {accountRowKeys.map((key) => (
-            <ListRow
-              key={key}
-              label={t(`accountRows.${key}`)}
-              icon={
-                <Ionicons name={accountIcons[key]} size={ROW_ICON_SIZE} color={sg.muted} />
-              }
-              onPress={() => onAccountRow(key)}
-            />
-          ))}
-        </VaultFramedCard>
+        {accountRowKeys.length > 0 ? (
+          <>
+            <Text style={styles.sectionHeader}>{t('settings.sectionWallet')}</Text>
+            <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
+              {accountRowKeys.map((key) => (
+                <ListRow
+                  key={key}
+                  label={t(`accountRows.${key}`)}
+                  icon={
+                    <Ionicons name={accountIcons[key]} size={ROW_ICON_SIZE} color={sg.muted} />
+                  }
+                  onPress={() => onAccountRow(key)}
+                />
+              ))}
+            </VaultFramedCard>
+          </>
+        ) : null}
 
         <Text style={styles.sectionHeader}>{t('account.sectionSupport')}</Text>
         <VaultFramedCard style={styles.listGroupWrap} contentStyle={styles.listGroupInner}>
@@ -191,25 +210,6 @@ export function SettingsScreen() {
             rightContent={<Text style={styles.localeValue}>{localeSummary}</Text>}
             onPress={() => setLocaleOpen(true)}
           />
-          <ListRow
-            label={t('settings.notifications')}
-            icon={<Ionicons name="notifications-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
-            onPress={() => navigation.navigate('Notifications')}
-          />
-          <PreferenceSwitchRow
-            label={t('settings.sound')}
-            subtitle={t('settings.soundSub')}
-            value={soundEnabled}
-            onValueChange={(v) => void setSoundEnabled(v)}
-            icon={<Ionicons name="volume-high-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
-          />
-          <PreferenceSwitchRow
-            label={t('settings.haptics')}
-            subtitle={t('settings.hapticsSub')}
-            value={hapticsEnabled}
-            onValueChange={(v) => void setHapticsEnabled(v)}
-            icon={<Ionicons name="phone-portrait-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
-          />
         </VaultFramedCard>
 
         <AdminToolsSection />
@@ -235,8 +235,6 @@ export function SettingsScreen() {
             </VaultFramedCard>
           </>
         ) : null}
-
-        <DeleteAccountSection />
 
         <Text style={styles.version}>{t('account.version', { name: APP_DISPLAY_NAME, version: APP_VERSION })}</Text>
         <AccountSignOutFooter visible={isClerkEnabled && clerkSignedIn} />
@@ -302,6 +300,9 @@ const styles = StyleSheet.create({
     backgroundColor: sg.bg,
   },
   content: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
     paddingHorizontal: spacing.base,
     paddingTop: spacing.base,
   },

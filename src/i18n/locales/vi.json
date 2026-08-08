@@ -100,7 +100,12 @@
     "resultsCount_one": "{{count}} listing",
     "resultsCount_other": "{{count}} listings",
     "searchA11yLabel": "Search the shop",
-    "clearSearchA11y": "Clear search text"
+    "clearSearchA11y": "Clear search text",
+    "unavailableEyebrow": "SHOP / RELEASE STATUS",
+    "unavailableTitle": "Verified inventory comes first.",
+    "unavailableBody": "Marketplace browsing will open after seller inventory, shipping regions, and checkout are connected and verified.",
+    "unavailableStatusBody": "Only verified listings and provider-sourced prices will appear here.",
+    "unavailableCta": "Explore packs"
   },
   "common": {
     "error": "Lỗi",
@@ -130,32 +135,36 @@
   },
   "helpCenter": {
     "navTitle": "Trung tâm trợ giúp",
-    "lead": "Câu trả lời nhanh về credit, giao hàng và hot drop. Đây là nội dung mẫu — thay bằng bài viết thật trước khi ra mắt.",
+    "lead": "Current availability for Points, fulfillment, and pack releases.",
     "faq": {
       "credits": {
-        "q": "Credit hoạt động thế nào?",
-        "a": "Credit là tiền tệ trong app để mở gói kỹ thuật số. Trong bản xem trước, giao dịch có thể được mô phỏng — giá, hoàn tiền và gói cuối cùng sẽ công bố trước khi ra mắt."
+        "q": "How do Points work?",
+        "a": "Points are used to open packs. Purchases remain unavailable until App Store billing is connected."
       },
       "shipping": {
         "q": "Bạn gửi thẻ vật lý ở đâu?",
-        "a": "Đơn đặt hàng trên thị trường được vận chuyển từ các cửa hàng đối tác. Giới hạn, nhà cung cấp dịch vụ và phí khác nhau tùy theo danh sách. Thêm địa chỉ giao hàng vào Tài khoản để quá trình thanh toán diễn ra nhanh hơn khi thanh toán được thực hiện."
+        "a": "Shipping stays unavailable until fulfillment regions, carriers, fees, and address handling are verified."
       },
       "drops": {
         "q": "Giọt nóng là gì?",
-        "a": "Hot drop là các bản phát hành gói có thời gian giới hạn hoặc có nhu cầu cao. Chúng khác với khuyến mãi tài khoản (tiền thưởng và phiếu giảm giá). Nhấn vào Hot Drops trên Tài khoản để xem phần giải thích ngắn gọn."
+        "a": "Hot drops will be limited pack releases. No active drop is shown unless it is backed by live inventory."
       }
     },
     "contactSection": "Vẫn bị mắc kẹt?",
     "emailCta": "Gửi email tới {{email}}",
     "emailUs": "Hỗ trợ qua email",
-    "responseTime": "Chúng tôi mong muốn trả lời trong vòng 1–2 ngày làm việc (bản demo — không được giám sát)."
+    "responseTime": "Response times are shown only while the monitored support channel is active.",
+    "contactUnavailableEyebrow": "SUPPORT / CONNECTION STATUS",
+    "contactUnavailableTitle": "Contact support is not active yet.",
+    "contactUnavailableBody": "A monitored contact channel will appear here after ownership and response procedures are verified.",
+    "contactStatusSection": "Contact status"
   },
   "shippingAddress": {
     "navTitle": "Địa chỉ giao hàng",
-    "lead": "Được sử dụng cho các đơn đặt hàng trên thị trường và vận chuyển giải thưởng khi quá trình thực hiện đang diễn ra. Chỉ được lưu trên thiết bị này trong bản dựng xem trước.",
+    "lead": "Used only for verified physical fulfillment.",
     "save": "Lưu địa chỉ",
     "savedTitle": "Đã lưu",
-    "savedBody": "Địa chỉ giao hàng của bạn đã được lưu trên thiết bị này.",
+    "savedBody": "Your shipping address was saved to your account.",
     "saveFailed": "Không thể lưu. Hãy thử lại.",
     "missingTitle": "Thiếu trường",
     "missingBody": "Nhập ít nhất tên, đường 1, thành phố và quốc gia.",
@@ -176,7 +185,12 @@
       "region": "VN",
       "postal": "700000",
       "country": "Hoa Kỳ"
-    }
+    },
+    "releaseEyebrow": "SHIPPING / RELEASE STATUS",
+    "releaseTitle": "Address collection is paused.",
+    "releaseBody": "No address is collected until storage, supported regions, and the fulfillment workflow are connected and verified.",
+    "releaseStatus": "WAITING FOR VERIFIED FULFILLMENT",
+    "loading": "Loading address"
   },
   "tierBenefits": {
     "navTitle": "Lợi ích theo cấp độ",
@@ -201,8 +215,8 @@
         "sub": "Gói giới hạn và bản phát hành hot."
       },
       "promos": {
-        "title": "Khuyến mãi & credit",
-        "sub": "Credit thưởng, mã giảm giá và chiến dịch theo mùa."
+        "title": "Khuyến mãi & Points",
+        "sub": "Points thưởng, mã giảm giá và chiến dịch theo mùa."
       },
       "social": {
         "title": "Bạn bè & xã hội",
@@ -216,16 +230,16 @@
     "b1": "Thời gian bắt đầu và kết thúc được công bố (hoặc “trong khi nguồn cung cấp vẫn còn”).",
     "b2": "Có thể có tỷ lệ cược hoặc giá khác với gói thường xanh — hãy luôn đọc chi tiết về gói.",
     "b3": "Có thể bán hết nhanh chóng; bật thông báo sẽ giúp bạn nắm bắt được hàng có sẵn.",
-    "callout": "Khác khuyến mãi: khuyến mãi là ưu đãi marketing (credit thưởng, mã giảm giá), không phải bản thân đợt phát hành gói."
+    "callout": "Khác khuyến mãi: khuyến mãi là ưu đãi marketing (Points thưởng, mã giảm giá), không phải bản thân đợt phát hành gói."
   },
   "promosInfo": {
     "navTitle": "Khuyến mãi",
-    "body": "Khuyến mãi là chương trình marketing: credit thưởng, mã giảm giá, chiến dịch theo mùa hoặc ưu đãi đối tác — thưởng cho đăng ký, mua gói, giới thiệu bạn, v.v.",
+    "body": "Khuyến mãi là chương trình marketing: Points thưởng, mã giảm giá, chiến dịch theo mùa hoặc ưu đãi đối tác — thưởng cho đăng ký, mua gói, giới thiệu bạn, v.v.",
     "b1": "Hiển thị trong ứng dụng, email hoặc mạng xã hội — mỗi quảng cáo có quy tắc và ngày riêng.",
     "b2": "Có thể xếp chồng theo cấp độ hoặc bị giới hạn ở một số gói nhất định - hãy đọc bản in đẹp trước khi ra mắt.",
     "b3": "Khác với Hot Drops: khuyến mãi là ưu đãi; một đợt giảm giá nóng là việc phát hành sản phẩm.",
     "vsHotTitle": "Hot drop và khuyến mãi",
-    "vsHotBody": "Hot drop giải thích gói giới hạn. Màn Khuyến mãi này giải thích credit thưởng và ưu đãi kiểu coupon."
+    "vsHotBody": "Hot drop giải thích gói giới hạn. Màn Khuyến mãi này giải thích Points thưởng và ưu đãi kiểu coupon."
   },
   "pullHistoryScreen": {
     "navTitle": "Lịch sử chơi",
@@ -236,47 +250,42 @@
     "body": "Việc liên kết cho phép bạn đăng nhập vào cùng một hồ sơ Pull Hub bằng nhiều phương thức (ví dụ: Google và Apple), do đó bạn không bị giới hạn ở một lần đăng nhập.",
     "whatTitle": "Điều này có nghĩa là gì",
     "whatBody": "Đây không phải là việc hợp nhất hai tài khoản ứng dụng riêng biệt. Đó là việc gắn các nhà cung cấp dịch vụ đăng nhập vào một tài khoản để thuận tiện và phục hồi.",
-    "futureTitle": "Đến sau",
+    "futureTitle": "Not active yet",
     "futureGoogle": "Liên kết tài khoản Google",
     "futureApple": "Liên kết ID Apple",
     "futureEmail": "Liên kết email + mật khẩu",
-    "note": "Liên kết nhà cung cấp sẽ dùng cấu hình auth của bạn (ví dụ Clerk) trên môi trường production."
+    "note": "This screen remains hidden until provider linking is connected and verified."
   },
   "identityVerification": {
     "navTitle": "Xác minh danh tính",
     "body": "Xác minh danh tính (đôi khi được gọi là KYC) xác nhận bạn là người thật và đáp ứng các quy tắc về độ tuổi hoặc tuân thủ trước các khoản thanh toán có giá trị cao, một số khuyến mãi nhất định hoặc các tính năng được quản lý.",
     "whyTitle": "Tại sao ứng dụng yêu cầu điều này",
     "whyBody": "Nó làm giảm gian lận, bảo vệ trẻ vị thành niên và đáp ứng các quy tắc tài chính hoặc thị trường khi tiền hoặc giải thưởng có giá trị di chuyển giữa người dùng và nền tảng.",
-    "previewTitle": "Luồng xem trước (không hoạt động)",
+    "previewTitle": "Verification is not active",
     "step1": "Kiểm tra giấy tờ hoặc ID chính phủ",
     "step2": "Kiểm tra ảnh selfie hoặc độ sống động (nếu cần)",
     "step3": "Xem lại - thường là vài phút, đôi khi lâu hơn",
-    "note": "Bản dựng này chỉ giải thích khái niệm. Liên hệ với nhà cung cấp của bạn (ví dụ: Persona, Stripe Identity) trước khi yêu cầu xác minh."
+    "note": "This screen remains hidden until a verification provider and policy are connected."
   },
   "payoutMethod": {
     "navTitle": "Phương thức thanh toán",
-    "body": "Khi bạn bán thẻ hoặc nhận tiền mặt, khoản thanh toán sẽ được chuyển đến ngân hàng hoặc thẻ ghi nợ được liên kết. Bản xem trước này không kết nối với ngân hàng thực.",
-    "line1": "Thêm tài khoản ngân hàng (ACH hoặc kênh địa phương) hoặc thẻ ghi nợ tùy khu vực.",
-    "line2": "Xác minh các khoản tiền gửi nhỏ hoặc các khoản phí vi mô tức thời khi bộ xử lý của bạn yêu cầu.",
-    "line3": "Thời gian và phí thanh toán tuân theo các quy tắc thị trường — xem Điều khoản trước khi ra mắt.",
-    "note": "Thay thế phần giữ chỗ này bằng khoản thanh toán thực tế khi tích hợp Stripe Connect hoặc PSP của bạn."
+    "body": "Payouts are not part of the current release. No bank or debit-card data is collected.",
+    "line1": "A verified payout provider is required before this feature can open.",
+    "line2": "Supported regions, timing, and fees must come from the live provider.",
+    "line3": "Any required identity or tax steps will be disclosed in the live flow.",
+    "note": "This screen remains hidden until payout onboarding is connected and verified."
   },
   "settings": {
     "title": "Cài đặt",
     "sectionProfile": "Your account",
-    "sectionWallet": "Wallet & verification",
+    "sectionWallet": "Account services",
     "devSection": "Nhà phát triển",
     "devResetLocalOnboarding": "Đặt lại onboarding cục bộ",
     "devResetAlertTitle": "Đặt lại onboarding cục bộ?",
     "devResetAlertBody": "Xóa các cờ guest/onboarding, mẹo hướng dẫn, banner chào mừng và thông báo mô phỏng trên thiết bị này. Bạn vẫn sẽ đăng nhập. Ứng dụng sẽ tải lại.",
-    "devResetConfirm": "Đặt lại",
-    "notifications": "Notifications",
-    "sound": "Sound",
-    "soundSub": "Pack opening and UI sound effects (when available).",
-    "haptics": "Haptics",
-    "hapticsSub": "Vibration feedback for pack opens and key actions."
+    "devResetConfirm": "Đặt lại"
   },
-  "demoBanner": "Bản xem trước — credit và phần thưởng được mô phỏng.",
+  "demoBanner": "Bản xem trước — Points và phần thưởng được mô phỏng.",
   "home": {
     "discover": "Khám phá",
     "browse": "Duyệt",
@@ -352,7 +361,7 @@
     "eyebrow": "TIỀN THƯỞNG CHÀO MỪNG",
     "headline1": "Tuyến gói tăng tỉ lệ",
     "headline2": "dành cho người chơi mới",
-    "sub": "Gói có hạn với tỉ lệ hit tốt hơn — tích credit và săn pull lớn",
+    "sub": "Gói có hạn với tỉ lệ hit tốt hơn — tích Points và săn pull lớn",
     "browsePacks": "Đến sàn gói",
     "notNow": "Có lẽ sau này",
     "hitCard": "Thẻ Jackpot"
@@ -405,7 +414,7 @@
     "sectionActivity": "Friends activity",
     "sectionFriends": "Friends",
     "sectionLeaderboard": "Leaderboard",
-    "leaderboardPreviewHint": "Total estimated value · tap for full board",
+    "leaderboardPreviewHint": "Total Trade in value · tap for full board",
     "leaderboardSeeAll": "See full leaderboard",
     "emptyActivity": "Add collectors to see their pulls here.",
     "emptyLeaderboardHint": "Invite friends to climb the board together.",
@@ -415,6 +424,18 @@
     "requestHint": "Wants to connect — accept to add them to your squad.",
     "acceptRequest": "Accept",
     "declineRequest": "Decline",
+    "guestAccessTitle": "Your collector circle starts here.",
+    "guestAccessBody": "Sign in to add friends and keep activity linked to your account.",
+    "guestFeatureActivity": "See activity only from collectors you add.",
+    "guestFeatureQr": "Share a personal QR and invite link.",
+    "guestFeatureLeaderboard": "Join leaderboards backed by saved pulls.",
+    "releaseEyebrow": "FRIENDS / RELEASE STATUS",
+    "releaseTitle": "Real collectors. No stand-ins.",
+    "releaseBody": "Friends will open after verified profiles, privacy controls, and server-ranked activity are connected.",
+    "releaseCta": "Explore packs",
+    "releasePointProfiles": "Only verified profiles appear here.",
+    "releasePointActivity": "Activity is sourced from completed live openings.",
+    "releasePointSafety": "Blocking, reporting, and privacy controls are required.",
     "addModalSubtitle": "Search by username or use a QR code.",
     "addFriendBtn": "Add friend",
     "addDividerOr": "or",
@@ -432,7 +453,7 @@
     "pullHistory": "Lịch sử mở gói",
     "shipped": "Đã vận chuyển",
     "noPullsTitle": "Chưa có lần mở nào",
-    "noPullsBody": "Mở gói đầu tiên — hit và credit sẽ hiện ở đây.",
+    "noPullsBody": "Mở gói đầu tiên — hit và Points sẽ hiện ở đây.",
     "latestWins": "Hit gần nhất",
     "viewFullHistory": "Toàn bộ lịch sử mở gói →",
     "inVault": "Vault"
@@ -455,11 +476,11 @@
     "version": "{{name}} v{{version}}",
     "guestSignInEyebrow": "Duyệt với tư cách khách",
     "guestSignInTitle": "Đăng nhập để dùng đầy đủ tính năng",
-    "guestSignInBody": "Khách chỉ xem được catalog. Đăng nhập bằng Google, Apple hoặc email để mở gói, mua credit, thanh toán và dùng Bạn bè.",
+    "guestSignInBody": "Guests can browse the catalog. Sign in to save live activity, access Points, and use account services as they become available.",
     "guestSignInCta": "Đăng nhập hoặc tạo tài khoản",
     "playerDeskEyebrow": "BÀN CHƠI",
     "pullHistoryCta": "Toàn bộ lịch sử mở gói",
-    "pullHistorySub": "Mỗi lần mở, credit trúng và hit — nhật ký đầy đủ",
+    "pullHistorySub": "Mỗi lần mở, Points trúng và hit — nhật ký đầy đủ",
     "accountDetailsEyebrow": "Chi tiết tài khoản",
     "usernameLabel": "Tên người dùng",
     "usernameUnset": "Chưa đặt",
@@ -471,14 +492,14 @@
     "profileStatPacks": "Packs",
     "profileStatValue": "Value",
     "profileStatLuck": "Luck",
-    "profileStatCoins": "Coins",
+    "profileStatCoins": "Points",
     "hitRateTitle": "Hit rate",
     "hitRateEmpty": "Open packs to track your last 10 results and hit rate here.",
     "hitRateSample": "Last {{count}} opens · tracks up to {{window}}",
     "hitRateMarkHit": "H",
     "hitRateMarkMiss": "M",
     "heroVaultValue": "Vault value",
-    "heroCoins": "Coins",
+    "heroCoins": "Points",
     "heroMembership": "Membership",
     "heroLevelLine": "Level {{level}} · {{rank}}",
     "sectionProgression": "Progression",
@@ -493,7 +514,11 @@
     "quickPullHistory": "Pull history",
     "quickLeaderboard": "Leaderboard",
     "quickPromotions": "Rewards",
-    "quickSettings": "Settings"
+    "quickSettings": "Settings",
+    "guestBenefitsTitle": "With an account",
+    "guestBenefitVault": "Keep Vault items synced across devices.",
+    "guestBenefitHistory": "Save every live opening and fulfillment decision.",
+    "guestBenefitFriends": "Friends and leaderboards appear after verified social access is available."
   },
   "shortcuts": {
     "notif": "Thông báo",
@@ -505,8 +530,8 @@
     "payout": "Phương thức thanh toán",
     "identity": "Xác minh danh tính",
     "linked": "Tài khoản được liên kết",
-    "creditHistory": "Credit History",
     "wallet": "Wallet Address",
+    "creditHistory": "Credit History",
     "shippingOrders": "Shipping Orders"
   },
   "supportRows": {
@@ -525,7 +550,7 @@
     "language": "Ngôn ngữ",
     "region": "Khu vực",
     "regionHint": "Được sử dụng cho ngày tháng, hiển thị tiền tệ và mặc định giao hàng trong tương lai.",
-    "fallbackNote": "Mọi ngôn ngữ trong danh sách đều có bản dịch giao diện đầy đủ. Khu vực vẫn quyết định định dạng ngày và tiền tệ.",
+    "fallbackNote": "Choose the language used throughout the app. Some release-status messages may remain in English.",
     "save": "Lưu",
     "cancel": "Hủy bỏ"
   },
@@ -538,30 +563,18 @@
   },
   "buyCredits": {
     "close": "Đóng",
-    "title": "Mua credit",
-    "subtitle": "Credit dùng để mở gói. Gói nhỏ có giảm giá; gói lớn gần giá niêm yết.",
-    "mockNote": "Xem trước: không thanh toán thật — credit cộng ngay cho demo.",
-    "discountBadge": "−{{pct}}%",
-    "pointsLine": "{{count}} điểm",
+    "title": "Buy Points",
+    "subtitle": "Points can be used to open packs. Purchases are currently unavailable.",
+    "mockNote": "Preview only. No payment or Points delivery occurs in this build.",
+    "discountBadge": "Unavailable",
+    "pointsLine": "{{count}} Points",
     "approx": "khoảng",
-    "buyNow": "Mua ngay",
-    "disclaimer": "Sau khi xác nhận mua credit, có thể không hủy, hoàn tiền hoặc hoàn điểm. (Chính sách cuối khi ra mắt.)",
-    "mockFooter": "Gói mô phỏng - thay thế bằng thanh toán thực trước khi ra mắt.",
-    "liveFooter": "Thanh toán an toàn · Giao hàng ngay · Không hết hạn",
-    "demoModeBadge": "Demo Credits / Test Mode",
-    "demoGrantCta": "Grant (demo)",
-    "demoGrantedTitle": "Demo credits added",
-    "demoGrantedBody": "Added {{count}} credits for testing. This is not a real purchase.",
-    "stripeComingSoonBody": "Stripe Top-Up Coming Soon. Live checkout needs EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY plus the create-credit-checkout edge function and webhook.",
-    "iapComingSoonBody": "In-app purchase for credits is coming soon on this platform. Set EXPO_PUBLIC_ALLOW_NATIVE_STRIPE_CREDITS=1 only for non-store Stripe Checkout testing.",
-    "stripeLiveNote": "Pay with Stripe Checkout. Credits land after payment via webhook — your balance refreshes on next hydrate.",
-    "unavailableTitle": "Top-up unavailable",
-    "unavailableCta": "Soon",
-    "checkoutFailedTitle": "Couldn’t start checkout",
-    "checkoutFailedBody": "Stripe Checkout did not open. Try again or contact support.",
-    "checkoutOpenedTitle": "Checkout opened",
-    "checkoutOpenedBody": "Complete payment in the browser. Credits appear after Stripe confirms — pull to refresh your balance if needed.",
-    "comingSoonFooter": "Purchase buttons stay disabled until Stripe or store billing is configured."
+    "buyNow": "Unavailable",
+    "disclaimer": "Purchase and refund terms will appear before purchases are enabled.",
+    "mockFooter": "Points purchases are unavailable.",
+    "liveFooter": "Points purchases are unavailable.",
+    "unavailableTitle": "Points purchases are unavailable",
+    "unavailableBody": "Purchases will open after the App Store billing connection and product review are complete."
   },
   "lootBox": {
     "title": "Xác suất của nội dung",
@@ -571,10 +584,10 @@
     "done": "Hiểu rồi"
   },
   "welcome": {
-    "signupPromoTitle": "Thưởng người chơi mới",
-    "signupPromoBody": "Tạo tài khoản trong lần đầu ghé thăm: sau khi đăng nhập, chúng tôi tặng {{credits}} credit thưởng (khoảng ${{usd}} giá trị mở gói).",
+    "signupPromoTitle": "Keep your collection",
+    "signupPromoBody": "Create an account to save live pulls, fulfillment choices, and your Vault across devices.",
     "skip": "Duyệt mà không cần đăng nhập",
-    "guestHint": "Bạn có thể xem catalog. Đăng nhập để mở gói, mua credit, thanh toán và dùng Bạn bè.",
+    "guestHint": "Bạn có thể xem catalog. Đăng nhập để mở gói, mua Points, thanh toán và dùng Bạn bè.",
     "flowMapLine": "Packs tab = mystery pulls in-app · Shop tab = pick cards & ship"
   },
   "auth": {
@@ -642,21 +655,19 @@
   "paymentPortal": {
     "navTitle": "Thanh toán",
     "eyebrow": "Thanh toán",
-    "tabCredits": "Credit",
+    "tabCredits": "Points",
     "tabMarketplace": "Chợ",
     "viewProbabilities": "Xem tỉ lệ nội dung gói",
-    "digitalRoutingNote": "Credit kỹ thuật số: mua trong app App Store/Google Play khi live — không dùng Stripe cho coin.",
+    "digitalRoutingNote": "Points kỹ thuật số: mua trong app App Store/Google Play khi live — không dùng Stripe cho Points.",
     "marketplaceTitle": "Đơn hàng vật lý",
-    "marketplaceLead": "Tin đăng đối tác giao hàng thật. Thanh toán dùng luồng hàng hoá (Stripe phía server), tách khỏi mua credit trong app.",
+    "marketplaceLead": "Tin đăng đối tác giao hàng thật. Thanh toán dùng luồng hàng hoá (Stripe phía server), tách khỏi mua Points trong app.",
     "item": "Mặt hàng",
     "price": "Giá",
     "physicalPolicy": "Chỉ hàng vật lý — PaymentIntent tạo trên server ({{mode}}). Apple Pay/Google Pay có thể hiện cho giao hàng, không phải cho tiền ảo trong app.",
     "continueCheckout": "Tiếp tục thanh toán",
     "physicalStubTitle": "Thanh toán không được kết nối",
     "physicalStubBody": "Kết nối backend để tạo Stripe PaymentIntent, rồi mở client với client secret trả về. Không để API key trong app.",
-    "sampleListingTitle": "Danh sách mẫu",
-    "marketplacePreviewNote": "Marketplace Checkout is currently in preview. Live purchases will open in the next release.",
-    "checkoutDisabledCta": "Checkout unavailable"
+    "sampleListingTitle": "Danh sách mẫu"
   },
   "legalModal": {
     "done": "Xong"
@@ -712,7 +723,7 @@
   },
   "packCard": {
     "openPack": "Chơi ngay",
-    "credits": "credit",
+    "credits": "Points",
     "remaining": "{{left}} / {{total}} còn lại",
     "maxPerUser": "Tối đa {{count}} lượt / tài khoản",
     "shortBadge": {
@@ -731,7 +742,7 @@
     "topHit": "Hit đỉnh",
     "chase": "CHASE",
     "unlockMembershipCta": "Unlock with membership",
-    "metadataRow": "{{credits}} credits • {{remaining}} remaining"
+    "metadataRow": "{{credits}} Points • {{remaining}} remaining"
   },
   "packOpening": {
     "title": "Mở gói",
@@ -743,21 +754,21 @@
     "continue": "Tiếp tục",
     "openNext": "Mở gói tiếp",
     "youPulled": "Bạn đã pull",
-    "creditsLabel": "+{{amount}} credit",
-    "resultCommon1": "Hit thường từ {{packName}}",
-    "resultCommon2": "Pull chuẩn từ {{packName}}",
-    "resultCommon3": "Thẻ thường từ {{packName}}",
-    "resultRare1": "Hit hiếm từ {{packName}}",
-    "resultRare2": "Ultra pull từ {{packName}}",
-    "resultRare3": "Thẻ đặc biệt từ {{packName}}",
-    "resultLegendary1": "Hit huyền thoại từ {{packName}}",
-    "resultLegendary2": "Pull mythic từ {{packName}}",
-    "resultLegendary3": "Thẻ game-changer từ {{packName}}",
+    "creditsLabel": "+{{amount}} Points",
+    "resultCommon1": "Pull from {{packName}}",
+    "resultCommon2": "Pull from {{packName}}",
+    "resultCommon3": "Pull from {{packName}}",
+    "resultRare1": "Pull from {{packName}}",
+    "resultRare2": "Pull from {{packName}}",
+    "resultRare3": "Pull from {{packName}}",
+    "resultLegendary1": "Pull from {{packName}}",
+    "resultLegendary2": "Pull from {{packName}}",
+    "resultLegendary3": "Pull from {{packName}}",
     "replay": "Phát lại hiệu ứng",
     "stageEyebrow": "Certified reveal",
     "manageWinnings": "Manage winnings",
     "openAnotherHeadline": "Pull again",
-    "openAnotherSub": "{{credits}} credits · same pack",
+    "openAnotherSub": "{{credits}} Points · same pack",
     "hudSpinningTitle": "Rip it open",
     "hudSpinningSub": "Tap fast to charge the break",
     "hudCommitTitle": "You're in control",
@@ -766,12 +777,12 @@
     "hudPrimedSub": "Pack's going…",
     "bulkPackSubtitle": "{{title}} · ×{{count}}",
     "bulkSummaryTitle": "{{count}} pulls",
-    "bulkTotalCredits": "Total card value: {{amount}} credits (if converted)",
+    "bulkTotalCredits": "Total card value: {{amount}} Points (if converted)",
     "bulkBestHit": "Best hit",
-    "bulkRowCredits": "+{{amount}} credits",
+    "bulkRowCredits": "+{{amount}} Points",
     "tier_base": "Cơ bản",
-    "tier_common": "Cơ bản",
-    "tier_rare": "Cơ bản",
+    "tier_common": "Base",
+    "tier_rare": "Epic",
     "tier_epic": "Epic",
     "tier_legendary": "Legendary",
     "tier_mythic": "Mythic",
@@ -791,28 +802,28 @@
     "reelEntering": "Opening the gallery",
     "reelEnteringSub": "Lining up your lane — hang tight.",
     "skippedToResult": "Skipped to result",
-    "resultStatCoins": "Coins won",
+    "resultStatCoins": "Trade in value",
     "resultStatVaultValue": "Vault value",
     "resultStatTier": "Tier",
-    "resultWinCredits": "+{{amount}} credits",
+    "resultWinCredits": "Trade in value: {{amount}} Points",
     "resultWinVaultLine": "{{value}} vault value",
     "storeInVault": "Store in vault",
     "sharePull": "Share",
-    "shareMessage": "I just pulled {{name}} ({{tier}}) — +{{credits}} credits!",
+    "shareMessage": "I just pulled {{name}} ({{tier}}) — +{{credits}} Points!",
     "bulkOtherPulls": "Your other pulls",
     "continueToWonPrizes": "Continue to Won Prizes"
   },
   "insufficientCredits": {
-    "title": "Không đủ credit",
-    "body": "Cần thêm credit để mở gói này.",
-    "bodyWithAmount": "Bạn còn thiếu {{needed}} credit để mở gói này. Nạp thêm để tiếp tục.",
+    "title": "Not enough Points",
+    "body": "You need more Points to open this pack.",
+    "bodyWithAmount": "You need {{needed}} more Points to open this pack.",
     "packLabel": "Gói",
     "costLabel": "Giá",
     "balanceLabel": "Số dư",
-    "creditsLine": "{{amount}} credit",
-    "buyCredits": "Mua credit",
+    "creditsLine": "{{amount}} Points",
+    "buyCredits": "View Points status",
     "cancel": "Hủy bỏ",
-    "costLineBulk": "{{perPack}} × {{count}} packs = {{total}} Credits"
+    "costLineBulk": "{{perPack}} × {{count}} packs = {{total}} Points"
   },
   "friendsAlerts": {
     "copiedTitle": "Đã sao chép",
@@ -839,14 +850,14 @@
     "profileNavTitle": "Hồ sơ",
     "goBack": "Quay lại",
     "profileMissingTitle": "Không có hồ sơ",
-    "profileMissingBody": "Chưa có hồ sơ demo cho tên người dùng này.",
+    "profileMissingBody": "This profile has not synced yet.",
     "joined": "Tham gia {{date}}",
     "statPacks": "Gói đã mở",
-    "statValue": "Tổng giá trị",
+    "statValue": "Total Trade in value",
     "statChase": "Chase trúng",
     "statLuck": "Điểm may mắn",
     "bestPull": "Pull tốt nhất",
-    "estimatedValue": "Giá trị ước tính",
+    "estimatedValue": "Trade in value",
     "rarityMix": "Tỷ lệ hiếm",
     "highlights": "Hoạt động",
     "recentPulls": "Pull gần đây",
@@ -859,7 +870,7 @@
     "notFriendTitle": "Chưa trong vòng của bạn",
     "notFriendBody": "Thêm người sưu tập này làm bạn để xem hồ sơ.",
     "leaderboardNavTitle": "Bảng xếp hạng bạn bè",
-    "leaderboardLead": "Xếp hạng theo chỉ số đã chọn. Chỉ dữ liệu demo.",
+    "leaderboardLead": "Ranked by synced activity.",
     "compareTitle": "So sánh người sưu tập",
     "compareSub": "Thống kê cạnh nhau — cao hơn thắng mỗi dòng.",
     "compareDone": "Xong",
@@ -882,19 +893,23 @@
     "emptyTitle": "Bắt đầu tìm kiếm",
     "emptyBody": "Tìm pack, set hoặc thẻ.",
     "noResultsTitle": "Không có kết quả",
-    "noResultsBody": "Thử từ khóa khác."
+    "noResultsBody": "Thử từ khóa khác.",
+    "resultA11y": "View status for {{title}}",
+    "releaseSyncLabel": "WAITING",
+    "releaseSyncBody": "Live inventory and pack details are not available yet.",
+    "releaseSyncHint": "View release status"
   },
   "demoSimulation": {
     "title": "Simulation notice",
-    "body": "This preview uses simulated credits and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
+    "body": "This preview uses simulated Points and rewards. No real money is charged or paid out. Marketplace purchases are not connected — this is for demonstration only.",
     "titleJa": "シミュレーションについてのお知らせ",
-    "bodyJa": "本プレビューではクレジットおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
+    "bodyJa": "本プレビューではPointsおよび報酬はすべてシミュレーションです。実際の課金や送金は発生しません。マーケットでの購入は接続されておらず、デモ／プレゼン用です。",
     "confirm": "I understand / 了解しました"
   },
   "packDetails": {
     "back": "Quay lại",
     "missingTitle": "Không tìm thấy pack",
-    "missingBody": "Pack này có thể đã kết thúc hoặc không khả dụng.",
+    "missingBody": "We could not find this pack in the current catalog.",
     "guaranteeTitle": "Đảm bảo",
     "priceTitle": "Giá",
     "remaining": "Còn {{left}} / {{total}}",
@@ -906,7 +921,7 @@
     "open10": "Open 10",
     "open100": "Open 100",
     "bulk100Title": "Open 100 packs?",
-    "bulk100Body": "This opens {{count}} packs at once for {{credits}} credits. You’ll review everything in Won Prizes next.",
+    "bulk100Body": "This opens {{count}} packs at once for {{credits}} Points. You’ll review everything in Won Prizes next.",
     "bulkCancel": "Not now",
     "bulkConfirm": "Open 100",
     "bulkStockTitle": "Không đủ hàng",
@@ -915,23 +930,23 @@
       "quantity": "Số lượng",
       "standardTitle": "Mở tiêu chuẩn",
       "standardLead": "Trải nghiệm đầy đủ — mở từng gói một.",
-      "standardCredits": "{{credits}} credits",
+      "standardCredits": "{{credits}} Points",
       "fastTitle": "Mở nhanh",
       "fastLead": "Mở nhanh · tóm tắt theo lô khi xong.",
-      "fastTotal": "Tổng {{total}} credits",
+      "fastTotal": "Tổng {{total}} Points",
       "perPack": "{{each}} mỗi gói",
       "rushTitle": "Rush 100 gói",
       "rushLead1": "Chế độ mở nhanh",
       "rushLead2": "Những hit tốt nhất sẽ được làm nổi bật trong recap.",
-      "rushTotal": "Tổng {{total}} credits",
+      "rushTotal": "Tổng {{total}} Points",
       "ctaOpenPack": "Mở gói",
       "ctaFastOpen": "Bắt đầu mở nhanh",
       "ctaRush": "Bắt đầu rush",
       "ctaSubInventory": "Còn {{left}} trong lane này",
       "rushModalKicker": "Phiên premium",
       "rushModalTitle": "Sẵn sàng Rush?",
-      "rushModalBody": "Mở {{count}} gói với {{total}} credits?",
-      "rushModalDisclosure": "Credits được trừ khi xác nhận — recap sẽ giữ những hit tốt nhất luôn nổi bật.",
+      "rushModalBody": "Mở {{count}} gói với {{total}} Points?",
+      "rushModalDisclosure": "Points được trừ khi xác nhận — recap sẽ giữ những hit tốt nhất luôn nổi bật.",
       "rushModalCancel": "Hủy",
       "rushModalConfirm": "Bắt đầu rush"
     },
@@ -942,16 +957,12 @@
     "topHitPreviewTitle": "Xem trước hit lớn",
     "topHitPreviewFinePrint": "Chỉ xem trước. Nội dung và giá trị demo có thể thay đổi trước khi ra mắt.",
     "whatYouCanPullTitle": "Bạn có thể kéo được gì",
+    "liveChecking": "Checking",
+    "liveUnavailableShort": "Live data required",
+    "liveUnavailableTitle": "Pack temporarily unavailable",
+    "liveUnavailableBody": "Opening stays disabled until current inventory and disclosed odds can be verified.",
     "oddsLiveBadge": "Live pool odds",
-    "oddsLiveDisclaimer": "Provably-fair probabilities from the active pack pool. Verify any pull against published weights.",
-    "featuredBadge": "FEATURED",
-    "tradeInRateUnit": "trade-in · listed value",
-    "remainingUnit": "left",
-    "oddsSummary": "{{tier}} odds",
-    "listedUnit": "listed",
-    "shipsTitle": "Ships from Tokyo",
-    "shipsBody": "Japanese exclusives, packed and shipped direct. Free shipping on orders {{threshold}}.",
-    "shipsThreshold": "$100+"
+    "oddsLiveDisclaimer": "Provably-fair probabilities from the active pack pool. Verify any pull against published weights."
   },
   "splash": {
     "frameKicker": "COLLECTOR VAULT",
@@ -961,20 +972,20 @@
   },
   "onboarding": {
     "welcomeTitle": "Chào mừng đến Pull Hub",
-    "welcomeSubtitle": "Lần đầu ghé thăm có thưởng đăng ký — tạo tài khoản ngay hoặc xem sảnh trước.",
-    "firstLaunchPromoPill": "{{credits}} credit thưởng · ~${{usd}} giá trị",
+    "welcomeSubtitle": "Create an account to save your collection, or preview the catalog first.",
+    "firstLaunchPromoPill": "Save pulls and Vault activity",
     "signUpCta": "Đăng ký miễn phí",
     "signInCta": "Đăng nhập",
     "continueGuest": "Tiếp tục với tư cách khách",
-    "sheetHint": "Vuốt bảng xuống hoặc chạm vùng mờ phía sau. Chúng tôi sẽ xác nhận trước khi bạn bỏ qua ưu đãi đăng ký.",
+    "sheetHint": "Swipe down or tap outside the sheet — we will confirm before continuing as a guest.",
     "dismissConfirmTitle": "Bỏ qua đăng ký?",
-    "dismissConfirmMessage": "Bạn luôn có thể tạo tài khoản sau, nhưng thưởng chuyến thăm này (khoảng ${{usd}} credit) chỉ có khi đăng ký ngay.",
-    "dismissConfirmStay": "Giữ ưu đãi — tôi sẽ đăng ký",
+    "dismissConfirmMessage": "You can keep browsing without an account. Live openings, saved Vault access, checkout, and Friends require sign-in.",
+    "dismissConfirmStay": "Stay and sign in",
     "dismissConfirmLeave": "Tiếp tục không có tài khoản",
     "promptEyebrow": "Mở đẹp đấy",
     "promptTitle": "Đăng ký để giữ",
-    "promptBody": "Tạo tài khoản để lưu kết quả mở vào kho, nhận thưởng và mở khóa gói chào mừng.",
-    "promptSignUp": "Nhận gói miễn phí",
+    "promptBody": "Create an account to save live pulls and fulfillment choices to your Vault.",
+    "promptSignUp": "Create account",
     "promptSignIn": "Tôi đã có tài khoản",
     "promptLater": "Để sau",
     "guestClaimTitle": "Đăng nhập để nhận",
@@ -986,9 +997,9 @@
     "navTitle": "Membership",
     "heroEyebrow": "Pull Hub 会員",
     "heroTitle": "Membership",
-    "heroLead": "A monthly pass for collectors — coins, status, and curated access to member-only packs and drops. Not a one-off coin bundle.",
+    "heroLead": "A monthly pass for collectors — Points, status, and curated access to member-only packs and drops. Not a one-off Points bundle.",
     "valueBlockTitle": "Why membership",
-    "valueBlockBody": "Your tier unlocks a badge, monthly coins, exclusive pack lanes, and earlier windows on select drops — the same rhythm serious collectors expect from a premium Oripa experience.",
+    "valueBlockBody": "Your tier unlocks a badge, monthly Points, exclusive pack lanes, and earlier windows on select drops — the same rhythm serious collectors expect from a premium Oripa experience.",
     "mostPopular": "Most popular",
     "tierName_silver": "Silver",
     "tierName_gold": "Gold",
@@ -1000,7 +1011,7 @@
     "badgeShort_gold": "GOLD",
     "badgeShort_black": "BLACK",
     "pricePerMonth": "{{price}} / month",
-    "coinsMonthly": "{{count}} coins each billing cycle",
+    "coinsMonthly": "{{count}} Points each billing cycle",
     "benefits": {
       "silver_badge": "Silver badge on your profile",
       "silver_packs": "Silver member-only packs in the lobby",
@@ -1025,84 +1036,90 @@
     "demoAlertTitle": "Membership",
     "demoAlertBody": "{{tier}} checkout will connect to App Store / Play billing. This is a product preview.",
     "accountRowTitle": "Pull Hub membership",
-    "accountRowSubtitle": "Silver, Gold, and Black — coins & exclusive packs",
+    "accountRowSubtitle": "Silver, Gold, and Black — Points & exclusive packs",
     "simActivatedTitle": "Demo membership on",
-    "simActivatedBody": "{{tier}} is active. We added {{coins}} credits for this cycle (demo).",
+    "simActivatedBody": "{{tier}} is active. We added {{coins}} Points for this cycle (demo).",
     "simClearTitle": "Clear demo membership?",
     "simClearBody": "Member-only packs lock again until you pick a tier.",
     "simClearConfirm": "Clear",
     "simActiveTitle": "Demo mode",
     "simActiveBody": "{{tier}} is active — your tier’s member packs are unlocked.",
     "simClearLink": "Clear demo membership",
-    "ctaSimSameTier": "Grant monthly credits again",
+    "ctaSimSameTier": "Grant monthly Points again",
     "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet.",
-    "ctaSubscribePreview": "Activate preview tier",
-    "previewBillingBanner": "Simulated / Preview Tier — no real recurring billing. App Store / Play IAP is not connected yet."
+    "releaseUnavailableShort": "Not available",
+    "releaseEyebrow": "MEMBERSHIP / RELEASE STATUS",
+    "releaseTitle": "Membership is not available yet.",
+    "releaseBody": "Plans stay unavailable until App Store products, receipt validation, and server entitlements are connected.",
+    "releaseStatus": "WAITING FOR VERIFIED ENTITLEMENTS"
   },
   "promotions": {
     "enterFromAccount": "Rewards & promo code",
     "screenTitle": "Rewards",
-    "screenLead": "Invite friends or enter a code. Rewards apply to your wallet right away in this preview.",
+    "screenLead": "Verified rewards will appear here when available.",
     "sectionReferral": "Invite friends",
     "sectionCode": "Promo code",
-    "codeExplainer": "One use per account. Try WELCOME, FREEPACK, or LAUNCH.",
+    "codeExplainer": "Enter a promotion code issued by Pull Hub.",
     "codeLabel": "Code",
     "codePlaceholder": "e.g. WELCOME",
     "apply": "Apply",
     "applyCode": "Apply promo code",
     "referralEyebrow": "Your link",
     "referralTitle": "Share Pull Hub",
-    "referralBody": "When a friend creates an account from your link, you both can earn rewards. Full referral payouts will use a server ledger at launch.",
+    "referralBody": "Referral status and rewards will appear here once the live rewards ledger is connected.",
     "copyLink": "Copy link",
     "copied": "Copied",
     "successEyebrow": "Applied",
     "successCta": "Done",
     "errorInvalid": "That code isn’t valid.",
     "errorRedeemed": "You’ve already used this code.",
-    "errorInactive": "This promotion isn’t available."
+    "errorInactive": "This promotion isn’t available.",
+    "releaseEyebrow": "REWARDS / RELEASE STATUS",
+    "releaseTitle": "Rewards are being verified.",
+    "releaseBody": "Promo codes and referrals stay unavailable until grants are issued and recorded by the live server."
   },
   "coach": {
     "homeEyebrow": "Pull Hub tip",
-    "homeTitle": "Credits unlock every pack pull",
-    "homeLine1": "This tab is where you spend credits on digital packs — filter by line, sort by price, and chase drops.",
-    "homeLine2": "Running low before a hot drop? Top up credits so you never miss a restock.",
+    "homeTitle": "Start your first pull",
+    "homeLine1": "This tab is where you spend Points on digital packs — filter by line, sort by price, and chase drops.",
+    "homeLine2": "Running low before a hot drop? Top up Points so you never miss a restock.",
     "homeLine3": "Shop is for sealed boxes and shipped goods; pulls here happen instantly in-app.",
-    "homeCtaCredits": "Get credits",
+    "homeCtaCredits": "Get Points",
     "shopEyebrow": "Shop vs Packs",
     "shopTitle": "Two ways to collect — pick the right lane",
-    "shopLine1": "Packs tab = buy credits, open packs, and build your vault digitally.",
+    "shopLine1": "Packs tab = buy Points, open packs, and build your vault digitally.",
     "shopLine2": "Shop = sealed product and merch with checkout and shipping — great for sealed grails.",
-    "shopLine3": "Most players keep credits ready for pulls, then browse Shop when they want something physical.",
+    "shopLine3": "Most players keep Points ready for pulls, then browse Shop when they want something physical.",
     "shopCtaPacks": "Back to Packs",
     "dismiss": "Got it",
-    "homeBody": "Open mystery packs instantly with credits. Win cards, convert to coins, and pull again.",
+    "homeBody": "Open mystery packs with Points. Win cards, Trade in for Points, and pull again.",
     "homeFlowOpen": "Open",
     "homeFlowWin": "Win",
-    "homeFlowConvert": "Convert",
+    "homeFlowConvert": "Trade in",
     "homeFlowRepeat": "Repeat",
     "homeCtaStart": "Start Pulling",
     "homeDismissSecondary": "Maybe later",
     "shopPacksHeading": "Packs",
     "shopPacksLine1": "Open instantly.",
     "shopPacksLine2": "Win cards.",
-    "shopPacksLine3": "Convert to coins.",
+    "shopPacksLine3": "Trade in for Points.",
     "shopShopHeading": "Shop",
     "shopShopLine1": "Buy specific cards and ship them home.",
     "shopHelper": "Most players open packs first, then shop for favorites.",
-    "shopCreditsHint": "Use credits you already have, or buy more anytime when you want to pull again.",
+    "shopCreditsHint": "Use Points you already have, or add more when you want to pull again.",
     "shopCtaContinue": "Continue to Shop",
     "shopCtaBackPacks": "Back to Packs"
   },
   "vaultScreen": {
     "title": "Vault",
-    "lead": "Hits you’ve kept or are shipping. Converted pulls stay in pull history only.",
+    "lead": "Your pulls stay here until you choose to ship, list, trade, or Trade in. Nothing changes without your confirmation.",
     "pullHistoryLink": "Full pull history →",
     "emptyTitle": "Nothing in your vault yet",
-    "emptyBody": "Open packs on Packs — your hits land here until you convert them to coins.",
+    "emptyBody": "Open packs on Packs — new pulls arrive here and stay until you choose what happens next.",
     "guestTitle": "Sign in to use your vault",
-    "guestBody": "Guest pulls aren’t saved. Create an account to build your collection.",
+    "guestBody": "Sign in is required to save and manage Vault items across devices.",
     "guestCta": "Sign in",
-    "statusPending": "Tap to decide ship or coins",
+    "statusPending": "Choose Vault or Trade in",
     "statusShipped": "Shipping",
     "statusKept": "In collection",
     "eyebrow": "SECURED STORAGE",
@@ -1110,80 +1127,57 @@
     "benefit1": "• Keep hits inside Pull Hub — build a real collection, not one-off shipments.",
     "benefit2": "• Vault Exchange: friends see your whole Vault — request anything; only your listings get Buy now (card checkout).",
     "benefit3": "• Request shipment on your schedule — fewer rushed labels, calmer fulfillment.",
-    "benefit4": "• Every secured item shows a clear storage timer so you always know what happens next.",
-    "benefit5": "• We’ll nudge you before time’s up — then unused items liquidate to credits automatically.",
-    "benefitFine": "Complimentary hold: {{days}} days per item. You can convert to credits anytime.",
+    "benefit4": "• Every secured item stays in your Vault until you choose what happens next.",
+    "benefit5": "• Nothing expires or converts automatically. Shipping and Trade in require your confirmation.",
+    "benefitFine": "Vault items do not expire. You can Trade in for Points anytime.",
     "statusVaulted": "Secured in Vault",
-    "notifyBeforeConvert": "Final day — ship, trade, or convert",
-    "timerDaysLeft": "{{count}}d left in Vault",
-    "timerHoursLeft": "{{count}}h left in Vault",
-    "timerEnded": "Hold ended",
-    "listedPill": "Buy now · {{price}}",
-    "shippingOrdersLink": "Shipping orders →",
-    "emptyCta": "Open a Pack →",
-    "emptyFilterTitle": "Nothing in this filter",
-    "emptyFilterBody": "Try another status tab or clear filters to see your full Vault.",
-    "statusConverted": "Traded in",
-    "refreshing": "Refreshing vault…",
-    "refreshErrorTitle": "Couldn’t refresh",
-    "refreshError": "Unable to refresh your vault. Please check your connection and try again.",
-    "filter": {
-      "all": "All",
-      "vaulted": "Vaulted",
-      "pending": "Pending",
-      "shipped": "Shipped",
-      "converted": "Traded In"
-    },
-    "sortLabel": "Sort",
-    "sort": {
-      "newest": "Newest first",
-      "oldest": "Oldest first",
-      "value_high": "Highest value",
-      "value_low": "Lowest value"
-    },
-    "listedBadge": "LISTED"
+    "notifyBeforeConvert": "Stored until you choose an action",
+    "timerDaysLeft": "Stored in Vault",
+    "timerHoursLeft": "Stored in Vault",
+    "timerEnded": "Stored in Vault",
+    "listedPill": "Buy now · {{price}}"
   },
   "wonPrizesModal": {
-    "title": "Cash out or Vault",
-    "lead": "By default every hit converts to credits as soon as you confirm. Check any row to secure it in the Vault instead — trade, list, or ship later. Shipping starts from the Vault when you’re ready.",
-    "summaryLabel": "Converting to credits",
-    "coinsLabel": "Credits",
-    "summaryAllVault": "Everything here is headed to your Vault with a {{days}}-day complimentary hold. No credits until you convert from Vault or the hold ends.",
-    "summaryAllConvert": "You’re cashing the full batch to credits — credits land as soon as you confirm.",
-    "summaryMixed": "Unchecked rows convert to credits on confirm. Checked rows stay in your Vault for {{days}} days.",
+    "title": "Vault or Trade in",
+    "lead": "Every pull is stored in Vault by default. Uncheck a row only when you want to Trade in for Points now. Shipping starts from Vault when you are ready.",
+    "summaryLabel": "Points from Trade in",
+    "coinsLabel": "Points",
+    "summaryAllVault": "Everything here will stay in your Vault until you choose to ship, list, trade, or Trade in.",
+    "summaryAllConvert": "The full batch will be Traded in after you confirm. Points are added only after this explicit action.",
+    "summaryMixed": "Selected rows stay in Vault. Unselected rows will be Traded in for Points after you confirm.",
     "sectionTitle_one": "This session · {{count}} item",
     "sectionTitle_other": "This session · {{count}} items",
-    "sectionHint": "Check for Vault",
+    "sectionHint": "Selected = Vault",
     "pillVault": "Vault",
-    "pillConvert": "Credits",
-    "checkboxHint": "Default: converts to credits when you confirm. Checked rows go to your Vault instead.",
+    "pillConvert": "Trade in",
+    "checkboxHint": "Default: Vault. Uncheck a row only when you want to Trade in for Points.",
     "ctaAllVault": "Store everything in Vault",
-    "ctaAllConvert": "Convert all · {{coins}} credits",
-    "ctaMixed": "Convert {{coins}} credits · Vault {{vaultCount}}",
+    "ctaAllConvert": "Convert all · {{coins}} Points",
+    "ctaMixed": "Convert {{coins}} Points · Vault {{vaultCount}}",
     "footerAllVault": "{{count}} secured",
-    "footerAllConvert": "Instant credit",
-    "footerMixed": "{{convertCount}} convert · {{vaultCount}} vault",
-    "footerVaultLine": "{{days}}-day Vault hold · auto-convert if untouched",
-    "footerCoinsOnly": "{{coins}} credits on confirm",
-    "confirmTitle": "Confirm credit conversion",
-    "confirmBody": "We’ll credit your wallet immediately for every row converting to credits. Vault rows stay secured.",
-    "confirmCoinsLabel": "Credits to receive",
-    "confirmVaultNote": "The other {{count}} secured hits keep their {{days}}-day Vault hold.",
+    "footerAllConvert": "Trade in on confirm",
+    "footerMixed": "{{convertCount}} Trade in · {{vaultCount}} Vault",
+    "footerVaultLine": "No expiry · no automatic Trade in",
+    "footerCoinsOnly": "{{coins}} Points after confirmation",
+    "confirmTitle": "Confirm Trade in",
+    "confirmBody": "Points are added for every row you explicitly Trade in. Selected Vault rows remain stored.",
+    "confirmCoinsLabel": "Points to receive",
+    "confirmVaultNote": "The other {{count}} pulls remain secured in Vault with no expiration.",
     "confirmCta": "Confirm",
     "confirmCancel": "Cancel"
   },
   "vaultAsset": {
     "sheetKicker": "VAULT ASSET",
-    "timerLabel": "Storage timer",
-    "timerUrgent": "Auto-convert soon",
-    "timerFine": "After the timer, Pull Hub credits the credit value automatically unless you ship or move the item. Hold length: {{days}} days.",
+    "timerLabel": "Vault status",
+    "timerUrgent": "Stored in Vault",
+    "timerFine": "This item remains in Vault until you explicitly request shipping, listing, trade, or Trade in.",
     "requestShipTitle": "Queue shipment?",
     "requestShipBody": "We’ll prepare this Vault item for fulfillment. You can track status from pull history once logistics are live.",
     "requestShipConfirm": "Queue shipment",
-    "convertTitle": "Convert to credits?",
-    "convertBody": "Cash out {{coins}} credits now. The physical claim for this Vault slot closes.",
+    "convertTitle": "Convert to Points?",
+    "convertBody": "Trade in {{coins}} Points now. The physical claim for this Vault slot closes.",
     "convertConfirm": "Convert now",
-    "ctaConvert": "Convert for {{coins}} credits",
+    "ctaConvert": "Convert for {{coins}} Points",
     "cancel": "Cancel",
     "ctaShip": "Request shipment",
     "ctaTrade": "Offer trade",
@@ -1196,15 +1190,11 @@
     "tradeSoonBody": "Peer trades will open from Vault — send offers, counter, and lock in when both sides agree (separate from fixed-price shop).",
     "shipStatusLine": "Shipment is queued for this item. We’ll notify you when the label is ready.",
     "readOnly": "This item isn’t editable from here.",
-    "close": "Close",
-    "convertedStatusLine": "Traded in for credits — shipping and listing actions are closed for this item.",
-    "carrierLine": "Carrier · {{carrier}}",
-    "trackingLine": "Tracking · {{tracking}}",
-    "trackingPending": "Tracking not assigned yet — check Shipping orders for updates."
+    "close": "Close"
   },
   "vaultList": {
     "title": "Vault Exchange listing",
-    "body": "Set a fixed USD price. Friends can buy instantly with card checkout (no credits). You keep the hit vaulted until it sells or you delist.",
+    "body": "Set a fixed USD price. Friends can buy instantly with card checkout (no Points). You keep the hit vaulted until it sells or you delist.",
     "priceLabel": "Price (USD, whole dollars)",
     "pricePlaceholder": "e.g. 99",
     "confirm": "List for {{price}}"
@@ -1225,7 +1215,7 @@
   "vaultExchange": {
     "checkoutKicker": "VAULT EXCHANGE",
     "checkoutTitle": "Secure card checkout",
-    "checkoutBody": "Peer sales use real payments (e.g. Stripe) — not wallet credits. This build simulates a successful charge so you can test the flow.",
+    "checkoutBody": "Peer sales use real payments (e.g. Stripe) — not wallet Points. This build simulates a successful charge so you can test the flow.",
     "checkoutSimulateCta": "Simulate paid checkout",
     "checkoutCancel": "Not now",
     "friendSectionTitle": "Their Vault",
@@ -1254,8 +1244,7 @@
       "offerBody": "Production: send a trade or cash offer thread — separate from fixed-price Buy now.",
       "askTitle": "Ask availability (demo)",
       "askBody": "Production: a light nudge to {{handle}} — still not a purchase until they list or accept."
-    },
-    "checkoutDisabledCta": "Checkout unavailable"
+    }
   },
   "progression": {
     "rankBand_0": "Studio regular",
@@ -1294,7 +1283,7 @@
     },
     "weekly_convert": {
       "title": "Convert one Vault hit",
-      "desc": "Cash a vaulted item to coins once this week."
+      "desc": "Cash a vaulted item to Points once this week."
     },
     "weekly_add_friend": {
       "title": "Grow your circle",
@@ -1310,8 +1299,8 @@
   "packOdds": {
     "kicker": "Tỷ lệ gói",
     "liveNote": "Disclosed probabilities from the active pack pool. Rates reflect current pool weights.",
-    "demoNote": "Sample odds — live odds appear when this pack is online.",
-    "liveDisclaimer": "Every pull can be verified against the published pool weights after you open."
+    "demoNote": "Demo probabilities — connect Supabase for live pool odds.",
+    "liveDisclaimer": "Provably-fair commit–reveal. Every pull is verifiable against the published pool weights."
   },
   "packOpeningEngine": {
     "brandTitle": "PULL HUB",
@@ -1319,8 +1308,8 @@
     "skip": "Bỏ qua",
     "replay": "Phát lại",
     "cardLabel": "Thẻ bài",
-    "estValueLabel": "Giá trị ước tính",
-    "estimatedValueLabel": "Giá trị ước tính"
+    "estValueLabel": "Listed value",
+    "estimatedValueLabel": "Listed value"
   },
   "recentHits": {
     "title": "Hit gần đây",
@@ -1333,7 +1322,48 @@
     "high_value": "Chase & premium"
   },
   "credits": {
-    "abbrev": "CR"
+    "abbrev": "PTS"
+  },
+  "serviceAvailability": {
+    "eyebrow": "Account service",
+    "title": "Not available in this release",
+    "body": "This connection stays disabled until its provider, data handling, and recovery flow are verified for production.",
+    "status": "CONNECTION / INACTIVE"
+  },
+  "walletLinking": {
+    "navTitle": "Wallet address",
+    "lead": "Link your Base wallet to receive Digital Twin NFTs when you ship high-tier pulls from your vault.",
+    "fieldLabel": "EVM wallet address",
+    "placeholder": "0x…",
+    "hint": "Must start with 0x and be 42 characters (Base / Ethereum format).",
+    "save": "Save wallet address",
+    "savedTitle": "Saved",
+    "savedBody": "Your wallet address was saved. NFTs will mint to this address when you request shipping.",
+    "saveFailed": "Could not save. Try again.",
+    "invalidTitle": "Invalid address",
+    "invalidBody": "Enter a valid EVM address (0x followed by 40 hex characters).",
+    "notSignedIn": "Sign in to save your wallet address.",
+    "notConfigured": "Supabase is not configured in this build.",
+    "authFailed": "Could not authenticate with Supabase. Try signing out and back in."
+  },
+  "creditHistory": {
+    "navTitle": "Credit history",
+    "lead": "Every credit change on your account — pack opens, trade-ins, top-ups, and refunds.",
+    "currentBalance": "Current balance · {{balance}}",
+    "balanceAfter": "Bal. {{balance}}",
+    "loading": "Loading ledger…",
+    "loadError": "Unable to load transactions. Please check your connection and try again.",
+    "retry": "Try again",
+    "offlineNote": "Credit history needs a signed-in session. Preview mode shows an empty list.",
+    "emptyTitle": "No ledger entries yet",
+    "emptyBody": "Open a pack or trade in a card to see credit movements here.",
+    "type": {
+      "packPull": "Pack pull",
+      "tradeIn": "Trade-in",
+      "topUp": "Top up",
+      "refund": "Refund",
+      "other": "Other"
+    }
   },
   "shippingOrders": {
     "navTitle": "Shipping orders",
@@ -1360,143 +1390,6 @@
       "shipped": "Shipped",
       "delivered": "Delivered",
       "cancelled": "Cancelled"
-    }
-  },
-  "creditHistory": {
-    "navTitle": "Credit history",
-    "lead": "Every credit change on your account — pack opens, trade-ins, top-ups, and refunds.",
-    "currentBalance": "Current balance · {{balance}}",
-    "balanceAfter": "Bal. {{balance}}",
-    "loading": "Loading ledger…",
-    "loadError": "Unable to load transactions. Please check your connection and try again.",
-    "retry": "Try again",
-    "offlineNote": "Credit history needs a signed-in session. Preview mode shows an empty list.",
-    "emptyTitle": "No ledger entries yet",
-    "emptyBody": "Open a pack or trade in a card to see credit movements here.",
-    "type": {
-      "packPull": "Pack pull",
-      "tradeIn": "Trade-in",
-      "topUp": "Top up",
-      "refund": "Refund",
-      "other": "Other"
-    }
-  },
-  "futureUpdate": {
-    "badge": "Coming in a future update",
-    "plannedTitle": "Planned (not available yet)"
-  },
-  "deleteAccount": {
-    "section": "Danger zone",
-    "lead": "Permanently deletes your Pull Hub account with our sign-in provider and clears local data on this device. This cannot be undone.",
-    "cta": "Delete account",
-    "confirmTitle": "Delete your account?",
-    "confirmBody": "Your Clerk account will be deleted and local vault/history on this device will be cleared. Language and preference toggles stay on the device.",
-    "confirmAction": "Delete forever",
-    "doneTitle": "Account deleted",
-    "doneBody": "Your account has been removed. You can create a new one anytime.",
-    "errorTitle": "Couldn’t delete account",
-    "errorBody": "Something went wrong. Try again or contact support.",
-    "localLead": "You’re browsing without a cloud account. This clears local vault, friends, and onboarding data on this device.",
-    "localCta": "Clear local data",
-    "localConfirmTitle": "Clear local data?",
-    "localConfirmBody": "Removes guest session data and vault history on this device. Preferences like language and sound stay.",
-    "localConfirmAction": "Clear data",
-    "localDoneTitle": "Local data cleared",
-    "localDoneBody": "This device is reset to a fresh guest session."
-  },
-  "walletLinking": {
-    "navTitle": "Wallet address",
-    "lead": "Link your Base wallet to receive Digital Twin NFTs when you ship high-tier pulls from your vault.",
-    "fieldLabel": "EVM wallet address",
-    "placeholder": "0x…",
-    "hint": "Must start with 0x and be 42 characters (Base / Ethereum format).",
-    "save": "Save wallet address",
-    "savedTitle": "Saved",
-    "savedBody": "Your wallet address was saved. NFTs will mint to this address when you request shipping.",
-    "saveFailed": "Could not save. Try again.",
-    "invalidTitle": "Invalid address",
-    "invalidBody": "Enter a valid EVM address (0x followed by 40 hex characters).",
-    "notSignedIn": "Sign in to save your wallet address.",
-    "notConfigured": "Wallet linking isn’t available in this build.",
-    "authFailed": "Could not verify your session. Try signing out and back in."
-  },
-  "cardMarket": {
-    "yours": "YOURS",
-    "listed": "Listed",
-    "previewCta": "Preview",
-    "ownListingTitle": "Your listing",
-    "ownListingBody": "This is your own listing. Visit your Vault to manage it.",
-    "previewTitle": "Marketplace preview",
-    "previewBody": "“{{title}}” (${{price}}) — Marketplace Checkout is currently in preview. Live purchases will open in the next release."
-  },
-  "alerts": {
-    "generic": {
-      "title": "Something went wrong",
-      "body": "Please check your connection and try again."
-    },
-    "missingLink": {
-      "title": "Link unavailable",
-      "body": "This link isn’t available yet. Please try again later."
-    },
-    "cannotOpenLink": {
-      "title": "Cannot open link",
-      "body": "We couldn’t open that link. Please try again later."
-    },
-    "openLinkFailed": "Could not open {{label}}.",
-    "openLinkFailedGeneric": "Could not open link.",
-    "shareCopiedTitle": "Copied to clipboard",
-    "shareCopiedBody": "Paste anywhere to share your pull.",
-    "packOpen": {
-      "signInTitle": "Sign in required",
-      "signInBody": "Please sign in to open packs.",
-      "alreadyTitle": "Already processed",
-      "alreadyBody": "This pack open was already recorded.",
-      "alreadyBulkBody": "This bulk open was already recorded.",
-      "connectionTitle": "Connection problem",
-      "failedTitle": "Pack open failed",
-      "failedBody": "We couldn’t complete this pack open. Please try again.",
-      "welcomeUsedTitle": "Welcome pack used",
-      "welcomeUsedBody": "You’ve already claimed this welcome pack."
-    },
-    "tradeIn": {
-      "unavailableTitle": "Trade-in unavailable",
-      "unavailableBody": "We couldn’t find this card in your vault. Refresh and try again.",
-      "failedTitle": "Trade-in failed",
-      "failedBody": "We couldn’t complete the trade-in. Please try again."
-    },
-    "shipping": {
-      "unavailableTitle": "Shipment unavailable",
-      "unavailableBody": "Shipping isn’t available right now. Please try again later.",
-      "addressRequiredTitle": "Shipping address required",
-      "addressRequiredBody": "Add a shipping address before requesting shipment.",
-      "insufficientTitle": "Insufficient credits",
-      "insufficientBody": "You don’t have enough credits for this shipping fee.",
-      "failedTitle": "Shipment request failed",
-      "failedBody": "We couldn’t start this shipment. Please try again."
-    },
-    "serviceUnavailable": {
-      "title": "Temporarily unavailable",
-      "body": "This feature isn’t available right now. Please try again later."
-    }
-  },
-  "resultScreen": {
-    "headerLabel": "PULL RECORD",
-    "stampSuffix": "JST · TOKYO",
-    "totalListedValue": "TOTAL LISTED VALUE",
-    "cardCount": "{{count}} CARDS",
-    "ctaTradeInAll": "Trade in all — {{coins}} Coins",
-    "ctaTradeIn": "Trade in — {{coins}} Coins",
-    "disclaimer": "100% of listed value, in Coins.",
-    "keepInVault": "Keep in Vault",
-    "pullAgain": "Pull again",
-    "fairnessFooter": "Odds applied · Fairness Record →",
-    "sheet": {
-      "titleMulti": "Trade in {{count}} cards?",
-      "titleOne": "Trade in 1 card?",
-      "amountSub": "COINS · 100% OF LISTED VALUE",
-      "bodyMulti": "All {{count}} cards will be traded in for Coins at their listed value.",
-      "bodyOne": "This card will be traded in for Coins at its listed value.",
-      "confirm": "Trade in"
     }
   },
   "fairness": {
@@ -1526,12 +1419,75 @@
       }
     }
   },
-  "creditsPill": {
-    "a11yHistory": "Credit history",
-    "a11yAdd": "Add credits"
+  "resultScreen": {
+    "headerLabel": "PULL RECORD",
+    "stampSuffix": "JST · TOKYO",
+    "totalListedValue": "TOTAL LISTED VALUE",
+    "cardCount": "{{count}} CARDS",
+    "ctaTradeInAll": "Trade in all — {{coins}} Coins",
+    "ctaTradeIn": "Trade in — {{coins}} Coins",
+    "disclaimer": "100% of listed value, in Coins.",
+    "keepInVault": "Keep in Vault",
+    "pullAgain": "Pull again",
+    "fairnessFooter": "Odds applied · Fairness Record →",
+    "sheet": {
+      "titleMulti": "Trade in {{count}} cards?",
+      "titleOne": "Trade in 1 card?",
+      "amountSub": "COINS · 100% OF LISTED VALUE",
+      "bodyMulti": "All {{count}} cards will be traded in for Coins at their listed value.",
+      "bodyOne": "This card will be traded in for Coins at its listed value.",
+      "confirm": "Trade in"
+    }
   },
-  "appHeader": {
-    "searchA11y": "Search packs"
+  "alerts": {
+    "generic": {
+      "title": "Something went wrong",
+      "body": "Please check your connection and try again."
+    },
+    "missingLink": {
+      "title": "Link unavailable",
+      "body": "This link isn’t available yet. Please try again later."
+    },
+    "cannotOpenLink": {
+      "title": "Cannot open link",
+      "body": "We couldn’t open that link. Please try again later."
+    },
+    "openLinkFailed": "Could not open {{label}}.",
+    "openLinkFailedGeneric": "Could not open link.",
+    "shareCopiedTitle": "Copied to clipboard",
+    "shareCopiedBody": "Paste anywhere to share your pull.",
+    "packOpen": {
+      "signInTitle": "Sign in required",
+      "signInBody": "Please sign in to open packs.",
+      "alreadyTitle": "Already processed",
+      "alreadyBody": "This pack open was already recorded.",
+      "alreadyBulkBody": "This bulk open was already recorded.",
+      "connectionTitle": "Connection problem",
+      "failedTitle": "Pack open failed",
+      "failedBody": "We couldn’t complete this pack open. Please try again.",
+      "welcomeUsedTitle": "Welcome pack used",
+      "welcomeUsedBody": "You’ve already claimed this welcome pack on this account."
+    },
+    "tradeIn": {
+      "unavailableTitle": "Trade-in unavailable",
+      "unavailableBody": "We couldn’t find this card in your vault. Refresh and try again.",
+      "failedTitle": "Trade-in failed",
+      "failedBody": "We couldn’t complete the trade-in. Please try again."
+    },
+    "shipping": {
+      "unavailableTitle": "Shipment unavailable",
+      "unavailableBody": "Shipping isn’t available right now. Please try again later.",
+      "addressRequiredTitle": "Shipping address required",
+      "addressRequiredBody": "Add a shipping address before requesting shipment.",
+      "insufficientTitle": "Insufficient credits",
+      "insufficientBody": "You don’t have enough credits for this shipping fee.",
+      "failedTitle": "Shipment request failed",
+      "failedBody": "We couldn’t start this shipment. Please try again."
+    },
+    "serviceUnavailable": {
+      "title": "Temporarily unavailable",
+      "body": "This feature isn’t available right now. Please try again later."
+    }
   },
   "packRing": {
     "unavailableTitle": "Pack scene unavailable",
@@ -1539,5 +1495,12 @@
     "misconfigured": "The opening scene isn’t available right now. Please try again later.",
     "retry": "Retry",
     "loading": "Loading pack scene…"
+  },
+  "creditsPill": {
+    "a11yHistory": "Credit history",
+    "a11yAdd": "Add credits"
+  },
+  "appHeader": {
+    "searchA11y": "Search packs"
   }
 }

@@ -12,6 +12,7 @@ import { LootBoxDisclosure } from '../components/payments/LootBoxDisclosure';
 import { CreditsPurchaseSection } from '../components/payments/CreditsPurchaseSection';
 import { MarketplaceCheckoutSection } from '../components/payments/MarketplaceCheckoutSection';
 import { useAppStore } from '../store/useAppStore';
+import { SgScreen } from '../components/ui';
 
 type Nav = StackNavigationProp<RootStackParamList, 'PaymentPortal'>;
 type R = RouteProp<RootStackParamList, 'PaymentPortal'>;
@@ -63,7 +64,7 @@ export function PaymentPortalScreen() {
   );
 
   return (
-    <View style={styles.root}>
+    <SgScreen constrainContent>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
@@ -100,19 +101,17 @@ export function PaymentPortalScreen() {
       </ScrollView>
 
       <LootBoxDisclosure visible={lootVisible} onClose={() => setLootVisible(false)} />
-    </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: sg.surface2,
-  },
-  scroll: { flex: 1 },
+  scroll: { flex: 1, backgroundColor: 'transparent' },
   content: {
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.md,
+    position: 'relative',
+    zIndex: 1,
   },
   eyebrow: {
     fontSize: fontSize.xs,

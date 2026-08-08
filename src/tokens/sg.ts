@@ -1,82 +1,172 @@
 /**
- * N2 "Neon Torii" design tokens.
- * Single source of truth: docs/design-system-n2.md (§3) — values are copied
- * verbatim, do not tune them here.
+ * Tokyo Night Terminal skin.
  *
- * React Native translation notes:
- * - CSS variables become this typed object.
- * - Web-only concepts from the handoff (backdrop blur, :active,
- *   prefers-reduced-motion, clip-path, text-stroke) are translated
- *   per-component in later steps — this module carries colors, lines,
- *   radii, shadows and type only.
+ * This branch is an explicit product-level visual override of the N2 black/gold
+ * presentation. Trust language, hierarchy and interaction rules stay intact;
+ * the visual system moves to a Japanese late-night transit/pack-terminal world.
  *
- * Role rules that code can't enforce (§4):
- * - gold = VALUE: prices, the ONE primary CTA per screen (black label),
- *   Hit rank, balances, logo accent. Never body text or wide fills.
- * - neon = MOMENT: DROP LIVE / CHASE / countdowns / reveal only,
- *   ≤2% of screen area, always with glow. Never CTAs, body, nav.
- * - success = verification / stock / success only. Never decoration.
- * - Dividers are 1px `line` borders, not shadows. `shadowHero` is the only
- *   shadow, on at most ONE hero element per screen.
- * - All numerals (price / odds / stock / cert / countdown / balance) are
- *   data-face + tabular-nums.
+ * Layering: primitive -> semantic -> component. Components should consume the
+ * exported `sg` semantic/component aliases instead of raw color literals.
  */
 
+const primitive = {
+  midnight950: '#080D18',
+  midnight900: '#0C1322',
+  navy800: '#121A2A',
+  navy700: '#182338',
+  navy600: '#21304A',
+  steel500: '#42516C',
+  steel400: '#6F7B91',
+  aluminum300: '#A7B0BC',
+  ivory100: '#F4EFE3',
+  valueGold500: '#D4AF37',
+  valueGold400: '#E8CE7E',
+  cobalt500: '#275DDB',
+  cobalt400: '#3E72F0',
+  vermilion500: '#FF5A47',
+  mint500: '#38BFA8',
+  amber500: '#EAB464',
+  rose500: '#F36B74',
+} as const;
+
+const semantic = {
+  bg: primitive.midnight950,
+  surface: primitive.navy800,
+  surface2: primitive.navy700,
+  surfaceRaised: primitive.navy600,
+  bayShell: '#0D1627',
+  bayGlass: 'rgba(24,35,56,0.72)',
+  surfaceTransparent: 'rgba(18,26,42,0)',
+  line: '#2C3A52',
+  lineStrong: primitive.steel500,
+  text: primitive.ivory100,
+  muted: primitive.aluminum300,
+  chrome: primitive.steel400,
+  /** Compatibility key: on this approved skin the value/primary accent is cobalt. */
+  gold: primitive.cobalt500,
+  goldHi: primitive.cobalt400,
+  onGold: primitive.ivory100,
+  /** C-4/C-9 invariant: financial value and true primary actions remain gold. */
+  value: primitive.valueGold500,
+  valueHi: primitive.valueGold400,
+  onValue: primitive.midnight950,
+  neon: primitive.vermilion500,
+  neonGlow: 'rgba(255,90,71,0.30)',
+  success: primitive.mint500,
+  error: primitive.rose500,
+  warning: primitive.amber500,
+  ticket: '#EAE4D8',
+  ticketInk: '#111827',
+  cobaltWashSoft: 'rgba(39,93,219,0.08)',
+  cobaltWash: 'rgba(39,93,219,0.14)',
+  cobaltWashStrong: 'rgba(39,93,219,0.20)',
+  cobaltBorder: 'rgba(62,114,240,0.42)',
+  cobaltBorderStrong: 'rgba(62,114,240,0.65)',
+  mintWash: 'rgba(56,191,168,0.13)',
+  mintBorder: 'rgba(56,191,168,0.36)',
+  vermilionWash: 'rgba(255,90,71,0.13)',
+  neonBorder: 'rgba(255,90,71,0.38)',
+  warningWash: 'rgba(234,180,100,0.13)',
+  warningBorder: 'rgba(234,180,100,0.36)',
+  ivoryLight: 'rgba(244,239,227,0.72)',
+  ivoryLightSoft: 'rgba(244,239,227,0.62)',
+  cobaltLight: 'rgba(62,114,240,0.45)',
+  cobaltLightStrong: 'rgba(62,114,240,0.50)',
+  backdropRail: 'rgba(62,114,240,0.10)',
+  backdropGrid: 'rgba(167,176,188,0.04)',
+  modalScrim: 'rgba(0,0,0,0.60)',
+  functionalScrim: 'rgba(8,13,24,0.88)',
+  /** Lower-density veil reserved for the single illuminated exhibit image. */
+  exhibitScrim: 'rgba(8,13,24,0.36)',
+  onPrimarySoft: 'rgba(244,239,227,0.68)',
+  cardShine: 'rgba(244,239,227,0.14)',
+} as const;
+
+const component = {
+  screen: {
+    background: semantic.bg,
+    rail: semantic.line,
+  },
+  panel: {
+    background: semantic.surface,
+    border: semantic.line,
+    radius: 6,
+  },
+  buttonPrimary: {
+    background: semantic.value,
+    foreground: semantic.onValue,
+    border: semantic.valueHi,
+    radius: 4,
+    height: 54,
+  },
+  ticket: {
+    background: semantic.ticket,
+    foreground: semantic.ticketInk,
+    radius: 3,
+  },
+  dock: {
+    background: '#0C1424',
+    active: semantic.goldHi,
+    inactive: semantic.muted,
+  },
+} as const;
+
 export const sg = {
-  // ── 基層 ──
-  bg: '#000000',
-  surface: '#101013',
-  surface2: '#17171C',
-  line: '#27272E',
+  ...semantic,
+  primitive,
+  component,
 
-  // ── テキスト ──
-  text: '#F0EEE8', // #FFFFFF is banned app-wide
-  muted: '#8E8C85',
-
-  // ── ブランド ──
-  gold: '#D4AF37',
-  goldHi: '#E8CE7E',
-  onGold: '#000000',
-  neon: '#FF4A38',
-  neonGlow: 'rgba(255,74,56,0.32)',
-
-  // ── セマンティック ──
-  success: '#6FBF8F',
-  error: '#E5484D', // flat — never glows
-  warning: '#FFB224',
-
-  // ── 質感 ──
-  radius: { panel: 13, btn: 10, tag: 6 } as const,
-  /** 0 20px 48px rgba(0,0,0,.65) — at most ONE hero element per screen. */
+  radius: { panel: 6, btn: 4, tag: 3, pill: 999 } as const,
+  /** One focal object per screen: smoked acrylic depth, not a soft card shadow. */
   shadowHero: {
-    shadowColor: '#000000',
-    shadowOpacity: 0.65,
-    shadowRadius: 48,
-    shadowOffset: { width: 0, height: 20 },
+    shadowColor: '#020611',
+    shadowOpacity: 0.72,
+    shadowRadius: 34,
+    shadowOffset: { width: 0, height: 18 },
     elevation: 12,
   },
-  /** 0 0 16px neonGlow — neon must glow (LIVE / CHASE moments only). */
   glowNeon: {
-    shadowColor: '#FF4A38',
-    shadowOpacity: 0.32,
+    shadowColor: semantic.neon,
+    shadowOpacity: 0.3,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  glowCobalt: {
+    shadowColor: semantic.gold,
+    shadowOpacity: 0.38,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  glowValue: {
+    shadowColor: semantic.value,
+    shadowOpacity: 0.24,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 0 },
   },
 
-  // ── 型 (§7 — N2 brand set; optical sizing is a no-op in RN) ──
   font: {
-    /** Headings — Fraunces weight 500 (not 600). */
-    display: 'Fraunces_500Medium',
+    /** Precise geometric display face: premium electronics, not generic gaming UI. */
+    display: 'Sora_800ExtraBold',
     body: 'SchibstedGrotesk_400Regular',
     bodyMedium: 'SchibstedGrotesk_500Medium',
     bodyBold: 'SchibstedGrotesk_700Bold',
-    /** Data faces — Spline Sans Mono 400/500 per §7. */
     data: 'SplineSansMono_400Regular',
-    dataBold: 'SplineSansMono_500Medium',
+    dataBold: 'SplineSansMono_600SemiBold',
+    /** Terminal labels deliberately use the stronger mono cut at small sizes. */
+    label: 'SplineSansMono_600SemiBold',
+    japanese: 'ZenKakuGothicNew_500Medium',
+    /** The bilingual layer stays restrained and ships one CJK weight. */
+    japaneseBold: 'ZenKakuGothicNew_500Medium',
   },
-  /** fontVariant for every numeric display (price/odds/stock/cert/balance). */
+  type: {
+    hero: { fontSize: 36, lineHeight: 38, letterSpacing: -1.35 },
+    title: { fontSize: 24, lineHeight: 28, letterSpacing: -0.55 },
+    label: { fontSize: 10, lineHeight: 14, letterSpacing: 1.15 },
+    body: { fontSize: 15, lineHeight: 22, letterSpacing: 0 },
+    data: { fontSize: 14, lineHeight: 18, letterSpacing: -0.15 },
+  },
   numeric: ['tabular-nums'] as const,
-
-  // ── spacing — N2 defines no spacing scale; the existing 8pt system stays ──
   space: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48, xxxl: 64 } as const,
 } as const;
+
+export type TokyoNightTerminalTheme = typeof sg;

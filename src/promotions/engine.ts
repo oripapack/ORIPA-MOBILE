@@ -10,6 +10,7 @@ export function normalizeReferralUsername(raw: string): string {
 }
 
 export function lookupPromoCode(code: string): { label: string; grant: PromotionGrant } | null {
+  if (!__DEV__) return null;
   const c = normalizePromoCode(code);
   const row = MOCK_PROMO_CODES.find((p) => p.code === c);
   if (!row) return null;
@@ -32,12 +33,13 @@ export function redeemPromoCode(
 
 export function getSignupPromotion(): { enabled: boolean; grant: PromotionGrant } {
   return {
-    enabled: MOCK_SIGNUP_PROMOTION.enabled,
+    enabled: __DEV__ && MOCK_SIGNUP_PROMOTION.enabled,
     grant: { ...MOCK_SIGNUP_PROMOTION.grant },
   };
 }
 
 export function getReferralGrants(): { newUser: PromotionGrant; referrer: PromotionGrant } {
+  if (!__DEV__) return { newUser: {}, referrer: {} };
   return {
     newUser: { ...MOCK_REFERRAL_PROGRAM.newUser },
     referrer: { ...MOCK_REFERRAL_PROGRAM.referrer },

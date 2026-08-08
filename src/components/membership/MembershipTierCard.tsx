@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   popularRibbon: {
     alignSelf: 'center',
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
     borderWidth: 1,
     borderColor: sg.line,
     paddingHorizontal: spacing.md,

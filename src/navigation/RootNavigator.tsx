@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
-import { BlurView } from 'expo-blur';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
@@ -15,12 +14,12 @@ import { AccountScreen } from '../screens/AccountScreen';
 import { MarketplaceScreen } from '../screens/MarketplaceScreen';
 import { VaultScreen } from '../screens/VaultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
-import { CreditHistoryScreen } from '../screens/history/CreditHistoryScreen';
 import { DevUiGalleryScreen } from '../screens/DevUiGalleryScreen';
 import { PaymentPortalScreen } from '../screens/PaymentPortalScreen';
 import { HelpCenterScreen } from '../screens/HelpCenterScreen';
 import { ShippingAddressScreen } from '../screens/ShippingAddressScreen';
 import { ShippingOrdersScreen } from '../screens/ShippingOrdersScreen';
+import { CreditHistoryScreen } from '../screens/history/CreditHistoryScreen';
 import { TierBenefitsScreen } from '../screens/TierBenefitsScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { HotDropsInfoScreen } from '../screens/HotDropsInfoScreen';
@@ -52,8 +51,6 @@ import { hasCompletedProfileOnboarding } from '../lib/clerkProfile';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { usePromotionStore } from '../store/promotionStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
-import { usePreferencesStore } from '../store/preferencesStore';
-import { useNotificationPreferencesStore } from '../store/notificationPreferencesStore';
 import { AppBootEntrance, BOOT_ENTRANCE_SPRING } from '../components/splash/AppBootEntrance';
 import { AppSplashScreen } from '../components/splash/AppSplashScreen';
 import { GuestModeProvider } from '../context/GuestModeContext';
@@ -65,6 +62,42 @@ import { PromotionSync } from '../components/promotions/PromotionSync';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
+const RELEASE_AUDIT_ROUTES = [
+  'MainTabs',
+  'DevUiGallery',
+  'Settings',
+  'PackDetails',
+  'Result',
+  'PaymentPortal',
+  'HelpCenter',
+  'ShippingAddress',
+  'TierBenefits',
+  'Membership',
+  'CollectorQuests',
+  'Notifications',
+  'HotDropsInfo',
+  'PromosInfo',
+  'PullHistory',
+  'FriendProfile',
+  'FriendsLeaderboard',
+  'LinkedAccounts',
+  'WalletLinking',
+  'IdentityVerification',
+  'PayoutMethod',
+  'Promotions',
+] as const satisfies readonly (keyof RootStackParamList)[];
+
+type ReleaseAuditRoute = (typeof RELEASE_AUDIT_ROUTES)[number];
+
+/** Local web QA only: opens one registered route without exposing it in normal builds. */
+function getReleaseAuditRoute(): ReleaseAuditRoute | null {
+  if (process.env.EXPO_PUBLIC_RELEASE_AUDIT !== '1' || Platform.OS !== 'web' || typeof window === 'undefined') {
+    return null;
+  }
+  const requested = new URLSearchParams(window.location.search).get('screen');
+  return RELEASE_AUDIT_ROUTES.find((route) => route === requested) ?? null;
+}
+
 const tabBarDockStyles = StyleSheet.create({
   root: {
     ...StyleSheet.absoluteFillObject,
@@ -72,7 +105,7 @@ const tabBarDockStyles = StyleSheet.create({
   },
   slab: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.72)',
+    backgroundColor: sg.component.dock.background,
   },
   topLine: {
     position: 'absolute',
@@ -92,11 +125,6 @@ const tabBarDockStyles = StyleSheet.create({
 function PremiumTabBarBackground() {
   return (
     <View style={tabBarDockStyles.root}>
-      {Platform.OS === 'ios' ? (
-        <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
-      ) : null}
-
-      {/* Night slab — §9 functional-chrome translucency */}
       <View style={tabBarDockStyles.slab} />
 
       {/* Top divider line */}
@@ -133,7 +161,7 @@ function TabNavigatorInner() {
         headerShown: false,
         sceneContainerStyle: Platform.OS === 'web' ? { flex: 1, minHeight: 0 } : undefined,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: sg.text,
+        tabBarActiveTintColor: sg.component.dock.active,
         tabBarInactiveTintColor: sg.muted,
         tabBarStyle: styles.tabBar,
         tabBarBackground: PremiumTabBarBackground,
@@ -197,6 +225,7 @@ function TabNavigatorInner() {
 }
 
 function RootStack() {
+  const releaseAuditRoute = getReleaseAuditRoute();
   const stackHeader = {
     headerShown: true as const,
     headerTintColor: sg.text,
@@ -211,11 +240,12 @@ function RootStack() {
       <Stack.Navigator
         // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery | Result. Ignored outside __DEV__.
         initialRouteName={
-          __DEV__ && process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
+          releaseAuditRoute ??
+          (__DEV__ && process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
             ? 'DevUiGallery'
             : __DEV__ && process.env.EXPO_PUBLIC_DEV_SCREEN === 'Result'
               ? 'Result'
-              : 'MainTabs'
+              : 'MainTabs')
         }
         screenOptions={{
           headerShown: false,
@@ -228,6 +258,7 @@ function RootStack() {
         <Stack.Screen
           name="PackDetails"
           component={PackDetailsScreen}
+          initialParams={releaseAuditRoute === 'PackDetails' ? { packId: 'welcome-pack' } : undefined}
           options={{
             headerShown: false,
           }}
@@ -257,7 +288,12 @@ function RootStack() {
         <Stack.Screen name="HotDropsInfo" component={HotDropsInfoScreen} options={stackHeader} />
         <Stack.Screen name="PromosInfo" component={PromosInfoScreen} options={stackHeader} />
         <Stack.Screen name="PullHistory" component={PullHistoryScreen} options={stackHeader} />
-        <Stack.Screen name="FriendProfile" component={FriendProfileScreen} options={stackHeader} />
+        <Stack.Screen
+          name="FriendProfile"
+          component={FriendProfileScreen}
+          initialParams={releaseAuditRoute === 'FriendProfile' ? { username: 'maya.cards' } : undefined}
+          options={stackHeader}
+        />
         <Stack.Screen name="FriendsLeaderboard" component={FriendsLeaderboardScreen} options={stackHeader} />
         <Stack.Screen name="LinkedAccounts" component={LinkedAccountsScreen} options={stackHeader} />
         <Stack.Screen name="WalletLinking" component={WalletLinkingScreen} options={stackHeader} />
@@ -280,8 +316,6 @@ function GuestHydration() {
   const hydrate = useGuestBrowseStore((s) => s.hydrate);
   const hydratePromotions = usePromotionStore((s) => s.hydrate);
   const hydrateMembershipSim = useMembershipSimulationStore((s) => s.hydrate);
-  const hydratePreferences = usePreferencesStore((s) => s.hydrate);
-  const hydrateNotifications = useNotificationPreferencesStore((s) => s.hydrate);
   const hydrateFirstTimePacks = useAppStore((s) => s.hydrateFirstTimePacks);
   const hydrateCollectorGame = useAppStore((s) => s.hydrateCollectorGame);
   const recordCollectorActivity = useAppStore((s) => s.recordCollectorActivity);
@@ -289,8 +323,6 @@ function GuestHydration() {
     void hydrate();
     void hydratePromotions();
     void hydrateMembershipSim();
-    void hydratePreferences();
-    void hydrateNotifications();
     void hydrateFirstTimePacks();
     void (async () => {
       await hydrateCollectorGame();
@@ -300,8 +332,6 @@ function GuestHydration() {
     hydrate,
     hydratePromotions,
     hydrateMembershipSim,
-    hydratePreferences,
-    hydrateNotifications,
     hydrateFirstTimePacks,
     hydrateCollectorGame,
     recordCollectorActivity,
@@ -426,13 +456,15 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: 'transparent',
     borderTopWidth: 0,
-    height: 82,
-    paddingBottom: 16,
-    paddingTop: 8,
+    height: 78,
+    paddingBottom: 13,
+    paddingTop: 9,
   },
   tabLabel: {
-    fontSize: 11,
-    fontFamily: sg.font.bodyMedium,
+    fontSize: 9,
+    fontFamily: sg.font.label,
+    letterSpacing: 0.35,
+    textTransform: 'uppercase',
   },
   stackHeaderTitle: {
     fontSize: 17,

@@ -8,6 +8,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import { SgScreen } from '../components/ui/SgScreen';
+import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 
 type Nav = StackNavigationProp<RootStackParamList, 'PromosInfo'>;
 
@@ -30,27 +32,33 @@ export function PromosInfoScreen() {
   const bulletKeys = ['b1', 'b2', 'b3'] as const;
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen constrainContent>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.body}>{t('promosInfo.body')}</Text>
-      {bulletKeys.map((k) => (
-        <Text key={k} style={styles.bullet}>
-          • {t(`promosInfo.${k}`)}
-        </Text>
-      ))}
+      <VaultFramedCard style={styles.guideCard} contentStyle={styles.guideInner}>
+        <Text style={styles.guideEyebrow}>REWARDS / FIELD GUIDE</Text>
+        {bulletKeys.map((k, index) => (
+          <View key={k} style={[styles.guideRow, index === bulletKeys.length - 1 && styles.guideRowLast]}>
+            <Text style={styles.guideCode}>{String(index + 1).padStart(2, '0')}</Text>
+            <Text style={styles.guideCopy}>{t(`promosInfo.${k}`)}</Text>
+          </View>
+        ))}
+      </VaultFramedCard>
       <View style={styles.callout}>
         <Text style={styles.calloutTitle}>{t('promosInfo.vsHotTitle')}</Text>
         <Text style={styles.calloutText}>{t('promosInfo.vsHotBody')}</Text>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   body: {
     fontSize: fontSize.sm,
@@ -58,11 +66,42 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: spacing.md,
   },
-  bullet: {
-    fontSize: fontSize.sm,
+  guideCard: {
+    marginBottom: sg.space.md,
+  },
+  guideInner: {
+    padding: sg.space.md,
+  },
+  guideEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.goldHi,
+    marginBottom: sg.space.sm,
+  },
+  guideRow: {
+    flexDirection: 'row',
+    gap: sg.space.md,
+    paddingVertical: sg.space.md,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: sg.line,
+  },
+  guideRowLast: {
+    borderBottomWidth: 0,
+  },
+  guideCode: {
+    width: 24,
+    fontFamily: sg.font.dataBold,
+    fontSize: sg.type.data.fontSize,
+    color: sg.goldHi,
+  },
+  guideCopy: {
+    flex: 1,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: sg.type.body.fontSize,
+    lineHeight: sg.type.body.lineHeight,
     color: sg.text,
-    lineHeight: 22,
-    marginBottom: spacing.xs,
   },
   callout: {
     marginTop: spacing.lg,

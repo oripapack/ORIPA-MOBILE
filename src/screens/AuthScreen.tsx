@@ -18,9 +18,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useClerk, useSSO, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
-import { getAppLogoParts } from '../config/app';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
-import { SIGNUP_PROMO_BONUS_CREDITS, SIGNUP_PROMO_BONUS_USD } from '../data/promotions.mock';
 
 /** Narrow types for Clerk’s email/password + verification helpers (see Clerk custom-flow docs). */
 type ClerkSignInPwd = {
@@ -86,8 +84,6 @@ export function AuthScreen({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
-
-  const { primary, secondary } = getAppLogoParts();
 
   const setMode = (m: EmailMode) => {
     setEmailMode(m);
@@ -281,6 +277,7 @@ export function AuthScreen({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
+        stickyHeaderIndices={isSheet && onRequestClose ? [0] : undefined}
       >
         {onRequestClose ? (
           <View style={styles.modalHeader}>
@@ -297,13 +294,13 @@ export function AuthScreen({
         ) : null}
 
         <View style={[styles.logoRow, isSheet && styles.logoRowSheet]}>
-          <Text style={[styles.logoPrimary, isSheet && styles.logoPrimarySheet]}>{primary}</Text>
-          {secondary ? (
-            <Text style={[styles.logoSecondary, isSheet && styles.logoSecondarySheet]}>{secondary}</Text>
-          ) : null}
+          <Text style={[styles.logoPrimary, isSheet && styles.logoPrimarySheet]}>PULL.HUB</Text>
+          <Text style={styles.accessLabel}>TOKYO TERMINAL / ACCESS</Text>
         </View>
 
-        <Text style={[styles.title, isSheet && styles.titleSheet]}>{t('auth.title')}</Text>
+        <Text style={[styles.title, isSheet && styles.titleSheet]}>
+          {t(emailMode === 'signup' ? 'auth.modeSignUp' : 'auth.title')}
+        </Text>
         <Text
           style={[styles.subtitle, isSheet && styles.subtitleSheet]}
           numberOfLines={isSheet ? 3 : undefined}
@@ -342,10 +339,7 @@ export function AuthScreen({
                 !isSheet && styles.promoBannerBodyOnArt,
               ]}
             >
-              {t('welcome.signupPromoBody', {
-                credits: SIGNUP_PROMO_BONUS_CREDITS,
-                usd: SIGNUP_PROMO_BONUS_USD,
-              })}
+              {t('welcome.signupPromoBody')}
             </Text>
           </View>
         ) : null}
@@ -453,7 +447,7 @@ export function AuthScreen({
               disabled={emailDisabled}
             >
               {emailBusy ? (
-                <ActivityIndicator color={sg.onGold} />
+                <ActivityIndicator color={sg.onValue} />
               ) : (
                 <Text style={styles.primaryBtnText}>{t('auth.verifyCode')}</Text>
               )}
@@ -490,7 +484,7 @@ export function AuthScreen({
               disabled={emailDisabled}
             >
               {emailBusy ? (
-                <ActivityIndicator color={sg.onGold} />
+                <ActivityIndicator color={sg.onValue} />
               ) : (
                 <Text style={styles.primaryBtnText}>
                   {emailMode === 'signin' ? t('auth.emailSignIn') : t('auth.emailContinue')}
@@ -520,9 +514,7 @@ export function AuthScreen({
             </TouchableOpacity>
             <Text style={styles.hint}>{t('welcome.guestHint')}</Text>
           </>
-        ) : (
-          <Text style={[styles.hint, isSheet && styles.hintSheet]}>{t('auth.dashboardHint')}</Text>
-        )}
+        ) : null}
       </ScrollView>
       </KeyboardAvoidingView>
     </>
@@ -569,7 +561,7 @@ const styles = StyleSheet.create({
   },
   scrollContentSheet: {
     flexGrow: 0,
-    paddingHorizontal: spacing.base,
+    paddingHorizontal: sg.space.md,
   },
   logoRowSheet: {
     marginBottom: spacing.sm,
@@ -587,7 +579,7 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.display,
   },
   subtitleSheet: {
-    marginBottom: spacing.lg,
+    marginBottom: sg.space.md,
     lineHeight: 22,
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyMedium,
@@ -606,7 +598,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   dividerRowSheet: {
-    marginVertical: spacing.lg,
+    marginVertical: sg.space.md,
   },
   dividerLineSheet: {
     backgroundColor: sg.line,
@@ -618,6 +610,8 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
+    minHeight: 48,
+    paddingVertical: 12,
   },
   appleBtnSheet: {
     backgroundColor: sg.bg,
@@ -628,13 +622,13 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    paddingVertical: spacing.md,
-    minHeight: 50,
+    paddingVertical: 12,
+    minHeight: 46,
   },
   modeChipOnSheet: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(212, 175, 55, 0.45)',
-    backgroundColor: 'rgba(212, 175, 55, 0.18)',
+    borderColor: sg.cobaltBorder,
+    backgroundColor: sg.cobaltWashStrong,
   },
   modeChipTextSheet: {
     fontSize: fontSize.md,
@@ -646,8 +640,8 @@ const styles = StyleSheet.create({
   },
   modeRowSheet: {
     marginTop: spacing.xs,
-    marginBottom: spacing.lg,
-    gap: spacing.md,
+    marginBottom: sg.space.md,
+    gap: sg.space.sm,
   },
   inputSheet: {
     backgroundColor: sg.surface2,
@@ -655,7 +649,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   primaryBtnSheet: {
-    shadowColor: sg.gold,
+    shadowColor: sg.value,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.22,
     shadowRadius: 10,
@@ -683,15 +677,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginBottom: spacing.sm,
+    minHeight: 36,
+    marginBottom: sg.space.sm,
+    paddingVertical: sg.space.xs,
+    backgroundColor: sg.surface,
+    zIndex: 2,
   },
   modalHeaderSpacer: {
     flex: 1,
   },
   logoRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 4,
+    alignItems: 'flex-start',
     marginBottom: spacing.xl,
   },
   logoPrimary: {
@@ -699,6 +695,14 @@ const styles = StyleSheet.create({
     fontFamily: sg.font.display,
     color: sg.text,
     letterSpacing: -0.5,
+  },
+  accessLabel: {
+    marginTop: 2,
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.muted,
   },
   logoSecondary: {
     fontSize: fontSize.hero,
@@ -785,8 +789,8 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
   },
   modeChipOn: {
-    borderColor: 'rgba(212,175,55,0.38)',
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    borderColor: sg.cobaltBorder,
+    backgroundColor: sg.cobaltWash,
   },
   modeChipText: {
     fontSize: fontSize.sm,
@@ -808,7 +812,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   primaryBtn: {
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -819,7 +823,7 @@ const styles = StyleSheet.create({
   primaryBtnText: {
     fontSize: fontSize.md,
     fontFamily: sg.font.bodyBold,
-    color: sg.onGold,
+    color: sg.onValue,
   },
   verifyHint: {
     fontSize: fontSize.sm,
@@ -860,7 +864,7 @@ const styles = StyleSheet.create({
   /** Full-screen auth on jewel background — no “light card on dark” clash */
   promoBannerOnArt: {
     backgroundColor: sg.surface,
-    borderColor: 'rgba(212,175,55,0.30)',
+    borderColor: sg.cobaltBorder,
     borderWidth: StyleSheet.hairlineWidth,
   },
   promoBannerTitleOnArt: {

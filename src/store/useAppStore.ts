@@ -7,8 +7,7 @@ import {
   lookupFriendDisplayName,
   normalizeFriendUsername,
 } from '../data/friends';
-import { mockUser, Pull, PullRarityTier, UserState } from '../data/mockUser';
-import { VAULT_HOLD_DAYS } from '../lib/vaultConstants';
+import { mockUser, releaseUserSeed, Pull, PullRarityTier, UserState } from '../data/mockUser';
 import {
   createInitialFriendVaultShop,
   listingIdForPull,
@@ -16,7 +15,12 @@ import {
   type PublicVaultListing,
 } from '../lib/friendVaultShop';
 import { HomeNicheCategory, Pack, PackSubfilter } from '../data/mockPacks';
-import { CREDITS_ARE_MOCK, DEV_STARTER_CREDITS, SHOW_DEMO_INCOMING_FRIEND_REQUEST } from '../config/app';
+import {
+  CREDITS_ARE_MOCK,
+  DEV_STARTER_CREDITS,
+  ENABLE_LOCAL_PACK_SIMULATION,
+  SHOW_DEMO_INCOMING_FRIEND_REQUEST,
+} from '../config/app';
 import type { PackRollResult } from '../components/pack/opening/types';
 import {
   executeBulkPullLive,
@@ -25,8 +29,6 @@ import {
   newClientSeed,
   newIdempotencyKey,
 } from '../lib/executePull';
-import { fairnessFromExecuteResponse } from '../lib/executePull';
-import type { PullFairnessRecord } from '../../shared/api/types';
 import {
   fetchUserVaultFromServer,
   instantTradeInLive,
@@ -45,8 +47,6 @@ import {
 } from '../data/shipping';
 import { loadClaimedFirstTimePacks, canClaimFirstTimePack, commitFirstTimePackClaim } from '../lib/firstTimePack';
 import { showUserMessage } from '../utils/showUserMessage';
-import i18n from '../i18n';
-import { packOpenFailureCopy, userFacingErrorBody } from '../utils/userFacingError';
 import { userWithSyncedProgression, tierXpBonusForPull } from '../lib/collectorProgression';
 import {
   loadCollectorGame,
@@ -123,8 +123,6 @@ interface AppStore {
     sessionId: number;
     vaultItemId?: string;
     tradeInValueCredits?: number;
-    clientSeed?: string;
-    fairness?: PullFairnessRecord;
   } | null;
   /** Server-backed ×10 batch awaiting bulk cinematic (ledger debits already applied). */
   pendingBulkServerPull: {
@@ -137,12 +135,9 @@ interface AppStore {
       idempotencyKey: string;
       vaultItemId?: string;
       tradeInValueCredits?: number;
-      fairness?: PullFairnessRecord;
     }>;
     balanceAfter: number;
   } | null;
-  /** Latest live fairness snapshot for Verify Fairness UI. */
-  lastFairnessRecord: PullFairnessRecord | null;
   /** pull_id → vault_item.id cache from live API. */
   vaultItemIdByPullId: Record<string, string>;
 
@@ -184,8 +179,6 @@ interface AppStore {
   requestVaultShipment: (pullId: string) => Promise<boolean>;
   /** Instant coin conversion for a vaulted item. */
   convertVaultPullToCoins: (pullId: string) => Promise<boolean>;
-  /** Auto-convert vaulted items past `vaultExpiresAt` (call on interval / resume). */
-  processVaultExpiries: () => void;
   /**
    * Records that the user has consumed a first-time pack.
    * Called inside `openPack` automatically — no need to call manually.
@@ -200,8 +193,6 @@ interface AppStore {
   hydrateUserCredits: (userId: string) => Promise<void>;
   /** Sync vault inventory from `user_vault_items` (live backend). */
   hydrateUserVault: () => Promise<void>;
-  /** Vault pull-to-refresh: vault items + credit balance. */
-  refreshVaultData: () => Promise<void>;
   clearPendingServerPull: () => void;
   clearPendingBulkServerPull: () => void;
   /** Adds a friend by unique username + display name (caller resolves name from lookup). */
@@ -250,10 +241,10 @@ function initialIncomingFriendRequests(): IncomingFriendRequest[] {
   return [buildDemoIncomingFriendRequest()];
 }
 
-const seededUser = userWithSyncedProgression(
-  { ...mockUser, credits: Math.max(mockUser.credits, DEV_STARTER_CREDITS) },
-  mockUser.xp,
-);
+const seedSource = __DEV__
+  ? { ...mockUser, credits: Math.max(mockUser.credits, DEV_STARTER_CREDITS) }
+  : releaseUserSeed;
+const seededUser = userWithSyncedProgression(seedSource, seedSource.xp);
 
 export const useAppStore = create<AppStore>((set, get) => {
   const persistCollector = () => {
@@ -292,7 +283,6 @@ export const useAppStore = create<AppStore>((set, get) => {
   resumePackOpenQuantity: 1,
   pendingServerPull: null,
   pendingBulkServerPull: null,
-  lastFairnessRecord: null,
   vaultItemIdByPullId: {},
   usedFirstTimePackIds: [],
   friendVaultShopByUser: createInitialFriendVaultShop(),
@@ -479,6 +469,7 @@ export const useAppStore = create<AppStore>((set, get) => {
   hydrateUserVault: async () => {
     if (!isLiveVaultEnabled()) return;
     const items = await fetchUserVaultFromServer();
+    if (!items.length) return;
 
     const idMap: Record<string, string> = {};
     for (const item of items) {
@@ -489,20 +480,9 @@ export const useAppStore = create<AppStore>((set, get) => {
       vaultItemIdByPullId: { ...state.vaultItemIdByPullId, ...idMap },
       user: {
         ...state.user,
-        pullHistory: items.length
-          ? mergeVaultItemsIntoPullHistory(state.user.pullHistory, items)
-          : state.user.pullHistory,
+        pullHistory: mergeVaultItemsIntoPullHistory(state.user.pullHistory, items),
       },
     }));
-  },
-
-  /** Re-fetch vault inventory + credit balance (Vault pull-to-refresh). */
-  refreshVaultData: async () => {
-    const userId = get().user.id;
-    await Promise.all([
-      get().hydrateUserVault(),
-      userId ? get().hydrateUserCredits(userId) : Promise.resolve(),
-    ]);
   },
 
   clearPendingServerPull: () => set({ pendingServerPull: null }),
@@ -554,6 +534,8 @@ export const useAppStore = create<AppStore>((set, get) => {
     const keepPack = options?.keepPackModalOnInsufficient ?? false;
     const quantity: PackOpenQuantity = options?.quantity ?? 1;
     const { user, usedFirstTimePackIds, packOpenInFlight } = get();
+    const useLiveEngine =
+      !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
 
     if (packOpenInFlight) return false;
     set({ packOpenInFlight: true });
@@ -571,28 +553,44 @@ export const useAppStore = create<AppStore>((set, get) => {
     };
 
     try {
-      if (pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id)) {
+      if (!useLiveEngine && !ENABLE_LOCAL_PACK_SIMULATION) {
         showUserMessage(
-          i18n.t('alerts.packOpen.welcomeUsedTitle'),
-          i18n.t('alerts.packOpen.welcomeUsedBody'),
+          'Pack unavailable',
+          'This pack is waiting for its live inventory connection.',
         );
         return false;
       }
 
-      if (pack.isFirstTimePack && quantity === 1) {
+      if (pack.isFirstTimePack && !ENABLE_LOCAL_PACK_SIMULATION) {
+        showUserMessage(
+          'Welcome pack unavailable',
+          'The welcome pack is waiting for its live fulfillment connection.',
+        );
+        return false;
+      }
+
+      if (pack.isFirstTimePack && usedFirstTimePackIds.includes(pack.id)) {
+        showUserMessage(
+          'Welcome pack used',
+          'You already opened your welcome pack on this account.',
+        );
+        return false;
+      }
+
+      if (pack.isFirstTimePack && quantity === 1 && ENABLE_LOCAL_PACK_SIMULATION) {
         const eligible = await canClaimFirstTimePack(user.id, pack.id);
         if (!eligible.allowed) {
           showUserMessage(
-            i18n.t('alerts.packOpen.welcomeUsedTitle'),
-            i18n.t('alerts.packOpen.welcomeUsedBody'),
+            'Welcome pack used',
+            'You already opened your welcome pack on this account.',
           );
           return false;
         }
 
         if (!(await commitFirstTimeIfNeeded())) {
           showUserMessage(
-            i18n.t('alerts.packOpen.welcomeUsedTitle'),
-            i18n.t('alerts.packOpen.welcomeUsedBody'),
+            'Welcome pack used',
+            'You already opened your welcome pack on this account.',
           );
           return false;
         }
@@ -613,7 +611,7 @@ export const useAppStore = create<AppStore>((set, get) => {
       }
 
       const grants = user.freePackGrants ?? 0;
-      const useFreeGrant = quantity === 1 && grants > 0;
+      const useFreeGrant = ENABLE_LOCAL_PACK_SIMULATION && quantity === 1 && grants > 0;
       if (useFreeGrant) {
         set((state) => ({
           selectedPack: pack,
@@ -631,9 +629,6 @@ export const useAppStore = create<AppStore>((set, get) => {
         }));
         return true;
       }
-
-      const useLiveEngine =
-        !CREDITS_ARE_MOCK && isSupabaseConfigured && Boolean(pack.packVersionId);
 
       const isInsufficientFunds = (code: string, status?: number) =>
         code === 'INSUFFICIENT_FUNDS' ||
@@ -662,9 +657,8 @@ export const useAppStore = create<AppStore>((set, get) => {
         }
 
         if (quantity === 1) {
-          const clientSeed = newClientSeed();
           const pullResult = await executePullLive({
-            clientSeed,
+            clientSeed: newClientSeed(),
             packVersionId: pack.packVersionId,
             idempotencyKey: newIdempotencyKey(),
             packCreditPrice: pack.creditPrice,
@@ -676,15 +670,16 @@ export const useAppStore = create<AppStore>((set, get) => {
               return false;
             }
             if (pullResult.code === 'UNAUTHORIZED') {
-              showUserMessage(i18n.t('alerts.packOpen.signInTitle'), i18n.t('alerts.packOpen.signInBody'));
+              showUserMessage('Sign in required', 'Please sign in to open packs.');
               return false;
             }
             if (pullResult.code === 'DUPLICATE_TRANSACTION') {
-              showUserMessage(i18n.t('alerts.packOpen.alreadyTitle'), i18n.t('alerts.packOpen.alreadyBody'));
+              showUserMessage('Already processed', 'This pack open was already recorded.');
               return false;
             }
-            const fail = packOpenFailureCopy(pullResult.code);
-            showUserMessage(fail.title, userFacingErrorBody(pullResult.message, 'alerts.packOpen.failedBody'));
+            const label =
+              pullResult.code === 'NETWORK_ERROR' ? 'Connection problem' : 'Pack open failed';
+            showUserMessage(label, pullResult.message);
             return false;
           }
 
@@ -694,7 +689,6 @@ export const useAppStore = create<AppStore>((set, get) => {
           const vaultItemId =
             pullResult.response.vault_item_id ?? pullResult.response.vault_item?.id;
           const tradeInValueCredits = pullResult.response.vault_item?.trade_in_value_credits;
-          const fairness = fairnessFromExecuteResponse(pullResult.response, clientSeed);
 
           set((state) => ({
             selectedPack: pack,
@@ -705,7 +699,6 @@ export const useAppStore = create<AppStore>((set, get) => {
             _packOpenRewardApplied: false,
             packOpenSessionId: nextSessionId,
             pendingBulkServerPull: null,
-            lastFairnessRecord: fairness ?? state.lastFairnessRecord,
             pendingServerPull: {
               pullId: pullResult.response.pull_id,
               mintStatus: pullResult.response.mint_status,
@@ -713,8 +706,6 @@ export const useAppStore = create<AppStore>((set, get) => {
               sessionId: nextSessionId,
               vaultItemId,
               tradeInValueCredits,
-              clientSeed,
-              fairness,
             },
             vaultItemIdByPullId: vaultItemId
               ? {
@@ -744,15 +735,16 @@ export const useAppStore = create<AppStore>((set, get) => {
             return false;
           }
           if (bulkResult.code === 'UNAUTHORIZED') {
-            showUserMessage(i18n.t('alerts.packOpen.signInTitle'), i18n.t('alerts.packOpen.signInBody'));
+            showUserMessage('Sign in required', 'Please sign in to open packs.');
             return false;
           }
           if (bulkResult.code === 'DUPLICATE_TRANSACTION') {
-            showUserMessage(i18n.t('alerts.packOpen.alreadyTitle'), i18n.t('alerts.packOpen.alreadyBulkBody'));
+            showUserMessage('Already processed', 'This bulk open was already recorded.');
             return false;
           }
-          const fail = packOpenFailureCopy(bulkResult.code);
-          showUserMessage(fail.title, userFacingErrorBody(bulkResult.message, 'alerts.packOpen.failedBody'));
+          const label =
+            bulkResult.code === 'NETWORK_ERROR' ? 'Connection problem' : 'Pack open failed';
+          showUserMessage(label, bulkResult.message);
           return false;
         }
 
@@ -774,14 +766,6 @@ export const useAppStore = create<AppStore>((set, get) => {
           _packOpenRewardApplied: false,
           packOpenSessionId: nextSessionId,
           pendingServerPull: null,
-          lastFairnessRecord: (() => {
-            const withFairness = bulkResult.response.pulls
-              .map((p) => p.fairness)
-              .filter((f): f is NonNullable<typeof f> => Boolean(f));
-            return withFairness.length > 0
-              ? withFairness[withFairness.length - 1]
-              : state.lastFairnessRecord;
-          })(),
           pendingBulkServerPull: {
             sessionId: nextSessionId,
             batchId: bulkResult.response.batchId,
@@ -792,7 +776,6 @@ export const useAppStore = create<AppStore>((set, get) => {
               idempotencyKey: p.idempotencyKey,
               vaultItemId: p.vaultItemId,
               tradeInValueCredits: p.tradeInValueCredits,
-              fairness: p.fairness,
             })),
             balanceAfter,
           },
@@ -1035,8 +1018,8 @@ export const useAppStore = create<AppStore>((set, get) => {
         const vaultItemId = resolveVaultItemIdForPull(pull, index);
         if (!vaultItemId) {
           showUserMessage(
-            i18n.t('alerts.tradeIn.unavailableTitle'),
-            i18n.t('alerts.tradeIn.unavailableBody'),
+            'Trade-in unavailable',
+            'Could not find this card in the live vault inventory.',
           );
           return false;
         }
@@ -1047,10 +1030,7 @@ export const useAppStore = create<AppStore>((set, get) => {
         });
 
         if (!tradeIn.ok) {
-          showUserMessage(
-            i18n.t('alerts.tradeIn.failedTitle'),
-            userFacingErrorBody(tradeIn.message, 'alerts.tradeIn.failedBody'),
-          );
+          showUserMessage('Trade-in failed', tradeIn.message);
           return false;
         }
 
@@ -1072,8 +1052,6 @@ export const useAppStore = create<AppStore>((set, get) => {
             .reduce((sum, p) => sum + (p.creditsWon ?? p.convertCreditValue ?? 0), 0);
 
       const clearedIds = new Set([...vaultIds, ...convertIds]);
-      const now = new Date();
-
       const xpAdd = vaultIds.length * 28 + convertIds.length * 14;
       let qp = state.collectorQuestProgress;
       if (vaultIds.length) qp = bumpQuestTrack(qp, 'vault_secured', vaultIds.length);
@@ -1097,13 +1075,11 @@ export const useAppStore = create<AppStore>((set, get) => {
               return { ...p, fulfillment: 'converted' as const };
             }
             if (vSet.has(p.id)) {
-              const vaultExpiresAt = new Date(now);
-              vaultExpiresAt.setDate(vaultExpiresAt.getDate() + VAULT_HOLD_DAYS);
               return {
                 ...p,
                 fulfillment: 'vaulted' as const,
-                vaultExpiresAt,
-                vaultHoldDays: VAULT_HOLD_DAYS,
+                vaultExpiresAt: undefined,
+                vaultHoldDays: undefined,
               };
             }
             return p;
@@ -1129,8 +1105,8 @@ export const useAppStore = create<AppStore>((set, get) => {
       );
       if (!vaultItemId) {
         showUserMessage(
-          i18n.t('alerts.shipping.unavailableTitle'),
-          i18n.t('alerts.shipping.unavailableBody'),
+          'Shipment unavailable',
+          'Could not find this card in the live vault inventory.',
         );
         return false;
       }
@@ -1139,9 +1115,9 @@ export const useAppStore = create<AppStore>((set, get) => {
       if (!addressResult.ok) {
         showUserMessage(
           addressResult.code === 'ADDRESS_REQUIRED'
-            ? i18n.t('alerts.shipping.addressRequiredTitle')
-            : i18n.t('alerts.shipping.failedTitle'),
-          userFacingErrorBody(addressResult.message, 'alerts.shipping.failedBody'),
+            ? 'Shipping address required'
+            : 'Shipment request failed',
+          addressResult.message,
         );
         return false;
       }
@@ -1155,15 +1131,12 @@ export const useAppStore = create<AppStore>((set, get) => {
 
       if (!result.ok) {
         if (result.code === 'INSUFFICIENT_FUNDS') {
-          showUserMessage(i18n.t('alerts.shipping.insufficientTitle'), userFacingErrorBody(result.message, 'alerts.shipping.insufficientBody'));
+          showUserMessage('Insufficient Points', result.message);
           return false;
         }
-        showUserMessage(
-          result.code === 'UNAUTHORIZED'
-            ? i18n.t('alerts.packOpen.signInTitle')
-            : i18n.t('alerts.shipping.failedTitle'),
-          userFacingErrorBody(result.message, 'alerts.shipping.failedBody'),
-        );
+        const label =
+          result.code === 'UNAUTHORIZED' ? 'Sign in required' : 'Shipment request failed';
+        showUserMessage(label, result.message);
         return false;
       }
 
@@ -1186,7 +1159,6 @@ export const useAppStore = create<AppStore>((set, get) => {
                     vaultExpiresAt: undefined,
                     vaultHoldDays: undefined,
                     vaultExchangeListUsd: undefined,
-                    shippingOrderId: result.response.shipping_order_id,
                   }
                 : p,
             ),
@@ -1202,28 +1174,27 @@ export const useAppStore = create<AppStore>((set, get) => {
       const shippingAddress = await loadShippingAddress();
       if (!shippingAddress) {
         showUserMessage(
-          i18n.t('alerts.shipping.addressRequiredTitle'),
-          i18n.t('alerts.shipping.addressRequiredBody'),
+          'Shipping address required',
+          'Add a shipping address in Settings before requesting shipment.',
         );
         return false;
       }
 
       const result = await requestShipmentLive({ pullId, shippingAddress });
       if (!result.ok) {
-        showUserMessage(
+        const label =
           result.code === 'NETWORK_ERROR'
-            ? i18n.t('alerts.packOpen.connectionTitle')
-            : i18n.t('alerts.shipping.failedTitle'),
-          userFacingErrorBody(result.message, 'alerts.shipping.failedBody'),
-        );
+            ? 'Connection problem'
+            : 'Shipment request failed';
+        showUserMessage(label, result.message);
         return false;
       }
     } else {
       const shippingAddress = await loadShippingAddress();
       if (!shippingAddress) {
         showUserMessage(
-          i18n.t('alerts.shipping.addressRequiredTitle'),
-          i18n.t('alerts.shipping.addressRequiredBody'),
+          'Shipping address required',
+          'Add a shipping address in Settings before requesting shipment.',
         );
         return false;
       }
@@ -1267,8 +1238,8 @@ export const useAppStore = create<AppStore>((set, get) => {
       );
       if (!vaultItemId) {
         showUserMessage(
-          i18n.t('alerts.tradeIn.unavailableTitle'),
-          i18n.t('alerts.tradeIn.unavailableBody'),
+          'Trade-in unavailable',
+          'Could not find this card in the live vault inventory.',
         );
         return false;
       }
@@ -1279,7 +1250,7 @@ export const useAppStore = create<AppStore>((set, get) => {
       });
 
       if (!tradeIn.ok) {
-        showUserMessage(i18n.t('alerts.tradeIn.failedTitle'), userFacingErrorBody(tradeIn.message, 'alerts.tradeIn.failedBody'));
+        showUserMessage('Trade-in failed', tradeIn.message);
         return false;
       }
 
@@ -1318,47 +1289,6 @@ export const useAppStore = create<AppStore>((set, get) => {
     });
     if (did) persistCollector();
     return did;
-  },
-
-  processVaultExpiries: () => {
-    const now = Date.now();
-    set((state) => {
-      let creditsToAdd = 0;
-      const seller = normalizeFriendUsername(state.user.username);
-      const nextHistory = state.user.pullHistory.map((p) => {
-        if (p.fulfillment !== 'vaulted' || !p.vaultExpiresAt) return p;
-        if (p.vaultExpiresAt.getTime() > now) return p;
-        creditsToAdd += p.creditsWon ?? p.convertCreditValue ?? 0;
-        return {
-          ...p,
-          fulfillment: 'converted' as const,
-          vaultExpiresAt: undefined,
-          vaultHoldDays: undefined,
-          vaultExchangeListUsd: undefined,
-        };
-      });
-      if (creditsToAdd === 0) return state;
-      const expiredIds = state.user.pullHistory
-        .filter(
-          (p) =>
-            p.fulfillment === 'vaulted' &&
-            p.vaultExpiresAt &&
-            p.vaultExpiresAt.getTime() <= now,
-        )
-        .map((p) => p.id);
-      let shop = state.friendVaultShopByUser;
-      for (const id of expiredIds) {
-        shop = removeListingsForPullId(shop, seller, id);
-      }
-      return {
-        friendVaultShopByUser: shop,
-        user: {
-          ...state.user,
-          credits: state.user.credits + creditsToAdd,
-          pullHistory: nextHistory,
-        },
-      };
-    });
   },
 
   listVaultPullForSale: (pullId, priceUsd) => {
@@ -1423,8 +1353,6 @@ export const useAppStore = create<AppStore>((set, get) => {
 
     const priceUsd = listing.listPriceUsd;
     const notionalCredits = Math.max(100, Math.round(priceUsd * 10));
-    const exp = new Date();
-    exp.setDate(exp.getDate() + VAULT_HOLD_DAYS);
     const newPull: Pull = {
       id: `pull_${Date.now()}_${Math.random().toString(16).slice(2)}`,
       packId: listing.packId,
@@ -1435,8 +1363,6 @@ export const useAppStore = create<AppStore>((set, get) => {
       fulfillment: 'vaulted',
       convertCreditValue: notionalCredits,
       tier: listing.tier ?? 'base',
-      vaultExpiresAt: exp,
-      vaultHoldDays: VAULT_HOLD_DAYS,
     };
 
     set((state) => {

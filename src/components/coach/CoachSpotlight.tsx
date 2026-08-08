@@ -40,9 +40,9 @@ type Props = {
   onSecondary?: () => void;
 };
 
-const GOLD_SOFT = 'rgba(212,175,55,0.10)';
-const GOLD_BORDER = 'rgba(212,175,55,0.38)';
-const GOLD_WASH = 'rgba(212,175,55,0.08)';
+const GOLD_SOFT = sg.cobaltWash;
+const GOLD_BORDER = sg.cobaltBorder;
+const GOLD_WASH = sg.cobaltWashSoft;
 
 /**
  * Bottom-anchored coach card — solid dim (no blur) so the tab behind stays readable.

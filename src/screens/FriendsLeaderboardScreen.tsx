@@ -15,6 +15,9 @@ import {
   type LeaderboardMetric,
 } from '../data/socialMock';
 import { formatUsd as fmt } from '../lib/socialFormat';
+import { SgScreen } from '../components/ui/SgScreen';
+import { SgUnavailableService } from '../components/ui';
+import { SOCIAL_IS_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendsLeaderboard'>;
 
@@ -22,13 +25,10 @@ const METRICS: LeaderboardMetric[] = [
   'totalValue',
   'biggestPull',
   'packsOpened',
-  'chaseHits',
-  'luckScore',
 ];
 
 function formatMetricValue(metric: LeaderboardMetric, v: number): string {
-  if (metric === 'luckScore') return `${Math.round(v)}`;
-  if (metric === 'packsOpened' || metric === 'chaseHits') return `${Math.round(v)}`;
+  if (metric === 'packsOpened') return `${Math.round(v)}`;
   return fmt(v);
 }
 
@@ -59,8 +59,20 @@ export function FriendsLeaderboardScreen() {
     });
   }, [navigation, t]);
 
+  if (!__DEV__ && !SOCIAL_IS_LIVE) {
+    return (
+      <SgUnavailableService
+        code="SOCIAL / LEADERBOARD"
+        eyebrow={t('friends.releaseEyebrow')}
+        title={t('friends.releaseTitle')}
+        body={t('friends.releaseBody')}
+      />
+    );
+  }
+
   return (
-    <View style={[styles.root, { paddingBottom: insets.bottom }]}>
+    <SgScreen constrainContent>
+      <View style={[styles.root, { paddingBottom: insets.bottom }]}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -96,7 +108,7 @@ export function FriendsLeaderboardScreen() {
             style={[styles.row, e.isCurrentUser && styles.rowMe]}
           >
             <Text style={styles.rank}>{e.rank}</Text>
-            <Text style={styles.emoji}>{e.avatarEmoji}</Text>
+            <Text style={styles.emoji}>{e.displayName.trim().slice(0, 2).toUpperCase()}</Text>
             <View style={styles.rowMeta}>
               <Text style={styles.rowName} numberOfLines={1}>
                 {e.displayName}
@@ -106,16 +118,21 @@ export function FriendsLeaderboardScreen() {
                 @{e.username}
               </Text>
             </View>
-            <Text style={styles.rowVal}>{formatMetricValue(metric, e.value)}</Text>
+            <Text
+              style={[styles.rowVal, metric !== 'packsOpened' && styles.rowValFinancial]}
+            >
+              {formatMetricValue(metric, e.value)}
+            </Text>
           </View>
         ))}
       </ScrollView>
-    </View>
+      </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: sg.bg },
+  root: { flex: 1, backgroundColor: 'transparent' },
   tabBar: { maxHeight: 52, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: sg.line },
   tabs: { paddingHorizontal: spacing.base, paddingVertical: spacing.sm, gap: spacing.sm, alignItems: 'center' },
   tab: {
@@ -148,7 +165,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
   },
-  rowMe: { borderColor: sg.line, backgroundColor: 'rgba(255,74,56,0.10)' },
+  rowMe: { borderColor: sg.cobaltBorder, backgroundColor: sg.cobaltWash },
   rank: {
     fontSize: fontSize.md,
     fontFamily: sg.font.display,
@@ -159,5 +176,6 @@ const styles = StyleSheet.create({
   rowMeta: { flex: 1, minWidth: 0 },
   rowName: { fontSize: fontSize.md, fontFamily: sg.font.bodyBold, color: sg.text },
   rowUn: { fontSize: fontSize.xs, color: sg.muted, marginTop: 2 },
-  rowVal: { fontSize: fontSize.md, fontFamily: sg.font.display, color: sg.surface2 },
+  rowVal: { fontSize: fontSize.md, fontFamily: sg.font.display, color: sg.text },
+  rowValFinancial: { color: sg.valueHi },
 });

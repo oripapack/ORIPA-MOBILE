@@ -51,11 +51,43 @@ export const SUPPORT_EMAIL = 'support@pullhub.app';
 /** Public web origin for referral links (`?r=` username). */
 export const PUBLIC_WEB_ORIGIN = 'https://pullhub.com';
 
-/** If true, Buy Credits is clearly labeled as mock (no real charges). */
+/** If true, Buy Points is clearly labeled as mock (no real charges). */
 export const CREDITS_ARE_MOCK = false;
 
-/** Extra local credits in dev so catalog packs can be opened for animation/UI work. */
+/** Extra local Points in dev so catalog packs can be opened for animation/UI work. */
 export const DEV_STARTER_CREDITS = __DEV__ ? 50_000 : 0;
+
+/**
+ * Local outcome generation is a development aid only. Production builds must
+ * receive every pack result from the live finite-inventory engine.
+ */
+export const ENABLE_LOCAL_PACK_SIMULATION = __DEV__;
+
+/**
+ * Marketplace listings and checkout must come from verified seller inventory.
+ * The current local listing catalog is a design fixture, so production keeps
+ * the marketplace in a polished unavailable state until the live feed ships.
+ */
+export const MARKETPLACE_IS_LIVE = process.env.EXPO_PUBLIC_MARKETPLACE_LIVE === '1';
+
+/** Promotion grants stay off until codes and referral rewards are server-owned. */
+export const PROMOTIONS_ARE_LIVE = process.env.EXPO_PUBLIC_PROMOTIONS_LIVE === '1';
+
+/** Paid membership stays informational until StoreKit and server entitlements are connected. */
+export const MEMBERSHIP_IS_LIVE = process.env.EXPO_PUBLIC_MEMBERSHIP_LIVE === '1';
+
+/** Friends, activity, and leaderboards stay hidden until profiles come from a verified service. */
+export const SOCIAL_IS_LIVE = process.env.EXPO_PUBLIC_SOCIAL_LIVE === '1';
+
+/** Shipping address collection stays off until storage, regions, and fulfillment are verified. */
+export const SHIPPING_IS_LIVE = process.env.EXPO_PUBLIC_SHIPPING_LIVE === '1';
+
+/** Wallet, payout, identity, and provider-linking rows are hidden until their services ship. */
+export const ADVANCED_ACCOUNT_SERVICES_ARE_LIVE =
+  process.env.EXPO_PUBLIC_ADVANCED_ACCOUNT_SERVICES_LIVE === '1';
+
+/** Contact details are shown only when the inbox and response process are actively monitored. */
+export const SUPPORT_IS_LIVE = process.env.EXPO_PUBLIC_SUPPORT_LIVE === '1';
 
 /**
  * When true, seeds one sample incoming friend request so the Friends tab badge + requests UI
@@ -64,7 +96,7 @@ export const DEV_STARTER_CREDITS = __DEV__ ? 50_000 : 0;
 export const SHOW_DEMO_INCOMING_FRIEND_REQUEST = CREDITS_ARE_MOCK;
 
 /**
- * When true (and credits are mock), the user must acknowledge the simulation notice once
+ * When true (and Points are mock), the user must acknowledge the simulation notice once
  * (`SimulationDisclosure` modal). Top banner is disabled — use this for a cleaner layout.
  */
 export const SHOW_SIMULATION_DISCLOSURE = CREDITS_ARE_MOCK;
@@ -76,4 +108,4 @@ export const SHOW_SIMULATION_DISCLOSURE = CREDITS_ARE_MOCK;
 export const SHOW_DEMO_BANNER = false;
 
 /** @deprecated Copy for legacy banner; modal uses i18n `demoSimulation.*`. */
-export const DEMO_BANNER_TEXT = 'Preview build — credits & rewards are simulated.';
+export const DEMO_BANNER_TEXT = 'Preview build — Points and rewards are simulated.';

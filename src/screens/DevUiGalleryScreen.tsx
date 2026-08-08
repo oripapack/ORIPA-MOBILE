@@ -22,11 +22,11 @@ export function DevUiGalleryScreen() {
         </View>
 
         <View style={styles.block}>
-          <SgButton label="Open a pack — $25.00" onPress={() => {}} />
+          <SgButton label="Open a pack — Points required" onPress={() => {}} />
           <View style={styles.gap} />
           <SgButton label="Back to packs" variant="line" onPress={() => {}} />
           <View style={styles.gap} />
-          <SgButton label="Open a pack — $25.00" onPress={() => {}} disabled />
+          <SgButton label="Open a pack — Points required" onPress={() => {}} disabled />
         </View>
 
         <View style={styles.block}>
@@ -34,7 +34,7 @@ export function DevUiGalleryScreen() {
             {/* Pack name — the one Fraunces use on this bench */}
             <Text style={styles.packName}>Kanto Origins</Text>
             <View style={styles.cardRow}>
-              <SgData value="2,500" unit="Coins" size="lg" tone="gold" />
+              <SgData value="2,500" unit="Points" size="lg" tone="gold" />
               <SgData value="214 / 500" unit="left" size="sm" />
             </View>
             {/* Slots: hairline bar + neutral mono numbers (no red, no blink) */}
@@ -63,7 +63,7 @@ export function DevUiGalleryScreen() {
               <SgTierTag tier="unknown" context="badge" />
             </View>
             <View style={styles.gapSm} />
-            <SgData value="+14,483" unit="Coins · trade-in complete" tone="success" size="md" />
+            <SgData value="+14,483" unit="Points · Trade in complete" tone="success" size="md" />
           </SgCard>
         </View>
 
@@ -90,7 +90,7 @@ export function DevUiGalleryScreen() {
           <SgCard raised>
             <SgSectionHeader title="Your pull is in the vault" />
             <View style={styles.cardRow}>
-              <SgData value="14,483" unit="Coins" tone="gold" size="lg" />
+              <SgData value="14,483" unit="Points" tone="gold" size="lg" />
               <SgData value="$0" unit="shipping" size="lg" />
             </View>
           </SgCard>

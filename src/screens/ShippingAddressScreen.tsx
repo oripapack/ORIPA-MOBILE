@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,8 @@ import { SHIPPING_ADDRESS_STORAGE_KEY } from '../lib/shippingAddress';
 import { createShippingAddressLive, getUserShippingAddressesLive } from '../data/shipping';
 import { useAppStore } from '../store/useAppStore';
 import { showUserMessage } from '../utils/showUserMessage';
+import { SgScreen } from '../components/ui';
+import { SHIPPING_IS_LIVE } from '../config/app';
 
 const STORAGE_KEY = SHIPPING_ADDRESS_STORAGE_KEY;
 
@@ -53,6 +56,7 @@ export function ShippingAddressScreen() {
   const [form, setForm] = useState<Form>(empty);
   const [loaded, setLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
+  const releaseBlocked = !__DEV__ && !SHIPPING_IS_LIVE;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -66,6 +70,10 @@ export function ShippingAddressScreen() {
   }, [navigation, t]);
 
   React.useEffect(() => {
+    if (releaseBlocked) {
+      setLoaded(true);
+      return;
+    }
     void (async () => {
       try {
         const live = await getUserShippingAddressesLive();
@@ -93,7 +101,7 @@ export function ShippingAddressScreen() {
         setLoaded(true);
       }
     })();
-  }, []);
+  }, [releaseBlocked]);
 
   const onSave = useCallback(async () => {
     if (!form.fullName.trim() || !form.line1.trim() || !form.city.trim() || !form.country.trim()) {
@@ -134,45 +142,144 @@ export function ShippingAddressScreen() {
         style={[styles.input, multiline && styles.inputMulti]}
         multiline={multiline}
         textAlignVertical={multiline ? 'top' : 'center'}
+        accessibilityLabel={t(`shippingAddress.fields.${key}`)}
       />
     </View>
   );
 
+  if (releaseBlocked) {
+    return (
+      <SgScreen constrainContent>
+        <View style={styles.releasePage} accessibilityRole="summary">
+          <Text style={styles.releaseEyebrow}>{t('shippingAddress.releaseEyebrow')}</Text>
+          <Text style={styles.releaseTitle}>{t('shippingAddress.releaseTitle')}</Text>
+          <Text style={styles.releaseBody}>{t('shippingAddress.releaseBody')}</Text>
+          <View style={styles.releasePanel}>
+            <Text style={styles.releasePanelCode}>FULFILLMENT / ADDRESS</Text>
+            <Text style={styles.releasePanelStatus}>{t('shippingAddress.releaseStatus')}</Text>
+          </View>
+        </View>
+      </SgScreen>
+    );
+  }
+
   if (!loaded) {
-    return <View style={[styles.container, { backgroundColor: sg.bg }]} />;
+    return (
+      <SgScreen>
+        <View
+          style={styles.loadingPage}
+          accessibilityRole="progressbar"
+          accessibilityLabel={t('shippingAddress.loading')}
+        >
+          <ActivityIndicator size="small" color={sg.goldHi} />
+          <Text style={styles.loadingText}>{t('shippingAddress.loading')}</Text>
+        </View>
+      </SgScreen>
+    );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
-      <Text style={styles.lead}>{t('shippingAddress.lead')}</Text>
-      {field('fullName')}
-      {field('line1')}
-      {field('line2', true)}
-      {field('city')}
-      <View style={styles.row2}>
-        <View style={styles.col}>{field('region')}</View>
-        <View style={styles.col}>{field('postal')}</View>
-      </View>
-      {field('country')}
-      <TouchableOpacity
-        style={[styles.saveBtn, saving ? styles.saveBtnDisabled : null]}
-        onPress={() => void onSave()}
-        activeOpacity={0.88}
-        disabled={saving}
+    <SgScreen constrainContent>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.saveBtnText}>{t('shippingAddress.save')}</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <Text style={styles.lead}>{t('shippingAddress.lead')}</Text>
+        {field('fullName')}
+        {field('line1')}
+        {field('line2', true)}
+        {field('city')}
+        <View style={styles.row2}>
+          <View style={styles.col}>{field('region')}</View>
+          <View style={styles.col}>{field('postal')}</View>
+        </View>
+        {field('country')}
+        <TouchableOpacity
+          style={[styles.saveBtn, saving ? styles.saveBtnDisabled : null]}
+          onPress={() => void onSave()}
+          activeOpacity={0.88}
+          disabled={saving}
+          accessibilityRole="button"
+          accessibilityLabel={t('shippingAddress.save')}
+          accessibilityState={{ disabled: saving, busy: saving }}
+        >
+          <Text style={styles.saveBtnText}>{t('shippingAddress.save')}</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  loadingPage: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: sg.space.sm,
+  },
+  loadingText: {
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.muted,
+    textTransform: 'uppercase',
+  },
+  releasePage: {
+    flex: 1,
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.xl,
+  },
+  releaseEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.warning,
+    marginBottom: sg.space.sm,
+  },
+  releaseTitle: {
+    fontFamily: sg.font.display,
+    fontSize: sg.type.title.fontSize,
+    lineHeight: sg.type.title.lineHeight,
+    letterSpacing: sg.type.title.letterSpacing,
+    color: sg.text,
+    marginBottom: sg.space.sm,
+  },
+  releaseBody: {
+    fontFamily: sg.font.body,
+    fontSize: sg.type.body.fontSize,
+    lineHeight: sg.type.body.lineHeight,
+    color: sg.muted,
+  },
+  releasePanel: {
+    minHeight: 112,
+    marginTop: sg.space.xl,
+    padding: sg.space.md,
+    justifyContent: 'space-between',
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    borderLeftWidth: 3,
+    borderLeftColor: sg.gold,
+  },
+  releasePanelCode: {
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.chrome,
+  },
+  releasePanelStatus: {
+    fontFamily: sg.font.label,
+    fontSize: 11,
+    lineHeight: 15,
+    letterSpacing: 1,
+    color: sg.warning,
+  },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,

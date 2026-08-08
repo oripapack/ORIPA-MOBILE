@@ -10,9 +10,9 @@ import { showUserMessage } from '../../utils/showUserMessage';
 
 const TIER_COLOR: Record<PullRarityTier, string> = {
   base: sg.muted,
-  epic: '#A855F7',
-  legendary: sg.gold,
-  mythic: '#FB7185',
+  epic: sg.goldHi,
+  legendary: sg.warning,
+  mythic: sg.neon,
 };
 
 const TIER_LABEL: Record<PullRarityTier, string> = {
@@ -23,10 +23,10 @@ const TIER_LABEL: Record<PullRarityTier, string> = {
 };
 
 const TIER_BG: Record<PullRarityTier, string> = {
-  base: 'rgba(139, 130, 168, 0.12)',
-  epic: 'rgba(192, 132, 252, 0.12)',
-  legendary: 'rgba(232, 197, 71, 0.12)',
-  mythic: 'rgba(244, 114, 182, 0.12)',
+  base: sg.surface2,
+  epic: sg.cobaltWash,
+  legendary: sg.warningWash,
+  mythic: sg.vermilionWash,
 };
 
 interface Props {
@@ -140,12 +140,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ownBadge: {
-    backgroundColor: 'rgba(212,175,55,0.14)',
+    backgroundColor: sg.cobaltWash,
     borderRadius: radius.sm,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.35)',
+    borderColor: sg.cobaltBorder,
   },
   ownBadgeText: {
     fontSize: 9,
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   buyBtnOwn: {
     backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.cobaltBorder,
   },
   buyBtnText: {
     fontSize: 11,

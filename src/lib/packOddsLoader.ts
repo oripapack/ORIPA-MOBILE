@@ -1,6 +1,7 @@
 import {
   buildPackOddsFromPoolItems,
   getStaticFallbackPackOdds,
+  UNAVAILABLE_PACK_ODDS,
   type PackOdds,
   type PackPoolItemInput,
 } from '../data/packOdds';
@@ -30,7 +31,7 @@ export async function fetchPackPoolItems(packVersionId: string): Promise<PackPoo
 
 export async function resolvePackOdds(pack: Pack): Promise<PackOdds> {
   if (!pack.packVersionId || !isSupabaseConfigured) {
-    return getStaticFallbackPackOdds();
+    return __DEV__ ? getStaticFallbackPackOdds() : UNAVAILABLE_PACK_ODDS;
   }
 
   const cached = oddsCache.get(pack.packVersionId);
@@ -38,7 +39,7 @@ export async function resolvePackOdds(pack: Pack): Promise<PackOdds> {
 
   const promise = (async () => {
     const items = await fetchPackPoolItems(pack.packVersionId!);
-    if (!items?.length) return getStaticFallbackPackOdds();
+    if (!items?.length) return __DEV__ ? getStaticFallbackPackOdds() : UNAVAILABLE_PACK_ODDS;
     return buildPackOddsFromPoolItems(items);
   })();
 

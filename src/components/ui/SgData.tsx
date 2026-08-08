@@ -5,7 +5,7 @@ import { sg } from '../../tokens/sg';
 interface Props {
   /** The numeral string, e.g. "2,500" / "214 / 500" / "80.0%" / a cert hash. */
   value: string;
-  /** Unit label — REQUIRED by design rule for money-like numbers ("Coins", "listed value"). */
+  /** Unit label — REQUIRED by design rule for money-like numbers ("Points", "listed value"). */
   unit?: string;
   size?: 'sm' | 'md' | 'lg';
   /**
@@ -26,7 +26,7 @@ const SIZES = { sm: 12, md: 15, lg: 20 } as const;
  * balances — product names and dates use the body face.
  */
 export function SgData({ value, unit, size = 'md', tone = 'default', style }: Props) {
-  const valueColor = tone === 'gold' ? sg.gold : tone === 'success' ? sg.success : sg.text;
+  const valueColor = tone === 'gold' ? sg.value : tone === 'success' ? sg.success : sg.text;
 
   return (
     <View style={styles.row}>

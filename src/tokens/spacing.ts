@@ -12,11 +12,11 @@ export const spacing = {
 };
 
 export const radius = {
-  sm: 6,
-  md: 10,
-  lg: 16,
-  xl: 20,
-  xxl: 24,
+  sm: 3,
+  md: 4,
+  lg: 6,
+  xl: 8,
+  xxl: 10,
   full: 999,
 };
 
@@ -37,7 +37,7 @@ export const elevation = {
     elevation: 10,
   },
   chromeBar: {
-    shadowColor: '#000',
+    shadowColor: colors.shadowStrong,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 16,

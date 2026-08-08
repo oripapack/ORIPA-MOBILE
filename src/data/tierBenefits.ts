@@ -23,7 +23,7 @@ export const TIER_BENEFITS: TierBenefitRow[] = [
     minXp: 10_000,
     perks: [
       'Everything in Starter',
-      '+2% bonus credits on credit bundle purchases (demo)',
+      '+2% bonus Points on Points bundle purchases (demo)',
       'Priority support queue (demo)',
     ],
   },
@@ -41,7 +41,7 @@ export const TIER_BENEFITS: TierBenefitRow[] = [
     minXp: 150_000,
     perks: [
       'Everything in Silver',
-      '+5% bonus credits on credit bundle purchases (demo)',
+      '+5% bonus Points on Points bundle purchases (demo)',
       'Early access to select hot drops (demo)',
       'Dedicated account tier badge & profile flair (demo)',
     ],

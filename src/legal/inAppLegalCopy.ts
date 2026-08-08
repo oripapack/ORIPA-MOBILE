@@ -19,8 +19,8 @@ You must be able to enter a binding agreement where you live and meet any minimu
 3. Accounts
 You are responsible for your account credentials and activity. Notify us if you suspect unauthorized access.
 
-4. Virtual credits, packs, and rewards
-${APP_DISPLAY_NAME} may offer credits, packs, pulls, rewards, or similar features. Unless we clearly state otherwise in-app or at checkout, certain features may be simulated or provided for demonstration. Odds, availability, and fulfillment rules are described in-app and may change.
+4. Points, packs, and rewards
+${APP_DISPLAY_NAME} may offer Points, packs, pulls, rewards, or similar features. Unless we clearly state otherwise in-app or at checkout, certain features may be simulated or provided for demonstration. Odds, availability, and fulfillment rules are described in-app and may change.
 
 When real payments are enabled, purchases are subject to platform rules (Apple App Store / Google Play) and additional terms shown at purchase.
 
@@ -55,7 +55,7 @@ This Privacy Policy describes how ${APP_DISPLAY_NAME} (“we,” “us”) colle
 • Account information: such as display name, member or friend ID, and preferences you provide.
 • Usage data: such as app interactions, feature usage, and diagnostics to operate and improve the App.
 • Device data: such as device type, OS version, and identifiers needed for security and analytics.
-• Transactions: if you purchase credits or items, payment is processed by Apple or Google; we receive limited purchase information from the platform, not your full card number.
+• Transactions: if you purchase Points or items, payment is processed by Apple or Google; we receive limited purchase information from the platform, not your full card number.
 • Content you submit: such as support messages or information you choose to share with friends (subject to your settings).
 
 2. How we use information
@@ -112,8 +112,8 @@ Purchases in ${APP_DISPLAY_NAME} (when real-money purchases are available) are p
 
 • Charges appear under the payment method linked to your store account.
 • Refunds and billing disputes are generally handled according to Apple’s or Google’s policies; you may also contact us for account-related issues.
-• Virtual credits or items may be non-refundable except as required by law or platform policy.
+• Points or items may be non-refundable except as required by law or platform policy.
 • Prices and taxes (if any) are shown before you confirm a purchase.
 
-If credits are labeled as simulated or preview in the App, no real charge applies until real checkout is enabled.
+If Points are labeled as simulated or preview in the App, no real charge applies until real checkout is enabled.
 `.trim();

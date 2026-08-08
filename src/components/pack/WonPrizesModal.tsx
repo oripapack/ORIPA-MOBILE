@@ -20,7 +20,7 @@ import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { getLocalizedPackTitle } from '../../i18n/packCopy';
 import type { PullRarityTier } from '../../data/mockUser';
 import { WinningsSummaryCard } from './WinningsSummaryCard';
-import { VAULT_HOLD_DAYS } from '../../lib/vaultConstants';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TIER_BADGE: Record<PullRarityTier, string> = {
   base: 'Base',
@@ -30,7 +30,7 @@ const TIER_BADGE: Record<PullRarityTier, string> = {
 };
 
 /**
- * Post-opening fulfillment: convert to credits by default; optionally check rows to store in Vault.
+ * Post-opening fulfillment: Trade in for Points by default; optionally check rows to store in Vault.
  * Shipping is initiated later from the Vault.
  */
 export function WonPrizesModal() {
@@ -42,13 +42,13 @@ export function WonPrizesModal() {
   const user = useAppStore((s) => s.user);
   const finalizePendingFulfillment = useAppStore((s) => s.finalizePendingFulfillment);
 
-  /** When true, this pull is stored in the Vault; when false, it converts to credits (default). */
+  /** Vault is the safe default. Trade in only happens after a deliberate row toggle and confirmation. */
   const [vaultSelected, setVaultSelected] = useState<Record<string, boolean>>({});
   const [showConvertConfirm, setShowConvertConfirm] = useState(false);
 
   useEffect(() => {
     if (!visible) return;
-    setVaultSelected({});
+    setVaultSelected(Object.fromEntries(pendingIds.map((id) => [id, true])));
     setShowConvertConfirm(false);
   }, [visible, pendingIds.length]);
 
@@ -98,12 +98,12 @@ export function WonPrizesModal() {
 
   const summaryHelperText = useMemo(() => {
     if (selectionState === 'allVault') {
-      return t('wonPrizesModal.summaryAllVault', { days: VAULT_HOLD_DAYS });
+      return t('wonPrizesModal.summaryAllVault');
     }
     if (selectionState === 'allConvert') {
       return t('wonPrizesModal.summaryAllConvert');
     }
-    return t('wonPrizesModal.summaryMixed', { days: VAULT_HOLD_DAYS });
+    return t('wonPrizesModal.summaryMixed');
   }, [selectionState, t]);
 
   const primaryCtaLabel = useMemo(() => {
@@ -176,7 +176,7 @@ export function WonPrizesModal() {
           </View>
 
           {pulls.map((pull) => {
-            const tier: PullRarityTier = pull.tier ?? 'base';
+            const tier = pull.tier;
             const toVault = !!vaultSelected[pull.id];
             const itemValue = pull.creditsWon ?? pull.convertCreditValue ?? 0;
             return (
@@ -194,17 +194,19 @@ export function WonPrizesModal() {
                 </TouchableOpacity>
 
                 <View style={styles.thumb}>
-                  <Text style={styles.thumbEmoji}>🎴</Text>
+                  <Ionicons name="albums-outline" size={25} color={sg.text} />
                   <View style={styles.thumbZoom}>
-                    <Text style={styles.thumbZoomIcon}>🔍</Text>
+                    <Ionicons name="search" size={11} color={sg.text} />
                   </View>
                 </View>
 
                 <View style={styles.itemBody}>
                   <View style={styles.itemTopRow}>
-                    <View style={styles.badge}>
-                      <Text style={styles.badgeText}>{TIER_BADGE[tier]}</Text>
-                    </View>
+                    {tier && tier !== 'base' ? (
+                      <View style={styles.badge}>
+                        <Text style={styles.badgeText}>{TIER_BADGE[tier]}</Text>
+                      </View>
+                    ) : null}
                     <View style={[styles.intentPill, toVault ? styles.intentVault : styles.intentConvert]}>
                       <Text style={styles.intentText}>
                         {toVault ? t('wonPrizesModal.pillVault') : t('wonPrizesModal.pillConvert')}
@@ -220,7 +222,7 @@ export function WonPrizesModal() {
                 </View>
 
                 <View style={styles.itemCoins}>
-                  <Text style={styles.coinIcon}>🪙</Text>
+                  <Text style={styles.coinIcon}>PTS</Text>
                   <Text style={styles.itemCoinValue}>{itemValue.toLocaleString()}</Text>
                 </View>
               </Pressable>
@@ -240,7 +242,7 @@ export function WonPrizesModal() {
           <Text style={styles.footerSub}>
             {selectionState === 'allConvert'
               ? t('wonPrizesModal.footerCoinsOnly', { coins: creditsToReceiveAmount.toLocaleString() })
-              : t('wonPrizesModal.footerVaultLine', { days: VAULT_HOLD_DAYS })}
+              : t('wonPrizesModal.footerVaultLine')}
             {'  ·  '}
             {footerSubcopy}
           </Text>
@@ -258,13 +260,13 @@ export function WonPrizesModal() {
             <View style={styles.confirmRow}>
               <Text style={styles.confirmLabel}>{t('wonPrizesModal.confirmCoinsLabel')}</Text>
               <View style={styles.confirmValue}>
-                <Text style={styles.coinIcon}>🪙</Text>
+                <Text style={styles.coinIcon}>PTS</Text>
                 <Text style={styles.confirmAmount}>{creditsToReceiveAmount.toLocaleString()}</Text>
               </View>
             </View>
             {vaultCount > 0 ? (
               <Text style={styles.confirmVaultNote}>
-                {t('wonPrizesModal.confirmVaultNote', { count: vaultCount, days: VAULT_HOLD_DAYS })}
+                {t('wonPrizesModal.confirmVaultNote', { count: vaultCount })}
               </Text>
             ) : null}
             <PrimaryButton label={t('wonPrizesModal.confirmCta')} variant="red" onPress={onConfirmConvert} />
@@ -332,7 +334,7 @@ const styles = StyleSheet.create({
   },
   itemCardVaultPick: {
     borderColor: sg.gold,
-    backgroundColor: 'rgba(212,175,55,0.08)',
+    backgroundColor: sg.cobaltWashSoft,
   },
   checkbox: {
     width: 24,
@@ -409,7 +411,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   intentVault: {
-    backgroundColor: 'rgba(212,175,55,0.15)',
+    backgroundColor: sg.cobaltWash,
     borderColor: sg.gold,
   },
   intentConvert: {

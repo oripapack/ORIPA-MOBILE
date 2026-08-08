@@ -12,7 +12,7 @@ interface Props {
   style?: ViewStyle;
 }
 
-/** N2 primary CTA — gold fill, black label (§4). Prefer `SgButton` for new code. */
+/** Legacy structural action. Prefer `SgButton` for new true-primary/value actions. */
 export function PrimaryButton({ label, onPress, variant = 'gold', disabled, loading, style }: Props) {
   const isLine = variant === 'red' || variant === 'line';
 
@@ -27,6 +27,9 @@ export function PrimaryButton({ label, onPress, variant = 'gold', disabled, load
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.88}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled || !!loading, busy: !!loading }}
     >
       <View style={styles.labelWrap} pointerEvents="none">
         {loading ? (

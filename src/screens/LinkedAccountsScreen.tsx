@@ -8,7 +8,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
-import { FutureUpdateBadge } from '../components/shared/FutureUpdateBadge';
+import { SgScreen } from '../components/ui/SgScreen';
+import { SgUnavailableService } from '../components/ui';
+import { ADVANCED_ACCOUNT_SERVICES_ARE_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'LinkedAccounts'>;
 
@@ -28,13 +30,17 @@ export function LinkedAccountsScreen() {
     });
   }, [navigation, t]);
 
+  if (!ADVANCED_ACCOUNT_SERVICES_ARE_LIVE) {
+    return <SgUnavailableService code="ACCOUNT / PROVIDERS" />;
+  }
+
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
-      <FutureUpdateBadge />
+    <SgScreen constrainContent>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.body}>{t('linkedAccounts.body')}</Text>
       <Text style={styles.section}>{t('linkedAccounts.whatTitle')}</Text>
       <Text style={styles.para}>{t('linkedAccounts.whatBody')}</Text>
@@ -45,12 +51,13 @@ export function LinkedAccountsScreen() {
         <Text style={styles.cardLine}>• {t('linkedAccounts.futureEmail')}</Text>
       </View>
       <Text style={styles.note}>{t('linkedAccounts.note')}</Text>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   body: {
     fontSize: fontSize.sm,

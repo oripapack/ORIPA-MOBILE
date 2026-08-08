@@ -1,24 +1,20 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import WebView from 'react-native-webview';
-import { useTranslation } from 'react-i18next';
 import type { RingPackOpenFlowProps } from './ringTypes';
 import { tierToRingRarity } from './ringRarity';
 import { getPackRingWebBaseUrl } from '../../../../config/packRingWebUrl';
 import { appendPackOpeningSceneTweaks } from '../../../../config/packOpeningSceneTweaks';
 import { sg } from '../../../../tokens/sg';
-import { fontSize } from '../../../../tokens/typography';
-import { spacing } from '../../../../tokens/spacing';
+import { TerminalOpeningFallback } from '../TerminalOpeningFallback';
 
 /**
  * Native iOS/Android — new opening-3d HTML scene in a WebView
  * (`pack-ring-server/opening-3d.html`, co-started by `npm start` on :3000).
  */
 export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
-  const { t } = useTranslation();
   const [failed, setFailed] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [reloadKey, setReloadKey] = useState(0);
   const revealedRef = useRef(false);
   const webRef = useRef<WebView>(null);
   const lastSkipRef = useRef(0);
@@ -44,12 +40,6 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
     props.onRevealDone();
   }, [props]);
 
-  const retry = useCallback(() => {
-    setFailed(false);
-    setLoading(true);
-    setReloadKey((k) => k + 1);
-  }, []);
-
   // Skip FAB in PackOpeningModal bumps skipNonce — tell the HTML scene to finish.
   useEffect(() => {
     if (!props.skipNonce || props.skipNonce === lastSkipRef.current) return;
@@ -60,28 +50,13 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
   }, [props.skipNonce]);
 
   if (!uri || failed) {
-    return (
-      <View style={styles.fill}>
-        <View style={styles.errorBox}>
-          <Text style={styles.errorTitle}>{t('packRing.unavailableTitle')}</Text>
-          <Text style={styles.errorBody}>
-            {uri ? t('packRing.loadFailed') : t('packRing.misconfigured')}
-          </Text>
-          {uri ? (
-            <Pressable onPress={retry} style={styles.retryBtn}>
-              <Text style={styles.retryText}>{t('packRing.retry')}</Text>
-            </Pressable>
-          ) : null}
-        </View>
-      </View>
-    );
+    return <TerminalOpeningFallback {...props} />;
   }
 
   return (
     <View style={styles.fill}>
       <WebView
         ref={webRef}
-        key={reloadKey}
         source={{ uri }}
         style={styles.fill}
         originWhitelist={['*']}
@@ -116,7 +91,7 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
       {loading ? (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color={sg.gold} />
-          <Text style={styles.loadingText}>{t('packRing.loading')}</Text>
+          <Text style={styles.loadingText}>Loading pack scene…</Text>
         </View>
       ) : null}
     </View>
@@ -135,44 +110,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: sg.bg,
-    gap: spacing.md,
+    gap: sg.space.md,
   },
   loadingText: {
     color: sg.muted,
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
-  },
-  errorBox: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: sg.space.xl,
-    gap: spacing.md,
-  },
-  errorTitle: {
-    color: sg.text,
-    fontSize: fontSize.lg,
-    fontFamily: sg.font.bodyBold,
-    textAlign: 'center',
-  },
-  errorBody: {
-    color: sg.muted,
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.body,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  retryBtn: {
-    marginTop: sg.space.sm,
-    paddingHorizontal: sg.space.lg,
-    paddingVertical: sg.space.sm,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: sg.line,
-  },
-  retryText: {
-    color: sg.gold,
-    fontSize: fontSize.sm,
+    fontSize: sg.type.data.fontSize,
     fontFamily: sg.font.bodyMedium,
   },
 });

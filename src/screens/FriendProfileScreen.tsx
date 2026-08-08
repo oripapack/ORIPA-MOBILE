@@ -24,11 +24,12 @@ import {
 } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
-import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { ActivityStrip } from '../components/social/ActivityStrip';
 import { CompareStatsModal } from '../components/social/CompareStatsModal';
 import { FriendVaultShowcaseSection } from '../components/friends/FriendVaultShowcaseSection';
-import { showUserMessage } from '../utils/showUserMessage';
+import { SgScreen } from '../components/ui/SgScreen';
+import { SgUnavailableService } from '../components/ui';
+import { SOCIAL_IS_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'FriendProfile'>;
 type Rt = RouteProp<RootStackParamList, 'FriendProfile'>;
@@ -71,27 +72,42 @@ export function FriendProfileScreen() {
 
   const meProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
 
+  if (!__DEV__ && !SOCIAL_IS_LIVE) {
+    return (
+      <SgUnavailableService
+        code="SOCIAL / PROFILE"
+        eyebrow={t('friends.releaseEyebrow')}
+        title={t('friends.releaseTitle')}
+        body={t('friends.releaseBody')}
+      />
+    );
+  }
+
   if (!isSelf && !isFriend) {
     return (
-      <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
-        <Text style={styles.errTitle}>{t('social.notFriendTitle')}</Text>
-        <Text style={styles.errBody}>{t('social.notFriendBody')}</Text>
-        <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.errBtnText}>{t('social.goBack')}</Text>
-        </TouchableOpacity>
-      </View>
+      <SgScreen constrainContent>
+        <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
+          <Text style={styles.errTitle}>{t('social.notFriendTitle')}</Text>
+          <Text style={styles.errBody}>{t('social.notFriendBody')}</Text>
+          <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
+            <Text style={styles.errBtnText}>{t('social.goBack')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SgScreen>
     );
   }
 
   if (!profile) {
     return (
-      <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
-        <Text style={styles.errTitle}>{t('social.profileMissingTitle')}</Text>
-        <Text style={styles.errBody}>{t('social.profileMissingBody')}</Text>
-        <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.errBtnText}>{t('social.goBack')}</Text>
-        </TouchableOpacity>
-      </View>
+      <SgScreen constrainContent>
+        <View style={[styles.center, { paddingTop: insets.top + spacing.xl }]}>
+          <Text style={styles.errTitle}>{t('social.profileMissingTitle')}</Text>
+          <Text style={styles.errBody}>{t('social.profileMissingBody')}</Text>
+          <TouchableOpacity style={styles.errBtn} onPress={() => navigation.goBack()}>
+            <Text style={styles.errBtnText}>{t('social.goBack')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SgScreen>
     );
   }
 
@@ -99,7 +115,8 @@ export function FriendProfileScreen() {
   const highlights = getActivityHighlights(profile);
 
   return (
-    <View style={styles.root}>
+    <SgScreen constrainContent>
+      <View style={styles.root}>
       <ScrollView
         contentContainerStyle={[
           styles.scroll,
@@ -108,7 +125,7 @@ export function FriendProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.hero}>
-          <Text style={styles.avatar}>{profile.avatarEmoji}</Text>
+          <Text style={styles.avatar}>{profile.displayName.trim().slice(0, 2).toUpperCase()}</Text>
           <View style={styles.heroText}>
             <Text style={styles.dn}>{profile.displayName}</Text>
             <Text style={styles.un}>@{profile.username}</Text>
@@ -116,9 +133,11 @@ export function FriendProfileScreen() {
           </View>
         </View>
         <Text style={styles.bio}>{profile.bio}</Text>
-        <Text style={styles.joined}>
-          {t('social.joined', { date: new Date(profile.joinDateIso).toLocaleDateString() })}
-        </Text>
+        {profile.joinDateIso ? (
+          <Text style={styles.joined}>
+            {t('social.joined', { date: new Date(profile.joinDateIso).toLocaleDateString() })}
+          </Text>
+        ) : null}
 
         <View style={styles.statGrid}>
           <View style={styles.statCell}>
@@ -128,14 +147,6 @@ export function FriendProfileScreen() {
           <View style={styles.statCell}>
             <Text style={styles.statVal}>{formatUsd(s.totalEstimatedValue)}</Text>
             <Text style={styles.statLab}>{t('social.statValue')}</Text>
-          </View>
-          <View style={styles.statCell}>
-            <Text style={styles.statVal}>{s.chaseHits}</Text>
-            <Text style={styles.statLab}>{t('social.statChase')}</Text>
-          </View>
-          <View style={styles.statCell}>
-            <Text style={styles.statVal}>{profile.luckScore}</Text>
-            <Text style={styles.statLab}>{t('social.statLuck')}</Text>
           </View>
         </View>
 
@@ -154,11 +165,12 @@ export function FriendProfileScreen() {
           <Text style={styles.bestSub}>{t('social.estimatedValue')}</Text>
         </View>
 
-        <Text style={styles.section}>{t('social.rarityMix')}</Text>
-        <RarityBreakdownMini breakdown={s.rarityBreakdown} />
-
-        <Text style={styles.section}>{t('social.highlights')}</Text>
-        <ActivityStrip items={highlights} />
+        {highlights.length > 0 ? (
+          <>
+            <Text style={styles.section}>{t('social.highlights')}</Text>
+            <ActivityStrip items={highlights} />
+          </>
+        ) : null}
 
         <Text style={styles.section}>{t('social.recentPulls')}</Text>
         {profile.recentPulls.length === 0 ? (
@@ -169,26 +181,21 @@ export function FriendProfileScreen() {
 
         {!isSelf ? (
           <View style={styles.actions}>
-            <TouchableOpacity
-              style={styles.btnDark}
-              onPress={() => setCompareOpen(true)}
-              activeOpacity={0.88}
-            >
-              <Text style={styles.btnDarkText}>{t('social.compare')}</Text>
-            </TouchableOpacity>
+            {profile.stats.packsOpened > 0 ? (
+              <TouchableOpacity
+                style={styles.btnDark}
+                onPress={() => setCompareOpen(true)}
+                activeOpacity={0.88}
+              >
+                <Text style={styles.btnDarkText}>{t('social.compare')}</Text>
+              </TouchableOpacity>
+            ) : null}
             <TouchableOpacity
               style={styles.btnOutline}
               onPress={() => navigation.navigate('FriendsLeaderboard')}
               activeOpacity={0.88}
             >
               <Text style={styles.btnOutlineText}>{t('social.openLeaderboard')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btnGhost}
-              onPress={() => showUserMessage(t('social.giftTitle'), t('social.giftBody'))}
-              activeOpacity={0.88}
-            >
-              <Text style={styles.btnGhostText}>{t('social.sendDemoPack')}</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -210,14 +217,15 @@ export function FriendProfileScreen() {
           friend={profile}
         />
       ) : null}
-    </View>
+      </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: sg.bg },
+  root: { flex: 1, backgroundColor: 'transparent' },
   scroll: { paddingHorizontal: spacing.base },
-  center: { flex: 1, paddingHorizontal: spacing.lg, backgroundColor: sg.bg },
+  center: { flex: 1, paddingHorizontal: spacing.lg, backgroundColor: 'transparent' },
   errTitle: {
     fontSize: fontSize.lg,
     fontFamily: sg.font.display,

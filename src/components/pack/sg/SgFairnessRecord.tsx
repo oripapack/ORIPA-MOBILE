@@ -1,55 +1,50 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { sg } from '../../../tokens/sg';
 import { SgCard, SgData, SgSectionHeader } from '../../ui';
-import type { PullFairnessRecord } from '../../../../shared/api/types';
 
-function shorten(value: string, head = 6, tail = 4): string {
-  if (!value) return '—';
-  if (value.length <= head + tail + 1) return value;
-  return `${value.slice(0, head)}…${value.slice(-tail)}`;
-}
+export type FairnessRecordData = {
+  serverCommitment: string;
+  clientSeed: string;
+  openingNumber: string;
+};
 
-/**
- * Fairness record block — commit–reveal trust chassis (§10/§12).
- * Pass `record` from the latest live open (`lastFairnessRecord`).
- */
+/** Trust chassis with no fabricated identifiers. A record appears only when
+ * the live opening response supplies all commit–reveal fields. */
 export function SgFairnessRecord({
-  onVerify,
   record,
+  onVerify,
 }: {
+  record?: FairnessRecordData;
   onVerify?: () => void;
-  record?: PullFairnessRecord | null;
 }) {
-  const { t } = useTranslation();
-  const hasLive = Boolean(record?.hashedServerSeed || record?.clientSeed);
+  if (!record) {
+    return (
+      <SgCard>
+        <SgSectionHeader title="Verification record" />
+        <View style={styles.pendingHeader}>
+          <View style={styles.pendingDot} />
+          <Text style={styles.pendingLabel}>CREATED AFTER A LIVE OPENING</Text>
+        </View>
+        <Text style={styles.method}>
+          The commitment, seed, and opening number will appear here with a completed live pull.
+        </Text>
+      </SgCard>
+    );
+  }
 
   return (
     <SgCard>
-      <SgSectionHeader title={t('fairness.record.title')} />
-      <Text style={styles.method}>{t('fairness.record.method')}</Text>
-      {hasLive && record ? (
-        <>
-          <Row label={t('fairness.record.serverCommitment')} value={shorten(record.hashedServerSeed)} />
-          <Row label={t('fairness.record.clientSeed')} value={shorten(record.clientSeed)} />
-          <Row
-            label={t('fairness.record.openingNumber')}
-            value={record.openingNumber || shorten(record.pullId, 4, 4)}
-          />
-        </>
-      ) : (
-        <Text style={styles.pending}>{t('fairness.record.pending')}</Text>
-      )}
-      <TouchableOpacity
-        onPress={onVerify}
-        style={styles.verify}
-        accessibilityRole="button"
-        disabled={!onVerify}
-      >
-        <Text style={[styles.verifyText, !onVerify ? styles.verifyDisabled : null]}>
-          {t('fairness.record.verifyCta')}
-        </Text>
+      <SgSectionHeader title="Fairness record" />
+      <Text style={styles.method}>
+        Draw method: provably-fair commit–reveal. The server commits to a hash
+        before you open; verify any pull afterwards.
+      </Text>
+      <Row label="Server commitment" value={record.serverCommitment} />
+      <Row label="Client seed" value={record.clientSeed} />
+      <Row label="Opening #" value={record.openingNumber} />
+      <TouchableOpacity onPress={onVerify} style={styles.verify} accessibilityRole="button">
+        <Text style={styles.verifyText}>VERIFY →</Text>
       </TouchableOpacity>
     </SgCard>
   );
@@ -73,12 +68,24 @@ const styles = StyleSheet.create({
     marginTop: sg.space.sm,
     marginBottom: sg.space.xs,
   },
-  pending: {
-    fontFamily: sg.font.body,
-    fontSize: 12,
-    lineHeight: 17,
-    color: sg.muted,
-    marginTop: sg.space.sm,
+  pendingHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: sg.space.sm,
+    marginTop: sg.space.md,
+  },
+  pendingDot: {
+    width: 7,
+    height: 7,
+    borderRadius: sg.radius.pill,
+    backgroundColor: sg.warning,
+  },
+  pendingLabel: {
+    flex: 1,
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 0.9,
+    color: sg.warning,
   },
   row: {
     flexDirection: 'row',
@@ -94,5 +101,4 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     color: sg.text,
   },
-  verifyDisabled: { color: sg.muted },
 });

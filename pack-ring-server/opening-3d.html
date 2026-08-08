@@ -1,49 +1,47 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#07070f">
-<title>PullHub｜パック開封 3D プロトタイプ</title>
+<meta name="theme-color" content="#080d1b">
+<title>Pull Hub | Tokyo Terminal Pack Opening</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; overflow:hidden; }
   body {
-    background:#07070f;
-    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",system-ui,sans-serif;
+    background:#080d1b;
+    font-family:"Arial Narrow","Avenir Next Condensed","Roboto Condensed",system-ui,sans-serif;
     user-select:none; -webkit-user-select:none;
   }
   body::before {
     content:""; position:fixed; inset:0; pointer-events:none;
     background:
-      radial-gradient(60% 42% at 18% 8%, rgba(255,63,216,.14), transparent 70%),
-      radial-gradient(55% 40% at 85% 88%, rgba(55,230,255,.12), transparent 70%),
-      radial-gradient(120% 90% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%),
-      linear-gradient(180deg,#0a0b18 0%,#07070f 55%,#05050b 100%);
+      radial-gradient(55% 38% at 14% 4%, rgba(52,91,231,.18), transparent 74%),
+      radial-gradient(46% 34% at 90% 92%, rgba(85,212,194,.09), transparent 76%),
+      linear-gradient(180deg,#0b1224 0%,#080d1b 58%,#060a14 100%);
   }
   body::after {
-    content:""; position:fixed; inset:-40%; pointer-events:none; opacity:.5;
-    background:repeating-linear-gradient(112deg, rgba(150,190,255,.05) 0 1px, transparent 1px 110px);
+    content:""; position:fixed; inset:0; pointer-events:none; opacity:.45;
+    background-image:linear-gradient(rgba(99,124,184,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(99,124,184,.045) 1px,transparent 1px);
+    background-size:32px 32px;
   }
   #c { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; z-index:1; }
   #brand { position:fixed; top:calc(14px + env(safe-area-inset-top)); left:18px; z-index:3; pointer-events:none; }
-  .bw { font-weight:900; font-size:20px; letter-spacing:.14em;
-    background:linear-gradient(90deg,#7ff3ff,#ff3fd8);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-    filter:drop-shadow(0 0 12px rgba(55,230,255,.35)); }
-  .bs { font-size:9px; letter-spacing:.3em; color:#8fa3d9; margin-top:3px; }
+  .bw { font-weight:900; font-size:20px; letter-spacing:.08em; color:#f5f0e6;
+    text-shadow:0 0 16px rgba(52,91,231,.34); }
+  .bs { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:9px; letter-spacing:.24em; color:#7b8aac; margin-top:4px; }
   #hint { position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom));
-    transform:translateX(-50%); z-index:3; padding:10px 18px; border-radius:999px;
-    background:rgba(10,13,26,.55); border:1px solid rgba(127,243,255,.28);
+    transform:translateX(-50%); z-index:3; padding:10px 16px; border-radius:8px;
+    background:rgba(12,20,40,.88); border:1px solid rgba(90,116,180,.48);
     backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
-    color:#cfe3ff; font-size:12.5px; letter-spacing:.05em; white-space:nowrap;
-    box-shadow:0 0 26px rgba(55,230,255,.12); transition:opacity .3s ease; }
+    color:#d8dfef; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; letter-spacing:.11em; white-space:nowrap;
+    box-shadow:0 0 28px rgba(52,91,231,.13); transition:opacity .3s ease; }
   #hint.off { opacity:0; pointer-events:none; }
   #resetBtn { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom));
     transform:translateX(-50%) translateY(10px); z-index:3; opacity:0; pointer-events:none;
-    padding:13px 30px; border-radius:999px; border:1px solid rgba(255,215,106,.55);
-    background:linear-gradient(180deg,rgba(34,28,10,.75),rgba(16,13,5,.75));
-    color:#ffd76a; font-weight:700; font-size:14px; letter-spacing:.16em; font-family:inherit;
+    padding:13px 30px; border-radius:8px; border:1px solid rgba(224,180,90,.58);
+    background:#151c2d;
+    color:#e0b45a; font-weight:800; font-size:13px; letter-spacing:.14em; font-family:inherit;
     backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
     box-shadow:0 0 34px rgba(255,215,106,.16);
     transition:opacity .35s cubic-bezier(.2,.8,.2,1), transform .35s cubic-bezier(.2,.8,.2,1); cursor:pointer; }
@@ -51,31 +49,31 @@
   #resetBtn:active { transform:translateX(-50%) scale(.96); }
   #cardInfo { position:fixed; left:50%; bottom:calc(84px + env(safe-area-inset-bottom));
     transform:translateX(-50%) translateY(14px); z-index:3; opacity:0; pointer-events:none;
-    text-align:center; padding:14px 28px; border-radius:20px; min-width:230px;
-    background:rgba(10,13,26,.62); border:1px solid rgba(255,215,106,.32);
+    text-align:center; padding:14px 28px; border-radius:10px; min-width:250px;
+    background:rgba(12,20,40,.92); border:1px solid rgba(224,180,90,.38);
     backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
     box-shadow:0 0 30px rgba(255,215,106,.12);
     transition:opacity .4s cubic-bezier(.2,.8,.2,1), transform .4s cubic-bezier(.2,.8,.2,1); }
   #cardInfo.on { opacity:1; transform:translateX(-50%) translateY(0); }
   .ci-tier { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px; }
-  #ciTier { font-size:12px; font-weight:900; letter-spacing:.18em; color:#241a05;
-    background:linear-gradient(90deg,#ffe9a8,#c98f2d); padding:3px 12px; border-radius:999px; }
-  #ciStars { color:var(--tierCol,#ffd76a); font-size:14px; letter-spacing:.14em;
-    text-shadow:0 0 10px var(--tierCol,rgba(255,215,106,.65)); }
-  .ci-name { color:#ffffff; font-size:17px; font-weight:800; letter-spacing:.04em; }
-  .ci-meta { margin-top:4px; color:#9fb0d9; font-size:12px; letter-spacing:.08em; }
+  #ciTier { font-size:11px; font-weight:900; letter-spacing:.16em; color:#080d1b;
+    background:#e0b45a; padding:4px 12px; border-radius:4px; }
+  #ciStars { color:var(--tierCol,#55d4c2); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:9px; letter-spacing:.1em;
+    text-shadow:0 0 10px var(--tierCol,rgba(85,212,194,.55)); }
+  .ci-name { color:#f5f0e6; font-size:17px; font-weight:900; letter-spacing:.02em; text-transform:uppercase; }
+  .ci-meta { margin-top:5px; color:#7b8aac; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; letter-spacing:.08em; }
   .ci-dot { margin:0 6px; opacity:.6; }
   @media (prefers-reduced-motion: reduce){ #hint,#resetBtn,#cardInfo{ transition:opacity .15s ease; } }
 </style>
 </head>
 <body>
-<div id="brand"><div class="bw">PULLHUB</div><div class="bs">PACK OPENING PROTOTYPE ・ 3D</div></div>
-<div id="hint">✨ 光るラインを横にスワイプで開封 ・ ドラッグで回転</div>
-<button id="resetBtn">もう一度開封する</button>
+<div id="brand"><div class="bw">PULL.HUB</div><div class="bs">TOKYO TERMINAL / LIVE</div></div>
+<div id="hint">SWIPE THE SEAL TO OPEN · DRAG TO ROTATE</div>
+<button id="resetBtn">OPEN AGAIN</button>
 <div id="cardInfo">
-  <div class="ci-tier"><span id="ciTier">SSR</span><span id="ciStars">★★★★☆</span></div>
-  <div class="ci-name" id="ciName">ミッドナイト・クリスタル</div>
-  <div class="ci-meta"><span id="ciYear">2026</span><span class="ci-dot">・</span><span id="ciGrade">GEM MINT 10</span></div>
+  <div class="ci-tier"><span id="ciTier">BASE</span><span id="ciStars">TIER / PULL RECORD</span></div>
+  <div class="ci-name" id="ciName">CARD ART PENDING</div>
+  <div class="ci-meta"><span id="ciYear">PULL RECORD</span><span class="ci-dot">/</span><span id="ciGrade">GRADE PENDING</span></div>
 </div>
 <canvas id="c"></canvas>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -85,7 +83,7 @@
 var hintEl=document.getElementById('hint');
 var resetBtn=document.getElementById('resetBtn');
 var infoEl=document.getElementById('cardInfo');
-if(!window.THREE){ hintEl.textContent='3Dライブラリの読み込みに失敗しました（通信環境をご確認ください）'; return; }
+if(!window.THREE){ hintEl.textContent='3D SCENE UNAVAILABLE · USE STANDARD OPENING'; return; }
 
 /* ============ 基本設定 ============ */
 var reduce=false;
@@ -93,7 +91,7 @@ try{ reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catc
 var PW=1.68, PH=2.95, PD=0.15;
 var TEAR_Y=1.185, BODY_H=2.66, BODY_CY=-0.145, STRIP_CY=1.33, CARD_Y0=0.0;
 var CARD_CY=0.95, CARD_CZ=1.1, CARD_SC=1.0, SLAB_S0=0.7;
-var HINT0='✨ 光るラインを横にスワイプで開封 ・ ドラッグで回転';
+var HINT0='SWIPE THE SEAL TO OPEN · DRAG TO ROTATE';
 
 /* ============ Tunable CFG (override via URL query, e.g. ?tearSensitivity=500&revealDelayMs=800) ============ */
 var CFG={
@@ -196,19 +194,13 @@ function star4(x,cx,cy,r){ var q=r*0.1; x.beginPath(); x.moveTo(cx,cy-r);
 /* ============ パック表面テクスチャ ============ */
 function texFront(){
   var W=768,H=1350,c=cnv(W,H),x=c.getContext('2d'),g;
-  g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#101430'); g.addColorStop(0.55,'#0b0e22'); g.addColorStop(1,'#060814');
+  g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#11151f'); g.addColorStop(0.55,'#080b12'); g.addColorStop(1,'#03050a');
   x.fillStyle=g; x.fillRect(0,0,W,H);
-  x.fillStyle='rgba(160,190,255,0.025)';
-  for(var sy=0; sy<H; sy+=7) x.fillRect(0,sy,W,1);
-  /* 「引」ウォーターマーク（PullHub＝引く） */
-  x.save(); x.translate(W/2,660); x.rotate(-0.08);
-  g=x.createLinearGradient(0,-300,0,300); g.addColorStop(0,'rgba(255,63,216,0.16)'); g.addColorStop(1,'rgba(55,230,255,0.12)');
-  x.fillStyle=g; x.font='900 600px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.textAlign='center'; x.textBaseline='middle'; x.fillText('引',0,16); x.restore();
-  x.textBaseline='alphabetic';
-  /* ホロ斜めストリーク */
+  x.fillStyle='rgba(123,138,172,0.16)';
+  for(var dy=270;dy<1160;dy+=38){ for(var dx=70;dx<W-70;dx+=38){ x.beginPath();x.arc(dx,dy,2.4,0,Math.PI*2);x.fill(); } }
+  /* Restrained foil streaks. */
   x.save(); x.translate(W/2,H/2); x.rotate(-0.45);
-  var cols=['rgba(127,243,255,','rgba(255,255,255,','rgba(255,63,216,'];
+  var cols=['rgba(85,212,194,','rgba(255,255,255,','rgba(52,91,231,'];
   for(var i=0;i<6;i++){
     var bx=-560+i*190;
     g=x.createLinearGradient(bx,-1060,bx+60,1060);
@@ -216,45 +208,40 @@ function texFront(){
     x.fillStyle=g; x.fillRect(bx,-1080,54,2160);
   }
   x.restore();
-  /* ネオン枠 */
-  g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#37e6ff'); g.addColorStop(1,'#ff3fd8');
+  /* Tokyo Terminal edge seal. */
+  g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#345be7'); g.addColorStop(1,'#55d4c2');
   x.strokeStyle=g; x.lineWidth=5;
-  x.shadowColor='rgba(55,230,255,0.9)'; x.shadowBlur=24; rr(x,26,26,W-52,H-52,30); x.stroke();
-  x.shadowColor='rgba(255,63,216,0.8)'; x.shadowBlur=20; x.stroke();
+  x.shadowColor='rgba(52,91,231,0.78)'; x.shadowBlur=24; rr(x,26,26,W-52,H-52,22); x.stroke();
+  x.shadowColor='rgba(85,212,194,0.52)'; x.shadowBlur=18; x.stroke();
   x.shadowBlur=0;
-  x.strokeStyle='rgba(160,200,255,0.28)'; x.lineWidth=1.5; rr(x,44,44,W-88,H-88,20); x.stroke();
+  x.strokeStyle='rgba(123,138,172,0.42)'; x.lineWidth=1.5; rr(x,44,44,W-88,H-88,16); x.stroke();
   x.textAlign='center';
-  /* ロゴ */
-  x.font='900 96px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.shadowColor='rgba(55,230,255,0.95)'; x.shadowBlur=30; x.fillStyle='#ffffff';
-  spaced(x,'PULLHUB',W/2,168,10);
+  x.font='900 76px "Arial Narrow","Avenir Next Condensed",sans-serif';
+  x.shadowColor='rgba(52,91,231,0.75)'; x.shadowBlur=22; x.fillStyle='#f5f0e6';
+  spaced(x,'PULL HUB',W/2,150,8);
   x.shadowBlur=0;
-  x.font='700 26px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillStyle='rgba(159,216,255,0.92)';
-  spaced(x,'オリジナル・オリパ',W/2,218,9);
-  /* 中央エンブレム */
-  var ex=W/2, ey=672;
-  g=x.createRadialGradient(ex,ey,0,ex,ey,200); g.addColorStop(0,'rgba(55,230,255,0.28)'); g.addColorStop(1,'rgba(55,230,255,0)');
-  x.fillStyle=g; x.fillRect(ex-210,ey-210,420,420);
-  x.save(); x.translate(ex,ey); x.rotate(0.12);
-  x.fillStyle='#10132a'; rr(x,-96,-136,192,272,18); x.fill();
-  g=x.createLinearGradient(-96,-136,96,136); g.addColorStop(0,'#7ff3ff'); g.addColorStop(1,'#ff3fd8');
-  x.strokeStyle=g; x.lineWidth=4; x.shadowColor='rgba(127,243,255,0.8)'; x.shadowBlur=18;
-  rr(x,-96,-136,192,272,18); x.stroke(); x.shadowBlur=0;
-  x.restore();
-  g=x.createRadialGradient(ex,ey,0,ex,ey,96); g.addColorStop(0,'#ffffff'); g.addColorStop(0.45,'#ffe9a8'); g.addColorStop(1,'rgba(255,215,106,0)');
-  x.fillStyle=g; x.shadowColor='rgba(255,236,170,0.95)'; x.shadowBlur=40;
-  star4(x,ex,ey,96); x.fill(); x.shadowBlur=0;
-  x.fillStyle='rgba(255,255,255,0.92)';
-  star4(x,ex-118,ey-92,16); x.fill(); star4(x,ex+124,ey+70,12); x.fill(); star4(x,ex+96,ey-128,9); x.fill();
-  /* エディション表記 */
-  x.font='900 40px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillStyle='#ffd76a'; x.shadowColor='rgba(255,215,106,0.75)'; x.shadowBlur=18;
-  spaced(x,'MIDNIGHT EDITION',W/2,976,7);
-  x.shadowBlur=0;
-  x.font='500 22px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillStyle='rgba(185,198,255,0.8)';
-  spaced(x,'真夜中のカードショップ',W/2,1016,6);
+  x.font='700 22px ui-monospace,SFMono-Regular,Menlo,monospace'; x.fillStyle='#7b8aac';
+  spaced(x,'TOKYO TERMINAL / SERIES 01',W/2,198,6);
+
+  /* Physical label system from the Tokyo Pack art direction. */
+  x.fillStyle='#f5f0e6'; rr(x,82,350,W-164,408,20); x.fill();
+  x.fillStyle='#080d1b'; x.textAlign='left';
+  x.font='900 82px "Arial Narrow","Avenir Next Condensed",sans-serif';
+  x.fillText('TOKYO',118,492); x.fillText('PACK 01',118,582);
+  x.font='700 17px ui-monospace,SFMono-Regular,Menlo,monospace';
+  spaced(x,'DIGITAL PACK / REAL CARD / YOURS',W/2,642,3);
+  x.fillStyle='#55d4c2'; rr(x,82,648,418,110,0); x.fill();
+  x.fillStyle='#f5f0e6'; x.font='900 34px "Arial Narrow",sans-serif';
+  x.fillText('TOKYO',112,708);
+  x.fillStyle='#ff5e57'; rr(x,500,504,184,254,10); x.fill();
+  x.fillStyle='#f5f0e6'; x.font='900 24px ui-monospace,SFMono-Regular,Menlo,monospace';
+  x.textAlign='center'; x.fillText('01',592,558);
+  for(var si=0;si<5;si++){ x.save();x.translate(520+si*31,690);x.rotate(-0.5);x.fillRect(0,0,14,74);x.restore(); }
+  x.strokeStyle='#7d4ce6'; x.lineWidth=5; x.beginPath(); x.arc(586,906,82,0,Math.PI*2); x.stroke();
+  x.lineWidth=2; x.beginPath(); x.arc(586,906,46,0,Math.PI*2); x.stroke();
+  x.beginPath();x.moveTo(504,906);x.lineTo(668,906);x.moveTo(586,824);x.lineTo(586,988);x.stroke();
+  x.fillStyle='#e0b45a'; x.font='900 34px ui-monospace,SFMono-Regular,Menlo,monospace'; x.textAlign='left';
+  x.fillText('24 / 7 OPEN',86,940);
   /* 下部インフォ */
   x.strokeStyle='rgba(160,200,255,0.3)'; x.lineWidth=1;
   x.beginPath(); x.moveTo(70,1134); x.lineTo(W-70,1134); x.stroke();
@@ -262,10 +249,10 @@ function texFront(){
   x.fillStyle='rgba(235,242,255,0.9)';
   while(bx2<268){ var bw=1+Math.floor(Math.random()*4); x.fillRect(bx2,1160,bw,70); bx2+=bw+1+Math.floor(Math.random()*4); }
   x.textAlign='right';
-  x.font='900 34px "Hiragino Sans","Noto Sans JP",sans-serif'; x.fillStyle='#ffffff';
-  x.fillText('10 CARDS / PACK', W-72, 1188);
-  x.font='500 17px "Hiragino Sans","Noto Sans JP",sans-serif'; x.fillStyle='rgba(190,205,255,0.6)';
-  x.fillText('提供割合はアプリ内でご確認ください', W-72, 1218);
+  x.font='900 32px "Arial Narrow","Avenir Next Condensed",sans-serif'; x.fillStyle='#f5f0e6';
+  x.fillText('PULL RECORD INCLUDED', W-72, 1188);
+  x.font='500 17px ui-monospace,SFMono-Regular,Menlo,monospace'; x.fillStyle='rgba(123,138,172,0.92)';
+  x.fillText('VIEW ODDS BEFORE OPENING', W-72, 1218);
   x.textAlign='center';
   x.fillStyle='rgba(160,180,230,0.28)';
   for(var fy=0; fy<2; fy++){ var fx=76; while(fx<W-260){ var fw=18+Math.random()*46; x.fillRect(fx,1254+fy*14,fw,3); fx+=fw+10; } }
@@ -276,27 +263,27 @@ function texBack(){
   g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0c1028'); g.addColorStop(1,'#060812');
   x.fillStyle=g; x.fillRect(0,0,W,H);
   x.save(); x.translate(W/2,H/2); x.rotate(-0.5);
-  x.font='700 26px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillStyle='rgba(140,170,255,0.07)'; x.textAlign='center';
+  x.font='700 24px ui-monospace,SFMono-Regular,Menlo,monospace';
+  x.fillStyle='rgba(123,138,172,0.08)'; x.textAlign='center';
   for(var ry=-900; ry<900; ry+=64){
     var off=((ry/64)%2)?130:0;
-    for(var rx=-900; rx<900; rx+=260){ x.fillText('PULLHUB ★', rx+off, ry); }
+    for(var rx=-900; rx<900; rx+=260){ x.fillText('PULL HUB / PH-01', rx+off, ry); }
   }
   x.restore();
   x.textAlign='center';
   var ex=W/2, ey=H/2-40;
-  g=x.createLinearGradient(ex-150,ey-150,ex+150,ey+150); g.addColorStop(0,'#37e6ff'); g.addColorStop(1,'#ff3fd8');
-  x.strokeStyle=g; x.lineWidth=5; x.shadowColor='rgba(55,230,255,0.7)'; x.shadowBlur=22;
+  g=x.createLinearGradient(ex-150,ey-150,ex+150,ey+150); g.addColorStop(0,'#345be7'); g.addColorStop(1,'#55d4c2');
+  x.strokeStyle=g; x.lineWidth=5; x.shadowColor='rgba(52,91,231,0.7)'; x.shadowBlur=22;
   x.beginPath(); x.arc(ex,ey,150,0,Math.PI*2); x.stroke();
   x.lineWidth=1.5; x.beginPath(); x.arc(ex,ey,168,0,Math.PI*2); x.stroke(); x.shadowBlur=0;
   g=x.createRadialGradient(ex,ey,0,ex,ey,86); g.addColorStop(0,'#ffffff'); g.addColorStop(0.5,'#bfeaff'); g.addColorStop(1,'rgba(127,243,255,0)');
   x.fillStyle=g; x.shadowColor='rgba(191,234,255,0.9)'; x.shadowBlur=34;
   star4(x,ex,ey,84); x.fill(); x.shadowBlur=0;
-  x.font='900 58px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillStyle='#ffffff'; x.shadowColor='rgba(255,63,216,0.7)'; x.shadowBlur=22;
-  spaced(x,'PULLHUB',ex,ey+266,8); x.shadowBlur=0;
-  x.font='500 20px "Hiragino Sans","Noto Sans JP",sans-serif'; x.fillStyle='rgba(159,216,255,0.7)';
-  spaced(x,'TOKYO → WORLDWIDE',ex,ey+306,4);
+  x.font='900 58px "Arial Narrow","Avenir Next Condensed",sans-serif';
+  x.fillStyle='#f5f0e6'; x.shadowColor='rgba(52,91,231,0.7)'; x.shadowBlur=22;
+  spaced(x,'PULL HUB',ex,ey+266,8); x.shadowBlur=0;
+  x.font='500 18px ui-monospace,SFMono-Regular,Menlo,monospace'; x.fillStyle='rgba(123,138,172,0.92)';
+  spaced(x,'TOKYO TERMINAL / PH-01',ex,ey+306,4);
   x.fillStyle='rgba(160,180,230,0.26)';
   for(var fy=0; fy<4; fy++){ var fx=96; while(fx<W-96){ var fw=16+Math.random()*54; x.fillRect(fx,1140+fy*17,fw,3); fx+=fw+9; } }
   return c;
@@ -338,8 +325,8 @@ function texCardBack(){
   x.save(); x.translate(W/2,H/2); x.rotate(-0.5);
   g=x.createLinearGradient(-400,-40,400,40); g.addColorStop(0,'rgba(255,255,255,0)'); g.addColorStop(0.5,'rgba(180,220,255,0.06)'); g.addColorStop(1,'rgba(255,255,255,0)');
   x.fillStyle=g; x.fillRect(-500,-90,1000,180); x.restore();
-  g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#37e6ff'); g.addColorStop(1,'#ff3fd8');
-  x.strokeStyle=g; x.lineWidth=6; x.shadowColor='rgba(55,230,255,0.8)'; x.shadowBlur=16;
+  g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#345be7'); g.addColorStop(1,'#55d4c2');
+  x.strokeStyle=g; x.lineWidth=6; x.shadowColor='rgba(52,91,231,0.8)'; x.shadowBlur=16;
   rr(x,14,14,W-28,H-28,22); x.stroke(); x.shadowBlur=0;
   x.strokeStyle='rgba(160,200,255,0.3)'; x.lineWidth=1.5; rr(x,34,34,W-68,H-68,14); x.stroke();
   var ex=W/2, ey=H/2-26;
@@ -349,9 +336,9 @@ function texCardBack(){
   g=x.createRadialGradient(ex,ey,0,ex,ey,64); g.addColorStop(0,'#ffffff'); g.addColorStop(0.55,'#bfeaff'); g.addColorStop(1,'rgba(127,243,255,0)');
   x.fillStyle=g; x.shadowColor='rgba(191,234,255,0.95)'; x.shadowBlur=26;
   star4(x,ex,ey,62); x.fill(); x.shadowBlur=0;
-  x.textAlign='center'; x.font='900 42px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillStyle='#ffffff'; x.shadowColor='rgba(255,63,216,0.7)'; x.shadowBlur=16;
-  spaced(x,'PULLHUB',ex,ey+178,6); x.shadowBlur=0;
+  x.textAlign='center'; x.font='900 42px "Arial Narrow","Avenir Next Condensed",sans-serif';
+  x.fillStyle='#f5f0e6'; x.shadowColor='rgba(52,91,231,0.7)'; x.shadowBlur=16;
+  spaced(x,'PULL HUB',ex,ey+178,6); x.shadowBlur=0;
   x.fillStyle='rgba(255,255,255,0.85)';
   star4(x,64,64,10); x.fill(); star4(x,W-64,64,10); x.fill();
   star4(x,64,H-64,10); x.fill(); star4(x,W-64,H-64,10); x.fill();
@@ -391,19 +378,19 @@ function texCardFront(){
   star4(x,206,180,14); x.fill(); star4(x,330,340,10); x.fill(); star4(x,150,330,7); x.fill();
   g=x.createLinearGradient(46,74,200,74); g.addColorStop(0,'#ffe9a8'); g.addColorStop(1,'#c98f2d');
   x.fillStyle=g; rr(x,46,66,150,36,18); x.fill();
-  x.fillStyle='#241a05'; x.font='900 22px "Hiragino Sans","Noto Sans JP",sans-serif'; x.textAlign='center';
-  x.fillText('★ SECRET', 121, 91);
+  x.fillStyle='#241a05'; x.font='900 20px ui-monospace,SFMono-Regular,Menlo,monospace'; x.textAlign='center';
+  x.fillText('PULL RECORD', 121, 91);
   x.fillStyle='rgba(8,10,24,0.85)'; rr(x,38,488,W-76,86,10); x.fill();
   x.strokeStyle='rgba(255,215,106,0.7)'; x.lineWidth=1.5; rr(x,38,488,W-76,86,10); x.stroke();
-  x.fillStyle='#ffffff'; x.font='800 32px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillText('ミッドナイト・クリスタル', W/2, 528);
-  x.fillStyle='rgba(200,214,255,0.6)'; x.font='500 16px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillText('PULLHUB PROTOTYPE ・ No.001', W/2, 558);
+  x.fillStyle='#f5f0e6'; x.font='800 30px "Arial Narrow","Avenir Next Condensed",sans-serif';
+  x.fillText('ABSTRACT DEMO ART', W/2, 528);
+  x.fillStyle='rgba(123,138,172,0.9)'; x.font='500 15px ui-monospace,SFMono-Regular,Menlo,monospace';
+  x.fillText('PULL HUB / CARD ART PENDING', W/2, 558);
   x.fillStyle='#ffd76a'; x.shadowColor='rgba(255,215,106,0.8)'; x.shadowBlur=10;
   x.font='700 30px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillText('★ ★ ★ ★ ★', W/2, 618); x.shadowBlur=0;
+  x.fillText('TOKYO TERMINAL', W/2, 618); x.shadowBlur=0;
   x.fillStyle='rgba(150,165,215,0.45)'; x.font='400 13px "Hiragino Sans","Noto Sans JP",sans-serif';
-  x.fillText('サンプルアートワーク — 実カードではありません', W/2, 672);
+  x.fillText('DEMO ART / NOT A REAL CARD', W/2, 672);
   return c;
 }
 function texGlow(){ var c=cnv(256,256),x=c.getContext('2d');
@@ -598,10 +585,10 @@ spark.position.set(0,TEAR_Y,ZLINE+0.05); packRoot.add(spark);
 /* ============ 交換可能なカードデータ ============ */
 var CARD_DATA={
   photo:null,
-  name:'ミッドナイト・クリスタル',
-  year:'2026',
-  grade:'GEM MINT 10',
-  rarity:4,
+  name:'CARD ART PENDING',
+  year:'PULL RECORD',
+  grade:'GRADE PENDING',
+  rarity:1,
   /* N2 §6 tiers — leak color only on top 3 */
   rarityLabels:['BASE','EPIC','LEGENDARY','MYTHIC'],
   rarityColors:['#8E8C85','#D4AF37','#D4AF37','#FF4A38']
@@ -699,8 +686,7 @@ function applyCardInfo(){
   document.getElementById('ciYear').textContent=d.year;
   document.getElementById('ciGrade').textContent=d.grade;
   document.getElementById('ciTier').textContent=d.rarityLabels[r-1];
-  var st=''; for(var i2=0;i2<max;i2++) st+=(i2<r?'★':'☆');
-  document.getElementById('ciStars').textContent=st;
+  document.getElementById('ciStars').textContent='TIER / PULL RECORD';
   applyRarityColor();
 }
 window.setCard=function(d){ for(var k2 in d) CARD_DATA[k2]=d[k2]; applyCardInfo(); loadPhoto(); };
@@ -1010,7 +996,7 @@ function openPack(){
   var wp=new THREE.Vector3(0,TEAR_Y,0.3); packRoot.localToWorld(wp);
   burst(wp,CFG.burstOpenN,rarityPal(),CFG.burstOpenSpd,CFG.burstOpenUp);
   flashVal=CFG.flashOnOpen;
-  hint('カードをタップしてめくろう');
+  hint('TAP THE CARD TO REVEAL');
   var c0=camTy;
   tw(CFG.camOpenDur,function(k){ camTy=c0+(CFG.camTyOpen-c0)*k; },eInOut);
   setTimeout(packExit, reduce?CFG.packExitDelayReducedMs:CFG.packExitDelayMs);

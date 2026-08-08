@@ -22,6 +22,13 @@ export type PackOdds = {
 /** Safe empty placeholder when pack is unresolved (hooks run before screen guard). */
 export const EMPTY_PACK_ODDS: PackOdds = { rows: [], note: '' };
 
+/** Production-safe state when no active pool can be verified. */
+export const UNAVAILABLE_PACK_ODDS: PackOdds = {
+  rows: [],
+  note: 'Live pool odds are unavailable. This pack cannot be opened.',
+  isLive: false,
+};
+
 const STATIC_FALLBACK_NOTE =
   'Sample odds — live odds appear when this pack is online.';
 

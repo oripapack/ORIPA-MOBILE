@@ -1,24 +1,26 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Modal, Pressable, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Modal, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTranslation } from 'react-i18next';
 import { sg } from '../tokens/sg';
 import { SgButton, SgTierTag } from '../components/ui';
 import { navigationRef } from '../navigation/navigationRef';
 import { useAppStore } from '../store/useAppStore';
 import { MOCK_RESULT_PULLS, type ResultCard, type ResultPullData, type MockResultVariant } from '../data/mockResultPull';
-import { FairnessVerifyModal } from '../components/fairness/FairnessVerifyModal';
+import { TerminalBackdrop } from '../components/terminal';
 
 /**
  * Result screen — task1-result-screen-spec.md on N2 v2.4 tokens.
  *
- * Entered after the opening sequence (PackOpeningModal). Callers pass
- * `pull` + `pullIds` from the live session; without params the screen
- * renders MOCK data for review (EXPO_PUBLIC_DEV_SCREEN=Result).
+ * Entered after the opening sequence has faded to black; no entry transition
+ * of its own. The opening flow passes `pull` plus store `pullIds` for real
+ * finalize actions; without params the screen renders MOCK data for review.
  *
- * Leaving without choosing NEVER converts to Coins: no action is taken on
+ * Copy is intentionally hardcoded English per the spec ("英語ロケール・その
+ * まま使う") — locale keys come later with the flow wiring.
+ *
+ * Leaving without choosing NEVER converts to Points: no action is taken on
  * unmount, so pending pulls stay pending (vault-by-default is the flow-side
  * contract).
  */
@@ -26,7 +28,7 @@ import { FairnessVerifyModal } from '../components/fairness/FairnessVerifyModal'
 type Props = {
   route: {
     params?: {
-      /** Real payload from the opening flow. */
+      /** Runtime payload from the opening flow. */
       pull?: ResultPullData;
       /** Store pull ids — when present, CTA/vault call finalizePendingFulfillment. */
       pullIds?: string[];
@@ -36,104 +38,114 @@ type Props = {
   };
 };
 
-const MONTH_KEYS = [
-  'jan', 'feb', 'mar', 'apr', 'may', 'jun',
-  'jul', 'aug', 'sep', 'oct', 'nov', 'dec',
-] as const;
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
 /** "JUL 27, 2026 · 14:32 JST · TOKYO" — manual UTC+9 (no Intl on Hermes). */
-function formatStampJst(iso: string, month: string, suffix: string): string {
+function formatStampJst(iso: string): string {
   const d = new Date(new Date(iso).getTime() + 9 * 3600e3);
   const hh = String(d.getUTCHours()).padStart(2, '0');
   const mm = String(d.getUTCMinutes()).padStart(2, '0');
-  return `${month} ${d.getUTCDate()}, ${d.getUTCFullYear()} · ${hh}:${mm} ${suffix}`;
+  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} · ${hh}:${mm} JST · TOKYO`;
 }
 
 function groupThousands(intStr: string): string {
   return intStr.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-function fmtUsd(v: number): string {
-  const [int, dec] = v.toFixed(2).split('.');
-  return `$${groupThousands(int)}.${dec}`;
-}
-
-/** 100 Coins = $1.00 — same rate the rest of the app uses (VaultScreen etc.). */
-function usdToCoins(usd: number): number {
-  return Math.round(usd * 100);
+function fmtPoints(value: number): string {
+  return `${groupThousands(String(Math.max(0, Math.round(value))))} Points`;
 }
 
 export function ResultScreen({ route }: Props) {
-  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const finalize = useAppStore((s) => s.finalizePendingFulfillment);
-  const openPack = useAppStore((s) => s.openPack);
-  const selectedPack = useAppStore((s) => s.selectedPack);
-  const lastFairnessRecord = useAppStore((s) => s.lastFairnessRecord);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [fairnessOpen, setFairnessOpen] = useState(false);
+  const [finalizing, setFinalizing] = useState(false);
 
   const params = route.params;
   const pull = params?.pull ?? MOCK_RESULT_PULLS[params?.mock ?? '5'];
   const pullIds = params?.pullIds;
-  const isLiveSession = Boolean(pullIds?.length);
 
   const { hero, rest } = useMemo(() => {
-    const best = pull.cards.reduce((a, c) => (c.listedValueUsd > a.listedValueUsd ? c : a), pull.cards[0]);
+    const best = pull.cards.reduce(
+      (a, c) => (c.tradeInValuePoints > a.tradeInValuePoints ? c : a),
+      pull.cards[0],
+    );
     return { hero: best, rest: pull.cards.filter((c) => c !== best) };
   }, [pull.cards]);
 
   const count = pull.cards.length;
   const multi = count > 1;
-  const coins = groupThousands(String(usdToCoins(pull.totalListedValueUsd)));
-  const ctaLabel = multi
-    ? t('resultScreen.ctaTradeInAll', { coins })
-    : t('resultScreen.ctaTradeIn', { coins });
+  const points = groupThousands(String(Math.max(0, Math.round(pull.totalTradeInValuePoints))));
+  const ctaLabel = multi ? `Trade in all — ${points} Points` : `Trade in — ${points} Points`;
 
-  const stamp = useMemo(() => {
-    const d = new Date(new Date(pull.pulledAt).getTime() + 9 * 3600e3);
-    const month = t(`common.monthsShort.${MONTH_KEYS[d.getUTCMonth()]}`);
-    return formatStampJst(pull.pulledAt, month, t('resultScreen.stampSuffix'));
-  }, [pull.pulledAt, t]);
-
-  const goTabs = (screen?: 'Vault' | 'Home') => {
+  const goTabs = (screen?: 'Vault') => {
     if (!navigationRef.isReady()) return;
     if (screen) navigationRef.navigate('MainTabs', { screen });
     else navigationRef.navigate('MainTabs');
   };
 
-  const onConfirmTradeIn = () => {
-    setSheetOpen(false);
-    if (pullIds?.length) void finalize({ vaultIds: [], convertIds: pullIds });
-    goTabs();
-  };
-
-  const onKeepInVault = () => {
-    if (pullIds?.length) void finalize({ vaultIds: pullIds, convertIds: [] });
-    goTabs('Vault');
-  };
-
-  const onPullAgain = () => {
-    if (!selectedPack) {
-      goTabs('Home');
-      return;
+  const onConfirmTradeIn = async () => {
+    if (finalizing) return;
+    setFinalizing(true);
+    try {
+      // With isolated mock data there is nothing to finalize; runtime pulls
+      // wait for the store/API result before leaving this record.
+      if (pullIds?.length) {
+        const ok = await finalize({ vaultIds: [], convertIds: pullIds });
+        if (!ok) return;
+      }
+      setSheetOpen(false);
+      goTabs();
+    } finally {
+      setFinalizing(false);
     }
-    goTabs('Home');
-    void openPack(selectedPack, { quantity: 1 });
   };
+
+  const onKeepInVault = async () => {
+    if (finalizing) return;
+    setFinalizing(true);
+    try {
+      // Spec: no confirmation for the Vault path.
+      if (pullIds?.length) {
+        const ok = await finalize({ vaultIds: pullIds, convertIds: [] });
+        if (!ok) return;
+      }
+      goTabs('Vault');
+    } finally {
+      setFinalizing(false);
+    }
+  };
+
+  if (!params?.pull && !__DEV__) {
+    return (
+      <View style={[styles.root, styles.unavailableRoot, { paddingTop: insets.top }]}>
+        <TerminalBackdrop />
+        <View style={styles.unavailableContent}>
+          <Text style={styles.unavailableEyebrow}>PULL RECORD / STATUS</Text>
+          <Text style={styles.unavailableTitle}>No live pull record was provided.</Text>
+          <Text style={styles.unavailableBody}>
+            Return to Packs and open a live pack. Result details appear only after a verified opening response.
+          </Text>
+          <SgButton label="Return to Packs" variant="line" onPress={() => goTabs()} style={styles.unavailableCta} />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
+      <TerminalBackdrop />
       {/* ── 1. Header band ── */}
       <View style={styles.header}>
-        <Text style={styles.headerLabel}>{t('resultScreen.headerLabel')}</Text>
+        <Text style={styles.headerLabel}>PULL RECORD</Text>
         <Text style={styles.headerId}>#{pull.pullId}</Text>
       </View>
 
       {/* ── 2. Title ── */}
       <View style={styles.titleBlock}>
         <Text style={styles.packName}>{pull.packName}</Text>
-        <Text style={styles.stamp}>{stamp}</Text>
+        <Text style={styles.stamp}>{formatStampJst(pull.pulledAt)}</Text>
       </View>
 
       {/* ── 3. Card panel ── */}
@@ -147,7 +159,11 @@ export function ResultScreen({ route }: Props) {
             <View style={styles.heroBlock}>
               <View style={styles.heroShadow}>
                 <View style={styles.heroImgClip}>
-                  <Image source={{ uri: hero.imageUrl }} style={styles.heroImg} contentFit="cover" />
+                  {hero.imageUrl ? (
+                    <Image source={{ uri: hero.imageUrl }} style={styles.heroImg} contentFit="cover" />
+                  ) : (
+                    <ResultArtPlaceholder />
+                  )}
                 </View>
               </View>
               <Text style={styles.heroName} numberOfLines={2}>{hero.name}</Text>
@@ -155,7 +171,7 @@ export function ResultScreen({ route }: Props) {
               <View style={styles.heroTag}>
                 <SgTierTag tier={hero.tier} context="badge" />
               </View>
-              <Text style={styles.heroValue}>{fmtUsd(hero.listedValueUsd)}</Text>
+              <Text style={styles.heroValue}>{fmtPoints(hero.tradeInValuePoints)}</Text>
             </View>
 
             {multi ? (
@@ -174,7 +190,7 @@ export function ResultScreen({ route }: Props) {
           </ScrollView>
           {/* Scroll fade into the panel ground (spec's "bg" read as the panel surface) */}
           <LinearGradient
-            colors={['rgba(16,16,19,0)', sg.surface]} // sg.surface with alpha 0 → 1
+            colors={[sg.surfaceTransparent, sg.surface]}
             style={styles.fade}
             pointerEvents="none"
           />
@@ -184,10 +200,10 @@ export function ResultScreen({ route }: Props) {
         {multi ? (
           <View style={styles.totalRow}>
             <View>
-              <Text style={styles.totalLabel}>{t('resultScreen.totalListedValue')}</Text>
-              <Text style={styles.totalCount}>{t('resultScreen.cardCount', { count })}</Text>
+              <Text style={styles.totalLabel}>TOTAL TRADE IN VALUE</Text>
+              <Text style={styles.totalCount}>{count} CARDS</Text>
             </View>
-            <Text style={styles.totalValue}>{fmtUsd(pull.totalListedValueUsd)}</Text>
+            <Text style={styles.totalValue}>{fmtPoints(pull.totalTradeInValuePoints)}</Text>
           </View>
         ) : null}
       </View>
@@ -195,27 +211,20 @@ export function ResultScreen({ route }: Props) {
       {/* ── 4. Action bar ── */}
       <View style={styles.actionBar}>
         <SgButton label={ctaLabel} onPress={() => setSheetOpen(true)} style={styles.cta} />
-        <Text style={styles.disclaimer}>{t('resultScreen.disclaimer')}</Text>
-        <SgButton label={t('resultScreen.keepInVault')} variant="line" onPress={onKeepInVault} style={styles.secondary} />
-        {isLiveSession && selectedPack ? (
-          <SgButton label={t('resultScreen.pullAgain')} variant="line" onPress={onPullAgain} style={styles.secondary} />
-        ) : null}
+        <Text style={styles.disclaimer}>100% of listed value, in Points.</Text>
+        <SgButton
+          label="Keep in Vault"
+          variant="line"
+          onPress={() => void onKeepInVault()}
+          loading={finalizing && !sheetOpen}
+          style={styles.secondary}
+        />
       </View>
 
       {/* ── 5. Footer ── */}
-      <TouchableOpacity
-        style={[styles.footer, { paddingBottom: insets.bottom }]}
-        onPress={() => setFairnessOpen(true)}
-        accessibilityRole="button"
-      >
-        <Text style={styles.footerText}>{t('resultScreen.fairnessFooter')}</Text>
-      </TouchableOpacity>
-
-      <FairnessVerifyModal
-        visible={fairnessOpen}
-        onClose={() => setFairnessOpen(false)}
-        record={lastFairnessRecord}
-      />
+      <View style={[styles.footer, { paddingBottom: insets.bottom }]}>
+        <Text style={styles.footerText}>Odds applied · Fairness Record →</Text>
+      </View>
 
       {/* ── Confirm sheet — trade-in never commits instantly ── */}
       <Modal visible={sheetOpen} transparent animationType="slide" onRequestClose={() => setSheetOpen(false)}>
@@ -224,20 +233,27 @@ export function ResultScreen({ route }: Props) {
           <Pressable style={StyleSheet.absoluteFillObject} onPress={() => setSheetOpen(false)} />
           <View style={styles.sheet}>
             <View style={styles.grabber} />
-            <Text style={styles.sheetTitle}>
-              {multi
-                ? t('resultScreen.sheet.titleMulti', { count })
-                : t('resultScreen.sheet.titleOne')}
-            </Text>
-            <Text style={styles.sheetAmount}>{coins}</Text>
-            <Text style={styles.sheetAmountSub}>{t('resultScreen.sheet.amountSub')}</Text>
+            <Text style={styles.sheetTitle}>{multi ? `Trade in ${count} cards?` : 'Trade in 1 card?'}</Text>
+            <Text style={styles.sheetAmount}>{points}</Text>
+            <Text style={styles.sheetAmountSub}>POINTS · 100% OF LISTED VALUE</Text>
             <Text style={styles.sheetBody}>
               {multi
-                ? t('resultScreen.sheet.bodyMulti', { count })
-                : t('resultScreen.sheet.bodyOne')}
+                ? `All ${count} cards will be traded in for Points at their listed value.`
+                : 'This card will be traded in for Points at its listed value.'}
             </Text>
-            <SgButton label={t('resultScreen.sheet.confirm')} onPress={onConfirmTradeIn} style={styles.cta} />
-            <SgButton label={t('common.cancel')} variant="line" onPress={() => setSheetOpen(false)} style={styles.sheetCancel} />
+            <SgButton
+              label="Trade in"
+              onPress={() => void onConfirmTradeIn()}
+              loading={finalizing}
+              style={styles.cta}
+            />
+            <SgButton
+              label="Cancel"
+              variant="line"
+              onPress={() => setSheetOpen(false)}
+              disabled={finalizing}
+              style={styles.sheetCancel}
+            />
           </View>
         </View>
       </Modal>
@@ -249,21 +265,71 @@ function GridCell({ card }: { card: ResultCard }) {
   return (
     <View style={styles.cell}>
       <View style={styles.cellImgClip}>
-        <Image source={{ uri: card.imageUrl }} style={styles.cellImg} contentFit="cover" />
+        {card.imageUrl ? (
+          <Image source={{ uri: card.imageUrl }} style={styles.cellImg} contentFit="cover" />
+        ) : (
+          <ResultArtPlaceholder compact />
+        )}
       </View>
       <Text style={styles.cellName} numberOfLines={2}>{card.name}</Text>
-      <Text style={styles.cellValue}>{fmtUsd(card.listedValueUsd)}</Text>
+      <Text style={styles.cellValue}>{fmtPoints(card.tradeInValuePoints)}</Text>
+    </View>
+  );
+}
+
+function ResultArtPlaceholder({ compact = false }: { compact?: boolean }) {
+  return (
+    <View style={styles.artPlaceholder}>
+      <View style={styles.artTopRail} />
+      <View style={[styles.artFrame, compact && styles.artFrameCompact]}>
+        <Text style={[styles.artCode, compact && styles.artCodeCompact]}>CARD ART</Text>
+        <Text style={styles.artStatus}>PENDING</Text>
+      </View>
+      <View style={styles.artBottomRail} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  unavailableRoot: {
+    justifyContent: 'center',
+  },
+  unavailableContent: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingHorizontal: sg.space.lg,
+  },
+  unavailableEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1.1,
+    color: sg.warning,
+    marginBottom: sg.space.sm,
+  },
+  unavailableTitle: {
+    fontFamily: sg.font.display,
+    fontSize: 30,
+    lineHeight: 33,
+    color: sg.text,
+    marginBottom: sg.space.md,
+  },
+  unavailableBody: {
+    fontFamily: sg.font.body,
+    fontSize: 14,
+    lineHeight: 22,
+    color: sg.muted,
+  },
+  unavailableCta: {
+    alignSelf: 'stretch',
+    marginTop: sg.space.xl,
+  },
   root: { flex: 1, backgroundColor: sg.bg },
 
   // 1. Header band
   header: {
     height: 52,
-    backgroundColor: sg.surface,
+    backgroundColor: sg.component.dock.background,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
     flexDirection: 'row',
@@ -272,7 +338,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headerLabel: {
-    fontFamily: sg.font.data,
+    fontFamily: sg.font.label,
     fontSize: 10.5,
     letterSpacing: 10.5 * 0.2,
     color: sg.muted,
@@ -288,9 +354,10 @@ const styles = StyleSheet.create({
   titleBlock: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16 },
   packName: {
     fontFamily: sg.font.display,
-    fontSize: 26,
-    lineHeight: 29, // 1.10
-    letterSpacing: 26 * -0.015,
+    fontSize: 30,
+    lineHeight: 32,
+    letterSpacing: -0.9,
+    textTransform: 'uppercase',
     color: sg.text,
   },
   stamp: {
@@ -323,8 +390,48 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     ...sg.shadowHero,
   },
-  heroImgClip: { flex: 1, borderRadius: 10, overflow: 'hidden' },
+  heroImgClip: { flex: 1, borderRadius: sg.radius.panel, overflow: 'hidden' },
   heroImg: { width: '100%', height: '100%' },
+  artPlaceholder: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: sg.space.sm,
+    backgroundColor: sg.bayShell,
+  },
+  artTopRail: { width: '72%', height: 2, backgroundColor: sg.ivoryLightSoft },
+  artFrame: {
+    width: '72%',
+    aspectRatio: 0.72,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: sg.cobaltBorderStrong,
+    backgroundColor: sg.surface2,
+  },
+  artFrameCompact: { width: '78%' },
+  artCode: {
+    fontFamily: sg.font.display,
+    fontSize: 16,
+    color: sg.text,
+    textAlign: 'center',
+  },
+  artCodeCompact: { fontSize: 9 },
+  artStatus: {
+    marginTop: sg.space.xs,
+    fontFamily: sg.font.label,
+    fontSize: 7,
+    letterSpacing: 0.8,
+    color: sg.muted,
+  },
+  artBottomRail: {
+    width: '60%',
+    height: 5,
+    borderWidth: 1,
+    borderColor: sg.cobaltBorder,
+    borderRadius: sg.radius.pill,
+  },
   heroName: {
     fontFamily: sg.font.bodyBold, // spec 600 — loaded weights are 400/500/700, 700 is the closest
     fontSize: 16,
@@ -336,14 +443,14 @@ const styles = StyleSheet.create({
   heroValue: {
     fontFamily: sg.font.dataBold,
     fontSize: 19,
-    color: sg.gold,
+    color: sg.value,
     marginTop: 11,
     fontVariant: [...sg.numeric],
   },
   divider: { height: 1, backgroundColor: sg.line, marginTop: 20, marginBottom: 18 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
   cell: { width: 80 },
-  cellImgClip: { width: 80, height: 112, borderRadius: 10, overflow: 'hidden', backgroundColor: sg.surface2 },
+  cellImgClip: { width: 80, height: 112, borderRadius: sg.radius.panel, overflow: 'hidden', backgroundColor: sg.surface2 },
   cellImg: { width: '100%', height: '100%' },
   cellName: {
     fontFamily: sg.font.body,
@@ -355,7 +462,7 @@ const styles = StyleSheet.create({
   cellValue: {
     fontFamily: sg.font.dataBold,
     fontSize: 11.5,
-    color: sg.gold,
+    color: sg.value,
     marginTop: 2,
     fontVariant: [...sg.numeric],
   },
@@ -386,7 +493,7 @@ const styles = StyleSheet.create({
   totalValue: {
     fontFamily: sg.font.dataBold,
     fontSize: 24,
-    color: sg.gold,
+    color: sg.value,
     fontVariant: [...sg.numeric],
   },
 
@@ -426,7 +533,7 @@ const styles = StyleSheet.create({
   sheetOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.6)', // sinks the CTA behind the sheet
+    backgroundColor: sg.modalScrim,
   },
   sheet: {
     backgroundColor: sg.surface2,
@@ -454,7 +561,7 @@ const styles = StyleSheet.create({
   sheetAmount: {
     fontFamily: sg.font.dataBold,
     fontSize: 34,
-    color: sg.gold,
+    color: sg.value,
     marginTop: 14,
     fontVariant: [...sg.numeric],
   },

@@ -10,14 +10,16 @@ import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
 import { TIER_BENEFITS } from '../data/tierBenefits';
+import { SgScreen } from '../components/ui/SgScreen';
+import { MEMBERSHIP_IS_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'TierBenefits'>;
 
 const tierAccent: Record<string, string> = {
-  Starter: '#6B7280',
-  Bronze: '#92400E',
-  Silver: '#6B7280',
-  Gold: '#B45309',
+  Starter: sg.chrome,
+  Bronze: sg.warning,
+  Silver: sg.chrome,
+  Gold: sg.goldHi,
 };
 
 export function TierBenefitsScreen() {
@@ -45,12 +47,25 @@ export function TierBenefitsScreen() {
     return TIER_BENEFITS[idx + 1]?.minXp ?? null;
   }, [userTier]);
 
+  if (!MEMBERSHIP_IS_LIVE && !__DEV__) {
+    return (
+      <SgScreen constrainContent>
+        <View style={styles.releasePage}>
+          <Text style={styles.releaseEyebrow}>{t('membership.releaseEyebrow')}</Text>
+          <Text style={styles.releaseTitle}>{t('membership.releaseTitle')}</Text>
+          <Text style={styles.releaseBody}>{t('membership.releaseBody')}</Text>
+        </View>
+      </SgScreen>
+    );
+  }
+
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen constrainContent>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.lead}>{t('tierBenefits.lead')}</Text>
       {nextTierXp != null ? (
         <Text style={styles.progressHint}>
@@ -92,12 +107,38 @@ export function TierBenefitsScreen() {
       })}
 
       <Text style={styles.disclaimer}>{t('tierBenefits.disclaimer')}</Text>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  releasePage: {
+    flex: 1,
+    padding: spacing.xl,
+    paddingTop: spacing.xxl,
+  },
+  releaseEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1.1,
+    color: sg.warning,
+    marginBottom: spacing.sm,
+  },
+  releaseTitle: {
+    fontFamily: sg.font.display,
+    fontSize: fontSize.xl,
+    lineHeight: 29,
+    color: sg.text,
+    marginBottom: spacing.md,
+  },
+  releaseBody: {
+    fontFamily: sg.font.body,
+    fontSize: fontSize.sm,
+    lineHeight: 21,
+    color: sg.muted,
+  },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,

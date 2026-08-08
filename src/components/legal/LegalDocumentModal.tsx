@@ -9,10 +9,10 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
+import { TerminalBackdrop } from '../terminal/TerminalBackdrop';
 
 interface Props {
   visible: boolean;
@@ -26,12 +26,33 @@ export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
   const insets = useSafeAreaInsets();
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <View style={[styles.root, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom + spacing.sm }]}>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={onClose}
+    >
+      <View style={[styles.root, { paddingTop: insets.top + sg.space.sm, paddingBottom: insets.bottom + sg.space.sm }]}>
+        <TerminalBackdrop />
         <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
-          <TouchableOpacity onPress={onClose} hitSlop={12} style={styles.closeBtn} accessibilityRole="button">
+          <View style={styles.headerTitleRow}>
+            <View style={styles.documentMark}>
+              <Ionicons name="document-text-outline" size={18} color={sg.goldHi} />
+            </View>
+            <View style={styles.headerCopy}>
+              <Text style={styles.headerKicker}>TOKYO TERMINAL / LEGAL</Text>
+              <Text style={styles.title}>{title}</Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={12}
+            style={styles.closeBtn}
+            accessibilityRole="button"
+            accessibilityLabel={t('legalModal.done')}
+          >
             <Text style={styles.closeLabel}>{t('legalModal.done')}</Text>
+            <Ionicons name="close" size={17} color={sg.text} />
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -39,7 +60,13 @@ export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator
         >
-          <Text style={styles.body}>{body}</Text>
+          <View style={styles.document}>
+            <View style={styles.documentMeta}>
+              <Text style={styles.documentCode}>DOC / 01</Text>
+              <View style={styles.metaLine} />
+            </View>
+            <Text style={styles.body}>{body}</Text>
+          </View>
         </ScrollView>
       </View>
     </Modal>
@@ -49,44 +76,108 @@ export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.bg,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.base,
-    paddingBottom: spacing.sm,
+    gap: sg.space.sm,
+    minHeight: 68,
+    paddingHorizontal: sg.space.md,
+    paddingVertical: sg.space.sm,
     borderBottomWidth: 1,
     borderBottomColor: sg.line,
+    backgroundColor: sg.surface,
+  },
+  headerTitleRow: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: sg.space.sm,
+  },
+  documentMark: {
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: sg.cobaltWash,
+    borderWidth: 1,
+    borderColor: sg.cobaltBorder,
+  },
+  headerCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  headerKicker: {
+    fontFamily: sg.font.label,
+    fontSize: 8,
+    lineHeight: 11,
+    letterSpacing: 0.9,
+    color: sg.muted,
   },
   title: {
-    flex: 1,
-    fontSize: fontSize.lg,
+    marginTop: 1,
+    fontSize: 19,
+    lineHeight: 22,
     fontFamily: sg.font.display,
     color: sg.text,
-    paddingRight: spacing.sm,
   },
   closeBtn: {
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
+    minHeight: 38,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 11,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    backgroundColor: sg.surface2,
   },
   closeLabel: {
-    fontSize: fontSize.base,
+    fontSize: 13,
     fontFamily: sg.font.bodyBold,
-    color: sg.error,
+    color: sg.text,
   },
   scroll: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.base,
-    paddingBottom: Platform.OS === 'ios' ? spacing.xxl : spacing.xl,
+    width: '100%',
+    maxWidth: 720,
+    alignSelf: 'center',
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.md,
+    paddingBottom: Platform.OS === 'ios' ? sg.space.xxxl : sg.space.xl,
   },
+  document: {
+    paddingHorizontal: sg.space.md,
+    paddingTop: sg.space.md,
+    paddingBottom: sg.space.lg,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderLeftWidth: 3,
+    borderLeftColor: sg.gold,
+  },
+  documentMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: sg.space.sm,
+    marginBottom: sg.space.md,
+  },
+  documentCode: {
+    fontFamily: sg.font.label,
+    fontSize: sg.type.label.fontSize,
+    lineHeight: sg.type.label.lineHeight,
+    letterSpacing: sg.type.label.letterSpacing,
+    color: sg.goldHi,
+  },
+  metaLine: { flex: 1, height: 1, backgroundColor: sg.line },
   body: {
-    fontSize: fontSize.sm,
-    lineHeight: 22,
-    color: sg.text,
+    fontFamily: sg.font.body,
+    fontSize: 14,
+    lineHeight: 23,
+    color: sg.ivoryLight,
   },
 });

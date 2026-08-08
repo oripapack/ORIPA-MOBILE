@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface,
   },
   btn: {
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderRadius: radius.md,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
@@ -116,6 +116,6 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyBold,
-    color: sg.onGold,
+    color: sg.onValue,
   },
 });

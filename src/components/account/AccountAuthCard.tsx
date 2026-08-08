@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   guestEyebrow: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: sg.error,
+    color: sg.goldHi,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -131,7 +131,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
-    backgroundColor: sg.error,
+    backgroundColor: sg.value,
+    borderWidth: 1,
+    borderColor: sg.valueHi,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     minHeight: 48,
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
   signInBtnText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: sg.text,
+    color: sg.onValue,
   },
   identityRow: {
     flexDirection: 'row',

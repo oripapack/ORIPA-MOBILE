@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { sg } from '../tokens/sg';
 import { View, Text, ScrollView, Switch, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -8,19 +8,22 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
-import {
-  useNotificationPreferencesStore,
-  type NotificationToggleKey,
-} from '../store/notificationPreferencesStore';
+import { SgScreen } from '../components/ui/SgScreen';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Notifications'>;
+
+type ToggleKey = 'order' | 'drops' | 'promos' | 'social';
 
 export function NotificationsScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
-  const toggles = useNotificationPreferencesStore((s) => s.toggles);
-  const setToggle = useNotificationPreferencesStore((s) => s.setToggle);
+  const [toggles, setToggles] = useState<Record<ToggleKey, boolean>>({
+    order: true,
+    drops: true,
+    promos: false,
+    social: true,
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -33,14 +36,15 @@ export function NotificationsScreen() {
     });
   }, [navigation, t]);
 
-  const keys: NotificationToggleKey[] = ['order', 'drops', 'promos', 'social'];
+  const keys: ToggleKey[] = ['order', 'drops', 'promos', 'social'];
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <SgScreen constrainContent>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
+        showsVerticalScrollIndicator={false}
+      >
       <Text style={styles.lead}>{t('notifications.lead')}</Text>
 
       {keys.map((key) => (
@@ -51,7 +55,7 @@ export function NotificationsScreen() {
           </View>
           <Switch
             value={toggles[key]}
-            onValueChange={(v) => void setToggle(key, v)}
+            onValueChange={(v) => setToggles((s) => ({ ...s, [key]: v }))}
             trackColor={{ false: sg.line, true: sg.gold }}
             thumbColor={sg.text}
           />
@@ -59,12 +63,13 @@ export function NotificationsScreen() {
       ))}
 
       <Text style={styles.note}>{t('notifications.note')}</Text>
-    </ScrollView>
+      </ScrollView>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: sg.bg },
+  container: { flex: 1, backgroundColor: 'transparent' },
   content: { padding: spacing.base, paddingTop: spacing.md },
   lead: {
     fontSize: fontSize.sm,

@@ -227,7 +227,7 @@ export function SplashCardFrame({
         <Animated.View style={[styles.frameOuter, frameStyle]}>
           <View style={styles.frameInner}>
             <LinearGradient
-              colors={['rgba(40,32,68,0.92)', 'rgba(22,18,42,0.97)', 'rgba(30,26,54,0.94)']}
+              colors={[sg.surfaceRaised, sg.surface, sg.surface2]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={StyleSheet.absoluteFillObject}

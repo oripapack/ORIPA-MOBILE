@@ -14,8 +14,6 @@ import { useIsFocused } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
-import { runHapticIfEnabled } from '../audio/hapticsGate';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../tokens/sg';
 import { fontSize, brandFont } from '../tokens/typography';
@@ -44,14 +42,16 @@ import {
   type LeaderboardEntry,
 } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
-import { PUBLIC_WEB_ORIGIN } from '../config/app';
+import { PUBLIC_WEB_ORIGIN, SOCIAL_IS_LIVE } from '../config/app';
 import { showUserMessage } from '../utils/showUserMessage';
+import { AppHeader } from '../components/shared/AppHeader';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 
 const RING_PALETTE = [
-  sg.error,
+  sg.neon,
   sg.gold,
-  '#60A5FA',
-  '#A855F7',
+  sg.goldHi,
+  sg.chrome,
   sg.success,
   sg.warning,
 ];
@@ -71,7 +71,6 @@ const ACTIVITY_AUTO_SCROLL_PAUSE_AFTER_DRAG_MS = 14_000;
 
 export function FriendsScreen() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
@@ -85,6 +84,7 @@ export function FriendsScreen() {
   const [qrOpen, setQrOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [friendScannerOpen, setFriendScannerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   /** Re-open Add friends sheet after QR / scanner sub-modals (pageSheet blocks stacked modals). */
   const reopenAddSheetRef = useRef(false);
 
@@ -200,9 +200,9 @@ export function FriendsScreen() {
     }
     const link = `${PUBLIC_WEB_ORIGIN}?r=${encodeURIComponent(handle)}`;
     await Clipboard.setStringAsync(link);
-    runHapticIfEnabled(() =>
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
-    );
+    if (Platform.OS !== 'web') {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
     showUserMessage(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'));
   }, [user.username, t]);
 
@@ -241,9 +241,87 @@ export function FriendsScreen() {
     reopenAddSheetIfNeeded();
   }, [reopenAddSheetIfNeeded]);
 
+  if (!__DEV__ && !SOCIAL_IS_LIVE) {
+    return (
+      <SgScreen>
+        <AppHeader onSearch={() => setSearchOpen(true)} />
+        <View style={styles.safeTop}>
+          <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+            <Text style={styles.pageTitle}>{t('friends.title')}</Text>
+            <VaultFramedCard style={styles.guestAccessCard} contentStyle={styles.guestAccessInner}>
+              <Text style={styles.guestBannerTitle}>{t('friends.releaseEyebrow')}</Text>
+              <Text style={styles.guestAccessTitle}>{t('friends.releaseTitle')}</Text>
+              <Text style={styles.guestBannerBody}>{t('friends.releaseBody')}</Text>
+              <PrimaryButton
+                label={t('friends.releaseCta')}
+                onPress={() => {
+                  if (navigationRef.isReady()) {
+                    navigationRef.navigate('MainTabs', { screen: 'Home' });
+                  }
+                }}
+              />
+            </VaultFramedCard>
+
+            <View style={styles.guestFeatureList}>
+              <GuestFriendFeature code="01" text={t('friends.releasePointProfiles')} />
+              <GuestFriendFeature code="02" text={t('friends.releasePointActivity')} />
+              <GuestFriendFeature code="03" text={t('friends.releasePointSafety')} isLast />
+            </View>
+          </ScrollView>
+        </View>
+        <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
+      </SgScreen>
+    );
+  }
+
+  if (isGuest) {
+    return (
+      <SgScreen>
+        <AppHeader onSearch={() => setSearchOpen(true)} />
+        <View style={styles.safeTop}>
+          <ScrollView
+            contentContainerStyle={styles.scroll}
+            showsVerticalScrollIndicator={false}
+            refreshControl={refreshControl}
+          >
+            <Text style={styles.pageTitle}>{t('friends.title')}</Text>
+            <VaultFramedCard style={styles.guestAccessCard} contentStyle={styles.guestAccessInner}>
+              <Text style={styles.guestBannerTitle}>{t('onboarding.friendsGuestTitle')}</Text>
+              <Text style={styles.guestAccessTitle}>{t('friends.guestAccessTitle')}</Text>
+              <Text style={styles.guestBannerBody}>{t('friends.guestAccessBody')}</Text>
+              <TouchableOpacity
+                style={styles.guestSignInCta}
+                onPress={openAdd}
+                accessibilityRole="button"
+                accessibilityLabel={t('account.guestSignInCta')}
+              >
+                <Text style={styles.guestSignInCtaText}>{t('account.guestSignInCta')}</Text>
+                <Ionicons name="arrow-forward" size={19} color={sg.onGold} />
+              </TouchableOpacity>
+            </VaultFramedCard>
+
+            <View style={styles.guestFeatureList}>
+              <GuestFriendFeature code="01" text={t('friends.guestFeatureActivity')} />
+              <GuestFriendFeature code="02" text={t('friends.guestFeatureQr')} />
+              <GuestFriendFeature code="03" text={t('friends.guestFeatureLeaderboard')} isLast />
+            </View>
+
+            <View style={styles.socialFooter}>
+              <Text style={styles.socialFooterTitle}>{t('friends.followFooterTitle')}</Text>
+              <Text style={styles.socialFooterSub}>{t('friends.followFooterSub')}</Text>
+              <SocialFollowRow compact />
+            </View>
+          </ScrollView>
+        </View>
+        <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
+      </SgScreen>
+    );
+  }
+
   return (
     <SgScreen>
-      <View style={[styles.safeTop, { paddingTop: insets.top + spacing.md }]}>
+      <AppHeader onSearch={() => setSearchOpen(true)} />
+      <View style={styles.safeTop}>
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
@@ -404,7 +482,7 @@ export function FriendsScreen() {
                     activeOpacity={0.88}
                   >
                     <Text style={styles.lbRank}>{e.rank}</Text>
-                    <Text style={styles.lbEmoji}>{e.avatarEmoji}</Text>
+                    <Text style={styles.lbEmoji}>{e.displayName.trim().slice(0, 2).toUpperCase()}</Text>
                     <View style={styles.lbMeta}>
                       <Text style={styles.lbName} numberOfLines={1}>
                         {e.displayName}
@@ -465,7 +543,17 @@ export function FriendsScreen() {
           reopenAddSheetIfNeeded();
         }}
       />
+      <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </SgScreen>
+  );
+}
+
+function GuestFriendFeature({ code, text, isLast = false }: { code: string; text: string; isLast?: boolean }) {
+  return (
+    <View style={[styles.guestFeatureRow, !isLast && styles.guestFeatureDivider]}>
+      <Text style={styles.guestFeatureCode}>{code}</Text>
+      <Text style={styles.guestFeatureText}>{text}</Text>
+    </View>
   );
 }
 
@@ -475,6 +563,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   scroll: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
     paddingHorizontal: spacing.base,
     paddingBottom: 120,
   },
@@ -493,6 +584,69 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.regular,
     color: sg.muted,
     lineHeight: 20,
+  },
+  guestAccessCard: {
+    marginTop: spacing.lg,
+    marginBottom: spacing.lg,
+  },
+  guestAccessInner: {
+    padding: spacing.lg,
+  },
+  guestAccessTitle: {
+    fontSize: fontSize.lg,
+    lineHeight: 24,
+    fontFamily: sg.font.display,
+    color: sg.text,
+    marginBottom: spacing.sm,
+  },
+  guestSignInCta: {
+    minHeight: 52,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.base,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: sg.gold,
+    borderWidth: 1,
+    borderColor: sg.goldHi,
+    borderRadius: sg.radius.btn,
+  },
+  guestSignInCtaText: {
+    fontSize: fontSize.sm,
+    fontFamily: sg.font.label,
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
+    color: sg.onGold,
+  },
+  guestFeatureList: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: sg.line,
+    marginBottom: spacing.xl,
+  },
+  guestFeatureRow: {
+    minHeight: 58,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  guestFeatureDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: sg.line,
+  },
+  guestFeatureCode: {
+    width: 28,
+    fontFamily: sg.font.dataBold,
+    fontSize: 10,
+    color: sg.goldHi,
+    letterSpacing: 0.7,
+  },
+  guestFeatureText: {
+    flex: 1,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: fontSize.sm,
+    lineHeight: 20,
+    color: sg.text,
   },
   headerRow: {
     flexDirection: 'row',
@@ -518,7 +672,7 @@ const styles = StyleSheet.create({
   },
   headerBtnAdd: {
     backgroundColor: sg.gold,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.cobaltBorder,
   },
   headerBtnPlaceholder: {
     width: 44,
@@ -642,7 +796,7 @@ const styles = StyleSheet.create({
     borderBottomColor: sg.line,
   },
   lbRowMe: {
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
   },
   lbRank: {
     width: 24,
@@ -679,7 +833,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     paddingVertical: spacing.sm + 2,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
   },
   seeAllText: {
     fontSize: fontSize.xs,
@@ -714,7 +868,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,

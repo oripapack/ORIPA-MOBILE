@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -19,12 +18,14 @@ import { AccountAuthCard } from '../components/account/AccountAuthCard';
 import { deriveSocialProfileFromUser } from '../data/socialMock';
 import { formatUsd } from '../lib/socialFormat';
 import { SocialPullRow } from '../components/social/SocialPullRow';
-import { RarityBreakdownMini } from '../components/social/RarityBreakdownMini';
 import { SgScreen } from '../components/ui';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { CollectorQuestRow } from '../components/account/CollectorQuestRow';
 import { progressionFromTotalXp } from '../lib/collectorProgression';
 import { countClaimableQuests, pickPreviewQuests } from '../lib/collectorQuestPreview';
+import { AppHeader } from '../components/shared/AppHeader';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
+import { MEMBERSHIP_IS_LIVE, SOCIAL_IS_LIVE } from '../config/app';
 
 const PREVIEW_PULLS = 2;
 const PREVIEW_QUESTS = 3;
@@ -36,7 +37,6 @@ type AccountNav = CompositeNavigationProp<
 
 export function AccountScreen() {
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation<AccountNav>();
   const user = useAppStore((s) => s.user);
   const coinBalance = useAppStore((s) => s.user.credits);
@@ -45,15 +45,16 @@ export function AccountScreen() {
   const streak = useAppStore((s) => s.collectorStreakDays);
   const streakBest = useAppStore((s) => s.collectorStreakBest);
   const { refreshControl } = usePullToRefresh();
-  const { requireAuth } = useRequireAuth();
+  const { requireAuth, canUseAccountFeatures } = useRequireAuth();
   const simulatedMemberTier = useMembershipSimulationStore((s) => s.simulatedTier);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const socialProfile = useMemo(() => deriveSocialProfileFromUser(user), [user]);
   const prog = progressionFromTotalXp(user.xp);
   const tierColors: Record<string, string> = {
     Starter: sg.gold,
     Bronze: sg.gold,
-    Silver: '#60A5FA',
+    Silver: sg.chrome,
     Gold: sg.gold,
   };
   const tierColor = tierColors[user.tier] ?? sg.muted;
@@ -77,6 +78,10 @@ export function AccountScreen() {
   }, [navigation, requireAuth]);
 
   const goLeaderboard = useCallback(() => {
+    if (!__DEV__ && !SOCIAL_IS_LIVE) {
+      navigation.navigate('Friends');
+      return;
+    }
     navigation.navigate('FriendsLeaderboard');
   }, [navigation]);
 
@@ -105,11 +110,47 @@ export function AccountScreen() {
     [socialProfile.recentPulls],
   );
 
+  if (!canUseAccountFeatures) {
+    return (
+      <SgScreen>
+        <AppHeader onSearch={() => setSearchOpen(true)} />
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={[styles.content, { paddingTop: spacing.lg }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.pageTitle}>{t('account.title')}</Text>
+          <AccountAuthCard />
+
+          <Text style={styles.sectionEyebrow}>{t('account.guestBenefitsTitle')}</Text>
+          <VaultFramedCard style={styles.guestBenefitsCard} contentStyle={styles.guestBenefitsInner}>
+            <GuestBenefitRow icon="file-tray-stacked-outline" text={t('account.guestBenefitVault')} />
+            <GuestBenefitRow icon="time-outline" text={t('account.guestBenefitHistory')} />
+            <GuestBenefitRow icon="people-outline" text={t('account.guestBenefitFriends')} isLast />
+          </VaultFramedCard>
+
+          <TouchableOpacity
+            style={styles.guestSettingsButton}
+            onPress={goSettings}
+            accessibilityRole="button"
+            accessibilityLabel={t('account.quickSettings')}
+          >
+            <Ionicons name="settings-outline" size={20} color={sg.muted} />
+            <Text style={styles.guestSettingsText}>{t('account.quickSettings')}</Text>
+            <Ionicons name="chevron-forward" size={18} color={sg.muted} />
+          </TouchableOpacity>
+        </ScrollView>
+        <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
+      </SgScreen>
+    );
+  }
+
   return (
     <SgScreen>
+      <AppHeader onSearch={() => setSearchOpen(true)} />
       <ScrollView
         style={styles.container}
-        contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
+        contentContainerStyle={[styles.content, { paddingTop: spacing.lg }]}
         showsVerticalScrollIndicator={false}
         refreshControl={refreshControl}
       >
@@ -120,7 +161,7 @@ export function AccountScreen() {
       {/* 1 · Hero profile */}
       <VaultFramedCard style={styles.heroCard}>
         <View style={styles.heroTop}>
-          <Text style={styles.heroAvatar}>{socialProfile.avatarEmoji}</Text>
+          <Text style={styles.heroAvatar}>{socialProfile.displayName.trim().slice(0, 2).toUpperCase()}</Text>
           <View style={styles.heroMeta}>
             <Text style={styles.heroName} numberOfLines={1}>
               {socialProfile.displayName}
@@ -143,9 +184,15 @@ export function AccountScreen() {
             <View style={styles.membershipCopy}>
               <Text style={styles.membershipLabel}>{t('account.heroMembership')}</Text>
               <Text style={styles.membershipValue} numberOfLines={1}>
-                {simulatedMemberTier
+                {!MEMBERSHIP_IS_LIVE && !__DEV__
+                  ? t('membership.releaseUnavailableShort')
+                  : simulatedMemberTier
                   ? t(`membership.badge_${simulatedMemberTier}`)
-                  : t('membership.navTitle')}
+                  : [
+                      t('membership.tierName_silver'),
+                      t('membership.tierName_gold'),
+                      t('membership.tierName_black'),
+                    ].join(' / ')}
               </Text>
             </View>
           </View>
@@ -249,11 +296,6 @@ export function AccountScreen() {
         recentPulls.map((pull) => <SocialPullRow key={pull.id} pull={pull} />)
       )}
 
-      <VaultFramedCard style={styles.rarityCard} contentStyle={styles.rarityInner}>
-        <Text style={styles.subsectionInCard}>{t('social.rarityMix')}</Text>
-        <RarityBreakdownMini breakdown={socialProfile.stats.rarityBreakdown} />
-      </VaultFramedCard>
-
       {/* 4 · Quick actions */}
       <Text style={styles.sectionEyebrow}>{t('account.sectionQuickActions')}</Text>
       <View style={styles.quickGrid}>
@@ -289,7 +331,27 @@ export function AccountScreen() {
         </TouchableOpacity>
       </View>
       </ScrollView>
+      <GlobalSearchModal visible={searchOpen} onClose={() => setSearchOpen(false)} />
     </SgScreen>
+  );
+}
+
+function GuestBenefitRow({
+  icon,
+  text,
+  isLast = false,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  text: string;
+  isLast?: boolean;
+}) {
+  return (
+    <View style={[styles.guestBenefitRow, !isLast && styles.guestBenefitDivider]}>
+      <View style={styles.guestBenefitIcon}>
+        <Ionicons name={icon} size={19} color={sg.goldHi} />
+      </View>
+      <Text style={styles.guestBenefitText}>{text}</Text>
+    </View>
   );
 }
 
@@ -299,6 +361,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   content: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
     paddingHorizontal: spacing.base,
     paddingBottom: 120,
   },
@@ -309,13 +374,64 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
     marginBottom: spacing.base,
   },
+  guestBenefitsCard: {
+    marginBottom: spacing.base,
+  },
+  guestBenefitsInner: {
+    paddingVertical: spacing.xs,
+  },
+  guestBenefitRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    minHeight: 58,
+    paddingVertical: spacing.sm,
+  },
+  guestBenefitDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: sg.line,
+  },
+  guestBenefitIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: sg.radius.btn,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: sg.cobaltWash,
+    borderWidth: 1,
+    borderColor: sg.cobaltBorder,
+  },
+  guestBenefitText: {
+    flex: 1,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 14,
+    lineHeight: 20,
+    color: sg.text,
+  },
+  guestSettingsButton: {
+    minHeight: 52,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.base,
+    borderWidth: 1,
+    borderColor: sg.line,
+    borderRadius: sg.radius.btn,
+    backgroundColor: sg.surface,
+  },
+  guestSettingsText: {
+    flex: 1,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 14,
+    color: sg.text,
+  },
   guestSignInCard: {
     marginBottom: spacing.base,
   },
   guestSignInEyebrow: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: sg.error,
+    color: sg.goldHi,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
@@ -334,7 +450,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   guestSignInBtn: {
-    backgroundColor: sg.error,
+    backgroundColor: sg.gold,
+    borderWidth: 1,
+    borderColor: sg.goldHi,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -344,7 +462,7 @@ const styles = StyleSheet.create({
   guestSignInBtnText: {
     fontSize: fontSize.md,
     fontFamily: brandFont.bold,
-    color: sg.text,
+    color: sg.onGold,
   },
   heroCard: {
     marginBottom: spacing.lg,
@@ -601,23 +719,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     marginTop: spacing.xs,
   },
-  subsectionInCard: {
-    fontSize: fontSize.sm,
-    fontFamily: brandFont.bold,
-    color: sg.muted,
-    marginBottom: spacing.sm,
-  },
   emptyPulls: {
     fontSize: fontSize.sm,
     color: sg.muted,
     marginBottom: spacing.md,
-  },
-  rarityCard: {
-    marginTop: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  rarityInner: {
-    padding: spacing.lg,
   },
   quickGrid: {
     flexDirection: 'row',

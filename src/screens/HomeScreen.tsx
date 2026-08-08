@@ -16,18 +16,11 @@ import { SgShowroomBackground } from '../components/home/sg/SgShowroomBackground
 import { SgBannerCarousel } from '../components/home/sg/SgBannerCarousel';
 import { SgFeaturedPackCard } from '../components/home/sg/SgFeaturedPackCard';
 import { SgShelfPackTile } from '../components/home/sg/SgShelfPackTile';
-import { SgRecentPulls } from '../components/home/sg/SgRecentPulls';
 import { SgTrustStrip } from '../components/home/sg/SgTrustStrip';
 import { SgSectionHeader } from '../components/ui';
 import { sg } from '../tokens/sg';
 import { navigationRef } from '../navigation/navigationRef';
-import {
-  mockPacks,
-  packBelongsToHomeNiche,
-  HOME_NICHE_CATEGORIES,
-  type Pack,
-  type HomeNicheCategory,
-} from '../data/mockPacks';
+import { mockPacks, type Pack } from '../data/mockPacks';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { useAppStore } from '../store/useAppStore';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -43,20 +36,16 @@ import { useRequireAuth } from '../hooks/useRequireAuth';
 
 type FilterKey = 'featured' | 'new' | 'low' | 'all';
 
-const FILTER_KEYS: FilterKey[] = ['featured', 'new', 'low', 'all'];
+const FILTERS: { key: FilterKey; label: string }[] = [
+  { key: 'featured', label: 'Featured' },
+  { key: 'new', label: 'New' },
+  { key: 'low', label: 'Low stock' },
+  { key: 'all', label: 'All' },
+];
 
-function filterLabelKey(key: FilterKey): string {
-  switch (key) {
-    case 'featured':
-      return 'home.filter.featured';
-    case 'new':
-      return 'home.filter.new';
-    case 'low':
-      return 'home.filter.lowStock';
-    default:
-      return 'home.filter.all';
-  }
-}
+const VISIBLE_FILTERS: { key: FilterKey; label: string }[] = __DEV__
+  ? FILTERS
+  : [{ key: 'all', label: 'All packs' }];
 
 /** Filter threshold — broader than the 10% stock promotion so the chip is useful. */
 const LOW_STOCK_FILTER_FRACTION = 0.25;
@@ -71,7 +60,7 @@ export function HomeScreen() {
   const { requireAuth } = useRequireAuth();
   const openPack = useAppStore((s) => s.openPack);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [filter, setFilter] = useState<FilterKey>('all');
+  const [filter, setFilter] = useState<FilterKey>(__DEV__ ? 'featured' : 'all');
 
   const featuredPack = useMemo(
     () => mockPacks.find((p) => p.isFeatured && p.id === 'platinum-legacy') ?? mockPacks.find((p) => p.isFeatured) ?? mockPacks[0]!,
@@ -96,19 +85,19 @@ export function HomeScreen() {
   const ListHeader = (
     <>
       <SgBannerCarousel />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-        {FILTER_KEYS.map((key) => (
-          <TouchableOpacity
-            key={key}
-            style={[styles.chip, filter === key && styles.chipActive]}
-            onPress={() => setFilter(key)}
-          >
-            <Text style={[styles.chipText, filter === key && styles.chipTextActive]}>
-              {t(filterLabelKey(key))}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      {VISIBLE_FILTERS.length > 1 ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
+          {VISIBLE_FILTERS.map((f) => (
+            <TouchableOpacity
+              key={f.key}
+              style={[styles.chip, filter === f.key && styles.chipActive]}
+              onPress={() => setFilter(f.key)}
+            >
+              <Text style={[styles.chipText, filter === f.key && styles.chipTextActive]}>{f.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      ) : null}
       <SgFeaturedPackCard pack={featuredPack} onOpen={onOpenFeatured} />
       <View style={styles.shelfSpacer} />
     </>
@@ -116,7 +105,6 @@ export function HomeScreen() {
 
   const ListFooter = (
     <>
-      <SgRecentPulls />
       <SgTrustStrip />
     </>
   );
@@ -151,37 +139,42 @@ export function HomeScreen() {
 
 /** Featured banner (browse filters) — same navigation behavior as before. */
 function SgFeaturedRow({ pack }: { pack: Pack }) {
-  const { t } = useTranslation();
   const goDetail = () => {
     if (navigationRef.isReady()) navigationRef.navigate('PackDetails', { packId: pack.id });
   };
   return (
     <Pressable onPress={goDetail} style={({ pressed }) => [styles.featuredRow, pressed && styles.featuredRowPressed]}>
       <View style={styles.featuredBody}>
-        <Text style={styles.featuredEyebrow}>{t('home.featured.eyebrow')}</Text>
+        <Text style={styles.featuredEyebrow}>FEATURED</Text>
         <Text style={styles.featuredTitle} numberOfLines={1}>{pack.title}</Text>
       </View>
-      <Text style={styles.featuredCta}>{t('home.featured.cta')}</Text>
+      <Text style={styles.featuredCta}>VIEW ›</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: sg.bg },
-  list: { paddingBottom: 100, flexGrow: 1 },
-  chipRow: { paddingHorizontal: sg.space.md, paddingVertical: sg.space.sm, gap: 8 },
+  list: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingBottom: 100,
+    flexGrow: 1,
+  },
+  chipRow: { paddingHorizontal: sg.space.md, paddingVertical: 11, gap: 7 },
   // Filter chips — btn radius (these are controls, not status tags)
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     borderRadius: sg.radius.btn,
     backgroundColor: sg.surface,
     borderWidth: 1,
     borderColor: sg.line,
   },
-  chipActive: { backgroundColor: sg.surface2 },
-  chipText: { fontFamily: sg.font.bodyMedium, fontSize: 13, color: sg.muted },
-  chipTextActive: { color: sg.text, fontFamily: sg.font.bodyBold },
+  chipActive: { backgroundColor: sg.cobaltWash, borderColor: sg.goldHi },
+  chipText: { fontFamily: sg.font.label, fontSize: 9, letterSpacing: 0.6, color: sg.muted, textTransform: 'uppercase' },
+  chipTextActive: { color: sg.goldHi, fontFamily: sg.font.label },
   shelfSpacer: { height: sg.space.md },
   shelfRow: { paddingHorizontal: sg.space.md, gap: sg.space.sm, marginBottom: sg.space.sm },
   featuredRow: {

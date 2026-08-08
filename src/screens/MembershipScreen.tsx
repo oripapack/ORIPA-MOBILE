@@ -13,18 +13,19 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MembershipTierCard } from '../components/membership/MembershipTierCard';
 import { MEMBERSHIP_PLANS, type MembershipTierId } from '../data/membershipPlans';
+import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { RootStackParamList } from '../navigation/types';
 import { confirmUserAction, showUserMessage } from '../utils/showUserMessage';
-import { FutureUpdateBadge } from '../components/shared/FutureUpdateBadge';
-import { isMembershipBillingLive } from '../config/payments';
+import { SgScreen } from '../components/ui/SgScreen';
+import { MEMBERSHIP_IS_LIVE } from '../config/app';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Membership'>;
 
 /**
- * Paid membership (会員) — simulate tier for preview; IAP not connected.
+ * Paid membership (会員) — simulate tier in MVP (persisted); IAP later.
  */
 export function MembershipScreen() {
   const { t } = useTranslation();
@@ -32,8 +33,8 @@ export function MembershipScreen() {
   const navigation = useNavigation<Nav>();
   const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
   const setSimulatedTier = useMembershipSimulationStore((s) => s.setSimulatedTier);
+  const addCredits = useAppStore((s) => s.addCredits);
   const [selectedId, setSelectedId] = useState<MembershipTierId>('gold');
-  const billingLive = isMembershipBillingLive();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -53,20 +54,16 @@ export function MembershipScreen() {
   const onSubscribe = useCallback(() => {
     const plan = MEMBERSHIP_PLANS.find((p) => p.id === selectedId);
     if (!plan) return;
-    if (billingLive) {
-      showUserMessage(t('membership.demoAlertTitle'), t('membership.demoAlertBody', {
-        tier: t(`membership.tierName_${plan.id}`),
-      }));
-      return;
-    }
     setSimulatedTier(plan.id);
+    addCredits(plan.monthlyCoins);
     showUserMessage(
       t('membership.simActivatedTitle'),
       t('membership.simActivatedBody', {
         tier: t(`membership.tierName_${plan.id}`),
+        coins: plan.monthlyCoins.toLocaleString(),
       }),
     );
-  }, [billingLive, selectedId, setSimulatedTier, t]);
+  }, [addCredits, selectedId, setSimulatedTier, t]);
 
   const onClearSimulation = useCallback(() => {
     confirmUserAction({
@@ -79,18 +76,34 @@ export function MembershipScreen() {
     });
   }, [setSimulatedTier, t]);
 
+  if (!MEMBERSHIP_IS_LIVE && !__DEV__) {
+    return (
+      <SgScreen constrainContent>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={[styles.releasePage, { paddingBottom: insets.bottom + spacing.xxxl }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.releaseEyebrow}>{t('membership.releaseEyebrow')}</Text>
+          <Text style={styles.releaseTitle}>{t('membership.releaseTitle')}</Text>
+          <Text style={styles.releaseBody}>{t('membership.releaseBody')}</Text>
+          <View style={styles.releasePanel}>
+            <Text style={styles.releasePanelCode}>MEMBERSHIP / ENTITLEMENTS</Text>
+            <Text style={styles.releasePanelStatus}>{t('membership.releaseStatus')}</Text>
+          </View>
+        </ScrollView>
+      </SgScreen>
+    );
+  }
+
   return (
-    <View style={styles.root}>
+    <SgScreen constrainContent>
+      <View style={styles.root}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.badgePad}>
-          <FutureUpdateBadge />
-          <Text style={styles.previewBanner}>{t('membership.previewBillingBanner')}</Text>
-        </View>
-
         {simulatedTier ? (
           <View style={styles.activeBanner}>
             <Text style={styles.activeBannerTitle}>{t('membership.simActiveTitle')}</Text>
@@ -134,36 +147,70 @@ export function MembershipScreen() {
           <Text style={styles.ctaText}>
             {simulatedTier === selectedId
               ? t('membership.ctaSimSameTier')
-              : t('membership.ctaSubscribePreview')}
+              : t('membership.ctaSubscribe')}
           </Text>
         </TouchableOpacity>
         <Text style={styles.ctaHint}>{t('membership.ctaSimHint')}</Text>
       </View>
-    </View>
+      </View>
+    </SgScreen>
   );
 }
 
 const styles = StyleSheet.create({
+  releasePage: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.xxl,
+  },
+  releaseEyebrow: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1.1,
+    color: sg.warning,
+    marginBottom: spacing.sm,
+  },
+  releaseTitle: {
+    fontFamily: sg.font.display,
+    fontSize: fontSize.xxl,
+    lineHeight: 32,
+    color: sg.text,
+    marginBottom: spacing.md,
+  },
+  releaseBody: {
+    fontFamily: sg.font.body,
+    fontSize: fontSize.sm,
+    lineHeight: 22,
+    color: sg.muted,
+  },
+  releasePanel: {
+    minHeight: 116,
+    marginTop: spacing.xxl,
+    padding: spacing.base,
+    justifyContent: 'space-between',
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    borderRadius: sg.radius.panel,
+  },
+  releasePanelCode: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 0.8,
+    color: sg.chrome,
+  },
+  releasePanelStatus: {
+    fontFamily: sg.font.label,
+    fontSize: 11,
+    letterSpacing: 0.8,
+    color: sg.warning,
+  },
   root: {
     flex: 1,
-    backgroundColor: sg.bg,
+    backgroundColor: 'transparent',
   },
   scroll: {
     flex: 1,
-  },
-  badgePad: {
-    paddingHorizontal: spacing.base,
-    paddingTop: spacing.md,
-  },
-  previewBanner: {
-    fontSize: fontSize.xs,
-    fontFamily: sg.font.bodyMedium,
-    color: sg.gold,
-    backgroundColor: 'rgba(232,197,71,0.12)',
-    padding: spacing.sm,
-    borderRadius: radius.md,
-    lineHeight: 18,
-    marginBottom: spacing.sm,
   },
   activeBanner: {
     marginHorizontal: spacing.base,
@@ -171,9 +218,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     padding: spacing.md,
     borderRadius: radius.lg,
-    backgroundColor: 'rgba(111,191,143,0.12)',
+    backgroundColor: sg.mintWash,
     borderWidth: 1,
-    borderColor: 'rgba(111,191,143,0.35)',
+    borderColor: sg.mintBorder,
   },
   activeBannerTitle: {
     fontSize: fontSize.xs,
@@ -197,7 +244,7 @@ const styles = StyleSheet.create({
   },
   heroEyebrow: {
     fontSize: 10,
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.japaneseBold,
     color: sg.muted,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
@@ -266,7 +313,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm,
   },
   ctaButton: {
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     borderRadius: radius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -274,7 +321,7 @@ const styles = StyleSheet.create({
   ctaText: {
     fontSize: fontSize.md,
     fontFamily: sg.font.bodyBold,
-    color: sg.onGold,
+    color: sg.onValue,
     letterSpacing: 0.3,
   },
   ctaHint: {

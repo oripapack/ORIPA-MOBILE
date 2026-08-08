@@ -15,7 +15,7 @@ interface Props {
   live?: boolean;
 }
 
-/** Section titles use the body face (bold); Fraunces is heading-tier only. */
+/** Terminal section header: bold title + monospaced operational action. */
 export function SgSectionHeader({ title, actionLabel, onAction, live }: Props) {
   const pulse = useRef(new Animated.Value(0.5)).current;
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -57,11 +57,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'baseline',
     justifyContent: 'space-between',
+    paddingBottom: 9,
+    borderBottomWidth: 1,
+    borderBottomColor: sg.line,
   },
-  title: { fontFamily: sg.font.bodyBold, fontSize: 17, letterSpacing: 0.2, color: sg.text },
+  title: { fontFamily: sg.font.display, fontSize: 18, letterSpacing: -0.35, color: sg.text, textTransform: 'uppercase' },
   action: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   actionLabel: {
-    fontFamily: sg.font.bodyMedium,
+    fontFamily: sg.font.label,
     fontSize: 11,
     letterSpacing: 1.2,
     textTransform: 'uppercase',

@@ -26,7 +26,7 @@ export function IntroLayer({
     <Animated.View style={[styles.wrap, { opacity, transform: [{ scale }] }]} pointerEvents="none">
       <Animated.View style={[styles.halo, { borderColor: tv.border, shadowColor: tv.glow, opacity: glow }]} />
       <View style={[packArtBase, { backgroundColor: packTint }]}>
-        <Text style={styles.emoji}>🎴</Text>
+        <Text style={styles.packMark}>PH</Text>
         <Text style={styles.title}>{t('packOpeningEngine.brandTitle')}</Text>
         <Text style={styles.body}>{t('packOpeningEngine.openingPack')}</Text>
       </View>
@@ -51,8 +51,11 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
     elevation: 10,
   },
-  emoji: {
-    fontSize: 44,
+  packMark: {
+    fontSize: 34,
+    fontFamily: sg.font.display,
+    color: sg.text,
+    letterSpacing: -1,
     marginBottom: 6,
   },
   title: {

@@ -3,12 +3,12 @@
  * Coworker edits shared/mock/catalog.ts — both apps stay in sync.
  */
 export {
-  CATALOG_PACKS,
+  MOCK_CATALOG_PACKS as CATALOG_PACKS,
   getCatalogPack,
   getFeaturedPack,
 } from '../../../shared/mock/catalog';
 
-export { RECENT_PULLS } from '../../../shared/mock/recentPulls';
+export { MOCK_RECENT_PULLS as RECENT_PULLS } from '../../../shared/mock/recentPulls';
 
 export { CATALOG_CATEGORIES } from '../../../shared/types/pack';
 

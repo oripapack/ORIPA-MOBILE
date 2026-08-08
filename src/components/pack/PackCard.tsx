@@ -230,7 +230,7 @@ export function PackCard({ pack, onPress }: Props) {
 
         <Text style={styles.metadataRow}>
           {t('packCard.metadataRow', {
-            defaultValue: '{{credits}} credits • {{remaining}} remaining',
+            defaultValue: '{{credits}} Points • {{remaining}} remaining',
             credits: pack.creditPrice.toLocaleString(),
             remaining: pack.remainingInventory.toLocaleString(),
           })}
@@ -269,7 +269,7 @@ export function PackCard({ pack, onPress }: Props) {
                 disabled={ctaBlocked || pack.remainingInventory < 10}
               >
                 <Text style={styles.quickCtaTitle}>Open 10</Text>
-                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 10).toLocaleString()} credits</Text>
+                <Text style={styles.quickCtaSub}>{(pack.creditPrice * 10).toLocaleString()} Points</Text>
               </Pressable>
             </View>
           </View>
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   topHitWrapChase: {
-    borderColor: 'rgba(212,175,55,0.35)',
+    borderColor: sg.cobaltBorder,
   },
   topHitHeader: {
     flexDirection: 'row',
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
   },
   rarityPillChase: {
-    borderColor: 'rgba(212,175,55,0.35)',
+    borderColor: sg.cobaltBorder,
   },
   rarityText: {
     fontSize: 10,

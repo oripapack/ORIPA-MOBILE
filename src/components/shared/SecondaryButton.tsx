@@ -10,7 +10,13 @@ interface Props {
 
 export function SecondaryButton({ label, onPress, style }: Props) {
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity
+      style={[styles.button, style]}
+      onPress={onPress}
+      activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
       <Text style={styles.label}>{label}</Text>
     </TouchableOpacity>
   );

@@ -1,3 +1,7 @@
+/**
+ * 実データ待ち。外部に見せないこと。
+ * Mock catalog fallback for local development only.
+ */
 import type { CatalogPack, RarityTier, TcgCategory, PriceRange } from '../../shared/types/pack';
 import { catalogPacksToMobile } from '../lib/catalogAdapter';
 import type { MembershipTierId } from './membershipPlans';
@@ -222,7 +226,7 @@ export const categories: { key: PackCategory | 'all'; label: string }[] = [
 // Credit bundles (unchanged)
 // ---------------------------------------------------------------------------
 
-export interface CreditBundle {
+export interface MockCreditBundle {
   id: string;
   credits: number;
   label: string;
@@ -235,7 +239,7 @@ export interface CreditBundle {
   jpyWas: string;
 }
 
-export const creditBundles: CreditBundle[] = [
+export const MOCK_CREDIT_BUNDLES: MockCreditBundle[] = [
   {
     id: 'b1',
     credits: 500,

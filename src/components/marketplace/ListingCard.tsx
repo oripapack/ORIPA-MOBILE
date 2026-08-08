@@ -5,6 +5,7 @@ import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { MarketplaceListing } from '../../data/marketplace';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const CARD_W = 158;
 
@@ -56,7 +57,7 @@ export function ListingCard({ listing, shipsFromShort, onPress }: Props) {
             accessibilityIgnoresInvertColors
           />
         ) : (
-          <Text style={styles.thumbPlaceholder}>🃏</Text>
+          <Ionicons name="albums-outline" size={34} color={sg.muted} />
         )}
         <View style={styles.thumbScrim} pointerEvents="none" />
         {shipsFromShort ? (
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sg.cobaltBorder,
   },
   regionPillText: {
     fontSize: 8,
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     left: 6,
     bottom: 6,
     zIndex: 1,
-    backgroundColor: sg.error,
+    backgroundColor: sg.warning,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderRadius: radius.sm,
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 8,
     fontFamily: brandFont.bold,
-    color: sg.text,
+    color: sg.ticketInk,
     letterSpacing: 0.3,
   },
   title: {

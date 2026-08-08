@@ -21,7 +21,7 @@ export function ResultLayer({
     <View style={styles.wrap} pointerEvents="none">
       <Text style={styles.label}>{t('packOpeningEngine.estimatedValueLabel')}</Text>
       <Animated.Text style={[styles.value, { opacity: valueOpacity, color: tv.accent }]}>
-        {roll.creditsWon.toLocaleString()} CR
+        {roll.creditsWon.toLocaleString()} Points
       </Animated.Text>
       <Text style={styles.subtitle}>{tv.label}</Text>
     </View>

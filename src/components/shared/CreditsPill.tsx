@@ -1,44 +1,45 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
 import { spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
+import { useGuestBrowseStore } from '../../store/guestBrowseStore';
+import { isClerkEnabled } from '../../config/clerk';
 
 interface Props {
   onAdd: () => void;
-  /** Optional: tap the balance number (e.g. open credit ledger). */
   onPressBalance?: () => void;
 }
 
 /**
- * Coin balance chip — N2: the balance NUMBER is the gold value signal (§4);
- * the coin glyph stays muted so header gold stays scarce (wordmark accent +
- * balance only). Surface fill + 1px line border; tag radius. Gold never
- * fills the add button.
+ * Points balance rendered as a compact ticket-machine readout.
  */
 export function CreditsPill({ onAdd, onPressBalance }: Props) {
-  const { t } = useTranslation();
   const credits = useAppStore((s) => s.user.credits);
+  const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
+  const showBalance = !isClerkEnabled || clerkSignedIn;
 
   return (
-    <View style={styles.pill}>
-      <FontAwesome5 name="coins" size={13} color={sg.muted} style={styles.coin} solid />
+    <View
+      style={styles.pill}
+      accessibilityLabel={showBalance ? `${credits.toLocaleString()} Points` : 'Points balance requires sign in'}
+    >
+      <Text style={styles.pointsLabel}>POINTS</Text>
       <TouchableOpacity
         onPress={onPressBalance}
-        disabled={!onPressBalance}
+        disabled={!onPressBalance || !showBalance}
         accessibilityRole={onPressBalance ? 'button' : undefined}
-        accessibilityLabel={onPressBalance ? t('creditsPill.a11yHistory') : undefined}
+        accessibilityLabel={onPressBalance ? 'Credit history' : undefined}
         hitSlop={6}
       >
-        <Text style={styles.amount}>{credits.toLocaleString()}</Text>
+        <Text style={styles.amount}>{showBalance ? credits.toLocaleString() : '—'}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.addBtn}
         onPress={onAdd}
         activeOpacity={0.8}
-        accessibilityLabel={t('creditsPill.a11yAdd')}
+        accessibilityRole="button"
+        accessibilityLabel={showBalance ? 'Buy Points' : 'Sign in to access Points'}
       >
         <Text style={styles.addText}>+</Text>
       </TouchableOpacity>
@@ -60,25 +61,23 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     overflow: 'hidden',
   },
-  coin: {
-    marginRight: 2,
-  },
+  pointsLabel: { color: sg.muted, fontSize: 7, fontFamily: sg.font.label, letterSpacing: 0.55 },
   amount: {
-    color: sg.gold,
+    color: sg.valueHi,
     fontSize: 13,
     fontFamily: sg.font.dataBold,
     fontVariant: [...sg.numeric],
     marginRight: spacing.xs,
   },
   addBtn: {
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.value,
     width: 34,
     height: 34,
     alignItems: 'center',
     justifyContent: 'center',
   },
   addText: {
-    color: sg.text,
+    color: sg.onValue,
     fontSize: 16,
     fontFamily: sg.font.bodyBold,
     lineHeight: 20,

@@ -1,5 +1,5 @@
 import type { CatalogPack, TcgCategory } from '../../shared/types/pack';
-import { CATALOG_PACKS } from '../../shared/mock/catalog';
+import { MOCK_CATALOG_PACKS } from '../../shared/mock/catalog';
 import { tcgCategoryToSlug } from '../../shared/utils/foil';
 import type {
   ChipTagType,
@@ -10,8 +10,8 @@ import type {
 import { packVersionIdForCatalogPackId } from '../../shared/api/catalogLive';
 
 const LIVE_GUARANTEE_TEXT =
-  'Instant 100% trade-in (listed value) · transparent odds';
-const DEMO_GUARANTEE_TEXT = 'Instant 100% trade-in (listed value)';
+  'Trade in for 100% of listed value, in Points. Live pool odds are disclosed before opening.';
+const DEMO_GUARANTEE_TEXT = 'Trade in for 100% of listed value, in Points.';
 
 const TOTAL_INVENTORY_BASE = 50_000;
 
@@ -71,7 +71,7 @@ export function catalogToPack(catalog: CatalogPack): Pack {
     totalInventory,
     remainingInventory,
     valueDescription: catalog.description,
-    // 2026-07-29 copy rule: trade-in is 100% of listed value, in Coins — never
+    // C-13 copy rule: Trade in is 100% of listed value, in Points — never
     // "buyback" (implies cash), and the number never appears without its basis.
     // Live packs (packVersionId set) restore "transparent odds" now that pool
     // weights drive disclosure (Step 3 — KNOWN_ISSUES #4).
@@ -99,10 +99,10 @@ export function catalogToPack(catalog: CatalogPack): Pack {
 }
 
 export function catalogPacksToMobile(): Pack[] {
-  return CATALOG_PACKS.map(catalogToPack);
+  return MOCK_CATALOG_PACKS.map(catalogToPack);
 }
 
 export function getCatalogPackForMobile(id: string): Pack | undefined {
-  const catalog = CATALOG_PACKS.find((p) => p.id === id);
+  const catalog = MOCK_CATALOG_PACKS.find((p) => p.id === id);
   return catalog ? catalogToPack(catalog) : undefined;
 }

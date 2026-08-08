@@ -32,6 +32,7 @@ import { tierCelebrationFor } from '../tierCelebration';
 import { revealRarityFromTier } from '../types';
 import { REVEAL_RARITY_VISUAL } from '../rarityTokens';
 import type { BulkOpenViewModel, BulkPullItem } from './bulkOpenTypes';
+import { SgScreen } from '../../../ui/SgScreen';
 
 const FLIP_MS = 520;
 const GRID_STAGGER_MS = 36;
@@ -75,13 +76,13 @@ function CardBackFace({ accent }: { accent: string }) {
   return (
     <View style={styles.cardFace}>
       <LinearGradient
-        colors={['#12121A', '#0A0A10', '#050508']}
+        colors={[sg.surface2, sg.surface, sg.bg]}
         style={StyleSheet.absoluteFill}
       />
       <View style={[styles.cardBackDiamond, { borderColor: `${accent}88` }]}>
         <View style={[styles.cardBackDiamondInner, { backgroundColor: `${accent}33` }]} />
       </View>
-      <Text style={styles.cardBackMark}>PULL HUB</Text>
+      <Text style={styles.cardBackMark}>PULL.HUB</Text>
     </View>
   );
 }
@@ -112,7 +113,7 @@ function CardFrontFace({ item }: { item: BulkPullItem }) {
             />
           ) : (
             <View style={[styles.cardArtFallback, { backgroundColor: item.card.color }]}>
-              <Text style={styles.cardArtEmoji}>{item.card.image}</Text>
+              <Text style={styles.cardArtPlaceholder}>DEMO ART</Text>
               <Text style={styles.cardArtMonogram}>{monogram}</Text>
             </View>
           )}
@@ -345,16 +346,18 @@ export function BulkResultsScreen({ viewModel, onContinue }: BulkResultsScreenPr
   }, []);
 
   return (
-    <View style={styles.root}>
-      <BulkResultsHeader viewModel={viewModel} />
-      <BulkBestHitHero item={viewModel.best} onFlipComplete={onFlipComplete} />
-      {gridReady ? (
-        <BulkPoolGrid items={viewModel.rest} columns={columns} />
-      ) : (
-        <View style={styles.poolPlaceholder} />
-      )}
-      <BulkResultsFooter onContinue={onContinue} />
-    </View>
+    <SgScreen>
+      <View style={styles.root}>
+        <BulkResultsHeader viewModel={viewModel} />
+        <BulkBestHitHero item={viewModel.best} onFlipComplete={onFlipComplete} />
+        {gridReady ? (
+          <BulkPoolGrid items={viewModel.rest} columns={columns} />
+        ) : (
+          <View style={styles.poolPlaceholder} />
+        )}
+        <BulkResultsFooter onContinue={onContinue} />
+      </View>
+    </SgScreen>
   );
 }
 
@@ -365,7 +368,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     minHeight: 0,
-    backgroundColor: sg.bg,
+    backgroundColor: 'transparent',
   },
   header: {
     paddingHorizontal: spacing.base,
@@ -373,14 +376,14 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   headerEyebrow: {
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.label,
     fontSize: 10,
     color: sg.muted,
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
   headerTitle: {
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.display,
     fontSize: fontSize.lg,
     color: sg.text,
   },
@@ -499,7 +502,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 1,
     overflow: 'hidden',
-    backgroundColor: '#020617',
+    backgroundColor: sg.bg,
     minHeight: 140,
   },
   cardArtImage: {
@@ -512,8 +515,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
   },
-  cardArtEmoji: {
-    fontSize: 36,
+  cardArtPlaceholder: {
+    fontFamily: sg.font.label,
+    fontSize: 9,
+    letterSpacing: 1.4,
+    color: sg.muted,
   },
   cardArtMonogram: {
     fontFamily: sg.font.bodyBold,

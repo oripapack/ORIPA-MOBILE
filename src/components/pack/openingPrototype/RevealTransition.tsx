@@ -346,7 +346,7 @@ export function RevealTransition({
             ]}
           >
             <View style={[styles.tierBadge, { borderColor: tv.border }]}>
-              <Text style={[styles.tierBadgeEmoji, { color: tv.accent }]}>{tv.emoji}</Text>
+              <View style={[styles.tierBadgeDot, { backgroundColor: tv.accent }]} />
               <Text style={[styles.tierBadgeText, { color: tv.accent }]}>{tierLabel}</Text>
             </View>
           </Animated.View>
@@ -507,8 +507,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: 'rgba(2,6,23,0.55)',
   },
-  tierBadgeEmoji: {
-    fontSize: 14,
+  tierBadgeDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   tierBadgeText: {
     fontSize: 12,

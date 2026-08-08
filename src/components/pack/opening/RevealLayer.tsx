@@ -2,6 +2,7 @@ import React from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import { RevealResultCard } from './RevealResultCard';
 import type { PackRollResult, RevealRarity } from './types';
+import { sg } from '../../../tokens/sg';
 
 export function RevealLayer({
   roll,
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
   },
   flash: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: sg.text,
   },
   center: {
     ...StyleSheet.absoluteFillObject,

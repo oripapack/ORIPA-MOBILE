@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(212,175,55,0.12)',
+    backgroundColor: sg.cobaltWash,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.base,

@@ -6,8 +6,7 @@ interface Props {
   label: string;
   onPress: () => void;
   /**
-   * gold — the ONE primary CTA per screen (N2 §4: gold = value, black label).
-   *        Neon is a "moment" color and must never fill a CTA.
+   * gold — the one value/primary CTA per screen.
    * line — quiet secondary (1px line border, no fill).
    */
   variant?: 'gold' | 'line';
@@ -30,12 +29,16 @@ export function SgButton({ label, onPress, variant = 'gold', disabled, loading, 
       disabled={disabled || loading}
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled || !!loading, busy: !!loading }}
     >
       <View style={styles.labelWrap} pointerEvents="none">
         {loading ? (
-          <ActivityIndicator color={isGold ? sg.onGold : sg.text} size="small" />
+          <ActivityIndicator color={isGold ? sg.onValue : sg.text} size="small" />
         ) : (
-          <Text style={[styles.label, !isGold && styles.labelLine]}>{label}</Text>
+          <>
+            <Text style={[styles.label, !isGold && styles.labelLine]}>{label}</Text>
+            {isGold ? <Text style={styles.arrow}>→</Text> : null}
+          </>
         )}
       </View>
     </Pressable>
@@ -45,26 +48,34 @@ export function SgButton({ label, onPress, variant = 'gold', disabled, loading, 
 const styles = StyleSheet.create({
   base: {
     borderRadius: sg.radius.btn,
-    paddingVertical: sg.space.md,
+    minHeight: sg.component.buttonPrimary.height,
+    paddingVertical: 14,
     paddingHorizontal: sg.space.lg,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  gold: { backgroundColor: sg.gold },
-  goldPressed: { backgroundColor: sg.goldHi },
+  gold: {
+    backgroundColor: sg.value,
+    borderWidth: 1,
+    borderColor: sg.valueHi,
+    ...sg.glowValue,
+  },
+  goldPressed: { backgroundColor: sg.valueHi },
   line: {
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: sg.line,
   },
   disabled: { opacity: 0.4 },
-  labelWrap: { flexDirection: 'row', alignItems: 'center' },
+  labelWrap: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' },
   label: {
-    fontFamily: sg.font.bodyBold,
-    fontSize: 16,
-    color: sg.onGold,
-    letterSpacing: 0.2,
+    fontFamily: sg.font.label,
+    fontSize: 14,
+    color: sg.onValue,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   labelLine: { color: sg.text },
+  arrow: { fontFamily: sg.font.bodyBold, fontSize: 20, lineHeight: 22, color: sg.onValue },
 });

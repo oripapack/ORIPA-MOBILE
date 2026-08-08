@@ -10,26 +10,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { sg } from '../../tokens/sg';
-import { fontSize } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../store/useAppStore';
-import { useGuestBrowseStore } from '../../store/guestBrowseStore';
-import { isClerkEnabled } from '../../config/clerk';
-import { getLocalizedPackFields, getLocalizedPackTitle } from '../../i18n/packCopy';
+import { getLocalizedPackFields } from '../../i18n/packCopy';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { resolveRevealCardForTier } from './opening/mockRevealCards';
 import { generatePackOpenResult } from './opening/generatePackRoll';
 import type { PackRollResult } from './opening/types';
-import { RevealCtaFade } from './opening/RevealResultCard';
-import { showUserMessage } from '../../utils/showUserMessage';
 import { buildBulkOpenViewModel } from './opening/bulk/bulkOpenViewModel';
 import { navigationRef } from '../../navigation/navigationRef';
-import { buildResultPullData } from '../../data/resultPullMapper';
+import type { ResultPullData } from '../../data/mockResultPull';
 
 /** Lazy so Three.js / R3F only load when a pack is opened (keeps web boot light). */
 const RingPackOpenFlow = React.lazy(() =>
@@ -46,22 +38,44 @@ const BulkResultsScreen = React.lazy(() =>
 
 type BulkOpenPhase = 'bulkCinematic' | 'bulkResults';
 
+function toCertificateId(raw: string | number): string {
+  const digits = String(raw).replace(/\D/g, '').slice(-6);
+  return (digits || '0').padStart(5, '0');
+}
+
+function buildResultPull(
+  rolls: PackRollResult[],
+  packName: string,
+  sourceId: string | number,
+): ResultPullData {
+  const cards = rolls.map((roll) => ({
+    name: roll.result,
+    tier: 'unknown' as const,
+    tradeInValuePoints: roll.creditsWon,
+  }));
+
+  return {
+    pullId: toCertificateId(sourceId),
+    pulledAt: new Date().toISOString(),
+    packName,
+    cards,
+    totalTradeInValuePoints: cards.reduce(
+      (total, card) => total + card.tradeInValuePoints,
+      0,
+    ),
+  };
+}
+
 export function PackOpeningModal() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
-  const firstPackPromptHandled = useGuestBrowseStore((s) => s.firstPackSignupPromptHandled);
-  const showSignupPrompt = useGuestBrowseStore((s) => s.showSignupPrompt);
-  const isGuest = isClerkEnabled && !clerkSignedIn;
 
   const visible = useAppStore((s) => s.modals.packOpening);
   const selectedPack = useAppStore((s) => s.selectedPack);
   const packOpenSessionId = useAppStore((s) => s.packOpenSessionId);
   const closeModal = useAppStore((s) => s.closeModal);
-  const openModal = useAppStore((s) => s.openModal);
   const applyPackOpenResult = useAppStore((s) => s.applyPackOpenResult);
   const applyBulkPackOpenResults = useAppStore((s) => s.applyBulkPackOpenResults);
-  const openPack = useAppStore((s) => s.openPack);
   const packOpenQuantity = useAppStore((s) => s.packOpenQuantity);
   const pendingServerPull = useAppStore((s) => s.pendingServerPull);
   const pendingBulkServerPull = useAppStore((s) => s.pendingBulkServerPull);
@@ -71,13 +85,12 @@ export function PackOpeningModal() {
   const [pending, setPending] = useState<PackRollResult | null>(null);
   const [bulkRolls, setBulkRolls] = useState<PackRollResult[] | null>(null);
   const [bulkPhase, setBulkPhase] = useState<BulkOpenPhase>('bulkCinematic');
-  const [skippedToEnd, setSkippedToEnd] = useState(false);
   const [skipNonce, setSkipNonce] = useState(0);
   const [engineDone, setEngineDone] = useState(false);
 
   const didApplyRef = useRef(false);
-  const rollRef = useRef<PackRollResult | null>(null);
-  const didAdvanceToWonRef = useRef(false);
+  const didAdvanceToResultRef = useRef(false);
+  const advanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isBulkOpen = packOpenQuantity > 1;
 
   const modalOpacity = useRef(new Animated.Value(0)).current;
@@ -87,10 +100,8 @@ export function PackOpeningModal() {
     setPending(null);
     setBulkRolls(null);
     setBulkPhase('bulkCinematic');
-    rollRef.current = null;
     didApplyRef.current = false;
-    didAdvanceToWonRef.current = false;
-    setSkippedToEnd(false);
+    didAdvanceToResultRef.current = false;
     setSkipNonce(0);
     setEngineDone(false);
     clearPendingServerPull();
@@ -98,10 +109,15 @@ export function PackOpeningModal() {
   }, [visible, clearPendingServerPull, clearPendingBulkServerPull]);
 
   useEffect(() => {
+    return () => {
+      if (advanceTimerRef.current) clearTimeout(advanceTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!visible || !selectedPack) return;
     didApplyRef.current = false;
-    didAdvanceToWonRef.current = false;
-    setSkippedToEnd(false);
+    didAdvanceToResultRef.current = false;
     setSkipNonce(0);
     setBulkPhase('bulkCinematic');
 
@@ -122,7 +138,6 @@ export function PackOpeningModal() {
       }
       setBulkRolls(rolls);
       setPending(null);
-      rollRef.current = null;
       setEngineDone(false);
     } else {
       setBulkRolls(null);
@@ -132,7 +147,6 @@ export function PackOpeningModal() {
           : null;
       const roll =
         serverRoll ?? generatePackOpenResult(selectedPack, t, loc.title);
-      rollRef.current = roll;
       setPending(roll);
       setEngineDone(false);
     }
@@ -163,7 +177,6 @@ export function PackOpeningModal() {
       setBulkPhase('bulkResults');
       return;
     }
-    setSkippedToEnd(true);
     setSkipNonce((n) => n + 1);
     // Advance even if the WebView hasn't loaded / missed the skip message.
     setEngineDone(true);
@@ -187,28 +200,34 @@ export function PackOpeningModal() {
     }
   }, [bulkRolls, packOpenQuantity, packOpenSessionId, selectedPack]);
 
+  const navigateToResult = useCallback(
+    (rolls: PackRollResult[]) => {
+      if (!selectedPack || rolls.length === 0) return;
+
+      const pullIds = useAppStore
+        .getState()
+        .pendingFulfillmentPullIds.slice(0, rolls.length);
+      const pull = buildResultPull(
+        rolls,
+        getLocalizedPackFields(selectedPack, t).title,
+        pullIds[0] ?? packOpenSessionId,
+      );
+
+      closeModal('packOpening');
+      if (!navigationRef.isReady()) return;
+      navigationRef.navigate('Result', { pull, pullIds });
+    },
+    [closeModal, packOpenSessionId, selectedPack, t],
+  );
+
   const onBulkContinue = useCallback(() => {
-    if (!bulkRolls || !selectedPack) return;
-    const sessionCount = bulkRolls.length;
+    if (!bulkRolls) return;
     if (!didApplyRef.current) {
       didApplyRef.current = true;
       applyBulkPackOpenResults(bulkRolls, { persistToVault: true });
     }
-    closeModal('packOpening');
-
-    const state = useAppStore.getState();
-    const pullIds = state.pendingFulfillmentPullIds.slice(0, sessionCount);
-    const pulls = pullIds
-      .map((id) => state.user.pullHistory.find((p) => p.id === id))
-      .filter((p): p is NonNullable<typeof p> => Boolean(p));
-    const packName = getLocalizedPackTitle(selectedPack.id, selectedPack.title, t);
-    const pull = buildResultPullData(pulls, packName);
-    if (navigationRef.isReady() && pull) {
-      navigationRef.navigate('Result', { pull, pullIds });
-    } else {
-      openModal('wonPrizes');
-    }
-  }, [applyBulkPackOpenResults, bulkRolls, closeModal, openModal, selectedPack, t]);
+    navigateToResult(bulkRolls);
+  }, [applyBulkPackOpenResults, bulkRolls, navigateToResult]);
 
   useEffect(() => {
     if (!visible || !selectedPack || !pending) return;
@@ -217,33 +236,23 @@ export function PackOpeningModal() {
     if (!engineDone) return;
 
     didApplyRef.current = true;
-    // Always record the pull so Result / Won Prizes can open — even for unsigned demos.
+    // Record the pull before Result renders so its fulfillment actions target real store ids.
     applyPackOpenResult(pending, { persistToVault: true });
   }, [applyPackOpenResult, engineDone, packOpenQuantity, pending, selectedPack, visible]);
 
-  /** After the 3D reveal finishes, go to ResultScreen with live pull payload. */
+  /** The reveal is presentation-only; the Result screen owns the irreversible fulfillment choice. */
   useEffect(() => {
-    if (!visible || !engineDone || isBulkOpen || !selectedPack) return;
-    if (!didApplyRef.current || didAdvanceToWonRef.current) return;
+    if (!visible || !engineDone || isBulkOpen) return;
+    if (!pending || !didApplyRef.current || didAdvanceToResultRef.current) return;
 
-    didAdvanceToWonRef.current = true;
-    const timer = setTimeout(() => {
-      closeModal('packOpening');
-      const state = useAppStore.getState();
-      const pullId = state.pendingFulfillmentPullIds[0];
-      const historyPull = pullId
-        ? state.user.pullHistory.find((p) => p.id === pullId)
-        : undefined;
-      const packName = getLocalizedPackTitle(selectedPack.id, selectedPack.title, t);
-      const pull = historyPull ? buildResultPullData([historyPull], packName) : null;
-      if (navigationRef.isReady() && pull && pullId) {
-        navigationRef.navigate('Result', { pull, pullIds: [pullId] });
-      } else {
-        openModal('wonPrizes');
-      }
+    didAdvanceToResultRef.current = true;
+    advanceTimerRef.current = setTimeout(() => {
+      navigateToResult([pending]);
     }, 600);
-    return () => clearTimeout(timer);
-  }, [closeModal, engineDone, isBulkOpen, openModal, selectedPack, t, visible]);
+    return () => {
+      if (advanceTimerRef.current) clearTimeout(advanceTimerRef.current);
+    };
+  }, [engineDone, isBulkOpen, navigateToResult, pending, visible]);
 
   const revealCard =
     pending && selectedPack && !isBulkOpen
@@ -254,50 +263,9 @@ export function PackOpeningModal() {
   const bulkCinematicActive = bulkOpenActive && bulkPhase === 'bulkCinematic';
   const bulkResultsActive = bulkOpenActive && bulkPhase === 'bulkResults';
 
-  const openAnother = useCallback(() => {
-    if (!selectedPack) return;
-    if (isGuest) {
-      if (!firstPackPromptHandled) {
-        showSignupPrompt();
-      } else {
-        showUserMessage(t('onboarding.guestClaimTitle'), t('onboarding.guestClaimBody'));
-      }
-      return;
-    }
-    // This re-charges credits + increments session id like a real open.
-    // In demo mode, we still use store openPack for a consistent “spent credits” story.
-    void openPack(selectedPack, { keepPackModalOnInsufficient: true, quantity: 1 }).then((ok) => {
-      if (!ok) return;
-      setSkippedToEnd(false);
-      setEngineDone(false);
-      setSkipNonce(0);
-    });
-  }, [firstPackPromptHandled, isGuest, openPack, selectedPack, showSignupPrompt, t]);
-
-  const goToWonPrizes = () => {
-    closeModal('packOpening');
-    if (!selectedPack) {
-      openModal('wonPrizes');
-      return;
-    }
-    const state = useAppStore.getState();
-    const pullId = state.pendingFulfillmentPullIds[0];
-    const historyPull = pullId
-      ? state.user.pullHistory.find((p) => p.id === pullId)
-      : undefined;
-    const packName = getLocalizedPackTitle(selectedPack.id, selectedPack.title, t);
-    const pull = historyPull ? buildResultPullData([historyPull], packName) : null;
-    if (navigationRef.isReady() && pull && pullId) {
-      navigationRef.navigate('Result', { pull, pullIds: [pullId] });
-    } else {
-      openModal('wonPrizes');
-    }
-  };
-
   const showSkip =
     (!!pending && !engineDone && !isBulkOpen) ||
     bulkCinematicActive;
-  const compactPackHeader = !!(pending && engineDone && !isBulkOpen);
   const ringOpenActive = !!pending && !!selectedPack && !isBulkOpen && !!revealCard;
   const fullscreenFlow = ringOpenActive || bulkOpenActive;
 
@@ -327,25 +295,17 @@ export function PackOpeningModal() {
           {!fullscreenFlow ? (
           <View style={styles.headerRow}>
             <View style={styles.headerTextBlock}>
-              {compactPackHeader ? (
-                <Text style={styles.titleCompact} numberOfLines={1}>
-                  {selectedPack ? getLocalizedPackFields(selectedPack, t).title : ''}
-                </Text>
-              ) : (
-                <>
-                  <Text style={styles.titleFifa}>{t('packOpening.title')}</Text>
-                  <Text style={styles.subFifa} numberOfLines={2}>
-                    {selectedPack
-                      ? isBulkOpen
-                        ? t('packOpening.bulkPackSubtitle', {
-                            title: getLocalizedPackFields(selectedPack, t).title,
-                            count: packOpenQuantity,
-                          })
-                        : getLocalizedPackFields(selectedPack, t).title
-                      : ''}
-                  </Text>
-                </>
-              )}
+              <Text style={styles.titleFifa}>{t('packOpening.title')}</Text>
+              <Text style={styles.subFifa} numberOfLines={2}>
+                {selectedPack
+                  ? isBulkOpen
+                    ? t('packOpening.bulkPackSubtitle', {
+                        title: getLocalizedPackFields(selectedPack, t).title,
+                        count: packOpenQuantity,
+                      })
+                    : getLocalizedPackFields(selectedPack, t).title
+                  : ''}
+              </Text>
             </View>
             <View style={styles.headerRight}>
               {showSkip && (
@@ -354,7 +314,7 @@ export function PackOpeningModal() {
                 </TouchableOpacity>
               )}
               <View style={styles.livePillFifa}>
-                <Text style={styles.liveDot}>●</Text>
+                <View style={styles.liveDot} />
                 <Text style={styles.liveText}>{t('packOpening.live')}</Text>
               </View>
             </View>
@@ -389,7 +349,6 @@ export function PackOpeningModal() {
                   revealCard={revealCard}
                   skipNonce={skipNonce}
                   onRevealDone={onRevealDone}
-                  onStoreInVault={goToWonPrizes}
                 />
               </React.Suspense>
             ) : null}
@@ -420,62 +379,6 @@ export function PackOpeningModal() {
             ) : null}
           </View>
 
-          {!isBulkOpen ? (
-          <RevealCtaFade
-            visible={engineDone}
-            instant={skippedToEnd}
-            enterDelayMs={720}
-            enterDurationMs={720}
-          >
-            {compactPackHeader ? (
-              <LinearGradient
-                colors={['transparent', 'rgba(0,0,0,0.55)']}
-                style={styles.ctaBridge}
-                pointerEvents="none"
-              />
-            ) : null}
-            <View style={[styles.ctaRow, compactPackHeader && styles.ctaRowTight]}>
-              <TouchableOpacity
-                style={styles.openAnotherBtn}
-                onPress={openAnother}
-                activeOpacity={0.88}
-                accessibilityRole="button"
-                accessibilityLabel={t('packOpening.openNext')}
-              >
-                <LinearGradient
-                  colors={[sg.gold, sg.goldHi]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.openAnotherGradient}
-                >
-                  <View style={styles.openAnotherRow}>
-                    <View style={styles.openAnotherIconCircle}>
-                      <Ionicons name="flash" size={22} color={sg.onGold} />
-                    </View>
-                    <View style={styles.openAnotherCopy}>
-                      <Text style={styles.openAnotherHeadline}>{t('packOpening.openAnotherHeadline')}</Text>
-                      <Text style={styles.openAnotherSub}>
-                        {t('packOpening.openAnotherSub', {
-                          credits:
-                            selectedPack != null ? selectedPack.creditPrice.toLocaleString() : '—',
-                        })}
-                      </Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={22} color="rgba(0,0,0,0.45)" />
-                  </View>
-                </LinearGradient>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={goToWonPrizes}
-                style={styles.manageWinningsBtn}
-                activeOpacity={0.65}
-                hitSlop={12}
-              >
-                <Text style={styles.manageWinningsText}>{t('packOpening.manageWinnings')}</Text>
-              </TouchableOpacity>
-            </View>
-          </RevealCtaFade>
-          ) : null}
         </Animated.View>
       </View>
     </Modal>
@@ -516,22 +419,13 @@ const styles = StyleSheet.create({
     zIndex: 20,
     paddingHorizontal: sg.space.md,
     paddingVertical: sg.space.sm,
-    borderRadius: radius.full,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    borderRadius: sg.radius.tag,
+    backgroundColor: sg.functionalScrim,
     borderWidth: 1,
     borderColor: sg.line,
   },
   bulkSkipFab: {
     zIndex: 30,
-  },
-  stageHeader: {
-    marginBottom: spacing.md,
-  },
-  headerBridge: {
-    width: '100%',
-    height: 1,
-    marginTop: sg.space.sm,
-    opacity: 0.85,
   },
   headerRow: {
     flexDirection: 'row',
@@ -543,35 +437,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: sg.space.sm,
   },
-  stageEyebrow: {
-    fontSize: 10,
-    fontFamily: sg.font.bodyBold,
-    color: sg.muted,
-    letterSpacing: 3.2,
-    textTransform: 'uppercase',
-    marginBottom: 4,
-  },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: sg.space.sm,
   },
   titleFifa: {
-    fontSize: 22,
-    fontFamily: sg.font.bodyBold,
+    fontSize: sg.type.title.fontSize,
+    lineHeight: sg.type.title.lineHeight,
+    fontFamily: sg.font.display,
     color: sg.text,
     marginBottom: 4,
     letterSpacing: 1.2,
   },
-  titleCompact: {
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
-    color: sg.muted,
-    letterSpacing: 0.2,
-    marginTop: 2,
-  },
   subFifa: {
-    fontSize: fontSize.xs,
+    fontSize: 12,
     color: sg.muted,
     maxWidth: '80%',
     letterSpacing: 0.2,
@@ -581,8 +461,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   skipText: {
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
+    fontSize: sg.type.data.fontSize,
+    fontFamily: sg.font.dataBold,
     color: sg.muted,
   },
   livePillFifa: {
@@ -591,87 +471,22 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: radius.full,
+    borderRadius: sg.radius.tag,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
     backgroundColor: sg.surface2,
   },
   liveDot: {
-    fontSize: 9,
-    color: sg.error,
+    width: 6,
+    height: 6,
+    borderRadius: sg.radius.pill,
+    backgroundColor: sg.neon,
+    ...sg.glowNeon,
   },
   liveText: {
     fontSize: 10,
     fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1.6,
-  },
-  ctaBridge: {
-    width: '100%',
-    height: 20,
-    marginTop: -4,
-  },
-  ctaRow: {
-    marginTop: sg.space.sm,
-    paddingTop: sg.space.sm,
-    paddingBottom: sg.space.xs,
-    paddingHorizontal: sg.space.md,
-    gap: sg.space.md,
-  },
-  ctaRowTight: {
-    marginTop: 0,
-    paddingTop: sg.space.xs,
-  },
-  openAnotherBtn: {
-    borderRadius: sg.radius.btn,
-    overflow: 'hidden',
-    ...sg.shadowHero,
-  },
-  openAnotherGradient: {
-    borderRadius: sg.radius.btn,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
-  },
-  openAnotherRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: sg.space.md,
-    paddingVertical: spacing.md + 4,
-    paddingHorizontal: sg.space.md,
-  },
-  openAnotherIconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(0,0,0,0.18)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  openAnotherCopy: {
-    flex: 1,
-    minWidth: 0,
-  },
-  openAnotherHeadline: {
-    color: sg.onGold,
-    fontSize: fontSize.lg,
-    fontFamily: sg.font.bodyBold,
-    letterSpacing: 0.2,
-    marginBottom: 2,
-  },
-  openAnotherSub: {
-    color: 'rgba(0,0,0,0.62)',
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
-  },
-  manageWinningsBtn: {
-    paddingVertical: sg.space.sm + 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  manageWinningsText: {
-    fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
-    color: sg.muted,
-    letterSpacing: 0.2,
   },
 });

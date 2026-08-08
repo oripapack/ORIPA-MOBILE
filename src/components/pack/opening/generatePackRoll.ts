@@ -1,3 +1,8 @@
+/**
+ * 実データ待ち。外部に見せないこと。
+ * Local animation fallback only. Production outcomes must come from the
+ * server-side finite inventory and disclosed odds.
+ */
 import type { TFunction } from 'i18next';
 import type { N2Tier } from '../../../lib/n2Rarity';
 import { N2_TIER_RANK } from '../../../lib/n2Rarity';

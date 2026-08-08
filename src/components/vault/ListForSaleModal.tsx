@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: sgVault.surface2,
   },
   presetOn: {
-    borderColor: 'rgba(212,175,55,0.38)',
+    borderColor: sgVault.cobaltBorder,
     backgroundColor: 'rgba(61,220,151,0.12)',
   },
   presetText: {

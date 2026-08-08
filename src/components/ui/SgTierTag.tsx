@@ -59,14 +59,14 @@ export function SgTierTag({ tier, context }: { tier: N2TierState; context: 'disc
 
 const boxStyles: Record<'mythic' | 'legendary' | 'epic', ViewStyle> = {
   mythic: { backgroundColor: sg.neon, ...sg.glowNeon },
-  legendary: { backgroundColor: sg.gold },
-  epic: { borderColor: sg.gold },
+  legendary: { backgroundColor: sg.value },
+  epic: { borderColor: sg.value },
 };
 
 const textStyles: Record<'mythic' | 'legendary' | 'epic', TextStyle> = {
   mythic: { color: sg.onGold },
-  legendary: { color: sg.onGold },
-  epic: { color: sg.gold },
+  legendary: { color: sg.onValue },
+  epic: { color: sg.value },
 };
 
 const styles = StyleSheet.create({

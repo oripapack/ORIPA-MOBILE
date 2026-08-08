@@ -1,4 +1,6 @@
 /**
+ * 実データ待ち。外部に見せないこと。
+ *
  * After a pack opens, user chooses Vault vs convert — until then, `pending`.
  * `vaulted`: secured hold with optional ship / trade / resale from Vault.
  */
@@ -22,9 +24,9 @@ export interface Pull {
    * New pulls start as `pending` until post-open fulfillment completes.
    */
   fulfillment?: PullFulfillment;
-  /** Set when `fulfillment === 'vaulted'` — auto-converts to coins after this instant. */
+  /** Legacy persisted expiry field. Retained for storage compatibility; current Vault items do not expire. */
   vaultExpiresAt?: Date;
-  /** Hold length granted when the item entered the Vault (e.g. 14). */
+  /** Legacy persisted hold length. Retained for storage compatibility only. */
   vaultHoldDays?: number;
   /** Credits added to wallet if user taps “Convert to points” (matches reveal `creditsWon`). */
   convertCreditValue?: number;
@@ -106,4 +108,18 @@ export const mockUser: UserState = {
       timestamp: new Date('2026-03-16T12:00:00'),
     },
   ],
+};
+
+/** Empty release seed. Clerk and Supabase hydrate real identity and balances. */
+export const releaseUserSeed: UserState = {
+  id: '',
+  displayName: 'Collector',
+  username: '',
+  freePackGrants: 0,
+  credits: 0,
+  tier: 'Starter',
+  xp: 0,
+  xpToNextTier: 100000,
+  isVerified: false,
+  pullHistory: [],
 };
