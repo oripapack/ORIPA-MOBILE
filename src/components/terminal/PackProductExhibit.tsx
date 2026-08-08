@@ -4,8 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import type { TcgCategory } from '../../../shared/types/pack';
 import { sg } from '../../tokens/sg';
 
-const EMPTY_EXHIBIT_WIDE = require('../../../assets/home/tokyo-exhibit-empty-clear-v3-wide.png');
-const EMPTY_EXHIBIT_PORTRAIT = require('../../../assets/home/tokyo-exhibit-empty-clear-v3-portrait.png');
+const EMPTY_EXHIBIT_WIDE = require('../../../assets/home/tokyo-exhibit-empty-clear-v3-wide.jpg');
+const EMPTY_EXHIBIT_PORTRAIT = require('../../../assets/home/tokyo-exhibit-empty-clear-v3-portrait.jpg');
 
 type ExhibitLayout = 'wide' | 'portrait';
 type ExhibitFocus = 'scene' | 'product';
