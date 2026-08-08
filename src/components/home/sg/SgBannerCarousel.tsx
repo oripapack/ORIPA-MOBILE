@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   statusText: { fontFamily: sg.font.dataBold, fontSize: 7, color: sg.success, letterSpacing: 0.55 },
   statusTextPending: { color: sg.warning },
   message: { paddingVertical: sg.space.sm },
-  kicker: { fontFamily: sg.font.label, fontSize: 8, color: sg.goldHi, letterSpacing: 1.15 },
+  kicker: { fontFamily: sg.font.japaneseBold, fontSize: 8, color: sg.goldHi, letterSpacing: 0.85 },
   title: {
     marginTop: 6,
     fontFamily: sg.font.display,

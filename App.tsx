@@ -4,24 +4,15 @@ import { useAppStore } from './src/store/useAppStore';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import {
-  useFonts,
-  Outfit_100Thin,
-  Outfit_200ExtraLight,
-  Outfit_300Light,
-  Outfit_400Regular,
-  Outfit_500Medium,
-  Outfit_600SemiBold,
-  Outfit_700Bold,
-  Outfit_800ExtraBold,
-  Outfit_900Black,
-} from '@expo-google-fonts/outfit';
-import {
-  SchibstedGrotesk_400Regular,
-  SchibstedGrotesk_500Medium,
-  SchibstedGrotesk_700Bold,
-} from '@expo-google-fonts/schibsted-grotesk';
-import { SplineSansMono_400Regular, SplineSansMono_500Medium } from '@expo-google-fonts/spline-sans-mono';
+import { useFonts } from 'expo-font';
+import { Sora_800ExtraBold } from '@expo-google-fonts/sora/800ExtraBold';
+import { SchibstedGrotesk_400Regular } from '@expo-google-fonts/schibsted-grotesk/400Regular';
+import { SchibstedGrotesk_500Medium } from '@expo-google-fonts/schibsted-grotesk/500Medium';
+import { SchibstedGrotesk_700Bold } from '@expo-google-fonts/schibsted-grotesk/700Bold';
+import { SplineSansMono_400Regular } from '@expo-google-fonts/spline-sans-mono/400Regular';
+import { SplineSansMono_500Medium } from '@expo-google-fonts/spline-sans-mono/500Medium';
+import { SplineSansMono_600SemiBold } from '@expo-google-fonts/spline-sans-mono/600SemiBold';
+import { ZenKakuGothicNew_500Medium } from '@expo-google-fonts/zen-kaku-gothic-new/500Medium';
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { hydrateLocaleFromStorage } from './src/i18n';
@@ -47,21 +38,16 @@ export default function App() {
   const [localeReady, setLocaleReady] = useState(false);
   const [fontsTimedOut, setFontsTimedOut] = useState(false);
   const [fontsLoaded] = useFonts({
-    Outfit_100Thin,
-    Outfit_200ExtraLight,
-    Outfit_300Light,
-    Outfit_400Regular,
-    Outfit_500Medium,
-    Outfit_600SemiBold,
-    Outfit_700Bold,
-    Outfit_800ExtraBold,
-    Outfit_900Black,
-    // Tokyo Night Terminal: geometric display, grotesk body, mono data.
+    // Tokyo Night Terminal: precise display, warm grotesk body, ledger data,
+    // and an explicit contemporary-Japanese face for the bilingual layer.
+    Sora_800ExtraBold,
     SchibstedGrotesk_400Regular,
     SchibstedGrotesk_500Medium,
     SchibstedGrotesk_700Bold,
     SplineSansMono_400Regular,
     SplineSansMono_500Medium,
+    SplineSansMono_600SemiBold,
+    ZenKakuGothicNew_500Medium,
   });
 
   useEffect(() => {

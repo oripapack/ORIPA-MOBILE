@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   markShort: { position: 'absolute', left: 12, top: 2, height: 20, width: 7, backgroundColor: sg.text },
   markDot: { position: 'absolute', right: 1, top: 2, width: 8, height: 8, borderRadius: 4, backgroundColor: sg.goldHi },
   wordmark: { fontFamily: sg.font.display, fontSize: 17, lineHeight: 18, color: sg.text, letterSpacing: 0.15 },
-  submark: { fontFamily: sg.font.label, fontSize: 6.5, lineHeight: 9, color: sg.muted, letterSpacing: 0.65 },
+  submark: { fontFamily: sg.font.japanese, fontSize: 6.5, lineHeight: 9, color: sg.muted, letterSpacing: 0.45 },
   right: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   iconBtn: { width: 34, height: 34, borderRadius: sg.radius.btn, borderWidth: 1, borderColor: sg.line, alignItems: 'center', justifyContent: 'center', backgroundColor: sg.surface },
 });

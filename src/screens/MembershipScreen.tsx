@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
   heroEyebrow: {
     fontSize: 10,
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.japaneseBold,
     color: sg.muted,
     letterSpacing: 1.6,
     textTransform: 'uppercase',

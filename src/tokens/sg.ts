@@ -145,15 +145,18 @@ export const sg = {
   },
 
   font: {
-    /** Condensed-feeling, high-impact display face available in the app bundle. */
-    display: 'Outfit_900Black',
+    /** Precise geometric display face: premium electronics, not generic gaming UI. */
+    display: 'Sora_800ExtraBold',
     body: 'SchibstedGrotesk_400Regular',
     bodyMedium: 'SchibstedGrotesk_500Medium',
     bodyBold: 'SchibstedGrotesk_700Bold',
     data: 'SplineSansMono_400Regular',
-    dataBold: 'SplineSansMono_500Medium',
-    /** Terminal labels deliberately use the mono face. */
-    label: 'SplineSansMono_500Medium',
+    dataBold: 'SplineSansMono_600SemiBold',
+    /** Terminal labels deliberately use the stronger mono cut at small sizes. */
+    label: 'SplineSansMono_600SemiBold',
+    japanese: 'ZenKakuGothicNew_500Medium',
+    /** The bilingual layer stays restrained and ships one CJK weight. */
+    japaneseBold: 'ZenKakuGothicNew_500Medium',
   },
   type: {
     hero: { fontSize: 36, lineHeight: 38, letterSpacing: -1.35 },

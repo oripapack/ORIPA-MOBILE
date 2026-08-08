@@ -129,14 +129,14 @@ const styles = StyleSheet.create({
   },
   titleJa: {
     fontSize: fontSize.md,
-    fontFamily: sg.font.bodyBold,
+    fontFamily: sg.font.japaneseBold,
     color: sg.text,
     marginBottom: spacing.sm,
     textAlign: 'center',
   },
   bodyJa: {
     fontSize: fontSize.sm,
-    fontFamily: sg.font.bodyMedium,
+    fontFamily: sg.font.japanese,
     color: sg.muted,
     lineHeight: 24,
     textAlign: 'left',
