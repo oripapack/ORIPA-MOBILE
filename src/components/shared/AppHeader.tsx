@@ -42,7 +42,7 @@ export function AppHeader({ onSearch }: { onSearch?: () => void }) {
             accessibilityRole="button"
             accessibilityLabel="Search"
           >
-            <Ionicons name="search" size={18} color={sg.text} />
+            <Ionicons name="search" size={20} color={sg.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -78,5 +78,5 @@ const styles = StyleSheet.create({
   wordmark: { fontFamily: sg.font.display, fontSize: 17, lineHeight: 18, color: sg.text, letterSpacing: 0.15 },
   submark: { fontFamily: sg.font.japanese, fontSize: 6.5, lineHeight: 9, color: sg.muted, letterSpacing: 0.45 },
   right: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  iconBtn: { width: 34, height: 34, borderRadius: sg.radius.btn, borderWidth: 1, borderColor: sg.line, alignItems: 'center', justifyContent: 'center', backgroundColor: sg.surface },
+  iconBtn: { width: 44, height: 44, borderRadius: sg.radius.btn, borderWidth: 1, borderColor: sg.line, alignItems: 'center', justifyContent: 'center', backgroundColor: sg.surface },
 });
