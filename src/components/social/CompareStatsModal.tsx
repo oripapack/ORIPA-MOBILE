@@ -93,7 +93,7 @@ export function CompareStatsModal({ visible, onClose, me, friend }: Props) {
 }
 
 const styles = StyleSheet.create({
-  back: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  back: { flex: 1, backgroundColor: sg.modalScrim, justifyContent: 'flex-end' },
   backTap: { ...StyleSheet.absoluteFillObject },
   sheet: {
     backgroundColor: sg.surface2,
@@ -157,16 +157,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   win: {
-    backgroundColor: 'rgba(22,163,74,0.1)',
-    borderColor: 'rgba(22,163,74,0.35)',
+    backgroundColor: sg.mintWash,
+    borderColor: sg.mintBorder,
   },
   lose: {
     backgroundColor: sg.surface,
     borderColor: sg.line,
   },
   tie: {
-    backgroundColor: 'rgba(59,130,246,0.08)',
-    borderColor: 'rgba(59,130,246,0.25)',
+    backgroundColor: sg.cobaltWash,
+    borderColor: sg.cobaltBorder,
   },
   cellText: {
     fontSize: fontSize.md,
@@ -177,7 +177,9 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     backgroundColor: sg.surface2,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
+    borderColor: sg.line,
     flexDirection: 'row',
     gap: spacing.sm,
     alignItems: 'flex-start',

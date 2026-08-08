@@ -105,7 +105,7 @@ export function MyQrModal({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: sg.modalScrim,
   },
   backdropTap: {
     flex: 1,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: sg.cobaltBorder,
     marginBottom: spacing.lg,
-    shadowColor: '#000',
+    shadowColor: sg.shadowHero.shadowColor,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.12,
     shadowRadius: 16,
@@ -203,10 +203,14 @@ const styles = StyleSheet.create({
     marginRight: spacing.sm,
   },
   copyBtn: {
+    minHeight: 44,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
-    backgroundColor: sg.surface2,
+    backgroundColor: sg.surfaceRaised,
     borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: sg.lineStrong,
+    justifyContent: 'center',
   },
   copyBtnText: {
     color: sg.text,
@@ -223,7 +227,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     marginBottom: spacing.md,
     borderWidth: 1.5,
-    borderColor: 'rgba(225,29,46,0.35)',
+    borderColor: sg.cobaltBorder,
   },
   scanOtherEmoji: {
     fontSize: 22,
@@ -252,17 +256,17 @@ const styles = StyleSheet.create({
   doneBtn: {
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: sg.gold,
+    shadowColor: sg.value,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 4,
   },
   doneBtnText: {
-    color: sg.text,
+    color: sg.onValue,
     fontSize: fontSize.base,
     fontFamily: brandFont.black,
     letterSpacing: 0.5,

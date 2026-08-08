@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
+    borderColor: sg.line,
     marginBottom: spacing.sm,
   },
   art: {

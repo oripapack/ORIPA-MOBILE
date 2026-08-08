@@ -82,7 +82,12 @@ export function QrScannerModal({ visible, onClose, onUsernameScanned }: Props) {
     >
       <View style={[styles.root, { paddingTop: insets.top }]}>
         <View style={styles.topBar}>
-          <TouchableOpacity onPress={onClose} hitSlop={12} accessibilityRole="button">
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={onClose}
+            hitSlop={12}
+            accessibilityRole="button"
+          >
             <Text style={styles.cancel}>{t('qrScanner.cancel')}</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{t('qrScanner.title')}</Text>
@@ -158,6 +163,11 @@ const styles = StyleSheet.create({
     color: sg.text,
     width: 56,
   },
+  cancelButton: {
+    minWidth: 56,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
   headerTitle: {
     fontSize: fontSize.base,
     fontFamily: brandFont.bold,
@@ -170,20 +180,20 @@ const styles = StyleSheet.create({
   },
   permText: {
     fontSize: fontSize.base,
-    color: 'rgba(255,255,255,0.85)',
+    color: sg.text,
     textAlign: 'center',
     marginBottom: spacing.lg,
     lineHeight: 22,
   },
   permBtn: {
     alignSelf: 'center',
-    backgroundColor: sg.gold,
+    backgroundColor: sg.value,
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
     borderRadius: radius.lg,
   },
   permBtnText: {
-    color: sg.onGold,
+    color: sg.onValue,
     fontFamily: brandFont.bold,
     fontSize: fontSize.base,
   },
@@ -194,19 +204,19 @@ const styles = StyleSheet.create({
   webPasteLabel: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.medium,
-    color: 'rgba(255,255,255,0.7)',
+    color: sg.muted,
     textAlign: 'center',
   },
   webPasteInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.2)',
+    borderColor: sg.lineStrong,
     borderRadius: radius.md,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
     fontSize: fontSize.md,
     fontFamily: brandFont.regular,
     color: sg.text,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: sg.surface2,
   },
   cameraContainer: {
     flex: 1,
@@ -222,7 +232,7 @@ const styles = StyleSheet.create({
     height: 260,
     borderRadius: radius.lg,
     borderWidth: 3,
-    borderColor: sg.gold,
+    borderColor: sg.goldHi,
     backgroundColor: 'transparent',
   },
   hint: {
@@ -231,7 +241,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     textAlign: 'center',
-    color: 'rgba(255,255,255,0.85)',
+    color: sg.text,
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
   },

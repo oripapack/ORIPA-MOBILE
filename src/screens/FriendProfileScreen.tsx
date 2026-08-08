@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
+    borderColor: sg.line,
   },
   statVal: { fontSize: fontSize.lg, fontFamily: sg.font.display, color: sg.text },
   statLab: { fontSize: 10, fontFamily: sg.font.bodyBold, color: sg.muted, marginTop: 4, letterSpacing: 0.5 },

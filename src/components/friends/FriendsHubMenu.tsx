@@ -57,7 +57,7 @@ export function FriendsHubMenu({ visible, onClose, onSelect }: Props) {
               accessibilityLabel={t(`friends.hubMenu.${row.action}`)}
             >
               <View style={styles.rowIcon}>
-                <Ionicons name={row.icon} size={22} color={sg.gold} />
+                <Ionicons name={row.icon} size={22} color={sg.accentText} />
               </View>
               <Text style={styles.rowLabel}>{t(`friends.hubMenu.${row.action}`)}</Text>
               <Ionicons name="chevron-forward" size={18} color={sg.muted} />
@@ -75,7 +75,7 @@ export function FriendsHubMenu({ visible, onClose, onSelect }: Props) {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: sg.modalScrim,
     justifyContent: 'flex-end',
   },
   sheet: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: sg.shadowHero.shadowColor,
         shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.2,
         shadowRadius: 12,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: sg.lineStrong,
     marginBottom: spacing.md,
   },
   sheetTitle: {
