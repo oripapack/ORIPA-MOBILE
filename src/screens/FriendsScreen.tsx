@@ -48,12 +48,10 @@ import { AppHeader } from '../components/shared/AppHeader';
 import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 
 const RING_PALETTE = [
-  sg.neon,
-  sg.gold,
   sg.goldHi,
   sg.chrome,
-  sg.success,
-  sg.warning,
+  sg.muted,
+  sg.lineStrong,
 ];
 
 function accentForId(id: string): string {

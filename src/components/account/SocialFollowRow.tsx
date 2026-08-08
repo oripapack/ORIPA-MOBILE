@@ -13,12 +13,11 @@ const SOCIAL_CONFIG: {
   id: SocialId;
   label: string;
   icon: 'instagram' | 'twitter' | 'youtube' | 'discord';
-  color: string;
 }[] = [
-  { id: 'instagram', label: 'Instagram', icon: 'instagram', color: '#E4405F' },
-  { id: 'x', label: 'X', icon: 'twitter', color: '#F8FAFC' },
-  { id: 'youtube', label: 'YouTube', icon: 'youtube', color: '#FF0000' },
-  { id: 'discord', label: 'Discord', icon: 'discord', color: '#5865F2' },
+  { id: 'instagram', label: 'Instagram', icon: 'instagram' },
+  { id: 'x', label: 'X', icon: 'twitter' },
+  { id: 'youtube', label: 'YouTube', icon: 'youtube' },
+  { id: 'discord', label: 'Discord', icon: 'discord' },
 ];
 
 type Props = {
@@ -37,13 +36,13 @@ export function SocialFollowRow({ compact = false }: Props) {
         {SOCIAL_CONFIG.map((item) => (
           <TouchableOpacity
             key={item.id}
-            style={[styles.compactBtn, { borderColor: `${item.color}44` }]}
+            style={styles.compactBtn}
             activeOpacity={0.82}
             onPress={() => void open(item.id)}
             accessibilityRole="link"
             accessibilityLabel={`Open ${item.label}`}
           >
-            <FontAwesome5 name={item.icon} size={20} color={item.color} brand />
+            <FontAwesome5 name={item.icon} size={18} color={sg.accentText} brand />
           </TouchableOpacity>
         ))}
       </View>
@@ -61,8 +60,8 @@ export function SocialFollowRow({ compact = false }: Props) {
           accessibilityRole="link"
           accessibilityLabel={`Open ${item.label}`}
         >
-          <View style={[styles.iconBubble, { borderColor: `${item.color}55` }]}>
-            <FontAwesome5 name={item.icon} size={22} color={item.color} brand />
+          <View style={styles.iconBubble}>
+            <FontAwesome5 name={item.icon} size={20} color={sg.accentText} brand />
           </View>
           <Text style={styles.socialLabel}>{item.label}</Text>
         </TouchableOpacity>
@@ -85,8 +84,9 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: sg.surface2,
     borderWidth: 1,
+    borderColor: sg.lineStrong,
   },
   socialRow: {
     flexDirection: 'row',
@@ -105,21 +105,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: sg.line,
   },
   iconBubble: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: sg.cobaltWash,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
+    borderColor: sg.cobaltBorder,
   },
   socialLabel: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: 'rgba(248,250,252,0.88)',
+    color: sg.text,
     letterSpacing: 0.2,
   },
 });
