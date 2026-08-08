@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import { FutureUpdateBadge } from '../components/shared/FutureUpdateBadge';
 
 type Nav = StackNavigationProp<RootStackParamList, 'PayoutMethod'>;
 
@@ -33,8 +34,10 @@ export function PayoutMethodScreen() {
       contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
       showsVerticalScrollIndicator={false}
     >
+      <FutureUpdateBadge />
       <Text style={styles.body}>{t('payoutMethod.body')}</Text>
       <View style={styles.card}>
+        <Text style={styles.cardTitle}>{t('futureUpdate.plannedTitle')}</Text>
         <Text style={styles.cardLine}>• {t('payoutMethod.line1')}</Text>
         <Text style={styles.cardLine}>• {t('payoutMethod.line2')}</Text>
         <Text style={styles.cardLine}>• {t('payoutMethod.line3')}</Text>
@@ -60,6 +63,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: sg.line,
     marginBottom: spacing.md,
+  },
+  cardTitle: {
+    fontSize: fontSize.sm,
+    fontFamily: sg.font.bodyBold,
+    color: sg.text,
+    marginBottom: spacing.sm,
   },
   cardLine: {
     fontSize: fontSize.sm,

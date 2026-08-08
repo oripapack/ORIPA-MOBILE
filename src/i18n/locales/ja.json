@@ -110,7 +110,12 @@
     "devResetLocalOnboarding": "ローカルオンボーディングをリセット",
     "devResetAlertTitle": "ローカルオンボーディングをリセットしますか？",
     "devResetAlertBody": "この端末のゲスト／オンボーディングフラグ、コーチのヒント、ウェルカムバナー、シミュレーションの開示を消去します。サインイン状態は保持され、アプリは再読み込みされます。",
-    "devResetConfirm": "リセット"
+    "devResetConfirm": "リセット",
+    "notifications": "Notifications",
+    "sound": "Sound",
+    "soundSub": "Pack opening and UI sound effects (when available).",
+    "haptics": "Haptics",
+    "hapticsSub": "Vibration feedback for pack opens and key actions."
   },
   "demoBanner": "プレビュー版 — クレジットと報酬はシミュレーションです。",
   "welcome": {
@@ -145,7 +150,33 @@
       "liveHitsKicker": "Live hits",
       "hotFloorChip": "Hot"
     },
-    "guaranteeTradeIn": "即時トレードイン 100%(表示価値)"
+    "guaranteeTradeIn": "即時トレードイン 100%(表示価値)",
+    "guaranteeTradeInLive": "Instant 100% trade-in (listed value) · transparent odds",
+    "filter": {
+      "featured": "注目",
+      "new": "新着",
+      "lowStock": "残りわずか",
+      "all": "すべて"
+    },
+    "featured": {
+      "eyebrow": "FEATURED",
+      "cta": "見る ›"
+    },
+    "recentPulls": {
+      "title": "最近の開封",
+      "sampleBadge": "サンプル",
+      "caption": "表示例です。実際のアクティビティではありません。",
+      "listedUnit": "表記"
+    },
+    "trustStrip": {
+      "zeroFeeTitle": "手数料ゼロ",
+      "zeroFeeSub": "いつでもトレードイン",
+      "listedValueTitle": "表記価格の100%",
+      "listedValueSub": "コインで還元",
+      "freeShipTitle": "送料無料",
+      "freeShipSub": "注文 ",
+      "freeShipThreshold": "$100+"
+    }
   },
   "packs": {
     "browseTitle": "パックを探す",
@@ -231,7 +262,16 @@
     "sectionRequests": "Friend requests",
     "requestHint": "Wants to connect — accept to add them to your squad.",
     "acceptRequest": "Accept",
-    "declineRequest": "Decline"
+    "declineRequest": "Decline",
+    "addModalSubtitle": "Search by username or use a QR code.",
+    "addFriendBtn": "Add friend",
+    "addDividerOr": "or",
+    "addMethodScan": "Scan someone's QR code",
+    "addMethodShowQr": "Show my QR code",
+    "addMethodCopyLink": "Copy invite link",
+    "demoTryTitle": "Try adding",
+    "moreMenuTitle": "More options",
+    "addFriendA11y": "Add friend"
   },
   "rewards": {
     "title": "リワード",
@@ -310,10 +350,13 @@
     "promos": "プロモ"
   },
   "accountRows": {
+    "creditHistory": "クレジット履歴",
     "shipping": "配送先住所",
     "payout": "受取方法",
     "identity": "本人確認",
-    "linked": "連携アカウント"
+    "linked": "連携アカウント",
+    "wallet": "Wallet Address",
+    "shippingOrders": "Shipping Orders"
   },
   "supportRows": {
     "help": "ヘルプセンター",
@@ -353,7 +396,21 @@
     "buyNow": "購入",
     "disclaimer": "購入確定後のキャンセル・返金・ポイント返還はできない場合があります（本番前に確定）。",
     "mockFooter": "シミュレーション — 本番前に実決済に差し替えてください。",
-    "liveFooter": "安全な決済 · 即時反映 · 失効なし"
+    "liveFooter": "安全な決済 · 即時反映 · 失効なし",
+    "demoModeBadge": "Demo Credits / Test Mode",
+    "demoGrantCta": "Grant (demo)",
+    "demoGrantedTitle": "Demo credits added",
+    "demoGrantedBody": "Added {{count}} credits for testing. This is not a real purchase.",
+    "stripeComingSoonBody": "Stripe Top-Up Coming Soon. Live checkout needs EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY plus the create-credit-checkout edge function and webhook.",
+    "iapComingSoonBody": "In-app purchase for credits is coming soon on this platform. Set EXPO_PUBLIC_ALLOW_NATIVE_STRIPE_CREDITS=1 only for non-store Stripe Checkout testing.",
+    "stripeLiveNote": "Pay with Stripe Checkout. Credits land after payment via webhook — your balance refreshes on next hydrate.",
+    "unavailableTitle": "Top-up unavailable",
+    "unavailableCta": "Soon",
+    "checkoutFailedTitle": "Couldn’t start checkout",
+    "checkoutFailedBody": "Stripe Checkout did not open. Try again or contact support.",
+    "checkoutOpenedTitle": "Checkout opened",
+    "checkoutOpenedBody": "Complete payment in the browser. Credits appear after Stripe confirms — pull to refresh your balance if needed.",
+    "comingSoonFooter": "Purchase buttons stay disabled until Stripe or store billing is configured."
   },
   "legalModal": {
     "done": "完了"
@@ -365,7 +422,8 @@
     "copy": "コピー",
     "done": "完了",
     "scanAnother": "他の人のコードをスキャン",
-    "scanAnotherSub": "カメラで相手の QR から追加"
+    "scanAnotherSub": "カメラで相手の QR から追加",
+    "missingUsername": "Set up your username in profile settings to show a QR code."
   },
   "qrScanner": {
     "title": "フレンドQRをスキャン",
@@ -375,7 +433,10 @@
     "hint": "QRを枠内に合わせてください",
     "webTitle": "Webではスキャンできません",
     "webBody": "スマホアプリでフレンドのQRをスキャンするか、フレンドIDを入力してください。",
-    "close": "閉じる"
+    "close": "閉じる",
+    "webPasteLabel": "Or paste a username or invite link",
+    "webPastePlaceholder": "e.g. jordan",
+    "webPasteSubmit": "Look up"
   },
   "sort": {
     "recommended": "おすすめ",
@@ -464,7 +525,6 @@
     "bulkBestHit": "Best hit",
     "bulkRowCredits": "+{{amount}} credits",
     "tier_base": "Base",
-
     "tier_common": "Base",
     "tier_rare": "Base",
     "tier_epic": "Epic",
@@ -492,7 +552,9 @@
     "resultWinVaultLine": "{{value}} vault value",
     "storeInVault": "Store in vault",
     "sharePull": "Share",
-    "shareMessage": "I just pulled {{name}} ({{tier}}) — +{{credits}} credits!"
+    "shareMessage": "I just pulled {{name}} ({{tier}}) — +{{credits}} credits!",
+    "bulkOtherPulls": "Your other pulls",
+    "continueToWonPrizes": "Continue to Won Prizes"
   },
   "insufficientCredits": {
     "title": "クレジット不足",
@@ -533,7 +595,25 @@
     "error": "エラー",
     "close": "Close",
     "cancel": "Cancel",
-    "vs": "vs"
+    "vs": "vs",
+    "retry": "再試行",
+    "copiedBody": "クリップボードにコピーしました。",
+    "copyFailedTitle": "コピーに失敗しました",
+    "copyFailedBody": "クリップボードにコピーできませんでした。",
+    "monthsShort": {
+      "jan": "1月",
+      "feb": "2月",
+      "mar": "3月",
+      "apr": "4月",
+      "may": "5月",
+      "jun": "6月",
+      "jul": "7月",
+      "aug": "8月",
+      "sep": "9月",
+      "oct": "10月",
+      "nov": "11月",
+      "dec": "12月"
+    }
   },
   "social": {
     "profileNavTitle": "プロフィール",
@@ -792,7 +872,9 @@
     "continueCheckout": "チェックアウトへ",
     "physicalStubTitle": "チェックアウト未接続",
     "physicalStubBody": "バックエンドで Stripe PaymentIntent を作成し、返った client secret でクライアントを開いてください。キーはアプリに置かないでください。",
-    "sampleListingTitle": "サンプル出品"
+    "sampleListingTitle": "サンプル出品",
+    "marketplacePreviewNote": "Marketplace Checkout is currently in preview. Live purchases will open in the next release.",
+    "checkoutDisabledCta": "Checkout unavailable"
   },
   "search": {
     "title": "検索",
@@ -859,7 +941,17 @@
     "viewOdds": "提供割合を見る",
     "topHitPreviewTitle": "トップヒットのプレビュー",
     "topHitPreviewFinePrint": "プレビューのみ。デモの画像や数値はリリース前に変更される場合があります。",
-    "whatYouCanPullTitle": "引けるもの"
+    "whatYouCanPullTitle": "引けるもの",
+    "oddsLiveBadge": "Live pool odds",
+    "oddsLiveDisclaimer": "Provably-fair probabilities from the active pack pool. Verify any pull against published weights.",
+    "featuredBadge": "FEATURED",
+    "tradeInRateUnit": "トレードイン · 表記価格",
+    "remainingUnit": "残り",
+    "oddsSummary": "{{tier}} 確率",
+    "listedUnit": "表記",
+    "shipsTitle": "東京から発送",
+    "shipsBody": "日本限定カードを梱包・直送。{{threshold}} 以上で送料無料。",
+    "shipsThreshold": "$100+"
   },
   "splash": {
     "frameKicker": "COLLECTOR VAULT",
@@ -943,7 +1035,9 @@
     "simActiveBody": "{{tier}} is active — your tier’s member packs are unlocked.",
     "simClearLink": "Clear demo membership",
     "ctaSimSameTier": "Grant monthly credits again",
-    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet."
+    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet.",
+    "ctaSubscribePreview": "Activate preview tier",
+    "previewBillingBanner": "Simulated / Preview Tier — no real recurring billing. App Store / Play IAP is not connected yet."
   },
   "promotions": {
     "enterFromAccount": "Rewards & promo code",
@@ -1024,7 +1118,30 @@
     "timerDaysLeft": "{{count}}d left in Vault",
     "timerHoursLeft": "{{count}}h left in Vault",
     "timerEnded": "Hold ended",
-    "listedPill": "Buy now · {{price}}"
+    "listedPill": "Buy now · {{price}}",
+    "shippingOrdersLink": "Shipping orders →",
+    "emptyCta": "Open a Pack →",
+    "emptyFilterTitle": "Nothing in this filter",
+    "emptyFilterBody": "Try another status tab or clear filters to see your full Vault.",
+    "statusConverted": "Traded in",
+    "refreshing": "Refreshing vault…",
+    "refreshErrorTitle": "Couldn’t refresh",
+    "refreshError": "Vaultを更新できませんでした。接続を確認してもう一度お試しください。",
+    "filter": {
+      "all": "All",
+      "vaulted": "Vaulted",
+      "pending": "Pending",
+      "shipped": "Shipped",
+      "converted": "Traded In"
+    },
+    "sortLabel": "Sort",
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "value_high": "Highest value",
+      "value_low": "Lowest value"
+    },
+    "listedBadge": "出品中"
   },
   "wonPrizesModal": {
     "title": "Cash out or Vault",
@@ -1079,7 +1196,11 @@
     "tradeSoonBody": "Peer trades will open from Vault — send offers, counter, and lock in when both sides agree (separate from fixed-price shop).",
     "shipStatusLine": "Shipment is queued for this item. We’ll notify you when the label is ready.",
     "readOnly": "This item isn’t editable from here.",
-    "close": "Close"
+    "close": "Close",
+    "convertedStatusLine": "Traded in for credits — shipping and listing actions are closed for this item.",
+    "carrierLine": "Carrier · {{carrier}}",
+    "trackingLine": "Tracking · {{tracking}}",
+    "trackingPending": "Tracking not assigned yet — check Shipping orders for updates."
   },
   "vaultList": {
     "title": "Vault Exchange listing",
@@ -1133,7 +1254,8 @@
       "offerBody": "Production: send a trade or cash offer thread — separate from fixed-price Buy now.",
       "askTitle": "Ask availability (demo)",
       "askBody": "Production: a light nudge to {{handle}} — still not a purchase until they list or accept."
-    }
+    },
+    "checkoutDisabledCta": "Checkout unavailable"
   },
   "progression": {
     "rankBand_0": "Studio regular",
@@ -1186,7 +1308,10 @@
     "empty": "一致するものがありません"
   },
   "packOdds": {
-    "kicker": "パック提供割合"
+    "kicker": "パック提供割合",
+    "liveNote": "Disclosed probabilities from the active pack pool. Rates reflect current pool weights.",
+    "demoNote": "サンプル確率です。オンラインのパックではライブ確率が表示されます。",
+    "liveDisclaimer": "開封後、公開されたプール比率に基づいて結果を検証できます。"
   },
   "packOpeningEngine": {
     "brandTitle": "PULL HUB",
@@ -1209,5 +1334,210 @@
   },
   "credits": {
     "abbrev": "CR"
+  },
+  "shippingOrders": {
+    "navTitle": "Shipping orders",
+    "lead": "Active and past shipments — tracking appears here once a carrier is assigned.",
+    "manageAddress": "Manage shipping address →",
+    "loading": "Loading orders…",
+    "loadError": "Couldn’t load shipping orders.",
+    "retry": "Try again",
+    "offlineNote": "発送履歴にはサインインが必要です。プレビューでは空のリストが表示されます。",
+    "emptyTitle": "No shipments yet",
+    "emptyBody": "Request shipment from a Vault item to see orders here.",
+    "orderId": "Order {{id}}…",
+    "created": "Requested {{when}}",
+    "shippedAt": "Shipped {{when}}",
+    "itemCount_one": "{{count}} item",
+    "itemCount_other": "{{count}} items",
+    "fee": "Fee · {{credits}} credits",
+    "carrier": "Carrier · {{carrier}}",
+    "tracking": "Tracking · {{tracking}}",
+    "trackingPending": "Tracking not assigned yet",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
+  },
+  "creditHistory": {
+    "navTitle": "Credit history",
+    "lead": "Every credit change on your account — pack opens, trade-ins, top-ups, and refunds.",
+    "currentBalance": "Current balance · {{balance}}",
+    "balanceAfter": "Bal. {{balance}}",
+    "loading": "Loading ledger…",
+    "loadError": "取引を読み込めませんでした。接続を確認してもう一度お試しください。",
+    "retry": "Try again",
+    "offlineNote": "クレジット履歴にはサインインが必要です。プレビューでは空のリストが表示されます。",
+    "emptyTitle": "No ledger entries yet",
+    "emptyBody": "Open a pack or trade in a card to see credit movements here.",
+    "type": {
+      "packPull": "パック開封",
+      "tradeIn": "トレードイン",
+      "topUp": "チャージ",
+      "refund": "返金",
+      "other": "その他"
+    }
+  },
+  "futureUpdate": {
+    "badge": "Coming in a future update",
+    "plannedTitle": "Planned (not available yet)"
+  },
+  "deleteAccount": {
+    "section": "Danger zone",
+    "lead": "Permanently deletes your Pull Hub account with our sign-in provider and clears local data on this device. This cannot be undone.",
+    "cta": "Delete account",
+    "confirmTitle": "Delete your account?",
+    "confirmBody": "Your Clerk account will be deleted and local vault/history on this device will be cleared. Language and preference toggles stay on the device.",
+    "confirmAction": "Delete forever",
+    "doneTitle": "Account deleted",
+    "doneBody": "Your account has been removed. You can create a new one anytime.",
+    "errorTitle": "Couldn’t delete account",
+    "errorBody": "Something went wrong. Try again or contact support.",
+    "localLead": "You’re browsing without a cloud account. This clears local vault, friends, and onboarding data on this device.",
+    "localCta": "Clear local data",
+    "localConfirmTitle": "Clear local data?",
+    "localConfirmBody": "Removes guest session data and vault history on this device. Preferences like language and sound stay.",
+    "localConfirmAction": "Clear data",
+    "localDoneTitle": "Local data cleared",
+    "localDoneBody": "This device is reset to a fresh guest session."
+  },
+  "walletLinking": {
+    "navTitle": "Wallet address",
+    "lead": "Link your Base wallet to receive Digital Twin NFTs when you ship high-tier pulls from your vault.",
+    "fieldLabel": "EVM wallet address",
+    "placeholder": "0x…",
+    "hint": "Must start with 0x and be 42 characters (Base / Ethereum format).",
+    "save": "Save wallet address",
+    "savedTitle": "Saved",
+    "savedBody": "Your wallet address was saved. NFTs will mint to this address when you request shipping.",
+    "saveFailed": "Could not save. Try again.",
+    "invalidTitle": "Invalid address",
+    "invalidBody": "Enter a valid EVM address (0x followed by 40 hex characters).",
+    "notSignedIn": "Sign in to save your wallet address.",
+    "notConfigured": "このビルドではウォレット連携を利用できません。",
+    "authFailed": "セッションを確認できませんでした。サインアウトして再度サインインしてください。"
+  },
+  "cardMarket": {
+    "yours": "YOURS",
+    "listed": "Listed",
+    "previewCta": "Preview",
+    "ownListingTitle": "Your listing",
+    "ownListingBody": "This is your own listing. Visit your Vault to manage it.",
+    "previewTitle": "Marketplace preview",
+    "previewBody": "“{{title}}” (${{price}}) — Marketplace Checkout is currently in preview. Live purchases will open in the next release."
+  },
+  "alerts": {
+    "generic": {
+      "title": "エラーが発生しました",
+      "body": "接続を確認して、もう一度お試しください。"
+    },
+    "missingLink": {
+      "title": "リンクを開けません",
+      "body": "このリンクは現在利用できません。しばらくしてからお試しください。"
+    },
+    "cannotOpenLink": {
+      "title": "リンクを開けません",
+      "body": "リンクを開けませんでした。しばらくしてからお試しください。"
+    },
+    "openLinkFailed": "{{label}} を開けませんでした。",
+    "openLinkFailedGeneric": "リンクを開けませんでした。",
+    "shareCopiedTitle": "クリップボードにコピーしました",
+    "shareCopiedBody": "どこにでも貼り付けてシェアできます。",
+    "packOpen": {
+      "signInTitle": "サインインが必要です",
+      "signInBody": "パックを開くにはサインインしてください。",
+      "alreadyTitle": "処理済みです",
+      "alreadyBody": "このパック開封はすでに記録されています。",
+      "alreadyBulkBody": "この一括開封はすでに記録されています。",
+      "connectionTitle": "接続エラー",
+      "failedTitle": "パックを開けませんでした",
+      "failedBody": "パック開封を完了できませんでした。もう一度お試しください。",
+      "welcomeUsedTitle": "ウェルカムパック使用済み",
+      "welcomeUsedBody": "You’ve already claimed this welcome pack."
+    },
+    "tradeIn": {
+      "unavailableTitle": "トレードインできません",
+      "unavailableBody": "Vaultにこのカードが見つかりません。更新してからもう一度お試しください。",
+      "failedTitle": "トレードインに失敗しました",
+      "failedBody": "トレードインを完了できませんでした。もう一度お試しください。"
+    },
+    "shipping": {
+      "unavailableTitle": "発送できません",
+      "unavailableBody": "発送は現在利用できません。しばらくしてからお試しください。",
+      "addressRequiredTitle": "配送先住所が必要です",
+      "addressRequiredBody": "発送前に配送先住所を追加してください。",
+      "insufficientTitle": "クレジット不足",
+      "insufficientBody": "送料に必要なクレジットが不足しています。",
+      "failedTitle": "発送リクエストに失敗しました",
+      "failedBody": "発送を開始できませんでした。もう一度お試しください。"
+    },
+    "serviceUnavailable": {
+      "title": "一時的に利用できません",
+      "body": "この機能は現在利用できません。しばらくしてからお試しください。"
+    }
+  },
+  "resultScreen": {
+    "headerLabel": "PULL RECORD",
+    "stampSuffix": "JST · TOKYO",
+    "totalListedValue": "表記価格合計",
+    "cardCount": "{{count}} 枚",
+    "ctaTradeInAll": "すべてトレードイン — {{coins}} コイン",
+    "ctaTradeIn": "トレードイン — {{coins}} コイン",
+    "disclaimer": "表記価格の100%をコインで還元。",
+    "keepInVault": "Vaultに保管",
+    "pullAgain": "もう一度引く",
+    "fairnessFooter": "確率適用済み · 公平性レコード →",
+    "sheet": {
+      "titleMulti": "{{count}} 枚をトレードインしますか？",
+      "titleOne": "1枚をトレードインしますか？",
+      "amountSub": "コイン · 表記価格の100%",
+      "bodyMulti": "{{count}} 枚すべてが表記価格でコインに交換されます。",
+      "bodyOne": "このカードは表記価格でコインに交換されます。",
+      "confirm": "トレードイン"
+    }
+  },
+  "fairness": {
+    "record": {
+      "title": "公平性レコード",
+      "method": "開封前にサーバー側の秘密値を確定します。開封後、結果がその確定値と一致することを確認できます。",
+      "serverCommitment": "サーバー確定値",
+      "clientSeed": "あなたのシード",
+      "openingNumber": "開封番号",
+      "pending": "ライブ開封後に検証情報が表示されます。プレビュー開封は検証できません。",
+      "verifyCta": "検証する →"
+    },
+    "verify": {
+      "title": "公平性を検証",
+      "body": "ライブ開封では抽選前にサーバー秘密値を確定し、あなたのシードと合わせて結果の公平性を確認できます。",
+      "empty": "検証レコードがまだありません。サインインしてパックを開くと、確認できる情報が表示されます。",
+      "closeA11y": "閉じる",
+      "tapToCopy": "タップしてコピー",
+      "rows": {
+        "pullId": "開封ID",
+        "algorithm": "方式",
+        "serverHash": "サーバー確定値",
+        "revealedSeed": "公開されたサーバー値",
+        "clientSeed": "あなたのシード",
+        "digest": "結果ダイジェスト",
+        "opening": "開封 / シリアル"
+      }
+    }
+  },
+  "creditsPill": {
+    "a11yHistory": "クレジット履歴",
+    "a11yAdd": "クレジットを追加"
+  },
+  "appHeader": {
+    "searchA11y": "パックを検索"
+  },
+  "packRing": {
+    "unavailableTitle": "開封シーンを表示できません",
+    "loadFailed": "開封シーンを読み込めませんでした。接続を確認してもう一度お試しください。",
+    "misconfigured": "開封シーンは現在利用できません。しばらくしてからお試しください。",
+    "retry": "再試行",
+    "loading": "開封シーンを読み込み中…"
   }
 }

@@ -37,6 +37,11 @@ export interface Pull {
   vaultExchangeListUsd?: number;
   /** Live vault row id (`user_vault_items.id`) when synced from server. */
   vaultItemId?: string;
+  /** Shipping order id when fulfillment was requested. */
+  shippingOrderId?: string;
+  /** Carrier / tracking once the order is marked shipped. */
+  shippingCarrier?: string | null;
+  shippingTrackingNumber?: string | null;
 }
 
 export interface UserState {

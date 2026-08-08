@@ -18,6 +18,7 @@ echo "==> 3/4 deploy edge functions"
 npx supabase functions deploy execute-pull
 npx supabase functions deploy request-shipment
 npx supabase functions deploy stripe-webhook
+npx supabase functions deploy create-credit-checkout
 npx supabase functions deploy mint-retry
 
 echo "==> 4/4 smoke live health checks"

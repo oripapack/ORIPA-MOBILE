@@ -5,7 +5,6 @@ import {
   Easing,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -17,6 +16,7 @@ import * as Haptics from 'expo-haptics';
 import { useTranslation } from 'react-i18next';
 import { brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
+import { runHapticIfEnabled } from '../../../audio/hapticsGate';
 import { ReelPackShell } from '../opening/ReelPackShell';
 
 const WIN_W = Dimensions.get('window').width;
@@ -338,9 +338,7 @@ export function PackSelectionCarousel({
   const onPackPress = useCallback(
     (i: number) => {
       if (!interactionEnabled) return;
-      if (Platform.OS !== 'web') {
-        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
-      }
+      runHapticIfEnabled(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium));
       onSelectIndex(i);
     },
     [interactionEnabled, onSelectIndex],

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import WebView from 'react-native-webview';
+import { useTranslation } from 'react-i18next';
 import type { RingPackOpenFlowProps } from './ringTypes';
 import { tierToRingRarity } from './ringRarity';
 import { getPackRingWebBaseUrl } from '../../../../config/packRingWebUrl';
@@ -14,6 +15,7 @@ import { spacing } from '../../../../tokens/spacing';
  * (`pack-ring-server/opening-3d.html`, co-started by `npm start` on :3000).
  */
 export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
+  const { t } = useTranslation();
   const [failed, setFailed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [reloadKey, setReloadKey] = useState(0);
@@ -61,15 +63,13 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
     return (
       <View style={styles.fill}>
         <View style={styles.errorBox}>
-          <Text style={styles.errorTitle}>Pack scene unavailable</Text>
+          <Text style={styles.errorTitle}>{t('packRing.unavailableTitle')}</Text>
           <Text style={styles.errorBody}>
-            {uri
-              ? 'The 3D opening scene could not load. Make sure `npm start` is running (it starts the scene server automatically).'
-              : 'Set EXPO_PUBLIC_PACK_RING_WEB_URL in .env to your Mac IP, e.g. http://192.168.11.14:3000'}
+            {uri ? t('packRing.loadFailed') : t('packRing.misconfigured')}
           </Text>
           {uri ? (
             <Pressable onPress={retry} style={styles.retryBtn}>
-              <Text style={styles.retryText}>Retry</Text>
+              <Text style={styles.retryText}>{t('packRing.retry')}</Text>
             </Pressable>
           ) : null}
         </View>
@@ -116,7 +116,7 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
       {loading ? (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color={sg.gold} />
-          <Text style={styles.loadingText}>Loading pack scene…</Text>
+          <Text style={styles.loadingText}>{t('packRing.loading')}</Text>
         </View>
       ) : null}
     </View>

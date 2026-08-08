@@ -118,6 +118,19 @@ export type InvokeEdgeResult<T> =
   | { ok: true; data: T }
   | { ok: false; status?: number; code: string; message: string };
 
+/** Provably-fair fields returned by `execute-pull` on a fresh (non-replay) open. */
+export type ExecutePullFairness = {
+  algo: string;
+  digest_hex: string;
+  canonical_message?: string;
+  accepted_uint32?: number;
+  slot_index?: number;
+  total_weight?: number;
+  stream_block?: number;
+  stream_word_index?: number;
+  rejection_limit?: number;
+};
+
 export type ExecutePullResponse = {
   pull_id: string;
   status?: string;
@@ -126,6 +139,9 @@ export type ExecutePullResponse = {
   credit_cost?: number;
   balance_after?: number;
   transaction_id?: string;
+  hashed_server_seed?: string;
+  revealed_server_seed?: string;
+  fairness?: ExecutePullFairness;
   won_item_id: string;
   card_name: string;
   serial_number: string;
@@ -133,6 +149,18 @@ export type ExecutePullResponse = {
   idempotency_key: string;
   vault_item_id?: string;
   vault_item?: VaultItem;
+};
+
+/** Client-side fairness snapshot for verify UI (commit–reveal). */
+export type PullFairnessRecord = {
+  pullId: string;
+  clientSeed: string;
+  hashedServerSeed: string;
+  revealedServerSeed?: string;
+  digestHex?: string;
+  algo?: string;
+  /** Serial / opening identifier when available. */
+  openingNumber?: string;
 };
 
 export type BulkPullLiveResult = {
@@ -143,6 +171,7 @@ export type BulkPullLiveResult = {
   balanceAfter?: number;
   vaultItemId?: string;
   tradeInValueCredits?: number;
+  fairness?: PullFairnessRecord;
 };
 
 export type ExecuteBulkPullResponse = {

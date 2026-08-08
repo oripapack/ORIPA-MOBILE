@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { sg } from '../tokens/sg';
 import { View, Text, ScrollView, Switch, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -8,21 +8,19 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import {
+  useNotificationPreferencesStore,
+  type NotificationToggleKey,
+} from '../store/notificationPreferencesStore';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Notifications'>;
-
-type ToggleKey = 'order' | 'drops' | 'promos' | 'social';
 
 export function NotificationsScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
-  const [toggles, setToggles] = useState<Record<ToggleKey, boolean>>({
-    order: true,
-    drops: true,
-    promos: false,
-    social: true,
-  });
+  const toggles = useNotificationPreferencesStore((s) => s.toggles);
+  const setToggle = useNotificationPreferencesStore((s) => s.setToggle);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -35,7 +33,7 @@ export function NotificationsScreen() {
     });
   }, [navigation, t]);
 
-  const keys: ToggleKey[] = ['order', 'drops', 'promos', 'social'];
+  const keys: NotificationToggleKey[] = ['order', 'drops', 'promos', 'social'];
 
   return (
     <ScrollView
@@ -53,7 +51,7 @@ export function NotificationsScreen() {
           </View>
           <Switch
             value={toggles[key]}
-            onValueChange={(v) => setToggles((s) => ({ ...s, [key]: v }))}
+            onValueChange={(v) => void setToggle(key, v)}
             trackColor={{ false: sg.line, true: sg.gold }}
             thumbColor={sg.text}
           />

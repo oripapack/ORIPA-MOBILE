@@ -14,6 +14,7 @@ import { useIsFocused } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
+import { runHapticIfEnabled } from '../audio/hapticsGate';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { sg } from '../tokens/sg';
@@ -199,9 +200,9 @@ export function FriendsScreen() {
     }
     const link = `${PUBLIC_WEB_ORIGIN}?r=${encodeURIComponent(handle)}`;
     await Clipboard.setStringAsync(link);
-    if (Platform.OS !== 'web') {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    }
+    runHapticIfEnabled(() =>
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
+    );
     showUserMessage(t('friendsAlerts.copiedTitle'), t('friendsAlerts.copiedBody'));
   }, [user.username, t]);
 

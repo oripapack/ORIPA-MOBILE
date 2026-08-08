@@ -11,10 +11,29 @@ import type {
   ExecutePullResponse,
   LedgerErrorCode,
   PackRollResult,
+  PullFairnessRecord,
   PullRarityTier,
   SupabaseFunctionsClient,
 } from './types';
 import { legacyTierToN2 } from '../../src/lib/n2Rarity';
+
+export function fairnessFromExecuteResponse(
+  response: ExecutePullResponse,
+  clientSeed: string,
+): PullFairnessRecord | undefined {
+  if (!response.hashed_server_seed && !response.revealed_server_seed && !response.fairness) {
+    return undefined;
+  }
+  return {
+    pullId: response.pull_id,
+    clientSeed,
+    hashedServerSeed: response.hashed_server_seed ?? '',
+    revealedServerSeed: response.revealed_server_seed,
+    digestHex: response.fairness?.digest_hex,
+    algo: response.fairness?.algo,
+    openingNumber: response.serial_number,
+  };
+}
 
 export {
   idempotencyKeyForBulkPull,
@@ -135,8 +154,9 @@ export async function executeBulkPullLive(
 
   for (let i = 0; i < quantity; i += 1) {
     const idempotencyKey = idempotencyKeyForBulkPull(batchId, i);
+    const clientSeed = newClientSeed();
     const pullResult = await executePullLive(client, {
-      clientSeed: newClientSeed(),
+      clientSeed,
       packVersionId: input.packVersionId,
       idempotencyKey,
       packCreditPrice: input.packCreditPrice,
@@ -158,6 +178,7 @@ export async function executeBulkPullLive(
       balanceAfter: response.balance_after,
       vaultItemId: response.vault_item_id ?? response.vault_item?.id,
       tradeInValueCredits: response.vault_item?.trade_in_value_credits,
+      fairness: fairnessFromExecuteResponse(response, clientSeed),
     });
   }
 

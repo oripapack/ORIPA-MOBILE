@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { sg } from '../tokens/sg';
 import { SgCard, SgData, SgSectionHeader, SgTierTag } from '../components/ui';
 import { SgFairnessRecord } from '../components/pack/sg/SgFairnessRecord';
+import { FairnessVerifyModal } from '../components/fairness/FairnessVerifyModal';
 import { PackVisual } from '../components/ph/PackVisual';
 import { spacing } from '../tokens/spacing';
 import { screenRoot, screenScroll, screenFooter } from '../tokens/layout';
@@ -36,8 +37,10 @@ export function PackDetailsScreen({ route }: Props) {
   const openPack = useAppStore((s) => s.openPack);
   const isPackOpening = useAppStore((s) => s.modals.packOpening);
   const awaitingFulfillment = useAppStore((s) => s.pendingFulfillmentPullIds.length > 0);
+  const lastFairnessRecord = useAppStore((s) => s.lastFairnessRecord);
   const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
   const [oddsOpen, setOddsOpen] = useState(false);
+  const [fairnessOpen, setFairnessOpen] = useState(false);
   const [openQuantity, setOpenQuantity] = useState<PackOpenQuantity>(1);
 
   const pack = useMemo<Pack | undefined>(
@@ -150,12 +153,12 @@ export function PackDetailsScreen({ route }: Props) {
           <View style={styles.heroBadges}>
             {pack.isFeatured ? (
               <View style={styles.featuredChip}>
-                <Text style={styles.featuredChipText}>FEATURED</Text>
+                <Text style={styles.featuredChipText}>{t('packDetails.featuredBadge')}</Text>
               </View>
             ) : null}
             {/* Trade-in is structurally 100% of listed value (coin economy) —
                 there is no per-pack rate, so this is fixed copy, not data. */}
-            <SgData value="100%" unit="trade-in · listed value" size="sm" tone="gold" />
+            <SgData value="100%" unit={t('packDetails.tradeInRateUnit')} size="sm" tone="gold" />
           </View>
           <Text style={styles.heroTitle}>{loc.title}</Text>
           <Text style={styles.heroSet}>{pack.tagline ?? loc.valueDescription}</Text>
@@ -184,7 +187,7 @@ export function PackDetailsScreen({ route }: Props) {
               <Text style={styles.specLabel}>{t('packDetails.specRemainingLabel')}</Text>
               <SgData
                 value={`${pack.remainingInventory.toLocaleString()} / ${pack.totalInventory.toLocaleString()}`}
-                unit="left"
+                unit={t('packDetails.remainingUnit')}
                 size="sm"
               />
             </View>
@@ -203,7 +206,7 @@ export function PackDetailsScreen({ route }: Props) {
             {topOddsRow ? (
               <View style={styles.oddsSummary}>
                 <Text style={styles.oddsSummaryLabel}>
-                  {topOddsRow.tier.toUpperCase()} odds{' '}
+                  {t('packDetails.oddsSummary', { tier: topOddsRow.tier.toUpperCase() })}{' '}
                   <Text style={styles.oddsSummaryValue}>{topOddsRow.chance}</Text>
                 </Text>
                 <TouchableOpacity onPress={() => setOddsOpen(true)} activeOpacity={0.86} style={styles.oddsBtn}>
@@ -225,7 +228,7 @@ export function PackDetailsScreen({ route }: Props) {
                   <Text style={styles.topHitName} numberOfLines={2}>
                     {topHit.name}
                   </Text>
-                  <SgData value={topHit.estValue} unit="listed" size="sm" tone="gold" />
+                  <SgData value={topHit.estValue} unit={t('packDetails.listedUnit')} size="sm" tone="gold" />
                   {/* Printed card rarity — a separate field from tier (§6): never merged into the tier slot */}
                   <SgData value={topHit.rarity.toUpperCase()} size="sm" />
                   {/* isChase (boolean) is the only card→tier link: true → MYTHIC, false → UNKNOWN (tag renders nothing) */}
@@ -265,17 +268,21 @@ export function PackDetailsScreen({ route }: Props) {
           <SgCard>
             <View style={styles.shipRow}>
               <View style={styles.shipBody}>
-                <Text style={styles.shipTitle}>Ships from Tokyo</Text>
+                <Text style={styles.shipTitle}>{t('packDetails.shipsTitle')}</Text>
                 <Text style={styles.sectionBody}>
-                  Japanese exclusives, packed and shipped direct. Free shipping on orders{' '}
-                  <Text style={styles.inlineNum}>$100+</Text>.
+                  {t('packDetails.shipsBody', {
+                    threshold: t('packDetails.shipsThreshold'),
+                  })}
                 </Text>
               </View>
             </View>
           </SgCard>
 
-          {/* ── 9. Fairness record (mock values until provably-fair wiring) ── */}
-          <SgFairnessRecord />
+          {/* ── 9. Fairness record (live seeds after execute-pull) ── */}
+          <SgFairnessRecord
+            record={lastFairnessRecord}
+            onVerify={() => setFairnessOpen(true)}
+          />
         </View>
       </ScrollView>
 
@@ -337,6 +344,11 @@ export function PackDetailsScreen({ route }: Props) {
       </View>
 
       <PackOddsModal visible={oddsOpen} onClose={() => setOddsOpen(false)} packTitle={loc.title} odds={odds} />
+      <FairnessVerifyModal
+        visible={fairnessOpen}
+        onClose={() => setFairnessOpen(false)}
+        record={lastFairnessRecord}
+      />
     </View>
   );
 }

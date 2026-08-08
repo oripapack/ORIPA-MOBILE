@@ -12,7 +12,7 @@
     "deploy:all": "bash scripts/deploy-all.sh",
     "smoke:live-packs": "node ../scripts/smoke-live-packs.mjs",
     "link": "npx supabase link",
-    "functions:deploy": "npx supabase functions deploy execute-pull && npx supabase functions deploy request-shipment && npx supabase functions deploy stripe-webhook && npx supabase functions deploy mint-retry",
+    "functions:deploy": "npx supabase functions deploy execute-pull && npx supabase functions deploy request-shipment && npx supabase functions deploy stripe-webhook && npx supabase functions deploy create-credit-checkout && npx supabase functions deploy mint-retry",
     "secrets:setup": "echo 'Execute manual script to populate production secrets for Stripe, Base minting, and Cron'"
   }
 }

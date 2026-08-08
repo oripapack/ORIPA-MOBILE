@@ -14,13 +14,15 @@ import { VaultFramedCard } from '../shared/VaultFramedCard';
 const INFINITE_CREDITS = 100_000_000;
 
 /**
- * Admin-only tools (grant / reset credits). Visible only to accounts flagged as admin
+ * Admin-only tools (grant / reset credits). Visible only in `__DEV__` builds,
+ * and only to accounts flagged as admin when Clerk is enabled
  * (Clerk `publicMetadata.role === 'admin'` or listed in `config/admin.ts`).
- * When Clerk is disabled, shows in dev builds only so the powers stay reachable.
+ * When Clerk is disabled, still `__DEV__`-only.
  */
 export function AdminToolsSection() {
+  if (!__DEV__) return null;
   if (!isClerkEnabled) {
-    return __DEV__ ? <AdminToolsCard /> : null;
+    return <AdminToolsCard />;
   }
   return <AdminToolsGate />;
 }

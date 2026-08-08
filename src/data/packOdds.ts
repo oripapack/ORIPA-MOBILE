@@ -23,7 +23,7 @@ export type PackOdds = {
 export const EMPTY_PACK_ODDS: PackOdds = { rows: [], note: '' };
 
 const STATIC_FALLBACK_NOTE =
-  'Demo probabilities — connect Supabase for live pool odds.';
+  'Sample odds — live odds appear when this pack is online.';
 
 const LIVE_NOTE =
   'Disclosed probabilities from the active pack pool. Rates reflect current pool weights.';

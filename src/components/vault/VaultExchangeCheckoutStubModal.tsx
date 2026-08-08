@@ -6,9 +6,9 @@ import { sgVault } from '../../tokens/sgVault';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
-import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
 import { formatVaultExchangeUsd } from '../../lib/vaultExchange';
+import { FutureUpdateBadge } from '../shared/FutureUpdateBadge';
 
 type Props = {
   visible: boolean;
@@ -16,16 +16,14 @@ type Props = {
   itemTitle: string;
   listPriceUsd: number;
   onClose: () => void;
-  /** Demo: completes purchase without real PSP (production: Stripe PaymentSheet). */
-  onSimulatePaid: () => void;
 };
 
+/** Honest preview modal — no simulated card charge. */
 export function VaultExchangeCheckoutStubModal({
   visible,
   itemTitle,
   listPriceUsd,
   onClose,
-  onSimulatePaid,
 }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -35,6 +33,7 @@ export function VaultExchangeCheckoutStubModal({
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={onClose} />
         <View style={[styles.card, { paddingBottom: insets.bottom + spacing.lg }]}>
+          <FutureUpdateBadge />
           <Text style={styles.kicker}>{t('vaultExchange.checkoutKicker')}</Text>
           <Text style={styles.title}>{t('vaultExchange.checkoutTitle')}</Text>
           <Text style={styles.item} numberOfLines={2}>
@@ -42,11 +41,9 @@ export function VaultExchangeCheckoutStubModal({
           </Text>
           <Text style={styles.price}>{formatVaultExchangeUsd(listPriceUsd)}</Text>
           <Text style={styles.body}>{t('vaultExchange.checkoutBody')}</Text>
-          <PrimaryButton
-            label={t('vaultExchange.checkoutSimulateCta', { price: formatVaultExchangeUsd(listPriceUsd) })}
-            onPress={onSimulatePaid}
-            style={styles.primary}
-          />
+          <View style={styles.disabledCta} accessibilityState={{ disabled: true }}>
+            <Text style={styles.disabledCtaText}>{t('vaultExchange.checkoutDisabledCta')}</Text>
+          </View>
           <SecondaryButton label={t('vaultExchange.checkoutCancel')} onPress={onClose} />
         </View>
       </View>
@@ -96,5 +93,21 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: spacing.lg,
   },
-  primary: { marginBottom: spacing.sm },
+  disabledCta: {
+    minHeight: 52,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: sgVault.line,
+    backgroundColor: sgVault.surface2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.md,
+  },
+  disabledCtaText: {
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: sgVault.muted,
+    textAlign: 'center',
+  },
 });

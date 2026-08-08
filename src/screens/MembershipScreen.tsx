@@ -13,17 +13,18 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MembershipTierCard } from '../components/membership/MembershipTierCard';
 import { MEMBERSHIP_PLANS, type MembershipTierId } from '../data/membershipPlans';
-import { useAppStore } from '../store/useAppStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { RootStackParamList } from '../navigation/types';
 import { confirmUserAction, showUserMessage } from '../utils/showUserMessage';
+import { FutureUpdateBadge } from '../components/shared/FutureUpdateBadge';
+import { isMembershipBillingLive } from '../config/payments';
 
 type Nav = StackNavigationProp<RootStackParamList, 'Membership'>;
 
 /**
- * Paid membership (会員) — simulate tier in MVP (persisted); IAP later.
+ * Paid membership (会員) — simulate tier for preview; IAP not connected.
  */
 export function MembershipScreen() {
   const { t } = useTranslation();
@@ -31,8 +32,8 @@ export function MembershipScreen() {
   const navigation = useNavigation<Nav>();
   const simulatedTier = useMembershipSimulationStore((s) => s.simulatedTier);
   const setSimulatedTier = useMembershipSimulationStore((s) => s.setSimulatedTier);
-  const addCredits = useAppStore((s) => s.addCredits);
   const [selectedId, setSelectedId] = useState<MembershipTierId>('gold');
+  const billingLive = isMembershipBillingLive();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -52,16 +53,20 @@ export function MembershipScreen() {
   const onSubscribe = useCallback(() => {
     const plan = MEMBERSHIP_PLANS.find((p) => p.id === selectedId);
     if (!plan) return;
+    if (billingLive) {
+      showUserMessage(t('membership.demoAlertTitle'), t('membership.demoAlertBody', {
+        tier: t(`membership.tierName_${plan.id}`),
+      }));
+      return;
+    }
     setSimulatedTier(plan.id);
-    addCredits(plan.monthlyCoins);
     showUserMessage(
       t('membership.simActivatedTitle'),
       t('membership.simActivatedBody', {
         tier: t(`membership.tierName_${plan.id}`),
-        coins: plan.monthlyCoins.toLocaleString(),
       }),
     );
-  }, [addCredits, selectedId, setSimulatedTier, t]);
+  }, [billingLive, selectedId, setSimulatedTier, t]);
 
   const onClearSimulation = useCallback(() => {
     confirmUserAction({
@@ -81,6 +86,11 @@ export function MembershipScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.badgePad}>
+          <FutureUpdateBadge />
+          <Text style={styles.previewBanner}>{t('membership.previewBillingBanner')}</Text>
+        </View>
+
         {simulatedTier ? (
           <View style={styles.activeBanner}>
             <Text style={styles.activeBannerTitle}>{t('membership.simActiveTitle')}</Text>
@@ -124,7 +134,7 @@ export function MembershipScreen() {
           <Text style={styles.ctaText}>
             {simulatedTier === selectedId
               ? t('membership.ctaSimSameTier')
-              : t('membership.ctaSubscribe')}
+              : t('membership.ctaSubscribePreview')}
           </Text>
         </TouchableOpacity>
         <Text style={styles.ctaHint}>{t('membership.ctaSimHint')}</Text>
@@ -140,6 +150,20 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
+  },
+  badgePad: {
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.md,
+  },
+  previewBanner: {
+    fontSize: fontSize.xs,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.gold,
+    backgroundColor: 'rgba(232,197,71,0.12)',
+    padding: spacing.sm,
+    borderRadius: radius.md,
+    lineHeight: 18,
+    marginBottom: spacing.sm,
   },
   activeBanner: {
     marginHorizontal: spacing.base,

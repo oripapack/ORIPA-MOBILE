@@ -37,7 +37,7 @@ export async function instantTradeInLive(input: {
     return {
       ok: false,
       code: 'VAULT_OFFLINE',
-      message: 'Live vault is not configured',
+      message: 'Vault isn’t available right now. Please try again later.',
     };
   }
 

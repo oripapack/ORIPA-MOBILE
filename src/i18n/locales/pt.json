@@ -108,7 +108,25 @@
     "friendIdCopied": "Friend ID copiado para a área de transferência.",
     "close": "Close",
     "cancel": "Cancel",
-    "vs": "vs"
+    "vs": "vs",
+    "retry": "Retry",
+    "copiedBody": "Value copied to clipboard.",
+    "copyFailedTitle": "Copy failed",
+    "copyFailedBody": "Could not copy to clipboard.",
+    "monthsShort": {
+      "jan": "JAN",
+      "feb": "FEB",
+      "mar": "MAR",
+      "apr": "APR",
+      "may": "MAY",
+      "jun": "JUN",
+      "jul": "JUL",
+      "aug": "AUG",
+      "sep": "SEP",
+      "oct": "OCT",
+      "nov": "NOV",
+      "dec": "DEC"
+    }
   },
   "helpCenter": {
     "navTitle": "Central de ajuda",
@@ -251,7 +269,12 @@
     "devResetLocalOnboarding": "Redefinir onboarding local",
     "devResetAlertTitle": "Redefinir onboarding local?",
     "devResetAlertBody": "Limpa flags de convidado/onboarding, dicas, banner de boas-vindas e aviso de simulação neste dispositivo. Você continuará conectado. O app será recarregado.",
-    "devResetConfirm": "Redefinir"
+    "devResetConfirm": "Redefinir",
+    "notifications": "Notifications",
+    "sound": "Sound",
+    "soundSub": "Pack opening and UI sound effects (when available).",
+    "haptics": "Haptics",
+    "hapticsSub": "Vibration feedback for pack opens and key actions."
   },
   "demoBanner": "Build de prévia — créditos e recompensas simulados.",
   "home": {
@@ -278,6 +301,33 @@
       "railGradedSub": "Slabbed pulls and graded chase — curated for collectors.",
       "liveHitsKicker": "Live hits",
       "hotFloorChip": "Hot"
+    },
+    "guaranteeTradeIn": "Instant 100% trade-in (listed value)",
+    "guaranteeTradeInLive": "Instant 100% trade-in (listed value) · transparent odds",
+    "filter": {
+      "featured": "Featured",
+      "new": "New",
+      "lowStock": "Low stock",
+      "all": "All"
+    },
+    "featured": {
+      "eyebrow": "FEATURED",
+      "cta": "VIEW ›"
+    },
+    "recentPulls": {
+      "title": "Just Pulled",
+      "sampleBadge": "SAMPLE",
+      "caption": "Example pulls — not real activity.",
+      "listedUnit": "listed"
+    },
+    "trustStrip": {
+      "zeroFeeTitle": "Zero-fee",
+      "zeroFeeSub": "trade-in, always",
+      "listedValueTitle": "100% listed value",
+      "listedValueSub": "back in Coins",
+      "freeShipTitle": "Free shipping",
+      "freeShipSub": "on orders ",
+      "freeShipThreshold": "$100+"
     }
   },
   "packs": {
@@ -364,7 +414,16 @@
     "sectionRequests": "Friend requests",
     "requestHint": "Wants to connect — accept to add them to your squad.",
     "acceptRequest": "Accept",
-    "declineRequest": "Decline"
+    "declineRequest": "Decline",
+    "addModalSubtitle": "Search by username or use a QR code.",
+    "addFriendBtn": "Add friend",
+    "addDividerOr": "or",
+    "addMethodScan": "Scan someone's QR code",
+    "addMethodShowQr": "Show my QR code",
+    "addMethodCopyLink": "Copy invite link",
+    "demoTryTitle": "Try adding",
+    "moreMenuTitle": "More options",
+    "addFriendA11y": "Add friend"
   },
   "rewards": {
     "title": "Recompensas",
@@ -445,7 +504,10 @@
     "shipping": "Endereço de entrega",
     "payout": "Recebimento",
     "identity": "Verificação de identidade",
-    "linked": "Contas vinculadas"
+    "linked": "Contas vinculadas",
+    "creditHistory": "Credit History",
+    "wallet": "Wallet Address",
+    "shippingOrders": "Shipping Orders"
   },
   "supportRows": {
     "help": "Central de ajuda",
@@ -485,7 +547,21 @@
     "buyNow": "Comprar agora",
     "disclaimer": "Após confirmar a compra de créditos, cancelamentos, reembolsos ou devolução de pontos podem não ser possíveis. (Política final antes do lançamento.)",
     "mockFooter": "Pacotes simulados — substitua por checkout real antes do lançamento.",
-    "liveFooter": "Checkout seguro · Entrega instantânea · Sem expiração"
+    "liveFooter": "Checkout seguro · Entrega instantânea · Sem expiração",
+    "demoModeBadge": "Demo Credits / Test Mode",
+    "demoGrantCta": "Grant (demo)",
+    "demoGrantedTitle": "Demo credits added",
+    "demoGrantedBody": "Added {{count}} credits for testing. This is not a real purchase.",
+    "stripeComingSoonBody": "Stripe Top-Up Coming Soon. Live checkout needs EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY plus the create-credit-checkout edge function and webhook.",
+    "iapComingSoonBody": "In-app purchase for credits is coming soon on this platform. Set EXPO_PUBLIC_ALLOW_NATIVE_STRIPE_CREDITS=1 only for non-store Stripe Checkout testing.",
+    "stripeLiveNote": "Pay with Stripe Checkout. Credits land after payment via webhook — your balance refreshes on next hydrate.",
+    "unavailableTitle": "Top-up unavailable",
+    "unavailableCta": "Soon",
+    "checkoutFailedTitle": "Couldn’t start checkout",
+    "checkoutFailedBody": "Stripe Checkout did not open. Try again or contact support.",
+    "checkoutOpenedTitle": "Checkout opened",
+    "checkoutOpenedBody": "Complete payment in the browser. Credits appear after Stripe confirms — pull to refresh your balance if needed.",
+    "comingSoonFooter": "Purchase buttons stay disabled until Stripe or store billing is configured."
   },
   "lootBox": {
     "title": "Probabilidade do conteúdo",
@@ -578,7 +654,9 @@
     "continueCheckout": "Continuar para o checkout",
     "physicalStubTitle": "Checkout não conectado",
     "physicalStubBody": "Conecte o backend para criar um PaymentIntent Stripe e abra o cliente com o client secret retornado. Sem chaves no app.",
-    "sampleListingTitle": "Anúncio de exemplo"
+    "sampleListingTitle": "Anúncio de exemplo",
+    "marketplacePreviewNote": "Marketplace Checkout is currently in preview. Live purchases will open in the next release.",
+    "checkoutDisabledCta": "Checkout unavailable"
   },
   "legalModal": {
     "done": "Concluído"
@@ -590,7 +668,8 @@
     "copy": "Copiar",
     "done": "Concluído",
     "scanAnother": "Ler o código de outra pessoa",
-    "scanAnotherSub": "Use a câmera para adicioná-la pelo QR"
+    "scanAnotherSub": "Use a câmera para adicioná-la pelo QR",
+    "missingUsername": "Set up your username in profile settings to show a QR code."
   },
   "qrScanner": {
     "title": "Escanear QR de amigo",
@@ -600,7 +679,10 @@
     "hint": "Alinhe o QR no quadro",
     "webTitle": "Scan indisponível na web",
     "webBody": "Abra o app no celular para escanear o QR ou digite o friend ID abaixo.",
-    "close": "Fechar"
+    "close": "Fechar",
+    "webPasteLabel": "Or paste a username or invite link",
+    "webPastePlaceholder": "e.g. jordan",
+    "webPasteSubmit": "Look up"
   },
   "sort": {
     "recommended": "Recomendado",
@@ -688,7 +770,6 @@
     "bulkBestHit": "Best hit",
     "bulkRowCredits": "+{{amount}} credits",
     "tier_base": "Base",
-
     "tier_common": "Base",
     "tier_rare": "Base",
     "tier_epic": "Epic",
@@ -717,7 +798,9 @@
     "resultWinVaultLine": "{{value}} vault value",
     "storeInVault": "Store in vault",
     "sharePull": "Share",
-    "shareMessage": "I just pulled {{name}} ({{tier}}) — +{{credits}} credits!"
+    "shareMessage": "I just pulled {{name}} ({{tier}}) — +{{credits}} credits!",
+    "bulkOtherPulls": "Your other pulls",
+    "continueToWonPrizes": "Continue to Won Prizes"
   },
   "insufficientCredits": {
     "title": "Créditos insuficientes",
@@ -858,7 +941,17 @@
     "viewOdds": "Ver probabilidades",
     "topHitPreviewTitle": "Prévia do melhor hit",
     "topHitPreviewFinePrint": "Apenas prévia. Mídias e valores de demonstração podem mudar antes do lançamento.",
-    "whatYouCanPullTitle": "O que você pode tirar"
+    "whatYouCanPullTitle": "O que você pode tirar",
+    "oddsLiveBadge": "Live pool odds",
+    "oddsLiveDisclaimer": "Provably-fair probabilities from the active pack pool. Verify any pull against published weights.",
+    "featuredBadge": "FEATURED",
+    "tradeInRateUnit": "trade-in · listed value",
+    "remainingUnit": "left",
+    "oddsSummary": "{{tier}} odds",
+    "listedUnit": "listed",
+    "shipsTitle": "Ships from Tokyo",
+    "shipsBody": "Japanese exclusives, packed and shipped direct. Free shipping on orders {{threshold}}.",
+    "shipsThreshold": "$100+"
   },
   "splash": {
     "frameKicker": "COLLECTOR VAULT",
@@ -942,7 +1035,9 @@
     "simActiveBody": "{{tier}} is active — your tier’s member packs are unlocked.",
     "simClearLink": "Clear demo membership",
     "ctaSimSameTier": "Grant monthly credits again",
-    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet."
+    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet.",
+    "ctaSubscribePreview": "Activate preview tier",
+    "previewBillingBanner": "Simulated / Preview Tier — no real recurring billing. App Store / Play IAP is not connected yet."
   },
   "promotions": {
     "enterFromAccount": "Rewards & promo code",
@@ -1023,7 +1118,30 @@
     "timerDaysLeft": "{{count}}d left in Vault",
     "timerHoursLeft": "{{count}}h left in Vault",
     "timerEnded": "Hold ended",
-    "listedPill": "Buy now · {{price}}"
+    "listedPill": "Buy now · {{price}}",
+    "shippingOrdersLink": "Shipping orders →",
+    "emptyCta": "Open a Pack →",
+    "emptyFilterTitle": "Nothing in this filter",
+    "emptyFilterBody": "Try another status tab or clear filters to see your full Vault.",
+    "statusConverted": "Traded in",
+    "refreshing": "Refreshing vault…",
+    "refreshErrorTitle": "Couldn’t refresh",
+    "refreshError": "Unable to refresh your vault. Please check your connection and try again.",
+    "filter": {
+      "all": "All",
+      "vaulted": "Vaulted",
+      "pending": "Pending",
+      "shipped": "Shipped",
+      "converted": "Traded In"
+    },
+    "sortLabel": "Sort",
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "value_high": "Highest value",
+      "value_low": "Lowest value"
+    },
+    "listedBadge": "LISTED"
   },
   "wonPrizesModal": {
     "title": "Cash out or Vault",
@@ -1078,7 +1196,11 @@
     "tradeSoonBody": "Peer trades will open from Vault — send offers, counter, and lock in when both sides agree (separate from fixed-price shop).",
     "shipStatusLine": "Shipment is queued for this item. We’ll notify you when the label is ready.",
     "readOnly": "This item isn’t editable from here.",
-    "close": "Close"
+    "close": "Close",
+    "convertedStatusLine": "Traded in for credits — shipping and listing actions are closed for this item.",
+    "carrierLine": "Carrier · {{carrier}}",
+    "trackingLine": "Tracking · {{tracking}}",
+    "trackingPending": "Tracking not assigned yet — check Shipping orders for updates."
   },
   "vaultList": {
     "title": "Vault Exchange listing",
@@ -1132,7 +1254,8 @@
       "offerBody": "Production: send a trade or cash offer thread — separate from fixed-price Buy now.",
       "askTitle": "Ask availability (demo)",
       "askBody": "Production: a light nudge to {{handle}} — still not a purchase until they list or accept."
-    }
+    },
+    "checkoutDisabledCta": "Checkout unavailable"
   },
   "progression": {
     "rankBand_0": "Studio regular",
@@ -1185,7 +1308,10 @@
     "empty": "Sem resultados"
   },
   "packOdds": {
-    "kicker": "Probabilidades do pacote"
+    "kicker": "Probabilidades do pacote",
+    "liveNote": "Disclosed probabilities from the active pack pool. Rates reflect current pool weights.",
+    "demoNote": "Sample odds — live odds appear when this pack is online.",
+    "liveDisclaimer": "Every pull can be verified against the published pool weights after you open."
   },
   "packOpeningEngine": {
     "brandTitle": "PULL HUB",
@@ -1208,5 +1334,210 @@
   },
   "credits": {
     "abbrev": "CR"
+  },
+  "shippingOrders": {
+    "navTitle": "Shipping orders",
+    "lead": "Active and past shipments — tracking appears here once a carrier is assigned.",
+    "manageAddress": "Manage shipping address →",
+    "loading": "Loading orders…",
+    "loadError": "Couldn’t load shipping orders.",
+    "retry": "Try again",
+    "offlineNote": "Shipping history needs a signed-in session. Preview mode shows an empty list.",
+    "emptyTitle": "No shipments yet",
+    "emptyBody": "Request shipment from a Vault item to see orders here.",
+    "orderId": "Order {{id}}…",
+    "created": "Requested {{when}}",
+    "shippedAt": "Shipped {{when}}",
+    "itemCount_one": "{{count}} item",
+    "itemCount_other": "{{count}} items",
+    "fee": "Fee · {{credits}} credits",
+    "carrier": "Carrier · {{carrier}}",
+    "tracking": "Tracking · {{tracking}}",
+    "trackingPending": "Tracking not assigned yet",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
+  },
+  "creditHistory": {
+    "navTitle": "Credit history",
+    "lead": "Every credit change on your account — pack opens, trade-ins, top-ups, and refunds.",
+    "currentBalance": "Current balance · {{balance}}",
+    "balanceAfter": "Bal. {{balance}}",
+    "loading": "Loading ledger…",
+    "loadError": "Unable to load transactions. Please check your connection and try again.",
+    "retry": "Try again",
+    "offlineNote": "Credit history needs a signed-in session. Preview mode shows an empty list.",
+    "emptyTitle": "No ledger entries yet",
+    "emptyBody": "Open a pack or trade in a card to see credit movements here.",
+    "type": {
+      "packPull": "Pack pull",
+      "tradeIn": "Trade-in",
+      "topUp": "Top up",
+      "refund": "Refund",
+      "other": "Other"
+    }
+  },
+  "futureUpdate": {
+    "badge": "Coming in a future update",
+    "plannedTitle": "Planned (not available yet)"
+  },
+  "deleteAccount": {
+    "section": "Danger zone",
+    "lead": "Permanently deletes your Pull Hub account with our sign-in provider and clears local data on this device. This cannot be undone.",
+    "cta": "Delete account",
+    "confirmTitle": "Delete your account?",
+    "confirmBody": "Your Clerk account will be deleted and local vault/history on this device will be cleared. Language and preference toggles stay on the device.",
+    "confirmAction": "Delete forever",
+    "doneTitle": "Account deleted",
+    "doneBody": "Your account has been removed. You can create a new one anytime.",
+    "errorTitle": "Couldn’t delete account",
+    "errorBody": "Something went wrong. Try again or contact support.",
+    "localLead": "You’re browsing without a cloud account. This clears local vault, friends, and onboarding data on this device.",
+    "localCta": "Clear local data",
+    "localConfirmTitle": "Clear local data?",
+    "localConfirmBody": "Removes guest session data and vault history on this device. Preferences like language and sound stay.",
+    "localConfirmAction": "Clear data",
+    "localDoneTitle": "Local data cleared",
+    "localDoneBody": "This device is reset to a fresh guest session."
+  },
+  "walletLinking": {
+    "navTitle": "Wallet address",
+    "lead": "Link your Base wallet to receive Digital Twin NFTs when you ship high-tier pulls from your vault.",
+    "fieldLabel": "EVM wallet address",
+    "placeholder": "0x…",
+    "hint": "Must start with 0x and be 42 characters (Base / Ethereum format).",
+    "save": "Save wallet address",
+    "savedTitle": "Saved",
+    "savedBody": "Your wallet address was saved. NFTs will mint to this address when you request shipping.",
+    "saveFailed": "Could not save. Try again.",
+    "invalidTitle": "Invalid address",
+    "invalidBody": "Enter a valid EVM address (0x followed by 40 hex characters).",
+    "notSignedIn": "Sign in to save your wallet address.",
+    "notConfigured": "Wallet linking isn’t available in this build.",
+    "authFailed": "Could not verify your session. Try signing out and back in."
+  },
+  "cardMarket": {
+    "yours": "YOURS",
+    "listed": "Listed",
+    "previewCta": "Preview",
+    "ownListingTitle": "Your listing",
+    "ownListingBody": "This is your own listing. Visit your Vault to manage it.",
+    "previewTitle": "Marketplace preview",
+    "previewBody": "“{{title}}” (${{price}}) — Marketplace Checkout is currently in preview. Live purchases will open in the next release."
+  },
+  "alerts": {
+    "generic": {
+      "title": "Something went wrong",
+      "body": "Please check your connection and try again."
+    },
+    "missingLink": {
+      "title": "Link unavailable",
+      "body": "This link isn’t available yet. Please try again later."
+    },
+    "cannotOpenLink": {
+      "title": "Cannot open link",
+      "body": "We couldn’t open that link. Please try again later."
+    },
+    "openLinkFailed": "Could not open {{label}}.",
+    "openLinkFailedGeneric": "Could not open link.",
+    "shareCopiedTitle": "Copied to clipboard",
+    "shareCopiedBody": "Paste anywhere to share your pull.",
+    "packOpen": {
+      "signInTitle": "Sign in required",
+      "signInBody": "Please sign in to open packs.",
+      "alreadyTitle": "Already processed",
+      "alreadyBody": "This pack open was already recorded.",
+      "alreadyBulkBody": "This bulk open was already recorded.",
+      "connectionTitle": "Connection problem",
+      "failedTitle": "Pack open failed",
+      "failedBody": "We couldn’t complete this pack open. Please try again.",
+      "welcomeUsedTitle": "Welcome pack used",
+      "welcomeUsedBody": "You’ve already claimed this welcome pack."
+    },
+    "tradeIn": {
+      "unavailableTitle": "Trade-in unavailable",
+      "unavailableBody": "We couldn’t find this card in your vault. Refresh and try again.",
+      "failedTitle": "Trade-in failed",
+      "failedBody": "We couldn’t complete the trade-in. Please try again."
+    },
+    "shipping": {
+      "unavailableTitle": "Shipment unavailable",
+      "unavailableBody": "Shipping isn’t available right now. Please try again later.",
+      "addressRequiredTitle": "Shipping address required",
+      "addressRequiredBody": "Add a shipping address before requesting shipment.",
+      "insufficientTitle": "Insufficient credits",
+      "insufficientBody": "You don’t have enough credits for this shipping fee.",
+      "failedTitle": "Shipment request failed",
+      "failedBody": "We couldn’t start this shipment. Please try again."
+    },
+    "serviceUnavailable": {
+      "title": "Temporarily unavailable",
+      "body": "This feature isn’t available right now. Please try again later."
+    }
+  },
+  "resultScreen": {
+    "headerLabel": "PULL RECORD",
+    "stampSuffix": "JST · TOKYO",
+    "totalListedValue": "TOTAL LISTED VALUE",
+    "cardCount": "{{count}} CARDS",
+    "ctaTradeInAll": "Trade in all — {{coins}} Coins",
+    "ctaTradeIn": "Trade in — {{coins}} Coins",
+    "disclaimer": "100% of listed value, in Coins.",
+    "keepInVault": "Keep in Vault",
+    "pullAgain": "Pull again",
+    "fairnessFooter": "Odds applied · Fairness Record →",
+    "sheet": {
+      "titleMulti": "Trade in {{count}} cards?",
+      "titleOne": "Trade in 1 card?",
+      "amountSub": "COINS · 100% OF LISTED VALUE",
+      "bodyMulti": "All {{count}} cards will be traded in for Coins at their listed value.",
+      "bodyOne": "This card will be traded in for Coins at its listed value.",
+      "confirm": "Trade in"
+    }
+  },
+  "fairness": {
+    "record": {
+      "title": "Fairness record",
+      "method": "Before you open, we lock in a secret server value. After the pull, you can check that the result matches what was committed.",
+      "serverCommitment": "Server commitment",
+      "clientSeed": "Your seed",
+      "openingNumber": "Opening #",
+      "pending": "Verification details appear here after a live pack open. Preview opens are not verifiable.",
+      "verifyCta": "VERIFY →"
+    },
+    "verify": {
+      "title": "Verify fairness",
+      "body": "Live opens lock in a server secret before the draw, then reveal it with your seed so anyone can confirm the outcome was fair.",
+      "empty": "No verification record yet. Open a pack while signed in to see commitment details you can check.",
+      "closeA11y": "Close",
+      "tapToCopy": "Tap to copy",
+      "rows": {
+        "pullId": "Pull id",
+        "algorithm": "Method",
+        "serverHash": "Server commitment",
+        "revealedSeed": "Revealed server value",
+        "clientSeed": "Your seed",
+        "digest": "Result digest",
+        "opening": "Opening / serial"
+      }
+    }
+  },
+  "creditsPill": {
+    "a11yHistory": "Credit history",
+    "a11yAdd": "Add credits"
+  },
+  "appHeader": {
+    "searchA11y": "Search packs"
+  },
+  "packRing": {
+    "unavailableTitle": "Pack scene unavailable",
+    "loadFailed": "The opening scene couldn’t load. Check your connection and try again.",
+    "misconfigured": "The opening scene isn’t available right now. Please try again later.",
+    "retry": "Retry",
+    "loading": "Loading pack scene…"
   }
 }

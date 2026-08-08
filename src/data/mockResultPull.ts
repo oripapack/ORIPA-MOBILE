@@ -1,15 +1,13 @@
 import type { N2TierState } from '../lib/n2Rarity';
 
 /**
- * MOCK RESULT DATA — 実データ待ち。外部に見せないこと。
- * The Result screen is not wired to the opening flow yet (Yutaka domain);
- * these pulls exist only so the screen can be reviewed (KNOWN_ISSUES).
- * Card names/values are fabricated placeholders, not content claims (§5-9).
+ * MOCK RESULT DATA — review / EXPO_PUBLIC_DEV_SCREEN=Result only.
+ * Live opens navigate to Result with `buildResultPullData` from the session.
+ * Card names/values here are fabricated placeholders, not content claims (§5-9).
  *
  * Every card ships with tier 'unknown': no card↔tier data structure exists
  * (KNOWN_ISSUES #4), and tiers must never be guessed from names or values.
- * When the backend starts returning tiers, populating `tier` here (or in the
- * real payload) is all it takes for the tags to light up.
+ * Live payloads set `tier` from the roll when available.
  */
 
 export type ResultCard = {

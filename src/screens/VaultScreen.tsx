@@ -22,7 +22,12 @@ import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { VaultAssetSheet } from '../components/vault/VaultAssetSheet';
 import { PortfolioCard } from '../components/vault/PortfolioCard';
-import { useVaultPullsSorted } from '../lib/vaultPulls';
+import { VaultFilterBar } from '../components/vault/VaultFilterBar';
+import {
+  useVaultPullsFiltered,
+  type VaultSortOption,
+  type VaultStatusFilter,
+} from '../lib/vaultPulls';
 import { formatVaultTimeLeft, vaultExpiryNoticeActive, vaultMillisRemaining } from '../lib/vaultTime';
 import { VAULT_HOLD_DAYS } from '../lib/vaultConstants';
 import { formatVaultExchangeUsd } from '../lib/vaultExchange';
@@ -37,6 +42,8 @@ import { sgVault } from '../tokens/sgVault';
 import { fontSize, brandFont } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import type { Pull, PullRarityTier } from '../data/mockUser';
+import { showUserMessage } from '../utils/showUserMessage';
+import { isLiveVaultEnabled } from '../data/userVault';
 
 type VaultNav = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Vault'>,
@@ -86,7 +93,6 @@ export function VaultScreen() {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<VaultNav>();
-  const { refreshControl } = usePullToRefresh();
   const { requireAuth } = useRequireAuth();
   const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
   const forceAuthWall = useGuestBrowseStore((s) => s.forceAuthWall);
@@ -94,9 +100,34 @@ export function VaultScreen() {
   const requestVaultShipment = useAppStore((s) => s.requestVaultShipment);
   const convertVaultPullToCoins = useAppStore((s) => s.convertVaultPullToCoins);
   const processVaultExpiries = useAppStore((s) => s.processVaultExpiries);
-  const pulls = useVaultPullsSorted();
+  const refreshVaultData = useAppStore((s) => s.refreshVaultData);
+  const [statusFilter, setStatusFilter] = useState<VaultStatusFilter>('all');
+  const [sortOption, setSortOption] = useState<VaultSortOption>('newest');
+  const [refreshError, setRefreshError] = useState<string | null>(null);
+  const pulls = useVaultPullsFiltered(statusFilter, sortOption);
+  const portfolioPulls = useVaultPullsFiltered('all', 'newest').filter(
+    (p) => p.fulfillment !== 'converted',
+  );
   const [searchOpen, setSearchOpen] = useState(false);
   const [sheetPull, setSheetPull] = useState<Pull | null>(null);
+
+  const { refreshControl, refreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      setRefreshError(null);
+      try {
+        await refreshVaultData();
+        processVaultExpiries();
+        if (!isLiveVaultEnabled()) {
+          // Local-only: still run expiry processing; no network error.
+          return;
+        }
+      } catch (e) {
+        const msg = t('vaultScreen.refreshError');
+        setRefreshError(msg);
+        showUserMessage(t('vaultScreen.refreshErrorTitle'), msg);
+      }
+    },
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -108,6 +139,10 @@ export function VaultScreen() {
 
   const goPullHistory = useCallback(() => {
     requireAuth(() => navigation.navigate('PullHistory'));
+  }, [navigation, requireAuth]);
+
+  const goShippingOrders = useCallback(() => {
+    requireAuth(() => navigation.navigate('ShippingOrders'));
   }, [navigation, requireAuth]);
 
   const goHome = useCallback(() => {
@@ -127,7 +162,11 @@ export function VaultScreen() {
         openModal('wonPrizes');
         return;
       }
-      if (pull.fulfillment === 'vaulted' || pull.fulfillment === 'shipped') {
+      if (
+        pull.fulfillment === 'vaulted' ||
+        pull.fulfillment === 'shipped' ||
+        pull.fulfillment === 'converted'
+      ) {
         setSheetPull(pull);
       }
     },
@@ -140,28 +179,70 @@ export function VaultScreen() {
         <Text style={styles.pageEyebrow}>{t('vaultScreen.eyebrow')}</Text>
         <Text style={styles.pageTitle}>{t('vaultScreen.title')}</Text>
 
-        {/* Portfolio summary card */}
-        <PortfolioCard pulls={pulls} />
+        <PortfolioCard pulls={portfolioPulls} />
 
-        <TouchableOpacity onPress={goPullHistory} accessibilityRole="button" style={styles.historyLinkWrap}>
-          <Text style={styles.historyLink}>{t('vaultScreen.pullHistoryLink')}</Text>
-        </TouchableOpacity>
+        <View style={styles.linkRow}>
+          <TouchableOpacity onPress={goPullHistory} accessibilityRole="button">
+            <Text style={styles.historyLink}>{t('vaultScreen.pullHistoryLink')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={goShippingOrders} accessibilityRole="button">
+            <Text style={styles.historyLink}>{t('vaultScreen.shippingOrdersLink')}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <VaultFilterBar
+          filter={statusFilter}
+          sort={sortOption}
+          onChangeFilter={setStatusFilter}
+          onChangeSort={setSortOption}
+        />
+
+        {refreshError ? (
+          <Text style={styles.refreshError}>{refreshError}</Text>
+        ) : null}
+        {refreshing ? (
+          <Text style={styles.refreshHint}>{t('vaultScreen.refreshing')}</Text>
+        ) : null}
       </View>
     ),
-    [goPullHistory, pulls, t],
+    [
+      goPullHistory,
+      goShippingOrders,
+      portfolioPulls,
+      refreshError,
+      refreshing,
+      sortOption,
+      statusFilter,
+      t,
+    ],
   );
 
   const EmptyState = useMemo(
     () => (
       <View style={styles.emptyWrap}>
-        <Text style={styles.emptyTitle}>{t('vaultScreen.emptyTitle')}</Text>
-        <Text style={styles.emptyBody}>{t('vaultScreen.emptyBody')}</Text>
-        <TouchableOpacity style={styles.emptyCta} onPress={goHome} activeOpacity={0.88} accessibilityRole="button">
-          <Text style={styles.emptyCtaText}>Open a Pack →</Text>
-        </TouchableOpacity>
+        <Text style={styles.emptyTitle}>
+          {statusFilter === 'all'
+            ? t('vaultScreen.emptyTitle')
+            : t('vaultScreen.emptyFilterTitle')}
+        </Text>
+        <Text style={styles.emptyBody}>
+          {statusFilter === 'all'
+            ? t('vaultScreen.emptyBody')
+            : t('vaultScreen.emptyFilterBody')}
+        </Text>
+        {statusFilter === 'all' ? (
+          <TouchableOpacity
+            style={styles.emptyCta}
+            onPress={goHome}
+            activeOpacity={0.88}
+            accessibilityRole="button"
+          >
+            <Text style={styles.emptyCtaText}>{t('vaultScreen.emptyCta')}</Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
     ),
-    [goHome, t],
+    [goHome, statusFilter, t],
   );
 
   const renderItem = useCallback(
@@ -221,11 +302,11 @@ export function VaultScreen() {
     <SgScreen skin="vault">
       <AppHeader onSearch={() => setSearchOpen(true)} />
       <FlatList
-        key="vault-grid-list"
+        key={`vault-grid-${statusFilter}-${sortOption}`}
         data={pulls}
         keyExtractor={(item) => item.id}
         numColumns={2}
-        columnWrapperStyle={styles.row}
+        columnWrapperStyle={pulls.length > 0 ? styles.row : undefined}
         ListHeaderComponent={ListHeader}
         ListEmptyComponent={EmptyState}
         renderItem={renderItem}
@@ -274,7 +355,8 @@ function VaultTile({
   const pressable =
     pull.fulfillment === 'pending' ||
     pull.fulfillment === 'vaulted' ||
-    pull.fulfillment === 'shipped';
+    pull.fulfillment === 'shipped' ||
+    pull.fulfillment === 'converted';
 
   const statusKey =
     pull.fulfillment === 'pending'
@@ -283,7 +365,9 @@ function VaultTile({
         ? 'vaultScreen.statusShipped'
         : pull.fulfillment === 'vaulted'
           ? 'vaultScreen.statusVaulted'
-          : 'vaultScreen.statusKept';
+          : pull.fulfillment === 'converted'
+            ? 'vaultScreen.statusConverted'
+            : 'vaultScreen.statusKept';
 
   const valueText = coinsToUsdText(pull.creditsWon);
 
@@ -334,7 +418,7 @@ function VaultTile({
           <Text style={[styles.tileValue, { color: accent }]}>{valueText}</Text>
           {isListed ? (
             <View style={styles.tileListedBadge}>
-              <Text style={styles.tileListedBadgeText}>LISTED</Text>
+              <Text style={styles.tileListedBadgeText}>{t('vaultScreen.listedBadge')}</Text>
             </View>
           ) : null}
         </View>
@@ -371,6 +455,13 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
     marginBottom: spacing.md,
   },
+  linkRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.md,
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
+  },
   historyLinkWrap: {
     marginTop: spacing.xs,
   },
@@ -378,6 +469,16 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
     color: sgVault.gold,
+  },
+  refreshError: {
+    fontSize: fontSize.xs,
+    color: sgVault.error,
+    marginBottom: spacing.xs,
+  },
+  refreshHint: {
+    fontSize: fontSize.xs,
+    color: sgVault.muted,
+    marginBottom: spacing.xs,
   },
   row: {
     justifyContent: 'space-between',

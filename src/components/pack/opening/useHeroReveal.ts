@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Platform } from 'react-native';
+import { Animated, Easing } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { hapticPackEnter, hapticPackReveal, hapticPackResult } from '../../../audio/packOpeningFeedback';
+import { runHapticIfEnabled } from '../../../audio/hapticsGate';
 import type { PackOpeningPhase, PackRollResult, RevealRarity } from './types';
 
 /** Rarity-tuned pauses, flash strength (peak opacity), and foil — common stays restrained; chase stays big. */
@@ -444,9 +445,7 @@ export function useHeroReveal({
 
   const runPrimedBurst = useCallback(() => {
     setPhase('primed');
-    if (Platform.OS !== 'web') {
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
+    runHapticIfEnabled(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium));
 
     packShakeX.setValue(0);
 
@@ -486,7 +485,7 @@ export function useHeroReveal({
     if (phase === 'commit') {
       if (burstLockRef.current) return;
       burstLockRef.current = true;
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      runHapticIfEnabled(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy));
       runPrimedBurst();
       return;
     }
@@ -532,9 +531,9 @@ export function useHeroReveal({
         }),
         Animated.spring(packScale, { toValue: 1.06, friction: 5, tension: 118, useNativeDriver: true }),
       ]).start();
-      if (Platform.OS !== 'web') {
-        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      }
+      runHapticIfEnabled(() =>
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
+      );
       // Wait for explicit commit tap — perceived agency only; pull was already rolled in `PackOpeningModal`.
       setPhase('commit');
       burstLockRef.current = false;

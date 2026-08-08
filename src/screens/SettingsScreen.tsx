@@ -19,7 +19,10 @@ import {
   PAYMENT_DISCLOSURES,
 } from '../legal/inAppLegalCopy';
 import { LanguageRegionModal } from '../components/account/LanguageRegionModal';
+import { PreferenceSwitchRow } from '../components/account/PreferenceSwitchRow';
+import { DeleteAccountSection } from '../components/account/DeleteAccountSection';
 import { useLocalePreferences, LANGUAGE_OPTIONS } from '../hooks/useLocalePreferences';
+import { usePreferencesStore } from '../store/preferencesStore';
 import { APP_DISPLAY_NAME, APP_VERSION, SUPPORT_EMAIL } from '../config/app';
 import { RootStackParamList } from '../navigation/types';
 import { useRequireAuth } from '../hooks/useRequireAuth';
@@ -44,10 +47,20 @@ const LEGAL_BODY: Record<'terms' | 'privacy' | 'promo' | 'payment', string> = {
 
 const ROW_ICON_SIZE = 22;
 
-const accountRowKeys = ['wallet', 'shipping', 'payout', 'identity', 'linked'] as const;
+const accountRowKeys = [
+  'creditHistory',
+  'wallet',
+  'shipping',
+  'shippingOrders',
+  'payout',
+  'identity',
+  'linked',
+] as const;
 const accountIcons: Record<(typeof accountRowKeys)[number], keyof typeof Ionicons.glyphMap> = {
+  creditHistory: 'list-outline',
   wallet: 'diamond-outline',
   shipping: 'cube-outline',
+  shippingOrders: 'receipt-outline',
   payout: 'wallet-outline',
   identity: 'person-circle-outline',
   linked: 'link-outline',
@@ -69,6 +82,10 @@ export function SettingsScreen() {
   const { language, region, saveLocale } = useLocalePreferences();
   const { requireAuth } = useRequireAuth();
   const clerkSignedIn = useGuestBrowseStore((s) => s.clerkSignedIn);
+  const soundEnabled = usePreferencesStore((s) => s.soundEnabled);
+  const hapticsEnabled = usePreferencesStore((s) => s.hapticsEnabled);
+  const setSoundEnabled = usePreferencesStore((s) => s.setSoundEnabled);
+  const setHapticsEnabled = usePreferencesStore((s) => s.setHapticsEnabled);
 
   const localeSummary = useMemo(() => {
     const langLabel = LANGUAGE_OPTIONS.find((l) => l.code === language)?.label ?? language;
@@ -78,8 +95,10 @@ export function SettingsScreen() {
 
   const onAccountRow = (key: (typeof accountRowKeys)[number]) => {
     requireAuth(() => {
+      if (key === 'creditHistory') navigation.navigate('CreditHistory');
       if (key === 'wallet') navigation.navigate('WalletLinking');
       if (key === 'shipping') navigation.navigate('ShippingAddress');
+      if (key === 'shippingOrders') navigation.navigate('ShippingOrders');
       if (key === 'payout') navigation.navigate('PayoutMethod');
       if (key === 'identity') navigation.navigate('IdentityVerification');
       if (key === 'linked') navigation.navigate('LinkedAccounts');
@@ -172,6 +191,25 @@ export function SettingsScreen() {
             rightContent={<Text style={styles.localeValue}>{localeSummary}</Text>}
             onPress={() => setLocaleOpen(true)}
           />
+          <ListRow
+            label={t('settings.notifications')}
+            icon={<Ionicons name="notifications-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
+            onPress={() => navigation.navigate('Notifications')}
+          />
+          <PreferenceSwitchRow
+            label={t('settings.sound')}
+            subtitle={t('settings.soundSub')}
+            value={soundEnabled}
+            onValueChange={(v) => void setSoundEnabled(v)}
+            icon={<Ionicons name="volume-high-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
+          />
+          <PreferenceSwitchRow
+            label={t('settings.haptics')}
+            subtitle={t('settings.hapticsSub')}
+            value={hapticsEnabled}
+            onValueChange={(v) => void setHapticsEnabled(v)}
+            icon={<Ionicons name="phone-portrait-outline" size={ROW_ICON_SIZE} color={sg.muted} />}
+          />
         </VaultFramedCard>
 
         <AdminToolsSection />
@@ -197,6 +235,8 @@ export function SettingsScreen() {
             </VaultFramedCard>
           </>
         ) : null}
+
+        <DeleteAccountSection />
 
         <Text style={styles.version}>{t('account.version', { name: APP_DISPLAY_NAME, version: APP_VERSION })}</Text>
         <AccountSignOutFooter visible={isClerkEnabled && clerkSignedIn} />

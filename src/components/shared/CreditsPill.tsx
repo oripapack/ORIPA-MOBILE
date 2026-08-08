@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
 import { spacing } from '../../tokens/spacing';
 import { useAppStore } from '../../store/useAppStore';
 
 interface Props {
   onAdd: () => void;
+  /** Optional: tap the balance number (e.g. open credit ledger). */
+  onPressBalance?: () => void;
 }
 
 /**
@@ -15,14 +18,28 @@ interface Props {
  * balance only). Surface fill + 1px line border; tag radius. Gold never
  * fills the add button.
  */
-export function CreditsPill({ onAdd }: Props) {
+export function CreditsPill({ onAdd, onPressBalance }: Props) {
+  const { t } = useTranslation();
   const credits = useAppStore((s) => s.user.credits);
 
   return (
     <View style={styles.pill}>
       <FontAwesome5 name="coins" size={13} color={sg.muted} style={styles.coin} solid />
-      <Text style={styles.amount}>{credits.toLocaleString()}</Text>
-      <TouchableOpacity style={styles.addBtn} onPress={onAdd} activeOpacity={0.8}>
+      <TouchableOpacity
+        onPress={onPressBalance}
+        disabled={!onPressBalance}
+        accessibilityRole={onPressBalance ? 'button' : undefined}
+        accessibilityLabel={onPressBalance ? t('creditsPill.a11yHistory') : undefined}
+        hitSlop={6}
+      >
+        <Text style={styles.amount}>{credits.toLocaleString()}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.addBtn}
+        onPress={onAdd}
+        activeOpacity={0.8}
+        accessibilityLabel={t('creditsPill.a11yAdd')}
+      >
         <Text style={styles.addText}>+</Text>
       </TouchableOpacity>
     </View>

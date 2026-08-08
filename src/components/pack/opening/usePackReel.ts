@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import {
   cancelAnimation,
@@ -10,6 +10,7 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import { hapticPackEnter } from '../../../audio/packOpeningFeedback';
+import { runHapticIfEnabled } from '../../../audio/hapticsGate';
 import { buildReelShells } from './reelStrip';
 
 const WIN_W = Dimensions.get('window').width;
@@ -17,8 +18,7 @@ const WIN_W = Dimensions.get('window').width;
 export type PackReelUiPhase = 'fast' | 'slow' | 'landed';
 
 function runHaptic(fn: () => Promise<void>) {
-  if (Platform.OS === 'web') return;
-  void fn().catch(() => {});
+  runHapticIfEnabled(fn);
 }
 
 export function usePackReel({

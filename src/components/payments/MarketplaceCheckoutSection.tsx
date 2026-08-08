@@ -1,11 +1,11 @@
 import React from 'react';
 import { sg } from '../../tokens/sg';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PAYMENT_ROUTING } from '../../payments/physicalGoodsPolicy';
-import { showUserMessage } from '../../utils/showUserMessage';
+import { FutureUpdateBadge } from '../shared/FutureUpdateBadge';
 
 interface Props {
   listingTitle: string;
@@ -19,17 +19,12 @@ interface Props {
 export function MarketplaceCheckoutSection({ listingTitle, listingPrice }: Props) {
   const { t } = useTranslation();
 
-  const onContinue = () => {
-    showUserMessage(
-      t('paymentPortal.physicalStubTitle'),
-      t('paymentPortal.physicalStubBody'),
-    );
-  };
-
   return (
     <View>
+      <FutureUpdateBadge />
       <Text style={styles.title}>{t('paymentPortal.marketplaceTitle')}</Text>
       <Text style={styles.lead}>{t('paymentPortal.marketplaceLead')}</Text>
+      <Text style={styles.previewNote}>{t('paymentPortal.marketplacePreviewNote')}</Text>
 
       <View style={styles.card}>
         <Text style={styles.label}>{t('paymentPortal.item')}</Text>
@@ -40,11 +35,13 @@ export function MarketplaceCheckoutSection({ listingTitle, listingPrice }: Props
         <Text style={styles.value}>{listingPrice}</Text>
       </View>
 
-      <Text style={styles.policy}>{t('paymentPortal.physicalPolicy', { mode: PAYMENT_ROUTING.physicalMarketplace })}</Text>
+      <Text style={styles.policy}>
+        {t('paymentPortal.physicalPolicy', { mode: PAYMENT_ROUTING.physicalMarketplace })}
+      </Text>
 
-      <TouchableOpacity style={styles.cta} onPress={onContinue} activeOpacity={0.88}>
-        <Text style={styles.ctaText}>{t('paymentPortal.continueCheckout')}</Text>
-      </TouchableOpacity>
+      <View style={styles.ctaDisabled} accessibilityState={{ disabled: true }}>
+        <Text style={styles.ctaText}>{t('paymentPortal.checkoutDisabledCta')}</Text>
+      </View>
     </View>
   );
 }
@@ -60,8 +57,18 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     fontFamily: sg.font.body,
     color: sg.muted,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.sm,
     lineHeight: 20,
+  },
+  previewNote: {
+    fontSize: fontSize.xs,
+    fontFamily: sg.font.bodyMedium,
+    color: sg.gold,
+    backgroundColor: 'rgba(232,197,71,0.12)',
+    padding: spacing.sm,
+    borderRadius: radius.md,
+    marginBottom: spacing.lg,
+    lineHeight: 18,
   },
   card: {
     borderWidth: 1,
@@ -92,14 +99,17 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginBottom: spacing.lg,
   },
-  cta: {
+  ctaDisabled: {
     backgroundColor: sg.surface2,
     paddingVertical: spacing.sm + 4,
     borderRadius: radius.md,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: sg.line,
+    opacity: 0.85,
   },
   ctaText: {
-    color: sg.text,
+    color: sg.muted,
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyBold,
   },

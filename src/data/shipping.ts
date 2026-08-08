@@ -133,7 +133,7 @@ export async function requestPhysicalFulfillmentLive(input: {
     return {
       ok: false,
       code: 'SHIPPING_OFFLINE',
-      message: 'Live shipping is not configured',
+      message: 'This feature isn’t available right now. Please try again later.',
     };
   }
 
@@ -154,6 +154,42 @@ export async function getUserShippingOrdersLive(): Promise<ShippingOrder[]> {
   if (!isLiveShippingEnabled()) return [];
   const client = await createClerkAuthedClient();
   if (!client) return [];
+
+  // Prefer nested items when PostgREST embed is available; fall back to plain orders.
+  try {
+    const { data, error } = await client
+      .from('shipping_orders')
+      .select(
+        'id,user_id,shipping_address_id,status,tracking_number,carrier,fee_credits,idempotency_key,created_at,shipped_at,shipping_order_items(vault_item_id)',
+      )
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      return data.map((row) => {
+        const items = (row as { shipping_order_items?: { vault_item_id?: string }[] })
+          .shipping_order_items;
+        const ids = Array.isArray(items)
+          ? items.map((i) => String(i.vault_item_id ?? '')).filter(Boolean)
+          : undefined;
+        return {
+          id: String(row.id),
+          user_id: String(row.user_id),
+          shipping_address_id: String(row.shipping_address_id),
+          status: String(row.status ?? 'pending') as ShippingOrder['status'],
+          tracking_number: row.tracking_number ? String(row.tracking_number) : null,
+          carrier: row.carrier ? String(row.carrier) : null,
+          fee_credits: Number(row.fee_credits ?? 0),
+          idempotency_key: row.idempotency_key ? String(row.idempotency_key) : undefined,
+          created_at: String(row.created_at ?? new Date().toISOString()),
+          shipped_at: row.shipped_at ? String(row.shipped_at) : null,
+          vault_item_ids: ids,
+        };
+      });
+    }
+  } catch {
+    /* fall through */
+  }
+
   return listOrdersShared(client as unknown as SupabaseQueryClient);
 }
 

@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { fontSize } from '../tokens/typography';
 import { radius, spacing } from '../tokens/spacing';
 import { RootStackParamList } from '../navigation/types';
+import { FutureUpdateBadge } from '../components/shared/FutureUpdateBadge';
 
 type Nav = StackNavigationProp<RootStackParamList, 'LinkedAccounts'>;
 
@@ -33,6 +34,7 @@ export function LinkedAccountsScreen() {
       contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxxl }]}
       showsVerticalScrollIndicator={false}
     >
+      <FutureUpdateBadge />
       <Text style={styles.body}>{t('linkedAccounts.body')}</Text>
       <Text style={styles.section}>{t('linkedAccounts.whatTitle')}</Text>
       <Text style={styles.para}>{t('linkedAccounts.whatBody')}</Text>

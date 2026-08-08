@@ -48,8 +48,10 @@ export function VaultAssetSheet({
   const coinValue = pull ? pull.creditsWon ?? pull.convertCreditValue ?? 0 : 0;
   const isVaulted = pull?.fulfillment === 'vaulted';
   const isShipped = pull?.fulfillment === 'shipped';
+  const isConverted = pull?.fulfillment === 'converted';
   const listedUsd = pull?.vaultExchangeListUsd;
   const suggestedListUsd = Math.max(5, Math.round(coinValue / 20));
+  const canAct = isVaulted && !isShipped && !isConverted;
 
   const timerLine = useMemo(() => {
     if (!pull || !isVaulted || !pull.vaultExpiresAt) return null;
@@ -166,10 +168,28 @@ export function VaultAssetSheet({
             {isShipped ? (
               <View style={styles.statusBanner}>
                 <Text style={styles.statusBannerText}>{t('vaultAsset.shipStatusLine')}</Text>
+                {pull.shippingCarrier ? (
+                  <Text style={styles.trackingLine} selectable>
+                    {t('vaultAsset.carrierLine', { carrier: pull.shippingCarrier })}
+                  </Text>
+                ) : null}
+                {pull.shippingTrackingNumber ? (
+                  <Text style={styles.trackingLine} selectable>
+                    {t('vaultAsset.trackingLine', { tracking: pull.shippingTrackingNumber })}
+                  </Text>
+                ) : (
+                  <Text style={styles.trackingPending}>{t('vaultAsset.trackingPending')}</Text>
+                )}
               </View>
             ) : null}
 
-            {isVaulted ? (
+            {isConverted ? (
+              <View style={styles.statusBanner}>
+                <Text style={styles.statusBannerText}>{t('vaultAsset.convertedStatusLine')}</Text>
+              </View>
+            ) : null}
+
+            {canAct ? (
               <>
                 <PrimaryButton label={t('vaultAsset.ctaShip')} onPress={confirmShip} style={styles.cta} />
                 <View style={styles.rowButtons}>
@@ -202,7 +222,7 @@ export function VaultAssetSheet({
               </>
             ) : null}
 
-            {!isVaulted && !isShipped ? (
+            {!canAct && !isShipped && !isConverted ? (
               <Text style={styles.readOnly}>{t('vaultAsset.readOnly')}</Text>
             ) : null}
 
@@ -323,6 +343,20 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.medium,
     color: sgVault.muted,
     lineHeight: 20,
+  },
+  trackingLine: {
+    marginTop: spacing.sm,
+    fontSize: fontSize.sm,
+    fontFamily: brandFont.semibold,
+    color: sgVault.text,
+    lineHeight: 22,
+  },
+  trackingPending: {
+    marginTop: spacing.sm,
+    fontSize: fontSize.xs,
+    fontFamily: brandFont.medium,
+    color: sgVault.muted,
+    fontStyle: 'italic',
   },
   cta: { marginBottom: spacing.md },
   rowButtons: {

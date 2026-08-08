@@ -17,21 +17,90 @@
     "benefit4": "• Every secured item shows a clear storage timer so you always know what happens next.",
     "benefit5": "• We’ll nudge you before time’s up — then unused items liquidate to credits automatically.",
     "benefitFine": "Complimentary hold: {{days}} days per item. You can convert to credits anytime.",
-    "pullHistoryLink": "Full pull history →",
+    "pullHistoryLink": "Pull history →",
+    "shippingOrdersLink": "Shipping orders →",
     "emptyTitle": "Your Vault is ready",
     "emptyBody": "Open packs on Packs — new hits land here secured, insured-feeling, and ready for what you do next.",
+    "emptyCta": "Open a Pack →",
+    "emptyFilterTitle": "Nothing in this filter",
+    "emptyFilterBody": "Try another status tab or clear filters to see your full Vault.",
     "guestTitle": "Sign in to use your vault",
     "guestBody": "Guest pulls aren’t saved. Create an account to build your collection.",
     "guestCta": "Sign in",
     "statusPending": "Decide: Vault or credits",
     "statusVaulted": "Secured in Vault",
     "statusShipped": "Shipment queued",
+    "statusConverted": "Traded in",
     "statusKept": "In collection",
     "notifyBeforeConvert": "Final day — ship, trade, or convert",
     "timerDaysLeft": "{{count}}d left in Vault",
     "timerHoursLeft": "{{count}}h left in Vault",
     "timerEnded": "Hold ended",
-    "listedPill": "Buy now · {{price}}"
+    "listedPill": "Buy now · {{price}}",
+    "refreshing": "Refreshing vault…",
+    "refreshErrorTitle": "Couldn’t refresh",
+    "refreshError": "Unable to refresh your vault. Please check your connection and try again.",
+    "filter": {
+      "all": "All",
+      "vaulted": "Vaulted",
+      "pending": "Pending",
+      "shipped": "Shipped",
+      "converted": "Traded In"
+    },
+    "sortLabel": "Sort",
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "value_high": "Highest value",
+      "value_low": "Lowest value"
+    },
+    "listedBadge": "LISTED"
+  },
+  "shippingOrders": {
+    "navTitle": "Shipping orders",
+    "lead": "Active and past shipments — tracking appears here once a carrier is assigned.",
+    "manageAddress": "Manage shipping address →",
+    "loading": "Loading orders…",
+    "loadError": "Couldn’t load shipping orders.",
+    "retry": "Try again",
+    "offlineNote": "Shipping history needs a signed-in session. Preview mode shows an empty list.",
+    "emptyTitle": "No shipments yet",
+    "emptyBody": "Request shipment from a Vault item to see orders here.",
+    "orderId": "Order {{id}}…",
+    "created": "Requested {{when}}",
+    "shippedAt": "Shipped {{when}}",
+    "itemCount_one": "{{count}} item",
+    "itemCount_other": "{{count}} items",
+    "fee": "Fee · {{credits}} credits",
+    "carrier": "Carrier · {{carrier}}",
+    "tracking": "Tracking · {{tracking}}",
+    "trackingPending": "Tracking not assigned yet",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
+  },
+  "creditHistory": {
+    "navTitle": "Credit history",
+    "lead": "Every credit change on your account — pack opens, trade-ins, top-ups, and refunds.",
+    "currentBalance": "Current balance · {{balance}}",
+    "balanceAfter": "Bal. {{balance}}",
+    "loading": "Loading ledger…",
+    "loadError": "Unable to load transactions. Please check your connection and try again.",
+    "retry": "Try again",
+    "offlineNote": "Credit history needs a signed-in session. Preview mode shows an empty list.",
+    "emptyTitle": "No ledger entries yet",
+    "emptyBody": "Open a pack or trade in a card to see credit movements here.",
+    "type": {
+      "packPull": "Pack pull",
+      "tradeIn": "Trade-in",
+      "topUp": "Top up",
+      "refund": "Refund",
+      "other": "Other"
+    }
   },
   "wonPrizesModal": {
     "title": "Cash out or Vault",
@@ -84,7 +153,11 @@
     "soonPill": "SOON",
     "soonTitle": "Coming soon",
     "tradeSoonBody": "Peer trades will open from Vault — send offers, counter, and lock in when both sides agree (separate from fixed-price shop).",
-    "shipStatusLine": "Shipment is queued for this item. We’ll notify you when the label is ready.",
+    "shipStatusLine": "Shipment is queued for this item. Tracking appears below when the carrier is assigned.",
+    "convertedStatusLine": "Traded in for credits — shipping and listing actions are closed for this item.",
+    "carrierLine": "Carrier · {{carrier}}",
+    "trackingLine": "Tracking · {{tracking}}",
+    "trackingPending": "Tracking not assigned yet — check Shipping orders for updates.",
     "readOnly": "This item isn’t editable from here.",
     "close": "Close"
   },
@@ -110,10 +183,11 @@
   },
   "vaultExchange": {
     "checkoutKicker": "VAULT EXCHANGE",
-    "checkoutTitle": "Secure card checkout",
-    "checkoutBody": "Peer sales use real payments (e.g. Stripe) — not wallet credits. This build simulates a successful charge so you can test the flow.",
+    "checkoutTitle": "Card checkout (preview)",
+    "checkoutBody": "Marketplace Checkout is currently in preview. Live purchases will open in the next release — no card will be charged from this screen.",
+    "checkoutDisabledCta": "Checkout unavailable",
+    "checkoutCancel": "Close",
     "checkoutSimulateCta": "Simulate paid checkout",
-    "checkoutCancel": "Not now",
     "friendSectionTitle": "Their Vault",
     "friendSectionHint": "Full collection is visible. Request, offer, or ask on anything. Only Vault Exchange listings show Buy now with a cash price.",
     "emptyVault": "No secured hits in the Vault yet. When they vault pulls, everything shows up here for discovery.",
@@ -287,7 +361,15 @@
       "rushModalConfirm": "Begin Rush"
     },
     "bulkStockTitle": "Not enough stock",
-    "bulkStockBody": "This pack doesn’t have {{count}} pulls left in the demo catalog."
+    "bulkStockBody": "This pack doesn’t have {{count}} pulls left in the demo catalog.",
+    "featuredBadge": "FEATURED",
+    "tradeInRateUnit": "trade-in · listed value",
+    "remainingUnit": "left",
+    "oddsSummary": "{{tier}} odds",
+    "listedUnit": "listed",
+    "shipsTitle": "Ships from Tokyo",
+    "shipsBody": "Japanese exclusives, packed and shipped direct. Free shipping on orders {{threshold}}.",
+    "shipsThreshold": "$100+"
   },
   "phonePicker": {
     "title": "Country / region",
@@ -298,8 +380,8 @@
   "packOdds": {
     "kicker": "Pack odds",
     "liveNote": "Disclosed probabilities from the active pack pool. Rates reflect current pool weights.",
-    "demoNote": "Demo probabilities — connect Supabase for live pool odds.",
-    "liveDisclaimer": "Provably-fair commit–reveal. Every pull is verifiable against the published pool weights."
+    "demoNote": "Sample odds — live odds appear when this pack is online.",
+    "liveDisclaimer": "Every pull can be verified against the published pool weights after you open."
   },
   "packOpeningEngine": {
     "brandTitle": "PULL HUB",
@@ -450,21 +532,23 @@
     "cancelAnytime": "Cancel anytime in Account settings (when billing is live).",
     "memberPackLockNote": "Member-only pack tiles will show a clear tier lock label until you subscribe.",
     "ctaSubscribe": "Continue with selected plan",
+    "ctaSubscribePreview": "Activate preview tier",
     "ctaHint": "Billing is not connected in this build — preview only.",
+    "previewBillingBanner": "Simulated / Preview Tier — no real recurring billing. App Store / Play IAP is not connected yet.",
     "demoAlertTitle": "Membership",
     "demoAlertBody": "{{tier}} checkout will connect to App Store / Play billing. This is a product preview.",
     "accountRowTitle": "Pull Hub membership",
     "accountRowSubtitle": "Silver, Gold, and Black — coins & exclusive packs",
-    "simActivatedTitle": "Demo membership on",
-    "simActivatedBody": "{{tier}} is active. We added {{coins}} credits for this cycle (demo).",
-    "simClearTitle": "Clear demo membership?",
+    "simActivatedTitle": "Preview membership on",
+    "simActivatedBody": "{{tier}} is active as a Simulated / Preview Tier on this device. No payment was taken and no monthly credits were granted.",
+    "simClearTitle": "Clear preview membership?",
     "simClearBody": "Member-only packs lock again until you pick a tier.",
     "simClearConfirm": "Clear",
-    "simActiveTitle": "Demo mode",
-    "simActiveBody": "{{tier}} is active — your tier’s member packs are unlocked.",
-    "simClearLink": "Clear demo membership",
-    "ctaSimSameTier": "Grant monthly credits again",
-    "ctaSimHint": "Persists on this device until you clear it. Billing is not connected yet."
+    "simActiveTitle": "Simulated / Preview Tier",
+    "simActiveBody": "{{tier}} is active for unlocks on this device — not a paid subscription.",
+    "simClearLink": "Clear preview membership",
+    "ctaSimSameTier": "Preview tier already active",
+    "ctaSimHint": "Persists on this device until you clear it. No real recurring billing."
   },
   "common": {
     "error": "Error",
@@ -472,7 +556,25 @@
     "close": "Close",
     "cancel": "Cancel",
     "vs": "vs",
-    "friendIdCopied": "Friend ID copied to clipboard."
+    "friendIdCopied": "Friend ID copied to clipboard.",
+    "retry": "Retry",
+    "copiedBody": "Value copied to clipboard.",
+    "copyFailedTitle": "Copy failed",
+    "copyFailedBody": "Could not copy to clipboard.",
+    "monthsShort": {
+      "jan": "JAN",
+      "feb": "FEB",
+      "mar": "MAR",
+      "apr": "APR",
+      "may": "MAY",
+      "jun": "JUN",
+      "jul": "JUL",
+      "aug": "AUG",
+      "sep": "SEP",
+      "oct": "OCT",
+      "nov": "NOV",
+      "dec": "DEC"
+    }
   },
   "credits": {
     "abbrev": "CR"
@@ -538,7 +640,7 @@
   },
   "notifications": {
     "navTitle": "Notifications",
-    "lead": "Choose what we can notify you about. Preferences are stored on this device only in the preview.",
+    "lead": "Choose what we can notify you about. Preferences are stored on this device.",
     "note": "System notification permission is requested separately when push is wired. Email and SMS controls will live here too.",
     "toggles": {
       "order": {
@@ -558,6 +660,29 @@
         "sub": "Friend requests and invites (when enabled)."
       }
     }
+  },
+  "futureUpdate": {
+    "badge": "Coming in a future update",
+    "plannedTitle": "Planned (not available yet)"
+  },
+  "deleteAccount": {
+    "section": "Danger zone",
+    "lead": "Permanently deletes your Pull Hub account with our sign-in provider and clears local data on this device. This cannot be undone.",
+    "cta": "Delete account",
+    "confirmTitle": "Delete your account?",
+    "confirmBody": "Your Clerk account will be deleted and local vault/history on this device will be cleared. Language and preference toggles stay on the device.",
+    "confirmAction": "Delete forever",
+    "doneTitle": "Account deleted",
+    "doneBody": "Your account has been removed. You can create a new one anytime.",
+    "errorTitle": "Couldn’t delete account",
+    "errorBody": "Something went wrong. Try again or contact support.",
+    "localLead": "You’re browsing without a cloud account. This clears local vault, friends, and onboarding data on this device.",
+    "localCta": "Clear local data",
+    "localConfirmTitle": "Clear local data?",
+    "localConfirmBody": "Removes guest session data and vault history on this device. Preferences like language and sound stay.",
+    "localConfirmAction": "Clear data",
+    "localDoneTitle": "Local data cleared",
+    "localDoneBody": "This device is reset to a fresh guest session."
   },
   "hotDropsInfo": {
     "navTitle": "Hot drops",
@@ -582,38 +707,43 @@
   },
   "linkedAccounts": {
     "navTitle": "Linked accounts",
-    "body": "Linking lets you sign in to the same Pull Hub profile with more than one method (for example Google and Apple), so you are not locked to a single login.",
-    "whatTitle": "What this means",
+    "body": "Linking extra sign-in methods to one Pull Hub profile is not available yet. Nothing on this screen can connect Google, Apple, or email today.",
+    "whatTitle": "What this will mean",
     "whatBody": "It is not about merging two separate app accounts. It is about attaching sign-in providers to one account for convenience and recovery.",
-    "futureTitle": "Coming later",
+    "futureTitle": "Planned providers",
     "futureGoogle": "Google account link",
     "futureApple": "Apple ID link",
     "futureEmail": "Email + password link",
-    "note": "Provider linking will use your auth settings (e.g. Clerk) in production."
+    "note": "Provider linking will use your auth settings (e.g. Clerk) when this feature ships. No action is required here."
   },
   "identityVerification": {
     "navTitle": "Identity verification",
-    "body": "Identity verification (sometimes called KYC) confirms you are a real person and meets age or compliance rules before high-value payouts, certain promos, or regulated features.",
+    "body": "Identity verification (KYC) is not active in this build. You cannot submit an ID or complete verification from this screen.",
     "whyTitle": "Why apps ask for this",
     "whyBody": "It reduces fraud, protects minors, and satisfies financial or marketplace rules when money or valuable prizes move between users and platforms.",
-    "previewTitle": "Preview flow (not active)",
+    "previewTitle": "Planned flow (not active)",
     "step1": "Government ID or document check",
     "step2": "Selfie or liveness check (if required)",
     "step3": "Review — usually minutes, sometimes longer",
-    "note": "This build only explains the concept. Wire your vendor (e.g. Persona, Stripe Identity) before requiring verification."
+    "note": "We’ll enable a real vendor (e.g. Persona, Stripe Identity) before requiring verification for payouts or regulated features."
   },
   "payoutMethod": {
     "navTitle": "Payout method",
-    "body": "When you sell cards or receive cash-outs, payouts go to a linked bank or debit card. This preview does not connect to real banking.",
+    "body": "Bank and debit payouts are not connected yet. You cannot add a payout method or receive cash-outs from this screen.",
     "line1": "Add a bank account (ACH / local rails) or debit card depending on region.",
     "line2": "Verify small deposits or instant micro-charges when your processor requires it.",
-    "line3": "Payout timing and fees follow marketplace rules — see Terms before launch.",
-    "note": "Replace this placeholder with real payout onboarding when Stripe Connect or your PSP is integrated."
+    "line3": "Payout timing and fees will follow marketplace rules — see Terms before launch.",
+    "note": "Real payout onboarding arrives with Stripe Connect (or your PSP). Until then, this page is informational only."
   },
   "settings": {
     "title": "Settings",
     "sectionProfile": "Your account",
     "sectionWallet": "Wallet & verification",
+    "notifications": "Notifications",
+    "sound": "Sound",
+    "soundSub": "Pack opening and UI sound effects (when available).",
+    "haptics": "Haptics",
+    "hapticsSub": "Vibration feedback for pack opens and key actions.",
     "devSection": "Developer",
     "devResetLocalOnboarding": "Reset local onboarding",
     "devResetAlertTitle": "Reset local onboarding?",
@@ -654,7 +784,32 @@
       "railGradedSub": "Slabbed pulls and graded chase — curated for collectors."
     },
     "guaranteeTradeIn": "Instant 100% trade-in (listed value)",
-    "guaranteeTradeInLive": "Instant 100% trade-in (listed value) · transparent odds"
+    "guaranteeTradeInLive": "Instant 100% trade-in (listed value) · transparent odds",
+    "filter": {
+      "featured": "Featured",
+      "new": "New",
+      "lowStock": "Low stock",
+      "all": "All"
+    },
+    "featured": {
+      "eyebrow": "FEATURED",
+      "cta": "VIEW ›"
+    },
+    "recentPulls": {
+      "title": "Just Pulled",
+      "sampleBadge": "SAMPLE",
+      "caption": "Example pulls — not real activity.",
+      "listedUnit": "listed"
+    },
+    "trustStrip": {
+      "zeroFeeTitle": "Zero-fee",
+      "zeroFeeSub": "trade-in, always",
+      "listedValueTitle": "100% listed value",
+      "listedValueSub": "back in Coins",
+      "freeShipTitle": "Free shipping",
+      "freeShipSub": "on orders ",
+      "freeShipThreshold": "$100+"
+    }
   },
   "packs": {
     "browseTitle": "Pack floor",
@@ -890,8 +1045,10 @@
     "promos": "Promos"
   },
   "accountRows": {
+    "creditHistory": "Credit History",
     "wallet": "Wallet Address",
     "shipping": "Shipping Address",
+    "shippingOrders": "Shipping Orders",
     "payout": "Payout Method",
     "identity": "Identity Verification",
     "linked": "Linked Accounts"
@@ -909,8 +1066,8 @@
     "invalidTitle": "Invalid address",
     "invalidBody": "Enter a valid EVM address (0x followed by 40 hex characters).",
     "notSignedIn": "Sign in to save your wallet address.",
-    "notConfigured": "Supabase is not configured in this build.",
-    "authFailed": "Could not authenticate with Supabase. Try signing out and back in."
+    "notConfigured": "Wallet linking isn’t available in this build.",
+    "authFailed": "Could not verify your session. Try signing out and back in."
   },
   "supportRows": {
     "help": "Help Center",
@@ -943,14 +1100,37 @@
     "close": "Close",
     "title": "Buy Credits",
     "subtitle": "Credits open packs. Promotional discounts show on smaller bundles; higher tiers are list price.",
-    "mockNote": "Preview: no real payment — credits are added instantly for demos.",
+    "mockNote": "Demo Credits / Test Mode — taps grant credits instantly. No real payment.",
+    "demoModeBadge": "Demo Credits / Test Mode",
+    "demoGrantCta": "Grant (demo)",
+    "demoGrantedTitle": "Demo credits added",
+    "demoGrantedBody": "Added {{count}} credits for testing. This is not a real purchase.",
+    "stripeComingSoonBody": "Stripe Top-Up Coming Soon. Live checkout needs EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY plus the create-credit-checkout edge function and webhook.",
+    "iapComingSoonBody": "In-app purchase for credits is coming soon on this platform. Set EXPO_PUBLIC_ALLOW_NATIVE_STRIPE_CREDITS=1 only for non-store Stripe Checkout testing.",
+    "stripeLiveNote": "Pay with Stripe Checkout. Credits land after payment via webhook — your balance refreshes on next hydrate.",
+    "unavailableTitle": "Top-up unavailable",
+    "unavailableCta": "Soon",
+    "checkoutFailedTitle": "Couldn’t start checkout",
+    "checkoutFailedBody": "Stripe Checkout did not open. Try again or contact support.",
+    "checkoutOpenedTitle": "Checkout opened",
+    "checkoutOpenedBody": "Complete payment in the browser. Credits appear after Stripe confirms — pull to refresh your balance if needed.",
     "discountBadge": "{{pct}}% OFF",
     "pointsLine": "{{count}} pt",
     "approx": "approx.",
     "buyNow": "Buy now",
     "disclaimer": "After confirming a credit purchase, cancellations, refunds, or point returns may not be possible. (Final policy before launch.)",
-    "mockFooter": "Simulated bundles — replace with real checkout before launch.",
-    "liveFooter": "Secure checkout · Instant delivery · No expiry"
+    "mockFooter": "Simulated bundles — demo grants only.",
+    "liveFooter": "Secure Stripe Checkout · Credits via webhook · No silent balance bumps",
+    "comingSoonFooter": "Purchase buttons stay disabled until Stripe or store billing is configured."
+  },
+  "cardMarket": {
+    "yours": "YOURS",
+    "listed": "Listed",
+    "previewCta": "Preview",
+    "ownListingTitle": "Your listing",
+    "ownListingBody": "This is your own listing. Visit your Vault to manage it.",
+    "previewTitle": "Marketplace preview",
+    "previewBody": "“{{title}}” (${{price}}) — Marketplace Checkout is currently in preview. Live purchases will open in the next release."
   },
   "lootBox": {
     "title": "Probability of contents",
@@ -1033,15 +1213,17 @@
     "tabCredits": "Credits",
     "tabMarketplace": "Marketplace",
     "viewProbabilities": "View probability of contents",
-    "digitalRoutingNote": "Digital credits: use App Store / Google Play in-app purchase when live — not Stripe for coins.",
+    "digitalRoutingNote": "Digital credits: use App Store / Google Play in-app purchase when live — Stripe Checkout is an optional web/testing path when configured.",
     "marketplaceTitle": "Physical order",
     "marketplaceLead": "Partner listings ship real products. Checkout uses a physical-goods payment flow (server-backed Stripe), separate from in-app credit packs.",
+    "marketplacePreviewNote": "Marketplace Checkout is currently in preview. Live purchases will open in the next release.",
     "item": "Item",
     "price": "Price",
     "physicalPolicy": "Physical goods only — PaymentIntent created on your server ({{mode}}). Apple Pay / Google Pay may appear for shipping purchases, not for digital currency.",
     "continueCheckout": "Continue to checkout",
+    "checkoutDisabledCta": "Checkout unavailable",
     "physicalStubTitle": "Checkout not connected",
-    "physicalStubBody": "Wire your backend to create a Stripe PaymentIntent, then open the client with the returned client secret. No keys in the app binary.",
+    "physicalStubBody": "Marketplace Checkout is currently in preview. Live purchases will open in the next release.",
     "sampleListingTitle": "Sample listing"
   },
   "legalModal": {
@@ -1220,5 +1402,116 @@
     "notFoundBody": "No demo account matches that username yet. Double-check spelling or try again later.",
     "noUsernameTitle": "Set a username first",
     "noUsernameBody": "Finish profile setup so you get a unique username to share with friends."
+  },
+  "alerts": {
+    "generic": {
+      "title": "Something went wrong",
+      "body": "Please check your connection and try again."
+    },
+    "missingLink": {
+      "title": "Link unavailable",
+      "body": "This link isn’t available yet. Please try again later."
+    },
+    "cannotOpenLink": {
+      "title": "Cannot open link",
+      "body": "We couldn’t open that link. Please try again later."
+    },
+    "openLinkFailed": "Could not open {{label}}.",
+    "openLinkFailedGeneric": "Could not open link.",
+    "shareCopiedTitle": "Copied to clipboard",
+    "shareCopiedBody": "Paste anywhere to share your pull.",
+    "packOpen": {
+      "signInTitle": "Sign in required",
+      "signInBody": "Please sign in to open packs.",
+      "alreadyTitle": "Already processed",
+      "alreadyBody": "This pack open was already recorded.",
+      "alreadyBulkBody": "This bulk open was already recorded.",
+      "connectionTitle": "Connection problem",
+      "failedTitle": "Pack open failed",
+      "failedBody": "We couldn’t complete this pack open. Please try again.",
+      "welcomeUsedTitle": "Welcome pack used",
+      "welcomeUsedBody": "You’ve already claimed this welcome pack on this account."
+    },
+    "tradeIn": {
+      "unavailableTitle": "Trade-in unavailable",
+      "unavailableBody": "We couldn’t find this card in your vault. Refresh and try again.",
+      "failedTitle": "Trade-in failed",
+      "failedBody": "We couldn’t complete the trade-in. Please try again."
+    },
+    "shipping": {
+      "unavailableTitle": "Shipment unavailable",
+      "unavailableBody": "Shipping isn’t available right now. Please try again later.",
+      "addressRequiredTitle": "Shipping address required",
+      "addressRequiredBody": "Add a shipping address before requesting shipment.",
+      "insufficientTitle": "Insufficient credits",
+      "insufficientBody": "You don’t have enough credits for this shipping fee.",
+      "failedTitle": "Shipment request failed",
+      "failedBody": "We couldn’t start this shipment. Please try again."
+    },
+    "serviceUnavailable": {
+      "title": "Temporarily unavailable",
+      "body": "This feature isn’t available right now. Please try again later."
+    }
+  },
+  "resultScreen": {
+    "headerLabel": "PULL RECORD",
+    "stampSuffix": "JST · TOKYO",
+    "totalListedValue": "TOTAL LISTED VALUE",
+    "cardCount": "{{count}} CARDS",
+    "ctaTradeInAll": "Trade in all — {{coins}} Coins",
+    "ctaTradeIn": "Trade in — {{coins}} Coins",
+    "disclaimer": "100% of listed value, in Coins.",
+    "keepInVault": "Keep in Vault",
+    "pullAgain": "Pull again",
+    "fairnessFooter": "Odds applied · Fairness Record →",
+    "sheet": {
+      "titleMulti": "Trade in {{count}} cards?",
+      "titleOne": "Trade in 1 card?",
+      "amountSub": "COINS · 100% OF LISTED VALUE",
+      "bodyMulti": "All {{count}} cards will be traded in for Coins at their listed value.",
+      "bodyOne": "This card will be traded in for Coins at its listed value.",
+      "confirm": "Trade in"
+    }
+  },
+  "fairness": {
+    "record": {
+      "title": "Fairness record",
+      "method": "Before you open, we lock in a secret server value. After the pull, you can check that the result matches what was committed.",
+      "serverCommitment": "Server commitment",
+      "clientSeed": "Your seed",
+      "openingNumber": "Opening #",
+      "pending": "Verification details appear here after a live pack open. Preview opens are not verifiable.",
+      "verifyCta": "VERIFY →"
+    },
+    "verify": {
+      "title": "Verify fairness",
+      "body": "Live opens lock in a server secret before the draw, then reveal it with your seed so anyone can confirm the outcome was fair.",
+      "empty": "No verification record yet. Open a pack while signed in to see commitment details you can check.",
+      "closeA11y": "Close",
+      "tapToCopy": "Tap to copy",
+      "rows": {
+        "pullId": "Pull id",
+        "algorithm": "Method",
+        "serverHash": "Server commitment",
+        "revealedSeed": "Revealed server value",
+        "clientSeed": "Your seed",
+        "digest": "Result digest",
+        "opening": "Opening / serial"
+      }
+    }
+  },
+  "creditsPill": {
+    "a11yHistory": "Credit history",
+    "a11yAdd": "Add credits"
+  },
+  "appHeader": {
+    "searchA11y": "Search packs"
+  },
+  "packRing": {
+    "unavailableTitle": "Pack scene unavailable",
+    "loadFailed": "The opening scene couldn’t load. Check your connection and try again.",
+    "misconfigured": "The opening scene isn’t available right now. Please try again later.",
+    "retry": "Retry",
+    "loading": "Loading pack scene…"
   }
 }

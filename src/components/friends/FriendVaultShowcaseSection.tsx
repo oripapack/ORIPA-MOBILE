@@ -21,7 +21,6 @@ import { vaultExchangeBuyerRules, formatVaultExchangeUsd } from '../../lib/vault
 import { FriendVaultItemSheet } from './FriendVaultItemSheet';
 import { VaultExchangeCheckoutStubModal } from '../vault/VaultExchangeCheckoutStubModal';
 import type { FriendEntry } from '../../data/friends';
-import { showUserMessage } from '../../utils/showUserMessage';
 
 type Props = {
   sellerUsername: string;
@@ -42,7 +41,6 @@ export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry
   const user = useAppStore((s) => s.user);
   const key = useMemo(() => normalizeFriendUsername(sellerUsername), [sellerUsername]);
   const listings = useAppStore((s) => s.friendVaultShopByUser[key] ?? []);
-  const purchase = useAppStore((s) => s.purchaseFriendVaultListing);
 
   const pulls = useMemo(
     () => getFriendVaultShowcasePulls({ username: key, isSelf, user, friendEntry: friendEntry ?? null }),
@@ -63,19 +61,6 @@ export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry
   const openCheckout = useCallback((listingId: string, priceUsd: number, title: string) => {
     setCheckout({ listingId, priceUsd, title });
   }, []);
-
-  const onSimulatePaid = useCallback(() => {
-    if (!checkout) return;
-    const res = purchase(key, checkout.listingId);
-    setCheckout(null);
-    if (res === 'ok') {
-      showUserMessage(t('vaultExchange.purchaseOkTitle'), t('vaultExchange.purchaseOkBody'));
-    } else if (res === 'own_listing') {
-      showUserMessage(t('friendVaultShop.ownTitle'), t('friendVaultShop.ownBody'));
-    } else {
-      showUserMessage(t('vaultExchange.purchaseFailTitle'), t('vaultExchange.purchaseFailBody'));
-    }
-  }, [checkout, purchase, key, t]);
 
   if (pulls.length === 0) {
     return (
@@ -121,7 +106,6 @@ export function FriendVaultShowcaseSection({ sellerUsername, isSelf, friendEntry
         itemTitle={checkout?.title ?? ''}
         listPriceUsd={checkout?.priceUsd ?? 0}
         onClose={() => setCheckout(null)}
-        onSimulatePaid={onSimulatePaid}
       />
     </View>
   );

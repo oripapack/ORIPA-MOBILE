@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native
 import { BlurView } from 'expo-blur';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
 import { spacing, elevation } from '../../tokens/spacing';
 import { CreditsPill } from './CreditsPill';
@@ -21,6 +22,7 @@ interface Props {
  * Logic (auth gate, PaymentPortal navigation) is unchanged.
  */
 export function AppHeader({ onSearch }: Props) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { requireAuth } = useRequireAuth();
   const initials = getLogoInitials();
@@ -30,6 +32,14 @@ export function AppHeader({ onSearch }: Props) {
     requireAuth(() => {
       if (navigationRef.isReady()) {
         navigationRef.navigate('PaymentPortal', { initialTab: 'credits' });
+      }
+    });
+  };
+
+  const goCreditHistory = () => {
+    requireAuth(() => {
+      if (navigationRef.isReady()) {
+        navigationRef.navigate('CreditHistory');
       }
     });
   };
@@ -72,8 +82,13 @@ export function AppHeader({ onSearch }: Props) {
         </View>
 
         <View style={styles.right}>
-          <CreditsPill onAdd={goCredits} />
-          <TouchableOpacity style={styles.iconBtn} onPress={onSearch} activeOpacity={0.75}>
+          <CreditsPill onAdd={goCredits} onPressBalance={goCreditHistory} />
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={onSearch}
+            activeOpacity={0.75}
+            accessibilityLabel={t('appHeader.searchA11y')}
+          >
             <Ionicons name="search" size={20} color={sg.text} />
           </TouchableOpacity>
         </View>

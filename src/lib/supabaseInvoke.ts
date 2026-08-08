@@ -12,7 +12,7 @@ export async function invokeEdgeFunction<TResponse>(
     return {
       ok: false as const,
       code: 'SUPABASE_NOT_CONFIGURED',
-      message: 'Supabase URL and anon key are not set in .env',
+      message: 'This feature isn’t available right now. Please try again later.',
     };
   }
 

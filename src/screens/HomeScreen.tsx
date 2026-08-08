@@ -43,12 +43,20 @@ import { useRequireAuth } from '../hooks/useRequireAuth';
 
 type FilterKey = 'featured' | 'new' | 'low' | 'all';
 
-const FILTERS: { key: FilterKey; label: string }[] = [
-  { key: 'featured', label: 'Featured' },
-  { key: 'new', label: 'New' },
-  { key: 'low', label: 'Low stock' },
-  { key: 'all', label: 'All' },
-];
+const FILTER_KEYS: FilterKey[] = ['featured', 'new', 'low', 'all'];
+
+function filterLabelKey(key: FilterKey): string {
+  switch (key) {
+    case 'featured':
+      return 'home.filter.featured';
+    case 'new':
+      return 'home.filter.new';
+    case 'low':
+      return 'home.filter.lowStock';
+    default:
+      return 'home.filter.all';
+  }
+}
 
 /** Filter threshold — broader than the 10% stock promotion so the chip is useful. */
 const LOW_STOCK_FILTER_FRACTION = 0.25;
@@ -89,13 +97,15 @@ export function HomeScreen() {
     <>
       <SgBannerCarousel />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-        {FILTERS.map((f) => (
+        {FILTER_KEYS.map((key) => (
           <TouchableOpacity
-            key={f.key}
-            style={[styles.chip, filter === f.key && styles.chipActive]}
-            onPress={() => setFilter(f.key)}
+            key={key}
+            style={[styles.chip, filter === key && styles.chipActive]}
+            onPress={() => setFilter(key)}
           >
-            <Text style={[styles.chipText, filter === f.key && styles.chipTextActive]}>{f.label}</Text>
+            <Text style={[styles.chipText, filter === key && styles.chipTextActive]}>
+              {t(filterLabelKey(key))}
+            </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -141,16 +151,17 @@ export function HomeScreen() {
 
 /** Featured banner (browse filters) — same navigation behavior as before. */
 function SgFeaturedRow({ pack }: { pack: Pack }) {
+  const { t } = useTranslation();
   const goDetail = () => {
     if (navigationRef.isReady()) navigationRef.navigate('PackDetails', { packId: pack.id });
   };
   return (
     <Pressable onPress={goDetail} style={({ pressed }) => [styles.featuredRow, pressed && styles.featuredRowPressed]}>
       <View style={styles.featuredBody}>
-        <Text style={styles.featuredEyebrow}>FEATURED</Text>
+        <Text style={styles.featuredEyebrow}>{t('home.featured.eyebrow')}</Text>
         <Text style={styles.featuredTitle} numberOfLines={1}>{pack.title}</Text>
       </View>
-      <Text style={styles.featuredCta}>VIEW ›</Text>
+      <Text style={styles.featuredCta}>{t('home.featured.cta')}</Text>
     </Pressable>
   );
 }

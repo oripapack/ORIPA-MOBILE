@@ -1,5 +1,6 @@
 import { Platform, Share } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
+import i18n from '../i18n';
 import { showUserMessage } from './showUserMessage';
 
 /** Share text — `Share.share` is unreliable on React Native Web. */
@@ -14,7 +15,7 @@ export async function shareUserContent(message: string): Promise<void> {
       }
     }
     await Clipboard.setStringAsync(message);
-    showUserMessage('Copied to clipboard', 'Paste anywhere to share your pull.');
+    showUserMessage(i18n.t('alerts.shareCopiedTitle'), i18n.t('alerts.shareCopiedBody'));
     return;
   }
   await Share.share({ message });

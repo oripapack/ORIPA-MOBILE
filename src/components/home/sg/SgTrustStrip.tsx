@@ -1,18 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { sg } from '../../../tokens/sg';
-
-const ITEMS = [
-  { title: 'Zero-fee', sub: 'trade-in, always' },
-  { title: '100% listed value', sub: 'back in Coins' },
-  { title: 'Free shipping', sub: 'on orders ', subNum: '$100+' },
-] as const;
 
 /** Trust strip — dividers are 1px `line` borders (N2 §3). */
 export function SgTrustStrip() {
+  const { t } = useTranslation();
+  const items = [
+    { title: t('home.trustStrip.zeroFeeTitle'), sub: t('home.trustStrip.zeroFeeSub') },
+    { title: t('home.trustStrip.listedValueTitle'), sub: t('home.trustStrip.listedValueSub') },
+    {
+      title: t('home.trustStrip.freeShipTitle'),
+      sub: t('home.trustStrip.freeShipSub'),
+      subNum: t('home.trustStrip.freeShipThreshold'),
+    },
+  ] as const;
+
   return (
     <View style={styles.row}>
-      {ITEMS.map((item, i) => (
+      {items.map((item, i) => (
         <View key={item.title} style={[styles.cell, i > 0 && styles.cellDivider]}>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.sub}>

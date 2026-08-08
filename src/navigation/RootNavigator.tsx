@@ -15,10 +15,12 @@ import { AccountScreen } from '../screens/AccountScreen';
 import { MarketplaceScreen } from '../screens/MarketplaceScreen';
 import { VaultScreen } from '../screens/VaultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { CreditHistoryScreen } from '../screens/history/CreditHistoryScreen';
 import { DevUiGalleryScreen } from '../screens/DevUiGalleryScreen';
 import { PaymentPortalScreen } from '../screens/PaymentPortalScreen';
 import { HelpCenterScreen } from '../screens/HelpCenterScreen';
 import { ShippingAddressScreen } from '../screens/ShippingAddressScreen';
+import { ShippingOrdersScreen } from '../screens/ShippingOrdersScreen';
 import { TierBenefitsScreen } from '../screens/TierBenefitsScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { HotDropsInfoScreen } from '../screens/HotDropsInfoScreen';
@@ -50,6 +52,8 @@ import { hasCompletedProfileOnboarding } from '../lib/clerkProfile';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { usePromotionStore } from '../store/promotionStore';
 import { useMembershipSimulationStore } from '../store/membershipSimulationStore';
+import { usePreferencesStore } from '../store/preferencesStore';
+import { useNotificationPreferencesStore } from '../store/notificationPreferencesStore';
 import { AppBootEntrance, BOOT_ENTRANCE_SPRING } from '../components/splash/AppBootEntrance';
 import { AppSplashScreen } from '../components/splash/AppSplashScreen';
 import { GuestModeProvider } from '../context/GuestModeContext';
@@ -205,11 +209,11 @@ function RootStack() {
     <>
       {isClerkEnabled ? <ClerkProfileSync /> : null}
       <Stack.Navigator
-        // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery | Result. No effect in normal runs.
+        // Dev-only: EXPO_PUBLIC_DEV_SCREEN=UiGallery | Result. Ignored outside __DEV__.
         initialRouteName={
-          process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
+          __DEV__ && process.env.EXPO_PUBLIC_DEV_SCREEN === 'UiGallery'
             ? 'DevUiGallery'
-            : process.env.EXPO_PUBLIC_DEV_SCREEN === 'Result'
+            : __DEV__ && process.env.EXPO_PUBLIC_DEV_SCREEN === 'Result'
               ? 'Result'
               : 'MainTabs'
         }
@@ -238,6 +242,8 @@ function RootStack() {
         <Stack.Screen name="PaymentPortal" component={PaymentPortalScreen} options={stackHeader} />
         <Stack.Screen name="HelpCenter" component={HelpCenterScreen} options={stackHeader} />
         <Stack.Screen name="ShippingAddress" component={ShippingAddressScreen} options={stackHeader} />
+        <Stack.Screen name="ShippingOrders" component={ShippingOrdersScreen} options={stackHeader} />
+        <Stack.Screen name="CreditHistory" component={CreditHistoryScreen} options={stackHeader} />
         <Stack.Screen name="TierBenefits" component={TierBenefitsScreen} options={stackHeader} />
         <Stack.Screen name="Membership" component={MembershipScreen} options={stackHeader} />
         <Stack.Screen
@@ -274,6 +280,8 @@ function GuestHydration() {
   const hydrate = useGuestBrowseStore((s) => s.hydrate);
   const hydratePromotions = usePromotionStore((s) => s.hydrate);
   const hydrateMembershipSim = useMembershipSimulationStore((s) => s.hydrate);
+  const hydratePreferences = usePreferencesStore((s) => s.hydrate);
+  const hydrateNotifications = useNotificationPreferencesStore((s) => s.hydrate);
   const hydrateFirstTimePacks = useAppStore((s) => s.hydrateFirstTimePacks);
   const hydrateCollectorGame = useAppStore((s) => s.hydrateCollectorGame);
   const recordCollectorActivity = useAppStore((s) => s.recordCollectorActivity);
@@ -281,6 +289,8 @@ function GuestHydration() {
     void hydrate();
     void hydratePromotions();
     void hydrateMembershipSim();
+    void hydratePreferences();
+    void hydrateNotifications();
     void hydrateFirstTimePacks();
     void (async () => {
       await hydrateCollectorGame();
@@ -290,6 +300,8 @@ function GuestHydration() {
     hydrate,
     hydratePromotions,
     hydrateMembershipSim,
+    hydratePreferences,
+    hydrateNotifications,
     hydrateFirstTimePacks,
     hydrateCollectorGame,
     recordCollectorActivity,

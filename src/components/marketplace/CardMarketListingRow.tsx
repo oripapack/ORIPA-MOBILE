@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { sg } from '../../tokens/sg';
 import { fontSize, brandFont } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import type { PublicVaultListing } from '../../lib/friendVaultShop';
 import type { PullRarityTier } from '../../data/mockUser';
-import { confirmUserAction, showUserMessage } from '../../utils/showUserMessage';
+import { showUserMessage } from '../../utils/showUserMessage';
 
 const TIER_COLOR: Record<PullRarityTier, string> = {
   base: sg.muted,
@@ -34,6 +35,7 @@ interface Props {
 }
 
 export function CardMarketListingRow({ listing, isOwnListing }: Props) {
+  const { t } = useTranslation();
   const tier = listing.tier ?? 'base';
   const tierColor = TIER_COLOR[tier];
   const tierBg = TIER_BG[tier];
@@ -41,34 +43,35 @@ export function CardMarketListingRow({ listing, isOwnListing }: Props) {
 
   const onBuyNow = () => {
     if (isOwnListing) {
-      showUserMessage('Your Listing', 'This is your own listing. Visit your Vault to manage it.');
+      showUserMessage(
+        t('cardMarket.ownListingTitle'),
+        t('cardMarket.ownListingBody'),
+      );
       return;
     }
-    confirmUserAction({
-      title: 'Buy Now',
-      message: `Purchase "${listing.result}" for $${listing.listPriceUsd}?\n\nStripe checkout coming soon.`,
-      cancelLabel: 'Cancel',
-      confirmLabel: `Buy for $${listing.listPriceUsd}`,
-      onConfirm: () =>
-        showUserMessage(
-          'Order Placed!',
-          'Your purchase will be processed via Stripe. The seller will be notified.',
-        ),
-    });
+    showUserMessage(
+      t('cardMarket.previewTitle'),
+      t('cardMarket.previewBody', {
+        title: listing.result,
+        price: listing.listPriceUsd,
+      }),
+    );
   };
 
   return (
     <View style={styles.row}>
-      {/* Rarity left bar */}
       <View style={[styles.rarityBar, { backgroundColor: tierColor }]} />
 
-      {/* Card info */}
       <View style={styles.infoWrap}>
         <View style={styles.topLine}>
           <Text style={styles.cardName} numberOfLines={1}>
             {listing.result}
           </Text>
-          {isOwnListing ? <View style={styles.ownBadge}><Text style={styles.ownBadgeText}>YOURS</Text></View> : null}
+          {isOwnListing ? (
+            <View style={styles.ownBadge}>
+              <Text style={styles.ownBadgeText}>{t('cardMarket.yours')}</Text>
+            </View>
+          ) : null}
         </View>
         <Text style={styles.packName} numberOfLines={1}>
           {listing.packTitle}
@@ -81,18 +84,21 @@ export function CardMarketListingRow({ listing, isOwnListing }: Props) {
         </View>
       </View>
 
-      {/* Price + CTA */}
       <View style={styles.rightWrap}>
         <Text style={styles.price}>${listing.listPriceUsd}</Text>
         <TouchableOpacity
-          style={[styles.buyBtn, isOwnListing && styles.buyBtnOwn]}
+          style={[styles.buyBtn, !isOwnListing && styles.buyBtnPreview, isOwnListing && styles.buyBtnOwn]}
           onPress={onBuyNow}
           activeOpacity={0.85}
           accessibilityRole="button"
-          accessibilityLabel={`Buy ${listing.result} for $${listing.listPriceUsd}`}
+          accessibilityLabel={
+            isOwnListing
+              ? t('cardMarket.listed')
+              : t('cardMarket.previewCta')
+          }
         >
-          <Text style={[styles.buyBtnText, isOwnListing && styles.buyBtnTextOwn]}>
-            {isOwnListing ? 'Listed' : 'Buy Now'}
+          <Text style={styles.buyBtnText}>
+            {isOwnListing ? t('cardMarket.listed') : t('cardMarket.previewCta')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -192,6 +198,11 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: spacing.md,
   },
+  buyBtnPreview: {
+    backgroundColor: sg.surface2,
+    borderWidth: 1,
+    borderColor: sg.line,
+  },
   buyBtnOwn: {
     backgroundColor: sg.surface2,
     borderWidth: 1,
@@ -200,10 +211,7 @@ const styles = StyleSheet.create({
   buyBtnText: {
     fontSize: 11,
     fontFamily: brandFont.black,
-    color: sg.onGold,
+    color: sg.muted,
     letterSpacing: 0.3,
-  },
-  buyBtnTextOwn: {
-    color: sg.gold,
   },
 });

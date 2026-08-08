@@ -1,31 +1,55 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { sg } from '../../../tokens/sg';
 import { SgCard, SgData, SgSectionHeader } from '../../ui';
+import type { PullFairnessRecord } from '../../../../shared/api/types';
+
+function shorten(value: string, head = 6, tail = 4): string {
+  if (!value) return '—';
+  if (value.length <= head + tail + 1) return value;
+  return `${value.slice(0, head)}…${value.slice(-tail)}`;
+}
 
 /**
- * Fairness record block (docs/design-system-n2.md — odds ledger / audit
- * exposure is part of the trust chassis, §10/§12):
- * Server commitment (hash prefix) / Client seed / Opening # / Verify →,
- * plus the draw-method statement. Hashes are data-face numerals (§4).
- *
- * Values are MOCK placeholders until the provably-fair backend lands
- * (shared/api commit–reveal flow) — the UI frame ships first so the trust
- * architecture is visible and the wiring point is obvious.
+ * Fairness record block — commit–reveal trust chassis (§10/§12).
+ * Pass `record` from the latest live open (`lastFairnessRecord`).
  */
-export function SgFairnessRecord({ onVerify }: { onVerify?: () => void }) {
+export function SgFairnessRecord({
+  onVerify,
+  record,
+}: {
+  onVerify?: () => void;
+  record?: PullFairnessRecord | null;
+}) {
+  const { t } = useTranslation();
+  const hasLive = Boolean(record?.hashedServerSeed || record?.clientSeed);
+
   return (
     <SgCard>
-      <SgSectionHeader title="Fairness record" />
-      <Text style={styles.method}>
-        Draw method: provably-fair commit–reveal. The server commits to a hash
-        before you open; verify any pull afterwards.
-      </Text>
-      <Row label="Server commitment" value="a41f8c…9c2e" />
-      <Row label="Client seed" value="7b03aa…d114" />
-      <Row label="Opening #" value="287" />
-      <TouchableOpacity onPress={onVerify} style={styles.verify} accessibilityRole="button">
-        <Text style={styles.verifyText}>VERIFY →</Text>
+      <SgSectionHeader title={t('fairness.record.title')} />
+      <Text style={styles.method}>{t('fairness.record.method')}</Text>
+      {hasLive && record ? (
+        <>
+          <Row label={t('fairness.record.serverCommitment')} value={shorten(record.hashedServerSeed)} />
+          <Row label={t('fairness.record.clientSeed')} value={shorten(record.clientSeed)} />
+          <Row
+            label={t('fairness.record.openingNumber')}
+            value={record.openingNumber || shorten(record.pullId, 4, 4)}
+          />
+        </>
+      ) : (
+        <Text style={styles.pending}>{t('fairness.record.pending')}</Text>
+      )}
+      <TouchableOpacity
+        onPress={onVerify}
+        style={styles.verify}
+        accessibilityRole="button"
+        disabled={!onVerify}
+      >
+        <Text style={[styles.verifyText, !onVerify ? styles.verifyDisabled : null]}>
+          {t('fairness.record.verifyCta')}
+        </Text>
       </TouchableOpacity>
     </SgCard>
   );
@@ -49,6 +73,13 @@ const styles = StyleSheet.create({
     marginTop: sg.space.sm,
     marginBottom: sg.space.xs,
   },
+  pending: {
+    fontFamily: sg.font.body,
+    fontSize: 12,
+    lineHeight: 17,
+    color: sg.muted,
+    marginTop: sg.space.sm,
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -63,4 +94,5 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     color: sg.text,
   },
+  verifyDisabled: { color: sg.muted },
 });

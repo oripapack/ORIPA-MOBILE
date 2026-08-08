@@ -1,10 +1,11 @@
 import { Linking, Platform } from 'react-native';
+import i18n from '../i18n';
 import { showUserMessage } from './showUserMessage';
 
 export async function openExternalUrl(url: string, label?: string): Promise<void> {
   const trimmed = url.trim();
   if (!trimmed) {
-    showUserMessage('Missing link', 'This URL is not set yet. Update `src/config/app.ts`.');
+    showUserMessage(i18n.t('alerts.missingLink.title'), i18n.t('alerts.missingLink.body'));
     return;
   }
 
@@ -18,14 +19,16 @@ export async function openExternalUrl(url: string, label?: string): Promise<void
   try {
     const supported = await Linking.canOpenURL(trimmed);
     if (!supported) {
-      showUserMessage(
-        'Cannot open link',
-        'Check that the URL is valid (https) in `src/config/app.ts`.',
-      );
+      showUserMessage(i18n.t('alerts.cannotOpenLink.title'), i18n.t('alerts.cannotOpenLink.body'));
       return;
     }
     await Linking.openURL(trimmed);
   } catch {
-    showUserMessage('Error', label ? `Could not open ${label}.` : 'Could not open link.');
+    showUserMessage(
+      i18n.t('common.error'),
+      label
+        ? i18n.t('alerts.openLinkFailed', { label })
+        : i18n.t('alerts.openLinkFailedGeneric'),
+    );
   }
 }

@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../store/useAppStore';
 import { useGuestBrowseStore } from '../../store/guestBrowseStore';
 import { isClerkEnabled } from '../../config/clerk';
-import { getLocalizedPackFields } from '../../i18n/packCopy';
+import { getLocalizedPackFields, getLocalizedPackTitle } from '../../i18n/packCopy';
 import { transparentModalIOSProps } from '../../constants/modalPresentation';
 import { resolveRevealCardForTier } from './opening/mockRevealCards';
 import { generatePackOpenResult } from './opening/generatePackRoll';
@@ -28,6 +28,8 @@ import type { PackRollResult } from './opening/types';
 import { RevealCtaFade } from './opening/RevealResultCard';
 import { showUserMessage } from '../../utils/showUserMessage';
 import { buildBulkOpenViewModel } from './opening/bulk/bulkOpenViewModel';
+import { navigationRef } from '../../navigation/navigationRef';
+import { buildResultPullData } from '../../data/resultPullMapper';
 
 /** Lazy so Three.js / R3F only load when a pack is opened (keeps web boot light). */
 const RingPackOpenFlow = React.lazy(() =>
@@ -186,14 +188,27 @@ export function PackOpeningModal() {
   }, [bulkRolls, packOpenQuantity, packOpenSessionId, selectedPack]);
 
   const onBulkContinue = useCallback(() => {
-    if (!bulkRolls) return;
+    if (!bulkRolls || !selectedPack) return;
+    const sessionCount = bulkRolls.length;
     if (!didApplyRef.current) {
       didApplyRef.current = true;
       applyBulkPackOpenResults(bulkRolls, { persistToVault: true });
     }
     closeModal('packOpening');
-    openModal('wonPrizes');
-  }, [applyBulkPackOpenResults, bulkRolls, closeModal, openModal]);
+
+    const state = useAppStore.getState();
+    const pullIds = state.pendingFulfillmentPullIds.slice(0, sessionCount);
+    const pulls = pullIds
+      .map((id) => state.user.pullHistory.find((p) => p.id === id))
+      .filter((p): p is NonNullable<typeof p> => Boolean(p));
+    const packName = getLocalizedPackTitle(selectedPack.id, selectedPack.title, t);
+    const pull = buildResultPullData(pulls, packName);
+    if (navigationRef.isReady() && pull) {
+      navigationRef.navigate('Result', { pull, pullIds });
+    } else {
+      openModal('wonPrizes');
+    }
+  }, [applyBulkPackOpenResults, bulkRolls, closeModal, openModal, selectedPack, t]);
 
   useEffect(() => {
     if (!visible || !selectedPack || !pending) return;
@@ -202,22 +217,33 @@ export function PackOpeningModal() {
     if (!engineDone) return;
 
     didApplyRef.current = true;
-    // Always record the pull so Won Prizes (convert vs vault) can open — even for unsigned demos.
+    // Always record the pull so Result / Won Prizes can open — even for unsigned demos.
     applyPackOpenResult(pending, { persistToVault: true });
   }, [applyPackOpenResult, engineDone, packOpenQuantity, pending, selectedPack, visible]);
 
-  /** After the 3D reveal finishes, go straight to convert / vault — CTAs under the iframe were unreachable. */
+  /** After the 3D reveal finishes, go to ResultScreen with live pull payload. */
   useEffect(() => {
-    if (!visible || !engineDone || isBulkOpen) return;
+    if (!visible || !engineDone || isBulkOpen || !selectedPack) return;
     if (!didApplyRef.current || didAdvanceToWonRef.current) return;
 
     didAdvanceToWonRef.current = true;
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       closeModal('packOpening');
-      openModal('wonPrizes');
+      const state = useAppStore.getState();
+      const pullId = state.pendingFulfillmentPullIds[0];
+      const historyPull = pullId
+        ? state.user.pullHistory.find((p) => p.id === pullId)
+        : undefined;
+      const packName = getLocalizedPackTitle(selectedPack.id, selectedPack.title, t);
+      const pull = historyPull ? buildResultPullData([historyPull], packName) : null;
+      if (navigationRef.isReady() && pull && pullId) {
+        navigationRef.navigate('Result', { pull, pullIds: [pullId] });
+      } else {
+        openModal('wonPrizes');
+      }
     }, 600);
-    return () => clearTimeout(t);
-  }, [closeModal, engineDone, isBulkOpen, openModal, visible]);
+    return () => clearTimeout(timer);
+  }, [closeModal, engineDone, isBulkOpen, openModal, selectedPack, t, visible]);
 
   const revealCard =
     pending && selectedPack && !isBulkOpen
@@ -250,7 +276,22 @@ export function PackOpeningModal() {
 
   const goToWonPrizes = () => {
     closeModal('packOpening');
-    openModal('wonPrizes');
+    if (!selectedPack) {
+      openModal('wonPrizes');
+      return;
+    }
+    const state = useAppStore.getState();
+    const pullId = state.pendingFulfillmentPullIds[0];
+    const historyPull = pullId
+      ? state.user.pullHistory.find((p) => p.id === pullId)
+      : undefined;
+    const packName = getLocalizedPackTitle(selectedPack.id, selectedPack.title, t);
+    const pull = historyPull ? buildResultPullData([historyPull], packName) : null;
+    if (navigationRef.isReady() && pull && pullId) {
+      navigationRef.navigate('Result', { pull, pullIds: [pullId] });
+    } else {
+      openModal('wonPrizes');
+    }
   };
 
   const showSkip =

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import Animated, {
@@ -16,6 +16,7 @@ import * as Haptics from 'expo-haptics';
 import { brandFont } from '../../../tokens/typography';
 import { spacing } from '../../../tokens/spacing';
 import { PROTOTYPE_RIP_GESTURE_GUARD_MS } from '../../../config/packOpeningAnimation';
+import { runHapticIfEnabled } from '../../../audio/hapticsGate';
 import { HeroPackFace } from '../opening/HeroPackFace';
 import { CAROUSEL_PACK_DIMS } from './PackSelectionCarousel';
 
@@ -26,18 +27,17 @@ const SPRING_BURST = { mass: 0.95, damping: 16, stiffness: 180 } as const;
 const BACK_HOLD_BEFORE_BURST_MS = 140;
 
 function hapticLight() {
-  if (Platform.OS === 'web') return;
-  void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+  runHapticIfEnabled(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light));
 }
 
 function hapticMedium() {
-  if (Platform.OS === 'web') return;
-  void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+  runHapticIfEnabled(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium));
 }
 
 function hapticSuccess() {
-  if (Platform.OS === 'web') return;
-  void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+  runHapticIfEnabled(() =>
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
+  );
 }
 
 type Props = {

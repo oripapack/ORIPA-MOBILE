@@ -22,9 +22,11 @@ export {
   newClientSeed,
   newIdempotencyKey,
 };
+export { fairnessFromExecuteResponse } from '../../shared/api/executePull';
 export type {
   ExecuteBulkPullResponse,
   ExecutePullResponse,
+  PullFairnessRecord,
 } from '../../shared/api/types';
 
 export async function executePullLive(input: {
@@ -40,7 +42,7 @@ export async function executePullLive(input: {
     return {
       ok: false,
       code: 'SUPABASE_NOT_CONFIGURED',
-      message: 'Supabase URL and anon key are not set in .env',
+      message: 'Pack opening isn’t available right now. Please try again later.',
     };
   }
 
@@ -60,7 +62,7 @@ export async function executeBulkPullLive(input: {
     return {
       ok: false,
       code: 'SUPABASE_NOT_CONFIGURED',
-      message: 'Supabase URL and anon key are not set in .env',
+      message: 'Pack opening isn’t available right now. Please try again later.',
     };
   }
 

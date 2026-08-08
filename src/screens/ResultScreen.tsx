@@ -1,24 +1,22 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Modal, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Modal, Pressable, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 import { sg } from '../tokens/sg';
 import { SgButton, SgTierTag } from '../components/ui';
 import { navigationRef } from '../navigation/navigationRef';
 import { useAppStore } from '../store/useAppStore';
 import { MOCK_RESULT_PULLS, type ResultCard, type ResultPullData, type MockResultVariant } from '../data/mockResultPull';
+import { FairnessVerifyModal } from '../components/fairness/FairnessVerifyModal';
 
 /**
  * Result screen — task1-result-screen-spec.md on N2 v2.4 tokens.
  *
- * Entered after the opening sequence has faded to black; no entry transition
- * of its own. Not yet wired to the opening flow (Yutaka domain): callers pass
- * `pull` (+ optional store `pullIds` for real finalize actions); without
- * params the screen renders MOCK data for review.
- *
- * Copy is intentionally hardcoded English per the spec ("英語ロケール・その
- * まま使う") — locale keys come later with the flow wiring.
+ * Entered after the opening sequence (PackOpeningModal). Callers pass
+ * `pull` + `pullIds` from the live session; without params the screen
+ * renders MOCK data for review (EXPO_PUBLIC_DEV_SCREEN=Result).
  *
  * Leaving without choosing NEVER converts to Coins: no action is taken on
  * unmount, so pending pulls stay pending (vault-by-default is the flow-side
@@ -28,7 +26,7 @@ import { MOCK_RESULT_PULLS, type ResultCard, type ResultPullData, type MockResul
 type Props = {
   route: {
     params?: {
-      /** Real payload from the opening flow (not wired yet). */
+      /** Real payload from the opening flow. */
       pull?: ResultPullData;
       /** Store pull ids — when present, CTA/vault call finalizePendingFulfillment. */
       pullIds?: string[];
@@ -38,14 +36,17 @@ type Props = {
   };
 };
 
-const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+const MONTH_KEYS = [
+  'jan', 'feb', 'mar', 'apr', 'may', 'jun',
+  'jul', 'aug', 'sep', 'oct', 'nov', 'dec',
+] as const;
 
 /** "JUL 27, 2026 · 14:32 JST · TOKYO" — manual UTC+9 (no Intl on Hermes). */
-function formatStampJst(iso: string): string {
+function formatStampJst(iso: string, month: string, suffix: string): string {
   const d = new Date(new Date(iso).getTime() + 9 * 3600e3);
   const hh = String(d.getUTCHours()).padStart(2, '0');
   const mm = String(d.getUTCMinutes()).padStart(2, '0');
-  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} · ${hh}:${mm} JST · TOKYO`;
+  return `${month} ${d.getUTCDate()}, ${d.getUTCFullYear()} · ${hh}:${mm} ${suffix}`;
 }
 
 function groupThousands(intStr: string): string {
@@ -63,13 +64,19 @@ function usdToCoins(usd: number): number {
 }
 
 export function ResultScreen({ route }: Props) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const finalize = useAppStore((s) => s.finalizePendingFulfillment);
+  const openPack = useAppStore((s) => s.openPack);
+  const selectedPack = useAppStore((s) => s.selectedPack);
+  const lastFairnessRecord = useAppStore((s) => s.lastFairnessRecord);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [fairnessOpen, setFairnessOpen] = useState(false);
 
   const params = route.params;
   const pull = params?.pull ?? MOCK_RESULT_PULLS[params?.mock ?? '5'];
   const pullIds = params?.pullIds;
+  const isLiveSession = Boolean(pullIds?.length);
 
   const { hero, rest } = useMemo(() => {
     const best = pull.cards.reduce((a, c) => (c.listedValueUsd > a.listedValueUsd ? c : a), pull.cards[0]);
@@ -79,9 +86,17 @@ export function ResultScreen({ route }: Props) {
   const count = pull.cards.length;
   const multi = count > 1;
   const coins = groupThousands(String(usdToCoins(pull.totalListedValueUsd)));
-  const ctaLabel = multi ? `Trade in all — ${coins} Coins` : `Trade in — ${coins} Coins`;
+  const ctaLabel = multi
+    ? t('resultScreen.ctaTradeInAll', { coins })
+    : t('resultScreen.ctaTradeIn', { coins });
 
-  const goTabs = (screen?: 'Vault') => {
+  const stamp = useMemo(() => {
+    const d = new Date(new Date(pull.pulledAt).getTime() + 9 * 3600e3);
+    const month = t(`common.monthsShort.${MONTH_KEYS[d.getUTCMonth()]}`);
+    return formatStampJst(pull.pulledAt, month, t('resultScreen.stampSuffix'));
+  }, [pull.pulledAt, t]);
+
+  const goTabs = (screen?: 'Vault' | 'Home') => {
     if (!navigationRef.isReady()) return;
     if (screen) navigationRef.navigate('MainTabs', { screen });
     else navigationRef.navigate('MainTabs');
@@ -89,30 +104,36 @@ export function ResultScreen({ route }: Props) {
 
   const onConfirmTradeIn = () => {
     setSheetOpen(false);
-    // Real wiring: convert every pull of this opening. With mock data there is
-    // nothing to finalize — state stays untouched.
     if (pullIds?.length) void finalize({ vaultIds: [], convertIds: pullIds });
     goTabs();
   };
 
   const onKeepInVault = () => {
-    // Spec: no confirmation for the Vault path.
     if (pullIds?.length) void finalize({ vaultIds: pullIds, convertIds: [] });
     goTabs('Vault');
+  };
+
+  const onPullAgain = () => {
+    if (!selectedPack) {
+      goTabs('Home');
+      return;
+    }
+    goTabs('Home');
+    void openPack(selectedPack, { quantity: 1 });
   };
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
       {/* ── 1. Header band ── */}
       <View style={styles.header}>
-        <Text style={styles.headerLabel}>PULL RECORD</Text>
+        <Text style={styles.headerLabel}>{t('resultScreen.headerLabel')}</Text>
         <Text style={styles.headerId}>#{pull.pullId}</Text>
       </View>
 
       {/* ── 2. Title ── */}
       <View style={styles.titleBlock}>
         <Text style={styles.packName}>{pull.packName}</Text>
-        <Text style={styles.stamp}>{formatStampJst(pull.pulledAt)}</Text>
+        <Text style={styles.stamp}>{stamp}</Text>
       </View>
 
       {/* ── 3. Card panel ── */}
@@ -163,8 +184,8 @@ export function ResultScreen({ route }: Props) {
         {multi ? (
           <View style={styles.totalRow}>
             <View>
-              <Text style={styles.totalLabel}>TOTAL LISTED VALUE</Text>
-              <Text style={styles.totalCount}>{count} CARDS</Text>
+              <Text style={styles.totalLabel}>{t('resultScreen.totalListedValue')}</Text>
+              <Text style={styles.totalCount}>{t('resultScreen.cardCount', { count })}</Text>
             </View>
             <Text style={styles.totalValue}>{fmtUsd(pull.totalListedValueUsd)}</Text>
           </View>
@@ -174,14 +195,27 @@ export function ResultScreen({ route }: Props) {
       {/* ── 4. Action bar ── */}
       <View style={styles.actionBar}>
         <SgButton label={ctaLabel} onPress={() => setSheetOpen(true)} style={styles.cta} />
-        <Text style={styles.disclaimer}>100% of listed value, in Coins.</Text>
-        <SgButton label="Keep in Vault" variant="line" onPress={onKeepInVault} style={styles.secondary} />
+        <Text style={styles.disclaimer}>{t('resultScreen.disclaimer')}</Text>
+        <SgButton label={t('resultScreen.keepInVault')} variant="line" onPress={onKeepInVault} style={styles.secondary} />
+        {isLiveSession && selectedPack ? (
+          <SgButton label={t('resultScreen.pullAgain')} variant="line" onPress={onPullAgain} style={styles.secondary} />
+        ) : null}
       </View>
 
       {/* ── 5. Footer ── */}
-      <View style={[styles.footer, { paddingBottom: insets.bottom }]}>
-        <Text style={styles.footerText}>Odds applied · Fairness Record →</Text>
-      </View>
+      <TouchableOpacity
+        style={[styles.footer, { paddingBottom: insets.bottom }]}
+        onPress={() => setFairnessOpen(true)}
+        accessibilityRole="button"
+      >
+        <Text style={styles.footerText}>{t('resultScreen.fairnessFooter')}</Text>
+      </TouchableOpacity>
+
+      <FairnessVerifyModal
+        visible={fairnessOpen}
+        onClose={() => setFairnessOpen(false)}
+        record={lastFairnessRecord}
+      />
 
       {/* ── Confirm sheet — trade-in never commits instantly ── */}
       <Modal visible={sheetOpen} transparent animationType="slide" onRequestClose={() => setSheetOpen(false)}>
@@ -190,16 +224,20 @@ export function ResultScreen({ route }: Props) {
           <Pressable style={StyleSheet.absoluteFillObject} onPress={() => setSheetOpen(false)} />
           <View style={styles.sheet}>
             <View style={styles.grabber} />
-            <Text style={styles.sheetTitle}>{multi ? `Trade in ${count} cards?` : 'Trade in 1 card?'}</Text>
+            <Text style={styles.sheetTitle}>
+              {multi
+                ? t('resultScreen.sheet.titleMulti', { count })
+                : t('resultScreen.sheet.titleOne')}
+            </Text>
             <Text style={styles.sheetAmount}>{coins}</Text>
-            <Text style={styles.sheetAmountSub}>COINS · 100% OF LISTED VALUE</Text>
+            <Text style={styles.sheetAmountSub}>{t('resultScreen.sheet.amountSub')}</Text>
             <Text style={styles.sheetBody}>
               {multi
-                ? `All ${count} cards will be traded in for Coins at their listed value.`
-                : 'This card will be traded in for Coins at its listed value.'}
+                ? t('resultScreen.sheet.bodyMulti', { count })
+                : t('resultScreen.sheet.bodyOne')}
             </Text>
-            <SgButton label="Trade in" onPress={onConfirmTradeIn} style={styles.cta} />
-            <SgButton label="Cancel" variant="line" onPress={() => setSheetOpen(false)} style={styles.sheetCancel} />
+            <SgButton label={t('resultScreen.sheet.confirm')} onPress={onConfirmTradeIn} style={styles.cta} />
+            <SgButton label={t('common.cancel')} variant="line" onPress={() => setSheetOpen(false)} style={styles.sheetCancel} />
           </View>
         </View>
       </Modal>

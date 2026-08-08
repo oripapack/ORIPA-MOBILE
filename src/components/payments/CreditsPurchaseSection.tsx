@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { sg } from '../../tokens/sg';
 import {
   View,
@@ -9,6 +9,7 @@ import {
   Platform,
   Dimensions,
   InteractionManager,
+  ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -18,8 +19,18 @@ import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { creditBundles } from '../../data/mockPacks';
 import { useAppStore } from '../../store/useAppStore';
-import { CREDITS_ARE_MOCK } from '../../config/app';
 import type { RootStackParamList } from '../../navigation/types';
+import {
+  allowDemoCreditGrants,
+  creditCheckoutUnavailableReason,
+  isLiveStripeCreditCheckoutEnabled,
+} from '../../config/payments';
+import {
+  creditBundleAmountCents,
+  startStripeCreditCheckout,
+} from '../../lib/creditCheckout';
+import { showUserMessage } from '../../utils/showUserMessage';
+import { useRequireAuth } from '../../hooks/useRequireAuth';
 
 const SCROLL_MAX_H = Math.round(Dimensions.get('window').height * 0.52);
 
@@ -33,10 +44,15 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
   const { t } = useTranslation();
   const navigation = useNavigation<RootNav>();
   const addCredits = useAppStore((s) => s.addCredits);
+  const { requireAuth } = useRequireAuth();
+  const [busyBundleId, setBusyBundleId] = useState<string | null>(null);
 
-  const handlePurchase = (credits: number) => {
-    addCredits(credits);
+  const unavailable = creditCheckoutUnavailableReason();
+  const demoMode = allowDemoCreditGrants();
+  const stripeLive = isLiveStripeCreditCheckoutEnabled() && unavailable === null;
+  const purchasesEnabled = demoMode || stripeLive;
 
+  const resumePackOpenIfReady = useCallback(() => {
     const s0 = useAppStore.getState();
     const qty = s0.resumePackOpenQuantity ?? 1;
     const need = s0.selectedPack ? s0.selectedPack.creditPrice * qty : 0;
@@ -60,13 +76,77 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
         }
       }, delay);
     });
+  }, [navigation]);
+
+  const handlePurchase = (bundle: (typeof creditBundles)[number]) => {
+    requireAuth(() => {
+      void (async () => {
+        if (demoMode) {
+          addCredits(bundle.credits);
+          showUserMessage(
+            t('buyCredits.demoGrantedTitle'),
+            t('buyCredits.demoGrantedBody', { count: bundle.credits.toLocaleString() }),
+          );
+          resumePackOpenIfReady();
+          return;
+        }
+
+        if (!stripeLive) {
+          showUserMessage(
+            t('buyCredits.unavailableTitle'),
+            unavailable === 'iap_native'
+              ? t('buyCredits.iapComingSoonBody')
+              : t('buyCredits.stripeComingSoonBody'),
+          );
+          return;
+        }
+
+        const amountCents = creditBundleAmountCents(bundle.priceUsd);
+        setBusyBundleId(bundle.id);
+        try {
+          const result = await startStripeCreditCheckout({
+            bundleId: bundle.id,
+            bundleLabel: bundle.label,
+            credits: bundle.credits,
+            amountCents,
+          });
+          if (!result.ok) {
+            showUserMessage(
+              t('buyCredits.checkoutFailedTitle'),
+              result.message || t('buyCredits.checkoutFailedBody'),
+            );
+            return;
+          }
+          showUserMessage(
+            t('buyCredits.checkoutOpenedTitle'),
+            t('buyCredits.checkoutOpenedBody'),
+          );
+        } finally {
+          setBusyBundleId(null);
+        }
+      })();
+    });
   };
+
+  const statusBanner =
+    demoMode
+      ? t('buyCredits.mockNote')
+      : unavailable === 'iap_native'
+        ? t('buyCredits.iapComingSoonBody')
+        : unavailable === 'stripe_coming_soon'
+          ? t('buyCredits.stripeComingSoonBody')
+          : t('buyCredits.stripeLiveNote');
 
   return (
     <View>
       <Text style={styles.title}>{t('buyCredits.title')}</Text>
       <Text style={styles.subtitle}>{t('buyCredits.subtitle')}</Text>
-      {CREDITS_ARE_MOCK && <Text style={styles.mockNote}>{t('buyCredits.mockNote')}</Text>}
+      <Text style={[styles.mockNote, demoMode ? null : styles.soonNote]}>{statusBanner}</Text>
+      {demoMode ? (
+        <View style={styles.demoTag}>
+          <Text style={styles.demoTagText}>{t('buyCredits.demoModeBadge')}</Text>
+        </View>
+      ) : null}
 
       <TouchableOpacity
         style={styles.probabilityLink}
@@ -87,9 +167,11 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
       >
         {creditBundles.map((bundle) => {
           const promo = bundle.showPromoDiscount;
+          const busy = busyBundleId === bundle.id;
+          const disabled = !purchasesEnabled || busyBundleId != null;
           return (
             <View key={bundle.id} style={styles.bundleWrap}>
-              <View style={styles.bundleCard}>
+              <View style={[styles.bundleCard, disabled && styles.bundleCardDisabled]}>
                 {promo ? (
                   <View style={styles.discountBadge}>
                     <Text style={styles.discountBadgeText}>
@@ -114,11 +196,23 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
                     {bundle.bonus ? <Text style={styles.bundleBonus}>{bundle.bonus}</Text> : null}
                   </View>
                   <TouchableOpacity
-                    style={styles.buyBtn}
-                    onPress={() => handlePurchase(bundle.credits)}
+                    style={[styles.buyBtn, disabled && styles.buyBtnDisabled]}
+                    onPress={() => handlePurchase(bundle)}
                     activeOpacity={0.85}
+                    disabled={disabled}
+                    accessibilityState={{ disabled }}
                   >
-                    <Text style={styles.buyBtnText}>{t('buyCredits.buyNow')}</Text>
+                    {busy ? (
+                      <ActivityIndicator color={sg.onGold} />
+                    ) : (
+                      <Text style={[styles.buyBtnText, disabled && styles.buyBtnTextMuted]}>
+                        {demoMode
+                          ? t('buyCredits.demoGrantCta')
+                          : purchasesEnabled
+                            ? t('buyCredits.buyNow')
+                            : t('buyCredits.unavailableCta')}
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -131,7 +225,11 @@ export function CreditsPurchaseSection({ onOpenLootBoxDisclosure }: Props) {
 
         <View style={styles.trustRow}>
           <Text style={styles.trustText}>
-            {CREDITS_ARE_MOCK ? t('buyCredits.mockFooter') : t('buyCredits.liveFooter')}
+            {demoMode
+              ? t('buyCredits.mockFooter')
+              : purchasesEnabled
+                ? t('buyCredits.liveFooter')
+                : t('buyCredits.comingSoonFooter')}
           </Text>
         </View>
       </ScrollView>
@@ -160,8 +258,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,74,56,0.10)',
     padding: spacing.sm,
     borderRadius: radius.md,
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
     lineHeight: 18,
+  },
+  soonNote: {
+    color: sg.gold,
+    backgroundColor: 'rgba(232,197,71,0.12)',
+  },
+  demoTag: {
+    alignSelf: 'flex-start',
+    marginBottom: spacing.md,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: sg.error,
+    backgroundColor: 'rgba(255,74,56,0.08)',
+  },
+  demoTagText: {
+    fontSize: 10,
+    fontFamily: sg.font.bodyBold,
+    color: sg.error,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
   },
   probabilityLink: {
     alignSelf: 'flex-start',
@@ -188,6 +307,9 @@ const styles = StyleSheet.create({
     padding: spacing.base,
     borderWidth: 1,
     borderColor: sg.line,
+  },
+  bundleCardDisabled: {
+    opacity: 0.72,
   },
   bundleRow: {
     flexDirection: 'row',
@@ -258,14 +380,24 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm + 2,
     borderRadius: radius.md,
     justifyContent: 'center',
-    minWidth: 72,
+    minWidth: 88,
+    minHeight: 36,
     alignItems: 'center',
+  },
+  buyBtnDisabled: {
+    backgroundColor: sg.surface,
+    borderWidth: 1,
+    borderColor: sg.line,
   },
   buyBtnText: {
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyBold,
     color: sg.onGold,
     letterSpacing: 0.3,
+    textAlign: 'center',
+  },
+  buyBtnTextMuted: {
+    color: sg.muted,
   },
   disclaimer: {
     fontSize: 10,
