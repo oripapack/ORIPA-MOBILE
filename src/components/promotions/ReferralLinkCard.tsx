@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   link: {
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyMedium,
-    color: sg.gold,
+    color: sg.accentText,
   },
   copyBtn: {
     alignSelf: 'flex-start',

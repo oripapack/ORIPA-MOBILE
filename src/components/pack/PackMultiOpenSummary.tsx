@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontSize: fontSize.sm,
     fontFamily: sg.font.dataBold,
-    color: sg.gold,
+    color: sg.valueHi,
   },
   supportMuted: {
     fontSize: fontSize.xs,

@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   ownBadgeText: {
     fontSize: 9,
     fontFamily: brandFont.black,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: 0.5,
   },
   packName: {
@@ -204,6 +204,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   buyBtnTextOwn: {
-    color: sg.gold,
+    color: sg.accentText,
   },
 });

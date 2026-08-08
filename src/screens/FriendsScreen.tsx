@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
   guestBannerTitle: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
     marginBottom: spacing.xs,
   },
   guestBannerBody: {
@@ -802,7 +802,7 @@ const styles = StyleSheet.create({
     width: 24,
     fontSize: fontSize.sm,
     fontFamily: brandFont.black,
-    color: sg.gold,
+    color: sg.accentText,
     textAlign: 'center',
   },
   lbEmoji: {
@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
   },
   squadBlock: {
     gap: spacing.sm,

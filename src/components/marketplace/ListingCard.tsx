@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   regionPillText: {
     fontSize: 8,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: 0.3,
   },
   badgePill: {

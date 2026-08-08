@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   buyBadgeText: {
     fontSize: 9,
     fontFamily: brandFont.black,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: 0.5,
   },
   tilePrice: {

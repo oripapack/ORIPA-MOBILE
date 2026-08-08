@@ -836,7 +836,7 @@ const styles = StyleSheet.create({
     color: sg.muted,
   },
   sortPillTextActive: {
-    color: sg.gold,
+    color: sg.accentText,
   },
   cardListContent: {
     paddingTop: spacing.xs,
@@ -1068,7 +1068,7 @@ const styles = StyleSheet.create({
     color: sg.muted,
   },
   catChipTextActive: {
-    color: sg.gold,
+    color: sg.accentText,
     fontFamily: brandFont.bold,
   },
   sortChip: {
@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
     color: sg.muted,
   },
   sortChipTextActive: {
-    color: sg.gold,
+    color: sg.accentText,
   },
   regionChip: {
     paddingHorizontal: spacing.sm,
@@ -1109,7 +1109,7 @@ const styles = StyleSheet.create({
     color: sg.muted,
   },
   regionChipTextActive: {
-    color: sg.gold,
+    color: sg.accentText,
   },
   section: {
     marginBottom: spacing.lg,
@@ -1244,7 +1244,7 @@ const styles = StyleSheet.create({
   emptyCtaText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
   },
   promoCompact: {
     flexDirection: 'row',
@@ -1279,7 +1279,7 @@ const styles = StyleSheet.create({
   promoTitle: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
     marginBottom: 2,
   },
   promoBody: {

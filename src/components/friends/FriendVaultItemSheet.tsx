@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     fontFamily: brandFont.black,
     letterSpacing: 0.6,
   },
-  badgeTextListed: { color: sg.gold },
+  badgeTextListed: { color: sg.accentText },
   badgeTextRequest: { color: sg.muted },
   price: {
     fontSize: fontSize.xxl,
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   ghostText: {
     fontSize: 10,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
     textDecorationLine: 'underline',
   },
 });

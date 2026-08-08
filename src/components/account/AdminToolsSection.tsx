@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: 1,
     textTransform: 'uppercase',
     marginTop: spacing.xl,

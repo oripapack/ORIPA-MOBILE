@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
     color: sg.muted,
   },
   labelActive: {
-    color: sg.gold,
+    color: sg.accentText,
   },
 });

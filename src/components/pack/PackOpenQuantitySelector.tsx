@@ -83,6 +83,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   segTextSelected: {
-    color: sg.gold,
+    color: sg.accentText,
   },
 });

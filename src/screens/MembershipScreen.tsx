@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   valueTitle: {
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyBold,
-    color: sg.gold,
+    color: sg.valueHi,
     marginBottom: spacing.xs,
   },
   valueBody: {

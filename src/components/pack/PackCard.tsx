@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
     color: sg.muted,
   },
   rarityTextChase: {
-    color: sg.gold,
+    color: sg.accentText,
   },
   topHitValue: {
     fontSize: fontSize.sm,
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
   oddsLink: {
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyMedium,
-    color: sg.gold,
+    color: sg.accentText,
     textDecorationLine: 'underline',
   },
 });

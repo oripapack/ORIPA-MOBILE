@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.black,
-    color: sg.gold,
+    color: sg.valueHi,
   },
   pack: {
     flex: 1,

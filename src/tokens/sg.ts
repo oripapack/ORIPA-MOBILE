@@ -23,6 +23,8 @@ const primitive = {
   valueGold400: '#E8CE7E',
   cobalt500: '#275DDB',
   cobalt400: '#3E72F0',
+  /** Small accent text on raised navy surfaces; 4.95:1 at the darkest supported panel. */
+  cobalt300: '#638AFF',
   vermilion500: '#FF5A47',
   mint500: '#38BFA8',
   amber500: '#EAB464',
@@ -44,7 +46,8 @@ const semantic = {
   chrome: primitive.steel400,
   /** Compatibility key: on this approved skin the value/primary accent is cobalt. */
   gold: primitive.cobalt500,
-  goldHi: primitive.cobalt400,
+  goldHi: primitive.cobalt300,
+  accentText: primitive.cobalt300,
   onGold: primitive.ivory100,
   /** C-4/C-9 invariant: financial value and true primary actions remain gold. */
   value: primitive.valueGold500,
@@ -106,7 +109,7 @@ const component = {
   },
   dock: {
     background: '#0C1424',
-    active: semantic.goldHi,
+    active: semantic.accentText,
     inactive: semantic.muted,
   },
 } as const;

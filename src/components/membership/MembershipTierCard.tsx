@@ -62,7 +62,7 @@ export function MembershipTierCard({ plan, selected, onSelect }: MembershipTierC
 
       <View style={styles.headerRow}>
         <View>
-          <Text style={[styles.tierName, plan.id === 'gold' && { color: sg.gold }]}>
+          <Text style={[styles.tierName, plan.id === 'gold' && { color: sg.valueHi }]}>
             {t(`membership.tierName_${plan.id}`)}
           </Text>
           <Text style={styles.badgeMicro}>{t(`membership.badge_${plan.id}`)}</Text>
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   popularRibbonText: {
     fontSize: 10,
     fontFamily: sg.font.bodyBold,
-    color: sg.gold,
+    color: sg.valueHi,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
   },

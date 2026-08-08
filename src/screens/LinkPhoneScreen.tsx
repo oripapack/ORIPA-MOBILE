@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   logoSecondary: {
     fontSize: fontSize.hero,
     fontFamily: sg.font.display,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: -0.5,
   },
   title: {
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   link: {
     fontSize: fontSize.sm,
     fontFamily: sg.font.bodyMedium,
-    color: sg.gold,
+    color: sg.accentText,
   },
   linkMuted: {
     fontSize: fontSize.sm,

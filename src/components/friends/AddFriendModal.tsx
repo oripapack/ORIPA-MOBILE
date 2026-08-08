@@ -336,6 +336,6 @@ const styles = StyleSheet.create({
   demoAddText: {
     fontSize: fontSize.xs,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
   },
 });

@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   typewriterCursor: {
     fontSize: fontSize.xxl,
     fontFamily: sg.font.display,
-    color: sg.gold,
+    color: sg.accentText,
     marginLeft: 1,
     marginTop: -2,
     textShadowColor: 'rgba(62, 92, 118, 0.15)',

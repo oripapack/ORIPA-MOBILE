@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyBold,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: 1.1,
     textTransform: 'uppercase',
   },
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   comparePrimaryHeading: {
     fontSize: fontSize.md,
     fontFamily: sg.font.display,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: -0.3,
     marginBottom: spacing.sm,
   },
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   },
   flowArrow: {
     fontSize: fontSize.xs,
-    color: sg.gold,
+    color: sg.accentText,
     fontFamily: sg.font.bodyBold,
   },
   actions: {

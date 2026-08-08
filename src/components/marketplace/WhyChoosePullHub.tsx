@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   pointPillText: {
     fontSize: 8,
     fontFamily: brandFont.bold,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: 0.5,
   },
   heading: {

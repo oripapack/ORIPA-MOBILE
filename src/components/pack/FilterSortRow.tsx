@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     color: sg.text,
   },
   checkmark: {
-    color: sg.gold,
+    color: sg.accentText,
     fontFamily: sg.font.bodyBold,
     fontSize: fontSize.base,
   },

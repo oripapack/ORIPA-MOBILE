@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   hub: {
     fontSize: fontSize.xxl,
     fontFamily: sg.font.display,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: -0.3,
     textShadowColor: 'rgba(232, 197, 71, 0.28)',
     textShadowOffset: { width: 0, height: 0 },

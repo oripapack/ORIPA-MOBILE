@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   logoSecondary: {
     fontSize: fontSize.hero,
     fontFamily: sg.font.display,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: -0.5,
   },
   title: {

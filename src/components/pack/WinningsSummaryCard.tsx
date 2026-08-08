@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
   },
   pillText: {
-    color: sg.gold,
+    color: sg.valueHi,
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyBold,
     letterSpacing: 0.2,

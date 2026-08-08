@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginBottom: sg.space.sm,
     fontSize: 10,
     fontFamily: sg.font.bodyBold,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: 1.6,
     textTransform: 'uppercase',
   },

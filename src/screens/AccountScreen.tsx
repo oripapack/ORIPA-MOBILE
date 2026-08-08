@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
   viewAllQuestsText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,
-    color: sg.gold,
+    color: sg.accentText,
   },
   tierLink: {
     marginTop: spacing.sm,
@@ -705,7 +705,7 @@ const styles = StyleSheet.create({
   bestVal: {
     fontSize: fontSize.hero - 4,
     fontFamily: brandFont.black,
-    color: sg.gold,
+    color: sg.valueHi,
   },
   bestSub: {
     marginTop: 4,

@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     fontSize: fontSize.xs,
     fontFamily: sg.font.bodyBold,
-    color: sg.gold,
+    color: sg.accentText,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     marginBottom: spacing.sm,
