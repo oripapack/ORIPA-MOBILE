@@ -92,6 +92,9 @@ export function HomeScreen() {
               key={f.key}
               style={[styles.chip, filter === f.key && styles.chipActive]}
               onPress={() => setFilter(f.key)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: filter === f.key }}
+              accessibilityLabel={`${f.label} packs`}
             >
               <Text style={[styles.chipText, filter === f.key && styles.chipTextActive]}>{f.label}</Text>
             </TouchableOpacity>
@@ -165,8 +168,10 @@ const styles = StyleSheet.create({
   chipRow: { paddingHorizontal: sg.space.md, paddingVertical: 11, gap: 7 },
   // Filter chips — btn radius (these are controls, not status tags)
   chip: {
+    minHeight: 44,
     paddingHorizontal: 12,
     paddingVertical: 7,
+    justifyContent: 'center',
     borderRadius: sg.radius.btn,
     backgroundColor: sg.surface,
     borderWidth: 1,

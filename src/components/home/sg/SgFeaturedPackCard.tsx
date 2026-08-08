@@ -93,7 +93,12 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
           />
 
           {!releaseBlocked ? (
-            <TouchableOpacity onPress={goVerify} style={styles.verifyRow} accessibilityRole="button">
+            <TouchableOpacity
+              onPress={goVerify}
+              style={styles.verifyRow}
+              accessibilityRole="button"
+              accessibilityLabel="View odds and verification record"
+            >
               <Text style={styles.verifyLabel}>VIEW ODDS + VERIFICATION RECORD</Text>
               <Text style={styles.verifyArrow}>›</Text>
             </TouchableOpacity>
@@ -191,7 +196,7 @@ const styles = StyleSheet.create({
     color: sg.muted,
   },
   cta: { alignSelf: 'stretch', marginTop: 12 },
-  verifyRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 4, paddingTop: 12, paddingBottom: 2 },
+  verifyRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 44, paddingHorizontal: 4, paddingTop: 10, paddingBottom: 8 },
   verifyLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.75 },
   verifyArrow: { fontFamily: sg.font.bodyBold, fontSize: 17, color: sg.goldHi },
 });
