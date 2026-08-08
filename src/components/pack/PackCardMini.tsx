@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   thumbOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.25)',
+    backgroundColor: sg.exhibitScrim,
   },
   thumbEmoji: {
     fontSize: 28,

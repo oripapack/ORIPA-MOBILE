@@ -129,7 +129,7 @@ export function CoachSpotlight({
                 </View>
               ) : null}
               <View style={styles.actions}>
-                <PrimaryButton label={primaryLabel} variant="red" onPress={onPrimary} style={styles.primaryCta} />
+                <PrimaryButton label={primaryLabel} onPress={onPrimary} style={styles.primaryCta} />
                 <SecondaryButton label={secondaryLabel} onPress={onSecondary ?? onDismiss} />
               </View>
             </View>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   dim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.74)',
+    backgroundColor: sg.modalScrim,
   },
   cardWrap: {
     paddingHorizontal: spacing.base,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     borderColor: sg.line,
     ...Platform.select({
       ios: {
-        shadowColor: '#000000',
+        shadowColor: sg.shadowHero.shadowColor,
         shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.35,
         shadowRadius: 24,
@@ -315,14 +315,5 @@ const styles = StyleSheet.create({
   primaryCta: {
     minHeight: 56,
     borderRadius: radius.lg,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.35,
-        shadowRadius: 10,
-      },
-      android: { elevation: 6 },
-    }),
   },
 });

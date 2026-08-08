@@ -326,10 +326,10 @@ const styles = StyleSheet.create({
   badgeMain: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-    backgroundColor: 'rgba(0,0,0,0.72)',
+    backgroundColor: sg.functionalScrim,
     borderRadius: radius.sm,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: sg.cardShine,
   },
   badgeMainText: {
     fontSize: 10,
@@ -340,10 +340,10 @@ const styles = StyleSheet.create({
   badgeSecondary: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: sg.modalScrim,
     borderRadius: radius.sm,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: sg.cardShine,
   },
   badgeSecondaryText: {
     fontSize: 10,
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: 5,
     borderRadius: radius.sm,
-    backgroundColor: 'rgba(0,0,0,0.78)',
+    backgroundColor: sg.functionalScrim,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
   },

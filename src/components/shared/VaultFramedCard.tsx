@@ -44,11 +44,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: sg.line,
-    shadowColor: 'rgba(0,0,0,0.72)',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 18,
-    elevation: 6,
   },
   rail: {
     position: 'absolute',

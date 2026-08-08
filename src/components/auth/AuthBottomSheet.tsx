@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   dim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(5, 10, 22, 0.88)',
+    backgroundColor: sg.functionalScrim,
   },
   /** Opaque panel so title, promo, and OAuth rows stay readable over a busy lobby. */
   sheet: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     borderColor: sg.lineStrong,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: sg.shadowHero.shadowColor,
         shadowOffset: { width: 0, height: -8 },
         shadowOpacity: 0.22,
         shadowRadius: 18,
