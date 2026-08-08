@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import type { RarityTier } from '../../../shared/types/pack';
 import { sg } from '../../tokens/sg';
-import { PackProductExhibit } from './PackProductExhibit';
+import { PackProductExhibit, packDisplayCode } from './PackProductExhibit';
 
 type PackSize = 'sm' | 'md' | 'lg' | 'hero';
 
@@ -21,6 +21,8 @@ export function TerminalPackBay({
   size?: PackSize;
   showRail?: boolean;
 }) {
+  const displayCode = packDisplayCode(packId ?? name);
+
   return (
     <View
       style={[styles.shell, size === 'sm' && styles.shellSmall]}
@@ -29,7 +31,7 @@ export function TerminalPackBay({
     >
       <View style={styles.headerRail}>
         <Text style={styles.headerLabel}>TOKYO TERMINAL / PACK BAY</Text>
-        <Text style={styles.headerCode}>PH-01</Text>
+        <Text style={styles.headerCode}>PK-{displayCode}</Text>
       </View>
       <View
         style={[

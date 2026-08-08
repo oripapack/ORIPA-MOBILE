@@ -5,7 +5,7 @@ import { sg } from '../../../tokens/sg';
 import { SgData } from '../../ui';
 import { navigationRef } from '../../../navigation/navigationRef';
 import { usePackOdds } from '../../../hooks/usePackOdds';
-import { PackProductExhibit } from '../../terminal';
+import { PackProductExhibit, packDisplayCode } from '../../terminal';
 
 export function SgShelfPackTile({ pack }: { pack: Pack }) {
   const { width } = useWindowDimensions();
@@ -26,7 +26,7 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
       accessibilityLabel={`View ${pack.title} pack details`}
     >
       <View style={styles.routeRow}>
-        <Text style={styles.route}>PK-{pack.id.slice(0, 2).toUpperCase()}</Text>
+        <Text style={styles.route}>PK-{packDisplayCode(pack.id)}</Text>
         {releaseBlocked ? (
           <Text style={styles.waiting}>WAITING</Text>
         ) : pack.isNew ? (
@@ -38,9 +38,10 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
       <View style={[styles.visual, isWide && styles.visualWide]}>
         <PackProductExhibit
           name={pack.title}
-          category={pack.tcgCategory}
-          packId={pack.id}
-          layout="wide"
+            category={pack.tcgCategory}
+            packId={pack.id}
+            layout="portrait"
+            focus="product"
         />
       </View>
       <Text style={styles.name} numberOfLines={2}>{pack.title}</Text>

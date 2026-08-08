@@ -8,30 +8,25 @@ const EMPTY_EXHIBIT_WIDE = require('../../../assets/home/tokyo-exhibit-empty-cle
 const EMPTY_EXHIBIT_PORTRAIT = require('../../../assets/home/tokyo-exhibit-empty-clear-v3-portrait.png');
 
 type ExhibitLayout = 'wide' | 'portrait';
+type ExhibitFocus = 'scene' | 'product';
 
 type ArtDirection = {
-  accent: string;
-  secondary: string;
-  accentInk: string;
   categoryCode: string;
 };
 
 const ART_BY_CATEGORY: Partial<Record<TcgCategory, ArtDirection>> = {
-  'Multi TCG': { accent: sg.success, secondary: sg.goldHi, accentInk: sg.onValue, categoryCode: 'MULTI' },
-  'Pokémon TCG': { accent: sg.goldHi, secondary: sg.success, accentInk: sg.onGold, categoryCode: 'TCG' },
-  'One Piece TCG': { accent: sg.neon, secondary: sg.goldHi, accentInk: sg.onGold, categoryCode: 'TCG' },
-  'Yu-Gi-Oh!': { accent: sg.value, secondary: sg.goldHi, accentInk: sg.onValue, categoryCode: 'TCG' },
-  'Sports Cards': { accent: sg.valueHi, secondary: sg.neon, accentInk: sg.onValue, categoryCode: 'SPORT' },
+  'Multi TCG': { categoryCode: 'MULTI' },
+  'Pokémon TCG': { categoryCode: 'POKEMON' },
+  'One Piece TCG': { categoryCode: 'ONE PIECE' },
+  'Yu-Gi-Oh!': { categoryCode: 'DUEL' },
+  'Sports Cards': { categoryCode: 'SPORT' },
 };
 
 const DEFAULT_ART: ArtDirection = {
-  accent: sg.goldHi,
-  secondary: sg.success,
-  accentInk: sg.onGold,
   categoryCode: 'CARDS',
 };
 
-function compactCode(value: string): string {
+export function packDisplayCode(value: string): string {
   return value
     .split('-')
     .filter(Boolean)
@@ -50,16 +45,19 @@ export function PackProductExhibit({
   category,
   packId,
   layout = 'wide',
+  focus = 'scene',
 }: {
   name: string;
   category?: TcgCategory | string;
   packId?: string;
   layout?: ExhibitLayout;
+  focus?: ExhibitFocus;
 }) {
   const art = ART_BY_CATEGORY[category as TcgCategory] ?? DEFAULT_ART;
-  const productCode = compactCode(packId ?? name);
+  const productCode = packDisplayCode(packId ?? name);
   const variant = variantFor(packId ?? name);
   const portrait = layout === 'portrait';
+  const productFocus = focus === 'product';
 
   return (
     <View
@@ -67,7 +65,13 @@ export function PackProductExhibit({
       accessibilityRole="image"
       accessibilityLabel={`${name} product pack in a clear display case`}
     >
-      <View style={[styles.canvas, portrait ? styles.canvasPortrait : styles.canvasWide]}>
+      <View
+        style={[
+          styles.canvas,
+          portrait ? styles.canvasPortrait : styles.canvasWide,
+          productFocus && styles.canvasProduct,
+        ]}
+      >
         <Image
           source={portrait ? EMPTY_EXHIBIT_PORTRAIT : EMPTY_EXHIBIT_WIDE}
           style={styles.exhibitPhoto}
@@ -84,7 +88,7 @@ export function PackProductExhibit({
           pointerEvents="none"
         >
           <LinearGradient
-            colors={['#1A2130', '#05070B', '#111827', '#020408']}
+            colors={[sg.surfaceRaised, sg.bg, sg.surface, sg.bg]}
             locations={[0, 0.18, 0.64, 1]}
             style={StyleSheet.absoluteFillObject}
           />
@@ -103,7 +107,7 @@ export function PackProductExhibit({
             >
               PULL HUB
             </Text>
-            <View style={[styles.seriesBox, { borderColor: art.accent }]}>
+            <View style={styles.seriesBox}>
               <Text
                 maxFontSizeMultiplier={1}
                 style={[styles.seriesText, portrait ? styles.seriesTextPortrait : styles.seriesTextWide]}
@@ -123,14 +127,13 @@ export function PackProductExhibit({
             >
               {name.toUpperCase()}
             </Text>
-            <View style={[styles.categoryBand, { backgroundColor: art.accent }]}>
+            <View style={styles.categoryBand}>
               <Text
                 maxFontSizeMultiplier={1}
                 numberOfLines={1}
                 style={[
                   styles.categoryText,
                   portrait ? styles.categoryTextPortrait : styles.categoryTextWide,
-                  { color: art.accentInk },
                 ]}
               >
                 東京発 / {art.categoryCode}
@@ -148,7 +151,6 @@ export function PackProductExhibit({
               styles.accentBlock,
               variant === 1 && styles.accentBlockOne,
               variant === 2 && styles.accentBlockTwo,
-              { backgroundColor: art.secondary },
             ]}
           >
             <View style={styles.accentStripe} />
@@ -162,8 +164,8 @@ export function PackProductExhibit({
                 <View key={`${weight}-${index}`} style={[styles.serialBar, { width: weight }]} />
               ))}
             </View>
-            <View style={[styles.originMark, { borderColor: art.accent }]}>
-              <View style={[styles.originMarkCore, { backgroundColor: art.accent }]} />
+            <View style={styles.originMark}>
+              <View style={styles.originMarkCore} />
             </View>
           </View>
 
@@ -192,25 +194,26 @@ const styles = StyleSheet.create({
   },
   canvasWide: { aspectRatio: 1672 / 941 },
   canvasPortrait: { aspectRatio: 1082 / 1454 },
+  canvasProduct: { height: '138%' },
   exhibitPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   pack: {
     position: 'absolute',
     overflow: 'hidden',
-    backgroundColor: '#05070B',
+    backgroundColor: sg.bg,
     borderWidth: 0.5,
-    borderColor: 'rgba(244,239,227,0.28)',
-    borderRadius: 2,
+    borderColor: sg.cardShine,
+    borderRadius: sg.radius.tag,
   },
   packWide: { left: '60.7%', top: '29.3%', width: '16.1%', height: '50.3%' },
   packPortrait: { left: '32.3%', top: '34.1%', width: '35.3%', height: '46.4%' },
   packShadowWide: {
-    shadowColor: '#000',
+    shadowColor: sg.bg,
     shadowOpacity: 0.78,
     shadowRadius: 9,
     shadowOffset: { width: 0, height: 4 },
   },
   packShadowPortrait: {
-    shadowColor: '#000',
+    shadowColor: sg.bg,
     shadowOpacity: 0.82,
     shadowRadius: 18,
     shadowOffset: { width: 0, height: 8 },
@@ -221,11 +224,11 @@ const styles = StyleSheet.create({
     bottom: '3%',
     left: '8%',
     width: '12%',
-    backgroundColor: 'rgba(244,239,227,0.08)',
+    backgroundColor: sg.cardShine,
     transform: [{ skewX: '-7deg' }],
   },
-  foilEdgeLeft: { position: 'absolute', left: 1, top: 0, bottom: 0, width: 1, backgroundColor: 'rgba(244,239,227,0.22)' },
-  foilEdgeRight: { position: 'absolute', right: 1, top: 0, bottom: 0, width: 1, backgroundColor: 'rgba(111,123,145,0.42)' },
+  foilEdgeLeft: { position: 'absolute', left: 1, top: 0, bottom: 0, width: 1, backgroundColor: sg.ivoryLightSoft },
+  foilEdgeRight: { position: 'absolute', right: 1, top: 0, bottom: 0, width: 1, backgroundColor: sg.lineStrong },
   seal: {
     position: 'absolute',
     left: 0,
@@ -233,12 +236,12 @@ const styles = StyleSheet.create({
     height: '5.5%',
     paddingVertical: 1,
     justifyContent: 'space-evenly',
-    backgroundColor: '#06080D',
-    borderColor: 'rgba(244,239,227,0.18)',
+    backgroundColor: sg.bg,
+    borderColor: sg.cardShine,
   },
   sealTop: { top: 0, borderBottomWidth: 0.5 },
   sealBottom: { bottom: 0, borderTopWidth: 0.5 },
-  sealLine: { height: 0.5, backgroundColor: 'rgba(167,176,188,0.28)' },
+  sealLine: { height: 0.5, backgroundColor: sg.cardShine },
   packTopline: {
     position: 'absolute',
     top: '9%',
@@ -251,7 +254,7 @@ const styles = StyleSheet.create({
   packBrand: { flexShrink: 1, fontFamily: sg.font.display, color: sg.text, letterSpacing: -0.5 },
   packBrandWide: { fontSize: 4.2, lineHeight: 4.5 },
   packBrandPortrait: { fontSize: 8.5, lineHeight: 9 },
-  seriesBox: { borderWidth: 0.7, borderRadius: 1, paddingHorizontal: 2, paddingVertical: 1 },
+  seriesBox: { borderWidth: 0.7, borderColor: sg.goldHi, borderRadius: sg.radius.tag, paddingHorizontal: 2, paddingVertical: 1 },
   seriesText: { fontFamily: sg.font.dataBold, color: sg.text, letterSpacing: 0.25 },
   seriesTextWide: { fontSize: 2.8, lineHeight: 3.2 },
   seriesTextPortrait: { fontSize: 5.3, lineHeight: 6 },
@@ -262,7 +265,7 @@ const styles = StyleSheet.create({
     top: '25%',
     height: '36%',
     backgroundColor: sg.ticket,
-    borderRadius: 2,
+    borderRadius: sg.radius.tag,
     overflow: 'hidden',
     paddingTop: '6%',
   },
@@ -278,12 +281,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: sg.goldHi,
   },
-  categoryText: { flexShrink: 1, fontFamily: sg.font.dataBold, letterSpacing: 0.15 },
+  categoryText: { flexShrink: 1, fontFamily: sg.font.dataBold, color: sg.onGold, letterSpacing: 0.15 },
   categoryTextWide: { fontSize: 2.2, lineHeight: 2.8 },
   categoryTextPortrait: { fontSize: 4.3, lineHeight: 5 },
   slashRow: { flexDirection: 'row', gap: 1 },
-  slash: { width: 2, height: 7, backgroundColor: 'rgba(244,239,227,0.92)', transform: [{ skewX: '-18deg' }] },
+  slash: { width: 2, height: 7, backgroundColor: sg.text, transform: [{ skewX: '-18deg' }] },
   accentBlock: {
     position: 'absolute',
     right: 0,
@@ -294,12 +298,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,
-    borderTopLeftRadius: 2,
-    borderBottomLeftRadius: 2,
+    borderTopLeftRadius: sg.radius.tag,
+    borderBottomLeftRadius: sg.radius.tag,
+    backgroundColor: sg.chrome,
   },
   accentBlockOne: { top: '62%', width: '42%' },
   accentBlockTwo: { top: '64%', width: '24%', height: '11%' },
-  accentStripe: { width: 2, height: '55%', backgroundColor: 'rgba(8,13,24,0.72)', transform: [{ skewX: '-18deg' }] },
+  accentStripe: { width: 2, height: '55%', backgroundColor: sg.functionalScrim, transform: [{ skewX: '-18deg' }] },
   serialRow: {
     position: 'absolute',
     left: '9%',
@@ -322,10 +327,11 @@ const styles = StyleSheet.create({
   originMark: {
     width: 12,
     height: 12,
-    borderRadius: 999,
+    borderRadius: sg.radius.pill,
     borderWidth: 1,
+    borderColor: sg.goldHi,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  originMarkCore: { width: 3, height: 3, borderRadius: 999 },
+  originMarkCore: { width: 3, height: 3, borderRadius: sg.radius.pill, backgroundColor: sg.goldHi },
 });

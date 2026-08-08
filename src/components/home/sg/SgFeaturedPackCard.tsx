@@ -7,7 +7,7 @@ import { sg } from '../../../tokens/sg';
 import { usePackOdds } from '../../../hooks/usePackOdds';
 import { getLocalizedPackFields } from '../../../i18n/packCopy';
 import { navigationRef } from '../../../navigation/navigationRef';
-import { PackProductExhibit } from '../../terminal';
+import { PackProductExhibit, packDisplayCode } from '../../terminal';
 
 export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () => void }) {
   const { t } = useTranslation();
@@ -17,6 +17,7 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
   const { odds, loading } = usePackOdds(pack);
   const releaseBlocked = !__DEV__ && !odds.isLive;
   const topOddsRow = odds.rows[0];
+  const displayCode = packDisplayCode(pack.id);
   const fraction = pack.remainingFraction ?? pack.remainingInventory / Math.max(pack.totalInventory, 1);
   const lowStock = fraction < 0.1;
 
@@ -40,10 +41,11 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
             name={pack.title}
             category={pack.tcgCategory}
             packId={pack.id}
-            layout="wide"
+            layout="portrait"
+            focus="product"
           />
           <View style={styles.photoCaption} pointerEvents="none">
-            <Text style={styles.photoCaptionCode}>PH-01</Text>
+            <Text style={styles.photoCaptionCode}>PK-{displayCode}</Text>
             <Text style={styles.photoCaptionText}>PHYSICAL DISPLAY / TOKYO CASE</Text>
           </View>
         </View>
