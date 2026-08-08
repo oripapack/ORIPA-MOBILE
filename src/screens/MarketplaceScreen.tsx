@@ -958,7 +958,7 @@ const styles = StyleSheet.create({
   filterBadgeText: {
     fontSize: 9,
     fontFamily: brandFont.black,
-    color: sg.surface2,
+    color: sg.onGold,
   },
   modalRoot: {
     flex: 1,
@@ -966,7 +966,7 @@ const styles = StyleSheet.create({
   },
   modalBackdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(2,6,23,0.5)',
+    backgroundColor: sg.modalScrim,
   },
   modalSheet: {
     backgroundColor: sg.surface,

@@ -75,7 +75,6 @@ export function ListForSaleModal({ visible, suggestedPriceUsd, onClose, onConfir
           </View>
           <PrimaryButton
             label={t('vaultList.confirm', { price: formatVaultExchangeUsd(parsed) })}
-            variant="red"
             onPress={() => onConfirm(parsed)}
             style={styles.cta}
           />
@@ -88,7 +87,7 @@ export function ListForSaleModal({ visible, suggestedPriceUsd, onClose, onConfir
 
 const styles = StyleSheet.create({
   overlay: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.45)' },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: sgVault.modalScrim },
   card: {
     backgroundColor: sgVault.surface,
     borderTopLeftRadius: radius.xl,
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
   },
   presetOn: {
     borderColor: sgVault.cobaltBorder,
-    backgroundColor: 'rgba(61,220,151,0.12)',
+    backgroundColor: sgVault.cobaltWash,
   },
   presetText: {
     fontSize: fontSize.xs,

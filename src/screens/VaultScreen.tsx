@@ -412,12 +412,12 @@ const styles = StyleSheet.create({
     letterSpacing: -0.2,
   },
   tileListedBadge: {
-    backgroundColor: 'rgba(61,220,151,0.12)',
+    backgroundColor: sgVault.mintWash,
     borderRadius: radius.sm,
     paddingHorizontal: 5,
     paddingVertical: 2,
     borderWidth: 1,
-    borderColor: 'rgba(61,220,151,0.35)',
+    borderColor: sgVault.mintBorder,
   },
   tileListedBadgeText: {
     fontSize: 8,

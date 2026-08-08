@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginBottom: spacing.sm,
     borderWidth: 1,
-    borderColor: 'rgba(15,23,42,0.06)',
+    borderColor: sg.line,
   },
   rowMe: { borderColor: sg.cobaltBorder, backgroundColor: sg.cobaltWash },
   rank: {

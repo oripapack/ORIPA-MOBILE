@@ -56,7 +56,7 @@ export function VaultExchangeCheckoutStubModal({
 
 const styles = StyleSheet.create({
   overlay: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: sgVault.modalScrim },
   card: {
     backgroundColor: sgVault.surface,
     borderTopLeftRadius: radius.xl,

@@ -203,7 +203,7 @@ export function VaultAssetSheet({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: sgVault.modalScrim,
     justifyContent: 'flex-end',
   },
   sheet: {
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   listedBanner: {
-    backgroundColor: 'rgba(61,220,151,0.12)',
+    backgroundColor: sgVault.cobaltWash,
     borderRadius: radius.lg,
     padding: spacing.base,
     marginBottom: spacing.md,
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   secondaryHalfAccent: {
     flex: 1,
-    backgroundColor: 'rgba(61,220,151,0.12)',
+    backgroundColor: sgVault.cobaltWash,
     borderRadius: radius.lg,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.sm,
@@ -319,7 +319,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: spacing.lg,
   },
-  dismiss: { alignItems: 'center', marginTop: spacing.md, paddingVertical: spacing.sm },
+  dismiss: {
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: spacing.md,
+    paddingVertical: spacing.sm,
+  },
   dismissText: {
     fontSize: fontSize.sm,
     fontFamily: brandFont.semibold,

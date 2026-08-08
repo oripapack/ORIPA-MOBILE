@@ -59,7 +59,6 @@ export function ListingCard({ listing, shipsFromShort, onPress }: Props) {
         ) : (
           <Ionicons name="albums-outline" size={34} color={sg.muted} />
         )}
-        <View style={styles.thumbScrim} pointerEvents="none" />
         {shipsFromShort ? (
           <View style={styles.regionPill} pointerEvents="none">
             <Text style={styles.regionPillText} numberOfLines={1}>
@@ -110,15 +109,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: sg.line,
   },
   thumbPlaceholder: {
     fontSize: 36,
     opacity: 0.35,
-  },
-  thumbScrim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.1)',
   },
   regionPill: {
     position: 'absolute',
@@ -126,7 +121,7 @@ const styles = StyleSheet.create({
     left: 6,
     zIndex: 2,
     maxWidth: '72%',
-    backgroundColor: 'rgba(10, 16, 12, 0.88)',
+    backgroundColor: sg.functionalScrim,
     paddingHorizontal: 6,
     paddingVertical: 3,
     borderRadius: radius.sm,
