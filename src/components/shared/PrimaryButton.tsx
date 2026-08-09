@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View, ViewStyle, ActivityIndicator } from 'react-native';
+import { Pressable, Text, StyleSheet, View, ViewStyle, ActivityIndicator } from 'react-native';
 import { sg } from '../../tokens/sg';
+import { useReducedMotionPreference } from '../../hooks/useReducedMotionPreference';
 
 interface Props {
   label: string;
@@ -15,18 +16,20 @@ interface Props {
 /** Legacy structural action. Prefer `SgButton` for new true-primary/value actions. */
 export function PrimaryButton({ label, onPress, variant = 'gold', disabled, loading, style }: Props) {
   const isLine = variant === 'red' || variant === 'line';
+  const reduceMotion = useReducedMotionPreference();
 
   return (
-    <TouchableOpacity
-      style={[
+    <Pressable
+      style={({ pressed }) => [
         styles.button,
         isLine ? styles.line : styles.gold,
+        pressed && styles.pressed,
+        pressed && !reduceMotion && styles.pressedScale,
         disabled && styles.disabled,
         style,
       ]}
       onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.88}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ disabled: !!disabled || !!loading, busy: !!loading }}
@@ -38,7 +41,7 @@ export function PrimaryButton({ label, onPress, variant = 'gold', disabled, load
           <Text style={[styles.label, isLine && styles.labelLine]}>{label}</Text>
         )}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: sg.gold,
   },
   line: {
-    backgroundColor: 'transparent',
+    backgroundColor: sg.surface2,
     borderWidth: 1,
     borderColor: sg.line,
   },
@@ -73,6 +76,10 @@ const styles = StyleSheet.create({
   labelLine: {
     color: sg.text,
   },
+  pressed: {
+    opacity: 0.88,
+  },
+  pressedScale: { transform: [{ scale: 0.985 }] },
   disabled: {
     opacity: 0.4,
   },

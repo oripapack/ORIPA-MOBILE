@@ -25,7 +25,6 @@ export function AppHeader({ onSearch }: { onSearch?: () => void }) {
 
   return (
     <View style={[styles.shell, { paddingTop: insets.top + spacing.sm }]}>
-      <View style={styles.signalLine} />
       <View style={styles.row}>
         <View style={styles.logo} accessibilityRole="header" accessibilityLabel={APP_DISPLAY_NAME}>
           <View style={styles.monogram}>
@@ -34,8 +33,8 @@ export function AppHeader({ onSearch }: { onSearch?: () => void }) {
             <View style={styles.markDot} />
           </View>
           <View>
-            <Text style={styles.wordmark}>PULL HUB</Text>
-            <Text style={styles.submark}>東京 / NIGHT TERMINAL</Text>
+            <Text style={styles.wordmark}>Pull Hub</Text>
+            <Text style={styles.submark}>東京 · Tokyo collection</Text>
           </View>
         </View>
         <View style={styles.right}>
@@ -60,13 +59,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     backgroundColor: sg.component.dock.background,
-    borderBottomWidth: 1,
-    borderBottomColor: sg.line,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: sg.cardShine,
     paddingHorizontal: spacing.base,
     paddingBottom: 11,
     zIndex: 2,
   },
-  signalLine: { position: 'absolute', left: 0, top: 0, height: 2, width: 96, backgroundColor: sg.gold },
   row: {
     width: '100%',
     maxWidth: 1040,
@@ -77,11 +75,11 @@ const styles = StyleSheet.create({
   },
   logo: { flexDirection: 'row', alignItems: 'center', gap: 9, flexShrink: 1 },
   monogram: { width: 31, height: 34, position: 'relative' },
-  markTall: { position: 'absolute', left: 1, top: 2, bottom: 2, width: 7, backgroundColor: sg.text },
-  markShort: { position: 'absolute', left: 12, top: 2, height: 20, width: 7, backgroundColor: sg.text },
+  markTall: { position: 'absolute', left: 1, top: 2, bottom: 2, width: 7, borderRadius: 4, backgroundColor: sg.text },
+  markShort: { position: 'absolute', left: 12, top: 2, height: 20, width: 7, borderRadius: 4, backgroundColor: sg.text },
   markDot: { position: 'absolute', right: 1, top: 2, width: 8, height: 8, borderRadius: 4, backgroundColor: sg.goldHi },
-  wordmark: { fontFamily: sg.font.display, fontSize: 17, lineHeight: 18, color: sg.text, letterSpacing: 0.15 },
-  submark: { fontFamily: sg.font.japanese, fontSize: 6.5, lineHeight: 9, color: sg.muted, letterSpacing: 0.45 },
+  wordmark: { fontFamily: sg.font.display, fontSize: 19, lineHeight: 22, color: sg.text, letterSpacing: -0.15 },
+  submark: { fontFamily: sg.font.japanese, fontSize: 8, lineHeight: 11, color: sg.muted, letterSpacing: 0.1 },
   right: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  iconBtn: { width: 34, height: 34, borderRadius: sg.radius.btn, borderWidth: 1, borderColor: sg.line, alignItems: 'center', justifyContent: 'center', backgroundColor: sg.surface },
+  iconBtn: { width: 40, height: 40, borderRadius: sg.radius.btn, borderWidth: StyleSheet.hairlineWidth, borderColor: sg.line, alignItems: 'center', justifyContent: 'center', backgroundColor: sg.surface },
 });

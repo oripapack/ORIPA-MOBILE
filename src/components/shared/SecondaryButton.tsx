@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
 import { sg } from '../../tokens/sg';
+import { useReducedMotionPreference } from '../../hooks/useReducedMotionPreference';
 
 interface Props {
   label: string;
@@ -9,16 +10,21 @@ interface Props {
 }
 
 export function SecondaryButton({ label, onPress, style }: Props) {
+  const reduceMotion = useReducedMotionPreference();
   return (
-    <TouchableOpacity
-      style={[styles.button, style]}
+    <Pressable
+      style={({ pressed }) => [
+        styles.button,
+        pressed && styles.pressed,
+        pressed && !reduceMotion && styles.pressedScale,
+        style,
+      ]}
       onPress={onPress}
-      activeOpacity={0.7}
       accessibilityRole="button"
       accessibilityLabel={label}
     >
       <Text style={styles.label}>{label}</Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 
@@ -38,4 +44,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: sg.font.bodyMedium,
   },
+  pressed: {
+    opacity: 0.82,
+  },
+  pressedScale: { transform: [{ scale: 0.985 }] },
 });

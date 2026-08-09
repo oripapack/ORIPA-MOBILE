@@ -122,7 +122,7 @@ export function ResultScreen({ route }: Props) {
       <View style={[styles.root, styles.unavailableRoot, { paddingTop: insets.top }]}>
         <TerminalBackdrop />
         <View style={styles.unavailableContent}>
-          <Text style={styles.unavailableEyebrow}>PULL RECORD / STATUS</Text>
+          <Text style={styles.unavailableEyebrow}>Pull record</Text>
           <Text style={styles.unavailableTitle}>No live pull record was provided.</Text>
           <Text style={styles.unavailableBody}>
             Return to Packs and open a live pack. Result details appear only after a verified opening response.
@@ -138,7 +138,7 @@ export function ResultScreen({ route }: Props) {
       <TerminalBackdrop />
       {/* ── 1. Header band ── */}
       <View style={styles.header}>
-        <Text style={styles.headerLabel}>PULL RECORD</Text>
+        <Text style={styles.headerLabel}>Pull record</Text>
         <Text style={styles.headerId}>#{pull.pullId}</Text>
       </View>
 
@@ -200,8 +200,8 @@ export function ResultScreen({ route }: Props) {
         {multi ? (
           <View style={styles.totalRow}>
             <View>
-              <Text style={styles.totalLabel}>TOTAL TRADE IN VALUE</Text>
-              <Text style={styles.totalCount}>{count} CARDS</Text>
+              <Text style={styles.totalLabel}>Total trade-in value</Text>
+              <Text style={styles.totalCount}>{count} cards</Text>
             </View>
             <Text style={styles.totalValue}>{fmtPoints(pull.totalTradeInValuePoints)}</Text>
           </View>
@@ -223,11 +223,11 @@ export function ResultScreen({ route }: Props) {
 
       {/* ── 5. Footer ── */}
       <View style={[styles.footer, { paddingBottom: insets.bottom }]}>
-        <Text style={styles.footerText}>Odds applied · Fairness Record →</Text>
+        <Text style={styles.footerText}>Odds and fairness record</Text>
       </View>
 
       {/* ── Confirm sheet — trade-in never commits instantly ── */}
-      <Modal visible={sheetOpen} transparent animationType="slide" onRequestClose={() => setSheetOpen(false)}>
+      <Modal visible={sheetOpen} transparent animationType="fade" onRequestClose={() => setSheetOpen(false)}>
         <View style={styles.sheetOverlay}>
           {/* Backdrop dismiss = cancel: no conversion happens without explicit confirm */}
           <Pressable style={StyleSheet.absoluteFillObject} onPress={() => setSheetOpen(false)} />
@@ -235,7 +235,7 @@ export function ResultScreen({ route }: Props) {
             <View style={styles.grabber} />
             <Text style={styles.sheetTitle}>{multi ? `Trade in ${count} cards?` : 'Trade in 1 card?'}</Text>
             <Text style={styles.sheetAmount}>{points}</Text>
-            <Text style={styles.sheetAmountSub}>POINTS · 100% OF LISTED VALUE</Text>
+            <Text style={styles.sheetAmountSub}>Points · 100% of listed value</Text>
             <Text style={styles.sheetBody}>
               {multi
                 ? `All ${count} cards will be traded in for Points at their listed value.`
@@ -282,8 +282,8 @@ function ResultArtPlaceholder({ compact = false }: { compact?: boolean }) {
     <View style={styles.artPlaceholder}>
       <View style={styles.artTopRail} />
       <View style={[styles.artFrame, compact && styles.artFrameCompact]}>
-        <Text style={[styles.artCode, compact && styles.artCodeCompact]}>CARD ART</Text>
-        <Text style={styles.artStatus}>PENDING</Text>
+        <Text style={[styles.artCode, compact && styles.artCodeCompact]}>Card artwork</Text>
+        <Text style={styles.artStatus}>Preview unavailable</Text>
       </View>
       <View style={styles.artBottomRail} />
     </View>
@@ -301,16 +301,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: sg.space.lg,
   },
   unavailableEyebrow: {
-    fontFamily: sg.font.label,
-    fontSize: 9,
-    letterSpacing: 1.1,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 13,
+    letterSpacing: 0,
     color: sg.warning,
     marginBottom: sg.space.sm,
   },
   unavailableTitle: {
     fontFamily: sg.font.display,
-    fontSize: 30,
-    lineHeight: 33,
+    fontSize: sg.type.title.fontSize,
+    lineHeight: sg.type.title.lineHeight,
     color: sg.text,
     marginBottom: sg.space.md,
   },
@@ -328,19 +328,17 @@ const styles = StyleSheet.create({
 
   // 1. Header band
   header: {
-    height: 52,
-    backgroundColor: sg.component.dock.background,
-    borderBottomWidth: 1,
-    borderBottomColor: sg.line,
+    minHeight: 48,
+    backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: sg.space.lg,
   },
   headerLabel: {
-    fontFamily: sg.font.label,
-    fontSize: 10.5,
-    letterSpacing: 10.5 * 0.2,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 13,
+    letterSpacing: 0,
     color: sg.muted,
   },
   headerId: {
@@ -351,42 +349,45 @@ const styles = StyleSheet.create({
   },
 
   // 2. Title
-  titleBlock: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16 },
+  titleBlock: {
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.lg,
+    paddingBottom: sg.space.md,
+  },
   packName: {
     fontFamily: sg.font.display,
-    fontSize: 30,
-    lineHeight: 32,
-    letterSpacing: -0.9,
-    textTransform: 'uppercase',
+    fontSize: 34,
+    lineHeight: 39,
+    letterSpacing: -0.5,
     color: sg.text,
   },
   stamp: {
-    fontFamily: sg.font.data,
-    fontSize: 10.5,
-    letterSpacing: 10.5 * 0.07,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 12,
+    lineHeight: 18,
+    letterSpacing: 0,
     color: sg.muted,
-    marginTop: 7,
-    fontVariant: [...sg.numeric],
+    marginTop: sg.space.sm,
   },
 
   // 3. Card panel — dark surface, 1px line (the old bright plane is gone)
   panel: {
     flex: 1,
-    marginHorizontal: 16,
+    marginHorizontal: sg.space.md,
     backgroundColor: sg.surface,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
     borderRadius: sg.radius.panel,
     overflow: 'hidden',
   },
   cardsScrollWrap: { flex: 1 },
-  cardsContent: { padding: 20, paddingBottom: 46 },
+  cardsContent: { padding: sg.space.lg, paddingBottom: sg.space.xxl },
   heroBlock: { alignItems: 'center' },
   // shadowHero lives ONLY here on this screen (§3 — one hero per screen)
   heroShadow: {
-    width: 152,
-    height: 212,
-    borderRadius: 10,
+    width: 164,
+    height: 228,
+    borderRadius: sg.radius.panel,
     backgroundColor: sg.surface2,
     ...sg.shadowHero,
   },
@@ -406,48 +407,55 @@ const styles = StyleSheet.create({
     aspectRatio: 0.72,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: sg.cobaltBorderStrong,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: sg.line,
+    borderRadius: sg.radius.btn,
     backgroundColor: sg.surface2,
   },
   artFrameCompact: { width: '78%' },
   artCode: {
-    fontFamily: sg.font.display,
-    fontSize: 16,
+    fontFamily: sg.font.bodyBold,
+    fontSize: 14,
     color: sg.text,
     textAlign: 'center',
   },
   artCodeCompact: { fontSize: 9 },
   artStatus: {
     marginTop: sg.space.xs,
-    fontFamily: sg.font.label,
-    fontSize: 7,
-    letterSpacing: 0.8,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 10,
+    letterSpacing: 0,
     color: sg.muted,
   },
   artBottomRail: {
     width: '60%',
     height: 5,
-    borderWidth: 1,
-    borderColor: sg.cobaltBorder,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: sg.lineStrong,
     borderRadius: sg.radius.pill,
   },
   heroName: {
     fontFamily: sg.font.bodyBold, // spec 600 — loaded weights are 400/500/700, 700 is the closest
-    fontSize: 16,
+    fontSize: 17,
+    lineHeight: 23,
     color: sg.text,
-    marginTop: 16,
+    marginTop: sg.space.md,
     textAlign: 'center',
   },
   heroTag: { marginTop: 8 },
   heroValue: {
     fontFamily: sg.font.dataBold,
-    fontSize: 19,
+    fontSize: 20,
     color: sg.value,
     marginTop: 11,
     fontVariant: [...sg.numeric],
   },
-  divider: { height: 1, backgroundColor: sg.line, marginTop: 20, marginBottom: 18 },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: sg.line,
+    marginTop: sg.space.lg,
+    marginBottom: sg.space.lg,
+  },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
   cell: { width: 80 },
   cellImgClip: { width: 80, height: 112, borderRadius: sg.radius.panel, overflow: 'hidden', backgroundColor: sg.surface2 },
@@ -468,24 +476,23 @@ const styles = StyleSheet.create({
   },
   fade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 46 },
   totalRow: {
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: sg.line,
-    paddingTop: 18,
-    paddingBottom: 18,
-    paddingHorizontal: 20,
+    paddingVertical: sg.space.md,
+    paddingHorizontal: sg.space.lg,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
   totalLabel: {
-    fontFamily: sg.font.data,
-    fontSize: 9.5,
-    letterSpacing: 9.5 * 0.18,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 12,
+    letterSpacing: 0,
     color: sg.muted,
   },
   totalCount: {
-    fontFamily: sg.font.data,
-    fontSize: 9.5,
+    fontFamily: sg.font.body,
+    fontSize: 11,
     color: sg.muted,
     marginTop: 4,
     fontVariant: [...sg.numeric],
@@ -499,18 +506,17 @@ const styles = StyleSheet.create({
 
   // 4. Action bar
   actionBar: {
-    paddingTop: 16,
-    paddingHorizontal: 20,
-    paddingBottom: 12,
+    padding: sg.space.md,
     backgroundColor: sg.surface,
-    borderTopWidth: 1,
-    borderTopColor: sg.line,
-    marginTop: 16,
+    borderRadius: sg.radius.panel,
+    marginTop: sg.space.sm,
+    marginHorizontal: sg.space.md,
   },
   cta: { height: 54, paddingVertical: 0 },
   disclaimer: {
     fontFamily: sg.font.body,
-    fontSize: 11,
+    fontSize: 12,
+    lineHeight: 18,
     color: sg.muted,
     textAlign: 'center',
     marginTop: 10,
@@ -520,14 +526,12 @@ const styles = StyleSheet.create({
 
   // 5. Footer
   footer: {
-    height: 40,
-    backgroundColor: sg.surface,
-    borderTopWidth: 1,
-    borderTopColor: sg.line,
+    minHeight: 44,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  footerText: { fontFamily: sg.font.body, fontSize: 11.5, color: sg.muted },
+  footerText: { fontFamily: sg.font.bodyMedium, fontSize: 12, color: sg.muted },
 
   // Confirm sheet
   sheetOverlay: {
@@ -539,23 +543,24 @@ const styles = StyleSheet.create({
     backgroundColor: sg.surface2,
     borderTopLeftRadius: sg.radius.panel,
     borderTopRightRadius: sg.radius.panel,
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: sg.line,
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 24,
+    paddingHorizontal: sg.space.lg,
+    paddingTop: sg.space.sm,
+    paddingBottom: sg.space.lg,
   },
   grabber: {
     alignSelf: 'center',
     width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: sg.line,
-    marginBottom: 18,
+    height: 5,
+    borderRadius: sg.radius.pill,
+    backgroundColor: sg.lineStrong,
+    marginBottom: sg.space.lg,
   },
   sheetTitle: {
-    fontFamily: sg.font.bodyBold, // spec 600 → closest loaded weight
-    fontSize: 21,
+    fontFamily: sg.font.display,
+    fontSize: sg.type.title.fontSize,
+    lineHeight: sg.type.title.lineHeight,
     color: sg.text,
   },
   sheetAmount: {
@@ -566,20 +571,19 @@ const styles = StyleSheet.create({
     fontVariant: [...sg.numeric],
   },
   sheetAmountSub: {
-    fontFamily: sg.font.data,
-    fontSize: 9.5,
-    letterSpacing: 9.5 * 0.18,
-    textTransform: 'uppercase',
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 12,
+    letterSpacing: 0,
     color: sg.muted,
     marginTop: 4,
   },
   sheetBody: {
     fontFamily: sg.font.body,
-    fontSize: 13.5,
+    fontSize: sg.type.body.fontSize,
     color: sg.muted,
     marginTop: 14,
     marginBottom: 20,
-    lineHeight: 19,
+    lineHeight: sg.type.body.lineHeight,
   },
   sheetCancel: { height: 50, paddingVertical: 0, backgroundColor: sg.surface2, marginTop: 10 },
 });

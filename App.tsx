@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { useFonts } from 'expo-font';
-import { Sora_800ExtraBold } from '@expo-google-fonts/sora/800ExtraBold';
+import { Fraunces_500Medium } from '@expo-google-fonts/fraunces/500Medium';
 import { SchibstedGrotesk_400Regular } from '@expo-google-fonts/schibsted-grotesk/400Regular';
 import { SchibstedGrotesk_500Medium } from '@expo-google-fonts/schibsted-grotesk/500Medium';
 import { SchibstedGrotesk_700Bold } from '@expo-google-fonts/schibsted-grotesk/700Bold';
@@ -27,7 +27,7 @@ import { ClerkSsoCallbackHandler } from './src/components/account/ClerkSsoCallba
 import { colors } from './src/tokens/colors';
 import { brandFont } from './src/tokens/typography';
 
-/** Default text: Tokyo Night Terminal body face. */
+/** Default text: warm, highly legible N2 body face. */
 const baseTextStyle = { fontFamily: brandFont.regular } as const;
 const T = Text as typeof Text & { defaultProps?: { style?: unknown } };
 const TI = TextInput as typeof TextInput & { defaultProps?: { style?: unknown } };
@@ -38,9 +38,9 @@ export default function App() {
   const [localeReady, setLocaleReady] = useState(false);
   const [fontsTimedOut, setFontsTimedOut] = useState(false);
   const [fontsLoaded] = useFonts({
-    // Tokyo Night Terminal: precise display, warm grotesk body, ledger data,
-    // and an explicit contemporary-Japanese face for the bilingual layer.
-    Sora_800ExtraBold,
+    // N2: editorial display, warm grotesk body, ledger data, and an explicit
+    // contemporary-Japanese face for the bilingual layer.
+    Fraunces_500Medium,
     SchibstedGrotesk_400Regular,
     SchibstedGrotesk_500Medium,
     SchibstedGrotesk_700Bold,

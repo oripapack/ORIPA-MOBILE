@@ -9,16 +9,9 @@ interface Props {
   children: React.ReactNode;
 }
 
-/**
- * Smoked terminal panel: sharp chassis, thin steel line, blue signal rail.
- */
+/** Quiet grouped surface: shape and spacing carry hierarchy without decorative rails. */
 export function SgCard({ raised, style, children }: Props) {
-  return (
-    <View style={[styles.base, raised && styles.raised, style]}>
-      <View style={styles.signalRail} pointerEvents="none" />
-      {children}
-    </View>
-  );
+  return <View style={[styles.base, raised && styles.raised, style]}>{children}</View>;
 }
 
 const styles = StyleSheet.create({
@@ -31,5 +24,4 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   raised: { backgroundColor: sg.surface2 },
-  signalRail: { position: 'absolute', left: 0, top: 0, width: 24, height: 2, backgroundColor: sg.gold },
 });

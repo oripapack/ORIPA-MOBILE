@@ -102,7 +102,7 @@
 - **T6** sgVault.ts コメント「buyback surfaces」→「trade-in surfaces」— **2026-07-31 実施済み**
 - **T7** バナー再調理(上記 #3 を再定義済み。和方針 J-1)(R-073)
 - **T8** lab /redesign 既定テーマの N2 化+Urushi 実装の退避(R-030/R-056)— **2026-07-31 前倒しで実施済み**(Urushi 露出事故を受け人間承認。既定=N2、原本は docs/archive/next-ui-lab-redesign-urushi-DEPRECATED.tsx へ退避。スキンブランチは rebase で追従)
-- **T9** P-1(旧§9 物理)+C-7 組版詳細の RN 換算表作成 — PLANNED 着手時の最初のタスク(R-037/R-048〜052)
+- **T9 — 2026-08-10 実施済み** P-1(旧§9 物理)+C-7 組版詳細の RN 換算表を `docs/rn-ui-calibration.md` に作成し、共通コントロールへ反映(R-037/R-048〜052)
 - **T10** 「docs/opening-spec 2.md」(複製ファイル)の削除 — **2026-07-31 実施済み**
 - **T11** C-5/C-12 チェックの grep スクリプト化(R-098)。**2026-08-07 `npm run audit:release-copy` として実施済み(本ブランチ)**
 - **T12** 【T8後続】lab 旧世代ページ(`/`・`/packs`・`/pack-detail`)の掃除または削除(2026-08-03 登録)。buybackRate 削除起因の既存 tsc エラー10件を含む — **修理不要と決定済み**(参照・流用禁止対象のため。CLAUDE.md)。掃除時は /vault・/lp・/opening の扱いも同時に判断

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityInfo, Platform, StyleSheet, Text, View } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
@@ -107,28 +108,41 @@ const tabBarDockStyles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: sg.component.dock.background,
   },
-  topLine: {
+  topHighlight: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     height: 1,
-    backgroundColor: sg.line,
+    backgroundColor: sg.cardShine,
   },
 });
 
 /**
- * Dock-style bar — N2 functional chrome (§9): translucent night slab
- * (rgba(0,0,0,.72) over blur), separated from content by a 1px `line`
- * border — dividers are lines, not shadows or highlights (§3).
+ * Functional chrome: one translucent layer over content on iOS, with an
+ * opaque fallback when reduced transparency is enabled.
  */
 function PremiumTabBarBackground() {
+  const [reduceTransparency, setReduceTransparency] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    void AccessibilityInfo.isReduceTransparencyEnabled().then(setReduceTransparency);
+    const subscription = AccessibilityInfo.addEventListener(
+      'reduceTransparencyChanged',
+      setReduceTransparency,
+    );
+    return () => subscription.remove();
+  }, []);
+
   return (
     <View style={tabBarDockStyles.root}>
-      <View style={tabBarDockStyles.slab} />
-
-      {/* Top divider line */}
-      <View style={tabBarDockStyles.topLine} pointerEvents="none" />
+      {Platform.OS === 'ios' && !reduceTransparency ? (
+        <BlurView intensity={68} tint="dark" style={StyleSheet.absoluteFillObject} />
+      ) : (
+        <View style={tabBarDockStyles.slab} />
+      )}
+      <View style={tabBarDockStyles.topHighlight} pointerEvents="none" />
     </View>
   );
 }
@@ -456,15 +470,15 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: 'transparent',
     borderTopWidth: 0,
-    height: 78,
-    paddingBottom: 13,
-    paddingTop: 9,
+    height: 82,
+    paddingBottom: 15,
+    paddingTop: 8,
   },
   tabLabel: {
-    fontSize: 9,
-    fontFamily: sg.font.label,
-    letterSpacing: 0.35,
-    textTransform: 'uppercase',
+    fontSize: 10,
+    lineHeight: 14,
+    fontFamily: sg.font.bodyMedium,
+    letterSpacing: 0.1,
   },
   stackHeaderTitle: {
     fontSize: 17,
