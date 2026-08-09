@@ -96,6 +96,10 @@ App Store へ提出するソースは `main` である必要はない。TestFlig
 
 `.env.app-store.local`の実データから`npm run render:app-store-review-notes`で生成する。passwordは生成物やrepoへ保存しない。
 
+会社書類の用途、Apple法人登録、D-U-N-S、契約・税務・銀行、本人作業の順序:
+
+- `docs/app-store/company-and-account-readiness.md`
+
 ## Release commands
 
 ```bash
