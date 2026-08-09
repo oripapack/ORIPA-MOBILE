@@ -79,6 +79,7 @@ App Store へ提出するソースは `main` である必要はない。TestFlig
 - `app-store/metadata/en-US.json`
 - `docs/app-store/metadata-en-US.md`
 - `docs/app-store/screenshot-capture-plan.md`
+- `docs/app-store/release-provenance.md`
 
 ドラフトは意図的に `draft-do-not-upload` としており、公開法務URL、Copyright、カテゴリ判断、実機スクリーンショットが揃うまで提出ゲートを通らない。
 
@@ -89,24 +90,7 @@ App Store へ提出するソースは `main` である必要はない。TestFlig
 - `docs/app-store/privacy-data-map.md`
 - `docs/app-store/review-and-age-rating.md`
 
-```
-Pull Hub lets signed-in collectors open card packs, review disclosed odds,
-keep eligible pulls in a vault, trade them in for Points, or request physical
-fulfillment where available.
-
-Review account:
-Email: [APP_REVIEW_EMAIL]
-Password: supplied only in App Store Connect
-
-No payment method is attached to the review account.
-Account deletion: Account tab > Settings > Account deletion > Delete account.
-
-Points purchase product IDs: [PRODUCT_IDS]
-Pack used for review: [LIVE_PACK_NAME]
-Odds location: [NAVIGATION_STEPS]
-Fairness record location: [NAVIGATION_STEPS]
-Shipping availability: [REGIONS_AND_LIMITATIONS]
-```
+`.env.app-store.local`の実データから`npm run render:app-store-review-notes`で生成する。passwordは生成物やrepoへ保存しない。
 
 ## Release commands
 
@@ -115,6 +99,7 @@ npm run check:release
 node scripts/check-app-store-readiness.mjs
 npm run check:app-store-metadata
 npm run release:ios
+npm run record:app-store-build -- <EAS_BUILD_ID>
 npm run prepare:app-store-submit
 ```
 

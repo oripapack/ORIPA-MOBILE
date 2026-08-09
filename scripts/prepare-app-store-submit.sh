@@ -9,6 +9,8 @@ cd "$RELEASE_ROOT"
 npm run check:release
 node scripts/check-app-store-readiness.mjs
 node scripts/check-app-store-metadata.mjs --submission
+node scripts/app-store-provenance.mjs
+node scripts/app-store-review-notes.mjs
 node scripts/check-app-store-submission.mjs
 
 echo "Submission gates passed. Submit only the exact TestFlight build that completed QA."

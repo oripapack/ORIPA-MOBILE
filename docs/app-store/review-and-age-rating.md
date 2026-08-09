@@ -47,34 +47,16 @@ Appleの入力手順: <https://developer.apple.com/help/app-store-connect/manage
 - odds、fairness record、Vault、Trade in、shipping request、account deletionを審査できる
 - passwordはApp Store ConnectのReview Informationだけに入力し、Gitや`.env.app-store.local`へ保存しない
 
-## App Review notes template
+## App Review notes
 
-下記はcore flowが本当に稼働してから貼り付ける。角括弧を一つでも残さない。
+core flowが本当に稼働してから`.env.app-store.local`へ審査経路を入力し、passwordを含まない審査メモを生成する。
 
-```text
-Pull Hub is a trading-card pack experience for collectors. Customers use
-Points purchased with Apple In-App Purchase to open packs with disclosed odds.
-Each result is recorded in Vault. Eligible cards can be kept for physical
-fulfillment or traded in for Points. Points cannot be withdrawn for cash.
-
-Review account
-Email: [APP_REVIEW_EMAIL]
-Password: supplied in App Store Connect only
-No payment method is attached to this account. The account has a server-side
-review grant that is used only for App Review.
-
-Review pack: [LIVE_PACK_NAME_AND_ID]
-Open flow: [NAVIGATION_STEPS]
-Odds before purchase: [NAVIGATION_STEPS]
-Fairness record after opening: [NAVIGATION_STEPS]
-Vault and Trade in: [NAVIGATION_STEPS]
-Physical fulfillment availability: [REGIONS_AND_LIMITATIONS]
-Account deletion: Account > Settings > Account deletion > Delete account
-
-Points product IDs: [PRODUCT_IDS]
-Chance-model legal classification and release territories: [SUMMARY]
-Support contact: [MONITORED_EMAIL]
+```bash
+npm run render:app-store-review-notes
+npm run check:app-store-review-notes
 ```
+
+出力先は`app-store/review/generated-review-notes.local.txt`。Git管理外で、App Store ConnectのReview Informationへ貼り付ける。入力値変更後の古いメモ、placeholder、未解決の法務回答、4000 byte超過は提出ゲートで停止する。passwordはApp Store Connectにだけ入力し、このファイルには含めない。
 
 ## 提出を許可する受入条件
 

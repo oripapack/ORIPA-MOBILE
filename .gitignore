@@ -40,6 +40,8 @@ yarn-error.*
 .env.production
 .env*.local
 backend/.env
+app-store/release/*.local.json
+app-store/review/*.local.txt
 
 # typescript
 *.tsbuildinfo

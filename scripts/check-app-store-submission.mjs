@@ -29,9 +29,17 @@ function parseEnvFile(filePath) {
 
 const submissionPath = process.env.APP_STORE_SUBMISSION_ENV_FILE || '.env.app-store.local';
 const productionPath = process.env.APP_STORE_PRODUCTION_ENV_FILE || '.env.production';
+const provenancePath =
+  process.env.APP_STORE_PROVENANCE_FILE || 'app-store/release/provenance.local.json';
+const submissionFileValues = parseEnvFile(submissionPath);
+for (const [name, value] of Object.entries(submissionFileValues)) {
+  if (/(?:PASSWORD|SECRET|PRIVATE_KEY)/i.test(name) && String(value).trim()) {
+    failures.push(`${submissionPath} must not store passwords, secrets, or private keys (${name})`);
+  }
+}
 const values = {
   ...parseEnvFile(productionPath),
-  ...parseEnvFile(submissionPath),
+  ...submissionFileValues,
   ...process.env,
 };
 
@@ -41,7 +49,7 @@ function requireValue(name) {
     failures.push(`${name} is required`);
     return '';
   }
-  if (/your |example\.com|live-pack-id|0000000000/i.test(value)) {
+  if (/your |example\.com|live-pack-id|0000000000|\b(?:describe|todo|tbd|unresolved)\b/i.test(value)) {
     failures.push(`${name} still contains an example or placeholder value`);
   }
   return value;
@@ -102,11 +110,37 @@ if (!fs.existsSync(productionPath)) {
 
 const eas = JSON.parse(fs.readFileSync('eas.json', 'utf8'));
 const metadata = JSON.parse(fs.readFileSync('app-store/metadata/en-US.json', 'utf8'));
+let provenance = {};
+if (!fs.existsSync(provenancePath)) {
+  failures.push(`Missing ${provenancePath}; record the finished production EAS build`);
+} else {
+  try {
+    provenance = JSON.parse(fs.readFileSync(provenancePath, 'utf8'));
+  } catch {
+    failures.push(`${provenancePath} is not valid JSON`);
+  }
+}
 const configuredAscAppId = String(eas.submit?.production?.ios?.ascAppId ?? '').trim();
 const declaredAscAppId = requireValue('APP_STORE_ASC_APP_ID');
 if (!configuredAscAppId) failures.push('eas.json submit.production.ios.ascAppId is required before submission');
 if (configuredAscAppId && declaredAscAppId && configuredAscAppId !== declaredAscAppId) {
   failures.push('APP_STORE_ASC_APP_ID must match eas.json submit.production.ios.ascAppId');
+}
+
+const declaredEasBuildId = requireValue('APP_STORE_EAS_BUILD_ID');
+if (declaredEasBuildId && provenance.easBuildId && declaredEasBuildId !== provenance.easBuildId) {
+  failures.push('APP_STORE_EAS_BUILD_ID must match the verified provenance record');
+}
+const testFlightBuildNumber = requireValue('APP_STORE_TESTFLIGHT_BUILD_NUMBER');
+if (testFlightBuildNumber && !/^\d+$/.test(testFlightBuildNumber)) {
+  failures.push('APP_STORE_TESTFLIGHT_BUILD_NUMBER must be a positive integer');
+}
+if (
+  testFlightBuildNumber &&
+  provenance.appBuildVersion &&
+  testFlightBuildNumber !== provenance.appBuildVersion
+) {
+  failures.push('APP_STORE_TESTFLIGHT_BUILD_NUMBER must match the EAS appBuildVersion');
 }
 
 requireValue('APP_STORE_LEGAL_ENTITY_NAME');
@@ -123,8 +157,13 @@ if (reviewEmail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(reviewEmail)) {
 }
 requireValue('APP_STORE_REVIEW_PACK_ID');
 requireValue('APP_STORE_POINTS_PRODUCT_IDS');
+requireValue('APP_STORE_REVIEW_OPEN_NAVIGATION');
 requireValue('APP_STORE_ODDS_NAVIGATION');
 requireValue('APP_STORE_FAIRNESS_NAVIGATION');
+requireValue('APP_STORE_VAULT_TRADE_IN_NAVIGATION');
+requireValue('APP_STORE_SHIPPING_LIMITATIONS');
+requireValue('APP_STORE_ACCOUNT_DELETION_NAVIGATION');
+requireValue('APP_STORE_CHANCE_MODEL_SUMMARY');
 
 for (const approval of [
   'APP_STORE_REVIEW_ACCOUNT_READY',
