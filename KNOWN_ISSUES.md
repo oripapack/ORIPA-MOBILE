@@ -103,6 +103,18 @@
 - **リリース条件**: migration deploy、Clerk production user で削除実行、再ログイン不可、PII / vault / ledger / shipping 行の削除確認、保持が必要な法定記録のポリシー確認。
 - **担当**: Auth / Backend / Privacy。
 
+### 15. 【ブロッカー】米国向けchance modelの法的分類とApp Store年齢回答が未承認
+- **記録日**: 2026-08-10
+- **内容**: 購入Points、ランダムなpack、価値の異なるcard、物理fulfillment、Trade inの組合せは、少なくともApp StoreのLoot Boxes回答と購入前odds開示が必要。対象州によってlottery / gambling / prize promotion等に該当するかはコードから判断できない。該当する場合、Apple Guideline 5.3.3によりIAP通貨とreal money gamingを併用できない可能性がある。
+- **リリース条件**: 対象州、Pointsの性質、Trade in、配送、無料参加手段の有無を固定したlegal memoを取得し、Gambling / Simulated Gambling / Loot Boxes回答、geo restriction、年齢制御、StoreKit設計を承認する。
+- **担当**: Legal / Product / App Store compliance。
+
+### 16. 【ブロッカー】公開法務情報・App Privacy・Sign in with Apple削除確認が未完了
+- **記録日**: 2026-08-10
+- **内容**: in-app Terms / Privacyはpreview templateで、運営法人、具体的保持期間、公開Privacy/Support URLの法務承認がない。2026-08-10時点の `pullhub.com/privacy` / `pullhub.com/support` はHTTP 200だが `/lander` へ送る駐車ページで、審査URLとして使用不可。Clerk user削除時にSign in with Apple token revocationまで完了するかも未検証。
+- **リリース条件**: 運営法人・監視窓口・公開URLを確定し、Clerk/Supabase/Expo/Appleのproduction data handlingを監査、公開PolicyとApp Privacy回答を一致、SIWA token revocationを実アカウントで確認する。`npm run prepare:app-store-submit` を0終了させる。
+- **担当**: Legal / Privacy / Auth / App Store operations。
+
 ## タスク登録(2026-07-31 デザインルール棚卸し docs/design-rules-inventory.md の選別結果)
 
 コード挙動を変えるタスクは登録のみで未実行。R-xxx は inventory の ID。

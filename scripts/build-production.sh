@@ -28,7 +28,7 @@ require_public_value() {
     exit 1
   fi
   case "$variable_value" in
-    *your-project*|*your-production*|*example.com*)
+    *your-project*|*your-production*|*example.com*|*Your\ Legal\ Entity\ Name*)
       echo "error: $variable_name still contains a placeholder"
       exit 1
       ;;
@@ -39,9 +39,23 @@ require_public_value EXPO_PUBLIC_SUPABASE_URL
 require_public_value EXPO_PUBLIC_SUPABASE_ANON_KEY
 require_public_value EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
 require_public_value EXPO_PUBLIC_PACK_RING_WEB_URL
+require_public_value EXPO_PUBLIC_LEGAL_ENTITY_NAME
+require_public_value EXPO_PUBLIC_LEGAL_CONTACT_EMAIL
+require_public_value EXPO_PUBLIC_PRIVACY_POLICY_URL
+require_public_value EXPO_PUBLIC_SUPPORT_URL
 
 if [[ "$EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY" != pk_live_* ]]; then
   echo "error: EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY must be a Clerk production key"
+  exit 1
+fi
+
+if [[ "$EXPO_PUBLIC_PRIVACY_POLICY_URL" != https://* ]]; then
+  echo "error: EXPO_PUBLIC_PRIVACY_POLICY_URL must be a public HTTPS URL"
+  exit 1
+fi
+
+if [[ "$EXPO_PUBLIC_SUPPORT_URL" != https://* ]]; then
+  echo "error: EXPO_PUBLIC_SUPPORT_URL must be a public HTTPS URL"
   exit 1
 fi
 

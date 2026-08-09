@@ -21,6 +21,8 @@
     "typecheck:release": "tsc --noEmit -p tsconfig.release.json",
     "audit:release-copy": "node scripts/audit-release-copy.mjs",
     "check:release": "npm run typecheck:release && npm run validate:i18n && npm run audit:release-copy && npx expo-doctor",
+    "check:app-store-submit": "node scripts/check-app-store-submission.mjs",
+    "prepare:app-store-submit": "bash scripts/prepare-app-store-submit.sh",
     "release:ios": "bash scripts/build-production.sh",
     "smoke:live-packs": "node scripts/smoke-live-packs.mjs",
     "deploy:backend": "npm --prefix backend run deploy:all",

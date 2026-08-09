@@ -1157,7 +1157,8 @@
     "sampleListingTitle": "Sample listing"
   },
   "legalModal": {
-    "done": "Done"
+    "done": "Done",
+    "openPublicPolicy": "Open public Privacy Policy"
   },
   "myQr": {
     "title": "Your username",

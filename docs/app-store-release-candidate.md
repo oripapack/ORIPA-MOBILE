@@ -62,6 +62,8 @@ App Store へ提出するソースは `main` である必要はない。TestFlig
 4. Privacy Policy URL とデータ保持・削除方針の法務確認。
 5. 決済情報を持たない App Review 用アカウント。審査メモにログイン手順を記載し、パスワードはこのrepoへ保存しない。
 
+`https://pullhub.com/privacy` と `https://pullhub.com/support` は 2026-08-10 時点でHTTP 200を返すが、本文は `/lander` へ送るドメイン駐車ページ。審査URLとして登録せず、実際の公開本文へ置き換える。
+
 ### App Store Connect
 
 1. Bundle ID `com.pullhub.app` の app record を作成し Apple ID (`ascAppId`) を `eas.json` に追加。
@@ -83,6 +85,11 @@ App Store へ提出するソースは `main` である必要はない。TestFlig
 - **Marketing URL:** `https://pullhub.com` (任意、公開確認前は登録しない)
 
 ## App Review notes draft
+
+プライバシー収集表と年齢レーティング・審査条件の詳細:
+
+- `docs/app-store/privacy-data-map.md`
+- `docs/app-store/review-and-age-rating.md`
 
 ```
 Pull Hub lets signed-in collectors open card packs, review disclosed odds,
@@ -109,6 +116,7 @@ Shipping availability: [REGIONS_AND_LIMITATIONS]
 npm run check:release
 node scripts/check-app-store-readiness.mjs
 npm run release:ios
+npm run prepare:app-store-submit
 ```
 
-`release:ios` は EAS production build までで止まる。まず TestFlight で実機QAし、合格した同じ build のみを submit する。
+`release:ios` は EAS production build までで止まる。`prepare:app-store-submit` は外部送信せず、公開法務情報・review account・IAP・公平抽選・本番deploy・TestFlight承認の宣言を検証する。まず TestFlight で実機QAし、合格した同じ build のみを submit する。

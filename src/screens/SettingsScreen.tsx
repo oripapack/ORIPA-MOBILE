@@ -40,6 +40,7 @@ import { AdminToolsSection } from '../components/account/AdminToolsSection';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { resetLocalOnboardingStateAndReload } from '../lib/resetLocalOnboardingState';
 import { confirmUserAction } from '../utils/showUserMessage';
+import { PRIVACY_POLICY_URL } from '../config/legal';
 
 type LegalSheet = 'terms' | 'privacy' | 'promo' | 'payment' | null;
 
@@ -247,6 +248,8 @@ export function SettingsScreen() {
           visible
           title={t(`legalRows.${legalSheet}`)}
           body={LEGAL_BODY[legalSheet]}
+          externalUrl={legalSheet === 'privacy' ? PRIVACY_POLICY_URL || undefined : undefined}
+          externalLabel={legalSheet === 'privacy' ? t('legalModal.openPublicPolicy') : undefined}
           onClose={() => setLegalSheet(null)}
         />
       )}
