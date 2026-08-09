@@ -11,6 +11,8 @@ App Store へ提出するソースは `main` である必要はない。TestFlig
 
 現時点では **iOS bundle は生成可能だが、提出不可**。UI の問題ではなく、下記の本番サービスと事業データが未接続だからである。未接続機能を動作するように見せる fixture や仮確率は使わない。
 
+2026-08-10のread-only外部確認では、EAS project `@yoshitake/tcg-mystery-pack` のApp Store Connect integrationは`not-connected`、iOS EAS build履歴は0件。App Store Connect app recordを作成・接続するまでTestFlight uploadは開始できない。
+
 ## 自動検査の現在地
 
 - [x] Expo project を作成し `app.json` に project ID を設定
