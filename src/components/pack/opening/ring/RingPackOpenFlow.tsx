@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import WebView from 'react-native-webview';
 import type { RingPackOpenFlowProps } from './ringTypes';
 import { tierToRingRarity } from './ringRarity';
+import { parseRingBridgeMessage } from './parseRingBridgeMessage';
 import { getPackRingWebBaseUrl } from '../../../../config/packRingWebUrl';
 import { appendPackOpeningSceneTweaks } from '../../../../config/packOpeningSceneTweaks';
 import { sg } from '../../../../tokens/sg';
@@ -37,16 +38,25 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
   const onRevealDone = useCallback(() => {
     if (revealedRef.current) return;
     revealedRef.current = true;
-    props.onRevealDone();
+    try {
+      props.onRevealDone();
+    } catch {
+      /* host must not crash the opening surface */
+      revealedRef.current = false;
+    }
   }, [props]);
 
   // Skip FAB in PackOpeningModal bumps skipNonce — tell the HTML scene to finish.
   useEffect(() => {
     if (!props.skipNonce || props.skipNonce === lastSkipRef.current) return;
     lastSkipRef.current = props.skipNonce;
-    webRef.current?.injectJavaScript(
-      'try{window.__PH_SKIP_OPEN__&&window.__PH_SKIP_OPEN__();}catch(e){} true;',
-    );
+    try {
+      webRef.current?.injectJavaScript(
+        'try{window.__PH_SKIP_OPEN__&&window.__PH_SKIP_OPEN__();}catch(e){}true;',
+      );
+    } catch {
+      /* ignore inject failures */
+    }
   }, [props.skipNonce]);
 
   if (!uri || failed) {
@@ -67,18 +77,23 @@ export function RingPackOpenFlow(props: RingPackOpenFlowProps) {
           setLoading(false);
         }}
         onHttpError={(event) => {
-          const { statusCode, url } = event.nativeEvent;
-          if (statusCode >= 400 && url.startsWith(baseUrl)) {
+          try {
+            const { statusCode, url } = event.nativeEvent;
+            if (statusCode >= 400 && typeof url === 'string' && url.startsWith(baseUrl)) {
+              setFailed(true);
+              setLoading(false);
+            }
+          } catch {
             setFailed(true);
             setLoading(false);
           }
         }}
         onMessage={(event) => {
           try {
-            const msg = JSON.parse(event.nativeEvent.data) as { type?: string };
-            if (msg.type === 'revealDone') onRevealDone();
+            const msg = parseRingBridgeMessage(event?.nativeEvent?.data);
+            if (msg?.type === 'revealDone') onRevealDone();
           } catch {
-            /* ignore malformed messages */
+            /* ignore unknown / malformed bridge payloads */
           }
         }}
         allowsInlineMediaPlayback

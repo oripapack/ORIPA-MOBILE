@@ -35,8 +35,26 @@
     background:rgba(12,20,40,.88); border:1px solid rgba(90,116,180,.48);
     backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
     color:#d8dfef; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; letter-spacing:.11em; white-space:nowrap;
-    box-shadow:0 0 28px rgba(52,91,231,.13); transition:opacity .3s ease; }
+    box-shadow:0 0 28px rgba(52,91,231,.13); transition:opacity .3s ease, transform .25s ease, background .25s ease, border-color .25s ease;
+    pointer-events:none; }
   #hint.off { opacity:0; pointer-events:none; }
+  #hint.continue {
+    pointer-events:auto; cursor:pointer;
+    padding:12px 22px; border-radius:999px;
+    background:rgba(12,20,40,.72); border:1px solid rgba(191,250,255,.38);
+    color:#e8fbff; letter-spacing:.16em; font-weight:700;
+    box-shadow:0 0 24px rgba(127,243,255,.18), inset 0 0 20px rgba(52,91,231,.12);
+  }
+  #hint.continue:hover { background:rgba(18,28,52,.88); border-color:rgba(191,250,255,.55); }
+  #hint.continue:active { transform:translateX(-50%) scale(.97); }
+  #c, #brand, #hint, #cardInfo, #tearCue {
+    transition: opacity .45s cubic-bezier(.4,0,.2,1);
+  }
+  body.ph-exiting #c,
+  body.ph-exiting #brand,
+  body.ph-exiting #hint,
+  body.ph-exiting #cardInfo,
+  body.ph-exiting #tearCue { opacity:0 !important; pointer-events:none !important; }
   #resetBtn { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom));
     transform:translateX(-50%) translateY(10px); z-index:3; opacity:0; pointer-events:none;
     padding:13px 30px; border-radius:8px; border:1px solid rgba(224,180,90,.58);
@@ -63,12 +81,73 @@
   .ci-name { color:#f5f0e6; font-size:17px; font-weight:900; letter-spacing:.02em; text-transform:uppercase; }
   .ci-meta { margin-top:5px; color:#7b8aac; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; letter-spacing:.08em; }
   .ci-dot { margin:0 6px; opacity:.6; }
-  @media (prefers-reduced-motion: reduce){ #hint,#resetBtn,#cardInfo{ transition:opacity .15s ease; } }
+  /* Off-pack tear cue — quiet HUD; arrow slides with glow, no opacity thrash. */
+  #tearCue {
+    position:fixed; left:0; top:0; z-index:3; pointer-events:none;
+    opacity:0;
+    transition:opacity .3s ease;
+  }
+  #tearCue.on { opacity:1; }
+  #tearCue.on.swiping { opacity:0; }
+  .tear-cue-inner {
+    display:flex; align-items:center; gap:6px;
+    padding:4px 2px 4px 4px;
+  }
+  .tear-cue-label {
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:12px; font-weight:700; letter-spacing:.18em;
+    color:#d5eef8;
+    text-shadow:
+      0 0 3px rgba(191,250,255,.55),
+      0 0 8px rgba(127,243,255,.35);
+  }
+  .tear-cue-chev {
+    width:28px; height:20px; flex:0 0 auto;
+    filter:
+      drop-shadow(0 0 3px rgba(191,250,255,.55))
+      drop-shadow(0 0 8px rgba(127,243,255,.35));
+  }
+  #tearCue.on:not(.swiping) .tear-cue-chev {
+    animation:tearCueArrow 1.35s ease-in-out infinite;
+  }
+  .tear-cue-chev svg { display:block; width:100%; height:100%; overflow:visible; }
+  .tear-cue-chev path { stroke:#e8fbff; stroke-width:2; }
+  /* Bigger slide only — steady glow, no fade pulse. */
+  @keyframes tearCueArrow {
+    0%,100% { transform:translateX(0); }
+    50% { transform:translateX(12px); }
+  }
+  #tearCue.hot:not(.swiping) .tear-cue-label {
+    color:#eef9ff;
+    text-shadow:
+      0 0 4px rgba(191,250,255,.7),
+      0 0 10px rgba(127,243,255,.45);
+  }
+  #tearCue.hot:not(.swiping) .tear-cue-chev {
+    filter:
+      drop-shadow(0 0 4px rgba(191,250,255,.7))
+      drop-shadow(0 0 10px rgba(127,243,255,.45));
+  }
+  @media (prefers-reduced-motion: reduce){
+    #hint,#resetBtn,#cardInfo,#tearCue{ transition:opacity .15s ease; }
+    #tearCue.on:not(.swiping) .tear-cue-chev { animation:none; }
+  }
 </style>
 </head>
 <body>
 <div id="brand"><div class="bw">PULL.HUB</div><div class="bs">TOKYO TERMINAL / LIVE</div></div>
 <div id="hint">SWIPE THE SEAL TO OPEN · DRAG TO ROTATE</div>
+<div id="tearCue" aria-hidden="true">
+  <div class="tear-cue-inner">
+    <span class="tear-cue-label">SWIPE</span>
+    <span class="tear-cue-chev" aria-hidden="true">
+      <svg viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 11h18" stroke="#bffaff" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M14 4.5L22.5 11L14 17.5" stroke="#bffaff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
+</div>
 <button id="resetBtn">OPEN AGAIN</button>
 <div id="cardInfo">
   <div class="ci-tier"><span id="ciTier">BASE</span><span id="ciStars">TIER / PULL RECORD</span></div>
@@ -83,13 +162,19 @@
 var hintEl=document.getElementById('hint');
 var resetBtn=document.getElementById('resetBtn');
 var infoEl=document.getElementById('cardInfo');
+var tearCueEl=document.getElementById('tearCue');
 if(!window.THREE){ hintEl.textContent='3D SCENE UNAVAILABLE · USE STANDARD OPENING'; return; }
 
 /* ============ 基本設定 ============ */
 var reduce=false;
 try{ reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
 var PW=1.68, PH=2.95, PD=0.15;
-var TEAR_Y=1.185, BODY_H=2.66, BODY_CY=-0.145, STRIP_CY=1.33, CARD_Y0=0.0;
+/* Top flap + body must share one height split so UVs match the mesh (keeps neon/holo on the strip). */
+var STRIP_H=0.24, BODY_H=PH-STRIP_H, BODY_CY=-0.145;
+var TEAR_Y=BODY_CY+BODY_H*0.5;
+var STRIP_CY=TEAR_Y+STRIP_H*0.5;
+var TAB_TOP_Y=STRIP_H*0.5+0.02;
+var CARD_Y0=0.0;
 var CARD_CY=0.95, CARD_CZ=1.1, CARD_SC=1.0, SLAB_S0=0.7;
 var HINT0='SWIPE THE SEAL TO OPEN · DRAG TO ROTATE';
 
@@ -113,7 +198,15 @@ var CFG={
   rotScaleY:0.006,
   rotScaleX:0.0045,
   rotXClamp:0.42,
+  /** Post-reveal card inspect limits (±45°). */
+  inspectClamp:0.785,
+  inspectScaleY:0.0075,
+  inspectScaleX:0.006,
+  /** Background tap-to-continue: max finger travel (px) still counts as a tap. */
+  tapSlopPx:5,
   tearSnapBackSec:0.4,
+  exitFadeMs:480,
+  exitFadeReducedMs:160,
 
   /* Flash / glow */
   flashOnOpen:3.5,
@@ -216,12 +309,13 @@ function texFront(){
   x.shadowBlur=0;
   x.strokeStyle='rgba(123,138,172,0.42)'; x.lineWidth=1.5; rr(x,44,44,W-88,H-88,16); x.stroke();
   x.textAlign='center';
+  /* Clean foil header — tear cue is the off-pack DOM arrow, not art on the pack. */
   x.font='900 76px "Arial Narrow","Avenir Next Condensed",sans-serif';
   x.shadowColor='rgba(52,91,231,0.75)'; x.shadowBlur=22; x.fillStyle='#f5f0e6';
-  spaced(x,'PULL HUB',W/2,150,8);
+  spaced(x,'PULL HUB',W/2,158,8);
   x.shadowBlur=0;
   x.font='700 22px ui-monospace,SFMono-Regular,Menlo,monospace'; x.fillStyle='#7b8aac';
-  spaced(x,'TOKYO TERMINAL / SERIES 01',W/2,198,6);
+  spaced(x,'TOKYO TERMINAL / SERIES 01',W/2,208,6);
 
   /* Physical label system from the Tokyo Pack art direction. */
   x.fillStyle='#f5f0e6'; rr(x,82,350,W-164,408,20); x.fill();
@@ -309,13 +403,6 @@ function texTorn(){
   var g=x.createLinearGradient(0,0,0,64); g.addColorStop(0,'#f2f6ff'); g.addColorStop(1,'#8a92b8');
   x.fillStyle=g; x.fill();
   x.strokeStyle='rgba(127,243,255,0.85)'; x.lineWidth=2; x.stroke();
-  return c;
-}
-function texDash(){
-  var c=cnv(512,24),x=c.getContext('2d');
-  x.clearRect(0,0,512,24);
-  x.shadowColor='#7ff3ff'; x.shadowBlur=7; x.fillStyle='#aef7ff';
-  for(var i=6;i<488;i+=34){ rr(x,i,8,20,8,4); x.fill(); }
   return c;
 }
 function texCardBack(){
@@ -442,7 +529,9 @@ var flashL=new THREE.PointLight(0xbfe8ff,0,30); flashL.position.set(0,1.6,3.4); 
 
 /* ============ ホロ（虹色フレネル）シェーダ注入 ============ */
 var tUniform={value:0};
-function holo(m){
+/* One shared shimmer field — pack UVs are continuous across body+strip. */
+function holo(m, strength){
+  var amt=(strength==null)?0.18:strength;
   m.onBeforeCompile=function(s){
     s.uniforms.uTime=tUniform;
     s.fragmentShader=s.fragmentShader
@@ -450,11 +539,12 @@ function holo(m){
       .replace('#include <emissivemap_fragment>',
         '#include <emissivemap_fragment>\n'+
         'vec3 hVDir=normalize(vViewPosition);\n'+
-        'float hFr=pow(1.0-abs(dot(normalize(normal),hVDir)),3.2);\n'+
+        'float hFr=pow(1.0-abs(dot(normalize(normal),hVDir)),2.85);\n'+
         'float hBand=sin((vUv.x*5.0+vUv.y*2.5)*3.14159+uTime*0.9+hFr*7.0);\n'+
         'vec3 hRb=0.5+0.5*cos(6.2831*(vec3(0.0,0.33,0.66)+hBand*0.45+uTime*0.03));\n'+
-        'totalEmissiveRadiance+=hRb*hFr*0.16;\n');
+        'totalEmissiveRadiance+=hRb*hFr*'+amt.toFixed(3)+';\n');
   };
+  m.customProgramCacheKey=function(){ return 'ph-holo-pack-'+amt; };
 }
 
 /* ============ パック形状（上下をつまんだピロー形） ============ */
@@ -474,16 +564,28 @@ function pinchedBox(w,h,d,cy,sw,sh){
   pos.needsUpdate=true; geo.computeVertexNormals();
   return geo;
 }
+/** Map mesh verts into one full-pack UV space so foil/holo is continuous across the tear. */
+function remapPackUVs(geo, yCenter){
+  var uv=geo.attributes.uv, pos=geo.attributes.position;
+  var y0=BODY_CY-BODY_H*0.5, y1=STRIP_CY+STRIP_H*0.5, span=y1-y0;
+  for(var i=0;i<pos.count;i++){
+    var u=pos.getX(i)/PW+0.5;
+    var v=(pos.getY(i)+yCenter-y0)/span;
+    if(u<0)u=0; else if(u>1)u=1;
+    if(v<0)v=0; else if(v>1)v=1;
+    uv.setXY(i,u,v);
+  }
+  uv.needsUpdate=true;
+}
 
 /* ============ マテリアル ============ */
 var frontTex=ctex(texFront()), backTex=ctex(texBack());
-function sub(tex,y0,hf){ var t=tex.clone(); t.needsUpdate=true; t.repeat.set(1,hf); t.offset.set(0,y0); return t; }
-var BFR=BODY_H/PH, SFR=1-BFR;
 function foilMat(map){ return new THREE.MeshStandardMaterial({map:map,metalness:0.72,roughness:0.34,envMap:env,envMapIntensity:0.9}); }
-var bodyFrontM=foilMat(sub(frontTex,0,BFR)); holo(bodyFrontM);
-var bodyBackM =foilMat(sub(backTex,0,BFR));
-var stripFrontM=foilMat(sub(frontTex,BFR,SFR)); holo(stripFrontM);
-var stripBackM =foilMat(sub(backTex,BFR,SFR));
+/* Same full-pack textures + identical holo — not two atlas slices. */
+var bodyFrontM=foilMat(frontTex); holo(bodyFrontM,0.18);
+var bodyBackM =foilMat(backTex);
+var stripFrontM=foilMat(frontTex); holo(stripFrontM,0.18);
+var stripBackM =foilMat(backTex);
 var sideB=new THREE.MeshStandardMaterial({color:0x141830,metalness:0.55,roughness:0.5,envMap:env,envMapIntensity:0.35});
 var sideS=sideB.clone();
 var seamB=new THREE.MeshStandardMaterial({color:0x0a0c16,metalness:0.2,roughness:0.9});
@@ -510,16 +612,20 @@ var stripGroup=new THREE.Group();
 stripGroup.position.set(STRIP_LX, STRIP_LY, 0);
 stripHinge.add(stripGroup);
 
-var bodyMesh=new THREE.Mesh(pinchedBox(PW,BODY_H,PD,BODY_CY,18,26),
+var bodyGeo=pinchedBox(PW,BODY_H,PD,BODY_CY,18,26);
+remapPackUVs(bodyGeo, BODY_CY);
+var bodyMesh=new THREE.Mesh(bodyGeo,
   [sideB,sideB,seamB,sideB,bodyFrontM,bodyBackM]);
 bodyGroup.add(bodyMesh);
-var stripMesh=new THREE.Mesh(pinchedBox(PW,0.29,PD,STRIP_CY,18,8),
+var stripGeo=pinchedBox(PW,STRIP_H,PD,STRIP_CY,18,12);
+remapPackUVs(stripGeo, STRIP_CY);
+var stripMesh=new THREE.Mesh(stripGeo,
   [sideS,sideS,sideS,seamS,stripFrontM,stripBackM]);
 stripGroup.add(stripMesh);
 
 
 var tabTop=new THREE.Mesh(new THREE.BoxGeometry(PW,0.16,0.03,18,2,1),crimpS);
-tabTop.position.y=0.23; stripGroup.add(tabTop);
+tabTop.position.y=TAB_TOP_Y; stripGroup.add(tabTop);
 var tabBot=new THREE.Mesh(new THREE.BoxGeometry(PW,0.16,0.045),crimpB);
 tabBot.position.y=-1.41; bodyGroup.add(tabBot);
 
@@ -568,10 +674,46 @@ tornF.visible=false; tornBk.visible=false;
 bodyGroup.add(tornF); bodyGroup.add(tornBk);
 
 var ZLINE=frontZAt(TEAR_Y)+0.02;
-var tearMat=new THREE.MeshBasicMaterial({map:ctex(texDash()),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:0.9});
-var tearLine=new THREE.Mesh(new THREE.PlaneGeometry(1.30,0.08),tearMat);
-tearLine.geometry.translate(0.65,0,0);
-tearLine.position.set(TEAR_X0,TEAR_Y,ZLINE); packRoot.add(tearLine);
+/* Tear affordance is the off-pack DOM arrow (#tearCue) — foil stays clean. */
+var tearHover=false;
+var tearCueWorld=new THREE.Vector3();
+function setTearCueVisible(on){
+  if(!tearCueEl) return;
+  if(on){
+    tearCueEl.classList.add('on');
+    tearCueEl.classList.remove('swiping','hot');
+  } else {
+    tearCueEl.classList.remove('on','hot','swiping');
+  }
+}
+function updateTearCueScreen(){
+  if(!tearCueEl||opened) return;
+  /* Anchor to pack LEFT EDGE at exact tear Y so cue lines up with the seal path. */
+  tearCueWorld.set(-PW/2, TEAR_Y, ZLINE);
+  packRoot.localToWorld(tearCueWorld);
+  tearCueWorld.project(camera);
+  var w=cv.clientWidth, h=cv.clientHeight;
+  var packLeftX=(tearCueWorld.x*0.5+0.5)*w;
+  var tearSy=(-tearCueWorld.y*0.5+0.5)*h;
+  if(tearCueWorld.z>1){ tearCueEl.classList.remove('on'); return; }
+
+  /* Responsive gap: clear of foil on narrow + wide viewports. */
+  var gap=Math.max(14, Math.min(42, w*0.05));
+  var cueRight=packLeftX-gap;
+  var minRight=Math.min(108, w*0.26);
+  if(cueRight<minRight) cueRight=minRight;
+
+  tearCueEl.style.transform='translate('+cueRight.toFixed(1)+'px,'+tearSy.toFixed(1)+'px) translate(-100%,-50%)';
+  tearCueEl.classList.add('on');
+
+  /* Fade as soon as the rip gesture starts. */
+  var swiping=mode==='tear'||progress>0.008;
+  if(swiping) tearCueEl.classList.add('swiping');
+  else tearCueEl.classList.remove('swiping');
+
+  if(!swiping&&tearHover) tearCueEl.classList.add('hot');
+  else tearCueEl.classList.remove('hot');
+}
 
 var tearHit=new THREE.Mesh(new THREE.BoxGeometry(2.0,0.75,1.0),
   new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false}));
@@ -924,30 +1066,85 @@ function buzz(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
 var opened=false,emerged=false,revealed=false,flipping=false,centering=false,centered=false,flapDone=false;
 var progress=0,lastTickN=-1,mode=null,flashVal=0,stripFly=null,sbTok=null;
 var rotT={x:0,y:0},rotC={x:0,y:0},dragVel=0,dragVelX=0,camTy=CFG.camTyIdle,cardBaseY=CARD_Y0;
-var lastX=0,lastY=0,tGlobal=0;
+var lastX=0,lastY=0,tGlobal=0,pointerMoved=0;
 var ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
 function hits(e,obj){ var r=cv.getBoundingClientRect();
   ndc.x=((e.clientX-r.left)/r.width)*2-1;
   ndc.y=-((e.clientY-r.top)/r.height)*2+1;
   ray.setFromCamera(ndc,camera);
   return ray.intersectObject(obj,true).length>0; }
+/** Raycast against slab/card meshes only — excludes glow / empty canvas. */
+function hitsCard(e){ return hits(e,cardInner); }
 function hint(s){ hintEl.textContent=s; }
+function clampInspect(){
+  var c=CFG.inspectClamp;
+  if(rotT.x>c)rotT.x=c; if(rotT.x<-c)rotT.x=-c;
+  if(rotT.y>c)rotT.y=c; if(rotT.y<-c)rotT.y=-c;
+}
+function showContinueCta(){
+  hint('HIT ANYWHERE TO CONTINUE');
+  hintEl.classList.add('continue');
+  hintEl.classList.remove('off');
+}
+function hideContinueCta(){
+  hintEl.classList.remove('continue');
+  hintEl.classList.add('off');
+}
+function requestExitToResult(){
+  if(window.__PH_REVEAL_POSTED__||window.__PH_EXITING__) return;
+  if(!revealed) return;
+  window.__PH_EXITING__=true;
+  mode=null;
+  hideContinueCta();
+  try{ document.body.classList.add('ph-exiting'); }catch(e){}
+  var ms=reduce?CFG.exitFadeReducedMs:CFG.exitFadeMs;
+  setTimeout(function(){ postRevealDone(); }, ms);
+}
 
 cv.addEventListener('pointerdown',function(e){
+  if(window.__PH_EXITING__||window.__PH_REVEAL_POSTED__) return;
   audio();
   try{ cv.setPointerCapture(e.pointerId); }catch(err){}
-  lastX=e.clientX; lastY=e.clientY; dragVel=0; dragVelX=0;
+  lastX=e.clientX; lastY=e.clientY; dragVel=0; dragVelX=0; pointerMoved=0;
+  /* Reveal: card hit → inspect drag (swallows continue); miss → background tap candidate. */
+  if(revealed && !window.__PH_REVEAL_POSTED__ && !window.__PH_EXITING__){
+    if(hitsCard(e)){
+      mode='inspect';
+      e.preventDefault();
+    } else {
+      mode='continueTap';
+    }
+    return;
+  }
   if(!opened && hits(e,tearHit)){
     mode='tear';
+    tearHover=true;
+    if(tearCueEl) tearCueEl.classList.add('swiping');
     if(sbTok){ sbTok.dead=true; sbTok=null; }
   }
   else if(emerged && !revealed && !flipping && hits(e,cardMesh)){ mode=null; flip(); }
-  else { mode='rotate'; }
+  else if(!revealed){ mode='rotate'; }
 });
 cv.addEventListener('pointermove',function(e){
+  if(!opened && !revealed){ tearHover=hits(e,tearHit) || mode==='tear'; }
   if(!mode) return;
   var dx=e.clientX-lastX, dy=e.clientY-lastY;
   lastX=e.clientX; lastY=e.clientY;
+  pointerMoved+=Math.abs(dx)+Math.abs(dy);
+  if(mode==='inspect'){
+    /* Card-only inspect — never promote to continue on this gesture. */
+    e.preventDefault();
+    rotT.y+=dx*CFG.inspectScaleY;
+    rotT.x+=dy*CFG.inspectScaleX;
+    clampInspect();
+    dragVel=dx*CFG.inspectScaleY;
+    dragVelX=dy*CFG.inspectScaleX;
+    return;
+  }
+  if(mode==='continueTap'){
+    /* Off-card: only tap advances; drag past slop cancels continue (no inspect steal). */
+    return;
+  }
   if(mode==='tear'){
     if(opened) return;
     progress+=Math.abs(dx)/Math.min(cv.clientWidth*CFG.tearWidthFrac,CFG.tearWidthCap);
@@ -960,7 +1157,7 @@ cv.addEventListener('pointermove',function(e){
       burst(wp,CFG.burstTearN,rarityPal(),CFG.burstTearSpd,CFG.burstTearUp);
     }
     if(progress>=1) openPack();
-  } else {
+  } else if(mode==='rotate'){
     rotT.y+=dx*CFG.rotScaleY;
     rotT.x+=dy*CFG.rotScaleX;
     if(rotT.x>CFG.rotXClamp)rotT.x=CFG.rotXClamp; if(rotT.x<-CFG.rotXClamp)rotT.x=-CFG.rotXClamp;
@@ -968,7 +1165,17 @@ cv.addEventListener('pointermove',function(e){
     dragVelX=dy*CFG.rotScaleX;
   }
 });
-function endPointer(){
+function endPointer(e){
+  if(window.__PH_EXITING__||window.__PH_REVEAL_POSTED__){ mode=null; return; }
+  if(mode==='inspect'){
+    /* Swallow: card drag must not fire background continue. */
+    if(e) e.preventDefault();
+    mode=null;
+    return;
+  }
+  if(mode==='continueTap' && pointerMoved<=CFG.tapSlopPx && revealed && hintEl.classList.contains('continue')){
+    requestExitToResult();
+  }
   if(mode==='tear' && !opened && progress>0){
     var p0=progress, tok={dead:false}; sbTok=tok;
     tw(CFG.tearSnapBackSec,function(k){ if(tok.dead)return; progress=p0*(1-k); },eOutCubic);
@@ -977,7 +1184,16 @@ function endPointer(){
 }
 cv.addEventListener('pointerup',endPointer);
 cv.addEventListener('pointercancel',endPointer);
+cv.addEventListener('pointerleave',function(){ if(mode!=='tear') tearHover=false; });
 cv.addEventListener('contextmenu',function(e){ e.preventDefault(); });
+hintEl.addEventListener('click',function(e){
+  e.preventDefault(); e.stopPropagation();
+  if(revealed && hintEl.classList.contains('continue')) requestExitToResult();
+});
+hintEl.addEventListener('pointerup',function(e){
+  e.preventDefault(); e.stopPropagation();
+  if(revealed && hintEl.classList.contains('continue')) requestExitToResult();
+});
 
 /* ============ 開封シーケンス ============ */
 function flapOpen(){
@@ -990,8 +1206,8 @@ function openPack(){
   opened=true; mode=null;
   cardGroup.visible=true;
   chime(); buzz([12,40,18]);
-  tw(CFG.tearFadeDur,function(k){ tearMat.opacity=0.9*(1-k); },eOutCubic,function(){ tearLine.visible=false; });
   spark.visible=false;
+  tearHover=false; setTearCueVisible(false);
   flapOpen();
   var wp=new THREE.Vector3(0,TEAR_Y,0.3); packRoot.localToWorld(wp);
   burst(wp,CFG.burstOpenN,rarityPal(),CFG.burstOpenSpd,CFG.burstOpenUp);
@@ -1062,7 +1278,8 @@ function flip(){
     hintEl.classList.add('off');
     if(!EMBED){ resetBtn.classList.add('on'); }
     infoEl.classList.add('on');
-    if(EMBED){ setTimeout(postRevealDone, reduce?CFG.revealDelayReducedMs:CFG.revealDelayMs); }
+    /* Inspect is always on; continue cue only in embed → Result. */
+    if(EMBED) showContinueCta();
   });
 }
 function resetAll(){
@@ -1078,9 +1295,13 @@ function resetAll(){
   stripGroup.position.set(STRIP_LX,STRIP_LY,0); stripGroup.rotation.set(0,0,0); stripGroup.visible=true;
   setStripOpacity(1);
   tornF.visible=false; tornBk.visible=false;
-  tearLine.visible=true; tearMat.opacity=0.9;
-  tearLine.position.x=TEAR_X0; tearLine.scale.x=(0.56-TEAR_X0)/1.30;
+  tearHover=false; setTearCueVisible(true);
   slitGlow.material.opacity=0; leakLight.intensity=0;
+  window.__PH_SKIP_BUSY__=false;
+  window.__PH_REVEAL_POSTED__=false;
+  window.__PH_EXITING__=false;
+  try{ document.body.classList.remove('ph-exiting'); }catch(e){}
+  hideContinueCta();
   for(var rz=0;rz<rayMats.length;rz++){ rayMats[rz].opacity=0; rays[rz].scale.y=1; }
   bodyGroup.visible=true; bodyGroup.position.set(0,BODY_CY,0); bodyGroup.rotation.set(0,0,0);
   packRoot.add(cardGroup); cardGroup.scale.set(SLAB_S0,SLAB_S0,SLAB_S0); cardGroup.visible=false;
@@ -1106,14 +1327,16 @@ function loop(){
   tUniform.value=tGlobal;
   lC.position.set(Math.cos(tGlobal*0.6)*4.2, 1.6+Math.sin(tGlobal*0.4)*1.2, 2.6+Math.sin(tGlobal*0.6)*1.5);
   lM.position.set(Math.cos(tGlobal*0.5+Math.PI)*4.2, 0.6+Math.cos(tGlobal*0.35), 2.4+Math.cos(tGlobal*0.5+Math.PI)*1.5);
-  if(mode!=='rotate'){
+  if(mode!=='rotate' && mode!=='inspect'){
     if(!centered&&!centering){
       dragVel=dragVel*0.90-rotT.y*0.016; rotT.y+=dragVel;
       dragVelX=dragVelX*0.90-rotT.x*0.016; rotT.x+=dragVelX;
     } else {
       rotT.y+=dragVel; dragVel*=0.93;
+      rotT.x+=dragVelX; dragVelX*=0.93;
     }
   }
+  if(revealed) clampInspect();
   var sm=1-Math.exp(-10*dt);
   rotC.x+=(rotT.x-rotC.x)*sm; rotC.y+=(rotT.y-rotC.y)*sm;
   var sway=reduce?0:Math.sin(tGlobal*0.35)*0.05;
@@ -1121,11 +1344,7 @@ function loop(){
   packRoot.position.y=-0.15+(reduce?0:Math.sin(tGlobal*1.1)*0.05);
   var tearAmt=opened?1:progress;
   if(!opened){
-    var op=0.45+0.3*(0.5+0.5*Math.sin(tGlobal*3))+0.5*progress;
-    tearMat.opacity=op>1?1:op;
-    var xF2=TEAR_X0+TEAR_SPAN*progress;
-    tearLine.position.x=xF2;
-    tearLine.scale.x=Math.max(0.001,(0.56-xF2)/1.30);
+    updateTearCueScreen();
     spark.visible=(progress>0.001)&&(mode==='tear');
     if(spark.visible){
       spark.position.set(TEAR_X0+TEAR_SPAN*progress,TEAR_Y,ZLINE+0.05);
@@ -1134,12 +1353,14 @@ function loop(){
     }
     slitGlow.material.opacity=progress*0.95;
     leakLight.intensity=progress*2.0;
+  } else {
+    setTearCueVisible(false);
   }
   if(bodyGroup.visible){
     if(tearAmt>0.001||stripDirty){
       windEff=opened?windA:(reduce?0:progress*0.4);
       deformStrip(stripMesh.geometry,stripOrig,0,tearAmt);
-      deformStrip(tabTop.geometry,tabOrig,0.23,tearAmt);
+      deformStrip(tabTop.geometry,tabOrig,TAB_TOP_Y,tearAmt);
       stripDirty=tearAmt>0.001;
     }
     slitGlow.scale.x=Math.max(0.02,tearAmt);
@@ -1159,8 +1380,11 @@ function loop(){
     cardGroup.rotation.z=reduce?0:Math.sin(tGlobal*0.9)*0.02;
   }
   if(centered){
-    cardGroup.position.y=CARD_CY+(reduce?0:Math.sin(tGlobal*1.5)*0.05);
-    cardGroup.rotation.set(rotC.x, rotC.y+sway*0.6, reduce?0:Math.sin(tGlobal*0.9)*0.02);
+    /* Inspect drives pitch/yaw; keep a tiny idle sway only before reveal. */
+    var zWob=(!revealed && !reduce)?Math.sin(tGlobal*0.9)*0.02:0;
+    var ySway=revealed?0:sway*0.6;
+    cardGroup.position.y=CARD_CY+(reduce||revealed?0:Math.sin(tGlobal*1.5)*0.05);
+    cardGroup.rotation.set(rotC.x, rotC.y+ySway, zWob);
   }
   if(emerged && revealed && !reduce && Math.random()<CFG.ambientSparkChance){
     var wp2=new THREE.Vector3((Math.random()-0.5)*1.3,(Math.random()-0.5)*1.9,0.1);
@@ -1186,12 +1410,21 @@ try{
 function postRevealDone(){
   if(window.__PH_REVEAL_POSTED__) return;
   window.__PH_REVEAL_POSTED__=true;
-  var msg=JSON.stringify({type:'revealDone'});
+  try{ hideContinueCta(); }catch(e){}
+  try{ hintEl.classList.add('off'); }catch(e){}
+  var payload={type:'revealDone'};
+  var msg=JSON.stringify(payload);
   try{
     var bridge=window.ReactNativeWebView;
     if(bridge&&typeof bridge.postMessage==='function') bridge.postMessage(msg);
   }catch(e){}
-  try{ window.parent&&window.parent.postMessage(msg,'*'); }catch(e){}
+  try{
+    if(window.parent&&window.parent!==window){
+      window.parent.postMessage(msg,'*');
+      window.parent.postMessage(payload,'*');
+    }
+  }catch(e){}
+  try{ window.postMessage(msg,'*'); }catch(e){}
 }
 
 function mapTierToRarity(tier){
@@ -1222,33 +1455,78 @@ function applyEmbedParams(){
   }catch(e){}
 }
 
-/** Skip → finish open + flip ASAP, then bridge to app. */
+/** Skip → bypass foil tear only; land on 3D card reveal (flip + burst). Result waits for tap. */
 window.__PH_SKIP_OPEN__=function(){
+  if(window.__PH_SKIP_BUSY__||window.__PH_EXITING__) return;
+  /* Already inspecting — Skip / second tap continues to Result with fade. */
+  if(revealed){ requestExitToResult(); return; }
+  if(flipping) return;
+  window.__PH_SKIP_BUSY__=true;
   try{
-    if(!opened){ openPack(); }
-    if(!emerged){ emerge(); }
-    if(!centered){
-      try{ centerCard(); }catch(e){}
-    }
-    if(!revealed){
-      /* Force reveal without waiting for tap */
-      if(!flipping){
-        flipping=true;
-        cardFrontM.map=cardFaceTex;
-        cardInner.rotation.y=0;
-        flipping=false; revealed=true;
-        hintEl.classList.add('off');
-        infoEl.classList.add('on');
-      }
-    }
-  }catch(e){}
-  postRevealDone();
+    if(sbTok){ sbTok.dead=true; sbTok=null; }
+    if(emTok){ emTok.dead=true; emTok=null; }
+    mode=null; progress=1;
+    tearHover=false; setTearCueVisible(false);
+    spark.visible=false;
+    hintEl.classList.add('off');
+
+    /* Instantly clear foil wrapper. */
+    bodyGroup.visible=false;
+    setStripOpacity(0);
+    tornF.visible=false; tornBk.visible=false;
+    slitGlow.material.opacity=0; leakLight.intensity=0;
+
+    opened=true; emerged=true; flapDone=true;
+    centering=false; centered=true;
+    packRoot.rotation.set(0,0,0);
+    rotT.x=0; rotT.y=0; rotC.x=0; rotC.y=0; dragVel=0; dragVelX=0;
+    camTy=CFG.camTyCenter;
+
+    /* Snap card into floating reveal pose (face-down, ready to flip). */
+    try{ scene.attach(cardGroup); }catch(e){ packRoot.add(cardGroup); }
+    cardGroup.visible=true;
+    cardGroup.position.set(0,CARD_CY,CARD_CZ);
+    cardGroup.rotation.set(0,0,0);
+    cardGroup.scale.set(CARD_SC,CARD_SC,CARD_SC);
+    cardBaseY=CARD_CY;
+    cardInner.rotation.y=Math.PI;
+    cardFrontM.map=cardBackTex;
+
+    glow.visible=true;
+    glow.scale.set(CFG.glowPeakScale,CFG.glowPeakScale*0.82,1);
+    glow.material.opacity=CFG.glowOpacity0*(1-CFG.glowOpacityFade*0.35);
+
+    chime(); buzz([12,40,18]);
+    flashVal=Math.max(flashVal,CFG.flashOnOpen);
+    var wp=cardGroup.getWorldPosition(new THREE.Vector3());
+    burst(wp,CFG.burstOpenN,rarityPal(),CFG.burstOpenSpd,CFG.burstOpenUp);
+
+    /* Play the flip + rarity pop; continue cue stays until postRevealDone. */
+    setTimeout(function(){
+      window.__PH_SKIP_BUSY__=false;
+      if(!revealed && !flipping) flip();
+    }, reduce?20:50);
+  }catch(e){
+    window.__PH_SKIP_BUSY__=false;
+    try{ if(!revealed) flip(); }catch(err){}
+  }
 };
 
 window.addEventListener('message',function(ev){
   try{
-    var data=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;
-    if(data&&data.type==='skip') window.__PH_SKIP_OPEN__();
+    var raw=ev&&ev.data;
+    var data=null;
+    if(typeof raw==='string'){
+      var t=raw.trim();
+      if(!t||(t.charAt(0)!=='{'&&t.charAt(0)!=='[')) return;
+      data=JSON.parse(t);
+    } else if(raw&&typeof raw==='object'){
+      data=raw;
+    } else {
+      return;
+    }
+    if(!data||typeof data.type!=='string') return;
+    if(data.type==='skip') window.__PH_SKIP_OPEN__();
   }catch(e){}
 });
 

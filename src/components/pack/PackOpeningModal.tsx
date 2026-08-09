@@ -43,15 +43,37 @@ function toCertificateId(raw: string | number): string {
   return (digits || '0').padStart(5, '0');
 }
 
+function cardTypeFromPack(pack: { tcgCategory?: string } | null | undefined): string {
+  switch (pack?.tcgCategory) {
+    case 'pokemon':
+      return 'POKÉMON';
+    case 'one_piece':
+      return 'ONE PIECE';
+    case 'yugioh':
+      return 'YU-GI-OH';
+    case 'sports':
+      return 'SPORTS';
+    case 'multi':
+      return 'MULTI';
+    default:
+      return 'CARD';
+  }
+}
+
 function buildResultPull(
   rolls: PackRollResult[],
   packName: string,
   sourceId: string | number,
+  meta?: { year?: number; cardType?: string },
 ): ResultPullData {
+  const year = meta?.year ?? new Date().getFullYear();
+  const cardType = meta?.cardType ?? 'CARD';
   const cards = rolls.map((roll) => ({
     name: roll.result,
     tier: 'unknown' as const,
     tradeInValuePoints: roll.creditsWon,
+    year,
+    cardType,
   }));
 
   return {
@@ -177,9 +199,8 @@ export function PackOpeningModal() {
       setBulkPhase('bulkResults');
       return;
     }
+    // Fast-forward 3D to card reveal only — Result waits for TAP TO CONTINUE.
     setSkipNonce((n) => n + 1);
-    // Advance even if the WebView hasn't loaded / missed the skip message.
-    setEngineDone(true);
   }, [bulkPhase, isBulkOpen]);
 
   const onBulkCinematicComplete = useCallback(() => {
@@ -211,6 +232,10 @@ export function PackOpeningModal() {
         rolls,
         getLocalizedPackFields(selectedPack, t).title,
         pullIds[0] ?? packOpenSessionId,
+        {
+          year: new Date().getFullYear(),
+          cardType: cardTypeFromPack(selectedPack),
+        },
       );
 
       closeModal('packOpening');
@@ -229,30 +254,46 @@ export function PackOpeningModal() {
     navigateToResult(bulkRolls);
   }, [applyBulkPackOpenResults, bulkRolls, navigateToResult]);
 
-  useEffect(() => {
-    if (!visible || !selectedPack || !pending) return;
-    if (packOpenQuantity > 1) return;
-    if (didApplyRef.current) return;
-    if (!engineDone) return;
-
-    didApplyRef.current = true;
-    // Record the pull before Result renders so its fulfillment actions target real store ids.
-    applyPackOpenResult(pending, { persistToVault: true });
-  }, [applyPackOpenResult, engineDone, packOpenQuantity, pending, selectedPack, visible]);
-
-  /** The reveal is presentation-only; the Result screen owns the irreversible fulfillment choice. */
+  /**
+   * Apply pull + advance to Result once the 3D scene reports revealDone.
+   * Mark didAdvance only when the timer fires — Strict Mode remounts clear the
+   * timeout, and setting the ref early permanently skips navigation.
+   */
   useEffect(() => {
     if (!visible || !engineDone || isBulkOpen) return;
-    if (!pending || !didApplyRef.current || didAdvanceToResultRef.current) return;
+    if (!pending || !selectedPack) return;
+    if (packOpenQuantity > 1) return;
 
-    didAdvanceToResultRef.current = true;
+    if (!didApplyRef.current) {
+      didApplyRef.current = true;
+      applyPackOpenResult(pending, { persistToVault: true });
+    }
+    if (didAdvanceToResultRef.current) return;
+
+    const roll = pending;
+    if (advanceTimerRef.current) clearTimeout(advanceTimerRef.current);
     advanceTimerRef.current = setTimeout(() => {
-      navigateToResult([pending]);
-    }, 600);
+      if (didAdvanceToResultRef.current) return;
+      didAdvanceToResultRef.current = true;
+      navigateToResult([roll]);
+    }, 280);
+
     return () => {
-      if (advanceTimerRef.current) clearTimeout(advanceTimerRef.current);
+      if (advanceTimerRef.current) {
+        clearTimeout(advanceTimerRef.current);
+        advanceTimerRef.current = null;
+      }
     };
-  }, [engineDone, isBulkOpen, navigateToResult, pending, visible]);
+  }, [
+    applyPackOpenResult,
+    engineDone,
+    isBulkOpen,
+    navigateToResult,
+    packOpenQuantity,
+    pending,
+    selectedPack,
+    visible,
+  ]);
 
   const revealCard =
     pending && selectedPack && !isBulkOpen

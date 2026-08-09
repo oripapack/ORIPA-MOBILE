@@ -18,6 +18,10 @@ export type ResultCard = {
   /** Real card art when supplied by the pull payload; omitted renders a neutral placeholder. */
   imageUrl?: string;
   tradeInValuePoints: number;
+  /** Release / print year for slab-style specs (optional until catalog wires it). */
+  year?: number;
+  /** Physical card type / category line (e.g. "FIRE / POKÉMON"). */
+  cardType?: string;
 };
 
 export type ResultPullData = {
@@ -40,8 +44,17 @@ const IMG = [
   'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&w=256&q=80',
 ] as const;
 
+const MOCK_TYPES = ['FIRE / POKÉMON', 'CHARACTER', 'EQUIPMENT', 'WATER / POKÉMON'] as const;
+
 function card(name: string, tradeInValuePoints: number, i: number): ResultCard {
-  return { name, tier: 'unknown', imageUrl: IMG[i % IMG.length], tradeInValuePoints };
+  return {
+    name,
+    tier: 'unknown',
+    imageUrl: IMG[i % IMG.length],
+    tradeInValuePoints,
+    year: 2023 + (i % 4),
+    cardType: MOCK_TYPES[i % MOCK_TYPES.length],
+  };
 }
 
 const FIVE_CARDS: ResultCard[] = [
