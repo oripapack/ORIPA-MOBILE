@@ -333,7 +333,7 @@
       "zeroFeeTitle": "Zero-fee",
       "zeroFeeSub": "trade-in, always",
       "listedValueTitle": "100% listed value",
-      "listedValueSub": "back in Coins",
+      "listedValueSub": "back in Points",
       "freeShipTitle": "Free shipping",
       "freeShipSub": "on orders ",
       "freeShipThreshold": "$100+"
@@ -531,7 +531,7 @@
     "identity": "Verifica identità",
     "linked": "Account collegati",
     "wallet": "Wallet Address",
-    "creditHistory": "Credit History",
+    "creditHistory": "Points History",
     "shippingOrders": "Shipping Orders"
   },
   "supportRows": {
@@ -1347,16 +1347,16 @@
     "authFailed": "Could not authenticate with Supabase. Try signing out and back in."
   },
   "creditHistory": {
-    "navTitle": "Credit history",
-    "lead": "Every credit change on your account — pack opens, trade-ins, top-ups, and refunds.",
+    "navTitle": "Points history",
+    "lead": "Every Points change on your account — pack opens, trade-ins, top-ups, and refunds.",
     "currentBalance": "Current balance · {{balance}}",
     "balanceAfter": "Bal. {{balance}}",
     "loading": "Loading ledger…",
     "loadError": "Unable to load transactions. Please check your connection and try again.",
     "retry": "Try again",
-    "offlineNote": "Credit history needs a signed-in session. Preview mode shows an empty list.",
+    "offlineNote": "Points history needs a signed-in session. Preview mode shows an empty list.",
     "emptyTitle": "No ledger entries yet",
-    "emptyBody": "Open a pack or trade in a card to see credit movements here.",
+    "emptyBody": "Open a pack or trade in a card to see Points movements here.",
     "type": {
       "packPull": "Pack pull",
       "tradeIn": "Trade-in",
@@ -1380,7 +1380,7 @@
     "shippedAt": "Shipped {{when}}",
     "itemCount_one": "{{count}} item",
     "itemCount_other": "{{count}} items",
-    "fee": "Fee · {{credits}} credits",
+    "fee": "Fee · {{credits}} Points",
     "carrier": "Carrier · {{carrier}}",
     "tracking": "Tracking · {{tracking}}",
     "trackingPending": "Tracking not assigned yet",
@@ -1424,18 +1424,18 @@
     "stampSuffix": "JST · TOKYO",
     "totalListedValue": "TOTAL LISTED VALUE",
     "cardCount": "{{count}} CARDS",
-    "ctaTradeInAll": "Trade in all — {{coins}} Coins",
-    "ctaTradeIn": "Trade in — {{coins}} Coins",
-    "disclaimer": "100% of listed value, in Coins.",
+    "ctaTradeInAll": "Trade in all — {{credits}} Points",
+    "ctaTradeIn": "Trade in — {{credits}} Points",
+    "disclaimer": "100% of listed value, in Points.",
     "keepInVault": "Keep in Vault",
     "pullAgain": "Pull again",
     "fairnessFooter": "Odds applied · Fairness Record →",
     "sheet": {
       "titleMulti": "Trade in {{count}} cards?",
       "titleOne": "Trade in 1 card?",
-      "amountSub": "COINS · 100% OF LISTED VALUE",
-      "bodyMulti": "All {{count}} cards will be traded in for Coins at their listed value.",
-      "bodyOne": "This card will be traded in for Coins at its listed value.",
+      "amountSub": "Points · 100% OF LISTED VALUE",
+      "bodyMulti": "All {{count}} cards will be traded in for Points at their listed value.",
+      "bodyOne": "This card will be traded in for Points at its listed value.",
       "confirm": "Trade in"
     }
   },
@@ -1479,8 +1479,8 @@
       "unavailableBody": "Shipping isn’t available right now. Please try again later.",
       "addressRequiredTitle": "Shipping address required",
       "addressRequiredBody": "Add a shipping address before requesting shipment.",
-      "insufficientTitle": "Insufficient credits",
-      "insufficientBody": "You don’t have enough credits for this shipping fee.",
+      "insufficientTitle": "Insufficient Points",
+      "insufficientBody": "You don’t have enough Points for this shipping fee.",
       "failedTitle": "Shipment request failed",
       "failedBody": "We couldn’t start this shipment. Please try again."
     },
@@ -1497,8 +1497,8 @@
     "loading": "Loading pack scene…"
   },
   "creditsPill": {
-    "a11yHistory": "Credit history",
-    "a11yAdd": "Add credits"
+    "a11yHistory": "Points history",
+    "a11yAdd": "Add Points"
   },
   "appHeader": {
     "searchA11y": "Search packs"

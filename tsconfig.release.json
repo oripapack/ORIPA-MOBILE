@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*", "shared/**/*", "assets.d.ts"],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "src/components/_archive",
+    "apps",
+    "backend",
+    "prototypes",
+    "pack-ring-server",
+    "dist"
+  ]
+}

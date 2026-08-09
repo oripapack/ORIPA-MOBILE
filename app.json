@@ -14,12 +14,11 @@
       "backgroundColor": "#000000"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.tcg-mystery-pack",
+      "supportsTablet": false,
+      "bundleIdentifier": "com.pullhub.app",
+      "buildNumber": "1",
       "infoPlist": {
-        "NSAppTransportSecurity": {
-          "NSAllowsLocalNetworking": true
-        }
+        "ITSAppUsesNonExemptEncryption": false
       },
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
@@ -51,6 +50,8 @@
       }
     },
     "android": {
+      "package": "com.pullhub.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#152018",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -66,7 +67,9 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to scan friend QR codes."
+          "cameraPermission": "Allow $(PRODUCT_NAME) to scan friend QR codes.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
         }
       ],
       [
@@ -76,7 +79,7 @@
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
             "buildToolsVersion": "35.0.0",
-            "usesCleartextTraffic": true
+            "usesCleartextTraffic": false
           },
           "ios": {
             "deploymentTarget": "16.0",
@@ -88,6 +91,12 @@
       "expo-localization",
       "expo-font",
       "expo-web-browser"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5212cf9f-9c5e-4670-8cba-e1d6f6fce235"
+      }
+    },
+    "owner": "yoshitake"
   }
 }

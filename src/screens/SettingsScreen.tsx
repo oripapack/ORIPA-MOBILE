@@ -34,6 +34,7 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { isClerkEnabled } from '../config/clerk';
 import { AccountSignOutFooter } from '../components/account/AccountSignOutFooter';
+import { DeleteAccountSection } from '../components/account/DeleteAccountSection';
 import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
 import { AdminToolsSection } from '../components/account/AdminToolsSection';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
@@ -238,6 +239,7 @@ export function SettingsScreen() {
 
         <Text style={styles.version}>{t('account.version', { name: APP_DISPLAY_NAME, version: APP_VERSION })}</Text>
         <AccountSignOutFooter visible={isClerkEnabled && clerkSignedIn} />
+        {isClerkEnabled && clerkSignedIn ? <DeleteAccountSection /> : null}
       </ScrollView>
 
       {legalSheet !== null && (
