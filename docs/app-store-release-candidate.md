@@ -72,17 +72,15 @@ App Store へ提出するソースは `main` である必要はない。TestFlig
 4. Age Rating ではランダムな virtual item / loot box 相当の質問へ実装どおり回答し、公開 odds を審査可能にする。
 5. 暗号輸出回答は `ITSAppUsesNonExemptEncryption=false` の根拠を最終確認。
 
-## en-US metadata draft
+## en-US metadata / screenshots
 
-実装にない効果・価値・在庫は主張しない。
+実装にない効果・価値・在庫は主張しない。文字数制限を含む構造化ドラフトと撮影仕様:
 
-- **Name:** Pull Hub
-- **Subtitle:** Open packs. Build your vault.
-- **Promotional text:** Digital pack reveals for collectors, with physical fulfillment for eligible pulls.
-- **Keywords draft:** trading cards,collecting,card packs,vault,collector
-- **Support URL:** `https://pullhub.com/support` (公開確認前は登録しない)
-- **Privacy URL:** `https://pullhub.com/privacy` (公開確認前は登録しない)
-- **Marketing URL:** `https://pullhub.com` (任意、公開確認前は登録しない)
+- `app-store/metadata/en-US.json`
+- `docs/app-store/metadata-en-US.md`
+- `docs/app-store/screenshot-capture-plan.md`
+
+ドラフトは意図的に `draft-do-not-upload` としており、公開法務URL、Copyright、カテゴリ判断、実機スクリーンショットが揃うまで提出ゲートを通らない。
 
 ## App Review notes draft
 
@@ -115,6 +113,7 @@ Shipping availability: [REGIONS_AND_LIMITATIONS]
 ```bash
 npm run check:release
 node scripts/check-app-store-readiness.mjs
+npm run check:app-store-metadata
 npm run release:ios
 npm run prepare:app-store-submit
 ```

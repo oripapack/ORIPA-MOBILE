@@ -101,6 +101,7 @@ if (!fs.existsSync(productionPath)) {
 }
 
 const eas = JSON.parse(fs.readFileSync('eas.json', 'utf8'));
+const metadata = JSON.parse(fs.readFileSync('app-store/metadata/en-US.json', 'utf8'));
 const configuredAscAppId = String(eas.submit?.production?.ios?.ascAppId ?? '').trim();
 const declaredAscAppId = requireValue('APP_STORE_ASC_APP_ID');
 if (!configuredAscAppId) failures.push('eas.json submit.production.ios.ascAppId is required before submission');
@@ -160,6 +161,17 @@ for (const [publicName, submissionName] of [
   const submissionValue = requireValue(submissionName);
   if (publicValue && submissionValue && publicValue !== submissionValue) {
     failures.push(`${publicName} must match ${submissionName}`);
+  }
+}
+
+for (const [metadataName, submissionName] of [
+  ['privacyPolicyUrl', 'APP_STORE_PRIVACY_URL'],
+  ['supportUrl', 'APP_STORE_SUPPORT_URL'],
+]) {
+  const metadataValue = String(metadata[metadataName] ?? '').trim();
+  const submissionValue = String(values[submissionName] ?? '').trim();
+  if (metadataValue && submissionValue && metadataValue !== submissionValue) {
+    failures.push(`metadata ${metadataName} must match ${submissionName}`);
   }
 }
 

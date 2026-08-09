@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "status": "draft-do-not-upload",
+  "locale": "en-US",
+  "name": "Pull Hub",
+  "subtitle": "Open packs. Build your vault.",
+  "promotionalText": "Open collectible card packs with disclosed odds, follow eligible pulls into your Vault, and choose physical fulfillment or Trade in for Points.",
+  "keywords": "trading cards,collector,card packs,vault,pack opening,tcg,collectibles,oripa",
+  "description": "Pull Hub is a card-pack experience inspired by Japan's pack-opening culture and designed for collectors in the United States.\n\nSEE THE ODDS BEFORE YOU OPEN\nReview disclosed odds, outcome tiers, and pack details before making a selection.\n\nOPEN AND REVEAL\nChoose an eligible pack and enjoy a focused card reveal built around the moment of the pull.\n\nBUILD YOUR VAULT\nKeep track of eligible pulls in one collection. Review pull records and verification details from the app.\n\nCHOOSE WHAT COMES NEXT\nFor eligible pulls and regions, request physical fulfillment or Trade in for Points. Points are used within Pull Hub and are not cash.\n\nSTAY IN CONTROL\nManage account settings, view privacy and support information, and request account deletion from the app.\n\nAvailability, pack inventory, odds, listed values, and fulfillment options may vary by pack and region. Terms apply.",
+  "privacyPolicyUrl": "",
+  "supportUrl": "",
+  "marketingUrl": "",
+  "copyright": "",
+  "category": {
+    "status": "pending-legal-and-product-review",
+    "primary": "Games",
+    "primarySubcategory": "Card",
+    "secondary": "Shopping",
+    "rationale": "Games/Card fits only if the release is primarily an interactive pack-opening experience. Keep Shopping secondary only if physical fulfillment is live and material. Finalize after legal classification of the chance model."
+  }
+}
