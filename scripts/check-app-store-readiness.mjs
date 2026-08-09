@@ -56,6 +56,15 @@ if (!app.extra?.eas?.projectId) {
 if (eas.build?.production?.environment !== 'production') {
   failures.push('eas.json production profile must use the production EAS environment');
 }
+if (eas.cli?.version !== '>= 18.5.0') {
+  failures.push('eas.json must require EAS CLI >= 18.5.0 for metadata credential handling');
+}
+if (eas.submit?.production?.ios?.metadataPath !== './store.config.js') {
+  failures.push('eas.json production submit profile must use ./store.config.js');
+}
+if (!fs.existsSync('store.config.js')) {
+  failures.push('Missing dynamic EAS Metadata configuration: store.config.js');
+}
 if (!eas.submit?.production?.ios?.ascAppId) {
   warnings.push('App Store Connect ascAppId is not set yet; add it before EAS Submit');
 }

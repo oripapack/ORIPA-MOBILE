@@ -119,6 +119,16 @@ if (!metadata.category || typeof metadata.category !== 'object') {
   for (const key of ['primary', 'primarySubcategory', 'secondary', 'rationale']) {
     if (!metadata.category[key]?.trim()) failures.push(`category.${key} is required`);
   }
+  if (
+    !Array.isArray(metadata.category.easCategories) ||
+    metadata.category.easCategories.length !== 2 ||
+    !Array.isArray(metadata.category.easCategories[0]) ||
+    metadata.category.easCategories[0][0] !== 'GAMES' ||
+    metadata.category.easCategories[0][1] !== 'GAMES_CARD' ||
+    metadata.category.easCategories[1] !== 'SHOPPING'
+  ) {
+    failures.push('category.easCategories must map the provisional Games/Card + Shopping decision');
+  }
   if (submissionMode && metadata.category.status !== 'approved') {
     failures.push('category.status must be approved before submission');
   } else if (!submissionMode && metadata.category.status !== 'approved') {

@@ -34,3 +34,15 @@ npm run check:app-store-metadata -- --submission
 ```
 
 通常モードは文字数と形式を検査し、未確定項目を warning にする。`--submission` は未承認ステータス、空の公開URL、空のCopyright、未作成スクリーンショットを blocker として停止する。
+
+## App Store Connect sync
+
+承認後は`store.config.js`がこのJSON、審査連絡先、生成済みReview notesからEAS Metadata形式を組み立てる。EAS Metadataはbetaのため、push前後にApp Store Connectの全項目を確認する。
+
+公式仕様: <https://docs.expo.dev/eas/metadata/config/>
+
+```bash
+npm run push:app-store-metadata
+```
+
+このコマンドは外部状態を変更するため、明示承認後だけ実行する。review account passwordは非表示promptから一時的に渡し、ファイルへ保存しない。Appleの新しいLoot Boxes回答を古いschemaで誤上書きしないよう、age-rating advisoryは同期対象外とし、App Store Connectで手動確認する。

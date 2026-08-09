@@ -56,7 +56,7 @@ npm run render:app-store-review-notes
 npm run check:app-store-review-notes
 ```
 
-出力先は`app-store/review/generated-review-notes.local.txt`。Git管理外で、App Store ConnectのReview Informationへ貼り付ける。入力値変更後の古いメモ、placeholder、未解決の法務回答、4000 byte超過は提出ゲートで停止する。passwordはApp Store Connectにだけ入力し、このファイルには含めない。
+出力先は`app-store/review/generated-review-notes.local.txt`。Git管理外で、App Store ConnectのReview Informationへ貼り付ける。入力値変更後の古いメモ、placeholder、未解決の法務回答、4000 byte超過は提出ゲートで停止する。username/passwordはnotes本文へ書かず、App Store Connectの専用credential欄にだけ入力する。
 
 ## 提出を許可する受入条件
 

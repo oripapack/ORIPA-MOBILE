@@ -16,6 +16,7 @@
     "primary": "Games",
     "primarySubcategory": "Card",
     "secondary": "Shopping",
+    "easCategories": [["GAMES", "GAMES_CARD"], "SHOPPING"],
     "rationale": "Games/Card fits only if the release is primarily an interactive pack-opening experience. Keep Shopping secondary only if physical fulfillment is live and material. Finalize after legal classification of the chance model."
   }
 }

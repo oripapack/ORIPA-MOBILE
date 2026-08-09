@@ -151,6 +151,16 @@ if (supportEmail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(supportEmail)) {
   failures.push('APP_STORE_SUPPORT_CONTACT_EMAIL must be a monitored email address');
 }
 requireValue('APP_STORE_RELEASE_COUNTRIES');
+requireValue('APP_STORE_REVIEW_CONTACT_FIRST_NAME');
+requireValue('APP_STORE_REVIEW_CONTACT_LAST_NAME');
+const reviewContactEmail = requireValue('APP_STORE_REVIEW_CONTACT_EMAIL');
+if (reviewContactEmail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(reviewContactEmail)) {
+  failures.push('APP_STORE_REVIEW_CONTACT_EMAIL must be a valid email address');
+}
+const reviewContactPhone = requireValue('APP_STORE_REVIEW_CONTACT_PHONE');
+if (reviewContactPhone && !/^\+[1-9][0-9 ()-]{6,}$/.test(reviewContactPhone)) {
+  failures.push('APP_STORE_REVIEW_CONTACT_PHONE must include a valid international country code');
+}
 const reviewEmail = requireValue('APP_STORE_REVIEW_ACCOUNT_EMAIL');
 if (reviewEmail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(reviewEmail)) {
   failures.push('APP_STORE_REVIEW_ACCOUNT_EMAIL must be a valid email address');

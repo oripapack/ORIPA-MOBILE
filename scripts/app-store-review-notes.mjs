@@ -87,9 +87,8 @@ Each result is recorded in Vault. Points cannot be withdrawn for cash.
 
 Release territories: ${fields.releaseCountries}
 
-Review account
-Email: ${fields.reviewEmail}
-Password: entered only in App Store Connect Review Information
+Review access
+Sign-in credentials are entered only in the dedicated App Store Connect fields.
 No payment method is attached to this account. The account has a server-side
 review grant used only for App Review.
 
