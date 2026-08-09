@@ -17,10 +17,22 @@ npm run record:app-store-build -- <EAS_BUILD_ID>
 ```
 
 4. `app-store/release/provenance.local.json` が生成される。このファイルはGitへ追加せず、審査完了まで安全に保管する。
-5. TestFlight QA後に次を実行する。
+5. TestFlightへ上げる前にread-only gateを実行する。
 
 ```bash
 npm run check:app-store-build
+npm run prepare:testflight-upload
+```
+
+6. 明示承認後だけ、exact EAS build IDをTestFlightへuploadする。
+
+```bash
+npm run upload:testflight
+```
+
+7. App Store Connectで処理完了後にTestFlight QAを行い、最終審査前に次を実行する。
+
+```bash
 npm run prepare:app-store-submit
 ```
 
@@ -35,4 +47,4 @@ npm run prepare:app-store-submit
 - build numberと完了時刻が記録されている
 - `.env.app-store.local`のEAS build ID / TestFlight build numberが証跡と一致
 
-証跡の記録・検査はread-onlyの`eas build:view`だけを使い、build開始、TestFlight upload、App Store submitは行わない。
+証跡の記録・検査はread-onlyの`eas build:view`だけを使う。`upload:testflight`はverified build IDを指定してbinaryをApp Store Connectへuploadする外部変更であり、明示承認とterminal確認の両方が必要。EAS Submitはbinary uploadであり、App Storeの「Submit for Review」操作ではない。

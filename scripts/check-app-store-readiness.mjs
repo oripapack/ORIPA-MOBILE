@@ -4,6 +4,7 @@ import fs from 'node:fs';
 
 const failures = [];
 const warnings = [];
+const testFlightMode = process.argv.includes('--testflight');
 
 const app = JSON.parse(fs.readFileSync('app.json', 'utf8')).expo;
 const eas = JSON.parse(fs.readFileSync('eas.json', 'utf8'));
@@ -65,7 +66,9 @@ if (eas.submit?.production?.ios?.metadataPath !== './store.config.js') {
 if (!fs.existsSync('store.config.js')) {
   failures.push('Missing dynamic EAS Metadata configuration: store.config.js');
 }
-if (!eas.submit?.production?.ios?.ascAppId) {
+if (!eas.submit?.production?.ios?.ascAppId && testFlightMode) {
+  failures.push('App Store Connect ascAppId is required before TestFlight upload');
+} else if (!eas.submit?.production?.ios?.ascAppId) {
   warnings.push('App Store Connect ascAppId is not set yet; add it before EAS Submit');
 }
 

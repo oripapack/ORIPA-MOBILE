@@ -76,4 +76,4 @@ echo "==> Starting iOS production build"
 
 echo "Build created. Record the EAS build ID before TestFlight QA:"
 echo "npm run record:app-store-build -- <EAS_BUILD_ID>"
-echo "Submit only after 'npm run prepare:app-store-submit' passes for this exact build."
+echo "Then run 'npm run prepare:testflight-upload' before uploading this exact build to TestFlight."

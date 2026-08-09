@@ -14,5 +14,7 @@ node scripts/app-store-review-notes.mjs
 node scripts/check-app-store-submission.mjs
 npx --yes eas-cli metadata:lint --profile production
 
-echo "Submission gates passed. Submit only the exact TestFlight build that completed QA."
-echo "Command after explicit approval: npx eas-cli submit --platform ios --profile production"
+APP_BUILD_VERSION="$(node -p "require('./app-store/release/provenance.local.json').appBuildVersion")"
+
+echo "Final App Store review gates passed for TestFlight build $APP_BUILD_VERSION."
+echo "In App Store Connect, select this exact build, verify every field, then use Add for Review and Submit for Review only after explicit approval."

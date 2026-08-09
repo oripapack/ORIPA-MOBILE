@@ -27,6 +27,8 @@
     "check:app-store-submit": "node scripts/check-app-store-submission.mjs",
     "record:app-store-build": "node scripts/app-store-provenance.mjs --record",
     "render:app-store-review-notes": "node scripts/app-store-review-notes.mjs --render",
+    "prepare:testflight-upload": "bash scripts/prepare-testflight-upload.sh",
+    "upload:testflight": "bash scripts/upload-testflight.sh",
     "push:app-store-metadata": "bash scripts/push-app-store-metadata.sh",
     "prepare:app-store-submit": "bash scripts/prepare-app-store-submit.sh",
     "release:ios": "bash scripts/build-production.sh",

@@ -71,6 +71,8 @@ App Store へ提出するソースは `main` である必要はない。TestFlig
 3. App Privacy は Clerk、Supabase、配送、決済、analytics の実際の収集・用途に合わせて回答。
 4. Age Rating ではランダムな virtual item / loot box 相当の質問へ実装どおり回答し、公開 odds を審査可能にする。
 5. 暗号輸出回答は `ITSAppUsesNonExemptEncryption=false` の根拠を最終確認。
+6. metadata、6.9-inch screenshots、content rights、release territoriesをApp Store Connect上で再確認。
+7. Points IAPに必要なAgreements / Tax / Bankingが有効であることを確認。
 
 ## en-US metadata / screenshots
 
@@ -100,7 +102,10 @@ node scripts/check-app-store-readiness.mjs
 npm run check:app-store-metadata
 npm run release:ios
 npm run record:app-store-build -- <EAS_BUILD_ID>
+npm run prepare:testflight-upload
+# 明示承認後のみ: npm run upload:testflight
+# TestFlight QA / metadata sync / App Store Connect確認後:
 npm run prepare:app-store-submit
 ```
 
-`release:ios` は EAS production build までで止まる。`prepare:app-store-submit` は外部送信せず、公開法務情報・review account・IAP・公平抽選・本番deploy・TestFlight承認の宣言を検証する。まず TestFlight で実機QAし、合格した同じ build のみを submit する。
+`release:ios` は EAS production build までで止まる。`prepare:testflight-upload`はexact build IDを検査するだけで外部送信しない。`upload:testflight`だけがbinaryをApp Store Connectへ送る。`prepare:app-store-submit` は公開法務情報・review account・IAP・公平抽選・本番deploy・TestFlight承認を検証するが、App Store審査は開始しない。最後はApp Store Connectで同じbuild numberを選び、明示承認後にSubmit for Reviewを行う。

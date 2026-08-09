@@ -68,5 +68,7 @@ npm run check:app-store-review-notes
 6. Legal: 運営法人、対象州、chance model、Terms、Privacy、fulfillmentを承認。
 7. QA: exact production buildを実機iPhone / en-US でfull flow、自動＋手動確認。
 8. Review: 専用accountとlive backendを審査期間中維持。
+9. Connect: App Privacy、Age Rating、metadata、screenshots、content rights、export complianceを保存後に再確認。
+10. Commerce: Points IAPに必要なAgreements / Tax / Bankingが有効。
 
 すべて完了したら `.env.app-store.local` を更新し、`npm run prepare:app-store-submit` が0終了することを提出前の機械条件とする。
