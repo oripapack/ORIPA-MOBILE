@@ -2,6 +2,7 @@
   "expo": {
     "name": "Pull Hub",
     "slug": "tcg-mystery-pack",
+    "owner": "yyamaguchi0102",
     "version": "1.0.0",
     "scheme": "pullhub",
     "newArchEnabled": true,
@@ -55,7 +56,11 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -85,6 +90,11 @@
       "./plugins/withNativeFoundation.js",
       "expo-localization",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bdf9171e-135a-4189-87e9-79bbd234141e"
+      }
+    }
   }
 }
