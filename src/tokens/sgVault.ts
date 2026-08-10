@@ -1,12 +1,11 @@
-/** Inventory console variant of the Tokyo Night Terminal skin. */
+/** C-13 Vault / trade-in surface variant registered in design-system N2 S-3. */
 import { sg } from './sg';
 
 export const sgVault = {
   ...sg,
-  bg: '#080E19',
-  surface: '#101B2B',
-  surface2: '#17253A',
-  line: '#2A3B55',
+  bg: '#0B0E11',
+  surface: '#14181D',
+  line: '#262E36',
   /** Positive / holdings delta only; never a CTA fill. */
   up: sg.success,
 } as const;

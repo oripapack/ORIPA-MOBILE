@@ -1,4 +1,10 @@
 import { APP_DISPLAY_NAME } from '../config/app';
+import {
+  LEGAL_CONTACT_EMAIL,
+  LEGAL_ENTITY_NAME,
+  PRIVACY_POLICY_URL,
+  SUPPORT_URL,
+} from '../config/legal';
 
 /**
  * In-app legal copy for MVP / preview builds.
@@ -11,7 +17,7 @@ Last updated: March 2026
 Welcome to ${APP_DISPLAY_NAME}. These Terms of Service (“Terms”) govern your use of our mobile application and related services (“Services”). By using ${APP_DISPLAY_NAME}, you agree to these Terms.
 
 1. Who we are
-${APP_DISPLAY_NAME} is operated by us (“we,” “us,” “our”). Contact details may be provided in-app or on our website when available.
+${APP_DISPLAY_NAME} is operated by ${LEGAL_ENTITY_NAME} (“we,” “us,” “our”). Contact: ${LEGAL_CONTACT_EMAIL}.${SUPPORT_URL ? ` Support: ${SUPPORT_URL}.` : ''}
 
 2. Eligibility
 You must be able to enter a binding agreement where you live and meet any minimum age required in your region (often 13+ in the U.S., or higher where applicable). If you use the Services on behalf of a business, you represent you have authority to bind that business.
@@ -43,7 +49,7 @@ We may update these Terms. We’ll post the new date above and, where appropriat
 Unless your local law requires otherwise, these Terms are governed by the laws of the State of Delaware, U.S.A., excluding conflict-of-law rules. Courts in Delaware (or another U.S. forum we designate) have exclusive jurisdiction, unless your local law gives you mandatory rights to sue elsewhere.
 
 11. Contact
-For questions about these Terms, use the contact method we provide in the app or on our site.
+For questions about these Terms, contact ${LEGAL_CONTACT_EMAIL}.${SUPPORT_URL ? ` You can also visit ${SUPPORT_URL}.` : ''}
 `.trim();
 
 export const PRIVACY_POLICY = `
@@ -88,7 +94,7 @@ If you use the App from outside the United States, your information may be proce
 We may update this Policy. We’ll update the date above and, where appropriate, notify you in-app.
 
 10. Contact
-For privacy questions, use the contact method we provide in the App or on our website when available.
+For privacy questions, contact ${LEGAL_CONTACT_EMAIL}.${PRIVACY_POLICY_URL ? ` The public policy is available at ${PRIVACY_POLICY_URL}.` : ''}
 `.trim();
 
 export const PROMOTIONAL_RULES = `

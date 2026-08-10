@@ -34,11 +34,13 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { useGuestBrowseStore } from '../store/guestBrowseStore';
 import { isClerkEnabled } from '../config/clerk';
 import { AccountSignOutFooter } from '../components/account/AccountSignOutFooter';
+import { DeleteAccountSection } from '../components/account/DeleteAccountSection';
 import { ClerkAccountSection } from '../components/account/ClerkAccountSection';
 import { AdminToolsSection } from '../components/account/AdminToolsSection';
 import { VaultFramedCard } from '../components/shared/VaultFramedCard';
 import { resetLocalOnboardingStateAndReload } from '../lib/resetLocalOnboardingState';
 import { confirmUserAction } from '../utils/showUserMessage';
+import { PRIVACY_POLICY_URL } from '../config/legal';
 
 type LegalSheet = 'terms' | 'privacy' | 'promo' | 'payment' | null;
 
@@ -238,6 +240,7 @@ export function SettingsScreen() {
 
         <Text style={styles.version}>{t('account.version', { name: APP_DISPLAY_NAME, version: APP_VERSION })}</Text>
         <AccountSignOutFooter visible={isClerkEnabled && clerkSignedIn} />
+        {isClerkEnabled && clerkSignedIn ? <DeleteAccountSection /> : null}
       </ScrollView>
 
       {legalSheet !== null && (
@@ -245,6 +248,8 @@ export function SettingsScreen() {
           visible
           title={t(`legalRows.${legalSheet}`)}
           body={LEGAL_BODY[legalSheet]}
+          externalUrl={legalSheet === 'privacy' ? PRIVACY_POLICY_URL || undefined : undefined}
+          externalLabel={legalSheet === 'privacy' ? t('legalModal.openPublicPolicy') : undefined}
           onClose={() => setLegalSheet(null)}
         />
       )}

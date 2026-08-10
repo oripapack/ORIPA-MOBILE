@@ -27,13 +27,14 @@
 - **参照箇所**: `src/components/home/sg/SgBannerCarousel.tsx` の `SLIDES`(3件の `require(...)`)のみ。差し替えはこの1ファイルの画像参照交換で完結する。
 - **担当**: 再調理アセット支給待ち(デザイン)。
 
-### 4. オッズ表 — ライブ3パックは DB 接続済み、残りはフォールバック
+### 4. 【ブロッカー】オッズ表 — ライブ3パックは重みDB接続済みだが有限在庫ではない
 - **記録日**: 2026-07-25 / **2026-08-06 Step 2–3**
-- **解決済み(ライブ3パック)**: `welcome-pack` / `grail-edition` / `charizard-chase` — Supabase 接続時 `pack_pool_items` weight から確率算出。UI に transparent odds 文言復活(Step 3)。
+- **現状(ライブ3パック)**: `welcome-pack` / `grail-edition` / `charizard-chase` — Supabase 接続時 `pack_pool_items` weight から確率算出。UI に transparent odds 文言復活(Step 3)。ただし weight は有限の物理在庫数ではなく、抽選後にも減算されないため、同じ景品を在庫以上に引ける。
 - **デプロイ**: `cd backend && npm run deploy:catalog` → migrations + `seed.sql`。検証: `npm run smoke:live-packs`(root)。
 - **ブロッカー(2026-08-06)**: ホスト Supabase プロジェクト `akfxxfthwpylpwdnjzcy` が **paused** — Dashboard で unpause 後に deploy + smoke を実行すること。
 - **未解決(残カタログ)**: ライブ `packVersionId` なしパックは静的 N2 フォールバック。
-- **担当**: 残カタログ pool 定義(バックエンド)。**ライブ3パックは unpause + seed 後リリース可。**
+- **リリース条件**: 事前コミット、実在庫数、抽選と同一トランザクションでの在庫減算、実在 listed value、ユーザー側再計算を実装・デプロイする。実データ未設定の pack は開封不可にする。
+- **担当**: 残カタログ pool 定義 / 公平抽選 / 在庫台帳(バックエンド)。**unpause + 旧 seed だけではリリース不可。**
 
 ### 5. 【ブロッカー】レアリティの語彙が3系統ある
 - **記録日**: 2026-07-25
@@ -90,19 +91,43 @@
 - **リリース条件**: 配送業者/API、地域別住所と料金、PII 保持方針、監視済みサポート窓口、本人確認/支払先/外部アカウントの各プロバイダーと復旧手順を接続・検証すること。完了した面だけ `EXPO_PUBLIC_SHIPPING_LIVE=1` / `EXPO_PUBLIC_SUPPORT_LIVE=1` / `EXPO_PUBLIC_ADVANCED_ACCOUNT_SERVICES_LIVE=1` を設定する。
 - **担当**: Fulfillment / Support / Compliance / Backend。
 
+### 13. 【ブロッカー】現行 commit–reveal は開封前コミットになっていない
+- **記録日**: 2026-08-10
+- **内容**: 現行 `execute-pull` は client seed と pack request を受け取った後に server seed を生成し、hash と reveal を同じ応答で返す。暗号学的乱数と rejection sampling 自体はあるが、運営が client seed を見る前に seed を固定したことを証明できない。
+- **リリース条件**: `prepare` で server-seed hash を永続化してから client seed を受け取る二段階方式、単調 nonce、使用済み commitment の再利用防止、同一コードによるユーザー側検証を実装する。
+- **担当**: Fairness / Backend。
+
+### 14. 【ブロッカー】アプリ内アカウント削除は実装済みだが本番DBへ未デプロイ
+- **記録日**: 2026-08-10
+- **内容**: Settings から Clerk identity と端末データを削除する導線、および所有するDB行を先に削除する RPC migration を本ブランチに追加した。Supabase CLI が未ログインかつホスト project が paused のため、本番適用・実アカウント検証は未完了。
+- **リリース条件**: migration deploy、Clerk production user で削除実行、再ログイン不可、PII / vault / ledger / shipping 行の削除確認、保持が必要な法定記録のポリシー確認。
+- **担当**: Auth / Backend / Privacy。
+
+### 15. 【ブロッカー】米国向けchance modelの法的分類とApp Store年齢回答が未承認
+- **記録日**: 2026-08-10
+- **内容**: 購入Points、ランダムなpack、価値の異なるcard、物理fulfillment、Trade inの組合せは、少なくともApp StoreのLoot Boxes回答と購入前odds開示が必要。対象州によってlottery / gambling / prize promotion等に該当するかはコードから判断できない。該当する場合、Apple Guideline 5.3.3によりIAP通貨とreal money gamingを併用できない可能性がある。
+- **リリース条件**: 対象州、Pointsの性質、Trade in、配送、無料参加手段の有無を固定したlegal memoを取得し、Gambling / Simulated Gambling / Loot Boxes回答、geo restriction、年齢制御、StoreKit設計を承認する。
+- **担当**: Legal / Product / App Store compliance。
+
+### 16. 【ブロッカー】公開法務情報・App Privacy・Sign in with Apple削除確認が未完了
+- **記録日**: 2026-08-10
+- **内容**: in-app Terms / Privacyはpreview templateで、運営法人、具体的保持期間、公開Privacy/Support URLの法務承認がない。2026-08-10時点の `pullhub.com/privacy` / `pullhub.com/support` はHTTP 200だが `/lander` へ送る駐車ページで、審査URLとして使用不可。Clerk user削除時にSign in with Apple token revocationまで完了するかも未検証。
+- **リリース条件**: 運営法人・監視窓口・公開URLを確定し、Clerk/Supabase/Expo/Appleのproduction data handlingを監査、公開PolicyとApp Privacy回答を一致、SIWA token revocationを実アカウントで確認する。`npm run prepare:app-store-submit` を0終了させる。
+- **担当**: Legal / Privacy / Auth / App Store operations。
+
 ## タスク登録(2026-07-31 デザインルール棚卸し docs/design-rules-inventory.md の選別結果)
 
 コード挙動を変えるタスクは登録のみで未実行。R-xxx は inventory の ID。
 
 - **T1** Coins→Points の全面移行(アプリ文言・コード・17ロケール)(R-001/R-078)
-- **T2** Vault 実装をルール(C-13)に整合: `VAULT_HOLD_DAYS`/`processVaultExpiries` の期限・自動変換廃止、WonPrizesModal を Vault 既定化(R-011/R-081/R-082)。**2026-08-07 実施済み(本ブランチ)**
+- **T2** Vault 実装をルール(C-13)に整合: `VAULT_HOLD_DAYS`/`processVaultExpiries` の期限・自動変換廃止、WonPrizesModal を Vault 既定化(R-011/R-081/R-082)。**UI / 端末ロジックは 2026-08-07 実施済み。ただし `20260806200000_user_vault_inventory.sql` が14日 expiry と価格×tier換算を残しているため、バックエンドは未完了。**
 - **T3** 旧5値 rarity enum(common〜mythic ほか)→ 4段ティアへの統一(R-080。上記 #5 と統合して扱う)
 - **T4** legacy トークン(ph/colors.ts・Outfit/brandFont・spacing.ts)の移行完了と撤去(R-021/R-039/R-062)。**新規実装での使用は 2026-07-31 付で禁止**(C-10 収録済み)
 - **T5** 開封領域の掃除: 絵文字モックカードと PSA/実在商品モックを中立コードへ置換(R-044/R-083。上記 #6 関連)。**2026-08-07 実施済み(本ブランチ)**
 - **T6** sgVault.ts コメント「buyback surfaces」→「trade-in surfaces」— **2026-07-31 実施済み**
 - **T7** バナー再調理(上記 #3 を再定義済み。和方針 J-1)(R-073)
 - **T8** lab /redesign 既定テーマの N2 化+Urushi 実装の退避(R-030/R-056)— **2026-07-31 前倒しで実施済み**(Urushi 露出事故を受け人間承認。既定=N2、原本は docs/archive/next-ui-lab-redesign-urushi-DEPRECATED.tsx へ退避。スキンブランチは rebase で追従)
-- **T9** P-1(旧§9 物理)+C-7 組版詳細の RN 換算表作成 — PLANNED 着手時の最初のタスク(R-037/R-048〜052)
+- **T9 — 2026-08-10 実施済み** P-1(旧§9 物理)+C-7 組版詳細の RN 換算表を `docs/rn-ui-calibration.md` に作成し、共通コントロールへ反映(R-037/R-048〜052)
 - **T10** 「docs/opening-spec 2.md」(複製ファイル)の削除 — **2026-07-31 実施済み**
 - **T11** C-5/C-12 チェックの grep スクリプト化(R-098)。**2026-08-07 `npm run audit:release-copy` として実施済み(本ブランチ)**
 - **T12** 【T8後続】lab 旧世代ページ(`/`・`/packs`・`/pack-detail`)の掃除または削除(2026-08-03 登録)。buybackRate 削除起因の既存 tsc エラー10件を含む — **修理不要と決定済み**(参照・流用禁止対象のため。CLAUDE.md)。掃除時は /vault・/lp・/opening の扱いも同時に判断

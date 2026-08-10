@@ -3,11 +3,10 @@ import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'rea
 import { useTranslation } from 'react-i18next';
 import { useClerk, useUser } from '@clerk/clerk-expo';
 import { sg } from '../../tokens/sg';
-import { fontSize, brandFont } from '../../tokens/typography';
-import { radius, spacing } from '../../tokens/spacing';
 import { isClerkEnabled } from '../../config/clerk';
 import { confirmUserAction, showUserMessage } from '../../utils/showUserMessage';
 import { clearLocalAccountData } from '../../lib/clearLocalAccountData';
+import { deleteServerAccountData } from '../../lib/deleteServerAccountData';
 import { useGuestBrowseStore } from '../../store/guestBrowseStore';
 
 /**
@@ -42,6 +41,7 @@ function DeleteAccountClerk() {
         void (async () => {
           setBusy(true);
           try {
+            await deleteServerAccountData();
             await user.delete();
             await clearLocalAccountData();
             try {
@@ -133,42 +133,41 @@ function DeleteAccountLocalOnly() {
 
 const styles = StyleSheet.create({
   wrap: {
-    marginTop: spacing.xl,
-    marginBottom: spacing.sm,
+    marginTop: sg.space.xl,
+    marginBottom: sg.space.sm,
   },
   sectionHeader: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.bold,
+    ...sg.type.label,
+    fontFamily: sg.font.bodyBold,
     color: sg.muted,
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
-    paddingLeft: spacing.xs,
+    marginBottom: sg.space.xs,
+    paddingLeft: sg.space.xs,
   },
   lead: {
-    fontSize: fontSize.xs,
-    fontFamily: brandFont.regular,
+    ...sg.type.caption,
+    fontFamily: sg.font.body,
     color: sg.muted,
-    lineHeight: 18,
-    marginBottom: spacing.sm,
-    paddingHorizontal: spacing.xs,
+    marginBottom: sg.space.sm,
+    paddingHorizontal: sg.space.xs,
   },
   btn: {
     minHeight: 48,
-    borderRadius: radius.lg,
+    borderRadius: sg.radius.btn,
     borderWidth: 1,
     borderColor: sg.error,
     backgroundColor: sg.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: sg.space.lg,
   },
   btnDisabled: {
     opacity: 0.6,
   },
   btnText: {
-    fontSize: fontSize.md,
-    fontFamily: brandFont.semibold,
+    ...sg.type.body,
+    fontFamily: sg.font.bodyBold,
     color: sg.error,
   },
 });

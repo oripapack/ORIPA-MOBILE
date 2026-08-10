@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import {
-  Modal,
   View,
   Text,
   Pressable,
@@ -14,6 +13,7 @@ import { fontSize } from '../../tokens/typography';
 import { radius, spacing } from '../../tokens/spacing';
 import { PrimaryButton } from '../shared/PrimaryButton';
 import { SecondaryButton } from '../shared/SecondaryButton';
+import { CoachSpotlightHost } from './CoachSpotlightHost';
 
 export type CoachComparisonProps = {
   packsHeading: string;
@@ -63,87 +63,95 @@ export function CoachSpotlight({
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
 
-  return (
-    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent>
-      <View style={[styles.root, { minHeight: height }]} pointerEvents="box-none">
-        <Pressable style={StyleSheet.absoluteFill} onPress={onDismiss} accessibilityRole="button">
-          <View style={styles.dim} />
-        </Pressable>
+  const spotlight = (
+    <View
+      style={[styles.root, Platform.OS === 'web' ? styles.webRoot : null, { minHeight: height }]}
+      pointerEvents="box-none"
+    >
+      <Pressable style={StyleSheet.absoluteFill} onPress={onDismiss} accessibilityRole="button">
+        <View style={styles.dim} />
+      </Pressable>
 
-        <View
-          style={[styles.cardWrap, { paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.sm }]}
-          pointerEvents="box-none"
-        >
-          <View style={styles.cardRing}>
-            <View style={styles.cardInner}>
-              <View style={styles.handle} />
-              {eyebrow ? (
-                <View style={styles.eyebrowPill}>
-                  <View style={styles.eyebrowDot} />
-                  <Text style={styles.eyebrow} accessibilityRole="text">
-                    {eyebrow}
-                  </Text>
-                </View>
-              ) : null}
-              <Text style={styles.title}>{title}</Text>
-              {comparison ? (
-                <View style={styles.compareWrap}>
-                  {/* Shop first: user opened Shop — primary visual treatment */}
-                  <View style={styles.comparePrimaryBlock}>
-                    <Text style={styles.comparePrimaryHeading}>{comparison.shopHeading}</Text>
-                    {comparison.shopLines.map((line, i) => (
-                      <Text key={`s-${i}`} style={styles.comparePrimaryLine}>
-                        {line}
-                      </Text>
-                    ))}
-                  </View>
-                  <View style={styles.compareDivider} />
-                  <View style={styles.compareSecondaryBlock}>
-                    <Text style={styles.compareSecondaryHeading}>{comparison.packsHeading}</Text>
-                    {comparison.packsLines.map((line, i) => (
-                      <Text key={`p-${i}`} style={styles.compareSecondaryLine}>
-                        {line}
-                      </Text>
-                    ))}
-                  </View>
-                </View>
-              ) : (
-                bodyLines.map((line, i) => (
-                  <Text key={i} style={styles.bodyLine}>
-                    {line}
-                  </Text>
-                ))
-              )}
-              {flowSteps && flowSteps.length > 0 ? (
-                <View
-                  style={styles.flowRow}
-                  accessibilityRole="text"
-                  accessibilityLabel={flowSteps.join(' → ')}
-                >
-                  {flowSteps.map((step, i) => (
-                    <Fragment key={`${step}-${i}`}>
-                      {i > 0 ? <Text style={styles.flowArrow}>→</Text> : null}
-                      <Text style={styles.flowStep}>{step}</Text>
-                    </Fragment>
+      <View
+        style={[styles.cardWrap, { paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.sm }]}
+        pointerEvents="box-none"
+      >
+        <View style={styles.cardRing}>
+          <View style={styles.cardInner}>
+            <View style={styles.handle} />
+            {eyebrow ? (
+              <View style={styles.eyebrowPill}>
+                <View style={styles.eyebrowDot} />
+                <Text style={styles.eyebrow} accessibilityRole="text">
+                  {eyebrow}
+                </Text>
+              </View>
+            ) : null}
+            <Text style={styles.title}>{title}</Text>
+            {comparison ? (
+              <View style={styles.compareWrap}>
+                {/* Shop first: user opened Shop — primary visual treatment */}
+                <View style={styles.comparePrimaryBlock}>
+                  <Text style={styles.comparePrimaryHeading}>{comparison.shopHeading}</Text>
+                  {comparison.shopLines.map((line, i) => (
+                    <Text key={`s-${i}`} style={styles.comparePrimaryLine}>
+                      {line}
+                    </Text>
                   ))}
                 </View>
-              ) : null}
-              <View style={styles.actions}>
-                <PrimaryButton label={primaryLabel} variant="red" onPress={onPrimary} style={styles.primaryCta} />
-                <SecondaryButton label={secondaryLabel} onPress={onSecondary ?? onDismiss} />
+                <View style={styles.compareDivider} />
+                <View style={styles.compareSecondaryBlock}>
+                  <Text style={styles.compareSecondaryHeading}>{comparison.packsHeading}</Text>
+                  {comparison.packsLines.map((line, i) => (
+                    <Text key={`p-${i}`} style={styles.compareSecondaryLine}>
+                      {line}
+                    </Text>
+                  ))}
+                </View>
               </View>
+            ) : (
+              bodyLines.map((line, i) => (
+                <Text key={i} style={styles.bodyLine}>
+                  {line}
+                </Text>
+              ))
+            )}
+            {flowSteps && flowSteps.length > 0 ? (
+              <View
+                style={styles.flowRow}
+                accessibilityRole="text"
+                accessibilityLabel={flowSteps.join(' → ')}
+              >
+                {flowSteps.map((step, i) => (
+                  <Fragment key={`${step}-${i}`}>
+                    {i > 0 ? <Text style={styles.flowArrow}>→</Text> : null}
+                    <Text style={styles.flowStep}>{step}</Text>
+                  </Fragment>
+                ))}
+              </View>
+            ) : null}
+            <View style={styles.actions}>
+              <PrimaryButton label={primaryLabel} variant="red" onPress={onPrimary} style={styles.primaryCta} />
+              <SecondaryButton label={secondaryLabel} onPress={onSecondary ?? onDismiss} />
             </View>
           </View>
         </View>
       </View>
-    </Modal>
+    </View>
   );
+
+  return <CoachSpotlightHost visible={visible}>{spotlight}</CoachSpotlightHost>;
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
     justifyContent: 'flex-end',
+  },
+  webRoot: {
+    ...StyleSheet.absoluteFillObject,
+    position: 'fixed' as never,
+    zIndex: 2147483647,
   },
   dim: {
     ...StyleSheet.absoluteFillObject,

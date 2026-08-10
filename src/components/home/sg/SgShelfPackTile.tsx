@@ -29,11 +29,11 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
       <View style={styles.routeRow}>
         <Text style={styles.route}>PK-{pack.id.slice(0, 2).toUpperCase()}</Text>
         {releaseBlocked ? (
-          <Text style={styles.waiting}>WAITING</Text>
+          <Text style={styles.waiting}>Waiting</Text>
         ) : pack.isNew ? (
-          <Text style={styles.newText}>NEW</Text>
+          <Text style={styles.newText}>New</Text>
         ) : (
-          <Text style={styles.online}>READY</Text>
+          <Text style={styles.online}>Ready</Text>
         )}
       </View>
       <View style={[styles.visual, isWide && styles.visualWide]}>
@@ -48,7 +48,7 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
       {releaseBlocked ? (
         <View style={styles.syncRow}>
           <View style={styles.syncDot} />
-          <Text style={styles.syncText}>{loading ? 'CHECKING AVAILABILITY' : 'OPENING UNAVAILABLE'}</Text>
+          <Text style={styles.syncText}>{loading ? 'Checking availability' : 'Opening unavailable'}</Text>
         </View>
       ) : (
         <View style={styles.metaRow}>
@@ -61,14 +61,14 @@ export function SgShelfPackTile({ pack }: { pack: Pack }) {
 }
 
 const styles = StyleSheet.create({
-  tile: { flex: 1, backgroundColor: sg.surface, borderWidth: 1, borderColor: sg.line, borderRadius: sg.radius.panel, padding: 9, overflow: 'hidden' },
+  tile: { flex: 1, backgroundColor: sg.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: sg.line, borderRadius: sg.radius.panel, padding: 10, overflow: 'hidden' },
   pressed: { opacity: 0.9, transform: [{ scale: 0.985 }] },
   routeRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   route: { fontFamily: sg.font.data, fontSize: 7.5, color: sg.chrome, letterSpacing: 0.7 },
-  newText: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.neon, letterSpacing: 0.7 },
-  online: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.success, letterSpacing: 0.55 },
-  waiting: { fontFamily: sg.font.label, fontSize: 7.5, color: sg.warning, letterSpacing: 0.55 },
-  visual: { height: 162, marginTop: 6, backgroundColor: sg.bayShell, borderWidth: 1, borderColor: sg.lineStrong, overflow: 'hidden' },
+  newText: { fontFamily: sg.font.bodyMedium, fontSize: 9, color: sg.neon },
+  online: { fontFamily: sg.font.bodyMedium, fontSize: 9, color: sg.success },
+  waiting: { fontFamily: sg.font.bodyMedium, fontSize: 9, color: sg.warning },
+  visual: { height: 162, marginTop: 7, backgroundColor: sg.bayShell, borderRadius: sg.radius.btn, overflow: 'hidden' },
   visualWide: { height: 260 },
   productPhoto: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   name: { fontFamily: sg.font.bodyBold, fontSize: 13, lineHeight: 16, color: sg.text, marginTop: 9, minHeight: 32 },
@@ -88,10 +88,9 @@ const styles = StyleSheet.create({
   },
   syncText: {
     flex: 1,
-    fontFamily: sg.font.label,
-    fontSize: 7,
-    lineHeight: 10,
-    letterSpacing: 0.45,
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 9,
+    lineHeight: 12,
     color: sg.warning,
   },
 });

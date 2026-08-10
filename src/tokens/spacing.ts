@@ -12,11 +12,12 @@ export const spacing = {
 };
 
 export const radius = {
-  sm: 3,
-  md: 4,
-  lg: 6,
-  xl: 8,
-  xxl: 10,
+  /** Compatibility map onto the N2 13 / 10 / 6 shape system. */
+  sm: 6,
+  md: 10,
+  lg: 13,
+  xl: 13,
+  xxl: 13,
   full: 999,
 };
 

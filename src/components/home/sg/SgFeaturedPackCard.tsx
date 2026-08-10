@@ -29,10 +29,10 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
     <View style={styles.card}>
       <View style={styles.ticketHead}>
         <View>
-          <Text style={styles.eyebrow}>DROP / TOKYO SERIES 01</Text>
+          <Text style={styles.eyebrow}>Tokyo series · Drop 01</Text>
           <Text style={styles.title}>{loc.title}</Text>
         </View>
-        <Text style={styles.bay}>BAY A</Text>
+        <Text style={styles.bay}>Bay A</Text>
       </View>
 
       <View style={[styles.productBody, isWide && styles.productBodyWide]}>
@@ -45,7 +45,7 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
           />
           <View style={styles.photoCaption} pointerEvents="none">
             <Text style={styles.photoCaptionCode}>PH-01</Text>
-            <Text style={styles.photoCaptionText}>PHYSICAL DISPLAY / TOKYO CASE</Text>
+            <Text style={styles.photoCaptionText}>Physical display · Tokyo case</Text>
           </View>
         </View>
 
@@ -79,13 +79,13 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
 
           {topOddsRow ? (
             <View style={styles.oddsLine}>
-              <Text style={styles.oddsLabel}>{topOddsRow.tier.toUpperCase()} TIER ODDS</Text>
+              <Text style={styles.oddsLabel}>{topOddsRow.tier} tier odds</Text>
               <Text style={styles.oddsValue}>{topOddsRow.chance}</Text>
             </View>
           ) : null}
 
           <SgButton
-            label={releaseBlocked ? 'VIEW PACK DETAILS' : t('packDetails.multiOpen.ctaOpenPack')}
+            label={releaseBlocked ? 'View pack details' : t('packDetails.multiOpen.ctaOpenPack')}
             onPress={releaseBlocked ? goVerify : onOpen}
             variant={releaseBlocked ? 'line' : 'gold'}
             style={styles.cta}
@@ -93,7 +93,7 @@ export function SgFeaturedPackCard({ pack, onOpen }: { pack: Pack; onOpen: () =>
 
           {!releaseBlocked ? (
             <TouchableOpacity onPress={goVerify} style={styles.verifyRow} accessibilityRole="button">
-              <Text style={styles.verifyLabel}>VIEW ODDS + VERIFICATION RECORD</Text>
+              <Text style={styles.verifyLabel}>View odds and verification record</Text>
               <Text style={styles.verifyArrow}>›</Text>
             </TouchableOpacity>
           ) : null}
@@ -109,26 +109,25 @@ const styles = StyleSheet.create({
     marginTop: sg.space.md,
     borderRadius: sg.radius.panel,
     backgroundColor: sg.surface,
-    borderWidth: 1,
-    borderColor: sg.lineStrong,
-    padding: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: sg.line,
+    padding: sg.space.md,
     ...sg.shadowHero,
   },
   ticketHead: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
     paddingHorizontal: 2, paddingBottom: 12,
   },
-  eyebrow: { fontFamily: sg.font.label, fontSize: 8, letterSpacing: 1, color: sg.goldHi },
-  title: { fontFamily: sg.font.display, fontSize: 20, lineHeight: 22, letterSpacing: -0.6, color: sg.text, marginTop: 3 },
-  bay: { fontFamily: sg.font.dataBold, fontSize: 9, color: sg.muted, borderWidth: 1, borderColor: sg.line, padding: 5 },
+  eyebrow: { fontFamily: sg.font.bodyMedium, fontSize: 11, color: sg.goldHi },
+  title: { fontFamily: sg.font.display, fontSize: 22, lineHeight: 27, letterSpacing: -0.35, color: sg.text, marginTop: 3 },
+  bay: { fontFamily: sg.font.bodyMedium, fontSize: 11, color: sg.muted, padding: 5 },
   productBody: { gap: 12 },
   productBodyWide: { flexDirection: 'row', alignItems: 'stretch' },
   productStage: {
     height: 216,
     backgroundColor: sg.bg,
-    borderWidth: 1,
-    borderColor: sg.lineStrong,
-    borderRadius: sg.radius.tag,
+    borderWidth: 0,
+    borderRadius: sg.radius.btn,
     overflow: 'hidden',
   },
   productStageWide: { flex: 1.6, height: 310 },
@@ -137,26 +136,26 @@ const styles = StyleSheet.create({
     position: 'absolute', left: 12, bottom: 12,
     paddingHorizontal: 8, paddingVertical: 6,
     backgroundColor: sg.functionalScrim,
-    borderWidth: 1, borderColor: sg.lineStrong,
-    borderRadius: sg.radius.tag,
+    borderWidth: StyleSheet.hairlineWidth, borderColor: sg.line,
+    borderRadius: sg.radius.btn,
   },
   photoCaptionCode: { fontFamily: sg.font.dataBold, fontSize: 8, color: sg.goldHi, fontVariant: [...sg.numeric] },
-  photoCaptionText: { marginTop: 2, fontFamily: sg.font.label, fontSize: 6.5, color: sg.text, letterSpacing: 0.55 },
+  photoCaptionText: { marginTop: 2, fontFamily: sg.font.bodyMedium, fontSize: 9, color: sg.text },
   productDetails: { gap: 0 },
   productDetailsWide: {
     flex: 1,
     justifyContent: 'center',
     padding: 12,
     backgroundColor: sg.surface2,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.line,
-    borderRadius: sg.radius.tag,
+    borderRadius: sg.radius.btn,
   },
   readout: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 12, paddingHorizontal: 4 },
   slotsBar: { height: 3, backgroundColor: sg.line, marginHorizontal: 4, marginTop: 8 },
   slotsFill: { height: 3, backgroundColor: sg.success },
   oddsLine: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, paddingHorizontal: 4 },
-  oddsLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.75 },
+  oddsLabel: { fontFamily: sg.font.bodyMedium, fontSize: 11, color: sg.muted },
   oddsValue: { fontFamily: sg.font.dataBold, fontSize: 10, color: sg.text, fontVariant: [...sg.numeric] },
   releaseStatus: {
     minHeight: 52,
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     backgroundColor: sg.warningWash,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: sg.warningBorder,
     borderRadius: sg.radius.btn,
   },
@@ -178,10 +177,8 @@ const styles = StyleSheet.create({
   },
   releaseStatusCopy: { flex: 1 },
   releaseStatusTitle: {
-    fontFamily: sg.font.label,
-    fontSize: 9,
-    letterSpacing: 0.7,
-    textTransform: 'uppercase',
+    fontFamily: sg.font.bodyMedium,
+    fontSize: 11,
     color: sg.warning,
   },
   releaseStatusBody: {
@@ -192,6 +189,6 @@ const styles = StyleSheet.create({
   },
   cta: { alignSelf: 'stretch', marginTop: 12 },
   verifyRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 4, paddingTop: 12, paddingBottom: 2 },
-  verifyLabel: { fontFamily: sg.font.label, fontSize: 8, color: sg.muted, letterSpacing: 0.75 },
+  verifyLabel: { fontFamily: sg.font.bodyMedium, fontSize: 11, color: sg.muted },
   verifyArrow: { fontFamily: sg.font.bodyBold, fontSize: 17, color: sg.goldHi },
 });

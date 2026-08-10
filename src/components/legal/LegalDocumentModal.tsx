@@ -13,15 +13,25 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TerminalBackdrop } from '../terminal/TerminalBackdrop';
+import { openExternalUrl } from '../../utils/openExternalUrl';
 
 interface Props {
   visible: boolean;
   title: string;
   body: string;
+  externalUrl?: string;
+  externalLabel?: string;
   onClose: () => void;
 }
 
-export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
+export function LegalDocumentModal({
+  visible,
+  title,
+  body,
+  externalUrl,
+  externalLabel,
+  onClose,
+}: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
@@ -66,6 +76,18 @@ export function LegalDocumentModal({ visible, title, body, onClose }: Props) {
               <View style={styles.metaLine} />
             </View>
             <Text style={styles.body}>{body}</Text>
+            {externalUrl ? (
+              <TouchableOpacity
+                style={styles.externalLink}
+                onPress={() => void openExternalUrl(externalUrl, externalLabel ?? title)}
+                activeOpacity={0.86}
+                accessibilityRole="link"
+                accessibilityLabel={externalLabel ?? title}
+              >
+                <Text style={styles.externalLinkText}>{externalLabel ?? title}</Text>
+                <Ionicons name="open-outline" size={17} color={sg.goldHi} />
+              </TouchableOpacity>
+            ) : null}
           </View>
         </ScrollView>
       </View>
@@ -179,5 +201,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 23,
     color: sg.ivoryLight,
+  },
+  externalLink: {
+    minHeight: 48,
+    marginTop: sg.space.lg,
+    paddingHorizontal: sg.space.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: sg.space.sm,
+    borderWidth: 1,
+    borderColor: sg.gold,
+    borderRadius: sg.radius.btn,
+    backgroundColor: sg.cobaltWash,
+  },
+  externalLinkText: {
+    flex: 1,
+    fontFamily: sg.font.bodyBold,
+    fontSize: 14,
+    color: sg.text,
   },
 });

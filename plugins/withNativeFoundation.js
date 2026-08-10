@@ -7,7 +7,7 @@ const {
   createRunOncePlugin,
   withPodfile,
   withGradleProperties,
-} = require('@expo/config-plugins');
+} = require('expo/config-plugins');
 
 function withNativeFoundation(config) {
   config = withPodfile(config, async (cfg) => {

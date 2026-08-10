@@ -10,8 +10,9 @@ export const brandFont = {
   medium: sg.font.bodyMedium,
   semibold: sg.font.bodyBold,
   bold: sg.font.bodyBold,
-  extraBold: sg.font.display,
-  black: sg.font.display,
+  /** Legacy heavy UI text stays grotesk; editorial Fraunces is opt-in via `sg.font.display`. */
+  extraBold: sg.font.bodyBold,
+  black: sg.font.bodyBold,
 } as const;
 
 export const fontFamily = {
